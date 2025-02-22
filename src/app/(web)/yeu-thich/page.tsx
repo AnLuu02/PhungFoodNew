@@ -6,7 +6,8 @@ import Empty from '~/app/_components/Empty';
 import LoadingComponent from '~/app/_components/Loading';
 import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
 import { api } from '~/trpc/react';
-export default function CustomerProfile() {
+
+export default function FavouritePage() {
   const { data: user } = useSession();
   const { data, isLoading } = api.FavouriteFood.getFilter.useQuery({ query: user?.user?.email || '' });
   const favourite_food = data ?? [];

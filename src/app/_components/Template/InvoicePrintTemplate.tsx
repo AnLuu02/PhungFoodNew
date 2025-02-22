@@ -114,7 +114,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
         </Box>
         {/* {sortedInvoicePaymentMethods && (
           <Text fs='italic' fz={18}>
-            {sortedInvoicePaymentMethods?.map((invoicePaymentMethod: any, index: any) => {
+            {sortedInvoicePaymentMethods?.map((invoicePaymentMethod: any, index: number) => {
               return (
                 <Flex justify={'space-between'}>
                   <Flex>

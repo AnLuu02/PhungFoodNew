@@ -69,7 +69,7 @@ export function RecipeModal({ recipe, opened, onClose }: any) {
               Nguyên liệu
             </Text>
             <List>
-              {recipe.ingredients.map((ingredient: any, index: any) => (
+              {recipe.ingredients.map((ingredient: any, index: number) => (
                 <List.Item key={index}>{ingredient}</List.Item>
               ))}
             </List>
@@ -83,7 +83,7 @@ export function RecipeModal({ recipe, opened, onClose }: any) {
               Các bước thực hiện
             </Text>
             <List type='ordered'>
-              {recipe.steps.map((step: any, index: any) => (
+              {recipe.steps.map((step: any, index: number) => (
                 <List.Item key={index}>{step}</List.Item>
               ))}
             </List>

@@ -27,12 +27,23 @@ const News = async ({
   } = data || {};
   return (
     <Grid>
-      <GridCol span={9}>
-        <Stack gap={'md'}>
+      <GridCol span={{ base: 12, sm: 6, md: 7, lg: 9 }} order={{ base: 2, sm: 1, md: 1, lg: 1 }} className='h-fit'>
+        <Stack gap={'xl'}>
           {news && news?.length > 0 ? (
             news?.map((item: any) => (
-              <Flex key={item.id} gap={'lg'} align={'flex-start'} justify={'flex-start'}>
-                <Paper radius={'md'} className='overflow-hidden' w={250} h={158} bg={'red'}>
+              <Flex
+                key={item.id}
+                direction={{ base: 'column', sm: 'row', md: 'row', lg: 'row' }}
+                gap={'lg'}
+                align={'flex-start'}
+                justify={'flex-start'}
+              >
+                <Paper
+                  radius={'md'}
+                  className='overflow-hidden'
+                  w={{ base: '100%', sm: 190, md: 190, lg: 250 }}
+                  h={{ base: '100%', sm: 180, md: 180, lg: 158 }}
+                >
                   <Image
                     loading='lazy'
                     src={item.image || '/images/jpg/empty-300x240.jpg'}
@@ -75,7 +86,13 @@ const News = async ({
           </Center>
         </Stack>
       </GridCol>
-      <GridCol span={3}>
+      <GridCol
+        span={{ base: 12, sm: 6, md: 5, lg: 3 }}
+        order={{ base: 1, sm: 2, md: 2, lg: 2 }}
+        className='h-fit'
+        pos={'sticky'}
+        top={70}
+      >
         <Stack gap={'md'}>
           {/* <GlobalSearch /> */}
           <Search />
@@ -90,13 +107,15 @@ const News = async ({
                 news?.slice(0, 4).map((item: any) => (
                   <Link key={item.id} className='h-full w-full no-underline' href={item.link} target='_blank'>
                     <Flex gap={'sm'} align={'flex-start'} justify={'flex-start'}>
-                      <Image
-                        loading='lazy'
-                        src={item.image || '/images/jpg/empty-300x240.jpg'}
-                        w={100}
-                        h={64}
-                        alt={item.title}
-                      />
+                      <Paper radius={0} className='overflow-hidden' w={100} h={64}>
+                        <Image
+                          loading='lazy'
+                          src={item.image || '/images/jpg/empty-300x240.jpg'}
+                          w={'100%'}
+                          h={'100%'}
+                          alt={item.title}
+                        />
+                      </Paper>
 
                       <Highlight
                         flex={1}

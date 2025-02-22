@@ -2,6 +2,10 @@ import { Box, rem } from '@mantine/core';
 import { api } from '~/trpc/server';
 import HomeWeb from './_components/Web/Home/HomeWeb';
 
+export const metadata = {
+  title: 'Trang chủ'
+};
+
 // export const revalidate = 3600;
 const Page = async () => {
   const [anVat, monChinh, monChay, thucUong, productDiscount, productBestSaler, productNew, productHot]: any =

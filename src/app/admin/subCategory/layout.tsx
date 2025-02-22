@@ -8,5 +8,5 @@ export const metadata: Metadata = {
   }
 };
 export default function SubCategorLayout({ children }: { children: React.ReactNode }) {
-  return { children };
+  return <>{children}</>;
 }

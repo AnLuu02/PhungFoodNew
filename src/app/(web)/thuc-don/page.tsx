@@ -1,9 +1,12 @@
 'use client';
-
-import { Flex, Grid, GridCol, Image, Text } from '@mantine/core';
+import { Box, Flex, Grid, GridCol, Image, Indicator, Text } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
+import { IconBell, IconGardenCart } from '@tabler/icons-react';
+import Link from 'next/link';
 import CustomPagination from '~/app/_components/Pagination';
 import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
 import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
+import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { api } from '~/trpc/react';
 import HeaderMenu from './_components/HeaderMenu';
 
@@ -41,10 +44,11 @@ const MenuSection = ({
       max: Number(searchParams?.price?.split('-')[1]) || undefined
     }
   });
+  const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
   const data = foderItems?.products || [];
   return (
-    <>
+    <Box pos={'relative'}>
       <HeaderMenu
         isLoading={isLoading}
         category={(searchParams?.['loai-san-pham'] || searchParams?.['danh-muc']) && data?.[0]?.subCategory}
@@ -83,7 +87,34 @@ const MenuSection = ({
           <CustomPagination totalPages={foderItems?.pagination?.totalPages || 1} />
         </Flex>
       </Flex>
-    </>
+      {cart?.length > 0 && (
+        <Link href='/gio-hang'>
+          <Indicator
+            inline
+            size={40}
+            color='green.9'
+            bg={'green.9'}
+            label={<IconBell size={30} color='white' className='animate-shake' />}
+            className='fixed bottom-0 right-[80px] z-50 cursor-pointer rounded-t-xl hover:opacity-80'
+          >
+            <Box mr={20}>
+              <Flex align={'center'} justify={'center'} gap={10} pt={4} pb={4} pl={20} pr={20}>
+                <IconGardenCart size={50} color='white' />
+                <Text className='text-xl font-bold' color='white'>
+                  {formatPriceLocaleVi(
+                    cart.reduce(
+                      (total: number, item: any) =>
+                        total + (Number(item?.price || 0) - Number(item?.discount || 0)) * Number(item?.quantity || 0),
+                      0
+                    )
+                  )}
+                </Text>
+              </Flex>
+            </Box>
+          </Indicator>
+        </Link>
+      )}
+    </Box>
   );
 };
 
