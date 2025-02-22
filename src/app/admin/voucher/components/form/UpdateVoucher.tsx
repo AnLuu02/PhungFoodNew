@@ -6,9 +6,9 @@ import { VoucherType } from '@prisma/client';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Voucher } from '~/app/Entity/VoucherEntity';
-import { createTag } from '~/app/lib/utils/generateTag';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/toast';
-import { voucherSchema } from '~/app/lib/utils/zodShcemaForm';
+import { createTag } from '~/app/lib/utils/func-handler/generateTag';
+import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { voucherSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: string; setOpened: any }) {

@@ -20,9 +20,9 @@ import {
 import { OrderStatus } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTruck } from '@tabler/icons-react';
 import { useState } from 'react';
-import { getStatusColor } from '~/app/(web)/don-hang-cua-toi/page';
 import { formatDate } from '~/app/lib/utils/format/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getStatusColor } from '~/app/lib/utils/func-handler/get-status-color';
 import InvoiceToPrint from '../Invoices/InvoceToPrint';
 
 function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {

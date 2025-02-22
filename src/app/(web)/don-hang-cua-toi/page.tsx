@@ -25,23 +25,11 @@ import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { formatDate } from '~/app/lib/utils/format/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getStatusColor } from '~/app/lib/utils/func-handler/get-status-color';
 import { api } from '~/trpc/react';
 import { default as Empty } from '../../_components/Empty';
 
-export const getStatusColor = (status: string) => {
-  switch (status) {
-    case OrderStatus.COMPLETED:
-      return 'green';
-    case OrderStatus.PENDING:
-      return 'yellow';
-    case OrderStatus.CANCELLED:
-      return 'red';
-    default:
-      return 'gray';
-  }
-};
-
-export const getStatusIcon = (status: string) => {
+const getStatusIcon = (status: string) => {
   switch (status) {
     case OrderStatus.COMPLETED:
       return <IconCreditCard size={24} />;

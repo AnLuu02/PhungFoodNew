@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { firebaseToFile } from '~/app/lib/utils/handle-file-upload';
+import { firebaseToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { api } from '~/trpc/react';
 import { PhotoCard } from '../PhotoCard';
 export const formatBytes = (bytes: number) => {

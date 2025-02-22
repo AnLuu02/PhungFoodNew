@@ -68,6 +68,7 @@ const LayoutProductCarouselWithImage2 = ({ title, imgaePositon = 'left', navbar 
                 alt='Restaurant Image 1'
                 w={'100%'}
                 h={190}
+                mb={'xs'}
                 className='cursor-pointer rounded-xl transition-all duration-500 ease-in-out hover:scale-105'
               />
               <Image

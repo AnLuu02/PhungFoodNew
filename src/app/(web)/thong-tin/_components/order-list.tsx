@@ -25,8 +25,8 @@ import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { formatDate } from '~/app/lib/utils/format/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getStatusColor } from '~/app/lib/utils/func-handler/get-status-color';
 import { api } from '~/trpc/react';
-import { getStatusColor } from '../../don-hang-cua-toi/page';
 export default function OrderList({ orders, isLoading }: any) {
   const [activeTab, setActiveTab] = useState<string | null>('all');
   const mockOrders =

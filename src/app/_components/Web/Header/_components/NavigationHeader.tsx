@@ -76,7 +76,7 @@ export default function NavigationHeader({
           <Menu
             shadow='md'
             key={index}
-            trigger='hover'
+            trigger={categories && categories.length > 0 ? 'hover' : 'click'}
             width={1000}
             transitionProps={{ transition: 'fade-up', duration: 300 }}
           >

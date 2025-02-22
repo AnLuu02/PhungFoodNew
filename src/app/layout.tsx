@@ -79,11 +79,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang='en'>
       <head>
-        <ColorSchemeScript defaultColorScheme='auto' />
+        <ColorSchemeScript defaultColorScheme='light' />
       </head>
       <body className={`${quickSandFont.className} ${font.variable}`}>
         <TRPCReactProvider session={session as Session}>
-          <MantineProvider theme={theme} defaultColorScheme='auto'>
+          <MantineProvider theme={theme} defaultColorScheme='light'>
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>
