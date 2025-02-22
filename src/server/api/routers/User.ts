@@ -1,18 +1,14 @@
 import { EntityType, Gender, ImageType, UserLevel, UserRole } from '@prisma/client';
-import { hash } from 'bcryptjs';
 import { z } from 'zod';
 import {
   deleteImageFromFirebase,
   getFileNameFromFirebaseFile,
   uploadToFirebase
 } from '~/app/lib/utils/func-handler/handle-file-upload';
+import { hashPassword } from '~/app/lib/utils/func-handler/hashPassword';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-export async function hashPassword(password: string) {
-  const saltRounds = 10;
-  const hashedPassword = await hash(password, saltRounds);
-  return hashedPassword;
-}
+
 export const userRouter = createTRPCRouter({
   find: publicProcedure
     .input(
@@ -126,6 +122,7 @@ export const userRouter = createTRPCRouter({
       if (input.email === 'anluu099@gmail.com') {
         input.role = 'ADMIN';
       }
+
       const passwordHash = await hashPassword(input.password);
       const user = await ctx.db.user.create({
         data: {

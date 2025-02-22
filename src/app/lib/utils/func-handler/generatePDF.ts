@@ -8,7 +8,6 @@ import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   const pdfDoc = await PDFDocument.create();
   pdfDoc.registerFontkit(fontkit);
-  console.log(invoiceData);
 
   // 🏁 Load font
   const fontPath = path.join(process.cwd(), 'public', 'fonts', 'my-font-mergeblack.ttf');

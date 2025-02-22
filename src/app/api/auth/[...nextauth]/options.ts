@@ -3,7 +3,6 @@ import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
-import { hashPassword } from '~/server/api/routers/User';
 import { api } from '~/trpc/server';
 
 export const authOptions: NextAuthOptions = {
@@ -56,12 +55,10 @@ export const authOptions: NextAuthOptions = {
       try {
         if (user.email) {
           const { email, name, image } = user;
-          const passwordHash = await hashPassword('default123');
-
           await api.User.create({
             email: email || '',
             name: name || '',
-            password: passwordHash,
+            password: 'default123',
             image: { fileName: image || '', base64: '' }
           });
         }

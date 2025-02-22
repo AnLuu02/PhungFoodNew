@@ -49,8 +49,6 @@ export default function UpdateUser({
       pointLevel: 0
     }
   });
-  console.log(watch());
-
   useEffect(() => {
     setLoading(true);
     if (data && data?.images?.[0]?.url && data?.images?.[0]?.url !== '') {
