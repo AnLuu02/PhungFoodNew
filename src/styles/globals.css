@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+/* css slider image */
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden !important;
+}
+main {
+  margin: auto;
+  width: min(1200px, 90vw);
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.scrollbar {
+  &,
+  &:hover {
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+  }
+
+  &[data-orientation='vertical'] .thumb {
+    background-color: var(--mantine-color-red-6);
+  }
+
+  &[data-orientation='horizontal'] .thumb {
+    background-color: var(--mantine-color-blue-6);
+  }
+}
+
+.corner {
+  opacity: 1;
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}

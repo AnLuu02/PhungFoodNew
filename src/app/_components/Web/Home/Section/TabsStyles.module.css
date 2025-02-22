@@ -1,0 +1,10 @@
+.tab {
+  &[data-active] {
+    background-color: transparent;
+    color: #f8c144;
+  }
+  &:hover {
+    background-color: transparent;
+    color: #f8c144;
+  }
+}

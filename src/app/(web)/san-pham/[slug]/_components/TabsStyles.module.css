@@ -1,0 +1,13 @@
+.tab {
+  transition: all 0.2s;
+  margin-right: 10px;
+  border: unset;
+  &[data-active] {
+    background-color: #008b4b;
+    color: #fff;
+  }
+  &:hover {
+    background-color: #008b4b;
+    color: white;
+  }
+}

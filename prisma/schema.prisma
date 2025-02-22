@@ -1,0 +1,288 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String        @id @default(cuid())
+  name        String
+  tag         String        @unique
+  description String?
+  createdAt   DateTime?     @default(now())
+  updatedAt   DateTime?     @updatedAt
+  subCategory SubCategory[]
+}
+
+model SubCategory {
+  id          String    @id @default(cuid())
+  name        String
+  tag         String
+  categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  description String?
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  product     Product[]
+  images      Image[]
+}
+
+model Voucher {
+  id                String      @id @default(cuid())
+  tag               String      @unique
+  name              String
+  description       String?
+  type              VoucherType
+  discountValue     Float
+  maxDiscount       Float
+  minOrderPrice     Float
+  quantity          Int         @default(0)
+  usedQuantity      Int         @default(0)
+  availableQuantity Int         @default(0)
+  applyAll          Boolean     @default(false)
+  startDate         DateTime
+  endDate           DateTime
+  vipLevel          Int?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  users             User[]
+  Orders            Order[]
+  products          Product[]
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  total         Int         @default(0)
+  status        OrderStatus
+  createdAt     DateTime?   @default(now())
+  updatedAt     DateTime?   @updatedAt
+  userId        String?
+  paymentId     String?
+  transactionId String?     @default("")
+  user          User?       @relation(fields: [userId], references: [id])
+  payment       Payment?    @relation(fields: [paymentId], references: [id])
+  orderItems    OrderItem[]
+  vouchers      Voucher[]
+  delivery      Delivery?   @relation(fields: [deliveryId], references: [id])
+  deliveryId    String?
+
+  @@index([userId], map: "Order_usersId_fkey_unique")
+}
+
+model Delivery {
+  id       String  @id @default(cuid())
+  name     String?
+  email    String?
+  phone    String?
+  province String?
+  address  String?
+  note     String?
+  userId   String?
+  orderId  String?
+  user     User?   @relation(fields: [userId], references: [id])
+  order    Order[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  productId String
+  quantity  Int     @default(1)
+  price     Int     @default(0)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId], map: "Order_item_orderId_fkey_unique")
+}
+
+model Payment {
+  id        String      @id @default(cuid())
+  name      String
+  tag       String      @unique
+  type      PaymentType
+  provider  String
+  createdAt DateTime?   @default(now())
+  isDefault Boolean     @default(false)
+  order     Order[]
+  revenue   Revenue?    @relation(fields: [revenueId], references: [id])
+  revenueId String?
+}
+
+model Product {
+  id                String          @id @default(cuid())
+  name              String
+  description       String?
+  descriptionDetail String?         @default("")
+  price             Int             @default(0)
+  discount          Int             @default(0)
+  tag               String          @unique
+  region            String
+  createdAt         DateTime?       @default(now())
+  updatedAt         DateTime?       @updatedAt
+  soldQuantity      Int             @default(0)
+  availableQuantity Int             @default(100)
+  rating            Float           @default(0.0)
+  totalRating       Int             @default(0)
+  orderItem         OrderItem[]
+  review            Review[]
+  favouriteFood     FavouriteFood[]
+
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  subCategoryId String?
+  Voucher       Voucher[]
+  voucherId     String?
+  images        Image[]
+
+  @@index([subCategoryId], map: "Product_categoryId_fkey_unique")
+}
+
+model Review {
+  id        String    @id @default(cuid())
+  userId    String
+  productId String
+  rating    Float     @default(0.0)
+  comment   String?
+  createdAt DateTime? @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
+
+  @@index([userId], map: "Review_userId_fkey_unique")
+}
+
+model User {
+  id            String          @id @default(cuid())
+  name          String
+  email         String          @unique
+  password      String
+  role          UserRole        @default(CUSTOMER)
+  phone         String?         @db.VarChar(10)
+  address       String?
+  dateOfBirth   DateTime?       @default(now())
+  gender        Gender?
+  pointLevel    Int             @default(0)
+  level         UserLevel
+  createdAt     DateTime?       @default(now())
+  updatedAt     DateTime?       @updatedAt
+  order         Order[]
+  review        Review[]
+  revenueId     String?
+  favouriteFood FavouriteFood[]
+  revenue       Revenue[]
+  delivery      Delivery[]
+  voucherId     String?
+  Voucher       Voucher?        @relation(fields: [voucherId], references: [id])
+  images        Image[]
+}
+
+model Revenue {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  date        Int
+  year        Int
+  month       Int
+  totalSpent  Decimal   @default(0)
+  totalOrders Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  payment     Payment[]
+
+  @@unique([userId, year, month])
+}
+
+model FavouriteFood {
+  id        String    @id @default(cuid())
+  userId    String
+  productId String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Image {
+  id            String     @id @default(cuid())
+  url           String
+  altText       String?
+  type          ImageType
+  subCategoryId String?
+  userId        String?
+  productId     String?
+  entityType    EntityType
+
+  subCategory SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([id, subCategoryId, entityType, type])
+  @@unique([id, userId, entityType, type])
+  @@unique([id, productId, entityType, type])
+  @@index([subCategoryId, entityType])
+  @@index([userId, entityType])
+  @@index([productId, entityType])
+}
+
+enum ImageType {
+  THUMBNAIL // Ảnh đại diện (User, Category, Product)
+  GALLERY // Ảnh phụ của Product
+}
+
+enum EntityType {
+  PRODUCT
+  USER
+  CATEGORY
+}
+
+enum VoucherType {
+  PERCENTAGE
+  FIXED
+}
+
+enum PaymentType {
+  CREDIT_CARD
+  E_WALLET
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+  REFUNDED
+}
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+  STAFF
+}
+
+enum RevenueType {
+  DATE
+  CUSTOMER
+  PAYMENT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum UserLevel {
+  DONG
+  BAC
+  VANG
+  BACHKIM
+  KIMCUONG
+}

@@ -1,0 +1,12 @@
+.tab {
+  &[data-active] {
+    background-color: #008b4b;
+    color: white;
+  }
+  &:hover {
+    opacity: 0.9;
+  }
+}
+.tabList {
+  border-bottom: 1px solid #008b4b;
+}
