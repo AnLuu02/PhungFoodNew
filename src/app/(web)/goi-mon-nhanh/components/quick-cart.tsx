@@ -1,10 +1,12 @@
 'use client';
 import { Box, Card, Center, Divider, Group, ScrollAreaAutosize, Select, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import Empty from '~/app/_components/Empty';
 import { HEIGHT_HEADER } from '~/app/_components/Web/Header/_components/NavigationHeader';
 import { CartItemFastMenu } from '~/app/_components/Web/Home/_Components/CartItemFastMenu';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { ButtonCheckout } from '../../thanh-toan/_components/ButtonCheckout';
 
 export const HEIGHT_HEADER_AND_BREADCRUMB = HEIGHT_HEADER + 100;
@@ -39,7 +41,7 @@ const QuickCart = () => {
                 <Box key={item?.id}>
                   <CartItemFastMenu
                     key={item?.id}
-                    image={item?.thumbnail}
+                    image={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                     name={item?.name}
                     price={item?.price}
                     quantity={item?.quantity}

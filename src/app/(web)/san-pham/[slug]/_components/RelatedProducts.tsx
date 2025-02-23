@@ -1,8 +1,10 @@
 'use client';
 
 import { Center, Group, Image, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import Link from 'next/link';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 interface RelatedProduct {
   id: number;
@@ -57,7 +59,7 @@ export function RelatedProducts({ data }: any) {
             <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
               <Image
                 loading='lazy'
-                src={product.thumbnail || '/images/jpg/empty-300x240.jpg'}
+                src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                 w={60}
                 h={60}
                 radius='md'

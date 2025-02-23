@@ -17,12 +17,13 @@ import {
   Title,
   rem
 } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
+import { ImageType, OrderStatus } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTruck } from '@tabler/icons-react';
 import { useState } from 'react';
 import { formatDate } from '~/app/lib/utils/format/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { getStatusColor } from '~/app/lib/utils/func-handler/get-status-color';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import InvoiceToPrint from '../Invoices/InvoceToPrint';
 
 function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {
@@ -173,7 +174,10 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                           <Table.Td>
                             <Avatar
                               size={40}
-                              src={item.product.thumbnail || '/images/jpg/empty-300x240.jpg'}
+                              src={
+                                getImageProduct(item?.product?.images || [], ImageType.THUMBNAIL) ||
+                                '/images/jpg/empty-300x240.jpg'
+                              }
                               radius={'md'}
                             />
                           </Table.Td>

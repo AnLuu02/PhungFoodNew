@@ -1,7 +1,9 @@
 import { Badge, Box, Center, Group, Highlight, Image, Spoiler, Text } from '@mantine/core';
 import { Spotlight } from '@mantine/spotlight';
+import { ImageType } from '@prisma/client';
 import Link from 'next/link';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 function GlobalSearchItem({ item, query }: any) {
   const isNew = (createdAt: any) => {
     if (!createdAt) return false;
@@ -14,17 +16,15 @@ function GlobalSearchItem({ item, query }: any) {
     <Link href={`/san-pham/${item.tag}`} className='no-underline'>
       <Spotlight.Action key={item.id}>
         <Group wrap='nowrap' w='100%'>
-          {item.thumbnail && (
-            <Center w={'8%'}>
-              <Image
-                loading='lazy'
-                src={item?.thumbnail || '/images/jpg/empty-300x240.jpg'}
-                w={50}
-                h={50}
-                alt={item.name}
-              />
-            </Center>
-          )}
+          <Center w={'8%'}>
+            <Image
+              loading='lazy'
+              src={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+              w={50}
+              h={50}
+              alt={item.name}
+            />
+          </Center>
 
           <Box style={{ flex: 1 }} w={'70%'}>
             <Highlight highlight={query} size='md' fw={700} c='black'>

@@ -19,6 +19,7 @@ import {
   Title
 } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import {
   IconBrandFacebook,
   IconBrandPinterest,
@@ -35,6 +36,7 @@ import Comments from '~/app/_components/Comments/Comments';
 import ProductSectionBase from '~/app/_components/Web/Home/Section/Layout-Product-Carousel-Only';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
 import { DiscountCodes } from './_components/DiscountCodes';
@@ -76,7 +78,7 @@ export default function ProductDetailsClient({ dataProduct }: { dataProduct: any
       <Grid>
         <Grid.Col span={{ base: 12, sm: 6, md: 6 }} pl={0}>
           <ProductImage
-            mainImage={product?.thumbnail || '/images/jpg/empty-300x240.jpg'}
+            mainImage={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             thumbnails={[...product?.images]}
             discount={discount}
           />

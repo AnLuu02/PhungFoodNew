@@ -16,8 +16,10 @@ import {
   Text
 } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import Empty from '../../_components/Empty';
 import RecapCart from '../thanh-toan/_components/recapCart';
 import ShoppingCartMobile from './_mobile/gio-hang-mobile';
@@ -56,7 +58,10 @@ export default function ShoppingCart() {
                         <Box w={80} h={80} className='hidden md:block'>
                           <Image
                             loading='lazy'
-                            src={item.thumbnail || '/images/jpg/empty-300x240.jpg'}
+                            src={
+                              getImageProduct(item?.images || [], ImageType.THUMBNAIL) ||
+                              '/images/jpg/empty-300x240.jpg'
+                            }
                             w={80}
                             h={80}
                             radius='md'

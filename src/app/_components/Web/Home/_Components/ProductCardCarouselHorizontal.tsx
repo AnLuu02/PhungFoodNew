@@ -1,5 +1,6 @@
 'use client';
 import { Badge, Box, Button, Card, Flex, Group, Image, Progress, Text, Tooltip } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconEye, IconHeart } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
@@ -8,17 +9,26 @@ import { usePathname, useRouter } from 'next/navigation';
 import BButton from '~/app/_components/Button';
 import { useModal } from '~/app/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const { data: user } = useSession();
   const pathname = usePathname();
   const router = useRouter();
   const { openModal } = useModal();
+
+  console.log('data___________________', data);
+
   return (
     <Card radius={'md'} withBorder bg={'white'} p={0} pos={'relative'}>
       <Flex h={162} gap={'xs'}>
         <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center'>
-          <Image loading='lazy' src={data?.thumbnail || '/images/jpg/empty-300x240.jpg'} w={'100%'} h={'100%'} />
+          <Image
+            loading='lazy'
+            src={getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+            w={'100%'}
+            h={'100%'}
+          />
 
           <Box
             pos={'absolute'}

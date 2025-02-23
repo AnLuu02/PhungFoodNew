@@ -15,7 +15,9 @@ import {
   Text
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 export default function ShoppingCartMobile() {
   const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -32,7 +34,7 @@ export default function ShoppingCartMobile() {
               <Box w={80} h={80} className=''>
                 <Image
                   loading='lazy'
-                  src={item.thumbnail || '/images/jpg/empty-300x240.jpg'}
+                  src={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                   w={80}
                   h={80}
                   radius='md'

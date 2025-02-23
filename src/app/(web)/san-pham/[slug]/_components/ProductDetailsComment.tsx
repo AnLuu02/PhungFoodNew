@@ -1,11 +1,18 @@
 import { Badge, Group, Image, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 export function ProductDetails({ product }: { product: any }) {
   return (
     <Paper withBorder p='md'>
       <Stack>
-        <Image loading='lazy' src={product.thumbnail || '/images/jpg/empty-300x240.jpg'} w={300} fit='contain' />
+        <Image
+          loading='lazy'
+          src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+          w={300}
+          fit='contain'
+        />
         <Title order={2}>{product.name}</Title>
         <Group>
           <Badge size='lg' variant='filled'>

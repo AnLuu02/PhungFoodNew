@@ -69,7 +69,8 @@ export const subCategoryRouter = createTRPCRouter({
             images: true,
             product: {
               include: {
-                favouriteFood: true
+                favouriteFood: true,
+                images: true
               }
             }
           }

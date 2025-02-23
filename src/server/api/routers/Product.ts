@@ -164,6 +164,7 @@ export const productRouter = createTRPCRouter({
             AND: filter.length > 0 ? filter : undefined
           } as any,
           include: {
+            images: true,
             subCategory: {
               select: {
                 id: true,
@@ -444,6 +445,7 @@ export const productRouter = createTRPCRouter({
           ]
         },
         include: {
+          images: true,
           subCategory: {
             include: {
               images: true,
@@ -532,6 +534,7 @@ export const productRouter = createTRPCRouter({
       const { hasCategory, hasCategoryChild, hasReview }: any = input;
       const product = await ctx.db.product.findMany({
         include: {
+          images: true,
           subCategory: {
             include: {
               images: true,
