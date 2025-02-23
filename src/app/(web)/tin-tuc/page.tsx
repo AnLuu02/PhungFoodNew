@@ -27,7 +27,7 @@ const News = async ({
   } = data || {};
   return (
     <Grid>
-      <GridCol span={{ base: 12, sm: 6, md: 7, lg: 9 }} order={{ base: 2, sm: 1, md: 1, lg: 1 }} className='h-fit'>
+      <GridCol span={{ base: 12, sm: 12, md: 8, lg: 9 }} order={{ base: 2, sm: 2, md: 1, lg: 1 }} className='h-fit'>
         <Stack gap={'xl'}>
           {news && news?.length > 0 ? (
             news?.map((item: any) => (
@@ -87,11 +87,11 @@ const News = async ({
         </Stack>
       </GridCol>
       <GridCol
-        span={{ base: 12, sm: 6, md: 5, lg: 3 }}
-        order={{ base: 1, sm: 2, md: 2, lg: 2 }}
+        span={{ base: 12, sm: 12, md: 4, lg: 3 }}
+        order={{ base: 1, sm: 1, md: 2, lg: 2 }}
         className='h-fit'
-        pos={'sticky'}
-        top={70}
+        pos={{ base: 'static', sm: 'static', md: 'sticky', lg: 'sticky' }}
+        top={{ base: 0, sm: 70, md: 70, lg: 70 }}
       >
         <Stack gap={'md'}>
           {/* <GlobalSearch /> */}
