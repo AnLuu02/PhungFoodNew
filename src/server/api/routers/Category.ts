@@ -176,7 +176,11 @@ export const categoryRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const category = await ctx.db.category.findMany({
       include: {
-        subCategory: true
+        subCategory: {
+          include: {
+            images: true
+          }
+        }
       }
     });
     return category;

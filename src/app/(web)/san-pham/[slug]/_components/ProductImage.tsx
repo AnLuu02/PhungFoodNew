@@ -6,41 +6,42 @@ import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { SocialShare } from './SocialShare';
 
 interface ProductImageProps {
-  mainImage: string;
-  thumbnails: string[];
+  thumbnail: string;
+  gallery: string[];
   discount?: number;
 }
 
-export function ProductImage({ mainImage, thumbnails, discount }: ProductImageProps) {
-  const [currentImage, setCurrentImage] = useState(mainImage);
+export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps) {
+  const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showfullImage, setShowfullImage] = useState(false);
 
   return (
     <>
       <Flex align={'flex-start'} gap={'xs'} justify={'flex-start'} pos={'relative'} w={'100%'}>
         <Flex direction={'column'} gap={'xs'} justify='space-between' align='center' top={0} left={0}>
-          {thumbnails?.map((item, index) => (
-            <Paper
-              w={113}
-              h={113}
-              withBorder
-              key={index}
-              radius={'md'}
-              onClick={() => {
-                setCurrentImage(item);
-                setShowfullImage(true);
-              }}
-              className='border-5 cursor-pointer overflow-hidden border-[#008b4b]'
-            >
-              <Image loading='lazy' src={item} w={113} h={113} />
-            </Paper>
-          ))}
+          {gallery?.length > 0 &&
+            gallery?.map((item, index) => (
+              <Paper
+                w={113}
+                h={113}
+                withBorder
+                key={index}
+                radius={'md'}
+                onClick={() => {
+                  setCurrentImage(item);
+                  setShowfullImage(true);
+                }}
+                className='border-5 cursor-pointer overflow-hidden border-[#008b4b]'
+              >
+                <Image loading='lazy' src={item} w={113} h={113} />
+              </Paper>
+            ))}
         </Flex>
         <Paper radius='md' className='relative mb-4' w={'100%'}>
           <Flex direction={'column'} align={'center'} justify={'center'} w={'100%'}>
             <Image
               loading='lazy'
-              src={mainImage}
+              src={thumbnail}
               alt='Product'
               className='object-cover'
               radius={'md'}

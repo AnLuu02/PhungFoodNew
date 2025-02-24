@@ -7,15 +7,15 @@ const LayoutBannerOverview = () => {
     <Card
       radius={'md'}
       pos='relative'
-      h='80vh'
+      h={{ base: 0, sm: '40vh', md: '40vh', lg: '80vh' }}
       w='100%'
       p={0}
       className="hidden bg-[url('/logo/bg.jpg')] bg-cover bg-center bg-no-repeat sm:block"
     >
       <Box pos='absolute' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.5} />
       <Flex direction='column' pos='absolute' top='50%' className='-translate-y-1/2 transform' c='white' w='100%'>
-        <Flex direction={{ base: 'column', md: 'row' }} align='center' px={'md'}>
-          <Box w={{ base: '100%', md: '50%' }}>
+        <Flex direction={{ base: 'column', sm: 'row', md: 'row' }} align='center' px={'md'}>
+          <Box w={{ base: '100%', sm: '50%', md: '50%' }}>
             <Image
               loading='lazy'
               src='/images/temp/ot hiem.png'

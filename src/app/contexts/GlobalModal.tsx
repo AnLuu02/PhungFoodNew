@@ -3,6 +3,7 @@ import React from 'react';
 import ModalOrderDetails from '../_components/Modals/ModalOrderDetails';
 import ModalProductComments from '../_components/Modals/ModalProductComments';
 import ModalProductDetails from '../_components/Modals/ModalProductDetails';
+import ModalSuccessAddToCart from '../_components/Modals/ModalSuccessAddCart';
 import { useModal } from './ModalContext';
 
 export const GlobalModal: React.FC = () => {
@@ -26,6 +27,12 @@ export const GlobalModal: React.FC = () => {
         opened={opened && modalType === 'orders'}
         close={closeModal}
         order={modalData}
+      />
+      <ModalSuccessAddToCart
+        type={modalType}
+        opened={opened && modalType === 'success'}
+        onClose={closeModal}
+        product={modalData}
       />
     </>
   );

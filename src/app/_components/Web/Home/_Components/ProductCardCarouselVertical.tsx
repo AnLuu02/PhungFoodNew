@@ -1,15 +1,16 @@
 'use client';
 import { Badge, Box, Button, Card, Flex, Group, Image, Rating, Text, Tooltip } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconEye, IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import BButton from '~/app/_components/Button';
 import { useModal } from '~/app/contexts/ModalContext';
+import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
@@ -17,10 +18,13 @@ import { api } from '~/trpc/react';
 const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; quickOrder?: boolean }) => {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const { data: user } = useSession();
+  const router = useRouter();
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const pathname = usePathname();
   const { openModal } = useModal();
   const [like, setLike] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingDetail, setLoadingDetail] = useState<boolean>(false);
   const utils = api.useUtils();
 
   useEffect(() => {
@@ -76,9 +80,16 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
             <Tooltip label='Xem nhanh'>
               <Button
                 onClick={() => {
-                  openModal('details', null, product);
+                  if (isMobile) {
+                    router.push(`/san-pham/${product?.tag}`);
+                    setLoadingDetail(true);
+                  } else {
+                    openModal('details', null, product);
+                  }
                 }}
                 size='xs'
+                loading={loadingDetail}
+                disabled={loadingDetail}
                 w={'max-content'}
                 p={5}
                 variant='default'
@@ -95,6 +106,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
               p={5}
               variant='default'
               loading={loading}
+              disabled={loading}
             >
               {like ? (
                 <Tooltip label='Xóa khỏi yêu thích'>
@@ -184,21 +196,32 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
           <Box>
             <BButton
               onClick={() => {
-                if (quickOrder) {
-                  const existingItem = cart.find((item: any) => item.id === product?.id);
-                  if (existingItem) {
-                    setCart(
-                      cart.map((item: any) =>
-                        item.id === product?.id ? { ...item, quantity: 1 + existingItem.quantity } : item
-                      )
-                    );
-                  } else {
-                    setCart([...cart, { ...product, quantity: 1 }]);
-                  }
-                  NotifySuccess('Thành công!', 'Thêm với gio hàng thành cong.');
+                // if (quickOrder) {
+                //   const existingItem = cart.find((item: any) => item.id === product?.id);
+                //   if (existingItem) {
+                //     setCart(
+                //       cart.map((item: any) =>
+                //         item.id === product?.id ? { ...item, quantity: 1 + existingItem.quantity } : item
+                //       )
+                //     );
+                //   } else {
+                //     setCart([...cart, { ...product, quantity: 1 }]);
+                //   }
+                //   NotifySuccess('Thành công!', 'Thêm với gio hàng thành cong.');
+                // } else {
+                //   openModal('details', null, product);
+                // }
+                const existingItem = cart.find((item: any) => item.id === product?.id);
+                if (existingItem) {
+                  setCart(
+                    cart.map((item: any) =>
+                      item.id === product?.id ? { ...item, quantity: 1 + existingItem.quantity } : item
+                    )
+                  );
                 } else {
-                  openModal('details', null, product);
+                  setCart([...cart, { ...product, quantity: 1 }]);
                 }
+                openModal('success', null, product);
               }}
             />
           </Box>

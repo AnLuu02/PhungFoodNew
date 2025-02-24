@@ -59,5 +59,18 @@ export const ButtonCheckout = ({
       }
     }
   };
-  return <BButton loading={loading} disabled={loading} {...stylesButtonCheckout} onClick={handleCreateOrder} />;
+  return (
+    <BButton
+      loading={loading}
+      disabled={loading}
+      {...stylesButtonCheckout}
+      onClick={() => {
+        if (user?.user?.email) {
+          handleCreateOrder();
+        } else {
+          NotifyError('Chưa đăng nhập', 'Vui lòng đăng nhập để tiến hành thanh toán.');
+        }
+      }}
+    />
+  );
 };

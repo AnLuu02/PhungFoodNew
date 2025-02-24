@@ -66,7 +66,6 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
         withCloseButton={false}
         pos={'relative'}
         styles={{
-          header: {},
           content: {
             overflow: 'hidden'
           }

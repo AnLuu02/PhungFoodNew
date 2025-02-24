@@ -1,5 +1,6 @@
 'use client';
 import { Badge, Box, Button, Card, Flex, Group, Image, Progress, Text, Tooltip } from '@mantine/core';
+import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconEye, IconHeart } from '@tabler/icons-react';
 import clsx from 'clsx';
@@ -8,16 +9,17 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import BButton from '~/app/_components/Button';
 import { useModal } from '~/app/contexts/ModalContext';
+import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
+  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const { data: user } = useSession();
   const pathname = usePathname();
   const router = useRouter();
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const { openModal } = useModal();
-
-  console.log('data___________________', data);
 
   return (
     <Card radius={'md'} withBorder bg={'white'} p={0} pos={'relative'}>
@@ -43,7 +45,13 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             <Button.Group className='group-hover/item:animate-fadeTop'>
               <Tooltip label='Xem nhanh'>
                 <Button
-                  onClick={() => openModal('details', null, data)}
+                  onClick={() => {
+                    if (isMobile) {
+                      router.push(`/san-pham/${data?.tag}`);
+                    } else {
+                      openModal('details', null, data);
+                    }
+                  }}
                   size='xs'
                   p={5}
                   w={'max-content'}
@@ -104,7 +112,21 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             </Text>
           </Group>
           <Flex align={'center'} gap={10} justify={'space-between'}>
-            <BButton onClick={() => {}} />
+            <BButton
+              onClick={() => {
+                const existingItem = cart.find((item: any) => item.id === data?.id);
+                if (existingItem) {
+                  setCart(
+                    cart.map((item: any) =>
+                      item.id === data?.id ? { ...item, quantity: 1 + existingItem.quantity } : item
+                    )
+                  );
+                } else {
+                  setCart([...cart, { ...data, quantity: 1 }]);
+                }
+                openModal('success', null, data);
+              }}
+            />
             <Text
               onClick={() => {
                 if (user?.user?.email) {

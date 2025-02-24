@@ -30,7 +30,7 @@ import {
   IconPencil
 } from '@tabler/icons-react';
 import { notFound } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import BButton from '~/app/_components/Button';
 import Comments from '~/app/_components/Comments/Comments';
 import ProductSectionBase from '~/app/_components/Web/Home/Section/Layout-Product-Carousel-Only';
@@ -38,48 +38,44 @@ import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { api } from '~/trpc/react';
-import { DiscountCodes } from './_components/DiscountCodes';
-import { ProductImage } from './_components/ProductImage';
-import { RatingStatistics } from './_components/RatingStatistics';
-import { RelatedProducts } from './_components/RelatedProducts';
-import { ShippingInfo } from './_components/ShippingInfo';
-import classes from './_components/TabsStyles.module.css';
-export default function ProductDetailsClient({ dataProduct }: { dataProduct: any }) {
+import { DiscountCodes } from './DiscountCodes';
+import { ProductImage } from './ProductImage';
+import { RatingStatistics } from './RatingStatistics';
+import { RelatedProducts } from './RelatedProducts';
+import { ShippingInfo } from './ShippingInfo';
+import classes from './TabsStyles.module.css';
+export default function ProductDetailsClient({ dataProduct, dataRelatedProducts, dataHintProducts }: any) {
+  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const product: any = dataProduct || {};
-  const { data: dataRelatedProducts, isLoading: isLoadingRelated } = api.Product.getFilter.useQuery({
-    query: product?.subCategory?.tag || ''
-  });
-  const { data: dataHintProducts, isLoading: isLoadingHint } = api.Product.getFilter.useQuery({
-    query: product?.subCategory?.category?.tag || ''
-  });
   const relatedProducts = dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [];
   const hintProducts = dataHintProducts?.filter((item: any) => item.id !== product?.id) || [];
 
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-
   const [quantity, setQuantity] = useState(1);
-
   const discount = product?.discount || 0;
   const inStock = product?.availableQuantity - product?.soldQuantity > 0;
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
 
   let ratingCountsDefault = [0, 0, 0, 0, 0];
+  const ratingCounts = useMemo(() => {
+    return (
+      product?.review?.reduce((acc: any, item: any) => {
+        acc[item.rating - 1] += 1;
+        return acc;
+      }, ratingCountsDefault) || ratingCountsDefault
+    );
+  }, [product?.review]);
 
-  const ratingCounts =
-    product?.review?.reduce((acc: any, item: any) => {
-      acc[item.rating - 1] += 1;
-      return acc;
-    }, ratingCountsDefault) || ratingCountsDefault;
-
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.mobile - 1}px)`);
+  const gallery = useMemo(() => {
+    return product?.images?.filter((item: any) => item.type !== ImageType.THUMBNAIL && item.url) || [];
+  }, [product]);
 
   return product?.id ? (
     <Box>
       <Grid>
         <Grid.Col span={{ base: 12, sm: 6, md: 6 }} pl={0}>
           <ProductImage
-            mainImage={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            thumbnails={[...product?.images]}
+            thumbnail={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+            gallery={gallery}
             discount={discount}
           />
         </Grid.Col>

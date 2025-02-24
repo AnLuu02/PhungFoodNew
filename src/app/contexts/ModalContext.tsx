@@ -2,7 +2,7 @@
 
 import { createContext, ReactNode, useContext, useState } from 'react';
 
-export type ModalType = 'comments' | 'details' | 'confirm' | 'orders' | null;
+export type ModalType = 'comments' | 'details' | 'confirm' | 'orders' | 'success' | null;
 
 interface ModalContextType {
   opened: boolean;

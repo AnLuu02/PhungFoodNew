@@ -8,8 +8,8 @@ import NavigationHeader from '../_components/NavigationHeader';
 
 const Header3 = ({ data }: any) => {
   const formatData: any = data.flatMap((i: any) => i.subCategory) || [];
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.mobile}px)`);
-  const notDesktop = useMediaQuery(`(min-width: ${breakpoints.mobile}px) and ( max-width: 1023px) `);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
+  const notDesktop = useMediaQuery(`(min-width: ${breakpoints.sm}px) and ( max-width: 1023px) `);
   const [opened, { open, close, toggle }] = useDisclosure();
 
   return (

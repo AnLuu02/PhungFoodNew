@@ -11,7 +11,7 @@ import GlobalSearchMenu from './GlobalSearchMenu';
 
 function HeaderMenu({ isLoading, category }: { isLoading: boolean; category: any }) {
   const params = useSearchParams();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.mobile}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const [valueSort, setValueSort] = useState<any[]>(
     params
       .getAll('sort')

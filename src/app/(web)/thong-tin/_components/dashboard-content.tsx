@@ -16,7 +16,7 @@ import UserStatistics from './user-statistics';
 export default function DashboardContent() {
   const { data: user } = useSession();
   const [activeTab, setActiveTab] = useState<string | null>('user-info');
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.mobile}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const { data, isLoading } =
     activeTab === 'user-info'
       ? api.User.getOne.useQuery({ query: user?.user?.email || '', hasOrders: true })

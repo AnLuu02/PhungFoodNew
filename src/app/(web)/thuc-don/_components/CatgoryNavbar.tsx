@@ -58,7 +58,7 @@ export function CategoryNav() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.mobile}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const [valueSort, setValueSort] = useState<any[]>(
     params
       .getAll('sort')

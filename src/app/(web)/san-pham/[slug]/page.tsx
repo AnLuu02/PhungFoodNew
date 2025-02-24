@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { api } from '~/trpc/server';
-import ProductDetailsClient from './pageClient';
+import ProductDetailsClient from './_components/pageClient';
 
 type Props = {
   params: { slug: string };
@@ -26,5 +26,22 @@ export default async function ProductDetail({ params }: Props) {
     hasCategoryChild: true
   });
 
-  return <ProductDetailsClient dataProduct={dataProduct} />;
+  const dataRelatedProducts = await api.Product.getFilter({
+    query: dataProduct?.subCategory?.tag || ''
+  });
+  const dataHintProducts = await api.Product.getFilter({
+    query: dataProduct?.subCategory?.category?.tag || ''
+  });
+
+  if (!dataProduct) {
+    return <p>Sản phẩm không tồn tại</p>;
+  }
+
+  return (
+    <ProductDetailsClient
+      dataProduct={dataProduct}
+      dataRelatedProducts={dataRelatedProducts}
+      dataHintProducts={dataHintProducts}
+    />
+  );
 }

@@ -31,7 +31,7 @@ export default function Header() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.mobile}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
 
   const { data: session } = useSession();
 
