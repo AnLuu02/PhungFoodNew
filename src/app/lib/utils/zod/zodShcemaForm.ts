@@ -79,7 +79,7 @@ export const deliverySchema = z.object({
 
 export const reviewSchema = z.object({
   id: z.string().optional(),
-  userId: z.string().min(1, 'User ID không được để trống'),
+  userId: z.string().optional(),
   productId: z.string().min(1, 'Product ID không được để trống'),
   rating: z.number().min(0).max(5, 'Rating phải trong khoảng 0-5'),
   comment: z.string().min(1, 'Bình luận không được để trống')

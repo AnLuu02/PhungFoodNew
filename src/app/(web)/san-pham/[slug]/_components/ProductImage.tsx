@@ -14,7 +14,6 @@ interface ProductImageProps {
 export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps) {
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showfullImage, setShowfullImage] = useState(false);
-  console.log(gallery);
 
   return (
     <>

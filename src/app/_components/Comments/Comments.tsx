@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, ScrollAreaAutosize, Text } from '@mantine/core';
+import { Box, ScrollAreaAutosize } from '@mantine/core';
 import { memo } from 'react';
 import LoadingComponent from '~/app/_components/Loading';
 import { api } from '~/trpc/react';
@@ -12,20 +12,6 @@ function Comments({ product, max_height_scroll }: any) {
   const review = data ?? [];
   return (
     <>
-      <Badge
-        radius={'md'}
-        py={10}
-        pt={20}
-        pr={20}
-        bg={'red'}
-        color='white'
-        pos={'absolute'}
-        top={'-10px'}
-        right={'-10px'}
-        className='z-[10000000]'
-      >
-        <Text size='xs'>Có {review?.length || 0} đánh giá</Text>
-      </Badge>
       {isLoading ? (
         <LoadingComponent />
       ) : (

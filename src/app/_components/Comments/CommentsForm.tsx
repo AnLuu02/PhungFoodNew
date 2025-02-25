@@ -24,7 +24,6 @@ export const CommentsForm = ({ product }: { product: any }) => {
     resolver: zodResolver(reviewSchema),
     defaultValues: {
       id: '',
-      userId: user?.user?.id ?? '',
       productId: product?.id ?? '',
       rating: 1.0,
       comment: ''
@@ -35,8 +34,8 @@ export const CommentsForm = ({ product }: { product: any }) => {
   const onSubmit: SubmitHandler<Review> = async formData => {
     try {
       setValue('productId', product.id);
-      if (formData) {
-        let result = await mutation.mutateAsync(formData);
+      if (user?.user?.id) {
+        let result = await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
         if (result.success) {
           utils.Review.invalidate();
           utils.Product.invalidate();
@@ -45,6 +44,8 @@ export const CommentsForm = ({ product }: { product: any }) => {
         } else {
           NotifyError(result.message);
         }
+      } else {
+        NotifyError('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
       }
     } catch (error) {
       NotifyError('Error created Category');

@@ -7,7 +7,7 @@ import { api } from '~/trpc/react';
 
 export function CreateImageButton() {
   return (
-    <FileButton onChange={files => console.log(files)} accept='image/png,image/jpeg'>
+    <FileButton onChange={files => {}} accept='image/png,image/jpeg'>
       {props => (
         <Button leftSection={<IconPlus />} {...props}>
           Upload Image
