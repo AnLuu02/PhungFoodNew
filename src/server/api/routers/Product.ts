@@ -517,9 +517,7 @@ export const productRouter = createTRPCRouter({
           favouriteFood: true
         }
       });
-      if (!product) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return product;
     }),
   getAll: publicProcedure

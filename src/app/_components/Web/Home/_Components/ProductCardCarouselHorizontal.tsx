@@ -138,7 +138,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
               size='xs'
               className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-[#f8c144] hover:underline'
             >
-              Có {data?.total_rating || 0} đánh giá
+              Có {data?.totalRating || 0} đánh giá
             </Text>
           </Flex>
         </Flex>

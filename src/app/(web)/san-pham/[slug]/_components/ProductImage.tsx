@@ -14,13 +14,14 @@ interface ProductImageProps {
 export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps) {
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showfullImage, setShowfullImage] = useState(false);
+  console.log(gallery);
 
   return (
     <>
       <Flex align={'flex-start'} gap={'xs'} justify={'flex-start'} pos={'relative'} w={'100%'}>
         <Flex direction={'column'} gap={'xs'} justify='space-between' align='center' top={0} left={0}>
           {gallery?.length > 0 &&
-            gallery?.map((item, index) => (
+            gallery?.map((item: any, index) => (
               <Paper
                 w={113}
                 h={113}
@@ -28,12 +29,12 @@ export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps
                 key={index}
                 radius={'md'}
                 onClick={() => {
-                  setCurrentImage(item);
+                  setCurrentImage(item?.url);
                   setShowfullImage(true);
                 }}
                 className='border-5 cursor-pointer overflow-hidden border-[#008b4b]'
               >
-                <Image loading='lazy' src={item} w={113} h={113} />
+                <Image loading='lazy' src={item?.url || '/images/jpg/empty-300x240.jpg'} w={113} h={113} />
               </Paper>
             ))}
         </Flex>
@@ -75,8 +76,8 @@ export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps
           </Flex>
         ) : null}
       </Flex>
-      <Modal size={'xl'} opened={showfullImage} onClose={() => setShowfullImage(false)}>
-        <Image loading='lazy' src={currentImage} />
+      <Modal size={'xl'} opened={showfullImage} onClose={() => setShowfullImage(false)} centered>
+        <Image loading='lazy' src={currentImage} fit='contain' h={500} />
       </Modal>
     </>
   );

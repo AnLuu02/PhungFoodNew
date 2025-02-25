@@ -145,7 +145,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                     </Badge>
                     <Rating value={product?.rating?.toFixed(1)} readOnly size='sm' color={'yellow.8'} />
                     <Text size='xs' c='dimmed'>
-                      Có {product?.total_rating} đánh giá
+                      Có {product?.totalRating} đánh giá
                     </Text>
                   </Flex>
                   <Link href={`/san-pham/${product?.tag}`} className='no-underline' onClick={close}>

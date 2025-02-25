@@ -21,7 +21,7 @@ export function ProductDetails({ product }: { product: any }) {
           <Group gap='xs'>
             <Rating value={product.rating} readOnly />
             <Text size='sm' color='dimmed'>
-              ({product.total_rating} đánh giá)
+              ({product.totalRating} đánh giá)
             </Text>
           </Group>
         </Group>

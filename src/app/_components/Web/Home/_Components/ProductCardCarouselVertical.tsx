@@ -186,10 +186,10 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
                   className='cursor-pointer text-gray-400 no-underline transition-all duration-200 ease-in-out hover:text-[#f8c144] hover:underline'
                   href={`/san-pham/${product?.tag}/danh-gia`}
                 >
-                  Có {product?.total_rating || 0} đánh giá
+                  Có {product?.totalRating || 0} đánh giá
                 </Link>
               ) : (
-                `Có ${product?.total_rating || 0} đánh giá`
+                `Có ${product?.totalRating || 0} đánh giá`
               )}
             </Text>
           </Flex>

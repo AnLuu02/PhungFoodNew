@@ -194,8 +194,8 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
           </Grid>
         )}
       </Modal>
-      <Modal size={'xl'} opened={showfullImage} onClose={() => setShowfullImage(false)}>
-        <Image loading='lazy' src={currentImage} />
+      <Modal size={'xl'} opened={showfullImage} onClose={() => setShowfullImage(false)} centered>
+        <Image loading='lazy' src={currentImage} h={400} fit='contain' />
       </Modal>
     </>
   );
