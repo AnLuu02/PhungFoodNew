@@ -1,6 +1,10 @@
 import { EntityType, ImageType } from '@prisma/client';
 import { z } from 'zod';
-import { deleteImageFromFirebase, uploadToFirebase } from '~/app/lib/utils/func-handler/handle-file-upload';
+import {
+  deleteImageFromFirebase,
+  getFileNameFromFirebaseFile,
+  uploadToFirebase
+} from '~/app/lib/utils/func-handler/handle-file-upload';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -329,7 +333,7 @@ export const productRouter = createTRPCRouter({
       if (duplicateProduct) {
         return {
           success: false,
-          message: 'Tag đã tồn tại. Hãy thử lại.',
+          message: 'Sản phẩm đã tồn tại.',
           record: duplicateProduct
         };
       }
@@ -338,26 +342,64 @@ export const productRouter = createTRPCRouter({
       const oldThumbnail = oldImages.find(img => img.type === ImageType.THUMBNAIL);
       const oldGallery = oldImages.filter(img => img.type === ImageType.GALLERY);
 
-      let newThumbnailUrl: string | null = oldThumbnail?.url ?? null;
-      if (input.thumbnail) {
-        newThumbnailUrl = await uploadToFirebase(input.thumbnail.fileName, input.thumbnail.base64);
-        if (oldThumbnail) await deleteImageFromFirebase(oldThumbnail.url);
+      // handle thumbnail
+      let newThumbnail: any = oldThumbnail;
+      if (input.thumbnail?.fileName) {
+        const filenameImgFromDb = oldThumbnail ? getFileNameFromFirebaseFile(oldThumbnail.url) : null;
+        if (filenameImgFromDb !== input.thumbnail.fileName) {
+          newThumbnail = {
+            url: await uploadToFirebase(input.thumbnail.fileName, input.thumbnail.base64),
+            type: ImageType.THUMBNAIL,
+            altText: `Ảnh ${input.thumbnail.fileName} loại ${ImageType.THUMBNAIL}`,
+            entityType: EntityType.PRODUCT
+          };
+
+          if (oldThumbnail) await deleteImageFromFirebase(oldThumbnail.url);
+        }
       }
 
-      const newGallery = await Promise.all(
-        (input.gallery ?? []).map(async item => ({
-          url: await uploadToFirebase(item.fileName, item.base64),
-          type: ImageType.GALLERY,
-          entityType: EntityType.PRODUCT
-        }))
+      // handle gallery
+      const anh_trong_db_dang_filename = oldGallery.map(item => ({
+        id: item.id,
+        fileName: getFileNameFromFirebaseFile(item.url)
+      }));
+
+      const anh_moi =
+        input.gallery?.filter(item => !anh_trong_db_dang_filename.some(anhdb => anhdb.fileName === item.fileName)) ??
+        [];
+
+      const anh_xoa = oldGallery.filter(
+        item => !input.gallery?.some(img => img.fileName === getFileNameFromFirebaseFile(item.url))
       );
 
-      if (newGallery.length) {
-        await Promise.all(oldGallery.map(img => deleteImageFromFirebase(img.url)));
-      }
+      const results = await Promise.all([
+        ...anh_xoa.map(img => deleteImageFromFirebase(img.url).then(() => null)),
+        ...anh_moi.map(async item => {
+          try {
+            const uploadedImage = await uploadToFirebase(item.fileName, item.base64);
+            return {
+              url: uploadedImage,
+              type: ImageType.GALLERY,
+              altText: `Ảnh ${item.fileName} loại ${ImageType.GALLERY}`,
+              entityType: EntityType.PRODUCT
+            };
+          } catch (error) {
+            console.error('Failed to upload image:', item.fileName, error);
+            return null;
+          }
+        })
+      ]);
+
+      const newGallery = results.filter(Boolean);
+
+      const newImages = [newThumbnail, ...oldGallery, ...newGallery].filter(
+        (item: any) => !anh_xoa.some(img => img.url === item.url)
+      );
 
       const updatedProduct = await ctx.db.product.update({
-        where: { id: input.id },
+        where: {
+          id: input.id
+        },
         data: {
           name: input.name,
           description: input.description,
@@ -367,15 +409,35 @@ export const productRouter = createTRPCRouter({
           subCategoryId: input.subCategoryId,
           region: input.region,
           images: {
-            deleteMany: {},
-            createMany: {
-              data: [
-                ...(newThumbnailUrl
-                  ? [{ url: newThumbnailUrl, type: ImageType.THUMBNAIL, entityType: EntityType.PRODUCT }]
-                  : []),
-                ...newGallery
-              ]
-            }
+            deleteMany: {
+              productId: input.id,
+              url: {
+                notIn: newImages.map(img => img?.url)?.filter(Boolean)
+              }
+            },
+            upsert: newImages.map(img => ({
+              where: {
+                id_productId_entityType_type: {
+                  id: img?.id || '',
+                  productId: input.id,
+                  entityType: img.entityType,
+                  type: img.type
+                }
+              },
+              update: {
+                id: img.id,
+                url: img.url,
+                type: img.type,
+                altText: img.altText,
+                entityType: img.entityType
+              },
+              create: {
+                url: img.url,
+                type: img.type,
+                altText: img.altText,
+                entityType: img.entityType
+              }
+            }))
           }
         },
         include: { images: true }

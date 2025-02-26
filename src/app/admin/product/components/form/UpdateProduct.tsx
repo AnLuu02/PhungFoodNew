@@ -69,10 +69,9 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
     if (data) {
       const thumnailDb = data?.images?.find(image => image.type === ImageType.THUMBNAIL)?.url || '';
       const galleries = data?.images?.filter(image => image.type === ImageType.GALLERY).map(image => image.url) || [];
-
       Promise.all([
         thumnailDb && thumnailDb !== '' && firebaseToFile(thumnailDb as string),
-        galleries && galleries?.length > 0 && firebaseToFile(galleries as string[], { type: 'multiple' })
+        galleries && galleries?.length > 0 ? firebaseToFile(galleries as string[], { type: 'multiple' }) : []
       ])
         .then(([thumbnail, images]) => {
           thumbnail instanceof File && setValue('thumbnail', thumbnail);
@@ -114,15 +113,17 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
           base64: (await fileToBase64(formData.thumbnail)) as string
         }));
       const images_format =
-        formData.gallery &&
-        (await Promise?.all(
-          formData.gallery?.map(async (image: any) => {
-            return {
-              name: image.name,
-              dataBase64: (await fileToBase64(image)) as string
-            };
-          })
-        ));
+        formData.gallery && formData.gallery?.length > 0
+          ? await Promise?.all(
+              formData.gallery?.map(async (image: any) => {
+                return {
+                  fileName: image.name,
+                  base64: (await fileToBase64(image)) as string
+                };
+              })
+            )
+          : [];
+
       const formDataWithImageUrlAsString = {
         ...formData,
         thumbnail: thumbnail_format as any,
