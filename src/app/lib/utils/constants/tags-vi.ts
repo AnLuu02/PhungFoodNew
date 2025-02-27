@@ -14,7 +14,6 @@ const tags: Record<string, string> = {
   'san-pham': 'Sản phẩm',
   'yeu-thich': 'Yêu thích',
   'danh-gia': 'Đánh giá',
-
   'mon-chay': 'Món chay',
   'an-vat-trang-mieng': 'Ăn vặt tráng miệng',
   'do-uong': 'Đồ uống',
@@ -25,7 +24,6 @@ const tags: Record<string, string> = {
   'mon-kho': 'Món kho',
   'rau-cu': 'Rau củ',
   'banh-ngot': 'Bánh ngọt',
-
   che: 'Chè',
   kem: 'Kem',
   khoai: 'Khoai',
@@ -45,14 +43,40 @@ const tags: Record<string, string> = {
   'mon-nuoc': 'Món nước',
   'mon-chien-xao': 'Món chiên xào',
   'mon-nuong': 'Món nướng',
-
   'san-pham-moi': 'Sản phẩm mới',
   'san-pham-hot': 'Sản phẩm nổi bật',
   'san-pham-promotion': 'Sản phẩm khuyến mãi',
   'san-pham-ban-chay': 'Sản phẩm bán chạy',
   'thuc-uong': 'Thức uống',
-
-  'don-hang-cua-toi': 'Đơn hàng của tôi'
+  'don-hang-cua-toi': 'Đơn hàng của tôi',
+  'com-tam-suon-bi-cha': 'Cơm tấm sườn bì chả',
+  'canh-rong-bien-dau-hu-non': 'Canh rong biển đậu hũ non',
+  'chuoi-nuong-nuoc-cot-dua': 'Chuối nướng nước cốt dừa',
+  'banh-da-lon': 'Bánh da lợn',
+  'banh-flan-caramel': 'Bánh flan caramel',
+  'bun-bo-hue': 'Bún bò Huế',
+  'banh-trang-nuong': 'Bánh tráng nướng',
+  'thuy-linh-xinh': 'Thùy Linh Xinh',
+  'xoi-bap': 'Xôi bắp (ngô)',
+  'xoi-dau-phong': 'Xôi đậu phộng',
+  'xoi-man': 'Xôi mặn',
+  'xoi-ngot-la-dua': 'Xôi ngọt lá dứa',
+  'xoi-xoai': 'Xôi xoài',
+  'banh-trang-cha-bong': 'Bánh tráng chà bông',
+  'banh-trang-tron': 'Bánh tráng trộn',
+  'banh-trang-tac': 'Bánh tráng tắc',
+  'banh-trang-cuon-sot-me': 'Bánh tráng cuốn sốt me',
+  'pho-bo': 'Phở bò',
+  'che-ba-mau': 'Chè ba màu',
+  'nuoc-mia': 'Nước mía',
+  'nuoc-ep-cam-tuoi': 'Nước ép cam tươi',
+  'ca-phe-sua-da': 'Cà phê sữa đá',
+  'bo-kho-chay': 'Bò kho chay',
+  'banh-cuon': 'Bánh cuốn',
+  'bun-cha-ha-noi': 'Bún chả Hà Nội',
+  'chao-ga-xe-phay': 'Cháo gà xé phay',
+  'bun-thai-chay': 'Bún Thái chay',
+  'com-chay-thap-cam': 'Cơm chay thập cẩm'
 };
 
 export default tags;

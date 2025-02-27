@@ -39,13 +39,15 @@ export const imageRouter = createTRPCRouter({
             user: {
               select: {
                 id: true,
-                name: true
+                name: true,
+                images: true
               }
             },
             subCategory: {
               select: {
                 id: true,
-                name: true
+                name: true,
+                images: true
               }
             }
           }
@@ -140,7 +142,11 @@ export const imageRouter = createTRPCRouter({
     const image = await ctx.db.image.findMany({
       include: {
         product: true,
-        user: true,
+        user: {
+          include: {
+            images: true
+          }
+        },
         subCategory: true
       }
     });

@@ -37,7 +37,7 @@ const quickSandFont = Quicksand({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Phụng Food Restaurant',
+    default: 'Trang chủ | Phụng Food Restaurant',
     template: '%s | Phụng Food Restaurant'
   },
   description: 'Phụng Food Restaurant',

@@ -83,7 +83,8 @@ export const favouriteFoodRouter = createTRPCRouter({
               select: {
                 id: true,
                 name: true,
-                email: true
+                email: true,
+                images: true
               }
             },
             product: true
@@ -206,7 +207,8 @@ export const favouriteFoodRouter = createTRPCRouter({
             select: {
               id: true,
               name: true,
-              email: true
+              email: true,
+              images: true
             }
           }
         }
@@ -266,7 +268,8 @@ export const favouriteFoodRouter = createTRPCRouter({
           select: {
             id: true,
             name: true,
-            email: true
+            email: true,
+            images: true
           }
         },
         product: {

@@ -203,7 +203,11 @@ export const reviewRouter = createTRPCRouter({
           OR: [{ id: { equals: input.query?.trim() } }, { productId: { equals: input.query?.trim() } }]
         },
         include: {
-          user: true
+          user: {
+            include: {
+              images: true
+            }
+          }
         }
       });
       if (!review) {

@@ -9,12 +9,13 @@ export const CommentsList = ({ data }: { data: any[] }) => {
   const mutationDel = api.Review.delete.useMutation();
   const utils = api.useUtils();
   const { data: user } = useSession();
+
   return data?.length > 0 ? (
     data.map((comment: any) => (
       <Paper shadow='sm' p='sm' radius='md' withBorder key={comment.id} className='mb-4' pos={'relative'}>
         <Flex direction={'column'} gap={'md'} align={'flex-start'} justify={'flex-start'}>
           <Group gap={7}>
-            <Avatar src={comment?.user?.image?.url} alt='User avatar' radius='lg' size={30} />
+            <Avatar src={comment?.user?.images?.[0]?.url} alt='User avatar' radius='lg' size={30} />
             <Box className='hidden text-left sm:block'>
               <Text fw={700} size='sm' lh={1} className='text-black'>
                 {comment?.user?.name}

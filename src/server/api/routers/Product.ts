@@ -1,4 +1,6 @@
 import { EntityType, ImageType } from '@prisma/client';
+import { promises as fs } from 'fs';
+import path from 'path';
 import { z } from 'zod';
 import {
   deleteImageFromFirebase,
@@ -277,6 +279,36 @@ export const productRouter = createTRPCRouter({
           }
         }
       });
+
+      if (product?.tag) {
+        const filePath = path.join(process.cwd(), 'src', 'app', 'lib', 'utils', 'constants', 'tags-vi.ts');
+        let content = await fs.readFile(filePath, 'utf8');
+
+        // Lấy đúng phần tags giữa {}
+        const match = content.match(/const tags: Record<string, string> = ({[\s\S]*?});/);
+        let tags: Record<string, string> = {};
+
+        if (match && match[1]) {
+          const jsonString = match[1]
+            .trim()
+            .replace(/'([^']+)'/g, '"$1"') // Chuyển dấu đơn thành kép cho key và value
+            .replace(/(\w+(-\w+)*):/g, '"$1":') // Chuyển key thành JSON hợp lệ
+            .replace(/,(\s*})/g, '$1'); // Xóa dấu phẩy cuối
+
+          try {
+            tags = JSON.parse(jsonString);
+          } catch (error) {
+            console.error('Lỗi khi parse tags:', error);
+          }
+        }
+
+        // Thêm tag mới hoặc cập nhật
+        tags[product.tag] = product.name;
+
+        // Ghi lại vào file tags-vi.ts
+        const newContent = `const tags: Record<string, string> = ${JSON.stringify(tags, null, 2)};\n\nexport default tags;`;
+        await fs.writeFile(filePath, newContent);
+      }
 
       return {
         success: true,

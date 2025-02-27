@@ -111,7 +111,11 @@ export const orderRouter = createTRPCRouter({
             : undefined,
           include: {
             payment: true,
-            user: true,
+            user: {
+              include: {
+                images: true
+              }
+            },
             delivery: true,
             orderItems: {
               include: {
@@ -291,7 +295,11 @@ export const orderRouter = createTRPCRouter({
             }
           },
           vouchers: true,
-          user: true,
+          user: {
+            include: {
+              images: true
+            }
+          },
           payment: true,
           delivery: true
         }
@@ -332,7 +340,11 @@ export const orderRouter = createTRPCRouter({
             }
           },
           vouchers: true,
-          user: true,
+          user: {
+            include: {
+              images: true
+            }
+          },
           payment: true,
           delivery: true
         }
