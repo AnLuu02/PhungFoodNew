@@ -27,19 +27,10 @@ import {
 } from '@tabler/icons-react';
 import React from 'react';
 
-// Assuming these are fetched from an API or passed as props
-const category = [
-  /* ... category data ... */
-];
-const payment = [
-  /* ... payment data ... */
-];
-const users = [
-  /* ... users data ... */
-];
-const orders = [
-  /* ... orders data ... */
-];
+const category = [];
+const payment = [];
+const users = [];
+const orders = [];
 
 function CardWithIcon({
   icon: Icon,

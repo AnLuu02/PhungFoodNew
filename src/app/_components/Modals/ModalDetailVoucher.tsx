@@ -132,42 +132,44 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
           </Box>
         </Paper>
 
-        <ScrollArea h={360} pb={30} mt={16} scrollbarSize={5}>
-          <Box className='border-b border-white p-4'>
+        <ScrollArea h={400} pb={30} mt={16} scrollbarSize={5}>
+          <Box className='border-b border-white' px={'md'} pt={'xl'}>
             <Text className='mb-1 text-sm font-medium'>Hạn sử dụng mã</Text>
             <Text className='text-sm font-medium text-[rgb(186,180,180)]'>
               {`Từ ${formatDate(data?.startDate)} đến ${(data?.endDate, formatDate(data?.endDate))}`}
             </Text>
           </Box>
 
-          <Box className='border-b border-white p-4'>
-            <Text className='mb-1 text-sm font-medium'>Ưu đãi</Text>
-            <Text className='text-sm font-medium text-[rgb(186,180,180)]'>{data?.description}</Text>
-          </Box>
+          {data?.description && (
+            <Box className='border-b border-white' px={'md'} pt={'sm'}>
+              <Text className='mb-1 text-sm font-medium'>Ưu đãi</Text>
+              <Text className='text-sm font-medium text-[rgb(186,180,180)]'>{data?.description}</Text>
+            </Box>
+          )}
 
-          <Box className='border-b border-white p-4'>
+          <Box className='border-b border-white' px={'md'} pt={'sm'}>
             <Text className='mb-1 text-sm font-medium'>Áp dụng cho sản phẩm</Text>
             <Text className='text-sm font-medium text-[rgb(186,180,180)]'>
               Áp dụng cho toàn bộ sản phẩm với tổng đơn hàng tối thiểu là {formatPriceLocaleVi(data?.minOrderPrice)}
             </Text>
           </Box>
 
-          <Box className='border-b border-white p-4'>
+          <Box className='border-b border-white' px={'md'} pt={'sm'}>
             <Text className='mb-1 text-sm font-medium'>Thanh Toán</Text>
             <Text className='text-sm font-medium text-[rgb(186,180,180)]'>Tất cả các hình thức thanh toán</Text>
           </Box>
 
-          <Box className='border-b border-white p-4'>
+          <Box className='border-b border-white' px={'md'} pt={'sm'}>
             <Text className='mb-1 text-sm font-medium'>Xem chi tiết</Text>
             <Text className='text-sm font-medium text-[rgb(186,180,180)]'>
               Voucher giảm tối đa {formatPriceLocaleVi(data?.maxDiscount)} cho đơn hàng hợp lệ từ{' '}
-              {formatPriceLocaleVi(data?.minOrderPrice)} áp dụng cho toàn bộ sản phẩm trong cửa hàng Kamala Shop. HSD:{' '}
+              {formatPriceLocaleVi(data?.minOrderPrice)} áp dụng cho toàn bộ sản phẩm trong cửa hàng Phụng Food. HSD:{' '}
               {formatDate(data?.endDate)}. Số lượng có hạn chỉ còn {data?.quantity} cái.
             </Text>
           </Box>
         </ScrollArea>
 
-        <Box className='sticky bottom-0 border-t border-white bg-white p-4'>
+        <Box className='fixed bottom-3 border-t border-white bg-white hover:opacity-75' w={'100%'} px={'md'}>
           <Button fullWidth color='orange' bg={'#ee4d2d'} onClick={onClose}>
             Đồng Ý
           </Button>

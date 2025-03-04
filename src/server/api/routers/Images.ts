@@ -76,9 +76,6 @@ export const imageRouter = createTRPCRouter({
       const image = await ctx.db.image.delete({
         where: { id: input.id }
       });
-      if (!image) {
-        throw new Error(`Stock with ID ${input.id} not found.`);
-      }
 
       return {
         success: true,
@@ -107,9 +104,7 @@ export const imageRouter = createTRPCRouter({
           ]
         }
       });
-      if (!image) {
-        throw new Error(`Stock with ID ${input.query?.trim()} not found.`);
-      }
+
       return image;
     }),
   getOne: publicProcedure
@@ -133,9 +128,7 @@ export const imageRouter = createTRPCRouter({
           ]
         }
       });
-      if (!image) {
-        throw new Error(`Stock with ID ${input.query?.trim()} not found.`);
-      }
+
       return image;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {

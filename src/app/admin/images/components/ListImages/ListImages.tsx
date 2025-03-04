@@ -28,13 +28,6 @@ export default function TableImage({
   const [imageUrls, setImageUrls] = useState<any[]>([]);
   const [showfullImage, setShowfullImage] = useState<any>('');
 
-  // const imgUser = currentItems.filter(img => img.entityType === EntityType.USER);
-  // const imgProduct = currentItems.filter(img => img.entityType === EntityType.PRODUCT);
-  // const imgSubCategory = currentItems.filter(img => img.entityType === EntityType.CATEGORY);
-
-  // const formatData = new Map();
-  // formatData.set(EntityType.USER, imgUser);
-
   useEffect(() => {
     const loadImages = async () => {
       if (!Array.isArray(currentItems)) return;
@@ -44,7 +37,6 @@ export default function TableImage({
           try {
             const file = await firebaseToFile(image.url);
 
-            // Kiểm tra nếu file là Blob thì mới tạo Object URL
             if (file instanceof Blob) {
               return {
                 ...image,
@@ -58,7 +50,7 @@ export default function TableImage({
             }
           } catch (error) {
             console.error('Lỗi khi tải ảnh:', error);
-            return image.url; // Trả về URL gốc nếu lỗi
+            return image.url;
           }
         })
       );

@@ -1,6 +1,7 @@
 'use client';
 import { Box, rem, ScrollArea, Stack, Text } from '@mantine/core';
 import {
+  IconBrandPolymer,
   IconCategory,
   IconCheese,
   IconCreditCardPay,
@@ -27,6 +28,7 @@ const navItems = [
   { label: 'Người dùng', icon: IconUser, href: '/admin/user' },
   { label: 'Phương thức thanh toán', icon: IconCreditCardPay, href: '/admin/payment' },
   { label: 'Sản phẩm', icon: IconCheese, href: '/admin/product' },
+  { label: 'Nguyên liệu', icon: IconBrandPolymer, href: '/admin/material' },
   { label: 'Khuyến mãi', icon: IconTicket, href: '/admin/voucher' },
   { label: 'Đánh giá', icon: IconUser, href: '/admin/review' },
   { label: 'Đơn bán hàng', icon: IconMenuOrder, href: '/admin/order' }
@@ -40,14 +42,7 @@ export default function Navbar() {
       <ScrollArea.Autosize scrollbarSize={6}>
         <Stack p={10} gap='xs'>
           {navItems.map(item => (
-            <Link
-              key={item.label}
-              href={item.href}
-              style={{ all: 'unset' }}
-              onClick={() => {
-                // toggle();
-              }}
-            >
+            <Link key={item.label} href={item.href} style={{ all: 'unset' }} onClick={() => {}}>
               <Box
                 className={`flex cursor-pointer items-center rounded-lg p-2 transition-colors duration-300 ${
                   item.href === pathname ? 'bg-blue-600 text-white' : 'bg-transparent hover:bg-blue-300'

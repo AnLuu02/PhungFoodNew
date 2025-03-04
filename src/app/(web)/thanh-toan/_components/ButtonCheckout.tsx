@@ -22,11 +22,13 @@ type IStylesButtonCheckout = {
 export const ButtonCheckout = ({
   stylesButtonCheckout,
   data,
-  total
+  total,
+  onClick
 }: {
   stylesButtonCheckout: IStylesButtonCheckout;
   data: any;
   total: any;
+  onClick?: any;
 }) => {
   const [seletedVouchers, setSelectedVouchers, resetSelectedVouchers] = useLocalStorage<any[]>({
     key: 'vouchers',
@@ -66,6 +68,7 @@ export const ButtonCheckout = ({
       {...stylesButtonCheckout}
       onClick={() => {
         if (user?.user?.email) {
+          onClick?.();
           handleCreateOrder();
         } else {
           NotifyError('Chưa đăng nhập', 'Vui lòng đăng nhập để tiến hành thanh toán.');

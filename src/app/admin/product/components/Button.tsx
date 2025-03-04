@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Button, Modal, Title } from '@mantine/core';
+import { ActionIcon, Button, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
@@ -15,7 +15,13 @@ export function CreateProductButton() {
       <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </Button>
-      <Modal size={'xl'} opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Tạo sản phẩm</Title>}>
+      <Modal
+        scrollAreaComponent={ScrollAreaAutosize}
+        size={'xl'}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Tạo sản phẩm</Title>}
+      >
         <CreateProduct setOpened={setOpened} />
       </Modal>
     </>
@@ -30,6 +36,7 @@ export function UpdateProductButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        scrollAreaComponent={ScrollAreaAutosize}
         size={'xl'}
         opened={opened}
         onClose={() => setOpened(false)}

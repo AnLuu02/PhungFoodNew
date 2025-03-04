@@ -1,169 +1,160 @@
 'use client';
-import { Badge, Button, Card, Group, Image, Paper, Stack, Tabs, Text, Title } from '@mantine/core';
-import { IconClock, IconCreditCard, IconWallet } from '@tabler/icons-react';
-import ModalShowVoucher from '~/app/_components/Modals/ModalShowVoucher';
+
+import {
+  Card,
+  CardSection,
+  Center,
+  Container,
+  Flex,
+  Grid,
+  GridCol,
+  Group,
+  Image,
+  Pagination,
+  Space,
+  Stack,
+  Tabs,
+  Text
+} from '@mantine/core';
+import { VoucherType } from '@prisma/client';
+import { useState } from 'react';
+import BButton from '~/app/_components/Button';
+import Empty from '~/app/_components/Empty';
+import LoadingComponent from '~/app/_components/Loading';
+import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
+import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
+import LayoutAds from '~/app/_components/Web/Home/Section/Layout-Ads';
+import LayoutPromotion from '~/app/_components/Web/Home/Section/Layout-Promotion';
 import { api } from '~/trpc/react';
 
-const foodItems = [
-  {
-    id: 1,
-    name: 'Pizza Margherita',
-    price: '$12.99',
-    discount: '20% off',
-    image: ''
-  },
-  {
-    id: 2,
-    name: 'Sushi Platter',
-    price: '$24.99',
-    discount: '15% off',
-    image: ''
-  },
-  { id: 3, name: 'Burger Deluxe', price: '$9.99', discount: '10% off', image: '' },
-  {
-    id: 4,
-    name: 'Pasta Carbonara',
-    price: '$14.99',
-    discount: '25% off',
-    image: ''
-  }
-];
+const ITEMS_PER_PAGE = 4;
 
-const combos = [
-  {
-    id: 1,
-    name: 'Bữa tiệc gia đình',
-    items: ['2 Large Pizzas', 'Garlic Bread', '1.5L Soda'],
-    price: '$29.99',
-    endTime: '2024-01-01T00:00:00'
-  },
-  {
-    id: 2,
-    name: 'Date Night Special',
-    items: ['2 Burgers', '2 Fries', '2 Milkshakes'],
-    price: '$24.99',
-    endTime: '2023-12-31T23:59:59'
-  }
-];
+export default function FoodPromotionPage() {
+  const [page, setPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<string | null>('all');
+  const [openDetail, setOpenDetail] = useState<any>({});
 
-export default function FoodPromotionPage({
-  searchParams
-}: {
-  searchParams?: {
-    tag?: string;
-    page?: string;
-    limit?: string;
+  const { data: voucherData, isLoading: isVoucherLoading } = api.Voucher.getAll.useQuery();
+  const { data: productData, isLoading: isProductLoading } = api.Product.find.useQuery({
+    skip: 0,
+    take: 10,
+    discount: true
+  });
+
+  const getFilteredPromotions = () => {
+    if (activeTab === 'all') return voucherData || [];
+    return voucherData?.filter(promo => promo.type === activeTab) || [];
   };
-}) {
-  const { data, isLoading } = api.Voucher.getAll.useQuery();
 
-  return <ModalShowVoucher opened={true} data={data} products={[]} onClose={() => {}} />;
-}
+  const filteredPromotions = getFilteredPromotions();
+  const totalPages = Math.ceil(filteredPromotions.length / ITEMS_PER_PAGE);
+  const paginatedPromotions = filteredPromotions.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
-function PromotionalBanner() {
-  return (
-    <Paper shadow='md' p='xl' radius='md' className='bg-blue-100 text-blue-900'>
-      <Title order={3} className='mb-2'>
-        Nhiều đơn hàng đặc biệt
-      </Title>
-      <Text>Đặt hàng từ 3 sản phẩm trở lên và được giảm thêm 10% cho toàn bộ đơn hàng!</Text>
-      <Button variant='filled' color='blue' className='mt-4'>
-        Đặt ngay
-      </Button>
-    </Paper>
-  );
-}
-
-function FoodItemCard({ item }: { item: any }) {
-  return (
-    <Card shadow='sm' padding='lg' radius='md' withBorder className='flex h-full flex-col'>
-      <Card.Section>
-        <Image loading='lazy' src={item.image} h={160} alt={item.name} />
-      </Card.Section>
-
-      <Text fw={500} size='lg' mt='md'>
-        {item.name}
-      </Text>
-      <Text size='sm' c='dimmed' mt={5} className='flex-grow'>
-        {item.price}
-      </Text>
-
-      <Badge color='red' variant='light' className='mb-4 mt-2'>
-        {item.discount}
-      </Badge>
-
-      <Button variant='light' color='blue' fullWidth mt='md' radius='md'>
-        Add to Cart
-      </Button>
-    </Card>
-  );
-}
-
-function ComboCard({ combo }: { combo: any }) {
-  const timeLeft = new Date(combo.endTime).getTime() - new Date().getTime();
-  const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+  if (isProductLoading || isVoucherLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
-    <Card shadow='sm' padding='lg' radius='md' withBorder>
-      <Group justify='space-between' mb='md'>
-        <Text fw={700} size='lg'>
-          {combo.name}
-        </Text>
-        <Badge color='yellow' variant='light'>
-          <Group gap={4}>
-            <IconClock size={14} />
-            <Text size='xs'>{hoursLeft} hours left</Text>
-          </Group>
-        </Badge>
-      </Group>
-      <Stack gap='xs'>
-        {combo.items.map((item: string, index: number) => (
-          <Text key={index} size='sm'>
-            {item}
-          </Text>
-        ))}
-      </Stack>
-      <Group justify='space-between' mt='md'>
-        <Text fw={700} size='xl'>
-          {combo.price}
-        </Text>
-        <Button variant='filled' color='green'>
-          Order Combo
-        </Button>
-      </Group>
-    </Card>
-  );
-}
+    <>
+      <Card radius={'lg'} bg={'gray.1'} p={0} className='hidden md:block'>
+        <CardSection pos={'relative'}>
+          <Image
+            loading='lazy'
+            className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
+            w={'100%'}
+            h={500}
+            src='/images/png/banner_food.png'
+          />
+          <Flex
+            justify={'center'}
+            align={'center'}
+            pos={'absolute'}
+            left={0}
+            top={0}
+            bottom={0}
+            right={0}
+            className='bg-[rgba(0,0,0,0.5)]'
+          >
+            <Stack w={{ sm: '80%', md: '80%', lg: '50%' }} gap={'xl'} align='center' justify='center'>
+              <Text c={'white'} fw={700} className='text-6xl sm:text-5xl'>
+                Ưu đãi đặc biệt
+              </Text>
+              <Text c={'white'} className='text-center text-4xl sm:text-3xl' fw={700}>
+                Giảm <i className='animate-wiggle text-[#008b4b]'>"50%"</i> đối với những khách hàng Bạch kim trở lên
+              </Text>
+              <BButton w={'max-content'} size='xl' title={'Khám phá ngay'} />
+            </Stack>
+          </Flex>
+        </CardSection>
+      </Card>
+      <Space h='xl' className='hidden md:block' />
 
-function PaymentOptions() {
-  return (
-    <Tabs defaultValue='wallet'>
-      <Tabs.List>
-        <Tabs.Tab value='wallet' leftSection={<IconWallet size={14} />}>
-          Wallet
-        </Tabs.Tab>
-        <Tabs.Tab value='card' leftSection={<IconCreditCard size={14} />}>
-          Card
-        </Tabs.Tab>
-      </Tabs.List>
+      <Container pl={0} pr={0} size='xl'>
+        <LayoutAds />
+        <Space h='xl' />
 
-      <Tabs.Panel value='wallet' pt='xs'>
-        <Paper shadow='xs' p='md'>
-          <Text>Wallet Balance: $50.00</Text>
-          <Button variant='light' color='blue' fullWidth mt='sm'>
-            Top Up Wallet
-          </Button>
-        </Paper>
-      </Tabs.Panel>
+        {productData && productData?.products?.length > 0 && (
+          <>
+            <LayoutPromotion data={productData.products} />
+            <Space h='xl' />
+          </>
+        )}
+        {voucherData && voucherData?.length > 0 && (
+          <Card withBorder shadow='sm' padding='lg' radius='md'>
+            <Tabs
+              variant='pills'
+              value={activeTab}
+              onChange={value => {
+                setPage(1);
+                setActiveTab(value);
+              }}
+            >
+              <Tabs.List bg={'gray.1'} mb={'md'}>
+                <Group gap={0}>
+                  <Tabs.Tab size={'md'} fw={700} value='all'>
+                    Tất cả
+                  </Tabs.Tab>
+                  <Tabs.Tab size={'md'} fw={700} value={VoucherType?.PERCENTAGE || 'percentage'}>
+                    Phần trăm
+                  </Tabs.Tab>
+                  <Tabs.Tab size={'md'} fw={700} value={VoucherType?.FIXED || 'fixed'}>
+                    Tiền mặt
+                  </Tabs.Tab>
+                </Group>
+              </Tabs.List>
 
-      <Tabs.Panel value='card' pt='xs'>
-        <Paper shadow='xs' p='md'>
-          <Text>Pay securely with your credit or debit card</Text>
-          <Button variant='light' color='blue' fullWidth mt='sm'>
-            Add New Card
-          </Button>
-        </Paper>
-      </Tabs.Panel>
-    </Tabs>
+              <Tabs.Panel value={activeTab || 'all'}>
+                <Grid mt='md'>
+                  {paginatedPromotions?.length > 0 ? (
+                    paginatedPromotions.map(promo => (
+                      <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
+                        <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
+                      </GridCol>
+                    ))
+                  ) : (
+                    <Empty
+                      title='Không có khuyến mãi nào'
+                      content='Vui lòng quay lại sau. Xin cảm ơn!'
+                      size='xs'
+                      hasButton={false}
+                    />
+                  )}
+                </Grid>
+              </Tabs.Panel>
+            </Tabs>
+
+            <Center>
+              <Pagination mt='xl' size='md' total={totalPages} value={page} onChange={setPage} />
+            </Center>
+            <ModalDetailVoucher
+              opened={openDetail?.type}
+              onClose={() => setOpenDetail({})}
+              data={openDetail}
+              products={[]}
+            />
+          </Card>
+        )}
+      </Container>
+    </>
   );
 }

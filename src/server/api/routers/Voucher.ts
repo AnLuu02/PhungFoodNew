@@ -110,6 +110,7 @@ export const voucherRouter = createTRPCRouter({
             }
           }
         });
+
         return {
           success: true,
           message: 'Tạo khuyến mãi thành công.',
@@ -139,18 +140,28 @@ export const voucherRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        applyAllProduct: z.boolean().optional(),
+        someLevel: z.number().optional(),
+        someProduct: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
       const voucher = await ctx.db.voucher.findMany({
         where: {
-          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
+          ...(input.applyAllProduct ? { applyAll: true } : {}),
+          ...(input.someLevel
+            ? {
+                vipLevel: {
+                  lte: input.someLevel
+                }
+              }
+            : {}),
+          ...(!input.applyAllProduct && input.someProduct ? { products: { some: { id: input.someProduct } } } : {})
+        },
+        include: {
+          products: true
         }
       });
-      if (!voucher) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
       return voucher;
     }),
   getOne: publicProcedure
@@ -165,13 +176,15 @@ export const voucherRouter = createTRPCRouter({
           OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
         }
       });
-      if (!voucher) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return voucher;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const voucher = await ctx.db.voucher.findMany({});
+    const voucher = await ctx.db.voucher.findMany({
+      include: {
+        products: true
+      }
+    });
     return voucher;
   }),
 
@@ -192,6 +205,7 @@ export const voucherRouter = createTRPCRouter({
         endDate: z.date(),
         applyAll: z.boolean().default(false),
         vipLevel: z.number().optional(),
+
         products: z.array(z.string()).optional()
       })
     )
@@ -203,27 +217,35 @@ export const voucherRouter = createTRPCRouter({
       });
 
       if (!existingVoucher || (existingVoucher && existingVoucher?.id == input?.id)) {
-        const voucher = await ctx.db.voucher.update({
-          where: { id: input?.id },
-          data: {
-            name: input.name,
-            tag: input.tag,
-            description: input.description,
-            type: input.type,
-            discountValue: input.discountValue,
-            minOrderPrice: input.minOrderPrice,
-            maxDiscount: input.maxDiscount,
-            quantity: input.quantity,
-            availableQuantity: input.availableQuantity,
-            startDate: input.startDate,
-            endDate: input.endDate,
-            vipLevel: input.vipLevel,
-            applyAll: input.applyAll,
-            products: {
-              connect: input?.products?.map(productId => ({ id: productId })) || []
+        const [voucher, updateVoucher] = await ctx.db.$transaction([
+          ctx.db.voucher.findUnique({
+            where: {
+              id: input.id
             }
-          }
-        });
+          }),
+          ctx.db.voucher.update({
+            where: { id: input?.id },
+            data: {
+              name: input.name,
+              tag: input.tag,
+              description: input.description,
+              type: input.type,
+              discountValue: input.discountValue,
+              minOrderPrice: input.minOrderPrice,
+              maxDiscount: input.maxDiscount,
+              quantity: input.quantity,
+              availableQuantity: input.availableQuantity,
+              startDate: input.startDate,
+              endDate: input.endDate,
+              vipLevel: input.vipLevel,
+              applyAll: input.applyAll,
+              products: {
+                connect: input?.products?.map(productId => ({ id: productId })) || []
+              }
+            }
+          })
+        ]);
+
         return {
           success: true,
           message: 'Cập nhật khuyến mãi thành công.',

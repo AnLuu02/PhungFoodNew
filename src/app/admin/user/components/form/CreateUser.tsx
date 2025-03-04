@@ -31,7 +31,7 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
       role: UserRole.CUSTOMER,
       address: '',
       pointLevel: 0,
-      level: UserLevel.DONG
+      level: UserLevel.BRONZE
     }
   });
 

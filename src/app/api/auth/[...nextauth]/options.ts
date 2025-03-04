@@ -78,7 +78,9 @@ export const authOptions: NextAuthOptions = {
           token.details = {
             id: userFromDb?.id,
             name: userFromDb?.name,
-            email: userFromDb?.email
+            email: userFromDb?.email,
+            level: userFromDb?.level,
+            pointLevel: userFromDb?.pointLevel
           };
         }
       } catch (error) {
@@ -96,6 +98,6 @@ export const authOptions: NextAuthOptions = {
     }
   },
   pages: {
-    signIn: '/dang-nhap'
+    signIn: '/auth/dang-nhap'
   }
 };

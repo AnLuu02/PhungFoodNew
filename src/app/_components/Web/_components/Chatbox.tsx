@@ -33,7 +33,6 @@ export default function Chatbox() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  // Hàm scroll tới cuối
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
       if (scrollAreaRef.current) {
@@ -45,7 +44,6 @@ export default function Chatbox() {
     });
   };
 
-  // Gọi `scrollToBottom` mỗi khi messages thay đổi
   useEffect(() => {
     scrollToBottom();
   }, [messages]);

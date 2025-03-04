@@ -69,7 +69,7 @@ export default function TableProduct({
     },
     {
       header: 'Ngày tạo',
-      accessorKey: 'updatedAt',
+      accessorKey: 'createdAt',
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {

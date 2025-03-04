@@ -96,8 +96,9 @@ export default function UserInfo({ user, isLoading }: any) {
                 {user?.name}
               </Text>
               <Badge color='gray' variant='transparent' bg={'gray.2'}>
-                Cấp V.I.P: {getLevelUser(user?.level)}
+                Cấp V.I.P: <b className='text-[#F8C144]'>{getLevelUser(user?.level)}</b>
               </Badge>
+              <Badge ml={5}>{user?.pointLevel}</Badge>
             </div>
             <UpdateUserButton email={user?.email || ('' as string)} isClient={true} />
           </Group>

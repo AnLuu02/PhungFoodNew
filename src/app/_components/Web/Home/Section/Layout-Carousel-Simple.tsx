@@ -42,7 +42,7 @@ const recipes = [
       'Rắc hỗn hợp dừa và mè lên bánh tráng',
       'Nướng bánh trên bếp than hoặc bếp gas đến khi giòn'
     ],
-    videoId: 'z2jgI0OQcsE' // Example YouTube video ID
+    videoId: 'z2jgI0OQcsE'
   },
   {
     title: 'Cách làm bánh xoài đào',
@@ -51,7 +51,7 @@ const recipes = [
     category: 'Trung bình',
     ingredients: [],
     steps: [],
-    videoId: 'vtrSVA_6EFY' // Example YouTube video ID
+    videoId: 'vtrSVA_6EFY'
   },
   {
     title: 'Cách làm bánh xèo vịt miền Tây',
@@ -60,7 +60,7 @@ const recipes = [
     category: 'Trung bình',
     ingredients: [],
     steps: [],
-    videoId: 'lJmBwDYY12k' // Example YouTube video ID
+    videoId: 'lJmBwDYY12k'
   }
 ];
 

@@ -12,14 +12,12 @@ export async function POST(req: Request) {
         Authorization: `Bearer ${TOGETHER_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free', // Model miễn phí, có thể thử 'gemma-7b-it' hoặc 'llama-2-7b-chat'
+        model: 'deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free',
         messages: [{ role: 'user', content: message }]
       })
     });
 
     const data = await response.json();
-
-    // 🛠️ Debug API Response
 
     if (!data || !data.choices || data.choices.length === 0) {
       return NextResponse.json({ reply: 'Lỗi: API không trả về dữ liệu hợp lệ' }, { status: 500 });

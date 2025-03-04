@@ -2,10 +2,12 @@
 
 import { Paper, Tabs } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { UserLevel } from '@prisma/client';
 import { IconChartBar, IconGift, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { breakpoints } from '~/app/lib/utils/constants/device';
+import { getValueLevelUser } from '~/app/lib/utils/func-handler/get--value-level-user';
 import { api } from '~/trpc/react';
 import classes from './dashboard-content.module.css';
 import OrderList from './order-list';
@@ -20,7 +22,12 @@ export default function DashboardContent() {
   const { data, isLoading } =
     activeTab === 'user-info'
       ? api.User.getOne.useQuery({ query: user?.user?.email || '', hasOrders: true })
-      : api.Order.getFilter.useQuery({ query: user?.user?.email || '' });
+      : activeTab === 'orders'
+        ? api.Order.getFilter.useQuery({ query: user?.user?.email || '' })
+        : api.Voucher.getFilter.useQuery({
+            applyAllProduct: true,
+            someLevel: getValueLevelUser(user?.user?.details?.level || UserLevel.BRONZE)
+          });
 
   return (
     <Tabs
@@ -53,7 +60,7 @@ export default function DashboardContent() {
         {activeTab === 'user-info' && <UserInfo user={data} isLoading={isLoading} />}
         {activeTab === 'statistics' && <UserStatistics />}
         {activeTab === 'orders' && <OrderList orders={data} isLoading={isLoading} />}
-        {activeTab === 'promotions' && <Promotions />}
+        {activeTab === 'promotions' && <Promotions promotions={data} isLoading={isLoading} />}
       </Tabs.Panel>
     </Tabs>
   );

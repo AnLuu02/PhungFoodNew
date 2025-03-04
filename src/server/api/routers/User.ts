@@ -1,4 +1,6 @@
 import { EntityType, Gender, ImageType, UserLevel, UserRole } from '@prisma/client';
+import { compare } from 'bcryptjs';
+import { randomInt } from 'crypto';
 import { z } from 'zod';
 import {
   deleteImageFromFirebase,
@@ -6,6 +8,7 @@ import {
   uploadToFirebase
 } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { hashPassword } from '~/app/lib/utils/func-handler/hashPassword';
+import { getOtpEmail, sendEmail } from '~/app/lib/utils/func-handler/sendEmail';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -89,7 +92,7 @@ export const userRouter = createTRPCRouter({
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
         address: z.string().optional(),
         pointLevel: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(UserLevel.DONG)
+        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -119,7 +122,7 @@ export const userRouter = createTRPCRouter({
           imgURL = input.image.fileName;
         }
       }
-      if (input.email === 'anluu099@gmail.com') {
+      if (input.email === process.env.EMAIL_SUPPER_ADMIN) {
         input.role = 'ADMIN';
       }
 
@@ -173,7 +176,7 @@ export const userRouter = createTRPCRouter({
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
         address: z.string().optional(),
         pointLevel: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(UserLevel.DONG)
+        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -265,10 +268,6 @@ export const userRouter = createTRPCRouter({
 
       const deleteduser = await ctx.db.user.delete({ where: { id: input.id } });
 
-      if (!user) {
-        throw new Error(`Stock with ID ${input.id} not found.`);
-      }
-
       return {
         success: true,
         message: 'Đã xóa user và ảnh liên quan.',
@@ -326,5 +325,92 @@ export const userRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.user.findMany();
     return user;
-  })
+  }),
+
+  requestPasswordReset: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: { email: input.email }
+      });
+
+      if (!user) {
+        throw new Error('Email không tồn tại.');
+      }
+
+      const otp = randomInt(100000, 999999).toString();
+      const now = new Date();
+      const otpExpiry = new Date(now.getTime() + 1 * 60 * 1000);
+
+      await ctx.db.user.update({
+        where: { email: input.email },
+        data: { resetToken: otp, resetTokenExpiry: otpExpiry }
+      });
+
+      const emailContent = getOtpEmail(otp);
+      await sendEmail(input.email, 'Mã OTP đặt lại mật khẩu', emailContent);
+
+      return { message: 'Mã OTP đã được gửi qua email!' };
+    }),
+
+  resetPassword: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+        token: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          email: input.email
+        }
+      });
+      if (!user) {
+        throw new Error('Email không tồn tại');
+      }
+
+      const isTokenValid = await compare(user.resetToken || '', input.token);
+
+      if (!isTokenValid) {
+        throw new Error('OTP không hợp lệ hoặc đã hết hạn.');
+      }
+
+      const hashedPassword = await hashPassword(input.password);
+
+      await ctx.db.user.update({
+        where: { id: user.id },
+        data: {
+          password: hashedPassword,
+          resetToken: null,
+          resetTokenExpiry: null
+        }
+      });
+
+      return { message: 'Mật khẩu đã được đặt lại.' };
+    }),
+
+  verifyOtp: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        otp: z.string().length(6)
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findFirst({
+        where: {
+          email: input.email,
+          resetToken: input.otp,
+          resetTokenExpiry: { gte: new Date() }
+        }
+      });
+
+      if (!user) {
+        throw new Error('OTP không hợp lệ hoặc đã hết hạn.');
+      }
+
+      return { sussess: true };
+    })
 });

@@ -155,15 +155,10 @@ export const deliveryRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const delivery = await ctx.db.delivery.findMany({
         where: {
-          OR: [
-            { id: { contains: input.query, mode: 'insensitive' } }
-            // { name: { contains: input.query, mode: 'insensitive' } }
-          ]
+          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
         }
       });
-      if (!delivery) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return delivery;
     }),
   getOne: publicProcedure
@@ -175,15 +170,10 @@ export const deliveryRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const delivery = await ctx.db.delivery.findFirst({
         where: {
-          OR: [
-            { id: { contains: input.query, mode: 'insensitive' } }
-            // { name: { contains: input.query, mode: 'insensitive' } }
-          ]
+          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
         }
       });
-      if (!delivery) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return delivery;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {

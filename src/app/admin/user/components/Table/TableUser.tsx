@@ -51,7 +51,7 @@ export default function TableUser({
     },
     {
       header: 'Ngày tạo',
-      accessorKey: 'updatedAt',
+      accessorKey: 'createdAt',
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {

@@ -13,7 +13,6 @@ model Category {
   tag         String        @unique
   description String?
   createdAt   DateTime?     @default(now())
-  updatedAt   DateTime?     @updatedAt
   subCategory SubCategory[]
 }
 
@@ -25,7 +24,6 @@ model SubCategory {
   category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   description String?
   createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
   product     Product[]
   images      Image[]
 }
@@ -47,8 +45,6 @@ model Voucher {
   endDate           DateTime
   vipLevel          Int?
   createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  users             User[]
   Orders            Order[]
   products          Product[]
 }
@@ -58,16 +54,16 @@ model Order {
   total         Int         @default(0)
   status        OrderStatus
   createdAt     DateTime?   @default(now())
-  updatedAt     DateTime?   @updatedAt
   userId        String?
   paymentId     String?
   transactionId String?     @default("")
-  user          User?       @relation(fields: [userId], references: [id])
+  transDate     DateTime?
   payment       Payment?    @relation(fields: [paymentId], references: [id])
   orderItems    OrderItem[]
   vouchers      Voucher[]
   delivery      Delivery?   @relation(fields: [deliveryId], references: [id])
   deliveryId    String?
+  User          User?       @relation(fields: [userId], references: [id])
 
   @@index([userId], map: "Order_usersId_fkey_unique")
 }
@@ -121,7 +117,6 @@ model Product {
   tag               String          @unique
   region            String
   createdAt         DateTime?       @default(now())
-  updatedAt         DateTime?       @updatedAt
   soldQuantity      Int             @default(0)
   availableQuantity Int             @default(100)
   rating            Float           @default(0.0)
@@ -130,13 +125,23 @@ model Product {
   review            Review[]
   favouriteFood     FavouriteFood[]
 
+  materials     Material[]
   subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
   subCategoryId String?
   Voucher       Voucher[]
-  voucherId     String?
   images        Image[]
 
   @@index([subCategoryId], map: "Product_categoryId_fkey_unique")
+}
+
+model Material {
+  id          String    @id @default(cuid())
+  name        String
+  tag         String
+  category    String
+  description String?
+  createdAt   DateTime? @default(now())
+  Products    Product[]
 }
 
 model Review {
@@ -153,28 +158,26 @@ model Review {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  name          String
-  email         String          @unique
-  password      String
-  role          UserRole        @default(CUSTOMER)
-  phone         String?         @db.VarChar(10)
-  address       String?
-  dateOfBirth   DateTime?       @default(now())
-  gender        Gender?
-  pointLevel    Int             @default(0)
-  level         UserLevel
-  createdAt     DateTime?       @default(now())
-  updatedAt     DateTime?       @updatedAt
-  order         Order[]
-  review        Review[]
-  revenueId     String?
-  favouriteFood FavouriteFood[]
-  revenue       Revenue[]
-  delivery      Delivery[]
-  voucherId     String?
-  Voucher       Voucher?        @relation(fields: [voucherId], references: [id])
-  images        Image[]
+  id               String          @id @default(cuid())
+  name             String
+  email            String          @unique
+  password         String
+  role             UserRole        @default(CUSTOMER)
+  phone            String?         @db.VarChar(10)
+  address          String?
+  dateOfBirth      DateTime?       @default(now())
+  gender           Gender?
+  pointLevel       Int             @default(0)
+  level            UserLevel
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  createdAt        DateTime?       @default(now())
+  order            Order[]
+  review           Review[]
+  favouriteFood    FavouriteFood[]
+  revenue          Revenue[]
+  delivery         Delivery[]
+  images           Image[]
 }
 
 model Revenue {
@@ -187,10 +190,9 @@ model Revenue {
   totalSpent  Decimal   @default(0)
   totalOrders Int       @default(0)
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
   payment     Payment[]
 
-  @@unique([userId, year, month])
+  @@unique([userId, year, month, date])
 }
 
 model FavouriteFood {
@@ -200,7 +202,6 @@ model FavouriteFood {
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
 
   @@unique([userId, productId])
 }
@@ -280,9 +281,9 @@ enum Gender {
 }
 
 enum UserLevel {
-  DONG
-  BAC
-  VANG
-  BACHKIM
-  KIMCUONG
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
 }

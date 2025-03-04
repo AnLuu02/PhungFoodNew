@@ -55,8 +55,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ paymentUrl }, { status: 200, headers: { 'Access-Control-Allow-Origin': '*' } });
 }
 
-// Hàm sắp xếp object theo thứ tự key (bắt buộc để ký hash chính xác)
-function sortObject(obj: any) {
+export function sortObject(obj: any) {
   let sorted: Record<string, string> = {};
   let str = [];
   let key;

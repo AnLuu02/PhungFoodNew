@@ -8,6 +8,7 @@ import {
   Grid,
   GridCol,
   Image,
+  MultiSelect,
   NumberInput,
   Paper,
   Select,
@@ -46,6 +47,7 @@ export const regions = [
 
 export default function CreateProduct({ setOpened }: { setOpened: any }) {
   const { data: categories } = api.SubCategory.getAll.useQuery();
+  const { data: materials, isLoading } = api.Material.getAll.useQuery();
   const [imageAddition, setImageAddition] = useState<File[]>([]);
 
   const {
@@ -66,7 +68,8 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
       thumbnail: undefined,
       gallery: [],
       region: 'Miền Nam',
-      subCategoryId: ''
+      subCategoryId: '',
+      materials: []
     }
   });
   const nameValue = watch('name', '');
@@ -305,6 +308,29 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             )}
           />
         </Grid.Col>
+
+        <Grid.Col span={6}>
+          <Controller
+            name='materials'
+            control={control}
+            render={({ field }) => (
+              <MultiSelect
+                label='Nguyên liệu'
+                placeholder='Chọn nguyên liệu'
+                searchable
+                data={materials?.map(material => ({
+                  value: material.id,
+                  label: material.name
+                }))}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.materials?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+
         <Grid.Col span={6}>
           <Controller
             control={control}

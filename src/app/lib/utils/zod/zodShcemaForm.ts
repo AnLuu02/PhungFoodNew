@@ -41,12 +41,18 @@ export const userSchema = z.object({
   image: imageSchema.optional(),
   gender: z.nativeEnum(Gender),
   dateOfBirth: z.date().optional(),
-  password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
+  password: z
+    .string()
+    .min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
+    .regex(/[A-Z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ hoa' })
+    .regex(/[a-z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ thường' })
+    .regex(/[0-9]/, { message: 'Mật khẩu phải chứa ít nhất một số' })
+    .regex(/[^A-Za-z0-9]/, { message: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt' }),
   role: z.nativeEnum(UserRole),
   phone: z.string().max(10, { message: 'Số điện thoại không được quá 10 ký tự' }),
   address: z.string().optional(),
   pointLevel: z.number().default(0),
-  level: z.nativeEnum(UserLevel).default(UserLevel.DONG)
+  level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
 });
 
 export const productSchema = z.object({
@@ -63,7 +69,8 @@ export const productSchema = z.object({
   rating: z.number().optional(),
   totalRating: z.number().optional(),
   soldQuantity: z.number().optional(),
-  availableQuantity: z.number().optional()
+  availableQuantity: z.number().optional(),
+  materials: z.array(z.string()).optional()
 });
 export const deliverySchema = z.object({
   id: z.string().optional(),
@@ -74,7 +81,8 @@ export const deliverySchema = z.object({
   address: z.string().min(1, 'Địa chỉ không được để trống').optional(),
   note: z.string().optional(),
   userId: z.string().optional(),
-  orderId: z.string().optional()
+  orderId: z.string().optional(),
+  paymentId: z.string().optional()
 });
 
 export const reviewSchema = z.object({
@@ -112,11 +120,19 @@ export const voucherSchema = z.object({
   maxDiscount: z.number().min(0, 'Giá trị tối đa không hợp lệ'),
   minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
   quantity: z.number().min(1, 'Số lượng không hợp lệ'),
-  applyAll: z.boolean().default(false),
+  applyAll: z.boolean().default(true),
   usedQuantity: z.number().min(0).default(0),
   availableQuantity: z.number().min(0).default(0),
   startDate: z.date(),
   endDate: z.date(),
-  vipLevel: z.number().optional(),
+  vipLevel: z.string().optional(),
   products: productSchema.array().optional()
+});
+
+export const materialSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, 'Tên không được để trống'),
+  tag: z.string().min(1, 'Tag là bắt buộc'),
+  description: z.string().optional(),
+  category: z.string().min(1, 'Category is required')
 });

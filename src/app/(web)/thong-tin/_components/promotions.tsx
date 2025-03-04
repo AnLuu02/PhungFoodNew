@@ -3,6 +3,7 @@
 import { Card, Grid, GridCol, Group, Tabs } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { useState } from 'react';
+import Empty from '~/app/_components/Empty';
 import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
 
@@ -23,8 +24,7 @@ export const mockPromotions = [
     tag: 'giam-20',
     startDate: new Date('2025-02-15'),
     endDate: new Date('2025-03-15'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-2',
@@ -42,8 +42,7 @@ export const mockPromotions = [
     tag: 'giam-50k',
     startDate: new Date('2025-02-20'),
     endDate: new Date('2025-03-20'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-3',
@@ -61,8 +60,7 @@ export const mockPromotions = [
     tag: 'giam-15',
     startDate: new Date('2025-02-10'),
     endDate: new Date('2025-03-10'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-4',
@@ -80,8 +78,7 @@ export const mockPromotions = [
     tag: 'giam-30k',
     startDate: new Date('2025-02-12'),
     endDate: new Date('2025-03-12'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-5',
@@ -99,8 +96,7 @@ export const mockPromotions = [
     tag: 'giam-25',
     startDate: new Date('2025-02-18'),
     endDate: new Date('2025-03-18'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-6',
@@ -118,8 +114,7 @@ export const mockPromotions = [
     tag: 'giam-100k',
     startDate: new Date('2025-02-25'),
     endDate: new Date('2025-03-25'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-7',
@@ -137,8 +132,7 @@ export const mockPromotions = [
     tag: 'giam-10',
     startDate: new Date('2025-02-08'),
     endDate: new Date('2025-03-08'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-8',
@@ -156,8 +150,7 @@ export const mockPromotions = [
     tag: 'giam-5',
     startDate: new Date('2025-02-01'),
     endDate: new Date('2025-02-28'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-9',
@@ -175,8 +168,7 @@ export const mockPromotions = [
     tag: 'giam-70k',
     startDate: new Date('2025-02-22'),
     endDate: new Date('2025-03-22'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   },
   {
     id: 'voucher-10',
@@ -194,18 +186,17 @@ export const mockPromotions = [
     tag: 'giam-40',
     startDate: new Date('2025-02-28'),
     endDate: new Date('2025-03-30'),
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: new Date()
   }
 ];
 
-export default function Promotions() {
+export default function Promotions({ promotions, isLoading }: any) {
   const [activeTab, setActiveTab] = useState<string | null>('all');
   const [openDetail, setOpenDetail] = useState<any>({});
-
+  const promotionData = promotions || [];
   const getFilteredPromotions = () => {
-    if (activeTab === 'all') return mockPromotions;
-    return mockPromotions.filter(promo => promo.type === activeTab);
+    if (activeTab === 'all') return promotionData;
+    return promotionData.filter((promo: any) => promo.type === activeTab);
   };
 
   return (
@@ -225,13 +216,22 @@ export default function Promotions() {
           </Group>
         </Tabs.List>
         <Tabs.Panel value={activeTab || 'all'}>
-          <Grid mt='md'>
-            {getFilteredPromotions().map(promo => (
-              <GridCol span={6} key={promo.id}>
-                <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
-              </GridCol>
-            ))}
-          </Grid>
+          {getFilteredPromotions()?.length > 0 ? (
+            <Grid mt='md'>
+              {getFilteredPromotions().map((promo: any) => (
+                <GridCol span={6} key={promo.id}>
+                  <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
+                </GridCol>
+              ))}
+            </Grid>
+          ) : (
+            <Empty
+              title='Không có khuyến mãi nào'
+              content='Vui lòng quay lại sau. Xin cảm ơn!'
+              size='xs'
+              hasButton={false}
+            />
+          )}
         </Tabs.Panel>
       </Tabs>
       <ModalDetailVoucher opened={openDetail?.type} onClose={() => setOpenDetail({})} data={openDetail} products={[]} />

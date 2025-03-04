@@ -32,7 +32,7 @@ export default function TableCategory({
     },
     {
       header: 'Ngày tạo',
-      accessorKey: 'updatedAt',
+      accessorKey: 'createdAt',
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {
@@ -41,23 +41,6 @@ export default function TableCategory({
         <Group className='text-center'>
           <UpdateCategoryButton id={info.row.original.id} />
           <DeleteCategoryButton id={info.row.original.id} />
-          {/* <CustomButton
-            label=''
-            icon={<IconEdit size={24} />}
-            Component={UpdateCategory}
-            componentProps={{
-              categoryId: info.row.original.id
-            }}
-          />
-          <CustomButton
-            label=''
-            icon={<IconTrash size={24} />}
-            isModalConfirm={true}
-            Component={DeleteCategory}
-            componentProps={{
-              categoryId: info.row.original.id
-            }}
-          /> */}
         </Group>
       )
     }

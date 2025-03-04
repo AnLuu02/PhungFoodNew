@@ -1,4 +1,5 @@
-import { Card, CardSection, Container, Image, Space } from '@mantine/core';
+import { Card, CardSection, Container, Flex, Image, Space, Stack, Text } from '@mantine/core';
+import BButton from '../../Button';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
 import LayoutAds from './Section/Layout-Ads';
 import LayoutBannerOverview from './Section/Layout-Banner-Overview';
@@ -12,14 +13,21 @@ import LayoutPromotion from './Section/Layout-Promotion';
 const HomeWeb = ({
   data
 }: {
-  data: { category: IDataCategory; productDiscount: any; productBestSaler: any; productNew: any; productHot: any };
+  data: {
+    category: IDataCategory;
+    materials: any;
+    productDiscount: any;
+    productBestSaler: any;
+    productNew: any;
+    productHot: any;
+  };
 }) => {
   return (
     <>
       <LayoutBannerOverview />
       <Space h='xl' />
       <Container pl={0} pr={0} size='xl'>
-        {data.category && (
+        {data.category?.anVat && (
           <>
             <CategoryCarouselHorizontal data={data.category} />
             <Space h='xl' />
@@ -70,73 +78,84 @@ const HomeWeb = ({
           </>
         )}
 
-        <LayoutProductCarouselWithImage2
-          title='Chay thanh đạm'
-          navbar={[
-            {
-              label: 'Đậu hủ',
-              key: 'dau-hu',
-              url: 'dau-hu'
-            },
-            {
-              label: 'Rau củ',
-              key: 'rau-cu',
-              url: 'rau-cu'
-            },
-            {
-              label: 'Món nước',
-              key: 'mon-chay-nuoc',
-              url: 'mon-chay-nuoc'
-            },
-            {
-              label: 'Món chay khô',
-              key: 'mon-chay-kho',
-              url: 'mon-chay-kho'
-            }
-          ]}
-        />
-        <Space h='xl' />
-        <LayoutProductCarouselWithImage2
-          title='Mặn tươi ngon'
-          imgaePositon={'right'}
-          navbar={[
-            {
-              label: 'Thịt',
-              key: 'thit',
-              url: 'thit'
-            },
-            {
-              label: 'Hải sản',
-              key: 'hai-san',
-              url: 'hai-san'
-            },
-            {
-              label: 'Món nước',
-              key: 'mon-nuoc',
-              url: 'mon-nuoc'
-            },
-            {
-              label: 'Món khô',
-              key: 'mon-kho',
-              url: 'mon-kho'
-            }
-          ]}
-        />
-        <Space h='xl' />
+        {data.materials?.rauCu?.products?.length > 0 && (
+          <>
+            <LayoutProductCarouselWithImage2
+              data={{ 'rau-cu': data.materials.rauCu, 'cac-loai-nam': data.materials.cacLoaiNam }}
+              title='Chay thanh đạm'
+              navbar={[
+                {
+                  label: 'Rau củ',
+                  key: 'rau-cu',
+                  url: 'rau-cu'
+                },
+                {
+                  label: 'Các loại nấm',
+                  key: 'cac-loai-nam',
+                  url: 'cac-loai-nam'
+                }
+              ]}
+            />
+            <Space h='xl' />
+          </>
+        )}
+
+        {data.materials?.thitTuoi?.products?.length > 0 && (
+          <>
+            <LayoutProductCarouselWithImage2
+              data={{ 'hai-san': data.materials.haiSan, 'thit-tuoi': data.materials.thitTuoi }}
+              title='Mặn tươi ngon'
+              imgaePositon={'right'}
+              navbar={[
+                {
+                  label: 'Thịt tươi',
+                  key: 'thit-tuoi',
+                  url: 'thit-tuoi'
+                },
+                {
+                  label: 'Hải sản',
+                  key: 'hai-san',
+                  url: 'hai-san'
+                }
+              ]}
+            />
+            <Space h='xl' />
+          </>
+        )}
         <LayoutCarouselSimple />
         <Space h='xl' />
-        <Card radius={'lg'} bg={'gray.1'} p={0} mb={50}>
-          <CardSection>
+        <Card radius={'lg'} bg={'gray.1'} p={0} className='hidden md:block'>
+          <CardSection pos={'relative'}>
             <Image
               loading='lazy'
               className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
               w={'100%'}
-              h={350}
-              src='/images/webp/img_banner_index.webp'
+              h={500}
+              src='/images/png/banner_food.png'
             />
+            <Flex
+              justify={'center'}
+              align={'center'}
+              pos={'absolute'}
+              left={0}
+              top={0}
+              bottom={0}
+              right={0}
+              className='bg-[rgba(0,0,0,0.5)]'
+            >
+              <Stack w={{ sm: '80%', md: '80%', lg: '50%' }} gap={'xl'} align='center' justify='center'>
+                <Text c={'white'} fw={700} className='text-6xl sm:text-5xl'>
+                  Ưu đãi đặc biệt
+                </Text>
+                <Text c={'white'} className='text-center text-4xl sm:text-3xl' fw={700}>
+                  Giảm <i className='animate-wiggle text-[#008b4b]'>"50%"</i> đối với những khách hàng Bạch kim trở lên
+                </Text>
+                <BButton w={'max-content'} size='xl' title={'Khám phá ngay'} />
+              </Stack>
+            </Flex>
           </CardSection>
         </Card>
-        <Space h='xl' />
+        <Space h='xl' className='hidden md:block' />
 
         {data.category.anVat && data.category.thucUong && (
           <FastMenuSection data={{ anVat: data.category.anVat, thucUong: data.category.thucUong }} />

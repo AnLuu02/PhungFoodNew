@@ -8,6 +8,7 @@ import {
   Grid,
   GridCol,
   Image,
+  MultiSelect,
   NumberInput,
   Paper,
   Select,
@@ -31,6 +32,8 @@ import { regions } from './CreateProduct';
 export default function UpdateProduct({ productId, setOpened }: { productId: string; setOpened: any }) {
   const [loading, setLoading] = useState(false);
   const { data: categories } = api.SubCategory.getAll.useQuery();
+  const { data: materials, isLoading } = api.Material.getAll.useQuery();
+
   const queryResult = productId ? api.Product.getOne.useQuery({ query: productId || '' }) : { data: null };
   const { data } = queryResult;
 
@@ -55,7 +58,8 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
       region: 'Miền Nam',
       thumbnail: undefined,
       gallery: [],
-      subCategoryId: ''
+      subCategoryId: '',
+      materials: []
     }
   });
   const nameValue = watch('name', '');
@@ -91,7 +95,8 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
         price: data?.price,
         discount: data?.discount,
         region: data?.region,
-        subCategoryId: data?.subCategoryId as string
+        subCategoryId: data?.subCategoryId as string,
+        materials: data?.materials.map(material => material.id)
       });
     }
   }, [data, reset]);
@@ -328,6 +333,29 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             )}
           />
         </Grid.Col>
+
+        <Grid.Col span={6}>
+          <Controller
+            name='materials'
+            control={control}
+            render={({ field }) => (
+              <MultiSelect
+                label='Nguyên liệu'
+                placeholder='Chọn nguyên liệu'
+                searchable
+                data={materials?.map(material => ({
+                  value: material.id,
+                  label: material.name
+                }))}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.materials?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -447,7 +475,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
           />
         </Grid.Col>
         <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
-          Cập nhật
+          Tạo sản phẩm
         </Button>
       </Grid>
     </form>

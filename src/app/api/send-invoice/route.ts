@@ -10,10 +10,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Thiếu thông tin email hoặc hóa đơn' }, { status: 400 });
     }
 
-    // 📝 Tạo PDF
     const pdfBuffer = await generatePDF(invoiceData);
 
-    // 📩 Cấu hình SMTP Gmail
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -22,7 +20,6 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    // 📧 Gửi email
     await transporter.sendMail({
       from: `"Fast Food" <${process.env.SMTP_EMAIL}>`,
       to: to,

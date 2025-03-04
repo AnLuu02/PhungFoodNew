@@ -29,7 +29,7 @@ const months = [
   { month: 'Nov', amount: 0 },
   { month: 'Dec', amount: 0 }
 ];
-export const orderCompletionRate = 85; // 85%
+export const orderCompletionRate = 85;
 
 export const vipLevels = ['Đồng', 'Bạc', 'Vàng', 'Bạch kim', 'Kim cương'];
 export const userVIPLevel = 'Vàng';

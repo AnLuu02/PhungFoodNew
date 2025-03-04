@@ -43,7 +43,7 @@ export const orderRouter = createTRPCRouter({
                     }
                   },
                   {
-                    user: {
+                    User: {
                       OR: [
                         {
                           name: {
@@ -94,7 +94,7 @@ export const orderRouter = createTRPCRouter({
                     }
                   },
                   {
-                    user: {
+                    User: {
                       name: {
                         contains: query?.trim(),
                         mode: 'insensitive'
@@ -111,7 +111,7 @@ export const orderRouter = createTRPCRouter({
             : undefined,
           include: {
             payment: true,
-            user: {
+            User: {
               include: {
                 images: true
               }
@@ -119,7 +119,11 @@ export const orderRouter = createTRPCRouter({
             delivery: true,
             orderItems: {
               include: {
-                product: true
+                product: {
+                  include: {
+                    images: true
+                  }
+                }
               }
             }
           }
@@ -183,7 +187,6 @@ export const orderRouter = createTRPCRouter({
           record: order
         };
       }
-      // updateRevenue(ctx, order.status, order.userId, order.total);
       if (order && order.status === OrderStatus.COMPLETED) {
         updatePointLevel(ctx, input.userId, Number(input.total) || 0);
       }
@@ -201,44 +204,13 @@ export const orderRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // const order = await ctx.db.order.update({
-      //   where: { id: input?.id },
-      //   data: {
-      //     total: input.total,
-      //     status: input.status,
-      //     userId: input.userId,
-      //     paymentId: input.paymentId,
-      //     transactionId: input.transactionId,
-      //     orderItems: {
-      //       upsert: input.orderItems.map(item => ({
-      //         where: {
-      //           id: item.id
-      //         },
-      //         update: {
-      //           productId: item.productId,
-      //           quantity: item.quantity,
-      //           price: item.price
-      //         },
-      //         create: {
-      //           productId: item.productId,
-      //           quantity: item.quantity,
-      //           price: item.price
-      //         }
-      //       })),
-      //       deleteMany: {
-      //         productId: {
-      //           notIn: input.orderItems.map(item => item.productId)
-      //         }
-      //       }
-      //     }
-      //   }
-      // });
       const order: any = await ctx.db.order.update({
         where: input.where as Prisma.OrderWhereUniqueInput,
         data: input.data
       });
-      updateRevenue(ctx, order.status, order.userId, order.total);
+
       if (order && order.status === OrderStatus.COMPLETED) {
+        updateRevenue(ctx, order.status, order.userId, order.total);
         updatePointLevel(ctx, order.userId, order.total);
       }
       return {
@@ -279,7 +251,7 @@ export const orderRouter = createTRPCRouter({
               id: input.query?.trim()
             },
             {
-              user: {
+              User: {
                 email: {
                   contains: input.query?.trim(),
                   mode: 'insensitive'
@@ -291,11 +263,15 @@ export const orderRouter = createTRPCRouter({
         include: {
           orderItems: {
             include: {
-              product: true
+              product: {
+                include: {
+                  images: true
+                }
+              }
             }
           },
           vouchers: true,
-          user: {
+          User: {
             include: {
               images: true
             }
@@ -305,9 +281,6 @@ export const orderRouter = createTRPCRouter({
         }
       });
 
-      if (!order) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
       return order;
     }),
   getOne: publicProcedure
@@ -324,7 +297,7 @@ export const orderRouter = createTRPCRouter({
               id: input.query?.trim()
             },
             {
-              user: {
+              User: {
                 email: {
                   contains: input.query?.trim(),
                   mode: 'insensitive'
@@ -336,11 +309,15 @@ export const orderRouter = createTRPCRouter({
         include: {
           orderItems: {
             include: {
-              product: true
+              product: {
+                include: {
+                  images: true
+                }
+              }
             }
           },
           vouchers: true,
-          user: {
+          User: {
             include: {
               images: true
             }
@@ -350,9 +327,6 @@ export const orderRouter = createTRPCRouter({
         }
       });
 
-      if (!order) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
       return order;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {

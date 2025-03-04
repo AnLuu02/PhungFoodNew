@@ -1,5 +1,6 @@
 import { PaymentType } from '@prisma/client';
 import { z } from 'zod';
+import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -69,6 +70,9 @@ export const paymentRouter = createTRPCRouter({
             isDefault: input.isDefault
           }
         });
+        if (payment?.tag) {
+          await CreateTagVi({ old: [], new: payment });
+        }
         return {
           success: true,
           message: 'Tạo thành công.',
@@ -112,10 +116,7 @@ export const paymentRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const payment = await ctx.db.payment.findMany({
         where: {
-          OR: [
-            { id: { contains: input.query, mode: 'insensitive' } }
-            // { name: { contains: input.query, mode: 'insensitive' } }
-          ]
+          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
         }
       });
       if (!payment) {
@@ -132,10 +133,7 @@ export const paymentRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const payment = await ctx.db.payment.findFirst({
         where: {
-          OR: [
-            { id: { contains: input.query, mode: 'insensitive' } }
-            // { name: { contains: input.query, mode: 'insensitive' } }
-          ]
+          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
         }
       });
       if (!payment) {
@@ -167,16 +165,24 @@ export const paymentRouter = createTRPCRouter({
       });
 
       if (!existingpayment || (existingpayment && existingpayment?.some((item: any) => item?.id == input?.paymentId))) {
-        const payment = await ctx.db.payment.update({
-          where: { id: input?.paymentId },
-          data: {
-            name: input.name,
-            tag: input.tag,
-            type: input.type,
-            provider: input.provider || '',
-            isDefault: input.isDefault
-          }
-        });
+        const [payment, updatePayment] = await ctx.db.$transaction([
+          ctx.db.payment.findUnique({
+            where: { id: input?.paymentId }
+          }),
+          ctx.db.payment.update({
+            where: { id: input?.paymentId },
+            data: {
+              name: input.name,
+              tag: input.tag,
+              type: input.type,
+              provider: input.provider || '',
+              isDefault: input.isDefault
+            }
+          })
+        ]);
+        if (payment?.tag && updatePayment?.tag) {
+          await CreateTagVi({ old: payment, new: updatePayment });
+        }
         return {
           success: true,
           message: 'Cập nhật thành công.',

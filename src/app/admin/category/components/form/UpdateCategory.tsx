@@ -52,8 +52,7 @@ export default function UpdateCategory({ categoryId, setOpened }: { categoryId: 
 
   const onSubmit: SubmitHandler<Category> = async formData => {
     if (categoryId) {
-      const updatedFormData = { ...formData };
-      let result = await updateMutation.mutateAsync({ categoryId, ...updatedFormData });
+      let result = await updateMutation.mutateAsync(formData);
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);

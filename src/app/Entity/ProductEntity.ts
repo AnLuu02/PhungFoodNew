@@ -28,4 +28,6 @@ export type Product = {
   totalRating: number;
 
   subCategoryId: string;
+
+  materials: string[];
 };

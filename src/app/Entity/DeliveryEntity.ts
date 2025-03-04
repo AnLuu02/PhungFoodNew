@@ -1,19 +1,21 @@
 export type Delivery = {
   id: string;
 
-  name?: string;
+  name: string;
 
-  email?: string;
+  email: string;
 
-  phone?: string;
+  phone: string;
 
-  province?: string;
+  province: string;
 
-  address?: string;
+  address: string;
 
   note?: string;
 
-  userId?: string;
+  userId: string;
 
-  orderId?: string;
+  orderId: string;
+
+  paymentId: string;
 };

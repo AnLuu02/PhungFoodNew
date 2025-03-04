@@ -49,7 +49,6 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
   useEffect(() => {
     setQuantity(1);
   }, [product]);
-  // if (type !== 'details') return null;
 
   return (
     <>

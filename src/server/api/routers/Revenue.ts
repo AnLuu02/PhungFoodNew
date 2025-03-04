@@ -10,7 +10,7 @@ export async function updateRevenue(ctx: any, status: OrderStatus, userId: strin
   const month = now.getMonth() + 1;
 
   await ctx.db.revenue.upsert({
-    where: { userId_year_month: { userId, year, month } },
+    where: { userId_year_month_date: { userId, year, month, date } },
     update: {
       totalSpent: status === OrderStatus.COMPLETED ? { increment: orderTotal } : { decrement: orderTotal },
       totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 }

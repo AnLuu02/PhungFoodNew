@@ -3,6 +3,7 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { IconCategory, IconChevronCompactDown } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import Empty from '~/app/_components/Empty';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import NavigationHeader from '../_components/NavigationHeader';
 
@@ -67,32 +68,36 @@ const Header3 = ({ data }: any) => {
 
           <Menu.Dropdown>
             <ScrollAreaAutosize mah={rem(400)} scrollbarSize={5}>
-              {formatData?.map((item: any, index: number) => {
-                return (
-                  <Link
-                    href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
-                    key={index}
-                    className='no-underline'
-                  >
-                    <Menu.Item
+              {formatData?.length > 0 ? (
+                formatData?.map((item: any, index: number) => {
+                  return (
+                    <Link
+                      href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
                       key={index}
-                      leftSection={
-                        <Image
-                          loading='lazy'
-                          src={item?.images?.[0]?.url || '/images/jpg/empty-300x240.jpg'}
-                          alt='logo'
-                          w={30}
-                          h={30}
-                        />
-                      }
+                      className='no-underline'
                     >
-                      <Text size='sm' fw={700}>
-                        {item?.name}
-                      </Text>
-                    </Menu.Item>
-                  </Link>
-                );
-              })}
+                      <Menu.Item
+                        key={index}
+                        leftSection={
+                          <Image
+                            loading='lazy'
+                            src={item?.images?.[0]?.url || '/images/jpg/empty-300x240.jpg'}
+                            alt='logo'
+                            w={30}
+                            h={30}
+                          />
+                        }
+                      >
+                        <Text size='sm' fw={700}>
+                          {item?.name}
+                        </Text>
+                      </Menu.Item>
+                    </Link>
+                  );
+                })
+              ) : (
+                <Empty size='xs' hasButton={false} title='Danh mục trống' content='' />
+              )}
             </ScrollAreaAutosize>
           </Menu.Dropdown>
         </Menu>

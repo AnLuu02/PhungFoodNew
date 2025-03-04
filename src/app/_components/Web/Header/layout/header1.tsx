@@ -115,13 +115,13 @@ export const Header1 = () => {
         ) : (
           <Group gap={'xs'} align={'center'}>
             <IconUserCircle size={20} fontWeight={'bold'} />
-            <Link href='/dang-ki' className='text-white no-underline'>
+            <Link href='/auth/dang-ki' className='text-white no-underline'>
               <Text size='sm' className={clsx('cursor-pointer font-bold no-underline hover:underline')}>
                 Đăng kí
               </Text>
             </Link>
             <Text>/</Text>
-            <Link href='/dang-nhap' className='text-white no-underline'>
+            <Link href='/auth/dang-nhap' className='text-white no-underline'>
               <Text size='sm' className={clsx('cursor-pointer font-bold no-underline hover:underline')}>
                 Đăng nhập
               </Text>

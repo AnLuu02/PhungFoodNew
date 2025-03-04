@@ -16,7 +16,7 @@ const LayoutAds = () => {
           <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
 
           <Title order={3} c={'black'} className='font-quicksand' mb={'xs'} w={'70%'}>
-            Nông sản tươi mới Sản phẩm 100% từ Thiên nhiên
+            Hương vị tươi ngon Món ăn 100% từ thiên nhiên
           </Title>
 
           <BButton title={'Xem ngay'} radius='md' size='sm' w={'max-content'} />
@@ -50,7 +50,7 @@ const LayoutAds = () => {
           <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
 
           <Title order={3} c={'black'} className='font-quicksand' mb={'xs'} w={'70%'}>
-            Thực phẩm 100% Sạch sẻ và an toàn Chất lượng
+            Ẩm thực sạch sẽ và an toàn Chất lượng hàng đầu
           </Title>
 
           <BButton title={'Xem ngay'} radius='md' size='sm' w={'max-content'} />

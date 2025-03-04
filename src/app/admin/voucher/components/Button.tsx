@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Button, Modal, Title } from '@mantine/core';
+import { ActionIcon, Button, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
@@ -15,7 +15,13 @@ export function CreateVoucherButton() {
       <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </Button>
-      <Modal size={'lg'} opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Tạo voucher</Title>}>
+      <Modal
+        scrollAreaComponent={ScrollAreaAutosize}
+        size={'xl'}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Tạo voucher</Title>}
+      >
         <CreateVoucher setOpened={setOpened} />
       </Modal>
     </>
@@ -29,7 +35,13 @@ export function UpdateVoucherButton({ id }: { id: string }) {
       <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
         <IconEdit size={24} />
       </ActionIcon>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Cập nhật voucher</Title>}>
+      <Modal
+        size={'xl'}
+        scrollAreaComponent={ScrollAreaAutosize}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Cập nhật voucher</Title>}
+      >
         <UpdateVoucher voucherId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>

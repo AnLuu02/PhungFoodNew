@@ -1,6 +1,7 @@
 import { EntityType } from '.prisma/client';
 import { ImageType } from '@prisma/client';
 import { z } from 'zod';
+import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 import {
   deleteImageFromFirebase,
   getFileNameFromFirebaseFile,
@@ -144,6 +145,9 @@ export const subCategoryRouter = createTRPCRouter({
             : undefined
         }
       });
+      if (subCategory?.tag) {
+        await CreateTagVi({ old: [], new: subCategory });
+      }
 
       return {
         success: true,
@@ -190,35 +194,43 @@ export const subCategoryRouter = createTRPCRouter({
       }
 
       if (!existed || existed.id === input.id) {
-        const subCategory = await ctx.db.subCategory.update({
-          where: { id: input.id },
-          data: {
-            name: input.name,
-            tag: input.tag,
-            description: input.description,
-            categoryId: input.categoryId,
-            images: imgURL
-              ? {
-                  upsert: {
-                    where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
-                    update: {
-                      entityType: EntityType.CATEGORY,
-                      altText: `Ảnh ${input.name}`,
-                      url: imgURL,
-                      type: ImageType.THUMBNAIL
-                    },
-                    create: {
-                      entityType: EntityType.CATEGORY,
-                      altText: `Ảnh ${input.name}`,
-                      url: imgURL,
-                      type: ImageType.THUMBNAIL
+        const [subCategory, updateSubCategory] = await ctx.db.$transaction([
+          ctx.db.subCategory.findUnique({
+            where: { id: input.id }
+          }),
+          ctx.db.subCategory.update({
+            where: { id: input.id },
+            data: {
+              name: input.name,
+              tag: input.tag,
+              description: input.description,
+              categoryId: input.categoryId,
+              images: imgURL
+                ? {
+                    upsert: {
+                      where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
+                      update: {
+                        entityType: EntityType.CATEGORY,
+                        altText: `Ảnh ${input.name}`,
+                        url: imgURL,
+                        type: ImageType.THUMBNAIL
+                      },
+                      create: {
+                        entityType: EntityType.CATEGORY,
+                        altText: `Ảnh ${input.name}`,
+                        url: imgURL,
+                        type: ImageType.THUMBNAIL
+                      }
                     }
                   }
-                }
-              : undefined
-          }
-        });
+                : undefined
+            }
+          })
+        ]);
 
+        if (subCategory?.tag && updateSubCategory?.tag) {
+          await CreateTagVi({ old: subCategory, new: updateSubCategory });
+        }
         return {
           success: true,
           message: 'Cập nhật danh mục thành công.',
@@ -249,14 +261,8 @@ export const subCategoryRouter = createTRPCRouter({
       }
 
       subCategory?.images?.[0]?.url && (await deleteImageFromFirebase(subCategory?.images?.[0]?.url));
-      // if (subCategory.images.length > 0) {
-      //   await Promise.all(subCategory.images.map(image => deleteImageFromFirebase(image.url)));
-      // }
-      const deletedSubCategory = await ctx.db.subCategory.delete({ where: { id: input.id } });
 
-      if (!subCategory) {
-        throw new Error(`Stock with ID ${input.id} not found.`);
-      }
+      const deletedSubCategory = await ctx.db.subCategory.delete({ where: { id: input.id } });
 
       return {
         success: true,
@@ -274,15 +280,10 @@ export const subCategoryRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const subCategory = await ctx.db.subCategory.findMany({
         where: {
-          OR: [
-            { id: { contains: input.query, mode: 'insensitive' } }
-            // { name: { contains: input.query, mode: 'insensitive' } }
-          ]
+          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
         }
       });
-      if (!subCategory) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return subCategory;
     }),
   getOne: publicProcedure
@@ -318,9 +319,7 @@ export const subCategoryRouter = createTRPCRouter({
           images: true
         }
       });
-      if (!subCategory) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return subCategory;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {

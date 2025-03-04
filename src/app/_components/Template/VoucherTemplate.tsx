@@ -1,4 +1,4 @@
-import { Box, Button, Card, Checkbox, Flex, Group, Image, Progress, Text } from '@mantine/core';
+import { Box, Button, Card, Checkbox, Divider, Flex, Group, Image, Progress, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import clsx from 'clsx';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
@@ -7,9 +7,9 @@ import DateVoucher from '../Modals/_components/DateVoucher';
 const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
   return (
     <Card w={'98%'} p={0} shadow='md' pos={'relative'} radius={'sm'}>
-      <Flex h={120}>
+      <Flex h={{ base: 'max-content', lg: 120 }}>
         <Flex
-          w={120}
+          w={{ base: 0, lg: 120 }}
           h='100%'
           direction={'column'}
           className='rounded-[10px]'
@@ -19,16 +19,17 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
         >
           <Image
             loading='lazy'
-            height={120}
-            width={120}
+            h={120}
+            w={120}
             src={
               voucher?.type === VoucherType.PERCENTAGE
                 ? '/images/png/voucher_bg_green.png'
                 : '/images/png/voucher_bg_red.png'
             }
             alt=''
+            className='hidden lg:block'
           />
-          <Flex direction='column' align='center' justify='center' pos={'absolute'} className='z-[10]'>
+          <Flex direction='column' align='center' justify='center' pos={'absolute'} className='z-[10] hidden md:flex'>
             <Text size='xs' className='text-center' c='#fff' fw={700}>
               MamaRestaurant Voucher
             </Text>
@@ -36,7 +37,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           {hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'active' ? (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md`,
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md lg:block`,
                 `bg-[#EDA500]`
               )}
             >
@@ -45,7 +46,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           ) : hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'upcoming' ? (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md`,
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md lg:block`,
                 `bg-[#00BB00]`
               )}
             >
@@ -54,14 +55,15 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           ) : (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md`
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md lg:block`
               )}
             >
               Sắp hết hạn
             </Box>
           )}
         </Flex>
-        <Flex p='xs' justify={'space-between'} align={'center'} h={'100%'} w={'100%'} flex={1}>
+        <Flex p='xs' justify={'space-between'} align={'center'} h={'100%'} w={'100%'} flex={1} pos={'relative'}>
+          <Divider orientation='vertical' h={'100%'} pos={'absolute'} right={40} top={0} variant='dashed' size={2} />
           <Flex h={'100%'} direction={'column'} flex={1} pr={30}>
             <Group>
               <Text size='sm' fw={500} lineClamp={1}>

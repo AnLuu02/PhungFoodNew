@@ -4,12 +4,10 @@ import path from 'path';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 
-// 📝 Hàm tạo PDF theo format Mantine
 export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   const pdfDoc = await PDFDocument.create();
   pdfDoc.registerFontkit(fontkit);
 
-  // 🏁 Load font
   const fontPath = path.join(process.cwd(), 'public', 'fonts', 'my-font-mergeblack.ttf');
   let customFont;
   if (fs.existsSync(fontPath)) {
@@ -19,7 +17,6 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
     customFont = await pdfDoc.embedStandardFont(StandardFonts.Helvetica);
   }
 
-  // 🖼️ Load logo
   const logoPath = path.join(process.cwd(), 'public', 'logo', 'logo_phungfood_1.png');
   let logoImage;
   if (fs.existsSync(logoPath)) {
@@ -30,10 +27,8 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   const page = pdfDoc.addPage([600, 800]);
   const { width, height } = page.getSize();
 
-  // 🎨 Vẽ nội dung hóa đơn
   let y = height - 50;
 
-  // 🏪 Logo và thông tin cửa hàng
   if (logoImage) {
     page.drawImage(logoImage, { x: 180, y: y - 60, width: 240, height: 80 });
     y -= 80;
@@ -43,11 +38,9 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   page.drawText('https://www.phungfood.vn', { x: 190, y: y - 60, size: 14, font: customFont });
   y -= 90;
 
-  // 🧾 Tiêu đề hóa đơn
   page.drawText('HÓA ĐƠN BÁN HÀNG', { x: 200, y: y, size: 24, font: customFont });
   y -= 40;
 
-  // 👤 Thông tin khách hàng
   page.drawText(`Thu Ngân: An Luu`, { x: 50, y: y, size: 14, font: customFont });
   page.drawText(`Seller: An Luu`, { x: 50, y: y - 20, size: 14, font: customFont });
   page.drawText(`Khách Hàng: ${invoiceData?.user?.name || 'Khách lẻ'}`, {
@@ -58,13 +51,10 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   });
   y -= 80;
 
-  // 🛒 Bảng danh sách sản phẩm
-  // 🛒 Vẽ bảng sản phẩm
   const headers = ['STT', 'Sản phẩm', 'SL', 'Giá', 'Giảm', 'Tổng'];
   const columnWidths = [30, 200, 40, 80, 80, 80];
   const xStart = 50;
 
-  // Vẽ header bảng (viền trên)
   page.drawRectangle({
     x: xStart,
     y: y - 5,
@@ -82,13 +72,12 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
       font: customFont
     });
   });
-  // Vẽ đường phân cách cột
   let xPos = xStart;
   columnWidths.forEach(width => {
     xPos += width;
     page.drawLine({
-      start: { x: xPos, y: y + 20 }, // Vẽ từ trên xuống
-      end: { x: xPos, y: y - invoiceData?.orderItems?.length * 25 }, // Kéo dài xuống hết bảng
+      start: { x: xPos, y: y + 20 },
+      end: { x: xPos, y: y - invoiceData?.orderItems?.length * 25 },
       thickness: 1,
       color: rgb(0, 0, 0)
     });
@@ -96,7 +85,6 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
 
   y -= 25;
 
-  // Vẽ từng dòng sản phẩm
   invoiceData?.orderItems?.forEach((item: any, index: number) => {
     const values = [
       `${index + 1}`,
@@ -140,7 +128,6 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
     y -= 25;
   });
 
-  // 📊 Tổng kết đơn hàng
   y -= 20;
   page.drawText(`Tổng hóa đơn: ${invoiceData?.total || 0} VND`, { x: 50, y: y, size: 14, font: customFont });
   y -= 20;
@@ -156,12 +143,9 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
     color: rgb(1, 0, 0)
   });
 
-  // 🏁 Lời cảm ơn
   y -= 40;
   page.drawText('CẢM ƠN QUÝ KHÁCH ĐÃ TIN TƯỞNG PHUNGFOOD!', { x: 100, y: y, size: 14, font: customFont });
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);
 };
-
-// 📩 API gửi hóa đơn qua email

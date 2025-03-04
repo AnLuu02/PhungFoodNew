@@ -1,5 +1,4 @@
 import { VoucherType } from '@prisma/client';
-import { Product } from './ProductEntity';
 
 export type Voucher = {
   id: string;
@@ -30,9 +29,9 @@ export type Voucher = {
 
   endDate: Date;
 
-  vipLevel?: number;
+  vipLevel?: string;
 
   orderId?: string;
 
-  products: Product[];
+  products: string[];
 };

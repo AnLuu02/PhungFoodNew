@@ -46,14 +46,13 @@ const priceRanges = [
   }
 ];
 
-const types = ['Cơm', 'Bún các loại', 'Thịt các loại', 'Đậu các loại', 'Đồ uống đóng chai'];
-
-const materials = ['Rau củ', 'Thịt bò', 'Thịt heo', 'Thịt gà', 'Đậu hủ', 'Nấm'];
-
 export function CategoryNav() {
   const [drawerOpened, setDrawerOpened] = useState(false);
   const { data, isLoading } = api.Category.getAll.useQuery();
+  const { data: materialData } = api.Material.getAll.useQuery();
   const categories = data ?? [];
+  const materials = materialData ?? [];
+
   const [valuePrice, setValuePrice] = useState<any>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -211,51 +210,29 @@ export function CategoryNav() {
 
             <Divider p={0} m={0} />
 
-            <Stack gap='xs'>
-              <Text size='md' fw={700}>
-                LOẠI
-              </Text>
-              <ScrollAreaAutosize mah={260} scrollbarSize={6} type='auto'>
-                <Stack gap='xs'>
-                  {types.map(type => (
-                    <>
-                      <Radio
-                        icon={CheckIcon}
-                        color='green.9'
-                        name='type'
-                        key={type}
-                        label={type}
-                        className='hover:text-green-700'
-                      />
-                    </>
-                  ))}
-                </Stack>
-              </ScrollAreaAutosize>
-            </Stack>
-
-            <Divider p={0} m={0} />
-
-            <Stack gap='xs'>
-              <Text size='md' fw={700}>
-                THƯƠNG HIỆU
-              </Text>
-              <ScrollAreaAutosize mah={260} scrollbarSize={6} type='auto'>
-                <Stack gap='xs'>
-                  {materials.map(material => (
-                    <>
-                      <Radio
-                        icon={CheckIcon}
-                        color='green.9'
-                        name='material'
-                        key={material}
-                        label={material}
-                        className='hover:text-green-700'
-                      />
-                    </>
-                  ))}
-                </Stack>
-              </ScrollAreaAutosize>
-            </Stack>
+            {materials?.length > 0 && (
+              <Stack gap='xs'>
+                <Text size='md' fw={700}>
+                  LOẠI
+                </Text>
+                <ScrollAreaAutosize mah={260} scrollbarSize={6} type='auto'>
+                  <Stack gap='xs'>
+                    {materials.map(type => (
+                      <>
+                        <Radio
+                          icon={CheckIcon}
+                          color='green.9'
+                          name='type'
+                          key={type?.id}
+                          label={type?.name}
+                          className='hover:text-green-700'
+                        />
+                      </>
+                    ))}
+                  </Stack>
+                </ScrollAreaAutosize>
+              </Stack>
+            )}
           </Stack>
         </ScrollArea>
       </Paper>

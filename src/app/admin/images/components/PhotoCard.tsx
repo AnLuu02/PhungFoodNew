@@ -14,8 +14,12 @@ interface PhotoCardProps {
   onOpened: ({ id, name, file, dimensions, postingDate }: any) => void;
 }
 
-const getImageSizePixel = (file: File): Promise<{ width: number; height: number }> => {
+const getImageSizePixel = (file?: File): Promise<{ width: number; height: number }> => {
   return new Promise((resolve, reject) => {
+    if (!file) {
+      reject(new Error('File is not provided'));
+      return;
+    }
     const img = new window.Image();
     img.onload = () => resolve({ width: img.width, height: img.height });
     img.onerror = reject;
@@ -29,16 +33,18 @@ export function PhotoCard({ id, name, file, postingDate, onOpened }: PhotoCardPr
   const utils = api.useUtils();
 
   useEffect(() => {
-    getImageSizePixel(file)
-      .then(setDimensions)
-      .catch(() => setDimensions(null));
+    if (file instanceof File) {
+      getImageSizePixel(file)
+        .then(setDimensions)
+        .catch(() => setDimensions(null));
+    }
   }, [file]);
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
       <Card.Section>
         <Image
-          src={(file && URL.createObjectURL(file)) || '/placeholder.svg'}
+          src={file instanceof File ? URL.createObjectURL(file) : '/images/empty-300x240.jpg'}
           height={160}
           alt={name}
           onClick={() => onOpened({ id, name, file, dimensions, postingDate })}

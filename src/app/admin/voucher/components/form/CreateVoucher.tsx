@@ -1,34 +1,18 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Avatar,
-  Button,
-  Checkbox,
-  Grid,
-  Group,
-  NumberInput,
-  Select,
-  TagsInput,
-  TagsInputProps,
-  Text,
-  Textarea,
-  TextInput
-} from '@mantine/core';
+import { Button, Checkbox, Grid, MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { VoucherType } from '@prisma/client';
-import { IconDatabase } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { UserLevel, VoucherType } from '@prisma/client';
+import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Voucher } from '~/app/Entity/VoucherEntity';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
+import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { voucherSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function CreateVoucher({ setOpened }: { setOpened: any }) {
-  const [valueProductSelected, setValueProductSelected] = useState<string[]>([]);
-
   const { data, isLoading } = api.Product.getAll.useQuery({
     hasCategoryChild: false
   });
@@ -41,18 +25,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
       price: product.price
     });
   });
-  const dataRender: Record<string, { thumbnail: string; name: string; price: string }> = Object.fromEntries(maps);
-  const renderTagsInputOption: TagsInputProps['renderOption'] = ({ option }) => (
-    <Group py={0}>
-      <Avatar src={dataRender[option.value]?.thumbnail} alt={dataRender[option.value]?.name} radius={'sm'} size={40} />
-      <Text size='md' fw={700}>
-        {dataRender[option.value]?.name}
-      </Text>
-      <Text size='md' fw={700} c={'red'}>
-        {formatPriceLocaleVi(dataRender[option.value]?.price || 0)}
-      </Text>
-    </Group>
-  );
 
   const {
     control,
@@ -71,13 +43,13 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
       discountValue: 0,
       minOrderPrice: 0,
       maxDiscount: 0,
-      applyAll: false,
+      applyAll: true,
       quantity: 0,
       usedQuantity: 0,
       availableQuantity: 0,
       startDate: new Date(),
       endDate: new Date(),
-      vipLevel: 0,
+      vipLevel: '0',
       products: []
     }
   });
@@ -89,13 +61,14 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
 
   const utils = api.useUtils();
   const mutation = api.Voucher.create.useMutation();
+  console.log(watch('vipLevel'));
 
   const onSubmit: SubmitHandler<Voucher> = async formData => {
     try {
       if (formData) {
         let result = await mutation.mutateAsync({
           ...formData,
-          products: [...valueProductSelected]
+          vipLevel: Number(formData.vipLevel) || 0
         });
         if (result.success) {
           NotifySuccess(result.message);
@@ -240,19 +213,23 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
         {/* Product áp dụng*/}
         {!watch('applyAll') && (
           <Grid.Col span={12}>
-            <TagsInput
-              label='Sản phẩm áp dụng'
-              placeholder='Nhập tên sản phẩm'
-              scrollAreaProps={{ type: 'auto' }}
-              clearable
-              leftSection={<IconDatabase size={16} />}
-              maxDropdownHeight={200}
-              data={products?.map((item: any) => item.id)}
-              renderOption={renderTagsInputOption}
-              value={valueProductSelected}
-              onChange={values => {
-                setValueProductSelected(values);
-              }}
+            <Controller
+              name='products'
+              control={control}
+              render={({ field }) => (
+                <MultiSelect
+                  label='Sản phẩm áp dụng'
+                  placeholder='Chọn sản phẩm áp dụng'
+                  searchable
+                  data={products?.map(product => ({
+                    value: product.id,
+                    label: product.name
+                  }))}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.products?.message}
+                />
+              )}
             />
           </Grid.Col>
         )}
@@ -348,11 +325,16 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
             control={control}
             name='vipLevel'
             render={({ field }) => (
-              <NumberInput
+              <Select
+                {...field}
                 label='Cấp độ VIP yêu cầu'
+                data={Object.values(UserLevel).map((level, index) => ({
+                  value: index.toString(),
+                  label: getLevelUser(level)
+                }))}
+                value={field.value?.toString()}
                 placeholder='Nhập cấp độ'
                 error={errors.vipLevel?.message}
-                {...field}
               />
             )}
           />

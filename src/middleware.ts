@@ -3,7 +3,7 @@ import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
 const protectedRoutes = ['/admin', '/thong-tin', '/thanh-toan', '/yeu-thich', '/don-hang-cua-toi'];
-const authPages = ['/dang-nhap', '/dang-ki'];
+const authPages = ['/auth/dang-nhap', '/auth/dang-ki'];
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!token && protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
-    const loginUrl = new URL('/dang-nhap', request.url);
+    const loginUrl = new URL('/auth/dang-nhap', request.url);
     loginUrl.searchParams.set('callbackUrl', currentUrl);
 
     return NextResponse.redirect(loginUrl);
@@ -28,5 +28,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/thong-tin/:path*', '/thanh-toan/:path*', '/yeu-thich/:path*', '/dang-nhap', '/dang-ki']
+  matcher: [
+    '/admin/:path*',
+    '/thong-tin/:path*',
+    '/thanh-toan/:path*',
+    '/yeu-thich/:path*',
+    '/auth/dang-nhap',
+    '/auth/dang-ki'
+  ]
 };

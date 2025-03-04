@@ -41,8 +41,6 @@ const navigationItem = [
   { label: 'Thực đơn', href: '/thuc-don' },
   { label: 'Về PhungFood', href: '/gioi-thieu' },
   { label: 'Liên Hệ', href: '/lien-he' },
-  // { label: 'Khuyến mãi', href: '/promotion' },
-  // { label: 'Dịch vụ', href: '/dich-vu' },
   { label: 'Tin tức', href: '/tin-tuc' },
   { label: 'Mua hàng nhanh', href: '/goi-mon-nhanh' }
 ];
@@ -76,7 +74,8 @@ export default function NavigationHeader({
           <Menu
             shadow='md'
             key={index}
-            trigger={categories && categories.length > 0 ? 'hover' : 'click'}
+            trigger={'hover'}
+            disabled={(categories && categories.length > 0) || !notDesktop ? false : true}
             width={1000}
             transitionProps={{ transition: 'fade-up', duration: 300 }}
           >
@@ -236,7 +235,15 @@ export default function NavigationHeader({
 
       <Flex gap={'md'} align={'center'} direction={{ base: 'column', md: 'row' }} mb={20}>
         {navigationItem.map((item, index) => (
-          <Link key={index} href={item.href} style={{ transition: 'all 0.3s' }} className={clsx(cssLink)}>
+          <Link
+            key={index}
+            onClick={() => {
+              close?.();
+            }}
+            href={item.href}
+            style={{ transition: 'all 0.3s' }}
+            className={clsx(cssLink)}
+          >
             <Button
               size='sm'
               radius={'xl'}

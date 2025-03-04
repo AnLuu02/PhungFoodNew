@@ -1,7 +1,6 @@
 import { EntityType, ImageType } from '@prisma/client';
-import { promises as fs } from 'fs';
-import path from 'path';
 import { z } from 'zod';
+import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 import {
   deleteImageFromFirebase,
   getFileNameFromFirebaseFile,
@@ -13,7 +12,7 @@ import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 export async function updatePointLevel(ctx: any, userId: string, orderTotal: number) {
   await ctx.db.user.update({
     where: { id: userId },
-    update: {
+    data: {
       pointLevel: { increment: orderTotal >= 10000 ? orderTotal / 10000 : 0 }
     }
   });
@@ -76,6 +75,13 @@ const buildFilter = (input: FilterOptions) => {
     query
       ? {
           OR: [
+            {
+              materials: {
+                some: {
+                  category: { equals: query?.trim() }
+                }
+              }
+            },
             { name: { contains: query?.trim(), mode: 'insensitive' } },
             { subCategory: { tag: { equals: query?.trim() } } },
             {
@@ -171,6 +177,7 @@ export const productRouter = createTRPCRouter({
           } as any,
           include: {
             images: true,
+            materials: true,
             subCategory: {
               select: {
                 id: true,
@@ -195,7 +202,6 @@ export const productRouter = createTRPCRouter({
       );
 
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-      // const pagination = paginate(totalProductsQuery || totalProducts, take, skip);
 
       return {
         products,
@@ -228,7 +234,8 @@ export const productRouter = createTRPCRouter({
             })
           )
           .optional(),
-        subCategoryId: z.string().optional()
+        subCategoryId: z.string().optional(),
+        materials: z.array(z.string()).optional()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -265,6 +272,7 @@ export const productRouter = createTRPCRouter({
           discount: input.discount,
           subCategoryId: input.subCategoryId,
           region: input.region,
+          materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
           images: {
             create: [
               ...(thumbnailURL
@@ -281,33 +289,7 @@ export const productRouter = createTRPCRouter({
       });
 
       if (product?.tag) {
-        const filePath = path.join(process.cwd(), 'src', 'app', 'lib', 'utils', 'constants', 'tags-vi.ts');
-        let content = await fs.readFile(filePath, 'utf8');
-
-        // Lấy đúng phần tags giữa {}
-        const match = content.match(/const tags: Record<string, string> = ({[\s\S]*?});/);
-        let tags: Record<string, string> = {};
-
-        if (match && match[1]) {
-          const jsonString = match[1]
-            .trim()
-            .replace(/'([^']+)'/g, '"$1"') // Chuyển dấu đơn thành kép cho key và value
-            .replace(/(\w+(-\w+)*):/g, '"$1":') // Chuyển key thành JSON hợp lệ
-            .replace(/,(\s*})/g, '$1'); // Xóa dấu phẩy cuối
-
-          try {
-            tags = JSON.parse(jsonString);
-          } catch (error) {
-            console.error('Lỗi khi parse tags:', error);
-          }
-        }
-
-        // Thêm tag mới hoặc cập nhật
-        tags[product.tag] = product.name;
-
-        // Ghi lại vào file tags-vi.ts
-        const newContent = `const tags: Record<string, string> = ${JSON.stringify(tags, null, 2)};\n\nexport default tags;`;
-        await fs.writeFile(filePath, newContent);
+        await CreateTagVi({ old: [], new: product });
       }
 
       return {
@@ -341,7 +323,8 @@ export const productRouter = createTRPCRouter({
             })
           )
           .optional(),
-        subCategoryId: z.string().optional()
+        subCategoryId: z.string().optional(),
+        materials: z.array(z.string()).optional()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -374,7 +357,6 @@ export const productRouter = createTRPCRouter({
       const oldThumbnail = oldImages.find(img => img.type === ImageType.THUMBNAIL);
       const oldGallery = oldImages.filter(img => img.type === ImageType.GALLERY);
 
-      // handle thumbnail
       let newThumbnail: any = oldThumbnail;
       if (input.thumbnail?.fileName) {
         const filenameImgFromDb = oldThumbnail ? getFileNameFromFirebaseFile(oldThumbnail.url) : null;
@@ -390,7 +372,6 @@ export const productRouter = createTRPCRouter({
         }
       }
 
-      // handle gallery
       const anh_trong_db_dang_filename = oldGallery.map(item => ({
         id: item.id,
         fileName: getFileNameFromFirebaseFile(item.url)
@@ -428,52 +409,60 @@ export const productRouter = createTRPCRouter({
         (item: any) => !anh_xoa.some(img => img.url === item.url)
       );
 
-      const updatedProduct = await ctx.db.product.update({
-        where: {
-          id: input.id
-        },
-        data: {
-          name: input.name,
-          description: input.description,
-          tag: input.tag,
-          price: input.price,
-          discount: input.discount,
-          subCategoryId: input.subCategoryId,
-          region: input.region,
-          images: {
-            deleteMany: {
-              productId: input.id,
-              url: {
-                notIn: newImages.map(img => img?.url)?.filter(Boolean)
-              }
-            },
-            upsert: newImages.map(img => ({
-              where: {
-                id_productId_entityType_type: {
-                  id: img?.id || '',
-                  productId: input.id,
-                  entityType: img.entityType,
-                  type: img.type
+      const [product, updatedProduct] = await ctx.db.$transaction([
+        ctx.db.product.findUnique({ where: { id: input.id } }),
+        ctx.db.product.update({
+          where: {
+            id: input.id
+          },
+          data: {
+            name: input.name,
+            description: input.description,
+            tag: input.tag,
+            price: input.price,
+            discount: input.discount,
+            subCategoryId: input.subCategoryId,
+            region: input.region,
+            materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
+            images: {
+              deleteMany: {
+                productId: input.id,
+                url: {
+                  notIn: newImages.map(img => img?.url)?.filter(Boolean)
                 }
               },
-              update: {
-                id: img.id,
-                url: img.url,
-                type: img.type,
-                altText: img.altText,
-                entityType: img.entityType
-              },
-              create: {
-                url: img.url,
-                type: img.type,
-                altText: img.altText,
-                entityType: img.entityType
-              }
-            }))
-          }
-        },
-        include: { images: true }
-      });
+              upsert: newImages.map(img => ({
+                where: {
+                  id_productId_entityType_type: {
+                    id: img?.id || '',
+                    productId: input.id,
+                    entityType: img.entityType,
+                    type: img.type
+                  }
+                },
+                update: {
+                  id: img.id,
+                  url: img.url,
+                  type: img.type,
+                  altText: img.altText,
+                  entityType: img.entityType
+                },
+                create: {
+                  url: img.url,
+                  type: img.type,
+                  altText: img.altText,
+                  entityType: img.entityType
+                }
+              }))
+            }
+          },
+          include: { images: true }
+        })
+      ]);
+
+      if (updatedProduct?.tag && product?.tag) {
+        await CreateTagVi({ old: product, new: updatedProduct });
+      }
 
       return {
         success: true,
@@ -523,6 +512,13 @@ export const productRouter = createTRPCRouter({
             { id: query?.trim() },
             { tag: query?.trim() },
             {
+              materials: {
+                some: {
+                  category: query?.trim()
+                }
+              }
+            },
+            {
               subCategory: {
                 OR: [
                   {
@@ -540,6 +536,8 @@ export const productRouter = createTRPCRouter({
         },
         include: {
           images: true,
+          materials: true,
+
           subCategory: {
             include: {
               images: true,
@@ -554,9 +552,7 @@ export const productRouter = createTRPCRouter({
           favouriteFood: true
         }
       });
-      if (!product) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return product;
     }),
 
@@ -579,6 +575,7 @@ export const productRouter = createTRPCRouter({
         },
         include: {
           images: true,
+          materials: true,
           subCategory: {
             include: {
               images: true,
@@ -627,6 +624,7 @@ export const productRouter = createTRPCRouter({
       const product = await ctx.db.product.findMany({
         include: {
           images: true,
+          materials: true,
           subCategory: {
             include: {
               images: true,

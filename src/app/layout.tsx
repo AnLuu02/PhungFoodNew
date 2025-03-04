@@ -47,7 +47,7 @@ export const metadata: Metadata = {
 const theme = createTheme({
   colors: {
     green: [
-      '#f6ffed', // Nhẹ nhất
+      '#f6ffed',
       '#d9f7be',
       '#b7eb8f',
       '#95de64',
@@ -55,11 +55,11 @@ const theme = createTheme({
       '#52c41a',
       '#389e0d',
       '#237804',
-      '#135200', // Đậm hơn
-      '#008b4b' // Đậm nhất
+      '#135200',
+      '#008b4b'
     ],
     yellow: [
-      '#fffbe6', // Nhẹ nhất
+      '#fffbe6',
       '#fff1b8',
       '#ffe58f',
       '#ffd666',
@@ -70,7 +70,6 @@ const theme = createTheme({
       '#f8c144',
       '#FFC522'
     ]
-    // #ff0000 red
   }
 });
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -196,21 +196,6 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
           <Box>
             <BButton
               onClick={() => {
-                // if (quickOrder) {
-                //   const existingItem = cart.find((item: any) => item.id === product?.id);
-                //   if (existingItem) {
-                //     setCart(
-                //       cart.map((item: any) =>
-                //         item.id === product?.id ? { ...item, quantity: 1 + existingItem.quantity } : item
-                //       )
-                //     );
-                //   } else {
-                //     setCart([...cart, { ...product, quantity: 1 }]);
-                //   }
-                //   NotifySuccess('Thành công!', 'Thêm với gio hàng thành cong.');
-                // } else {
-                //   openModal('details', null, product);
-                // }
                 const existingItem = cart.find((item: any) => item.id === product?.id);
                 if (existingItem) {
                   setCart(

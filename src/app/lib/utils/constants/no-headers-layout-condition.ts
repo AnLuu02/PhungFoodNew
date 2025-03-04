@@ -1,1 +1,1 @@
-export const noHeadersLayoutCondition = ['/admin', '/thanh-toan', '/unauthorized'];
+export const noHeadersLayoutCondition = ['/admin', '/unauthorized'];

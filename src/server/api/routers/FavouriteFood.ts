@@ -87,7 +87,11 @@ export const favouriteFoodRouter = createTRPCRouter({
                 images: true
               }
             },
-            product: true
+            product: {
+              include: {
+                images: true
+              }
+            }
           }
         })
       ]);
@@ -200,7 +204,8 @@ export const favouriteFoodRouter = createTRPCRouter({
           product: {
             include: {
               favouriteFood: true,
-              review: true
+              review: true,
+              images: true
             }
           },
           user: {
@@ -213,9 +218,7 @@ export const favouriteFoodRouter = createTRPCRouter({
           }
         }
       });
-      if (!favourite_food) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return favourite_food;
     }),
   getOne: publicProcedure
@@ -256,9 +259,7 @@ export const favouriteFoodRouter = createTRPCRouter({
           ]
         }
       });
-      if (!favourite_food) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return favourite_food;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -274,7 +275,8 @@ export const favouriteFoodRouter = createTRPCRouter({
         },
         product: {
           include: {
-            favouriteFood: true
+            favouriteFood: true,
+            images: true
           }
         }
       }

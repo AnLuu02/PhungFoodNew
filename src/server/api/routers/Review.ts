@@ -93,7 +93,8 @@ export const reviewRouter = createTRPCRouter({
               select: {
                 id: true,
                 name: true,
-                tag: true
+                tag: true,
+                images: true
               }
             }
           }
@@ -210,9 +211,7 @@ export const reviewRouter = createTRPCRouter({
           }
         }
       });
-      if (!review) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return review;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {

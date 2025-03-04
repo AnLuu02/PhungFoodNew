@@ -2,11 +2,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Grid, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { VoucherType } from '@prisma/client';
+import { UserLevel, VoucherType } from '@prisma/client';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Voucher } from '~/app/Entity/VoucherEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
+import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { voucherSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -33,13 +34,13 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
       discountValue: 0,
       minOrderPrice: 0,
       maxDiscount: 0,
-      applyAll: false,
+      applyAll: true,
       quantity: 0,
       usedQuantity: 0,
       availableQuantity: 0,
       startDate: new Date(),
       endDate: new Date(),
-      vipLevel: 0,
+      vipLevel: '0',
       products: []
     }
   });
@@ -67,7 +68,7 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
         availableQuantity: data.availableQuantity,
         startDate: data?.startDate,
         endDate: data.endDate,
-        vipLevel: data.vipLevel || 0
+        vipLevel: data?.vipLevel?.toString() || '0'
       });
     }
   }, [data, reset]);
@@ -77,8 +78,10 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
 
   const onSubmit: SubmitHandler<Voucher> = async formData => {
     if (voucherId) {
-      const updatedFormData = { ...formData, products: formData?.products?.map(product => product.id) };
-      let result = await updateMutation.mutateAsync(updatedFormData);
+      let result = await updateMutation.mutateAsync({
+        ...formData,
+        vipLevel: Number(formData.vipLevel) || 0
+      });
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
@@ -295,11 +298,16 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
             control={control}
             name='vipLevel'
             render={({ field }) => (
-              <NumberInput
+              <Select
+                {...field}
                 label='Cấp độ VIP yêu cầu'
+                data={Object.values(UserLevel).map((level, index) => ({
+                  value: index.toString(),
+                  label: getLevelUser(level)
+                }))}
+                value={field.value?.toString()}
                 placeholder='Nhập cấp độ'
                 error={errors.vipLevel?.message}
-                {...field}
               />
             )}
           />

@@ -9,23 +9,20 @@ export const newsRouter = createTRPCRouter({
   fetchNews: publicProcedure
     .input(
       z.object({
-        skip: z.number().nonnegative(), // Bỏ qua bao nhiêu bài
-        take: z.number().positive(), // Lấy bao nhiêu bài
-        query: z.string().optional() // Tìm kiếm nếu cần
+        skip: z.number().nonnegative(),
+        take: z.number().positive(),
+        query: z.string().optional()
       })
     )
     .query(async ({ input }) => {
       try {
         const { skip, take, query } = input;
-        // Lấy dữ liệu RSS
         const feed: any = await parser.parseURL(urlRss);
 
-        // Lọc dữ liệu nếu có query (tìm kiếm)
         const filteredItems = input?.query
           ? feed.items.filter((item: any) => item.title.toLowerCase().includes(query?.toLowerCase()))
           : feed.items;
 
-        // Cắt mảng bài viết theo skip và take
         const pagedItems = filteredItems.slice(skip, skip + take);
 
         return {

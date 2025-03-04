@@ -41,7 +41,6 @@ export default function DeliveryCard({ control }: { control: any }) {
               <TextInput
                 label='Số điện thoại'
                 placeholder='Số điện thoại (tùy chọn)'
-                leftSection={<Select data={['+84']} defaultValue='+84' variant='unstyled' w={70} />}
                 {...field}
                 error={fieldState.error?.message}
               />
@@ -73,6 +72,7 @@ export default function DeliveryCard({ control }: { control: any }) {
               placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
               {...field}
               error={fieldState.error?.message}
+              resize='block'
             />
           )}
         />
@@ -81,7 +81,9 @@ export default function DeliveryCard({ control }: { control: any }) {
           name='note'
           control={control}
           defaultValue=''
-          render={({ field }) => <Textarea label='Ghi chú' placeholder='Ghi chú (tùy chọn)' {...field} />}
+          render={({ field }) => (
+            <Textarea resize='block' label='Ghi chú' placeholder='Ghi chú (tùy chọn)' {...field} />
+          )}
         />
       </Stack>
     </Card>

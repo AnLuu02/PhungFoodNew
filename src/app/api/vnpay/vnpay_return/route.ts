@@ -27,16 +27,25 @@ export async function GET(req: NextRequest) {
   const transactionId = vnp_Params['vnp_TxnRef'];
   const responseCode = vnp_Params['vnp_ResponseCode'];
   const status = responseCode === '00' ? OrderStatus.COMPLETED : OrderStatus.FAILED;
-
+  const transDate = vnp_Params['vnp_PayDate'];
   await api.Order.update({
     where: { id: transactionId },
     data: {
       status,
-      transactionId
+      transactionId,
+      transDate: transDate
+        ? new Date(
+            `${transDate.substring(0, 4)}-${transDate.substring(4, 6)}-${transDate.substring(6, 8)}T${transDate.substring(8, 10)}:${transDate.substring(10, 12)}:${transDate.substring(12, 14)}Z`
+          )
+        : null
     }
   });
+  const redirectUrl =
+    responseCode === '00'
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}/vnpay-payment-result?${qs.stringify(vnp_Params)}`
+      : `${process.env.NEXT_PUBLIC_BASE_URL}/vnpay-payment-result?${qs.stringify(vnp_Params)}`;
 
-  return NextResponse.json({ code: responseCode, status });
+  return NextResponse.redirect(redirectUrl);
 }
 function sortObject(obj: any) {
   let sorted: Record<string, string> = {};

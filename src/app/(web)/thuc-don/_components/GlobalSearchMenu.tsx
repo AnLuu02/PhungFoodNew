@@ -1,12 +1,15 @@
-import { Box, ScrollAreaAutosize, TextInput } from '@mantine/core';
+'use client';
+import { Avatar, Box, ScrollAreaAutosize, TextInput } from '@mantine/core';
 import { useDebouncedValue, useWindowEvent } from '@mantine/hooks';
 import { Spotlight, spotlight, SpotlightActionData } from '@mantine/spotlight';
-import { IconDashboard, IconFileText, IconHome, IconSearch } from '@tabler/icons-react';
+import { IconSearch } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { api } from '~/trpc/react';
 import GlobalSearchItem from './GlobalSearchItem';
 
 function GlobalSearchMenu({ width }: { width?: any }) {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const [debounced] = useDebouncedValue(query, 500);
   const { data: product, isLoading: isLoadingProduct } = api.Product.find.useQuery(
@@ -23,25 +26,31 @@ function GlobalSearchMenu({ width }: { width?: any }) {
   });
   const actions: SpotlightActionData[] = [
     {
-      id: 'home',
-      label: 'Home',
-      description: 'Get to home page',
-      onClick: () => {},
-      leftSection: <IconHome size={24} stroke={1.5} />
+      id: 'rice',
+      label: 'Cơm',
+      description: 'Đặt món cơm ngon nhất tại đây',
+      onClick: () => {
+        router.push('/thuc-don?loai=com');
+      },
+      leftSection: <Avatar size={24} src='/images/png/icon-rice.png' />
     },
     {
-      id: 'dashboard',
-      label: 'Dashboard',
-      description: 'Get full information about current system status',
-      onClick: () => {},
-      leftSection: <IconDashboard size={24} stroke={1.5} />
+      id: 'meat',
+      label: 'Thịt',
+      description: 'Đặt món thịt ngon nhất tại đây',
+      onClick: () => {
+        router.push('/thuc-don?loai=thit-tuoi');
+      },
+      leftSection: <Avatar size={24} src='/images/png/icon-meat.png' />
     },
     {
-      id: 'documentation',
-      label: 'Documentation',
-      description: 'Visit documentation to lean more about all features',
-      onClick: () => {},
-      leftSection: <IconFileText size={24} stroke={1.5} />
+      id: 'vegetable',
+      label: 'Rau củ',
+      description: 'Đặt món rau củ ngon nhất tại đây',
+      onClick: () => {
+        router.push('/thuc-don?loai=rau-cu');
+      },
+      leftSection: <Avatar size={24} src='/images/png/icon-vegetable.png' />
     }
   ];
   return (

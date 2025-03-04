@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -94,6 +95,11 @@ export const categoryRouter = createTRPCRouter({
             description: input.description
           }
         });
+
+        if (category?.tag) {
+          await CreateTagVi({ old: [], new: category });
+        }
+
         return {
           success: true,
           message: 'Tạo danh mục thành công.',
@@ -116,9 +122,6 @@ export const categoryRouter = createTRPCRouter({
       const category = await ctx.db.category.delete({
         where: { id: input.id }
       });
-      if (!category) {
-        throw new Error(`Stock with ID ${input.id} not found.`);
-      }
 
       return {
         success: true,
@@ -126,13 +129,7 @@ export const categoryRouter = createTRPCRouter({
         record: category
       };
     }),
-  //
-  //
-  //
-  //
-  //
-  //
-  //----------------------------------------------------get filter
+
   getFilter: publicProcedure
     .input(
       z.object({
@@ -143,14 +140,13 @@ export const categoryRouter = createTRPCRouter({
       const category = await ctx.db.category.findMany({
         where: {
           OR: [
-            { id: { contains: input.query, mode: 'insensitive' } }
-            // { name: { contains: input.query, mode: 'insensitive' } }
+            { id: { equals: input.query?.trim() } },
+            { name: { equals: input.query?.trim() } },
+            { tag: { equals: input.query?.trim() } }
           ]
         }
       });
-      if (!category) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return category;
     }),
   getOne: publicProcedure
@@ -163,14 +159,13 @@ export const categoryRouter = createTRPCRouter({
       const category = await ctx.db.category.findFirst({
         where: {
           OR: [
-            { id: { contains: input.query, mode: 'insensitive' } }
-            // { name: { contains: input.query, mode: 'insensitive' } }
+            { id: { equals: input.query?.trim() } },
+            { name: { equals: input.query?.trim() } },
+            { tag: { equals: input.query?.trim() } }
           ]
         }
       });
-      if (!category) {
-        throw new Error(`Stock with ID ${input.query} not found.`);
-      }
+
       return category;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -189,7 +184,7 @@ export const categoryRouter = createTRPCRouter({
   update: publicProcedure
     .input(
       z.object({
-        categoryId: z.string(),
+        id: z.string(),
         name: z.string().min(1, 'Name is required'),
         tag: z.string().min(1, 'Tag is required'),
         description: z.string().optional()
@@ -202,15 +197,23 @@ export const categoryRouter = createTRPCRouter({
         }
       });
 
-      if (!existingCategory || (existingCategory && existingCategory?.id == input?.categoryId)) {
-        const category = await ctx.db.category.update({
-          where: { id: input?.categoryId },
-          data: {
-            name: input.name,
-            description: input.description,
-            tag: input.tag
-          }
-        });
+      if (!existingCategory || (existingCategory && existingCategory?.id == input?.id)) {
+        const [category, updateCategory] = await ctx.db.$transaction([
+          ctx.db.category.findUnique({
+            where: { id: input?.id }
+          }),
+          ctx.db.category.update({
+            where: { id: input?.id },
+            data: {
+              name: input.name,
+              description: input.description,
+              tag: input.tag
+            }
+          })
+        ]);
+        if (updateCategory?.tag && updateCategory?.tag) {
+          await CreateTagVi({ old: category, new: updateCategory });
+        }
         return {
           success: true,
           message: 'Cập nhật danh mục thành công.',

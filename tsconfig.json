@@ -22,7 +22,6 @@
     "jsx": "preserve",
     "plugins": [{ "name": "next" }],
     "incremental": true,
-    "types": ["stripe"], // Thêm dòng này
 
     /* Path Aliases */
     "baseUrl": ".",
