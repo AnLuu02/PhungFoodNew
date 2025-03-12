@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ paymentUrl }, { status: 200, headers: { 'Access-Control-Allow-Origin': '*' } });
 }
 
-export function sortObject(obj: any) {
+function sortObject(obj: any) {
   let sorted: Record<string, string> = {};
   let str = [];
   let key;
