@@ -1,39 +1,10 @@
 'use client';
 import { Button, Flex, Grid, GridCol, Input, Text, Textarea, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
-import { useState } from 'react';
 
 const Contact = () => {
-  const [loading, setLoading] = useState(false);
-  const sendTestEmail = async () => {
-    setLoading(true);
-    const res = await fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: 'anluu0099@gmail.com',
-        subject: 'Test Email',
-        message: 'Hello from Next.js!'
-      })
-    });
-
-    const data = await res.json();
-    setLoading(false);
-  };
-
   return (
     <Grid w={'100%'}>
-      <GridCol className='flex justify-between' span={12}>
-        <Button
-          loading={loading}
-          onClick={() => {
-            sendTestEmail();
-          }}
-        >
-          Send mail
-        </Button>
-      </GridCol>
-
       <GridCol className='flex justify-between' span={12}>
         <Grid>
           <GridCol span={{ base: 12, md: 6 }}>
