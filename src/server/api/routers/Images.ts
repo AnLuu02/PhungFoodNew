@@ -1,4 +1,3 @@
-import { EntityType, ImageType } from '@prisma/client';
 import { z } from 'zod';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
@@ -40,14 +39,14 @@ export const imageRouter = createTRPCRouter({
               select: {
                 id: true,
                 name: true,
-                images: true
+                image: true
               }
             },
             subCategory: {
               select: {
                 id: true,
                 name: true,
-                images: true
+                image: true
               }
             }
           }
@@ -83,61 +82,14 @@ export const imageRouter = createTRPCRouter({
         record: image
       };
     }),
-  getFilter: publicProcedure
-    .input(
-      z.object({
-        query: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const image = await ctx.db.image.findMany({
-        where: {
-          OR: [
-            { id: { contains: input.query?.trim(), mode: 'insensitive' } },
-            { altText: { contains: input.query?.trim(), mode: 'insensitive' } },
-            {
-              type: input.query?.trim() as ImageType
-            },
-            {
-              entityType: input.query?.trim() as EntityType
-            }
-          ]
-        }
-      });
 
-      return image;
-    }),
-  getOne: publicProcedure
-    .input(
-      z.object({
-        query: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const image = await ctx.db.image.findFirst({
-        where: {
-          OR: [
-            { id: { contains: input.query?.trim(), mode: 'insensitive' } },
-            { altText: { contains: input.query?.trim(), mode: 'insensitive' } },
-            {
-              type: input.query?.trim() as ImageType
-            },
-            {
-              entityType: input.query?.trim() as EntityType
-            }
-          ]
-        }
-      });
-
-      return image;
-    }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const image = await ctx.db.image.findMany({
       include: {
         product: true,
         user: {
           include: {
-            images: true
+            image: true
           }
         },
         subCategory: true

@@ -206,7 +206,7 @@ export const reviewRouter = createTRPCRouter({
         include: {
           user: {
             include: {
-              images: true
+              image: true
             }
           }
         }

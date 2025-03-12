@@ -47,7 +47,8 @@ const CartItem = ({ item, index }: any) => {
               updateQuantity(item.id, Number(quantity));
             }}
             min={0}
-            max={99}
+            max={Number(item?.availableQuantity) || 100}
+            clampBehavior='strict'
             style={{ width: '80px' }}
           />
         </GridCol>

@@ -1,10 +1,11 @@
 'use client';
 
-import { Card, Group, Select, Stack, Textarea, TextInput, Title } from '@mantine/core';
+import { Card, Grid, GridCol, Group, Select, Stack, Textarea, TextInput, Title } from '@mantine/core';
+import { IconMail, IconPhone } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { Controller } from 'react-hook-form';
 
-export default function DeliveryCard({ control }: { control: any }) {
+export default function DeliveryCard({ control, watch, errors, provinces, districts, wards }: any) {
   const { data: user } = useSession();
 
   return (
@@ -19,7 +20,14 @@ export default function DeliveryCard({ control }: { control: any }) {
             control={control}
             defaultValue={user?.user?.email || 'anluu0099@gmail.com'}
             render={({ field, fieldState }) => (
-              <TextInput label='Email' placeholder='Email' {...field} error={fieldState.error?.message} />
+              <TextInput
+                label='Email'
+                placeholder='Email'
+                type='email'
+                leftSection={<IconMail size={18} stroke={1.5} />}
+                {...field}
+                error={fieldState.error?.message}
+              />
             )}
           />
           <Controller
@@ -39,43 +47,92 @@ export default function DeliveryCard({ control }: { control: any }) {
             defaultValue=''
             render={({ field, fieldState }) => (
               <TextInput
+                {...field}
                 label='Số điện thoại'
+                leftSection={<IconPhone size={18} stroke={1.5} />}
                 placeholder='Số điện thoại (tùy chọn)'
-                {...field}
-                error={fieldState.error?.message}
-              />
-            )}
-          />
-          <Controller
-            name='province'
-            control={control}
-            defaultValue=''
-            render={({ field, fieldState }) => (
-              <Select
-                label='Tỉnh thành'
-                placeholder='Tỉnh thành'
-                data={['Hà Nội', 'TP HCM', 'Đà Nẵng']}
-                {...field}
                 error={fieldState.error?.message}
               />
             )}
           />
         </Group>
 
-        <Controller
-          name='address'
-          control={control}
-          defaultValue=''
-          render={({ field, fieldState }) => (
-            <Textarea
-              label='Địa chỉ'
-              placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
-              {...field}
-              error={fieldState.error?.message}
-              resize='block'
+        <Grid>
+          <GridCol span={4}>
+            <Controller
+              control={control}
+              name={`address.provinceId`}
+              render={({ field, fieldState }) => (
+                <Select
+                  {...field}
+                  searchable
+                  placeholder='Chọn tỉnh thành'
+                  data={provinces?.results?.map((item: any) => ({
+                    value: item.province_id,
+                    label: item.province_name
+                  }))}
+                  nothingFoundMessage='Nothing found...'
+                  error={fieldState.error?.message}
+                />
+              )}
             />
-          )}
-        />
+          </GridCol>
+          <GridCol span={4}>
+            <Controller
+              control={control}
+              name={`address.districtId`}
+              disabled={!watch('address.provinceId')}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  searchable
+                  placeholder='Chọn quận huyện'
+                  data={districts?.results?.map((item: any) => ({
+                    value: item.district_id,
+                    label: item.district_name
+                  }))}
+                  nothingFoundMessage='Nothing found...'
+                  error={errors?.delivery?.address?.districtId?.message}
+                />
+              )}
+            />
+          </GridCol>
+          <GridCol span={4}>
+            <Controller
+              control={control}
+              name={`address.wardId`}
+              disabled={!watch('address.districtId')}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  searchable
+                  placeholder='Chọn phường xã'
+                  data={wards?.results?.map((item: any) => ({
+                    value: item.ward_id,
+                    label: item.ward_name
+                  }))}
+                  nothingFoundMessage='Nothing found...'
+                  error={errors?.delivery?.address?.wardId?.message}
+                />
+              )}
+            />
+          </GridCol>
+          <GridCol span={12}>
+            <Controller
+              control={control}
+              name={`address.detail`}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  label='Địa chỉ'
+                  placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
+                  resize='block'
+                  error={errors?.delivery?.address?.detail?.message}
+                />
+              )}
+            />
+          </GridCol>
+        </Grid>
 
         <Controller
           name='note'

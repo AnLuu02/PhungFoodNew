@@ -11,11 +11,13 @@ import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';
 export default function TableCategory({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user: any;
 }) {
   const { data: result, isLoading } = api.Category.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.categories || [];
@@ -28,7 +30,7 @@ export default function TableCategory({
     {
       header: 'Mô tả',
       accessorKey: 'description',
-      cell: info => <Highlight highlight={query}>{info.row.original.description}</Highlight>
+      cell: info => <Highlight highlight={query}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Ngày tạo',
@@ -36,11 +38,17 @@ export default function TableCategory({
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
-        <Group className='text-center'>
-          <UpdateCategoryButton id={info.row.original.id} />
-          <DeleteCategoryButton id={info.row.original.id} />
+        <Group>
+          {user?.user && (
+            <>
+              <UpdateCategoryButton id={info.row.original.id} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeleteCategoryButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

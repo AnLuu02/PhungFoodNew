@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
+import { IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Category } from '~/app/Entity/CategoryEntity';
@@ -52,7 +53,15 @@ export default function UpdateCategory({ categoryId, setOpened }: { categoryId: 
 
   const onSubmit: SubmitHandler<Category> = async formData => {
     if (categoryId) {
-      let result = await updateMutation.mutateAsync(formData);
+      // let result = await updateMutation.mutateAsync(formData);
+      let result = await updateMutation.mutateAsync({
+        where: {
+          id: categoryId
+        },
+        data: {
+          ...formData
+        }
+      });
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
@@ -72,11 +81,11 @@ export default function UpdateCategory({ categoryId, setOpened }: { categoryId: 
             name='name'
             render={({ field }) => (
               <TextInput
+                {...field}
                 size='sm'
                 label='Tên danh mục'
                 placeholder='Nhập tên danh mục'
                 error={errors.name?.message}
-                {...field}
               />
             )}
           />
@@ -87,12 +96,13 @@ export default function UpdateCategory({ categoryId, setOpened }: { categoryId: 
             name='tag'
             render={({ field }) => (
               <TextInput
+                {...field}
                 size='sm'
                 readOnly
                 label='Tag'
+                leftSection={<IconTag size={18} stroke={1.5} />}
                 placeholder='Sẽ tạo tự động'
                 error={errors.name?.message}
-                {...field}
               />
             )}
           />

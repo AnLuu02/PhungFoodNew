@@ -12,8 +12,9 @@ model Category {
   name        String
   tag         String        @unique
   description String?
-  createdAt   DateTime?     @default(now())
   subCategory SubCategory[]
+  createdAt   DateTime?     @default(now())
+  updatedAt   DateTime?     @updatedAt
 }
 
 model SubCategory {
@@ -21,17 +22,18 @@ model SubCategory {
   name        String
   tag         String
   categoryId  String
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   description String?
-  createdAt   DateTime? @default(now())
+  image       Image?
   product     Product[]
-  images      Image[]
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
 model Voucher {
   id                String      @id @default(cuid())
-  tag               String      @unique
   name              String
+  tag               String      @unique
   description       String?
   type              VoucherType
   discountValue     Float
@@ -44,42 +46,42 @@ model Voucher {
   startDate         DateTime
   endDate           DateTime
   vipLevel          Int?
-  createdAt         DateTime    @default(now())
-  Orders            Order[]
+  orders            Order[]
   products          Product[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime?   @updatedAt
 }
 
 model Order {
   id            String      @id @default(cuid())
   total         Int         @default(0)
   status        OrderStatus
-  createdAt     DateTime?   @default(now())
-  userId        String?
-  paymentId     String?
   transactionId String?     @default("")
   transDate     DateTime?
+  paymentId     String?
   payment       Payment?    @relation(fields: [paymentId], references: [id])
   orderItems    OrderItem[]
   vouchers      Voucher[]
-  delivery      Delivery?   @relation(fields: [deliveryId], references: [id])
-  deliveryId    String?
-  User          User?       @relation(fields: [userId], references: [id])
+  delivery      Delivery?
+  userId        String?
+  user          User?       @relation(fields: [userId], references: [id])
+  createdAt     DateTime?   @default(now())
+  updatedAt     DateTime?   @updatedAt
 
   @@index([userId], map: "Order_usersId_fkey_unique")
 }
 
 model Delivery {
-  id       String  @id @default(cuid())
-  name     String?
-  email    String?
-  phone    String?
-  province String?
-  address  String?
-  note     String?
-  userId   String?
-  orderId  String?
-  user     User?   @relation(fields: [userId], references: [id])
-  order    Order[]
+  id        String   @id @default(cuid())
+  name      String?
+  email     String?
+  phone     String?
+  address   Address?
+  note      String?
+  orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model OrderItem {
@@ -115,8 +117,9 @@ model Product {
   price             Int             @default(0)
   discount          Int             @default(0)
   tag               String          @unique
+  tags              String[]
+  status            ProductStatus
   region            String
-  createdAt         DateTime?       @default(now())
   soldQuantity      Int             @default(0)
   availableQuantity Int             @default(100)
   rating            Float           @default(0.0)
@@ -124,14 +127,20 @@ model Product {
   orderItem         OrderItem[]
   review            Review[]
   favouriteFood     FavouriteFood[]
-
-  materials     Material[]
-  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
-  subCategoryId String?
-  Voucher       Voucher[]
-  images        Image[]
+  materials         Material[]
+  subCategory       SubCategory?    @relation(fields: [subCategoryId], references: [id])
+  subCategoryId     String?
+  vouchers          Voucher[]
+  images            Image[]
+  createdAt         DateTime?       @default(now())
+  updatedAt         DateTime?       @updatedAt
 
   @@index([subCategoryId], map: "Product_categoryId_fkey_unique")
+}
+
+enum ProductStatus {
+  ACTIVE
+  HIDDEN
 }
 
 model Material {
@@ -141,7 +150,7 @@ model Material {
   category    String
   description String?
   createdAt   DateTime? @default(now())
-  Products    Product[]
+  products    Product[]
 }
 
 model Review {
@@ -162,22 +171,61 @@ model User {
   name             String
   email            String          @unique
   password         String
-  role             UserRole        @default(CUSTOMER)
   phone            String?         @db.VarChar(10)
-  address          String?
   dateOfBirth      DateTime?       @default(now())
   gender           Gender?
   pointLevel       Int             @default(0)
   level            UserLevel
   resetToken       String?
   resetTokenExpiry DateTime?
-  createdAt        DateTime?       @default(now())
   order            Order[]
   review           Review[]
   favouriteFood    FavouriteFood[]
   revenue          Revenue[]
-  delivery         Delivery[]
-  images           Image[]
+  image            Image?
+  roleId           String?
+  role             Role?           @relation(fields: [roleId], references: [id])
+  address          Address?
+  createdAt        DateTime?       @default(now())
+  updatedAt        DateTime?       @updatedAt
+}
+
+model Address {
+  id          String      @id @default(cuid())
+  type        AddressType
+  provinceId  String?
+  districtId  String?
+  wardId      String?
+  province    String?
+  district    String?
+  ward        String?
+  detail      String?
+  postalCode  String?
+  fullAddress String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  userId      String?     @unique
+  user        User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  delivery    Delivery?   @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  deliveryId  String?     @unique
+}
+
+enum AddressType {
+  USER
+  DELIVERY
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  permissions Permission[]
+  users       User[]
+}
+
+model Permission {
+  id    String @id @default(cuid())
+  name  String @unique
+  roles Role[]
 }
 
 model Revenue {
@@ -193,6 +241,7 @@ model Revenue {
   payment     Payment[]
 
   @@unique([userId, year, month, date])
+  @@unique([userId, year, month])
 }
 
 model FavouriteFood {
@@ -207,18 +256,18 @@ model FavouriteFood {
 }
 
 model Image {
-  id            String     @id @default(cuid())
-  url           String
-  altText       String?
-  type          ImageType
-  subCategoryId String?
-  userId        String?
-  productId     String?
-  entityType    EntityType
+  id         String     @id @default(cuid())
+  url        String
+  altText    String?
+  type       ImageType
+  entityType EntityType
 
-  subCategory SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product     Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  subCategoryId String?      @unique
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  userId        String?      @unique
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId     String?
+  product       Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([id, subCategoryId, entityType, type])
   @@unique([id, userId, entityType, type])
@@ -229,8 +278,8 @@ model Image {
 }
 
 enum ImageType {
-  THUMBNAIL // Ảnh đại diện (User, Category, Product)
-  GALLERY // Ảnh phụ của Product
+  THUMBNAIL
+  GALLERY
 }
 
 enum EntityType {
@@ -254,24 +303,6 @@ enum OrderStatus {
   COMPLETED
   CANCELLED
   FAILED
-}
-
-enum PaymentStatus {
-  PAID
-  UNPAID
-  REFUNDED
-}
-
-enum UserRole {
-  ADMIN
-  CUSTOMER
-  STAFF
-}
-
-enum RevenueType {
-  DATE
-  CUSTOMER
-  PAYMENT
 }
 
 enum Gender {

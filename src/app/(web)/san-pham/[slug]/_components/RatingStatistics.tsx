@@ -28,7 +28,7 @@ export function RatingStatistics({ ratings }: RatingStatisticsProps) {
               <IconStarFilled size={16} color='#FFD700' />
             </Group>
             <Group gap='xs' style={{ flex: 1 }}>
-              <Progress value={(count / totalRatings) * 100} size='xl' radius='xl' style={{ flex: 1 }} />
+              <Progress value={(count / totalRatings) * 100} size='md' radius='xl' style={{ flex: 1 }} />
               <Text size='xs' color='dimmed' style={{ minWidth: '30px', textAlign: 'right' }}>
                 {count}
               </Text>

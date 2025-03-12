@@ -9,11 +9,7 @@ import { api } from '~/trpc/react';
 
 export default function TableRevenue({ query }: { query: string }) {
   const { data: revenues, isLoading } =
-    query === 'user'
-      ? api.Revenue.getRevenueByUser.useQuery()
-      : query === 'date'
-        ? api.Revenue.getRevenueByDate.useQuery()
-        : api.Revenue.getRevenueByDate.useQuery();
+    query === 'user' ? api.Revenue.getRevenueByUser.useQuery() : api.Revenue.getRevenueByDate.useQuery();
   const currentItems = revenues || [];
 
   const columns: ColumnDef<any>[] = [

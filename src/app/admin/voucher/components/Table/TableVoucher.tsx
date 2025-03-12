@@ -1,5 +1,5 @@
 'use client';
-import { Button, Checkbox, Group, Menu, Table, Text } from '@mantine/core';
+import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
@@ -13,11 +13,13 @@ import { DeleteVoucherButton, UpdateVoucherButton } from '../Button';
 export default function TableVoucher({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
   const { data: result, isLoading } = api.Voucher.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.vouchers || [];
@@ -29,7 +31,8 @@ export default function TableVoucher({
 
     {
       header: 'Mô tả',
-      accessorKey: 'description'
+      accessorKey: 'description',
+      cell: info => <Highlight highlight={query}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Hình thức',
@@ -90,11 +93,17 @@ export default function TableVoucher({
       cell: info => <Text>{new Date(info.getValue() as string).toLocaleDateString()}</Text>
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          <UpdateVoucherButton id={info.row.original.id} />
-          <DeleteVoucherButton id={info.row.original.id} />
+          {user?.user && (
+            <>
+              <UpdateVoucherButton id={info.row.original.id} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeleteVoucherButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

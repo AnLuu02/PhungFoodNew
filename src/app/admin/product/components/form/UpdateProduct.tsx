@@ -12,18 +12,19 @@ import {
   NumberInput,
   Paper,
   Select,
+  TagsInput,
   Text,
   Textarea,
   TextInput
 } from '@mantine/core';
-import { ImageType } from '@prisma/client';
-import { IconFile, IconTrash } from '@tabler/icons-react';
+import { ImageType, ProductStatus } from '@prisma/client';
+import { IconFile, IconTag, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingComponent from '~/app/_components/Loading';
 import { Product } from '~/app/Entity/ProductEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
-import { fileToBase64, firebaseToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
+import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { productSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -34,7 +35,9 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials, isLoading } = api.Material.getAll.useQuery();
 
-  const queryResult = productId ? api.Product.getOne.useQuery({ query: productId || '' }) : { data: null };
+  const queryResult = productId
+    ? api.Product.getOne.useQuery({ query: productId || '', userRole: 'ADMIN' })
+    : { data: null };
   const { data } = queryResult;
 
   const [imageAddition, setImageAddition] = useState<File[]>([]);
@@ -56,6 +59,8 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
       price: 0,
       discount: 0,
       region: 'Miền Nam',
+      tags: [],
+      status: ProductStatus.ACTIVE,
       thumbnail: undefined,
       gallery: [],
       subCategoryId: '',
@@ -74,8 +79,8 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
       const thumnailDb = data?.images?.find(image => image.type === ImageType.THUMBNAIL)?.url || '';
       const galleries = data?.images?.filter(image => image.type === ImageType.GALLERY).map(image => image.url) || [];
       Promise.all([
-        thumnailDb && thumnailDb !== '' && firebaseToFile(thumnailDb as string),
-        galleries && galleries?.length > 0 ? firebaseToFile(galleries as string[], { type: 'multiple' }) : []
+        thumnailDb && thumnailDb !== '' && vercelBlobToFile(thumnailDb as string),
+        galleries && galleries?.length > 0 ? vercelBlobToFile(galleries as string[], { type: 'multiple' }) : []
       ])
         .then(([thumbnail, images]) => {
           thumbnail instanceof File && setValue('thumbnail', thumbnail);
@@ -95,6 +100,8 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
         price: data?.price,
         discount: data?.discount,
         region: data?.region,
+        tags: data?.tags,
+        status: data?.status,
         subCategoryId: data?.subCategoryId as string,
         materials: data?.materials.map(material => material.id)
       });
@@ -299,7 +306,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             control={control}
             name='name'
             render={({ field }) => (
-              <TextInput label='Tên sản phẩm' placeholder='Nhập tên sản phẩm' error={errors.name?.message} {...field} />
+              <TextInput {...field} label='Tên sản phẩm' placeholder='Nhập tên sản phẩm' error={errors.name?.message} />
             )}
           />
         </Grid.Col>
@@ -308,7 +315,14 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             control={control}
             name='tag'
             render={({ field }) => (
-              <TextInput label='Tag' placeholder='Sẽ tạo tự động' error={errors.name?.message} readOnly {...field} />
+              <TextInput
+                {...field}
+                leftSection={<IconTag size={18} stroke={1.5} />}
+                label='Tag'
+                placeholder='Sẽ tạo tự động'
+                error={errors.name?.message}
+                readOnly
+              />
             )}
           />
         </Grid.Col>
@@ -409,6 +423,38 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             )}
           />
         </Grid.Col>
+
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='status'
+            render={({ field }) => (
+              <Select
+                label='Trạng thái'
+                placeholder='Hiển thị hay ẩn'
+                data={Object.values(ProductStatus)?.map(category => ({
+                  value: category,
+                  label: category === ProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
+                }))}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.subCategoryId?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+
+        <Grid.Col span={12}>
+          <Controller
+            control={control}
+            name='tags'
+            render={({ field }) => (
+              <TagsInput {...field} label='Gắn tag cho sản phẩm' placeholder='Gắn tag cho sản phẩm' clearable />
+            )}
+          />
+        </Grid.Col>
+
         <Grid.Col span={12}>
           <Controller
             control={control}
@@ -475,7 +521,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
           />
         </Grid.Col>
         <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
-          Tạo sản phẩm
+          Cập nhật
         </Button>
       </Grid>
     </form>

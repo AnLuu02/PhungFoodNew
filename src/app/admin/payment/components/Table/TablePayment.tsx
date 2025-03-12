@@ -12,11 +12,13 @@ import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 export default function TablePayment({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
   const { data: result, isLoading } = api.Payment.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.payments || [];
@@ -45,11 +47,17 @@ export default function TablePayment({
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          <UpdatePaymentButton id={info.row.original.id} />
-          <DeletePaymentButton id={info.row.original.id} />
+          {user?.user && (
+            <>
+              <UpdatePaymentButton id={info.row.original.id} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeletePaymentButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

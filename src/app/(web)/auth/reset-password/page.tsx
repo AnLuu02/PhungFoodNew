@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, Center, Grid, GridCol, PasswordInput, rem, TextInput, Title } from '@mantine/core';
+import { IconMail } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import BButton from '~/app/_components/Button';
@@ -64,7 +65,14 @@ export default function ResetPassword({
               </GridCol>
 
               <GridCol span={12}>
-                <TextInput type='email' value={email} readOnly placeholder='E-mail' />
+                <TextInput
+                  type='email'
+                  value={email}
+                  readOnly
+                  placeholder='E-mail'
+                  label='E-mail'
+                  leftSection={<IconMail size={18} stroke={1.5} />}
+                />
               </GridCol>
 
               <GridCol span={12}>
@@ -83,7 +91,7 @@ export default function ResetPassword({
                   onChange={e => setConfirmPassword(e.target.value)}
                   required
                   placeholder='Xác nhận mật khẩu mới'
-                  error={password !== confirmPassword ? 'Mật khẩu không khớp' : ''}
+                  error={confirmPassword !== '' && password !== confirmPassword ? 'Mật khẩu không khớp' : ''}
                 />
               </GridCol>
 

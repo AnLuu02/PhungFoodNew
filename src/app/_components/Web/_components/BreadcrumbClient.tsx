@@ -48,7 +48,7 @@ export function BreadcrumbClient() {
                   <Image
                     loading='lazy'
                     src={
-                      category?.images?.[0]?.url ||
+                      category?.image?.url ||
                       'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'
                     }
                     h={130}

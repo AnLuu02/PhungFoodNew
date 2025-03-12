@@ -1,3 +1,5 @@
+import { ProductStatus } from '@prisma/client';
+
 export type Product = {
   id: string;
 
@@ -12,6 +14,10 @@ export type Product = {
   discount: number;
 
   region: string;
+
+  status: ProductStatus;
+
+  tags: string[];
 
   thumbnail?: File;
 

@@ -15,6 +15,7 @@ const MenuSection = ({
 }: {
   searchParams?: {
     tag?: string;
+    query?: string;
     'sort-price'?: string;
     'sort-name'?: string;
     price?: string;
@@ -32,7 +33,7 @@ const MenuSection = ({
       price: searchParams?.['sort-price'],
       name: searchParams?.['sort-name']
     },
-    query: searchParams?.tag,
+    query: searchParams?.tag || searchParams?.query,
     'danh-muc': searchParams?.['danh-muc'],
     'loai-san-pham': searchParams?.['loai-san-pham'],
     newProduct: searchParams?.loai === 'san-pham-moi',
@@ -51,6 +52,7 @@ const MenuSection = ({
     <Box pos={'relative'}>
       <HeaderMenu
         isLoading={isLoading}
+        products={data}
         category={(searchParams?.['loai-san-pham'] || searchParams?.['danh-muc']) && data?.[0]?.subCategory}
       />
       <Flex direction={'column'} align={'flex-start'}>

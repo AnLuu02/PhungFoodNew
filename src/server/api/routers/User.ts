@@ -1,14 +1,13 @@
-import { EntityType, Gender, ImageType, UserLevel, UserRole } from '@prisma/client';
+import { EntityType, Gender, ImageType, UserLevel } from '@prisma/client';
+import { del, put } from '@vercel/blob';
 import { compare } from 'bcryptjs';
 import { randomInt } from 'crypto';
 import { z } from 'zod';
-import {
-  deleteImageFromFirebase,
-  getFileNameFromFirebaseFile,
-  uploadToFirebase
-} from '~/app/lib/utils/func-handler/handle-file-upload';
+import { UserRole } from '~/app/lib/utils/constants/roles';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { hashPassword } from '~/app/lib/utils/func-handler/hashPassword';
 import { getOtpEmail, sendEmail } from '~/app/lib/utils/func-handler/sendEmail';
+import { addressSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -33,7 +32,9 @@ export const userRouter = createTRPCRouter({
                 name: { contains: query, mode: 'insensitive' }
               },
               {
-                address: { contains: query, mode: 'insensitive' }
+                address: {
+                  detail: { contains: query, mode: 'insensitive' }
+                }
               },
               {
                 phone: { contains: query, mode: 'insensitive' }
@@ -53,7 +54,9 @@ export const userRouter = createTRPCRouter({
                 name: { contains: query, mode: 'insensitive' }
               },
               {
-                address: { contains: query, mode: 'insensitive' }
+                address: {
+                  detail: { contains: query, mode: 'insensitive' }
+                }
               },
               {
                 phone: { contains: query, mode: 'insensitive' }
@@ -62,6 +65,9 @@ export const userRouter = createTRPCRouter({
                 email: { contains: query, mode: 'insensitive' }
               }
             ]
+          },
+          include: {
+            role: true
           }
         })
       ]);
@@ -79,6 +85,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1, 'Name is required'),
+        gender: z.nativeEnum(Gender).default(Gender.OTHER),
         email: z.string().email({ message: 'Invalid email' }),
         image: z
           .object({
@@ -88,22 +95,26 @@ export const userRouter = createTRPCRouter({
           .optional(),
         dateOfBirth: z.date().optional(),
         password: z.string().min(6, { message: 'Password should include at least 6 characters' }),
-        role: z.enum(['ADMIN', 'CUSTOMER', 'STAFF']).default('CUSTOMER'),
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
-        address: z.string().optional(),
+        address: addressSchema.optional(),
         pointLevel: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
+        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE),
+        roleId: z.string().optional()
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const existed = await ctx.db.user.findFirst({
-        where: {
-          email: { equals: input.email }
-        },
-        include: {
-          images: true
-        }
-      });
+      const [existed, roles] = await ctx.db.$transaction([
+        ctx.db.user.findFirst({
+          where: {
+            email: { equals: input.email }
+          },
+          include: {
+            image: true
+          }
+        }),
+        ctx.db.role.findMany({})
+      ]);
+      let defaultRole = roles.find(role => role.name === UserRole.CUSTOMER)?.id;
 
       if (existed) {
         return {
@@ -117,28 +128,30 @@ export const userRouter = createTRPCRouter({
 
       if (input?.image && input.image.fileName !== '') {
         if (input.image?.base64 !== '') {
-          imgURL = await uploadToFirebase(input.image.fileName, input.image.base64);
+          const buffer = Buffer.from(input.image.base64, 'base64');
+          const blob = await put(input.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+          imgURL = blob.url;
         } else {
           imgURL = input.image.fileName;
         }
       }
-      if (input.email === process.env.EMAIL_SUPPER_ADMIN) {
-        input.role = 'ADMIN';
-      }
-
       const passwordHash = await hashPassword(input.password);
       const user = await ctx.db.user.create({
         data: {
           name: input.name,
           email: input.email,
+          gender: input.gender,
           dateOfBirth: input.dateOfBirth,
           password: passwordHash,
-          role: input.role,
           phone: input.phone,
-          address: input.address,
+          address: input.address
+            ? {
+                create: input.address
+              }
+            : undefined,
           pointLevel: input.pointLevel,
           level: input.level,
-          images: imgURL
+          image: imgURL
             ? {
                 create: {
                   entityType: EntityType.USER,
@@ -147,7 +160,19 @@ export const userRouter = createTRPCRouter({
                   type: ImageType.THUMBNAIL
                 }
               }
-            : undefined
+            : undefined,
+          role:
+            input.roleId || input.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN
+              ? {
+                  connect: {
+                    id: input.roleId || defaultRole
+                  }
+                }
+              : {
+                  create: {
+                    name: UserRole.SUPER_ADMIN
+                  }
+                }
         }
       });
 
@@ -169,14 +194,14 @@ export const userRouter = createTRPCRouter({
             base64: z.string()
           })
           .optional(),
-        gender: z.nativeEnum(Gender),
+        gender: z.nativeEnum(Gender).default(Gender.OTHER),
         dateOfBirth: z.date().optional(),
         password: z.string().min(6, { message: 'Password should include at least 6 characters' }),
-        role: z.nativeEnum(UserRole),
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
-        address: z.string().optional(),
+        address: addressSchema,
         pointLevel: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
+        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE),
+        roleId: z.string().optional()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -184,18 +209,20 @@ export const userRouter = createTRPCRouter({
         where: {
           email: { equals: input.email }
         },
-        include: { images: true }
+        include: { image: true }
       });
 
       let imgURL: string | undefined;
-      const oldImage = existed?.images[0];
+      const oldImage = existed?.image;
 
       if (input?.image?.fileName) {
-        const filenameImgFromDb = oldImage ? getFileNameFromFirebaseFile(oldImage.url) : null;
+        const filenameImgFromDb = oldImage ? getFileNameFromVercelBlob(oldImage.url) : null;
 
         if (!filenameImgFromDb || filenameImgFromDb !== input.image.fileName) {
-          if (oldImage) await deleteImageFromFirebase(oldImage.url);
-          imgURL = await uploadToFirebase(input.image.fileName, input.image.base64);
+          if (oldImage) await del(oldImage.url, { token: tokenBlobVercel });
+          const buffer = Buffer.from(input.image.base64, 'base64');
+          const blob = await put(input.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+          imgURL = blob.url;
         } else {
           imgURL = oldImage?.url;
         }
@@ -208,15 +235,24 @@ export const userRouter = createTRPCRouter({
             name: input.name,
             email: input.email,
             dateOfBirth: input.dateOfBirth,
-            role: input.role,
             phone: input.phone,
-            address: input.address,
+            gender: input.gender,
+            address: {
+              update: {
+                ...input.address
+              }
+            },
             pointLevel: input.pointLevel,
             level: input.level,
-            images: imgURL
+            role: {
+              connect: {
+                id: input.roleId
+              }
+            },
+            image: imgURL
               ? {
                   upsert: {
-                    where: oldImage ? { id: oldImage.id } : { id: 'unknown' },
+                    where: { id: oldImage?.id || '' },
                     update: {
                       entityType: EntityType.USER,
                       altText: `Ảnh ${input.name}`,
@@ -257,14 +293,14 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.user.findUnique({
         where: { id: input.id },
-        include: { images: true }
+        include: { image: true }
       });
 
       if (!user) {
         throw new Error('user không tồn tại.');
       }
 
-      user?.images?.[0]?.url && (await deleteImageFromFirebase(user?.images?.[0]?.url));
+      user?.image?.url && (await del(user?.image?.url, { token: tokenBlobVercel }));
 
       const deleteduser = await ctx.db.user.delete({ where: { id: input.id } });
 
@@ -313,7 +349,9 @@ export const userRouter = createTRPCRouter({
         },
         include: {
           order: input.hasOrders || false,
-          images: true
+          image: true,
+          role: true,
+          address: true
         }
       });
       if (!user) {

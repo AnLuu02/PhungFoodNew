@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionIcon, Button, FileInput, Grid, GridCol, Image, Select, Textarea, TextInput } from '@mantine/core';
-import { IconFile } from '@tabler/icons-react';
+import { IconFile, IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { SubCategory } from '~/app/Entity/SubCategoryEntity';
@@ -109,12 +109,12 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
               <Controller
                 name='categoryId'
                 control={control}
-                rules={{ required: 'Category is required' }}
                 render={({ field }) => (
                   <Select
                     disabled={isLoading}
-                    label='Khách hàng'
-                    placeholder='Select your User'
+                    searchable
+                    label='Danh mục'
+                    placeholder='Chọn danh mục'
                     data={categoryData?.map(category => ({ value: category.id, label: category.name }))}
                     {...field}
                     error={errors.categoryId?.message}
@@ -128,11 +128,12 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
                 name='name'
                 render={({ field }) => (
                   <TextInput
+                    {...field}
                     size='sm'
+                    required
                     label='Tên danh mục'
                     placeholder='Nhập tên danh mục'
                     error={errors.name?.message}
-                    {...field}
                   />
                 )}
               />
@@ -143,12 +144,14 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
                 name='tag'
                 render={({ field }) => (
                   <TextInput
+                    {...field}
                     size='sm'
+                    required
                     readOnly
                     label='Tag'
+                    leftSection={<IconTag size={18} stroke={1.5} />}
                     placeholder='Sẽ tạo tự động'
                     error={errors.tag?.message}
-                    {...field}
                   />
                 )}
               />

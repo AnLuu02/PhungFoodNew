@@ -1,6 +1,6 @@
-import { UserRole } from '@prisma/client';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
+import { UserRole } from './app/lib/utils/constants/roles';
 
 const protectedRoutes = ['/admin', '/thong-tin', '/thanh-toan', '/yeu-thich', '/don-hang-cua-toi'];
 const authPages = ['/auth/dang-nhap', '/auth/dang-ki'];
@@ -19,10 +19,18 @@ export async function middleware(request: NextRequest) {
 
     return NextResponse.redirect(loginUrl);
   }
-
-  if (token && token?.role !== UserRole.ADMIN && request.nextUrl.pathname.startsWith('/admin')) {
+  if (token && token?.role === UserRole.CUSTOMER && request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.redirect(new URL('/unauthorized', request.url));
   }
+  // if (
+  //   token &&
+  //   token?.role === UserRole.ADMIN &&
+  //   token?.role !== UserRole.STAFF &&
+  //   token?.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN &&
+  //   request.nextUrl.pathname.startsWith('/admin')
+  // ) {
+  //   return NextResponse.redirect(new URL('/unauthorized', request.url));
+  // }
 
   return NextResponse.next();
 }

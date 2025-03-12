@@ -15,7 +15,12 @@ export function CreateMaterialButton() {
       <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </Button>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Tạo danh mục</Title>}>
+      <Modal
+        opened={opened}
+        closeOnClickOutside={false}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Tạo danh mục</Title>}
+      >
         <CreateMaterial setOpened={setOpened} />
       </Modal>
     </>
@@ -29,7 +34,12 @@ export function UpdateMaterialButton({ id }: { id: string }) {
       <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
         <IconEdit size={24} />
       </ActionIcon>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Cập nhật danh mục</Title>}>
+      <Modal
+        opened={opened}
+        closeOnClickOutside={false}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Cập nhật danh mục</Title>}
+      >
         <UpdateMaterial materialId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>

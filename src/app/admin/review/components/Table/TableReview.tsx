@@ -11,11 +11,13 @@ import { DeleteReviewButton, UpdateReviewButton } from '../Button';
 export default function TableReview({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
   const { data: result, isLoading } = api.Review.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.reviews || [];
@@ -47,28 +49,17 @@ export default function TableReview({
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          <UpdateReviewButton id={info.row.original.id} />
-          <DeleteReviewButton id={info.row.original.id} />
-          {/* <CustomButton
-            label=''
-            icon={<IconEdit size={24} />}
-            Component={UpdateReview}
-            componentProps={{
-              ReviewId: info.row.original.id
-            }}
-          />
-          <CustomButton
-            label=''
-            icon={<IconTrash size={24} />}
-            isModalConfirm={true}
-            Component={DeleteReview}
-            componentProps={{
-              ReviewId: info.row.original.id
-            }}
-          /> */}
+          {user?.user && (
+            <>
+              <UpdateReviewButton id={info.row.original.id} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeleteReviewButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

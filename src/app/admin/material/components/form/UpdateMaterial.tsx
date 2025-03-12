@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
+import { IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Material } from '~/app/Entity/MaterialEntity';
@@ -74,11 +75,11 @@ export default function UpdateMaterial({ materialId, setOpened }: { materialId: 
             name='name'
             render={({ field }) => (
               <TextInput
+                {...field}
                 label='Tên nguyên liệu'
                 size='sm'
                 placeholder='Nhập tên nguyên liệu'
                 error={errors.name?.message}
-                {...field}
               />
             )}
           />
@@ -89,12 +90,13 @@ export default function UpdateMaterial({ materialId, setOpened }: { materialId: 
             name='tag'
             render={({ field }) => (
               <TextInput
+                {...field}
                 size='sm'
                 readOnly
                 label='Tag'
+                leftSection={<IconTag size={18} stroke={1.5} />}
                 placeholder='Sẽ tạo tự động'
                 error={errors.tag?.message}
-                {...field}
               />
             )}
           />

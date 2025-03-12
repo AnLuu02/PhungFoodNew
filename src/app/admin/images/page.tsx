@@ -2,7 +2,7 @@ import { Card, Group, Text, Title } from '@mantine/core';
 import Search from '~/app/_components/Admin/Search';
 import { api } from '~/trpc/server';
 import { CreateImageButton } from './components/Button';
-import TableImage from './components/ListImages/ListImages';
+import ListImage from './components/ListImages/ListImages';
 
 export default async function ImageManagementPage({
   searchParams
@@ -32,7 +32,7 @@ export default async function ImageManagementPage({
         </Group>
       </Group>
 
-      <TableImage currentPage={currentPage} query={query} limit={limit} />
+      <ListImage currentPage={currentPage} query={query} limit={limit} />
     </Card>
   );
 }

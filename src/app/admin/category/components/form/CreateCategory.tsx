@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
+import { IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Category } from '~/app/Entity/CategoryEntity';
@@ -62,11 +63,11 @@ export default function CreateCategory({ setOpened }: { setOpened: any }) {
             name='name'
             render={({ field }) => (
               <TextInput
+                {...field}
                 label='Tên danh mục'
                 size='sm'
                 placeholder='Nhập tên danh mục'
                 error={errors.name?.message}
-                {...field}
               />
             )}
           />
@@ -77,12 +78,13 @@ export default function CreateCategory({ setOpened }: { setOpened: any }) {
             name='tag'
             render={({ field }) => (
               <TextInput
+                {...field}
                 size='sm'
                 readOnly
+                leftSection={<IconTag size={18} stroke={1.5} />}
                 label='Tag'
                 placeholder='Sẽ tạo tự động'
                 error={errors.tag?.message}
-                {...field}
               />
             )}
           />

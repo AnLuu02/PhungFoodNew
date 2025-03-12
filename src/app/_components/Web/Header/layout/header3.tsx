@@ -20,7 +20,7 @@ const Header3 = ({ data }: any) => {
       align={'center'}
       justify={'space-between'}
       py={'md'}
-      className='sticky top-0 z-50 bg-white'
+      className='sticky top-0 z-[100] bg-white'
       direction={{ base: 'row', md: 'row' }}
     >
       {(isMobile || notDesktop) && <Burger opened={opened} onClick={toggle} aria-label='Toggle navigation' />}
@@ -81,7 +81,7 @@ const Header3 = ({ data }: any) => {
                         leftSection={
                           <Image
                             loading='lazy'
-                            src={item?.images?.[0]?.url || '/images/jpg/empty-300x240.jpg'}
+                            src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                             alt='logo'
                             w={30}
                             h={30}

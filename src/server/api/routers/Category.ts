@@ -1,8 +1,10 @@
+import { Prisma, ProductStatus } from '@prisma/client';
 import { z } from 'zod';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
-
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-
+const findExistingCategory = async (ctx: any, tag: string) => {
+  return await ctx.db.category.findFirst({ where: { tag } });
+};
 export const categoryRouter = createTRPCRouter({
   find: publicProcedure
     .input(
@@ -72,46 +74,7 @@ export const categoryRouter = createTRPCRouter({
         }
       };
     }),
-  create: publicProcedure
-    .input(
-      z.object({
-        name: z.string().min(1, 'Name is required'),
-        description: z.string().optional(),
-        tag: z.string()
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const existingCategory = await ctx.db.category.findMany({
-        where: {
-          tag: input.tag
-        }
-      });
 
-      if (!existingCategory?.length) {
-        const category = await ctx.db.category.create({
-          data: {
-            name: input.name,
-            tag: input.tag,
-            description: input.description
-          }
-        });
-
-        if (category?.tag) {
-          await CreateTagVi({ old: [], new: category });
-        }
-
-        return {
-          success: true,
-          message: 'Tạo danh mục thành công.',
-          record: category
-        };
-      }
-      return {
-        success: false,
-        message: 'Danh mục đã tồn tại. Hãy thử lại.',
-        record: existingCategory
-      };
-    }),
   delete: publicProcedure
     .input(
       z.object({
@@ -173,58 +136,60 @@ export const categoryRouter = createTRPCRouter({
       include: {
         subCategory: {
           include: {
-            images: true
+            image: true,
+            product: {
+              where: {
+                status: ProductStatus.ACTIVE
+              }
+            }
           }
         }
       }
     });
     return category;
   }),
-
-  update: publicProcedure
+  create: publicProcedure
     .input(
       z.object({
-        id: z.string(),
         name: z.string().min(1, 'Name is required'),
-        tag: z.string().min(1, 'Tag is required'),
-        description: z.string().optional()
+        description: z.string().optional(),
+        tag: z.string()
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const existingCategory: any = await ctx.db.category.findFirst({
-        where: {
-          tag: input.tag
-        }
+      const existingCategory = await findExistingCategory(ctx, input.tag);
+      if (existingCategory) {
+        return { success: false, message: 'Danh mục đã tồn tại.' };
+      }
+      const category = await ctx.db.category.create({
+        data: input
       });
+      if (category?.tag) {
+        await CreateTagVi({ old: [], new: category });
+      }
+      return { success: true, message: 'Tạo danh mục thành công.', record: category };
+    }),
+  update: publicProcedure
+    .input(
+      z.object({
+        where: z.record(z.any()),
+        data: z.record(z.any())
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existingCategory = await findExistingCategory(ctx, input.data.tag);
 
-      if (!existingCategory || (existingCategory && existingCategory?.id == input?.id)) {
-        const [category, updateCategory] = await ctx.db.$transaction([
-          ctx.db.category.findUnique({
-            where: { id: input?.id }
-          }),
-          ctx.db.category.update({
-            where: { id: input?.id },
-            data: {
-              name: input.name,
-              description: input.description,
-              tag: input.tag
-            }
-          })
-        ]);
-        if (updateCategory?.tag && updateCategory?.tag) {
-          await CreateTagVi({ old: category, new: updateCategory });
-        }
-        return {
-          success: true,
-          message: 'Cập nhật danh mục thành công.',
-          record: category
-        };
+      if (existingCategory && existingCategory.id !== input.where.id) {
+        return { success: false, message: 'Danh mục đã tồn tại.' };
       }
 
-      return {
-        success: false,
-        message: 'Danh mục đã tồn tại. Hãy thử lại.',
-        record: existingCategory
-      };
+      const category = await ctx.db.category.update({
+        where: input.where as Prisma.CategoryWhereUniqueInput,
+        data: input.data as Prisma.CategoryUpdateInput
+      });
+
+      await CreateTagVi({ old: existingCategory, new: category });
+
+      return { success: true, message: 'Cập nhật danh mục thành công.', record: category };
     })
 });

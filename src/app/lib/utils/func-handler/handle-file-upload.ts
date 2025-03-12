@@ -1,5 +1,4 @@
-import { deleteObject, getDownloadURL, ref, updateMetadata, uploadString } from 'firebase/storage';
-import { storage } from '~/app/config/firebase';
+export const tokenBlobVercel = process.env.BLOB_READ_WRITE_TOKEN;
 
 export function fileToBase64(file: any) {
   return new Promise((resolve, reject) => {
@@ -12,60 +11,20 @@ export function fileToBase64(file: any) {
     reader.readAsDataURL(file);
   });
 }
-export async function uploadToFirebase(fileName: string, base64Content: string) {
-  const fileRef = ref(storage, `Images_PhungFood/Images_Food/${fileName}`);
-  await uploadString(fileRef, base64Content, 'base64');
-  const mimeType = fileName.endsWith('.png')
-    ? 'image/png'
-    : fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')
-      ? 'image/jpeg'
-      : 'application/octet-stream';
-  await updateMetadata(fileRef, { contentType: mimeType });
-  const url = await getDownloadURL(fileRef);
-  return url;
-}
 
-export async function deleteImageFromFirebase(fileName: string): Promise<void> {
-  try {
-    const fileNameDecode = decodeURIComponent(fileName.split('?')[0]?.split('%2F').pop() || 'default-file-name');
-    const fileRef = ref(storage, `Images_PhungFood/Images_Food/${fileNameDecode}`);
-    await deleteObject(fileRef);
-  } catch (error) {
-    console.error('Lỗi khi xóa file:', error);
-    throw new Error('Không thể xóa file từ Firebase Storage');
-  }
-}
-
-export async function getImageUrlFirebase(fileName: string) {
-  if (fileName && fileName !== '') {
-    try {
-      const fileRef = ref(storage, `Images_PhungFood/Images_Food/${fileName}`);
-      const url = await getDownloadURL(fileRef);
-      return url;
-    } catch (error) {
-      console.error('Lỗi khi lấy URL:', error);
-      throw new Error('Không thể lấy URL của file');
-    }
-  }
-}
-
-interface IOptionsFirebaseToFile {
-  type: 'single' | 'multiple';
-}
-
-export async function firebaseToFile(
+export async function vercelBlobToFile(
   url: string | string[],
-  options?: IOptionsFirebaseToFile
+  options?: { type?: 'multiple' }
 ): Promise<File | File[] | null> {
   try {
     if (!url) {
       throw new Error('URL is undefined');
     }
 
-    const urls: any = Array.isArray(url) ? url : [url];
+    const urls = Array.isArray(url) ? url : [url];
 
     const fetchFile = async (url: string): Promise<File> => {
-      const fileName = decodeURIComponent(url.split('?')[0]?.split('%2F').pop() || 'default-file-name');
+      const fileName = getFileNameFromVercelBlob(url);
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`Failed to fetch the file from ${url}`);
@@ -75,18 +34,18 @@ export async function firebaseToFile(
     };
 
     if (options?.type === 'multiple') {
-      const files = await Promise.all(urls.map((u: any) => fetchFile(u)));
+      const files = await Promise.all(urls.map(u => fetchFile(u)));
       return files;
     }
 
-    return await fetchFile(urls[0]);
+    return await fetchFile(urls[0] as string);
   } catch (error) {
-    console.error('Error converting URL to file:', error);
+    console.error('Error converting Vercel Blob URL to file:', error);
     return null;
   }
 }
 
-export function getFileNameFromFirebaseFile(url: any) {
+export function getFileNameFromVercelBlob(url: string): string {
   const decodedUrl = decodeURIComponent(url);
   return decodedUrl.split('/').pop()?.split('?')[0] || '';
 }

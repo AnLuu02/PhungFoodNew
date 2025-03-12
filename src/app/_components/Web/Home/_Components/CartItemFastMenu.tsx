@@ -44,6 +44,7 @@ export function CartItemFastMenu({ image, name, price, quantity, onQuantityChang
                 Số lượng
               </Text>
             }
+            clampBehavior='strict'
             value={quantity}
             onChange={value => onQuantityChange(Number(value))}
             min={1}

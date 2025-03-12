@@ -103,13 +103,14 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                       <Text size='sm'>
                         <strong>Email:</strong> {order?.delivery?.email}
                       </Text>
-                      {order?.user?.address && (
+                      {order?.user?.address?.fullAddress && (
                         <Text size='sm'>
-                          <strong>Địa chỉ:</strong> {order?.delivery?.address}
+                          <strong>Địa chỉ:</strong> {order?.user?.address?.fullAddress}
                         </Text>
                       )}
                       <Text size='sm'>
-                        <strong>Địa chỉ nhận:</strong> {order?.delivery?.address || '123 Main St, Anytown, AN 12345'}
+                        <strong>Địa chỉ nhận:</strong>{' '}
+                        {order?.delivery?.address?.fullAddress || '123 Main St, Anytown, AN 12345'}
                       </Text>
 
                       <Spoiler

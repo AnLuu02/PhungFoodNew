@@ -192,11 +192,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                     my={'xs'}
                   >
                     <Spoiler maxHeight={60} showLabel='Xem thêm' hideLabel='Ẩn'>
-                      <Text size='sm'>
-                        {product?.description ||
-                          `Có ai đó đã từng nói rằng: “Lý tưởng là những ước mơ cao thượng nhất của con người, rất khó thực hiện nhưng lại có thể thực hiện được và đòi hỏi phải phấn đấu lâu dài, gian khổ, kiên trì…”. Quả thật, trong cuộc sống của chúng ta, lí tưởng cao đẹp có một vai trò vô cùng quan trọng.
-`}
-                      </Text>
+                      <Text size='sm'>{product?.description || `Không có nội dung.`}</Text>
                     </Spoiler>
                   </Card>
 
@@ -208,6 +204,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                             Số lượng:
                           </Text>
                         }
+                        clampBehavior='strict'
                         value={quantity}
                         onChange={(value: any) => setQuantity(value)}
                         thousandSeparator=','
@@ -223,6 +220,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                             Kích cỡ:
                           </Text>
                         }
+                        searchable
                         placeholder='Pick value'
                         data={['1 người ăn', '2 người ăn', '3 người ăn', '5 người ']}
                       />

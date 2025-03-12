@@ -1,12 +1,9 @@
-import { EntityType } from '.prisma/client';
+import { EntityType, ProductStatus } from '.prisma/client';
 import { ImageType } from '@prisma/client';
+import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
-import {
-  deleteImageFromFirebase,
-  getFileNameFromFirebaseFile,
-  uploadToFirebase
-} from '~/app/lib/utils/func-handler/handle-file-upload';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -67,8 +64,11 @@ export const subCategoryRouter = createTRPCRouter({
           },
           include: {
             category: true,
-            images: true,
+            image: true,
             product: {
+              where: {
+                status: ProductStatus.ACTIVE
+              },
               include: {
                 favouriteFood: true,
                 images: true
@@ -110,7 +110,7 @@ export const subCategoryRouter = createTRPCRouter({
         where: {
           AND: [{ name: input.name }, { categoryId: input.categoryId }]
         },
-        include: { images: true, category: true }
+        include: { image: true, category: true }
       });
 
       if (existed) {
@@ -124,7 +124,9 @@ export const subCategoryRouter = createTRPCRouter({
       let imgURL: string | undefined;
 
       if (input?.thumbnail && input.thumbnail.fileName !== '') {
-        imgURL = await uploadToFirebase(input.thumbnail.fileName, input.thumbnail.base64);
+        const buffer = Buffer.from(input.thumbnail.base64, 'base64');
+        const blob = await put(input.thumbnail.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+        imgURL = blob.url;
       }
 
       const subCategory = await ctx.db.subCategory.create({
@@ -133,14 +135,14 @@ export const subCategoryRouter = createTRPCRouter({
           tag: input.tag,
           description: input.description,
           categoryId: input.categoryId,
-          images: imgURL
+          image: imgURL
             ? {
                 create: {
                   entityType: EntityType.CATEGORY,
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
                   type: ImageType.THUMBNAIL
-                }
+                } as any
               }
             : undefined
         }
@@ -176,18 +178,20 @@ export const subCategoryRouter = createTRPCRouter({
         where: {
           AND: [{ id: input.id }, { categoryId: input.categoryId }]
         },
-        include: { category: true, images: true }
+        include: { category: true, image: true }
       });
 
       let imgURL: string | undefined;
-      const oldImage = existed?.images?.[0];
+      const oldImage = existed?.image;
 
       if (input?.thumbnail?.fileName) {
-        const filenameImgFromDb = oldImage ? getFileNameFromFirebaseFile(oldImage?.url) : null;
+        const filenameImgFromDb = oldImage ? getFileNameFromVercelBlob(oldImage?.url) : null;
 
         if (!filenameImgFromDb || filenameImgFromDb !== input.thumbnail.fileName) {
-          if (oldImage && oldImage?.url) await deleteImageFromFirebase(oldImage?.url);
-          imgURL = await uploadToFirebase(input.thumbnail.fileName, input.thumbnail.base64);
+          if (oldImage && oldImage?.url) await del(oldImage.url, { token: tokenBlobVercel });
+          const buffer = Buffer.from(input.thumbnail.base64, 'base64');
+          const blob = await put(input.thumbnail.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+          imgURL = blob.url;
         } else {
           imgURL = oldImage?.url;
         }
@@ -205,7 +209,7 @@ export const subCategoryRouter = createTRPCRouter({
               tag: input.tag,
               description: input.description,
               categoryId: input.categoryId,
-              images: imgURL
+              image: imgURL
                 ? {
                     upsert: {
                       where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
@@ -214,13 +218,13 @@ export const subCategoryRouter = createTRPCRouter({
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
                         type: ImageType.THUMBNAIL
-                      },
+                      } as any,
                       create: {
                         entityType: EntityType.CATEGORY,
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
                         type: ImageType.THUMBNAIL
-                      }
+                      } as any
                     }
                   }
                 : undefined
@@ -253,14 +257,14 @@ export const subCategoryRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const subCategory = await ctx.db.subCategory.findUnique({
         where: { id: input.id },
-        include: { images: true }
+        include: { image: true }
       });
 
       if (!subCategory) {
         throw new Error('SubCategory không tồn tại.');
       }
 
-      subCategory?.images?.[0]?.url && (await deleteImageFromFirebase(subCategory?.images?.[0]?.url));
+      subCategory?.image?.url && (await del(subCategory?.image?.url, { token: tokenBlobVercel }));
 
       const deletedSubCategory = await ctx.db.subCategory.delete({ where: { id: input.id } });
 
@@ -316,7 +320,7 @@ export const subCategoryRouter = createTRPCRouter({
         },
         include: {
           category: true,
-          images: true
+          image: true
         }
       });
 
@@ -325,7 +329,7 @@ export const subCategoryRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const subCategory = await ctx.db.subCategory.findMany({
       include: {
-        images: true,
+        image: true,
         category: true
       }
     });

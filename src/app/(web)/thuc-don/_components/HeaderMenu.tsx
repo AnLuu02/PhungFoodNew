@@ -1,15 +1,15 @@
-import { Box, Button, Flex, Grid, GridCol, Skeleton, Text, Title } from '@mantine/core';
+import { Box, Button, Flex, Grid, GridCol, Group, Skeleton, Text, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconX } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import Search from '~/app/_components/Admin/Search';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { getTagFromQuery } from '~/app/lib/utils/func-handler/generateTag';
 import FilterPriceMenu from './FilterPrice';
 import FilterMenu, { dataSort } from './FilterSort';
-import GlobalSearchMenu from './GlobalSearchMenu';
 
-function HeaderMenu({ isLoading, category }: { isLoading: boolean; category: any }) {
+function HeaderMenu({ isLoading, category, products }: { isLoading: boolean; category: any; products: any[] }) {
   const params = useSearchParams();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const [valueSort, setValueSort] = useState<any[]>(
@@ -33,9 +33,14 @@ function HeaderMenu({ isLoading, category }: { isLoading: boolean; category: any
                   <Text c={'dimmed'} size='sm'>
                     Danh mục
                   </Text>
-                  <Title className='font-quicksand' c={'green.9'}>
-                    {getTagFromQuery(params)}
-                  </Title>
+                  <Group gap={'xs'}>
+                    <Title className='font-quicksand' c={'green.9'}>
+                      {getTagFromQuery(params)}
+                    </Title>
+                    <Title order={2} className='font-quicksand' c={'green.9'}>
+                      ({products?.length})
+                    </Title>
+                  </Group>
                 </>
               )}
             </Flex>
@@ -45,7 +50,8 @@ function HeaderMenu({ isLoading, category }: { isLoading: boolean; category: any
               <FilterPriceMenu />
               <FilterMenu valueSort={valueSort} setValueSort={setValueSort} />
               <Box w={{ base: '100%', md: '40%' }}>
-                <GlobalSearchMenu />
+                {/* <GlobalSearchMenu /> */}
+                <Search />
               </Box>
             </GridCol>
           )}

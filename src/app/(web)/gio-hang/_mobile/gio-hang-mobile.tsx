@@ -71,6 +71,7 @@ export default function ShoppingCartMobile() {
             <Stack>
               <NumberInput
                 thousandSeparator=','
+                clampBehavior='strict'
                 value={item.quantity}
                 label='Số lượng'
                 onChange={quantity => {
@@ -80,7 +81,7 @@ export default function ShoppingCartMobile() {
                   updateQuantity(item.id, Number(quantity));
                 }}
                 min={0}
-                max={99}
+                max={Number(item?.availableQuantity) || 100}
                 style={{ width: '80px' }}
               />
               <Divider />

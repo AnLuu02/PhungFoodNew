@@ -1,13 +1,13 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionIcon, Button, FileInput, Grid, GridCol, Image, Select, Textarea, TextInput } from '@mantine/core';
-import { IconFile } from '@tabler/icons-react';
+import { IconFile, IconTag } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingComponent from '~/app/_components/Loading';
 import { SubCategory } from '~/app/Entity/SubCategoryEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
-import { fileToBase64, firebaseToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
+import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { subCategorySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -44,8 +44,8 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
 
   useEffect(() => {
     setLoading(true);
-    if (data && data?.images?.[0]?.url && data?.images?.[0]?.url !== '') {
-      firebaseToFile(data?.images?.[0]?.url as string)
+    if (data && data?.image?.url && data?.image?.url !== '') {
+      vercelBlobToFile(data?.image?.url as string)
         .then(file => {
           setValue('thumbnail.url', file as File);
         })
@@ -116,12 +116,11 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
               <Controller
                 name='categoryId'
                 control={control}
-                rules={{ required: 'Category is required' }}
                 render={({ field }) => (
                   <Select
                     disabled={isLoading}
-                    label='Khách hàng'
-                    placeholder='Select your User'
+                    label='Danh mục chính'
+                    placeholder='Danh mục chính không được để trống'
                     data={categoryData?.map(category => ({ value: category.id, label: category.name }))}
                     {...field}
                     error={errors.categoryId?.message}
@@ -135,11 +134,12 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
                 name='name'
                 render={({ field }) => (
                   <TextInput
+                    {...field}
                     size='sm'
+                    required
                     label='Tên danh mục'
                     placeholder='Nhập tên danh mục'
                     error={errors.name?.message}
-                    {...field}
                   />
                 )}
               />
@@ -150,12 +150,14 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
                 name='tag'
                 render={({ field }) => (
                   <TextInput
+                    {...field}
                     size='sm'
                     readOnly
                     label='Tag'
+                    required
+                    leftSection={<IconTag size={18} stroke={1.5} />}
                     placeholder='Sẽ tạo tự động'
                     error={errors.tag?.message}
-                    {...field}
                   />
                 )}
               />

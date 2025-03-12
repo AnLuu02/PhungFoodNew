@@ -4,15 +4,16 @@ import { deliveryRouter } from './routers/Delivery';
 import { favouriteFoodRouter } from './routers/FavouriteFood';
 import { imageRouter } from './routers/Images';
 import { materialRouter } from './routers/Material';
+import { newsRouter } from './routers/news';
 import { orderRouter } from './routers/Order';
 import { paymentRouter } from './routers/Payment';
 import { productRouter } from './routers/Product';
 import { revenueRouter } from './routers/Revenue';
 import { reviewRouter } from './routers/Review';
+import { rolePermissionRouter } from './routers/RolePermission';
 import { subCategoryRouter } from './routers/SubCategory';
 import { userRouter } from './routers/User';
 import { voucherRouter } from './routers/Voucher';
-import { newsRouter } from './routers/news';
 
 export const appRouter = createTRPCRouter({
   Category: categoryRouter,
@@ -28,7 +29,8 @@ export const appRouter = createTRPCRouter({
   Voucher: voucherRouter,
   Image: imageRouter,
   news: newsRouter,
-  Material: materialRouter
+  Material: materialRouter,
+  RolePermission: rolePermissionRouter
 });
 
 export type AppRouter = typeof appRouter;

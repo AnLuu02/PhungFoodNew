@@ -1,4 +1,13 @@
-import { EntityType, Gender, ImageType, OrderStatus, PaymentType, UserLevel, UserRole } from '@prisma/client';
+import {
+  AddressType,
+  EntityType,
+  Gender,
+  ImageType,
+  OrderStatus,
+  PaymentType,
+  ProductStatus,
+  UserLevel
+} from '@prisma/client';
 import { z } from 'zod';
 export const imageSchema = z.object({
   id: z.string().optional(),
@@ -34,33 +43,14 @@ export const paymentSchema = z.object({
   isDefault: z.boolean().default(false)
 });
 
-export const userSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, 'Tên không được để trống'),
-  email: z.string().email({ message: 'Email không hợp lệ (vd: example@gmail.com)' }),
-  image: imageSchema.optional(),
-  gender: z.nativeEnum(Gender),
-  dateOfBirth: z.date().optional(),
-  password: z
-    .string()
-    .min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
-    .regex(/[A-Z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ hoa' })
-    .regex(/[a-z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ thường' })
-    .regex(/[0-9]/, { message: 'Mật khẩu phải chứa ít nhất một số' })
-    .regex(/[^A-Za-z0-9]/, { message: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt' }),
-  role: z.nativeEnum(UserRole),
-  phone: z.string().max(10, { message: 'Số điện thoại không được quá 10 ký tự' }),
-  address: z.string().optional(),
-  pointLevel: z.number().default(0),
-  level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
-});
-
 export const productSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'Tên sản phẩm không được để trống'),
   description: z.string().optional(),
   region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
   tag: z.string(),
+  tags: z.array(z.string()),
+  status: z.nativeEnum(ProductStatus).default(ProductStatus.ACTIVE),
   price: z.number().min(10000, 'Giá trị phải lớn hơn hoặc bằng 10.000').default(10000),
   discount: z.number().min(0, 'Giá trị không được nhỏ hơn 0').optional().default(0),
   thumbnail: z.instanceof(File).optional(),
@@ -72,17 +62,33 @@ export const productSchema = z.object({
   availableQuantity: z.number().optional(),
   materials: z.array(z.string()).optional()
 });
+
+export const addressSchema = z.object({
+  id: z.string().optional(),
+  type: z.nativeEnum(AddressType).default(AddressType.USER),
+  provinceId: z.string().min(1, 'Tinh/thanh phố là bắt buộc'),
+  districtId: z.string().min(1, 'Quan/huyen là bắt buộc'),
+  wardId: z.string().min(1, 'Phuong/xa la bắt buộc'),
+  province: z.string().optional(),
+  district: z.string().optional(),
+  ward: z.string().optional(),
+  detail: z.string().min(1, 'Chi tiết địa chỉ không được để trống'),
+  postalCode: z.string().nullable().optional(),
+  fullAddress: z.string().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional()
+});
+
 export const deliverySchema = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
   email: z.string().email({ message: 'Email không hợp lệ' }).optional(),
   phone: z.string().min(10, 'Số điện thoại không hợp lệ').max(10, 'Số điện thoại không hợp lệ').optional(),
-  province: z.string().min(1, 'Tỉnh/Thành phố không được để trống').optional(),
-  address: z.string().min(1, 'Địa chỉ không được để trống').optional(),
+  address: addressSchema,
   note: z.string().optional(),
-  userId: z.string().optional(),
   orderId: z.string().optional(),
-  paymentId: z.string().optional()
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional()
 });
 
 export const reviewSchema = z.object({
@@ -104,30 +110,35 @@ export const orderSchema = z.object({
   id: z.string().optional(),
   total: z.any(),
   status: z.nativeEnum(OrderStatus),
-  userId: z.string().min(1, 'User ID là bắt buộc'),
-  paymentId: z.string().min(1, 'Payment ID là bắt buộc'),
+  userId: z.string().min(1, 'Ai là người mua hàng?'),
+  paymentId: z.string().min(1, 'Chọn phương thức thanh toán'),
   orderItems: z.array(orderItemSchema),
-  delivery: deliverySchema.optional()
+  delivery: deliverySchema
 });
 
-export const voucherSchema = z.object({
-  id: z.string().optional(),
-  tag: z.string().optional(),
-  name: z.string().min(1, 'Tên voucher không được để trống'),
-  description: z.string().optional(),
-  type: z.enum(['PERCENTAGE', 'FIXED']),
-  discountValue: z.number().min(1, 'Giá trị giảm không hợp lệ'),
-  maxDiscount: z.number().min(0, 'Giá trị tối đa không hợp lệ'),
-  minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
-  quantity: z.number().min(1, 'Số lượng không hợp lệ'),
-  applyAll: z.boolean().default(true),
-  usedQuantity: z.number().min(0).default(0),
-  availableQuantity: z.number().min(0).default(0),
-  startDate: z.date(),
-  endDate: z.date(),
-  vipLevel: z.string().optional(),
-  products: productSchema.array().optional()
-});
+export const voucherSchema = z
+  .object({
+    id: z.string().optional(),
+    tag: z.string().optional(),
+    name: z.string().min(1, 'Tên voucher không được để trống'),
+    description: z.string().optional(),
+    type: z.enum(['PERCENTAGE', 'FIXED']),
+    discountValue: z.number().min(1, 'Giá trị giảm không hợp lệ'),
+    maxDiscount: z.number().min(0, 'Giá trị tối đa không hợp lệ'),
+    minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
+    quantity: z.number().min(1, 'Số lượng không hợp lệ'),
+    applyAll: z.boolean().default(true),
+    usedQuantity: z.number().min(0).default(0),
+    availableQuantity: z.number().min(0).default(0),
+    startDate: z.date({ required_error: 'Hãy chọn ngày bắt đầu khuyến mãi' }),
+    endDate: z.date({ required_error: 'Hãy chọn ngày kết thúc khuyến mãi' }),
+    vipLevel: z.string().optional(),
+    products: z.array(z.string()).optional()
+  })
+  .refine(data => data.endDate > data.startDate, {
+    message: 'Ngày kết thúc phải sau ngày bắt đầu',
+    path: ['endDate']
+  });
 
 export const materialSchema = z.object({
   id: z.string().optional(),
@@ -135,4 +146,24 @@ export const materialSchema = z.object({
   tag: z.string().min(1, 'Tag là bắt buộc'),
   description: z.string().optional(),
   category: z.string().min(1, 'Category is required')
+});
+export const userSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, 'Tên không được để trống'),
+  email: z.string().email({ message: 'Email không hợp lệ (vd: example@gmail.com)' }),
+  image: imageSchema.optional(),
+  gender: z.nativeEnum(Gender).default(Gender.OTHER),
+  roleId: z.string().optional(),
+  dateOfBirth: z.date().optional(),
+  password: z
+    .string()
+    .min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
+    .regex(/[A-Z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ hoa' })
+    .regex(/[a-z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ thường' })
+    .regex(/[0-9]/, { message: 'Mật khẩu phải chứa ít nhất một số' })
+    .regex(/[^A-Za-z0-9]/, { message: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt' }),
+  phone: z.string().max(10, { message: 'Số điện thoại không được quá 10 ký tự' }),
+  address: addressSchema.optional(),
+  pointLevel: z.number().default(0),
+  level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
 });

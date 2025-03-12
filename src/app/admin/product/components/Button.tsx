@@ -16,8 +16,10 @@ export function CreateProductButton() {
         Tạo mới
       </Button>
       <Modal
+        closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
-        size={'xl'}
+        size={'80%'}
+        fullScreen
         opened={opened}
         onClose={() => setOpened(false)}
         title={<Title order={2}>Tạo sản phẩm</Title>}
@@ -36,8 +38,9 @@ export function UpdateProductButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
-        size={'xl'}
+        size={'80%'}
         opened={opened}
         onClose={() => setOpened(false)}
         title={<Title order={2}>Cập nhật danh mục</Title>}

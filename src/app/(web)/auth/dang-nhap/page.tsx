@@ -15,6 +15,7 @@ import {
   TextInput,
   Title
 } from '@mantine/core';
+import { IconKey, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -90,9 +91,11 @@ export default function Page() {
                   name='email'
                   render={({ field }) => (
                     <TextInput
-                      styles={{ input: {} }}
-                      placeholder='E-mail, số điện thoại'
                       {...field}
+                      placeholder='E-mail'
+                      type='email'
+                      label='E-mail'
+                      leftSection={<IconMail size={18} stroke={1.5} />}
                       onChange={e => {
                         field.onChange(e.target.value);
                         setError('');
@@ -110,6 +113,7 @@ export default function Page() {
                     <PasswordInput
                       {...field}
                       placeholder='Mật khẩu'
+                      leftSection={<IconKey size={18} stroke={1.5} />}
                       onChange={e => {
                         field.onChange(e.target.value);
                         setError('');

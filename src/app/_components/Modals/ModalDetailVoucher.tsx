@@ -44,8 +44,8 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
                 />
               </Box>
               <Flex direction='column' align='center' justify='center' pos={'absolute'} className='z-[10]'>
-                <Text size='xs' className='text-center' c='#fff'>
-                  Voucher
+                <Text size='xs' className='text-center' c='#fff' fw={700}>
+                  Mama Voucher
                 </Text>
               </Flex>
               {hoursRemainingVoucher(data?.startDate, data?.endDate)?.type == 'active' ? (

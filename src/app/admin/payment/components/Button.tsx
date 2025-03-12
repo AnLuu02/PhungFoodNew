@@ -16,6 +16,7 @@ export function CreatePaymentButton() {
         Tạo mới
       </Button>
       <Modal
+        closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
         title={<Title order={2}>Tạo phương thức thanh toán</Title>}
@@ -34,6 +35,7 @@ export function UpdatePaymentButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
         title={<Title order={2}>Cập nhật phương thức thanh toán</Title>}

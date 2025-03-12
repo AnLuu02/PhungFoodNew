@@ -1,7 +1,9 @@
 'use client';
-import { Box, Card, Center, Divider, Group, ScrollAreaAutosize, Select, Stack, Text } from '@mantine/core';
+import { Box, Card, Center, Divider, Group, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
 import { useLocalStorage } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
+import { IconCalendar } from '@tabler/icons-react';
 import Empty from '~/app/_components/Empty';
 import { HEIGHT_HEADER } from '~/app/_components/Web/Header/_components/NavigationHeader';
 import { CartItemFastMenu } from '~/app/_components/Web/Home/_Components/CartItemFastMenu';
@@ -63,20 +65,12 @@ const QuickCart = () => {
           </Group>
 
           <Stack gap='md' className='px-4'>
-            <Text fw={500}>Thời gian giao hàng</Text>
-            <Select
-              placeholder='Chọn ngày'
-              data={[
-                { value: 'today', label: 'Hôm nay' },
-                { value: 'tomorrow', label: 'Ngày mai' }
-              ]}
-            />
-            <Select
-              placeholder='Chọn thời gian'
-              data={[
-                { value: 'morning', label: 'Buổi sáng (8:00 - 12:00)' },
-                { value: 'afternoon', label: 'Buổi chiều (13:00 - 17:00)' }
-              ]}
+            <DateTimePicker
+              valueFormat='DD-MM-YYYY'
+              label={'Thời gian giao hàng'}
+              leftSection={<IconCalendar size={18} stroke={1.5} />}
+              dropdownType='modal'
+              placeholder='Thời gian giao hàng'
             />
             <Box mb={10}>
               <ButtonCheckout

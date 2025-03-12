@@ -19,7 +19,13 @@ export function CreateOrderButton() {
       <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </Button>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Tạo hóa đơn</Title>}>
+      <Modal
+        closeOnClickOutside={false}
+        size={'100%'}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Tạo hóa đơn</Title>}
+      >
         <CreateOrder setOpened={setOpened} />
       </Modal>
     </>
@@ -110,7 +116,8 @@ export function UpdateOrderButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
-        size={'xl'}
+        closeOnClickOutside={false}
+        size={'100%'}
         opened={opened}
         onClose={() => setOpened(false)}
         title={

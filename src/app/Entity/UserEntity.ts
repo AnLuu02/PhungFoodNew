@@ -1,4 +1,5 @@
-import { Gender, UserLevel, UserRole } from '@prisma/client';
+import { Gender, UserLevel } from '@prisma/client';
+import { Address } from './AddressEntity';
 import { Image } from './ImageEntity';
 
 export type User = {
@@ -10,13 +11,13 @@ export type User = {
 
   image?: Image;
 
-  password: string;
+  roleId?: string;
 
-  role: UserRole;
+  password: string;
 
   phone?: string;
 
-  address?: string;
+  address?: Address;
 
   dateOfBirth?: Date;
 

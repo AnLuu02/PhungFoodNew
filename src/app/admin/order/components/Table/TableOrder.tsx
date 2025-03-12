@@ -19,11 +19,13 @@ import {
 export default function TableOrder({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
   const { data: result, isLoading } = api.Order.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.orders || [];
@@ -37,12 +39,12 @@ export default function TableOrder({
     {
       header: 'Khách hàng',
       accessorKey: 'user.name',
-      cell: info => <Highlight highlight={query}>{info.row.original.user.name}</Highlight>
+      cell: info => <Highlight highlight={query}>{info.row.original.user?.name}</Highlight>
     },
     {
       header: 'Thanh toán',
       accessorKey: 'payment.name',
-      cell: info => <Highlight highlight={query}>{info.row.original.payment.name}</Highlight>
+      cell: info => <Highlight highlight={query}>{info.row.original.payment?.name}</Highlight>
     },
     {
       header: 'Tổng hóa đơn',
@@ -81,7 +83,7 @@ export default function TableOrder({
               formData={{
                 id: info.row.original.id,
                 total: info.row.original.total,
-                userId: info.row.original.user.id,
+                userId: info.row.original.user?.id,
                 paymentId: info.row.original.payment.id,
                 orderItems: info.row.original.orderItems,
                 status: OrderStatus.CANCELLED
@@ -92,12 +94,18 @@ export default function TableOrder({
       )
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          <UpdateOrderButton id={info.row.original.id} />
-          <DeleteOrderButton id={info.row.original.id} />
-          <SendOrderButton order={info.row.original} />
+          {user?.user && (
+            <>
+              <UpdateOrderButton id={info.row.original.id} />
+              <SendOrderButton order={info.row.original} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeleteOrderButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

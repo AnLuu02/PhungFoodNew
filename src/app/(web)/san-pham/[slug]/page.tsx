@@ -93,15 +93,26 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   ) : (
     <Box>
       <Grid>
-        <Grid.Col span={{ base: 12, sm: 6, md: 6 }} pl={0}>
+        <Grid.Col span={{ base: 12, sm: 6, md: 6 }} pl={0} pos={'sticky'} top={70} className='h-fit'>
           <ProductImage
             thumbnail={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            gallery={gallery}
+            gallery={
+              gallery?.length > 0
+                ? gallery
+                : [
+                    { url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000' },
+                    { url: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?q=80&w=1000' },
+                    { url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000' },
+                    { url: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000' },
+                    { url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1000' },
+                    { url: 'https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1000' }
+                  ]
+            }
             discount={discount}
           />
         </Grid.Col>
 
-        <Grid.Col span={{ base: 12, sm: 6, md: 6 }}>
+        <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='h-fit'>
           <Stack gap='md'>
             <Flex align='center' gap={'xs'}>
               <Badge bg={inStock ? 'green.9' : 'red'} radius={'sm'} size='md'>
@@ -197,7 +208,8 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                   onChange={(value: any) => setQuantity(value)}
                   thousandSeparator=','
                   min={0}
-                  max={99}
+                  max={Number(product?.availableQuantity) || 100}
+                  clampBehavior='strict'
                   style={{ width: '80px' }}
                 />
               </Group>
@@ -208,6 +220,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
                       Kích cỡ:
                     </Text>
                   }
+                  searchable
                   placeholder='Pick value'
                   data={['1 người ăn', '2 người ăn', '3 người ăn', '5 người ']}
                 />
@@ -260,14 +273,22 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
             <ShippingInfo />
           </Stack>
         </Grid.Col>
-
+      </Grid>
+      <Grid mt={'md'}>
         {!isMobile && (
           <Grid.Col span={12}>
             <DiscountCodes />
           </Grid.Col>
         )}
 
-        <Grid.Col span={{ base: 12, sm: 7, md: 8, lg: 9 }}>
+        <Grid.Col
+          span={{
+            base: 12,
+            sm: hintProducts?.length > 0 ? 7 : 12,
+            md: hintProducts?.length > 0 ? 8 : 12,
+            lg: hintProducts?.length > 0 ? 9 : 12
+          }}
+        >
           <Tabs defaultValue='description' classNames={classes}>
             <Tabs.List>
               <Tabs.Tab value='description'>
@@ -392,9 +413,11 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
           </Tabs>
         </Grid.Col>
 
-        <Grid.Col span={{ base: 12, sm: 5, md: 4, lg: 3 }}>
-          <RelatedProducts data={hintProducts} />
-        </Grid.Col>
+        {hintProducts?.length > 0 && (
+          <Grid.Col span={{ base: 12, sm: 5, md: 4, lg: 3 }}>
+            <RelatedProducts data={hintProducts} />
+          </Grid.Col>
+        )}
 
         {relatedProducts?.length > 0 && (
           <Grid.Col span={12}>

@@ -21,7 +21,6 @@ import LoadingComponent from '~/app/_components/Loading';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { formatDate } from '~/app/lib/utils/format/formatDate';
 import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
-import { vipLevels } from './user-statistics';
 export const mockOrders = [
   { id: '1', date: '2023-05-01', total: 99.99, status: 'completed' },
   { id: '2', date: '2023-05-15', total: 149.99, status: 'processing' },
@@ -82,7 +81,7 @@ export default function UserInfo({ user, isLoading }: any) {
           <Group mb='xs'>
             <Tooltip label={'Change Avatar'}>
               <Box w={80} h={80} pos={'relative'} className='group cursor-pointer overflow-hidden rounded-full'>
-                <Avatar src={user?.images?.[0]?.url} size={'100%'} radius={40} />
+                <Avatar src={user?.image?.url} size={'100%'} radius={40} />
                 <Flex className='absolute inset-0 hidden cursor-pointer group-hover:block group-hover:bg-[rgba(0,0,0,0.4)]'>
                   <Center className='h-full w-full' component='label'>
                     <IconUpload size={24} stroke={1.5} color='white' />
@@ -150,18 +149,18 @@ export default function UserInfo({ user, isLoading }: any) {
                   Role
                 </Text>
                 <Text size='sm' c='dimmed'>
-                  {user?.role}
+                  {user?.role?.name}
                 </Text>
               </Grid.Col>
             )}
 
-            {user?.address && (
+            {user?.address?.fullAddress && (
               <Grid.Col span={12}>
                 <Text fw={700} size='sm'>
                   Address
                 </Text>
                 <Text size='sm' c='dimmed'>
-                  {user?.address}
+                  {user?.address?.fullAddress}
                 </Text>
               </Grid.Col>
             )}
@@ -218,14 +217,44 @@ export default function UserInfo({ user, isLoading }: any) {
               <Text fw={700} size='sm' mb='xs'>
                 Cấp V.I.P: {getLevelUser(user?.level as UserLevel)}
               </Text>
-              <Progress value={getVIPProgress(user)} size='sm' radius='xl' />
-              <Group mt='xs'>
+              {/* <Progress value={getVIPProgress(user)} size='sm' radius='xl' /> */}
+              <Progress.Root size={'xl'}>
+                <Tooltip label='ĐỒNG'>
+                  <Progress.Section value={33} color='#CD7F32'>
+                    <Progress.Label>ĐỒNG</Progress.Label>
+                  </Progress.Section>
+                </Tooltip>
+
+                <Tooltip label='BẠC'>
+                  <Progress.Section value={28} color=' #C0C0C0'>
+                    <Progress.Label>BẠC</Progress.Label>
+                  </Progress.Section>
+                </Tooltip>
+
+                <Tooltip label='VÀNG'>
+                  <Progress.Section value={15} color=' #FFD700'>
+                    <Progress.Label>VÀNG</Progress.Label>
+                  </Progress.Section>
+                </Tooltip>
+                <Tooltip label='BẠCH KIM'>
+                  <Progress.Section value={15} color='#E5E4E2'>
+                    <Progress.Label>BẠCH KIM</Progress.Label>
+                  </Progress.Section>
+                </Tooltip>
+                <Tooltip label='KIM CƯƠNG'>
+                  <Progress.Section value={15} color='#B9F2FF'>
+                    <Progress.Label>KIM CƯƠNG</Progress.Label>
+                  </Progress.Section>
+                </Tooltip>
+              </Progress.Root>
+
+              {/* <Group mt='xs'>
                 {vipLevels.map(level => (
                   <Text key={level} size='sm' color='dimmed'>
                     {level}
                   </Text>
                 ))}
-              </Group>
+              </Group> */}
             </Box>
           </Stack>
         </Card>

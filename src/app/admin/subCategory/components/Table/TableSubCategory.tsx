@@ -11,11 +11,13 @@ import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 export default function TableSubCategory({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
   const { data: result, isLoading } = api.SubCategory.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.subCategories || [];
@@ -29,12 +31,7 @@ export default function TableSubCategory({
       header: 'Ảnh',
       accessorKey: 'images[0].url',
       cell: info => (
-        <Avatar
-          src={info.row.original.images?.[0]?.url}
-          alt={info.row.original.images?.[0]?.altText}
-          size={40}
-          radius={'md'}
-        />
+        <Avatar src={info.row.original.image?.url} alt={info.row.original.image?.altText} size={40} radius={'md'} />
       )
     },
     {
@@ -45,7 +42,7 @@ export default function TableSubCategory({
     {
       header: 'Mô tả',
       accessorKey: 'description',
-      cell: info => <Highlight highlight={query}>{info.row.original.description}</Highlight>
+      cell: info => <Highlight highlight={query}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Ngày tạo',
@@ -53,11 +50,17 @@ export default function TableSubCategory({
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          <UpdateSubCategoryButton id={info.row.original.id} />
-          <DeleteSubCategoryButton id={info.row.original.id} />
+          {user?.user && (
+            <>
+              <UpdateSubCategoryButton id={info.row.original.id} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeleteSubCategoryButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

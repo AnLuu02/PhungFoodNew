@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
 import { PaymentType } from '@prisma/client';
+import { IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Payment } from '~/app/Entity/PaymentEntity';
@@ -79,10 +80,10 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
             name='name'
             render={({ field }) => (
               <TextInput
+                {...field}
                 label='Tên phương thức'
                 placeholder='Nhập tên phương thức'
                 error={errors.name?.message}
-                {...field}
               />
             )}
           />
@@ -92,7 +93,14 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
             control={control}
             name='tag'
             render={({ field }) => (
-              <TextInput label='Tag' placeholder='Sẽ tạo tự động' error={errors.name?.message} readOnly {...field} />
+              <TextInput
+                {...field}
+                leftSection={<IconTag size={18} stroke={1.5} />}
+                label='Tag'
+                placeholder='Sẽ tạo tự động'
+                error={errors.name?.message}
+                readOnly
+              />
             )}
           />
         </Grid.Col>
@@ -103,6 +111,7 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
             render={({ field }) => (
               <Select
                 label='Phương thức thanh toán'
+                searchable
                 placeholder='Chọn phương thức '
                 data={[
                   { value: PaymentType.CREDIT_CARD, label: 'Thẻ tín dụng' },
@@ -124,6 +133,7 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
               <Select
                 label='Nhà cung cấp thanh toán'
                 placeholder='Chọn phương thức thanh toán'
+                searchable
                 data={[
                   { value: 'momo', label: 'Momo' },
                   { value: 'zalopay', label: 'ZaloPay' },

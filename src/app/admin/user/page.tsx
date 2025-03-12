@@ -1,9 +1,10 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { getServerSession } from 'next-auth';
 import Search from '~/app/_components/Admin/Search';
+import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateUserButton } from './components/Button';
 import TableUser from './components/Table/TableUser';
-
 export default async function UserManagementPage({
   searchParams
 }: {
@@ -17,6 +18,7 @@ export default async function UserManagementPage({
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.User.getAll();
+  const user = await getServerSession(authOptions);
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -28,11 +30,11 @@ export default async function UserManagementPage({
         <Text fw={500}>Số lượng bản ghi: {totalData && totalData?.length}</Text>
         <Group>
           <Search />
-          <CreateUserButton />
+          {user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && <CreateUserButton />}
         </Group>
       </Group>
 
-      <TableUser currentPage={currentPage} query={query} limit={limit} />
+      <TableUser currentPage={currentPage} query={query} limit={limit} user={user} />
     </Card>
   );
 }

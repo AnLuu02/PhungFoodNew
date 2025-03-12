@@ -12,11 +12,13 @@ import {
   NumberInput,
   Paper,
   Select,
+  TagsInput,
   Text,
   Textarea,
   TextInput
 } from '@mantine/core';
-import { IconFile, IconTrash } from '@tabler/icons-react';
+import { ProductStatus } from '@prisma/client';
+import { IconFile, IconTag, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Product } from '~/app/Entity/ProductEntity';
@@ -67,6 +69,8 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
       price: 0,
       thumbnail: undefined,
       gallery: [],
+      tags: [],
+      status: ProductStatus.ACTIVE,
       region: 'Miền Nam',
       subCategoryId: '',
       materials: []
@@ -274,7 +278,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             control={control}
             name='name'
             render={({ field }) => (
-              <TextInput label='Tên sản phẩm' placeholder='Nhập tên sản phẩm' error={errors.name?.message} {...field} />
+              <TextInput {...field} label='Tên sản phẩm' placeholder='Nhập tên sản phẩm' error={errors.name?.message} />
             )}
           />
         </Grid.Col>
@@ -283,7 +287,14 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             control={control}
             name='tag'
             render={({ field }) => (
-              <TextInput label='Tag' placeholder='Sẽ tạo tự động' error={errors.name?.message} readOnly {...field} />
+              <TextInput
+                {...field}
+                leftSection={<IconTag size={18} stroke={1.5} />}
+                label='Tag'
+                placeholder='Sẽ tạo tự động'
+                error={errors.name?.message}
+                readOnly
+              />
             )}
           />
         </Grid.Col>
@@ -384,6 +395,38 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             )}
           />
         </Grid.Col>
+
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='status'
+            render={({ field }) => (
+              <Select
+                label='Trạng thái'
+                placeholder='Hiển thị hay ẩn'
+                data={Object.values(ProductStatus)?.map(category => ({
+                  value: category,
+                  label: category === ProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
+                }))}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.subCategoryId?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+
+        <Grid.Col span={12}>
+          <Controller
+            control={control}
+            name='tags'
+            render={({ field }) => (
+              <TagsInput {...field} label='Gắn tag cho sản phẩm' placeholder='Gắn tag cho sản phẩm' clearable />
+            )}
+          />
+        </Grid.Col>
+
         <Grid.Col span={12}>
           <Controller
             control={control}

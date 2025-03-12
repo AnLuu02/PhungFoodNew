@@ -1,21 +1,17 @@
+import { Address } from './AddressEntity';
+
 export type Delivery = {
   id: string;
 
-  name: string;
+  name?: string;
 
-  email: string;
+  email?: string;
 
-  phone: string;
+  phone?: string;
 
-  province: string;
-
-  address: string;
+  address?: Address;
 
   note?: string;
 
-  userId: string;
-
-  orderId: string;
-
-  paymentId: string;
+  orderId?: string;
 };

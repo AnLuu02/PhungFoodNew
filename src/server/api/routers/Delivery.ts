@@ -1,68 +1,20 @@
 import { z } from 'zod';
+import { addressSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const deliveryRouter = createTRPCRouter({
-  find: publicProcedure
-    .input(
-      z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
-        query: z.string().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
-
-      const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-      const [totalDeliveries, totalDeliveriesQuery, deliveries] = await ctx.db.$transaction([
-        ctx.db.delivery.count(),
-        ctx.db.delivery.count({
-          where: {
-            OR: [
-              {
-                name: { contains: query?.trim(), mode: 'insensitive' }
-              }
-            ]
-          }
-        }),
-        ctx.db.delivery.findMany({
-          skip: startPageItem,
-          take,
-          where: {
-            OR: [
-              {
-                name: { contains: query?.trim(), mode: 'insensitive' }
-              }
-            ]
-          }
-        })
-      ]);
-      const totalPages = Math.ceil(
-        query?.trim() ? (totalDeliveriesQuery == 0 ? 1 : totalDeliveriesQuery / take) : totalDeliveries / take
-      );
-      const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-
-      return {
-        deliveries,
-        pagination: {
-          currentPage,
-          totalPages
-        }
-      };
-    }),
   create: publicProcedure
     .input(
       z.object({
         id: z.string().optional(),
-        name: z.string().min(1, 'Name is required'),
-        email: z.string().optional(),
-        phone: z.string().optional(),
-        province: z.string().optional(),
-        address: z.string().optional(),
+        name: z.string().min(1, 'Name là bắt buộc'),
+        email: z.string().min(1, 'Email là bắt buộc'),
+        phone: z.string().min(1, 'Phone là bắt buộc'),
+        address: addressSchema,
         note: z.string().optional(),
-        userId: z.string().optional(),
-        orderId: z.string().optional()
+        userId: z.string().min(1, 'Ai là người mua hàng?'),
+        orderId: z.string().min(1, 'Order ID là bắt buộc')
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -71,11 +23,16 @@ export const deliveryRouter = createTRPCRouter({
           name: input.name,
           email: input.email,
           phone: input.phone,
-          province: input.province,
-          address: input.address,
+          address: {
+            create: {
+              ...input.address
+            }
+          },
           note: input.note,
-          userId: input.userId,
           orderId: input.orderId
+        },
+        include: {
+          address: true
         }
       });
       return {
@@ -88,14 +45,13 @@ export const deliveryRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string().optional(),
-        name: z.string().min(1, 'Name is required'),
-        email: z.string().optional(),
-        phone: z.string().optional(),
-        province: z.string().optional(),
-        address: z.string().optional(),
+        name: z.string().min(1, 'Name là bắt buộc'),
+        email: z.string().min(1, 'Email là bắt buộc'),
+        phone: z.string().min(1, 'Phone là bắt buộc'),
+        address: addressSchema,
         note: z.string().optional(),
-        userId: z.string().optional(),
-        orderId: z.string().optional()
+        userId: z.string().min(1, 'Ai là người mua hàng?'),
+        orderId: z.string().min(1, 'Order ID là bắt buộc')
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -109,13 +65,16 @@ export const deliveryRouter = createTRPCRouter({
         const delivery = await ctx.db.delivery.update({
           where: { id: input?.id },
           data: {
+            id: input?.id,
             name: input.name,
             email: input.email,
             phone: input.phone,
-            province: input.province,
-            address: input.address,
+            address: {
+              update: {
+                ...input.address
+              }
+            },
             note: input.note,
-            userId: input.userId,
             orderId: input.orderId
           }
         });
@@ -131,53 +90,5 @@ export const deliveryRouter = createTRPCRouter({
         message: 'Danh mục đã tồn tại. Hãy thử lại.',
         record: existingDelivery
       };
-    }),
-  delete: publicProcedure
-    .input(
-      z.object({
-        id: z.string()
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const delivery = await ctx.db.delivery.delete({
-        where: { id: input.id }
-      });
-
-      return delivery;
-    }),
-
-  getFilter: publicProcedure
-    .input(
-      z.object({
-        query: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const delivery = await ctx.db.delivery.findMany({
-        where: {
-          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
-        }
-      });
-
-      return delivery;
-    }),
-  getOne: publicProcedure
-    .input(
-      z.object({
-        query: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const delivery = await ctx.db.delivery.findFirst({
-        where: {
-          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
-        }
-      });
-
-      return delivery;
-    }),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const delivery = await ctx.db.delivery.findMany({});
-    return delivery;
-  })
+    })
 });

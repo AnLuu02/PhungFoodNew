@@ -13,13 +13,16 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+import { AddressType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import useSWR from 'swr';
 import { z } from 'zod';
 import BButton from '~/app/_components/Button';
-import { Delivery } from '~/app/Entity/DeliveryEntity';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 import { deliverySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -29,9 +32,7 @@ import { PaymentForm } from '../PyamentForm';
 
 export default function CheckoutClient({ order, orderId }: any) {
   const [loading, setLoading] = React.useState(false);
-  const mutationOrder = api.Order.update.useMutation();
-  const mutationDelivery = api.Delivery.create.useMutation();
-
+  const updateMutationOrder = api.Order.update.useMutation();
   const discount = React.useMemo(() => {
     return order?.orderItems?.reduce((sum: any, item: any) => {
       if (item.product.discount > 0) {
@@ -47,7 +48,12 @@ export default function CheckoutClient({ order, orderId }: any) {
   const tax = (subtotal - discount) * 0.1;
   const total = subtotal + tax - discount;
 
-  const { control, handleSubmit } = useForm({
+  const {
+    control,
+    watch,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<z.infer<typeof deliverySchema> & { paymentId: string }>({
     resolver: zodResolver(
       deliverySchema.extend({
         paymentId: z.string().min(1, 'Chọn phương thức thanh toán.')
@@ -56,25 +62,96 @@ export default function CheckoutClient({ order, orderId }: any) {
     mode: 'onChange',
     defaultValues: {
       paymentId: '',
-      orderId: orderId,
-      email: order?.user?.email,
-      name: order?.user?.name,
-      address: order?.user?.address,
+      name: '',
+      email: '',
+      phone: '',
+      address: {
+        provinceId: '',
+        districtId: '',
+        wardId: '',
+        province: '',
+        district: '',
+        ward: '',
+        fullAddress: '',
+        postalCode: '',
+        detail: '',
+        type: AddressType.DELIVERY
+      },
       note: '',
-      phone: order?.user?.phone,
-      province: order?.user?.address
+      orderId: ''
     }
   });
+  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
+  const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
 
-  const onSubmit: SubmitHandler<Delivery> = async (formData): Promise<void> => {
+  const { data: districts } = useSWR<any>(
+    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
+    fetcher
+  );
+
+  const { data: wards } = useSWR<any>(
+    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
+    fetcher
+  );
+
+  const onSubmit: SubmitHandler<z.infer<typeof deliverySchema> & { paymentId: string }> = async (
+    formData
+  ): Promise<void> => {
     setLoading(true);
     if (order) {
-      const delivery = await mutationDelivery.mutateAsync(formData);
-      const resp: any = await mutationOrder.mutateAsync({
+      const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
+      const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
+      const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
+      const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+
+      const resp: any = await updateMutationOrder.mutateAsync({
         where: { id: orderId },
         data: {
           paymentId: formData.paymentId,
-          deliveryId: delivery.record.id
+          delivery: {
+            upsert: {
+              where: { orderId: orderId },
+              update: {
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                note: formData.note,
+                address: {
+                  update: {
+                    ...formData.address,
+                    detail: formData.address?.detail || '',
+                    provinceId: formData.address?.provinceId || '',
+                    districtId: formData.address?.districtId || '',
+                    wardId: formData.address?.wardId || '',
+                    province: province?.province_name || '',
+                    district: district?.district_name || '',
+                    ward: ward?.ward_name || '',
+                    fullAddress
+                  }
+                }
+              },
+              create: {
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                note: formData.note,
+                address: {
+                  create: {
+                    ...formData.address,
+                    detail: formData.address?.detail || '',
+                    provinceId: formData.address?.provinceId || '',
+                    districtId: formData.address?.districtId || '',
+                    wardId: formData.address?.wardId || '',
+                    province: province?.province_name || '',
+                    district: district?.district_name || '',
+                    ward: ward?.ward_name || '',
+                    fullAddress
+                  }
+                }
+              }
+            }
+          }
         }
       });
 
@@ -119,7 +196,14 @@ export default function CheckoutClient({ order, orderId }: any) {
               </Link>
             </GridCol> */}
             <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-              <DeliveryCard control={control} />
+              <DeliveryCard
+                control={control}
+                watch={watch}
+                errors={errors}
+                provinces={provinces}
+                districts={districts}
+                wards={wards}
+              />
             </GridCol>
             <GridCol span={{ base: 12, sm: 12, md: 6 }}>
               <PaymentForm control={control} />

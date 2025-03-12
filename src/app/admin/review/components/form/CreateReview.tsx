@@ -27,7 +27,8 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
   const { data: products } = api.Product.getAll.useQuery({
     hasCategoryChild: true,
     hasCategory: true,
-    hasReview: true
+    hasReview: true,
+    userRole: 'ADMIN'
   });
   const { data: users } = api.User.getAll.useQuery();
 
@@ -102,7 +103,14 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
             }}
             render={({ field, fieldState }) => (
               <Flex align={'center'} justify={'space-between'}>
-                <NumberInput label='Đánh giá' {...field} min={0} max={5} error={errors.rating?.message} />
+                <NumberInput
+                  label='Đánh giá'
+                  {...field}
+                  min={0}
+                  max={5}
+                  clampBehavior='strict'
+                  error={errors.rating?.message}
+                />
                 <Rating size={'lg'} {...field} fractions={2} color={'yellow.8'} />
               </Flex>
             )}

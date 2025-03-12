@@ -1,9 +1,10 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { getServerSession } from 'next-auth';
 import Search from '~/app/_components/Admin/Search';
+import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateReviewButton } from './components/Button';
 import TableReview from './components/Table/TableReview';
-
 export default async function ReviewManagementPage({
   searchParams
 }: {
@@ -17,6 +18,7 @@ export default async function ReviewManagementPage({
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.Review.getAll();
+  const user = await getServerSession(authOptions);
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -27,11 +29,12 @@ export default async function ReviewManagementPage({
         <Text fw={500}>Số lượng bản ghi: {totalData && totalData?.length}</Text>
         <Group>
           <Search />
-          <CreateReviewButton />
+          {user?.user?.role === 'ADMIN' ||
+            (user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && <CreateReviewButton />)}
         </Group>
       </Group>
 
-      <TableReview currentPage={currentPage} query={query} limit={limit} />
+      <TableReview currentPage={currentPage} query={query} limit={limit} user={user} />
     </Card>
   );
 }

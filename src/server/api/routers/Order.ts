@@ -1,8 +1,9 @@
 import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
+import { deliverySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-import { updatePointLevel } from './Product';
+import { updatePointLevel, updateSales } from './Product';
 import { updateRevenue } from './Revenue';
 
 export const orderRouter = createTRPCRouter({
@@ -43,7 +44,7 @@ export const orderRouter = createTRPCRouter({
                     }
                   },
                   {
-                    User: {
+                    user: {
                       OR: [
                         {
                           name: {
@@ -94,7 +95,7 @@ export const orderRouter = createTRPCRouter({
                     }
                   },
                   {
-                    User: {
+                    user: {
                       name: {
                         contains: query?.trim(),
                         mode: 'insensitive'
@@ -111,9 +112,10 @@ export const orderRouter = createTRPCRouter({
             : undefined,
           include: {
             payment: true,
-            User: {
+            user: {
               include: {
-                images: true
+                image: true,
+                address: true
               }
             },
             delivery: true,
@@ -149,7 +151,7 @@ export const orderRouter = createTRPCRouter({
         status: z.nativeEnum(OrderStatus),
         userId: z.string(),
         paymentId: z.string().optional(),
-        deliveryId: z.string().optional(),
+        delivery: deliverySchema.optional(),
         transactionId: z.string().optional(),
         orderItems: z.array(
           z.object({
@@ -168,7 +170,16 @@ export const orderRouter = createTRPCRouter({
           status: input.status,
           userId: input.userId,
           paymentId: input.paymentId,
-          deliveryId: input?.deliveryId,
+          delivery: input.delivery
+            ? {
+                create: {
+                  ...input.delivery,
+                  address: {
+                    create: input.delivery.address
+                  }
+                }
+              }
+            : undefined,
           transactionId: input.transactionId,
           orderItems: {
             createMany: {
@@ -206,12 +217,20 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const order: any = await ctx.db.order.update({
         where: input.where as Prisma.OrderWhereUniqueInput,
-        data: input.data
+        data: input.data,
+        include: {
+          orderItems: true
+        }
       });
 
       if (order && order.status === OrderStatus.COMPLETED) {
         updateRevenue(ctx, order.status, order.userId, order.total);
         updatePointLevel(ctx, order.userId, order.total);
+        await Promise.all(
+          order?.orderItems?.map((orderItem: any) => {
+            return updateSales(ctx, order.status, orderItem.productId, orderItem?.quantity);
+          })
+        );
       }
       return {
         success: true,
@@ -251,7 +270,7 @@ export const orderRouter = createTRPCRouter({
               id: input.query?.trim()
             },
             {
-              User: {
+              user: {
                 email: {
                   contains: input.query?.trim(),
                   mode: 'insensitive'
@@ -271,13 +290,18 @@ export const orderRouter = createTRPCRouter({
             }
           },
           vouchers: true,
-          User: {
+          user: {
             include: {
-              images: true
+              image: true,
+              address: true
             }
           },
           payment: true,
-          delivery: true
+          delivery: {
+            include: {
+              address: true
+            }
+          }
         }
       });
 
@@ -297,7 +321,7 @@ export const orderRouter = createTRPCRouter({
               id: input.query?.trim()
             },
             {
-              User: {
+              user: {
                 email: {
                   contains: input.query?.trim(),
                   mode: 'insensitive'
@@ -317,13 +341,18 @@ export const orderRouter = createTRPCRouter({
             }
           },
           vouchers: true,
-          User: {
+          user: {
             include: {
-              images: true
+              image: true,
+              address: true
             }
           },
           payment: true,
-          delivery: true
+          delivery: {
+            include: {
+              address: true
+            }
+          }
         }
       });
 

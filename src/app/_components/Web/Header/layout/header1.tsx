@@ -19,11 +19,12 @@ export const Header1 = () => {
       direction={{ base: 'column', sm: 'row', md: 'row' }}
       h={{ base: 'max-content', md: 40 }}
       bg={'green.9'}
+      pos={'relative'}
       pl={{ base: rem(20), lg: rem(130) }}
       pr={{ base: rem(20), lg: rem(130) }}
       align={'center'}
       justify={{ base: 'flex-start', sm: 'space-between', md: 'space-between' }}
-      className='text-white'
+      className='z-[100] text-white'
     >
       <Center>
         <Text size='sm'>Chào mừng bạn đến với Phụng Food!</Text>

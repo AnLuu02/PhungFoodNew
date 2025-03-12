@@ -1,9 +1,10 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { getServerSession } from 'next-auth';
 import Search from '~/app/_components/Admin/Search';
+import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateProductButton } from './components/Button';
 import TableProduct from './components/Table/TableProduct';
-
 export default async function ProductManagementPage({
   searchParams
 }: {
@@ -16,7 +17,8 @@ export default async function ProductManagementPage({
   const query = searchParams?.query || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
-  const totalData = await api.Product.getAll({});
+  const totalData = await api.Product.getAll({ userRole: 'ADMIN' });
+  const user = await getServerSession(authOptions);
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -28,12 +30,12 @@ export default async function ProductManagementPage({
         <Text fw={500}>Số lượng bản ghi: {totalData && totalData?.length}</Text>
         <Group>
           <Search />
-          <CreateProductButton />
-          {/* <DeleteAllProductButton /> */}
+          {user?.user?.role === 'ADMIN' ||
+            (user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && <CreateProductButton />)}
         </Group>
       </Group>
 
-      <TableProduct currentPage={currentPage} query={query} limit={limit} />
+      <TableProduct currentPage={currentPage} query={query} limit={limit} user={user} />
     </Card>
   );
 }

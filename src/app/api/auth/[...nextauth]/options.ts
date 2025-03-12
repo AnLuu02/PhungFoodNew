@@ -1,7 +1,6 @@
 import { compare } from 'bcryptjs';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import { api } from '~/trpc/server';
 
@@ -10,10 +9,6 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt'
   },
   providers: [
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string
-    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!
@@ -41,8 +36,8 @@ export const authOptions: NextAuthOptions = {
           id: user?.id,
           name: user?.name,
           email: user?.email,
-          image: user?.images?.[0]?.url,
-          role: user?.role
+          image: user?.image?.url,
+          role: user?.role?.name
         };
       }
     })
@@ -72,13 +67,11 @@ export const authOptions: NextAuthOptions = {
       try {
         const userFromDb = await api.User.getOne({ query: token?.email || '' });
 
-        if (userFromDb) {
-          token.role = userFromDb?.role;
+        if (userFromDb?.id) {
+          token.role = userFromDb?.role?.name;
           token.id = userFromDb?.id;
           token.details = {
             id: userFromDb?.id,
-            name: userFromDb?.name,
-            email: userFromDb?.email,
             level: userFromDb?.level,
             pointLevel: userFromDb?.pointLevel
           };

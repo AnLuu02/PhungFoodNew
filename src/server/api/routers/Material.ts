@@ -50,7 +50,7 @@ export const materialRouter = createTRPCRouter({
             ]
           },
           include: {
-            Products: true
+            products: true
           }
         })
       ]);
@@ -125,24 +125,6 @@ export const materialRouter = createTRPCRouter({
       };
     }),
 
-  getFilter: publicProcedure
-    .input(
-      z.object({
-        query: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const material = await ctx.db.material.findMany({
-        where: {
-          OR: [
-            { id: { equals: input.query?.trim() } },
-            { name: { equals: input.query?.trim() } },
-            { tag: { equals: input.query?.trim() } }
-          ]
-        }
-      });
-      return material;
-    }),
   getOne: publicProcedure
     .input(
       z.object({
@@ -165,7 +147,7 @@ export const materialRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const material = await ctx.db.material.findMany({
       include: {
-        Products: true
+        products: true
       }
     });
     return material;

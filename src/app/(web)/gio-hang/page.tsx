@@ -114,6 +114,7 @@ export default function ShoppingCart() {
 
                       <NumberInput
                         thousandSeparator=','
+                        clampBehavior='strict'
                         value={item.quantity}
                         onChange={quantity => {
                           if (Number(quantity) === 0) {
@@ -122,7 +123,7 @@ export default function ShoppingCart() {
                           updateQuantity(item.id, Number(quantity));
                         }}
                         min={0}
-                        max={99}
+                        max={Number(item?.availableQuantity) || 100}
                         style={{ width: '80px' }}
                       />
                     </Table.Td>

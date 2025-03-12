@@ -1,6 +1,6 @@
 'use client';
 import { Avatar, Badge, Button, Checkbox, Group, Highlight, Menu, Spoiler, Table, Text, Tooltip } from '@mantine/core';
-import { ImageType } from '@prisma/client';
+import { ImageType, ProductStatus } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
@@ -13,13 +13,19 @@ import { DeleteProductButton, UpdateProductButton } from '../Button';
 export default function TableProduct({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
-  const { data: result, isLoading } = api.Product.find.useQuery({ skip: +currentPage, take: +limit, query });
+  const { data: result, isLoading } = api.Product.find.useQuery({
+    skip: +currentPage,
+    take: +limit,
+    userRole: 'ADMIN'
+  });
   const currentItems = result?.products || [];
   const columns: ColumnDef<any>[] = [
     {
@@ -51,9 +57,7 @@ export default function TableProduct({
       cell: info => (
         <Spoiler maxHeight={60} showLabel='Xem thêm' hideLabel='Ẩn'>
           <Highlight highlight={query} size='sm'>
-            {info.row.original.description ||
-              `Có ai đó đã từng nói rằng: “Lý tưởng là những ước mơ cao thượng nhất của con người, rất khó thực hiện nhưng lại có thể thực hiện được và đòi hỏi phải phấn đấu lâu dài, gian khổ, kiên trì…”. Quả thật, trong cuộc sống của chúng ta, lí tưởng cao đẹp có một vai trò vô cùng quan trọng.
-        `}
+            {info.row.original.description || 'Đang cập nhật.'}
           </Highlight>
         </Spoiler>
       )
@@ -68,16 +72,33 @@ export default function TableProduct({
       )
     },
     {
+      header: 'Trạng thái',
+      accessorKey: 'status',
+      cell: info => (
+        <Tooltip label={info.row.original.status}>
+          <Badge color={info.cell.row.original.status == ProductStatus.ACTIVE ? '' : 'red'}>
+            {info.cell.row.original.status == ProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'}
+          </Badge>
+        </Tooltip>
+      )
+    },
+    {
       header: 'Ngày tạo',
       accessorKey: 'createdAt',
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          <UpdateProductButton id={info.row.original.id} />
-          <DeleteProductButton id={info.row.original.id} />
+          {user?.user && (
+            <>
+              <UpdateProductButton id={info.row.original.id} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeleteProductButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

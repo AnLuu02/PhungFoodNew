@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
@@ -174,6 +175,9 @@ export const voucherRouter = createTRPCRouter({
       const voucher = await ctx.db.voucher.findFirst({
         where: {
           OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
+        },
+        include: {
+          products: true
         }
       });
 
@@ -188,68 +192,90 @@ export const voucherRouter = createTRPCRouter({
     return voucher;
   }),
 
+  // update: publicProcedure
+  //   .input(
+  //     z.object({
+  //       id: z.string(),
+  //       tag: z.string().min(1, 'Tag không được để trống'),
+  //       name: z.string().min(1, 'Tên voucher không được để trống'),
+  //       description: z.string().optional(),
+  //       type: z.enum(['PERCENTAGE', 'FIXED']),
+  //       discountValue: z.number().min(1, 'Giá trị giảm không hợp lệ'),
+  //       minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
+  //       maxDiscount: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
+  //       quantity: z.number().min(1, 'Số lượng không hợp lệ'),
+  //       availableQuantity: z.number().min(0).default(0),
+  //       startDate: z.date(),
+  //       endDate: z.date(),
+  //       applyAll: z.boolean().default(false),
+  //       vipLevel: z.number().optional(),
+  //       products: z.array(z.string()).optional()
+  //     })
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const existingVoucher: any = await ctx.db.voucher.findFirst({
+  //       where: {
+  //         id: input.id
+  //       }
+  //     });
+
+  //     if (!existingVoucher || (existingVoucher && existingVoucher?.id == input?.id)) {
+  //       const updateVoucher = await  ctx.db.voucher.update({
+  //         where: { id: input?.id },
+  //         data: {
+  //           name: input.name,
+  //           tag: input.tag,
+  //           description: input.description,
+  //           type: input.type,
+  //           discountValue: input.discountValue,
+  //           minOrderPrice: input.minOrderPrice,
+  //           maxDiscount: input.maxDiscount,
+  //           quantity: input.quantity,
+  //           availableQuantity: input.availableQuantity,
+  //           startDate: input.startDate,
+  //           endDate: input.endDate,
+  //           vipLevel: input.vipLevel,
+  //           applyAll: input.applyAll,
+  //           products: {
+  //             connect: input?.products?.map(productId => ({ id: productId })) || []
+  //           }
+  //         }
+  //       })
+
+  //       return {
+  //         success: true,
+  //         message: 'Cập nhật khuyến mãi thành công.',
+  //         record: updateVoucher
+  //       };
+  //     }
+
+  //     return {
+  //       success: false,
+  //       message: 'khuyến mãi đã tồn tại. Hãy thử lại.',
+  //       record: existingVoucher
+  //     };
+  //   })
   update: publicProcedure
     .input(
       z.object({
-        id: z.string(),
-        tag: z.string().min(1, 'Tag không được để trống'),
-        name: z.string().min(1, 'Tên voucher không được để trống'),
-        description: z.string().optional(),
-        type: z.enum(['PERCENTAGE', 'FIXED']),
-        discountValue: z.number().min(1, 'Giá trị giảm không hợp lệ'),
-        minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
-        maxDiscount: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
-        quantity: z.number().min(1, 'Số lượng không hợp lệ'),
-        availableQuantity: z.number().min(0).default(0),
-        startDate: z.date(),
-        endDate: z.date(),
-        applyAll: z.boolean().default(false),
-        vipLevel: z.number().optional(),
-
-        products: z.array(z.string()).optional()
+        where: z.record(z.any()),
+        data: z.record(z.any())
       })
     )
     .mutation(async ({ ctx, input }) => {
       const existingVoucher: any = await ctx.db.voucher.findFirst({
-        where: {
-          id: input.id
-        }
+        where: input.where
       });
 
-      if (!existingVoucher || (existingVoucher && existingVoucher?.id == input?.id)) {
-        const [voucher, updateVoucher] = await ctx.db.$transaction([
-          ctx.db.voucher.findUnique({
-            where: {
-              id: input.id
-            }
-          }),
-          ctx.db.voucher.update({
-            where: { id: input?.id },
-            data: {
-              name: input.name,
-              tag: input.tag,
-              description: input.description,
-              type: input.type,
-              discountValue: input.discountValue,
-              minOrderPrice: input.minOrderPrice,
-              maxDiscount: input.maxDiscount,
-              quantity: input.quantity,
-              availableQuantity: input.availableQuantity,
-              startDate: input.startDate,
-              endDate: input.endDate,
-              vipLevel: input.vipLevel,
-              applyAll: input.applyAll,
-              products: {
-                connect: input?.products?.map(productId => ({ id: productId })) || []
-              }
-            }
-          })
-        ]);
-
+      if (!existingVoucher || (existingVoucher && existingVoucher?.id == input?.where?.id)) {
+        const updateVoucher = await ctx.db.voucher.update({
+          where: input.where as Prisma.VoucherWhereUniqueInput,
+          data: input.data as Prisma.VoucherUpdateInput
+        });
         return {
           success: true,
           message: 'Cập nhật khuyến mãi thành công.',
-          record: voucher
+          record: updateVoucher
         };
       }
 

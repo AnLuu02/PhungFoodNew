@@ -1,4 +1,4 @@
-import { Box, Button, Card, Checkbox, Divider, Flex, Group, Image, Progress, Text } from '@mantine/core';
+import { Box, Button, Card, Checkbox, Divider, Flex, Group, Image, Progress, Text, Tooltip } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import clsx from 'clsx';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
@@ -31,7 +31,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           />
           <Flex direction='column' align='center' justify='center' pos={'absolute'} className='z-[10] hidden md:flex'>
             <Text size='xs' className='text-center' c='#fff' fw={700}>
-              MamaRestaurant Voucher
+              Mama Voucher
             </Text>
           </Flex>
           {hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'active' ? (
@@ -75,10 +75,15 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
                 </Text>
               )}
             </Group>
-            <Text size='xs' c='dimmed' lineClamp={2}>
-              Đơn tối thiểu {formatPriceLocaleVi(voucher?.minOrderPrice)}, giảm tối đa{' '}
-              {formatPriceLocaleVi(voucher?.maxDiscount)}
-            </Text>
+            <Tooltip
+              label={` Đơn tối thiểu ${formatPriceLocaleVi(voucher?.minOrderPrice)}, giảm tối đa 
+                                               ${formatPriceLocaleVi(voucher?.maxDiscount)}`}
+            >
+              <Text size='xs' c='dimmed' lineClamp={1}>
+                Đơn tối thiểu {formatPriceLocaleVi(voucher?.minOrderPrice)}, giảm tối đa{' '}
+                {formatPriceLocaleVi(voucher?.maxDiscount)}
+              </Text>
+            </Tooltip>
             <Progress
               value={Math.floor((voucher?.quantity / 10) * 100)}
               color='red'

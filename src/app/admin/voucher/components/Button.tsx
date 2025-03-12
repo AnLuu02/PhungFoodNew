@@ -16,6 +16,7 @@ export function CreateVoucherButton() {
         Tạo mới
       </Button>
       <Modal
+        closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
         size={'xl'}
         opened={opened}
@@ -36,6 +37,7 @@ export function UpdateVoucherButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        closeOnClickOutside={false}
         size={'xl'}
         scrollAreaComponent={ScrollAreaAutosize}
         opened={opened}

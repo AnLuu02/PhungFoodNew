@@ -1,28 +1,10 @@
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Divider,
-  Flex,
-  Group,
-  Image,
-  Modal,
-  Progress,
-  ScrollArea,
-  Stack,
-  Text
-} from '@mantine/core';
+import { ActionIcon, Box, Button, Checkbox, Divider, Group, Modal, ScrollArea, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { VoucherType } from '@prisma/client';
 import { IconHelp } from '@tabler/icons-react';
-import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { allowedVoucher, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers';
-import DateVoucher from './_components/DateVoucher';
+import { allowedVoucher } from '~/app/lib/utils/func-handler/vouchers';
+import VoucherTemplate from '../Template/VoucherTemplate';
 import ModalDetailVoucher from './ModalDetailVoucher';
 interface VoucherProps {
   opened: boolean;
@@ -97,119 +79,126 @@ export default function ModalShowVoucher({ opened, products, data, onClose }: Vo
                           className={`relative w-full ${allowedVoucher(item?.minOrderPrice || 0, products) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                         >
                           {
-                            <Card w={'98%'} p={0} shadow='md' pos={'relative'} radius={'sm'}>
-                              <Flex h={120}>
-                                <Flex
-                                  w={120}
-                                  h='100%'
-                                  direction={'column'}
-                                  className='rounded-[10px]'
-                                  align={'center'}
-                                  justify='center'
-                                  pos={'relative'}
-                                >
-                                  <Image
-                                    loading='lazy'
-                                    height={120}
-                                    width={120}
-                                    src={
-                                      item?.type === VoucherType.PERCENTAGE
-                                        ? '/images/png/voucher_bg_green.png'
-                                        : '/images/png/voucher_bg_red.png'
-                                    }
-                                    alt=''
-                                  />
-                                  <Flex
-                                    direction='column'
-                                    align='center'
-                                    justify='center'
-                                    pos={'absolute'}
-                                    className='z-[10]'
-                                  >
-                                    <Text size='xs' className='text-center' c='#fff' fw={700}>
-                                      MamaRestaurant Voucher
-                                    </Text>
-                                  </Flex>
-                                  {hoursRemainingVoucher(item.startDate, item?.endDate)?.type == 'active' ? (
-                                    <Box
-                                      className={clsx(
-                                        `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`,
-                                        `bg-[#EDA500]`
-                                      )}
-                                    >
-                                      Dành cho bạn
-                                    </Box>
-                                  ) : hoursRemainingVoucher(item.startDate, item?.endDate)?.type == 'upcoming' ? (
-                                    <Box
-                                      className={clsx(
-                                        `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`,
-                                        `bg-[#00BB00]`
-                                      )}
-                                    >
-                                      Sắp đến hạn sử dụng
-                                    </Box>
-                                  ) : (
-                                    <Box
-                                      className={clsx(
-                                        `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`
-                                      )}
-                                    >
-                                      Sắp hết hạn
-                                    </Box>
-                                  )}
-                                </Flex>
-                                <Flex p='xs' justify={'space-between'} align={'center'} h={'100%'} w={'100%'} flex={1}>
-                                  <Flex h={'100%'} direction={'column'} flex={1} pr={30}>
-                                    <Group>
-                                      <Text size='sm' fw={500} lineClamp={1}>
-                                        {item?.name}
-                                      </Text>
-                                      {!allowedVoucher(item?.minOrderPrice || 0, products) && (
-                                        <Text size='xs' c='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
-                                          Không đủ điều kiện
-                                        </Text>
-                                      )}
-                                    </Group>
-                                    <Text size='xs' c='dimmed' lineClamp={2}>
-                                      Đơn tối thiểu {formatPriceLocaleVi(item?.minOrderPrice)}, giảm tối đa{' '}
-                                      {formatPriceLocaleVi(item?.maxDiscount)}
-                                    </Text>
-                                    <Progress
-                                      value={Math.floor((item?.quantity / 10) * 100)}
-                                      color='red'
-                                      bg={'#DCDCDC'}
-                                      radius='xs'
-                                      my={8}
-                                    />
+                            // <Card w={'98%'} p={0} shadow='md' pos={'relative'} radius={'sm'}>
+                            //   <Flex h={120}>
+                            //     <Flex
+                            //       w={120}
+                            //       h='100%'
+                            //       direction={'column'}
+                            //       className='rounded-[10px]'
+                            //       align={'center'}
+                            //       justify='center'
+                            //       pos={'relative'}
+                            //     >
+                            //       <Image
+                            //         loading='lazy'
+                            //         height={120}
+                            //         width={120}
+                            //         src={
+                            //           item?.type === VoucherType.PERCENTAGE
+                            //             ? '/images/png/voucher_bg_green.png'
+                            //             : '/images/png/voucher_bg_red.png'
+                            //         }
+                            //         alt=''
+                            //       />
+                            //       <Flex
+                            //         direction='column'
+                            //         align='center'
+                            //         justify='center'
+                            //         pos={'absolute'}
+                            //         className='z-[10]'
+                            //       >
+                            //         <Text size='xs' className='text-center' c='#fff' fw={700}>
+                            //           Mama Voucher
+                            //         </Text>
+                            //       </Flex>
+                            //       {hoursRemainingVoucher(item.startDate, item?.endDate)?.type == 'active' ? (
+                            //         <Box
+                            //           className={clsx(
+                            //             `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`,
+                            //             `bg-[#EDA500]`
+                            //           )}
+                            //         >
+                            //           Dành cho bạn
+                            //         </Box>
+                            //       ) : hoursRemainingVoucher(item.startDate, item?.endDate)?.type == 'upcoming' ? (
+                            //         <Box
+                            //           className={clsx(
+                            //             `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`,
+                            //             `bg-[#00BB00]`
+                            //           )}
+                            //         >
+                            //           Sắp đến hạn sử dụng
+                            //         </Box>
+                            //       ) : (
+                            //         <Box
+                            //           className={clsx(
+                            //             `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`
+                            //           )}
+                            //         >
+                            //           Sắp hết hạn
+                            //         </Box>
+                            //       )}
+                            //     </Flex>
+                            //     <Flex p='xs' justify={'space-between'} align={'center'} h={'100%'} w={'100%'} flex={1}>
+                            //       <Flex h={'100%'} direction={'column'} flex={1} pr={30}>
+                            //         <Group>
+                            //           <Text size='sm' fw={500} lineClamp={1}>
+                            //             {item?.name}
+                            //           </Text>
+                            //           {!allowedVoucher(item?.minOrderPrice || 0, products) && (
+                            //             <Text size='xs' c='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
+                            //               Không đủ điều kiện
+                            //             </Text>
+                            //           )}
+                            //         </Group>
+                            //         <Tooltip
+                            //           label={` Đơn tối thiểu ${formatPriceLocaleVi(item?.minOrderPrice)}, giảm tối đa
+                            //           ${formatPriceLocaleVi(item?.maxDiscount)}`}
+                            //         >
+                            //           <Text size='xs' c='dimmed' lineClamp={1}>
+                            //             Đơn tối thiểu {formatPriceLocaleVi(item?.minOrderPrice)}, giảm tối đa{' '}
+                            //             {formatPriceLocaleVi(item?.maxDiscount)}
+                            //           </Text>
+                            //         </Tooltip>
+                            //         <Progress
+                            //           value={Math.floor((item?.quantity / 10) * 100)}
+                            //           color='red'
+                            //           bg={'#DCDCDC'}
+                            //           radius='xs'
+                            //           my={8}
+                            //         />
 
-                                    <Flex align={'center'}>
-                                      <DateVoucher item={item} />
-                                      <Button
-                                        variant='transparent'
-                                        color='blue'
-                                        size='xs'
-                                        pos={'relative'}
-                                        bg={'#fff'}
-                                        className='z-[49]'
-                                        onClick={() => {
-                                          setOpenDetail(true);
-                                        }}
-                                      >
-                                        Điều kiện
-                                      </Button>
-                                    </Flex>
-                                  </Flex>
-                                  <Checkbox
-                                    value={item?.id.toString()}
-                                    disabled={!allowedVoucher(item?.minOrderPrice || 0, products)}
-                                    id={`voucher-${item?.id.toString()}`}
-                                  />
-                                </Flex>
-                              </Flex>
-                              <Box className='absolute right-[-6px] top-[6px] z-[1] rounded-l-[10px] bg-red-500/30 px-[8px] py-[2px] text-[12px] font-semibold text-red-500'>
-                                x {item?.quantity}
-                              </Box>
-                            </Card>
+                            //         <Flex align={'center'}>
+                            //           <DateVoucher item={item} />
+                            //           <Button
+                            //             variant='transparent'
+                            //             color='blue'
+                            //             size='xs'
+                            //             pos={'relative'}
+                            //             bg={'#fff'}
+                            //             className='z-[49]'
+                            //             onClick={() => {
+                            //               setOpenDetail(true);
+                            //             }}
+                            //           >
+                            //             Điều kiện
+                            //           </Button>
+                            //         </Flex>
+                            //       </Flex>
+                            //       <Checkbox
+                            //         value={item?.id.toString()}
+                            //         disabled={!allowedVoucher(item?.minOrderPrice || 0, products)}
+                            //         id={`voucher-${item?.id.toString()}`}
+                            //       />
+                            //     </Flex>
+                            //   </Flex>
+                            //   <Box className='absolute right-[-6px] top-[6px] z-[1] rounded-l-[10px] bg-red-500/30 px-[8px] py-[2px] text-[12px] font-semibold text-red-500'>
+                            //     x {item?.quantity}
+                            //   </Box>
+                            // </Card>
+
+                            <VoucherTemplate voucher={item} products={products} setOpenDetail={setOpenDetail} />
                           }
                         </label>
                       );

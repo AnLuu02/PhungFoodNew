@@ -11,11 +11,13 @@ import { DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 export default function TableMaterial({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
   const { data: result, isLoading } = api.Material.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.materials || [];
@@ -28,7 +30,7 @@ export default function TableMaterial({
     {
       header: 'Mô tả',
       accessorKey: 'description',
-      cell: info => <Highlight highlight={query}>{info.row.original.description}</Highlight>
+      cell: info => <Highlight highlight={query}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Ngày tạo',
@@ -36,11 +38,17 @@ export default function TableMaterial({
       cell: info => new Date(info.getValue() as string).toLocaleDateString()
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          <UpdateMaterialButton id={info.row.original.id} />
-          <DeleteMaterialButton id={info.row.original.id} />
+          {user?.user && (
+            <>
+              <UpdateMaterialButton id={info.row.original.id} />
+              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
+                <DeleteMaterialButton id={info.row.original.id} />
+              )}
+            </>
+          )}
         </Group>
       )
     }

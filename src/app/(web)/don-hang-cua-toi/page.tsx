@@ -19,7 +19,7 @@ import { OrderStatus } from '@prisma/client';
 import { IconAlertCircle, IconClock, IconCreditCard, IconTrash } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
 import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
@@ -55,7 +55,9 @@ export default function MyOrderPage() {
     { status: OrderStatus.CANCELLED, count: orders?.filter(i => i.status === OrderStatus.CANCELLED)?.length || 0 }
   ];
   const totalOrders = orders?.length || 0;
-  const totalAmount = orders?.reduce((total: number, item) => total + item.total, 0) || 0;
+  const totalAmount = React.useMemo(() => {
+    return orders?.reduce((total: number, item) => total + item.total, 0) || 0;
+  }, [orders]);
   const mutationDelete = api.Order.delete.useMutation();
   const { openModal } = useModal();
 

@@ -10,7 +10,7 @@ import { api } from '~/trpc/react';
 
 export default function UpdateReview({ reviewId, setOpened }: { reviewId: string; setOpened: any }) {
   const queryResult = reviewId ? api.Review.getFilter.useQuery({ query: reviewId || '' }) : { data: null };
-  const { data: products } = api.Product.getAll.useQuery({ hasReview: true });
+  const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: 'ADMIN' });
   const { data: users } = api.User.getAll.useQuery();
   const { data } = queryResult;
 

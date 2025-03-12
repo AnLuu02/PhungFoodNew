@@ -14,7 +14,13 @@ export function CreateUserButton() {
       <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </Button>
-      <Modal size='lg' opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Tạo người dùng</Title>}>
+      <Modal
+        closeOnClickOutside={false}
+        size='100%'
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Tạo người dùng</Title>}
+      >
         <CreateUser setOpened={setOpened} />
       </Modal>
     </>
@@ -29,12 +35,13 @@ export function UpdateUserButton({ email, isClient = false }: { email: string; i
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
-        size='lg'
+        closeOnClickOutside={false}
+        size='100%'
         opened={opened}
         onClose={() => setOpened(false)}
         title={<Title order={2}>Cập nhật người dùng</Title>}
       >
-        <UpdateUser email={email.toString()} setOpened={setOpened} isClient={isClient} />
+        <UpdateUser email={email.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );

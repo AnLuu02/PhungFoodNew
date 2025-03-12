@@ -1,9 +1,10 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { getServerSession } from 'next-auth';
 import Search from '~/app/_components/Admin/Search';
+import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateSubCategoryButton } from './components/Button';
 import TableSubCategory from './components/Table/TableSubCategory';
-
 export default async function SubCategoryManagementPage({
   searchParams
 }: {
@@ -17,6 +18,7 @@ export default async function SubCategoryManagementPage({
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.SubCategory.getAll();
+  const user = await getServerSession(authOptions);
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -29,12 +31,12 @@ export default async function SubCategoryManagementPage({
         </Text>
         <Group>
           <Search />
-          <CreateSubCategoryButton />
-          {/* <DeleteAllSubCategoryButton /> */}
+          {user?.user?.role === 'ADMIN' ||
+            (user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && <CreateSubCategoryButton />)}
         </Group>
       </Group>
 
-      <TableSubCategory currentPage={currentPage} query={query} limit={limit} />
+      <TableSubCategory currentPage={currentPage} query={query} limit={limit} user={user} />
     </Card>
   );
 }

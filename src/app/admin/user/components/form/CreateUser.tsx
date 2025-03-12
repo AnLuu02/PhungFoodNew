@@ -1,11 +1,26 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ActionIcon, Avatar, Button, FileInput, Grid, PasswordInput, Select, TextInput } from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
-import { Gender, UserLevel, UserRole } from '@prisma/client';
-import { IconFile } from '@tabler/icons-react';
+import {
+  ActionIcon,
+  Avatar,
+  Button,
+  Center,
+  FileInput,
+  Grid,
+  GridCol,
+  PasswordInput,
+  Select,
+  Textarea,
+  TextInput
+} from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
+import { useDebouncedValue } from '@mantine/hooks';
+import { AddressType, Gender, UserLevel } from '@prisma/client';
+import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import useSWR from 'swr';
 import { User } from '~/app/Entity/UserEntity';
+import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { fileToBase64 } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { userSchema } from '~/app/lib/utils/zod/zodShcemaForm';
@@ -25,16 +40,37 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
       email: '',
       image: undefined,
       gender: Gender.OTHER,
-      dateOfBirth: new Date(),
+      dateOfBirth: new Date('2000-01-01'),
       password: '',
       phone: '',
-      role: UserRole.CUSTOMER,
-      address: '',
+      address: {
+        provinceId: '',
+        districtId: '',
+        wardId: '',
+        province: '',
+        district: '',
+        ward: '',
+        detail: '',
+        type: AddressType.USER
+      },
+      roleId: '',
       pointLevel: 0,
       level: UserLevel.BRONZE
     }
   });
+  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
+  const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
 
+  const { data: districts } = useSWR<any>(
+    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
+    fetcher
+  );
+
+  const { data: wards } = useSWR<any>(
+    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
+    fetcher
+  );
   const utils = api.useUtils();
   const mutation = api.User.create.useMutation();
 
@@ -44,11 +80,28 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
         const file = formData?.image?.url as File;
         const fileName = file?.name || '';
         const base64 = file ? await fileToBase64(file) : '';
+
+        const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
+        const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
+        const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
+        const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+
         let result = await mutation.mutateAsync({
           ...formData,
           image: {
             fileName: fileName as string,
             base64: base64 as string
+          },
+          address: {
+            ...formData.address,
+            detail: formData.address?.detail || '',
+            provinceId: formData.address?.provinceId || '',
+            districtId: formData.address?.districtId || '',
+            wardId: formData.address?.wardId || '',
+            province: province?.province_name || '',
+            district: district?.district_name || '',
+            ward: ward?.ward_name || '',
+            fullAddress
           }
         });
         if (result.success) {
@@ -60,72 +113,88 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
         }
       }
     } catch (error) {
-      NotifyError('Error created User');
+      NotifyError('Xảy ra ngoại lệ khi tạo người dùng.');
     }
   };
+
+  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getRoles.useQuery();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
-        <Grid.Col span={5}>
-          <Avatar
-            src={
-              watch('image.url') instanceof File
-                ? URL.createObjectURL(watch('image.url') as File)
-                : '/images/jpg/empty-300x240.jpg'
-            }
-            size={200}
-            alt='Product Image'
-            className='mb-4'
-          />
-          <Grid.Col span={12}>
-            <Controller
-              name='image.url'
-              control={control}
-              rules={{
-                required: 'File or URL is required',
-                validate: file =>
-                  file && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
-                    ? true
-                    : 'Only PNG, JPEG, or JPG files are allowed'
-              }}
-              render={({ field, fieldState }) => (
-                <FileInput
-                  leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
-                  label='Ảnh chính'
-                  placeholder='Choose a file'
-                  leftSectionPointerEvents='none'
-                  {...field}
-                  error={errors.image?.message}
-                  accept='image/png,image/jpeg,image/jpg'
-                />
-              )}
+        <GridCol span={3}>
+          <Center>
+            <Avatar
+              src={
+                watch('image.url') instanceof File
+                  ? URL.createObjectURL(watch('image.url') as File)
+                  : '/images/jpg/empty-300x240.jpg'
+              }
+              size={200}
+              alt='Product Image'
+              className='mb-4'
             />
-          </Grid.Col>
-        </Grid.Col>
-        <Grid.Col span={7}>
+          </Center>
+          <Controller
+            name='image.url'
+            control={control}
+            rules={{
+              required: 'File or URL is required',
+              validate: file =>
+                file && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
+                  ? true
+                  : 'Only PNG, JPEG, or JPG files are allowed'
+            }}
+            render={({ field, fieldState }) => (
+              <FileInput
+                leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                label='Ảnh chính'
+                placeholder='Choose a file'
+                leftSectionPointerEvents='none'
+                {...field}
+                error={errors.image?.message}
+                accept='image/png,image/jpeg,image/jpg'
+              />
+            )}
+          />
+        </GridCol>
+        <GridCol span={9}>
           <Grid gutter='md'>
-            <Grid.Col span={12}>
+            <GridCol span={4}>
               <Controller
                 control={control}
                 name='name'
                 render={({ field }) => (
-                  <TextInput label='Tên' placeholder='Enter your name' error={errors.name?.message} {...field} />
+                  <TextInput
+                    {...field}
+                    required
+                    label='Tên'
+                    placeholder='Enter your name'
+                    error={errors.name?.message}
+                  />
                 )}
               />
-            </Grid.Col>
+            </GridCol>
 
-            <Grid.Col span={12}>
+            <GridCol span={4}>
               <Controller
                 control={control}
                 name='email'
                 render={({ field }) => (
-                  <TextInput label='Email' placeholder='Enter your tag' error={errors.email?.message} {...field} />
+                  <TextInput
+                    {...field}
+                    type='email'
+                    required
+                    leftSection={<IconMail size={18} stroke={1.5} />}
+                    label='Email'
+                    placeholder='Enter your tag'
+                    error={errors.email?.message}
+                  />
                 )}
               />
-            </Grid.Col>
+            </GridCol>
 
-            <Grid.Col span={12}>
+            <GridCol span={4}>
               <Controller
                 control={control}
                 name='password'
@@ -138,61 +207,133 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
                   />
                 )}
               />
-            </Grid.Col>
+            </GridCol>
 
-            <Grid.Col span={6}>
+            <GridCol span={4}>
               <Controller
                 control={control}
                 name='phone'
                 render={({ field }) => (
                   <TextInput
+                    {...field}
                     label='Số điện thoại'
+                    leftSection={<IconPhone size={18} stroke={1.5} />}
                     placeholder='Enter your name'
                     error={errors.phone?.message}
-                    {...field}
                   />
                 )}
               />
-            </Grid.Col>
-            <Grid.Col span={6}>
+            </GridCol>
+
+            <GridCol span={4}>
               <Controller
-                name='role'
                 control={control}
-                rules={{ required: 'Role is required' }}
-                render={({ field, fieldState }) => (
+                name='roleId'
+                render={({ field }) => (
                   <Select
-                    label='Role'
-                    placeholder='Select your role'
-                    data={[
-                      { value: 'CUSTOMER', label: 'CUSTOMER' },
-                      { value: 'ADMIN', label: 'ADMIN' },
-                      { value: 'STAFF', label: 'STAFF' }
-                    ]}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    error={errors.role?.message}
+                    label='Vai trò'
+                    searchable
+                    placeholder='Chọn vai trò'
+                    {...field}
+                    data={roles?.map(role => ({ value: role.id, label: role.name })) || []}
+                    error={errors.roleId?.message}
                   />
                 )}
               />
-            </Grid.Col>
-            <Grid.Col span={12}>
+            </GridCol>
+
+            <GridCol span={4}>
               <Controller
                 control={control}
                 name='dateOfBirth'
                 render={({ field }) => {
                   const dateValue = field.value ? new Date(field.value) : null;
-                  return <DatePickerInput p={0} m={0} placeholder='Chọn năm sinh' {...field} value={dateValue} />;
+                  return (
+                    <DateTimePicker
+                      valueFormat='DD-MM-YYYY'
+                      leftSection={<IconCalendar size={18} stroke={1.5} />}
+                      dropdownType='modal'
+                      label='Năm sinh'
+                      placeholder='Chọn năm sinh'
+                      {...field}
+                      value={dateValue}
+                    />
+                  );
                 }}
               />
-            </Grid.Col>
-            <Grid.Col span={12}>
+            </GridCol>
+
+            <GridCol span={4}>
+              <Controller
+                control={control}
+                name={`address.provinceId`}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    searchable
+                    label='Chọn tỉnh thành'
+                    placeholder='Chọn tỉnh thành'
+                    data={provinces?.results?.map((item: any) => ({
+                      value: item.province_id,
+                      label: item.province_name
+                    }))}
+                    nothingFoundMessage='Nothing found...'
+                    error={errors?.address?.province?.message}
+                  />
+                )}
+              />
+            </GridCol>
+            <GridCol span={4}>
+              <Controller
+                control={control}
+                name={`address.districtId`}
+                disabled={!watch('address.provinceId')}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    searchable
+                    label='Chọn quận huyện'
+                    placeholder='Chọn quận huyện'
+                    data={districts?.results?.map((item: any) => ({
+                      value: item.district_id,
+                      label: item.district_name
+                    }))}
+                    nothingFoundMessage='Nothing found...'
+                    error={errors?.address?.district?.message}
+                  />
+                )}
+              />
+            </GridCol>
+            <GridCol span={4}>
+              <Controller
+                control={control}
+                name={`address.wardId`}
+                disabled={!watch('address.districtId')}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    label='Chọn phường xã'
+                    searchable
+                    placeholder='Chọn phường xã'
+                    data={wards?.results?.map((item: any) => ({
+                      value: item.ward_id,
+                      label: item.ward_name
+                    }))}
+                    nothingFoundMessage='Nothing found...'
+                    error={errors?.address?.ward?.message}
+                  />
+                )}
+              />
+            </GridCol>
+            <GridCol span={4}>
               <Controller
                 control={control}
                 name='gender'
                 render={({ field }) => (
                   <Select
                     placeholder='Giới tính'
+                    searchable
+                    label='Giới tính'
                     {...field}
                     data={[
                       { value: Gender.MALE, label: 'Nam' },
@@ -202,29 +343,31 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
                   />
                 )}
               />
-            </Grid.Col>
-
-            <Grid.Col span={12}>
+            </GridCol>
+            <GridCol span={12}>
               <Controller
                 control={control}
-                name='address'
+                name={`address.detail`}
                 render={({ field }) => (
-                  <TextInput
-                    type='textarea'
-                    label='Địa chỉ'
-                    placeholder='Enter your tag'
-                    error={errors.address?.message}
+                  <Textarea
                     {...field}
+                    label='Địa chỉ chi tiết'
+                    placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
+                    resize='block'
+                    error={errors?.address?.detail?.message}
                   />
                 )}
               />
-            </Grid.Col>
+            </GridCol>
+
+            <GridCol span={12}>
+              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+                Tạo mới
+              </Button>
+            </GridCol>
           </Grid>
-        </Grid.Col>
+        </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
-        Tạo mới
-      </Button>
     </form>
   );
 }

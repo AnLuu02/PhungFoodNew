@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { firebaseToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
+import { vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { api } from '~/trpc/react';
 import { PhotoCard } from '../PhotoCard';
 export const formatBytes = (bytes: number) => {
@@ -14,7 +14,7 @@ export const formatBytes = (bytes: number) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
-export default function TableImage({
+export default function ListImage({
   currentPage,
   query,
   limit
@@ -35,7 +35,7 @@ export default function TableImage({
       const urls = await Promise.all(
         currentItems.map(async image => {
           try {
-            const file = await firebaseToFile(image.url);
+            const file = await vercelBlobToFile(image.url as string);
 
             if (file instanceof Blob) {
               return {

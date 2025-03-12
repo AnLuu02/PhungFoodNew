@@ -31,7 +31,7 @@ export async function updateRevenue(ctx: any, status: OrderStatus, userId: strin
 }
 
 export const revenueRouter = createTRPCRouter({
-  getOneUserTotalSpentByYear: publicProcedure
+  getTotalSpentInYearByUser: publicProcedure
     .input(
       z.object({
         userId: z.string(),
@@ -51,7 +51,7 @@ export const revenueRouter = createTRPCRouter({
         year: input.year
       };
     }),
-  getOneUserMonthlySpending: publicProcedure
+  getTotalSpentInMonthByUser: publicProcedure
     .input(
       z.object({
         userId: z.string(),
@@ -60,20 +60,26 @@ export const revenueRouter = createTRPCRouter({
     )
 
     .query(async ({ ctx, input }) => {
-      const revenues = await ctx.db.revenue.findMany({
+      // const revenues = await ctx.db.revenue.findMany({
+      //   where: { userId: input.userId, year: input.year || 2025 },
+      //   select: { month: true, totalSpent: true },
+      //   orderBy: { month: 'asc' }
+      // });
+      const revenues = await ctx.db.revenue.groupBy({
+        by: ['month'],
         where: { userId: input.userId, year: input.year || 2025 },
-        select: { month: true, totalSpent: true },
+        _sum: { totalSpent: true },
         orderBy: { month: 'asc' }
       });
       return revenues?.map(item => {
         return {
           month: item.month,
-          totalSpent: item.totalSpent,
+          totalSpent: item._sum.totalSpent,
           year: input.year
         };
       });
     }),
-  getTotalSpendingByMonth: publicProcedure
+  getTotalSpentByMonth: publicProcedure
     .input(
       z.object({
         year: z.number()
@@ -91,16 +97,17 @@ export const revenueRouter = createTRPCRouter({
   getTopUsers: publicProcedure
     .input(
       z.object({
-        year: z.number()
+        year: z.number().optional(),
+        limit: z.number().optional()
       })
     )
     .query(async ({ ctx, input }) => {
       const revenues = await ctx.db.revenue.groupBy({
         by: ['userId'],
-        where: { year: input.year || 2025 },
+        where: input.year ? { year: input.year } : {},
         _sum: { totalSpent: true },
         orderBy: { _sum: { totalSpent: 'desc' } },
-        take: 5
+        take: input.limit || 5
       });
       return revenues;
     }),
@@ -153,5 +160,44 @@ export const revenueRouter = createTRPCRouter({
         totalOrders: item._sum.totalOrders
       };
     });
-  })
+  }),
+  getRevenueByDuringDate: publicProcedure
+    .input(
+      z.object({
+        period: z.enum(['7 ngày', '30 ngày', '3 tháng']).optional(),
+        categoryId: z.string().optional()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { period, categoryId } = input;
+      const now = new Date();
+      let startDate = new Date();
+
+      if (period === '7 ngày') {
+        startDate.setDate(now.getDate() - 7);
+      } else if (period === '30 ngày') {
+        startDate.setDate(now.getDate() - 30);
+      } else if (period === '3 tháng') {
+        startDate.setMonth(now.getMonth() - 3);
+      }
+
+      const revenues = await ctx.db.revenue.findMany({
+        where: {
+          createdAt: { gte: startDate },
+          ...(categoryId && { categoryId })
+        },
+        select: {
+          date: true,
+          month: true,
+          year: true,
+          totalSpent: true
+        },
+        orderBy: { createdAt: 'asc' }
+      });
+
+      return revenues.map(item => ({
+        date: `${item.year}-${String(item.month).padStart(2, '0')}-${String(item.date).padStart(2, '0')}`,
+        sales: item.totalSpent
+      }));
+    })
 });

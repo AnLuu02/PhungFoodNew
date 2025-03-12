@@ -5,17 +5,20 @@ import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
+import { UserRole } from '~/app/lib/utils/constants/roles';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdateUserButton } from '../Button';
 
 export default function TableUser({
   currentPage,
   query,
-  limit
+  limit,
+  user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  user?: any;
 }) {
   const { data: result, isLoading } = api.User.find.useQuery({ skip: +currentPage, take: +limit, query });
   const currentItems = result?.users || [];
@@ -34,8 +37,16 @@ export default function TableUser({
       header: 'Vai trò',
       accessorKey: 'role',
       cell: info => (
-        <Badge p={'sm'} radius={'md'} color={info.cell.row.original.role === 'ADMIN' ? 'red' : 'green'}>
-          {info.cell.row.original.role}
+        <Badge
+          p={'sm'}
+          radius={'md'}
+          color={
+            info.cell.row.original.role?.name !== 'ADMIN' || info.cell.row.original.role?.name !== 'Super Admin'
+              ? 'green'
+              : 'red'
+          }
+        >
+          {info.cell.row.original.role?.name || 'Super Admin'}
         </Badge>
       )
     },
@@ -46,8 +57,8 @@ export default function TableUser({
     },
     {
       header: 'Địa chỉ',
-      accessorKey: 'address',
-      cell: info => <Highlight highlight={query}>{info.row.original.address}</Highlight>
+      accessorKey: 'address.fullAddress',
+      cell: info => <Highlight highlight={query}>{info.row.original?.address?.fullAddress}</Highlight>
     },
     {
       header: 'Ngày tạo',
@@ -63,15 +74,20 @@ export default function TableUser({
       accessorKey: 'level'
     },
     {
-      header: 'Actions',
+      header: 'Thao tác',
       cell: info => (
         <Group className='text-center'>
-          {info.row.original.role !== 'ADMIN' && (
-            <>
+          {user?.user &&
+            (user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role === 'ADMIN' ? (
+              <>
+                <UpdateUserButton email={info.row.original.email} />
+                {info.row.original.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && (
+                  <DeleteUserButton id={info.row.original.id} />
+                )}
+              </>
+            ) : user.user.role === UserRole.STAFF && user.user.email === info.row.original.email ? (
               <UpdateUserButton email={info.row.original.email} />
-              <DeleteUserButton id={info.row.original.id} />
-            </>
-          )}
+            ) : null)}
         </Group>
       )
     }

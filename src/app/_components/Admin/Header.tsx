@@ -42,7 +42,7 @@ export default function Header() {
           <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={150} h={50} p={0} />
         </Link>
         <Badge bg={'red'} radius={'sm'}>
-          ADMIN
+          {session?.user?.role || 'Super Admin'}
         </Badge>
       </Group>
 
@@ -107,7 +107,7 @@ export default function Header() {
               color='red'
               onClick={() => signOut({ callbackUrl: 'https://www.facebook.com/' })}
             >
-              Logout
+              Đăng xuất
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

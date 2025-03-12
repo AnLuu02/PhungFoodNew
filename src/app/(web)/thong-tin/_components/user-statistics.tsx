@@ -16,18 +16,18 @@ const mockYearlySpending = {
   '2023': 2500
 };
 const months = [
-  { month: 'Jan', amount: 0 },
-  { month: 'Feb', amount: 0 },
-  { month: 'Mar', amount: 0 },
-  { month: 'Apr', amount: 0 },
-  { month: 'May', amount: 0 },
-  { month: 'Jun', amount: 0 },
-  { month: 'Jul', amount: 0 },
-  { month: 'Aug', amount: 0 },
-  { month: 'Sep', amount: 0 },
-  { month: 'Oct', amount: 0 },
-  { month: 'Nov', amount: 0 },
-  { month: 'Dec', amount: 0 }
+  { month: 'Tháng 1', amount: 0 },
+  { month: 'Tháng 2', amount: 0 },
+  { month: 'Tháng 3', amount: 0 },
+  { month: 'Tháng 4', amount: 0 },
+  { month: 'Tháng 5', amount: 0 },
+  { month: 'Tháng 6', amount: 0 },
+  { month: 'Tháng 7', amount: 0 },
+  { month: 'Tháng 8', amount: 0 },
+  { month: 'Tháng 9', amount: 0 },
+  { month: 'Tháng 10', amount: 0 },
+  { month: 'Tháng 11', amount: 0 },
+  { month: 'Tháng 12', amount: 0 }
 ];
 export const orderCompletionRate = 85;
 
@@ -38,7 +38,7 @@ export default function UserStatistics() {
   const [selectedYear, setSelectedYear] = useState('2025');
   const { data: user } = useSession();
   const { data: userDb, isLoading: isLoadingUserDb } = api.User.getOne.useQuery({ query: user?.user?.email || '' });
-  const { data: revenue, isLoading } = api.Revenue.getOneUserMonthlySpending.useQuery({
+  const { data: revenue, isLoading } = api.Revenue.getTotalSpentInMonthByUser.useQuery({
     userId: user?.user?.id || '',
     year: Number(selectedYear) || 2025
   });

@@ -1,12 +1,13 @@
 'use client';
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
 
 const OrderItemForm = ({ register, index, removeOrderItem, control, watch, setValue, getValues, errors }: any) => {
+  const [productOrderItem, setProductOrderItem] = useState<any>({});
   const { data: products } = api.Product.getAll.useQuery({
     hasCategory: true,
     hasCategoryChild: true,
@@ -18,7 +19,10 @@ const OrderItemForm = ({ register, index, removeOrderItem, control, watch, setVa
   const orderItems = watch(`orderItems`);
   useEffect(() => {
     const p = products?.find((product: any) => product.id === chooseProduct);
-    setValue(`orderItems.${index}.price`, p?.price);
+    if (p?.id) {
+      setProductOrderItem(p);
+      setValue(`orderItems.${index}.price`, p?.price);
+    }
   }, [chooseProduct]);
 
   useEffect(() => {
@@ -38,6 +42,7 @@ const OrderItemForm = ({ register, index, removeOrderItem, control, watch, setVa
             render={({ field }) => (
               <Select
                 label='Chọn món'
+                searchable
                 {...field}
                 placeholder='Select products'
                 data={products?.map((product: any) => ({ value: product.id, label: product.name }))}
@@ -51,13 +56,20 @@ const OrderItemForm = ({ register, index, removeOrderItem, control, watch, setVa
             control={control}
             name={`orderItems.${index}.quantity`}
             defaultValue='1'
+            rules={{
+              validate: value =>
+                Number(value) <= Number(productOrderItem?.availableQuantity) ||
+                `Trong kho chỉ còn ${productOrderItem?.availableQuantity} sản phẩm.`
+            }}
             render={({ field }) => (
               <NumberInput
+                {...field}
                 thousandSeparator=','
-                label='Số lượng'
+                label={`Số lượng (còn: ${Number(productOrderItem?.availableQuantity) || 100})`}
+                min={0}
+                max={Number(productOrderItem?.availableQuantity) || 100}
                 placeholder='Select quantity'
                 error={errors?.orderItems?.[index]?.quantity?.message}
-                {...field}
               />
             )}
           />
@@ -98,7 +110,7 @@ const OrderItemForm = ({ register, index, removeOrderItem, control, watch, setVa
           if (orderItems.length > 1) {
             removeOrderItem(index);
           } else {
-            NotifyError('You must have at least one item');
+            NotifyError('Không hợp lệ.', 'Đơn hàng phải có ít nhất 1 sản phẩm.');
           }
         }}
         variant='outline'

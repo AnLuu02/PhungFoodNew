@@ -13,8 +13,10 @@ const BreadcrumbsComponent = () => {
   };
   return (
     <Breadcrumbs separator='>' classNames={{ separator: 'mx-2 text-gray-500' }}>
-      <Link href='/' className={`flex items-center text-gray-500 no-underline hover:text-[#f8c144] hover:underline`}>
-        {/* <IconHome className='mr-1 h-4 w-4' /> */}
+      <Link
+        href='/'
+        className={`no-underline hover:text-[#f8c144] hover:underline ${pathname !== '/' ? 'text-[#f8c144] hover:text-[#f8c144] hover:underline' : 'text-gray-500'}`}
+      >
         <Text size='sm' fw={700}>
           Trang chủ
         </Text>
@@ -26,7 +28,7 @@ const BreadcrumbsComponent = () => {
           <Link
             key={href}
             href={href}
-            className={`flex items-center ${isActive ? 'text-[#f8c144]' : 'text-gray-500'} no-underline hover:text-[#f8c144] hover:underline`}
+            className={` ${!isActive ? 'text-[#f8c144] hover:text-[#f8c144] hover:underline' : 'text-gray-500'} no-underline`}
             style={{ pointerEvents: isActive ? 'none' : 'auto', textDecoration: 'none' }}
           >
             <Text size='sm' fw={700}>

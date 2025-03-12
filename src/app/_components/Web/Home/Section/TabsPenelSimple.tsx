@@ -92,7 +92,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                 <CardSection>
                   <Image
                     loading='lazy'
-                    src={item?.images[0]?.url || '/images/jpg/empty-300x240.jpg'}
+                    src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                     height={120}
                     alt='Norway'
                   />

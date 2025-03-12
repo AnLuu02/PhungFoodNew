@@ -128,7 +128,7 @@ export function CategoryNav() {
                         : 500
                     }
                   >
-                    {category?.name}
+                    {category?.name} ({category?.subCategory?.length || 0})
                   </Text>
                 </Accordion.Control>
                 <Accordion.Panel>
@@ -149,7 +149,7 @@ export function CategoryNav() {
                             item.tag === params.get('loai-san-pham') ? 'bg-[#f8c144] text-black' : 'text-white'
                           )}
                         >
-                          {item?.name}
+                          {item?.name} ({item?.product?.length || 0})
                         </Button>
                       </Link>
                     ))}

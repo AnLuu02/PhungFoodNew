@@ -15,7 +15,12 @@ export function CreateReviewButton() {
       <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </Button>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Tạo đánh giá</Title>}>
+      <Modal
+        closeOnClickOutside={false}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Tạo đánh giá</Title>}
+      >
         <CreateReview setOpened={setOpened} />
       </Modal>
     </>
@@ -29,7 +34,12 @@ export function UpdateReviewButton({ id }: { id: string }) {
       <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
         <IconEdit size={24} />
       </ActionIcon>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Cập nhật đánh giá</Title>}>
+      <Modal
+        closeOnClickOutside={false}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Cập nhật đánh giá</Title>}
+      >
         <UpdateReview reviewId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>

@@ -1,13 +1,21 @@
-import { EntityType, ImageType } from '@prisma/client';
+import { EntityType, ImageType, OrderStatus, ProductStatus } from '@prisma/client';
+import { del, put } from '@vercel/blob';
 import { z } from 'zod';
+import { UserRole } from '~/app/lib/utils/constants/roles';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
-import {
-  deleteImageFromFirebase,
-  getFileNameFromFirebaseFile,
-  uploadToFirebase
-} from '~/app/lib/utils/func-handler/handle-file-upload';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+
+export async function updateSales(ctx: any, status: OrderStatus, productId: string, soldQuantity: number) {
+  await ctx.db.product.update({
+    where: { id: productId },
+    data: {
+      soldQuantity: status === OrderStatus.COMPLETED ? { increment: soldQuantity } : { decrement: soldQuantity },
+      availableQuantity: status === OrderStatus.COMPLETED ? { decrement: soldQuantity } : { increment: soldQuantity }
+    }
+  });
+}
 
 export async function updatePointLevel(ctx: any, userId: string, orderTotal: number) {
   await ctx.db.user.update({
@@ -46,7 +54,7 @@ const buildSortFilter = (sort: any) => {
   }
   return orderBy?.map(item => item).filter(Boolean);
 };
-const buildFilter = (input: FilterOptions) => {
+const buildFilter = (input: FilterOptions, userRole: any) => {
   const {
     query,
     discount,
@@ -58,6 +66,11 @@ const buildFilter = (input: FilterOptions) => {
     'loai-san-pham': loaiSanPham
   } = input;
   return [
+    userRole && userRole != UserRole.CUSTOMER
+      ? undefined
+      : {
+          status: ProductStatus.ACTIVE
+        },
     loaiSanPham || danhMuc
       ? {
           subCategory: {
@@ -80,6 +93,11 @@ const buildFilter = (input: FilterOptions) => {
                 some: {
                   category: { equals: query?.trim() }
                 }
+              }
+            },
+            {
+              tags: {
+                has: query?.trim()
               }
             },
             { name: { contains: query?.trim(), mode: 'insensitive' } },
@@ -130,7 +148,8 @@ export const productRouter = createTRPCRouter({
             min: z.number().optional(),
             max: z.number().optional()
           })
-          .optional()
+          .optional(),
+        userRole: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
@@ -151,17 +170,20 @@ export const productRouter = createTRPCRouter({
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
-      const filter = buildFilter({
-        query,
-        discount,
-        bestSaler,
-        newProduct,
-        hotProduct,
-        price,
-        sort,
-        'danh-muc': danhMuc,
-        'loai-san-pham': loaiSanPham
-      });
+      const filter = buildFilter(
+        {
+          query,
+          discount,
+          bestSaler,
+          newProduct,
+          hotProduct,
+          price,
+          sort,
+          'danh-muc': danhMuc,
+          'loai-san-pham': loaiSanPham
+        },
+        input.userRole
+      );
       const [totalProducts, totalProductsQuery, products] = await ctx.db.$transaction([
         ctx.db.product.count(),
         ctx.db.product.count({
@@ -184,7 +206,7 @@ export const productRouter = createTRPCRouter({
                 tag: true,
                 name: true,
                 category: true,
-                images: true
+                image: true
               }
             },
             review: true,
@@ -219,6 +241,8 @@ export const productRouter = createTRPCRouter({
         tag: z.string(),
         price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
         discount: z.number().min(0, 'Giảm giá không được âm').default(0),
+        tags: z.array(z.string()).optional(),
+        status: z.nativeEnum(ProductStatus).default(ProductStatus.ACTIVE),
         region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
         thumbnail: z
           .object({
@@ -253,13 +277,17 @@ export const productRouter = createTRPCRouter({
 
       let thumbnailURL: string | null = null;
       if (input.thumbnail) {
-        thumbnailURL = await uploadToFirebase(input.thumbnail.fileName, input.thumbnail.base64);
+        const buffer = Buffer.from(input.thumbnail.base64, 'base64');
+        const blob = await put(input.thumbnail.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+        thumbnailURL = blob.url;
       }
 
       const galleryURLs = await Promise.all(
         (input.gallery ?? []).map(async item => {
-          const uploadedUrl = await uploadToFirebase(item.fileName, item.base64);
-          return uploadedUrl ? { fileName: uploadedUrl, type: ImageType.GALLERY } : null;
+          const buffer = Buffer.from(item.base64, 'base64');
+          const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+          const uploadedUrl = blob.url;
+          return uploadedUrl ? { url: uploadedUrl, type: ImageType.GALLERY } : null;
         })
       ).then(results => results.filter(item => item !== null));
 
@@ -272,16 +300,26 @@ export const productRouter = createTRPCRouter({
           discount: input.discount,
           subCategoryId: input.subCategoryId,
           region: input.region,
+          tags: input.tags,
+          status: input.status,
           materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
           images: {
             create: [
               ...(thumbnailURL
-                ? [{ url: thumbnailURL, type: ImageType.THUMBNAIL, entityType: EntityType.PRODUCT }]
+                ? [
+                    {
+                      url: thumbnailURL,
+                      type: ImageType.THUMBNAIL,
+                      entityType: EntityType.PRODUCT,
+                      altText: `Ảnh ${input?.thumbnail?.fileName} loại ${ImageType.THUMBNAIL}`
+                    }
+                  ]
                 : []),
               ...galleryURLs.map(item => ({
-                url: item.fileName,
+                url: item.url,
                 type: item.type,
-                entityType: EntityType.PRODUCT
+                entityType: EntityType.PRODUCT,
+                altText: `Ảnh ${item?.url} loại ${ImageType.GALLERY}`
               }))
             ]
           }
@@ -309,6 +347,8 @@ export const productRouter = createTRPCRouter({
         price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
         discount: z.number().min(0, 'Giảm giá không được âm').default(0),
         region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
+        tags: z.array(z.string()).optional(),
+        status: z.nativeEnum(ProductStatus).default(ProductStatus.ACTIVE),
         thumbnail: z
           .object({
             fileName: z.string(),
@@ -354,27 +394,33 @@ export const productRouter = createTRPCRouter({
       }
 
       const oldImages = existingProduct.images || [];
-      const oldThumbnail = oldImages.find(img => img.type === ImageType.THUMBNAIL);
-      const oldGallery = oldImages.filter(img => img.type === ImageType.GALLERY);
+      const oldThumbnail = oldImages.find(img => img?.type === ImageType.THUMBNAIL);
+      const oldGallery = oldImages.filter(img => img?.type === ImageType.GALLERY);
 
       let newThumbnail: any = oldThumbnail;
       if (input.thumbnail?.fileName) {
-        const filenameImgFromDb = oldThumbnail ? getFileNameFromFirebaseFile(oldThumbnail.url) : null;
+        const filenameImgFromDb = oldThumbnail ? getFileNameFromVercelBlob(oldThumbnail.url) : null;
         if (filenameImgFromDb !== input.thumbnail.fileName) {
+          const url = (
+            await put(input.thumbnail.fileName, Buffer.from(input.thumbnail.base64, 'base64'), {
+              access: 'public',
+              token: tokenBlobVercel
+            })
+          )?.url;
           newThumbnail = {
-            url: await uploadToFirebase(input.thumbnail.fileName, input.thumbnail.base64),
+            url: url,
             type: ImageType.THUMBNAIL,
             altText: `Ảnh ${input.thumbnail.fileName} loại ${ImageType.THUMBNAIL}`,
             entityType: EntityType.PRODUCT
           };
 
-          if (oldThumbnail) await deleteImageFromFirebase(oldThumbnail.url);
+          if (oldThumbnail) await del(oldThumbnail.url, { token: tokenBlobVercel });
         }
       }
 
       const anh_trong_db_dang_filename = oldGallery.map(item => ({
         id: item.id,
-        fileName: getFileNameFromFirebaseFile(item.url)
+        fileName: getFileNameFromVercelBlob(item.url)
       }));
 
       const anh_moi =
@@ -382,14 +428,16 @@ export const productRouter = createTRPCRouter({
         [];
 
       const anh_xoa = oldGallery.filter(
-        item => !input.gallery?.some(img => img.fileName === getFileNameFromFirebaseFile(item.url))
+        item => !input.gallery?.some(img => img?.fileName === getFileNameFromVercelBlob(item.url))
       );
 
       const results = await Promise.all([
-        ...anh_xoa.map(img => deleteImageFromFirebase(img.url).then(() => null)),
+        ...anh_xoa.map(img => del(img.url, { token: tokenBlobVercel }).then(() => null)),
         ...anh_moi.map(async item => {
           try {
-            const uploadedImage = await uploadToFirebase(item.fileName, item.base64);
+            const buffer = Buffer.from(item.base64, 'base64');
+            const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+            const uploadedImage = blob.url;
             return {
               url: uploadedImage,
               type: ImageType.GALLERY,
@@ -405,9 +453,9 @@ export const productRouter = createTRPCRouter({
 
       const newGallery = results.filter(Boolean);
 
-      const newImages = [newThumbnail, ...oldGallery, ...newGallery].filter(
-        (item: any) => !anh_xoa.some(img => img.url === item.url)
-      );
+      const newImages = [newThumbnail, ...oldGallery, ...newGallery]
+        .filter((item: any) => !anh_xoa.some(img => img?.url === item.url))
+        .filter(Boolean);
 
       const [product, updatedProduct] = await ctx.db.$transaction([
         ctx.db.product.findUnique({ where: { id: input.id } }),
@@ -423,38 +471,43 @@ export const productRouter = createTRPCRouter({
             discount: input.discount,
             subCategoryId: input.subCategoryId,
             region: input.region,
+            tags: input.tags,
+            status: input.status,
             materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
-            images: {
-              deleteMany: {
-                productId: input.id,
-                url: {
-                  notIn: newImages.map(img => img?.url)?.filter(Boolean)
-                }
-              },
-              upsert: newImages.map(img => ({
-                where: {
-                  id_productId_entityType_type: {
-                    id: img?.id || '',
-                    productId: input.id,
-                    entityType: img.entityType,
-                    type: img.type
+            images:
+              newImages?.length > 0
+                ? {
+                    deleteMany: {
+                      productId: input.id,
+                      url: {
+                        notIn: newImages.map(img => img?.url)?.filter(Boolean)
+                      }
+                    },
+                    upsert: newImages.map(img => ({
+                      where: {
+                        id_productId_entityType_type: {
+                          id: img?.id || '',
+                          productId: input.id,
+                          entityType: img?.entityType,
+                          type: img?.type
+                        }
+                      },
+                      update: {
+                        id: img?.id,
+                        url: img?.url,
+                        type: img?.type,
+                        altText: img?.altText,
+                        entityType: img?.entityType
+                      } as any,
+                      create: {
+                        url: img?.url,
+                        type: img?.type,
+                        altText: img?.altText,
+                        entityType: img?.entityType
+                      } as any
+                    }))
                   }
-                },
-                update: {
-                  id: img.id,
-                  url: img.url,
-                  type: img.type,
-                  altText: img.altText,
-                  entityType: img.entityType
-                },
-                create: {
-                  url: img.url,
-                  type: img.type,
-                  altText: img.altText,
-                  entityType: img.entityType
-                }
-              }))
-            }
+                : undefined
           },
           include: { images: true }
         })
@@ -483,7 +536,7 @@ export const productRouter = createTRPCRouter({
         include: { images: true }
       });
       if (product?.images && product.images.length > 0) {
-        await Promise.all(product.images.map(image => deleteImageFromFirebase(image.url)));
+        await Promise.all(product.images.map(image => del(image.url, { token: tokenBlobVercel })));
       }
       const productDeleted = await ctx.db.product.delete({
         where: { id: input.id },
@@ -501,13 +554,19 @@ export const productRouter = createTRPCRouter({
         query: z.string().optional(),
         hasCategory: z.boolean().default(false).optional(),
         hasCategoryChild: z.boolean().default(false).optional(),
-        hasReview: z.boolean().default(false).optional()
+        hasReview: z.boolean().default(false).optional(),
+        userRole: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { query, hasCategory, hasCategoryChild, hasReview }: any = input;
+      const { query, hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
       const product = await ctx.db.product.findMany({
         where: {
+          ...(userRole && userRole != UserRole.CUSTOMER
+            ? {}
+            : {
+                status: ProductStatus.ACTIVE
+              }),
           OR: [
             { id: query?.trim() },
             { tag: query?.trim() },
@@ -540,7 +599,7 @@ export const productRouter = createTRPCRouter({
 
           subCategory: {
             include: {
-              images: true,
+              image: true,
               ...(hasCategoryChild
                 ? {
                     category: hasCategory ? true : false
@@ -563,14 +622,21 @@ export const productRouter = createTRPCRouter({
         hasCategory: z.boolean().default(false).optional(),
         hasCategoryChild: z.boolean().default(false).optional(),
         hasReview: z.boolean().default(false).optional(),
-        hasUser: z.boolean().default(false).optional()
+        hasUser: z.boolean().default(false).optional(),
+        userRole: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { query, hasCategory, hasCategoryChild, hasReview, hasUser }: any = input;
+      const { query, hasCategory, hasCategoryChild, hasReview, hasUser, userRole }: any = input;
 
       const product = await ctx.db.product.findFirst({
         where: {
+          ...(userRole && userRole != UserRole.CUSTOMER
+            ? {}
+            : {
+                status: ProductStatus.ACTIVE
+              }),
+
           OR: [{ id: { equals: query } }, { tag: { equals: query?.trim() } }]
         },
         include: {
@@ -578,7 +644,7 @@ export const productRouter = createTRPCRouter({
           materials: true,
           subCategory: {
             include: {
-              images: true,
+              image: true,
               ...(hasCategoryChild
                 ? {
                     category: hasCategory ? true : false
@@ -596,7 +662,7 @@ export const productRouter = createTRPCRouter({
                             select: {
                               id: true,
                               name: true,
-                              images: true
+                              image: true
                             }
                           }
                         : false)
@@ -616,18 +682,26 @@ export const productRouter = createTRPCRouter({
       z.object({
         hasCategory: z.boolean().default(false).optional(),
         hasCategoryChild: z.boolean().default(false).optional(),
-        hasReview: z.boolean().default(false).optional()
+        hasReview: z.boolean().default(false).optional(),
+        userRole: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { hasCategory, hasCategoryChild, hasReview }: any = input;
+      const { hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
       const product = await ctx.db.product.findMany({
+        where: {
+          ...(userRole && userRole != UserRole.CUSTOMER
+            ? {}
+            : {
+                status: ProductStatus.ACTIVE
+              })
+        },
         include: {
           images: true,
           materials: true,
           subCategory: {
             include: {
-              images: true,
+              image: true,
               ...(hasCategoryChild
                 ? {
                     category: hasCategory ? true : false
@@ -640,5 +714,14 @@ export const productRouter = createTRPCRouter({
         }
       });
       return product;
-    })
+    }),
+
+  getTotalProductSales: publicProcedure.query(async ({ ctx }) => {
+    const totalProductSales = await ctx.db.product.aggregate({
+      _sum: {
+        soldQuantity: true
+      }
+    });
+    return totalProductSales._sum.soldQuantity;
+  })
 });

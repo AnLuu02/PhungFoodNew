@@ -2,6 +2,7 @@
 
 import { Card, Center, Grid, GridCol, rem, TextInput, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { IconMail } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/app/_components/Button';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
@@ -55,6 +56,8 @@ export default function ForgotPassword() {
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder='E-mail'
+                    label='E-mail'
+                    leftSection={<IconMail size={18} stroke={1.5} />}
                   />
                 </GridCol>
 

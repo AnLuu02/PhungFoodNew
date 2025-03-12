@@ -15,7 +15,12 @@ export function CreateCategoryButton() {
       <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </Button>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Tạo danh mục</Title>}>
+      <Modal
+        closeOnClickOutside={false}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Tạo danh mục</Title>}
+      >
         <CreateCategory setOpened={setOpened} />
       </Modal>
     </>
@@ -29,7 +34,12 @@ export function UpdateCategoryButton({ id }: { id: string }) {
       <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
         <IconEdit size={24} />
       </ActionIcon>
-      <Modal opened={opened} onClose={() => setOpened(false)} title={<Title order={2}>Cập nhật danh mục</Title>}>
+      <Modal
+        closeOnClickOutside={false}
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={<Title order={2}>Cập nhật danh mục</Title>}
+      >
         <UpdateCategory categoryId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
