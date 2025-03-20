@@ -14,33 +14,16 @@ const FastMenu = async ({
   searchParams
 }: {
   searchParams?: {
-    tag?: string;
-    'sort-price'?: string;
-    'sort-name'?: string;
-    price?: string;
     page?: string;
     limit?: string;
     'danh-muc'?: string;
-    'loai-san-pham'?: string;
-    filter?: string;
   };
 }) => {
   const categoriesData = await api.Category.getAll();
   const foderItems = await api.Product.find({
     skip: Number(searchParams?.page) || 0,
     take: Number(searchParams?.limit) || 12,
-    sort: {
-      price: searchParams?.['sort-price'],
-      name: searchParams?.['sort-name']
-    },
-    query: searchParams?.tag,
-    'danh-muc': searchParams?.['danh-muc'],
-    'loai-san-pham': searchParams?.['loai-san-pham'],
-    newProduct: searchParams?.filter === 'san-pham-moi',
-    price: {
-      min: Number(searchParams?.price?.split('-')[0]) || undefined,
-      max: Number(searchParams?.price?.split('-')[1]) || undefined
-    }
+    'danh-muc': searchParams?.['danh-muc']
   });
   const categories = categoriesData || [];
   const products = foderItems?.products || [];

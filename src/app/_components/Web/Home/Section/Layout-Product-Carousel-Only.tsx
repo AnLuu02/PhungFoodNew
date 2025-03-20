@@ -36,7 +36,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
   }, [embla, onSelect]);
 
   return (
-    <Card h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'gray.1'} p={0}>
+    <Card h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'theme.gray.1'} p={0}>
       <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
         <Flex
           align={'center'}
@@ -45,7 +45,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
           direction={{ base: 'column', sm: 'row', md: 'row' }}
           gap={'md'}
         >
-          <Title order={2} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
+          <Title order={2} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
             {title || 'Sản phẩm mới'}
           </Title>
 

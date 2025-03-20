@@ -9,7 +9,7 @@ export default function FooterWebLayout({ restaurant }: any) {
   return (
     noHeadersLayoutCondition.every(path => !pathname.includes(path)) && (
       <>
-        <Grid className='w-full overflow-hidden px-4 py-8 text-black' bg={'gray.1'}>
+        <Grid className='w-full overflow-hidden px-4 py-8' bg={'theme.gray.1'}>
           <GridCol span={{ base: 12, sm: 6, md: 5 }}>
             <Center>
               <Box className='space-y-4'>
@@ -38,35 +38,35 @@ export default function FooterWebLayout({ restaurant }: any) {
                 </Box>
               </Box>
               <Flex direction={'column'} className='space-y-3 text-sm'>
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Liên hệ
                 </Link>
 
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Chính sách và quy định chung
                 </Link>
 
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Chính sách thanh toán khi đặt hàng
                 </Link>
 
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Chính sách hoạt động
                 </Link>
 
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Chính sách bảo mật thông tin
                 </Link>
 
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Thông tin vận chuyển và giao nhận
                 </Link>
 
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Thông tin đăng ký giao dịch chung
                 </Link>
 
-                <Link href='#' className='rounded-sm text-black hover:underline'>
+                <Link href='#' className='rounded-sm hover:underline'>
                   Hướng dẫn đặt phần ăn
                 </Link>
               </Flex>
@@ -77,13 +77,13 @@ export default function FooterWebLayout({ restaurant }: any) {
             <Box className='space-y-6'>
               <Text className='text-xl font-bold'>HÃY KẾT NỐI VỚI CHÚNG TÔI</Text>
               <Flex align={'center'} gap={'md'}>
-                <Link href='#' className='rounded-sm text-black hover:underline hover:opacity-80'>
+                <Link href='#' className='rounded-sm hover:underline hover:opacity-80'>
                   <Image loading='lazy' w={40} h={40} src={'/images/svg/icon-zalo.svg'} />
                 </Link>
-                <Link href='#' className='rounded-sm text-black hover:underline hover:opacity-80'>
+                <Link href='#' className='rounded-sm hover:underline hover:opacity-80'>
                   <Image loading='lazy' w={40} h={40} src={'/images/svg/icon-facebook.svg'} />
                 </Link>
-                <Link href='#' className='rounded-sm text-black hover:underline hover:opacity-80'>
+                <Link href='#' className='rounded-sm hover:underline hover:opacity-80'>
                   <Image loading='lazy' w={40} h={40} src={'/images/svg/icon-phone.svg'} />
                 </Link>
               </Flex>
@@ -93,10 +93,10 @@ export default function FooterWebLayout({ restaurant }: any) {
               <Box className='space-y-4'>
                 <h4 className='text-center font-bold lg:text-left'>TẢI ỨNG DỤNG ĐẶT HÀNG VỚI NHIỀU ƯU ĐÃI HƠN</h4>
                 <Box className='flex justify-center gap-4 lg:justify-start'>
-                  <Link href='#' className='rounded-sm text-black hover:underline hover:opacity-80'>
+                  <Link href='#' className='rounded-sm hover:underline hover:opacity-80'>
                     <Image loading='lazy' src='/images/png/logo_playstore.png' alt='Google Play' w={140} h={42} />
                   </Link>
-                  <Link href='#' className='rounded-sm text-black hover:underline hover:opacity-80'>
+                  <Link href='#' className='rounded-sm hover:underline hover:opacity-80'>
                     <Image loading='lazy' src='/images/png/logo_appstore.png' alt='App Store' w={140} h={42} />
                   </Link>
                 </Box>

@@ -22,7 +22,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const { openModal } = useModal();
 
   return (
-    <Card radius={'md'} withBorder bg={'white'} p={0} pos={'relative'}>
+    <Card radius={'md'} withBorder bg={'theme.white'} p={0} pos={'relative'}>
       <Flex h={162} gap={'xs'}>
         <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center'>
           <Image
@@ -78,12 +78,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
         <Flex direction={'column'} align={'flex-start'} w={'64%'} gap={'xs'} justify={'center'} pr={'md'}>
           <Link href={`/san-pham/${data?.tag}`}>
             <Tooltip label={data?.name}>
-              <Text
-                lineClamp={1}
-                size='md'
-                fw={700}
-                className='cursor-pointer text-center text-black hover:text-[#008b4b]'
-              >
+              <Text lineClamp={1} size='md' fw={700} className='cursor-pointer text-center hover:text-[#008b4b]'>
                 {data?.name || 'Cá thu'}
               </Text>
             </Tooltip>

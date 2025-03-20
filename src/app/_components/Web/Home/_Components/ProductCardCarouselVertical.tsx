@@ -149,7 +149,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
                 size='md'
                 fw={700}
                 px={10}
-                className='cursor-pointer text-center text-black hover:text-[#008b4b]'
+                className='cursor-pointer text-center hover:text-[#008b4b]'
               >
                 {product?.name || 'Cá thu'}
               </Text>

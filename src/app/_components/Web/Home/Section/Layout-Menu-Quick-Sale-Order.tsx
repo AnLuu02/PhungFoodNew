@@ -15,7 +15,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
+                <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
                   Ăn vặt
                 </Title>
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
@@ -56,7 +56,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
+                <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
                   Thức uống
                 </Title>
                 <Link href='/thuc-don?danh-muc=thuc-uong'>
@@ -98,7 +98,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
+                <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
                   Tráng miệng
                 </Title>
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
