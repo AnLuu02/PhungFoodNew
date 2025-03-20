@@ -1,5 +1,6 @@
 import { Card, CardSection, Container, Flex, Image, Space, Stack, Text } from '@mantine/core';
 import BButton from '../../Button';
+import BannerSection from './Section/Banner-section';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
 import LayoutAds from './Section/Layout-Ads';
 import LayoutCarouselSimple from './Section/Layout-Carousel-Simple';
@@ -8,7 +9,6 @@ import LayoutProductCarouselOnly from './Section/Layout-Product-Carousel-Only';
 import LayoutProductCarouselWithImage from './Section/Layout-Product-Carousel-With-Image';
 import LayoutProductCarouselWithImage2 from './Section/Layout-Product-Carousel-With-Image-2';
 import LayoutPromotion from './Section/Layout-Promotion';
-import BannerSection from './Section/banner-section';
 
 const HomeWeb = ({
   data
