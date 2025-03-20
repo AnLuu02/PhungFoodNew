@@ -11,7 +11,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
     <>
       <Flex
         h={{ base: 'max-content', md: 92 }}
-        bg={'theme.gray.1'}
+        bg={'gray.1'}
         pl={{ base: rem(20), lg: rem(130) }}
         pr={{ base: rem(20), lg: rem(130) }}
         justify={'space-between'}

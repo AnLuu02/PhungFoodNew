@@ -15,9 +15,7 @@ const ServiceComponent = () => {
                 <Text size='md' c={'green.9'} fw={700}>
                   Vận chuyển miễn phí
                 </Text>
-                <Text size='sm' c={'black'}>
-                  Hóa đơn trên 5 triệu
-                </Text>
+                <Text size='sm'>Hóa đơn trên 5 triệu</Text>
               </Flex>
             </Flex>
           </Card>
@@ -30,9 +28,7 @@ const ServiceComponent = () => {
                 <Text size='md' c={'green.9'} fw={700}>
                   Đổi trả miễn phí
                 </Text>
-                <Text size='sm' c={'black'}>
-                  Trong vòng 7 ngày
-                </Text>
+                <Text size='sm'>Trong vòng 7 ngày</Text>
               </Flex>
             </Flex>
           </Card>
@@ -45,9 +41,7 @@ const ServiceComponent = () => {
                 <Text size='md' c={'green.9'} fw={700}>
                   100% Hoàn tiền
                 </Text>
-                <Text size='sm' c={'black'}>
-                  Nếu sản phẩm lỗi
-                </Text>
+                <Text size='sm'>Nếu sản phẩm lỗi</Text>
               </Flex>
             </Flex>
           </Card>
@@ -60,9 +54,7 @@ const ServiceComponent = () => {
                 <Text size='md' c={'green.9'} fw={700}>
                   webp/hotline: 1900 6750
                 </Text>
-                <Text size='sm' c={'black'}>
-                  Hỗ trợ 24/7
-                </Text>
+                <Text size='sm'>Hỗ trợ 24/7</Text>
               </Flex>
             </Flex>
           </Card>

@@ -22,7 +22,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const { openModal } = useModal();
 
   return (
-    <Card radius={'md'} withBorder bg={'theme.white'} p={0} pos={'relative'}>
+    <Card radius={'md'} withBorder bg={'white'} p={0} pos={'relative'}>
       <Flex h={162} gap={'xs'}>
         <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center'>
           <Image

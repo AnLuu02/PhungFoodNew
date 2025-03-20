@@ -13,7 +13,7 @@ const LayoutPromotion = ({ data }: any) => {
       withBorder
       className='border-2 border-dashed border-[#008b4b]'
       p={0}
-      bg={'theme.gray.2'}
+      bg={'gray.2'}
     >
       <Flex h={'100%'} direction={'column'}>
         <Flex

@@ -9,7 +9,7 @@ export default function FooterWebLayout({ restaurant }: any) {
   return (
     noHeadersLayoutCondition.every(path => !pathname.includes(path)) && (
       <>
-        <Grid className='w-full overflow-hidden px-4 py-8' bg={'theme.gray.1'}>
+        <Grid className='w-full overflow-hidden px-4 py-8' bg={'gray.1'}>
           <GridCol span={{ base: 12, sm: 6, md: 5 }}>
             <Center>
               <Box className='space-y-4'>

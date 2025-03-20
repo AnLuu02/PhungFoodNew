@@ -99,7 +99,7 @@ export default function BannerSection({ banner }: any) {
             <Link href={service.href || ''} key={index}>
               <Paper
                 key={index}
-                bg={'theme.gray.1'}
+                bg={'gray.1'}
                 className='flex cursor-pointer items-center justify-center transition-shadow hover:shadow-md'
                 radius={'md'}
                 p={'sm'}
@@ -108,7 +108,7 @@ export default function BannerSection({ banner }: any) {
               >
                 <Flex align={'center'} gap={'xs'}>
                   <Text size='2rem'>{service.icon}</Text>
-                  <Text fw={700} c='theme.gray.8' size='md'>
+                  <Text fw={700} c='gray.8' size='md'>
                     {service.title}
                   </Text>
                 </Flex>

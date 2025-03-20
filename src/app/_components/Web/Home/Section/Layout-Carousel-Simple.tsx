@@ -88,7 +88,7 @@ const LayoutCarouselSimple = () => {
 
   return (
     <>
-      <Card h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'theme.gray.1'} p={0}>
+      <Card h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'gray.1'} p={0}>
         <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
           <Flex
             align={'center'}
