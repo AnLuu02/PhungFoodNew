@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -14,24 +13,28 @@ export async function POST(request: NextRequest) {
     const buffer = await (file as Blob).arrayBuffer();
     const imageBase64 = Buffer.from(buffer).toString('base64');
 
-    // Gọi Hugging Face API
-    const response = await axios.post(
-      'https://api-inference.huggingface.co/models/nateraw/food',
-      { inputs: imageBase64 },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    // Gọi Hugging Face API bằng fetch
+    const response = await fetch('https://api-inference.huggingface.co/models/nateraw/food', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ inputs: imageBase64 })
+    });
 
-    const results = response.data.map((item: any) => ({
-      label: item.label,
-      score: item.score
-    }));
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-    return NextResponse.json({ results });
+    const results = await response.json();
+
+    return NextResponse.json({
+      results: results.map((item: any) => ({
+        label: item.label,
+        score: item.score
+      }))
+    });
   } catch (error) {
     console.error('API Error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Internal server error';
