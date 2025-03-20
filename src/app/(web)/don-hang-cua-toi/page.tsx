@@ -16,31 +16,19 @@ import {
   Tooltip
 } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
-import { IconAlertCircle, IconClock, IconCreditCard, IconTrash } from '@tabler/icons-react';
+import { IconTrash } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
 import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
-import { formatDate } from '~/app/lib/utils/format/formatDate';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { getStatusColor } from '~/app/lib/utils/func-handler/get-status-color';
+import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
 import { api } from '~/trpc/react';
 import { default as Empty } from '../../_components/Empty';
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case OrderStatus.COMPLETED:
-      return <IconCreditCard size={24} />;
-    case OrderStatus.PENDING:
-      return <IconClock size={24} />;
-    case OrderStatus.CANCELLED:
-      return <IconAlertCircle size={24} />;
-    default:
-      return null;
-  }
-};
 export default function MyOrderPage() {
   const { data: user } = useSession();
   const { data, isLoading } = api.Order.getFilter.useQuery({ query: user?.user?.email || '' });
@@ -50,7 +38,9 @@ export default function MyOrderPage() {
     ? orders?.filter(order => order.status.toLowerCase() === selectedStatus.toLowerCase())
     : orders;
   const statusCounts = [
+    { status: OrderStatus.PROCESSING, count: orders?.filter(i => i.status === OrderStatus.PROCESSING)?.length || 0 },
     { status: OrderStatus.PENDING, count: orders?.filter(i => i.status === OrderStatus.PENDING)?.length || 0 },
+    { status: OrderStatus.DELIVERED, count: orders?.filter(i => i.status === OrderStatus.DELIVERED)?.length || 0 },
     { status: OrderStatus.COMPLETED, count: orders?.filter(i => i.status === OrderStatus.COMPLETED)?.length || 0 },
     { status: OrderStatus.CANCELLED, count: orders?.filter(i => i.status === OrderStatus.CANCELLED)?.length || 0 }
   ];
@@ -65,7 +55,7 @@ export default function MyOrderPage() {
     <Grid gutter='md'>
       <Grid.Col span={{ base: 12, md: 4, lg: 4 }} className='h-fit' pos={'sticky'} top={70}>
         <Paper withBorder shadow='sm' p='md' className='h-full'>
-          <Title order={3} className='mb-4'>
+          <Title order={3} className='mb-4 font-quicksand'>
             Thống kê nhanh
           </Title>
           <Grid gutter='md'>
@@ -108,7 +98,7 @@ export default function MyOrderPage() {
       <Grid.Col span={{ base: 12, md: 8, lg: 8 }} className='h-fit'>
         <Paper withBorder shadow='sm' p='md' className='h-full'>
           <Flex justify={'space-between'} align={'flex-start'}>
-            <Title order={3} className='mb-4'>
+            <Title order={3} className='mb-4 font-quicksand'>
               Chi tiết đặt hàng
             </Title>
             <Group gap={'xl'}>
@@ -150,12 +140,16 @@ export default function MyOrderPage() {
                     <Table.Td>{formatPriceLocaleVi(order.total)}</Table.Td>
                     <Table.Td>{formatDate(order.createdAt)}</Table.Td>
                     <Table.Td>
-                      <Badge color={getStatusColor(order.status)}>
-                        {order.status == OrderStatus.PENDING
-                          ? 'Chưa thanh toán'
-                          : order.status == OrderStatus.CANCELLED
-                            ? 'Đã hủy'
-                            : 'Hoàn thành'}
+                      <Badge
+                        size='xs'
+                        color={getStatusColor(order.status)}
+                        p={'xs'}
+                        className='align-items-center flex'
+                      >
+                        <Flex align={'center'}>
+                          {getStatusText(order.status)}
+                          {getStatusIcon(order.status)}
+                        </Flex>
                       </Badge>
                     </Table.Td>
                     <Table.Td>
@@ -173,7 +167,7 @@ export default function MyOrderPage() {
 
                         {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
 
-                        {order?.status === OrderStatus.PENDING && (
+                        {order?.status === OrderStatus.PROCESSING && (
                           <Link href={`/thanh-toan/${order.id}`}>
                             <Tooltip label='Tiếp tục thanh toán'>
                               <Button size='xs'>Thanh toán</Button>

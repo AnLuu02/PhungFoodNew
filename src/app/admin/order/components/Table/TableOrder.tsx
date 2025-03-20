@@ -1,16 +1,17 @@
 'use client';
-import { Badge, Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/core';
+import { Badge, Button, Checkbox, Flex, Group, Highlight, Menu, Table, Text } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { api } from '~/trpc/react';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
 import {
   CancleOrderButton,
   DeleteOrderButton,
+  DeliveryOrderButton,
+  SendMessageOrderButton,
   SendOrderButton,
   SuccessOrderButton,
   UpdateOrderButton
@@ -19,16 +20,17 @@ import {
 export default function TableOrder({
   currentPage,
   query,
+  data,
   limit,
   user
 }: {
   currentPage: string;
+  data: any;
   query: string;
   limit: string;
   user?: any;
 }) {
-  const { data: result, isLoading } = api.Order.find.useQuery({ skip: +currentPage, take: +limit, query });
-  const currentItems = result?.orders || [];
+  const currentItems = data?.orders || [];
 
   const columns: ColumnDef<any>[] = [
     {
@@ -64,32 +66,20 @@ export default function TableOrder({
       cell: info => (
         <Group className='text-center'>
           <Badge
-            color={
-              info.row.original.status === OrderStatus.COMPLETED
-                ? 'green.9'
-                : info.row.original.status === OrderStatus.PENDING
-                  ? 'yellow'
-                  : info.row.original.status === OrderStatus.CANCELLED
-                    ? 'red'
-                    : 'gray'
-            }
+            size='xs'
+            color={getStatusColor(info.row.original.status)}
+            p={'xs'}
+            className='align-items-center flex'
           >
-            {info.row.original.status}
+            <Flex align={'center'}>
+              {getStatusText(info.row.original.status)}
+              {getStatusIcon(info.row.original.status)}
+            </Flex>
           </Badge>
-          {info.row.original.status !== OrderStatus.COMPLETED && <SuccessOrderButton id={info.row.original.id} />}
-          {info.row.original.status !== OrderStatus.CANCELLED && (
-            <CancleOrderButton
-              id={info.row.original.id}
-              formData={{
-                id: info.row.original.id,
-                total: info.row.original.total,
-                userId: info.row.original.user?.id,
-                paymentId: info.row.original.payment.id,
-                orderItems: info.row.original.orderItems,
-                status: OrderStatus.CANCELLED
-              }}
-            />
-          )}
+          {info.row.original.status === OrderStatus.DELIVERED && <SuccessOrderButton id={info.row.original.id} />}
+          {info.row.original.status === OrderStatus.PENDING && <DeliveryOrderButton id={info.row.original.id} />}
+          {info.row.original.status === OrderStatus.PROCESSING && <SendMessageOrderButton id={info.row.original.id} />}
+          {info.row.original.status !== OrderStatus.CANCELLED && <CancleOrderButton id={info.row.original.id} />}
         </Group>
       )
     },
@@ -121,9 +111,7 @@ export default function TableOrder({
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel()
   });
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Group pb={'lg'}>
         <Menu shadow='md' width={220}>
@@ -189,7 +177,7 @@ export default function TableOrder({
 
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
-        <CustomPagination totalPages={result?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
     </>
   );

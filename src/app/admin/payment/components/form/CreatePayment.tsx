@@ -2,8 +2,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
 import { PaymentType } from '@prisma/client';
-import { IconTag } from '@tabler/icons-react';
-import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Payment } from '~/app/Entity/PaymentEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
@@ -14,10 +12,7 @@ import { api } from '~/trpc/react';
 export default function CreatePayment({ setOpened }: { setOpened: any }) {
   const {
     control,
-    register,
     handleSubmit,
-    watch,
-    setValue,
     formState: { errors, isSubmitting }
   } = useForm<Payment>({
     resolver: zodResolver(paymentSchema),
@@ -31,29 +26,29 @@ export default function CreatePayment({ setOpened }: { setOpened: any }) {
     }
   });
 
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
   const utils = api.useUtils();
-  const mutation = api.Payment.create.useMutation();
+  const mutation = api.Payment.create.useMutation({
+    onSuccess: () => {
+      utils.Payment.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Payment> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync(formData);
+        let result = await mutation.mutateAsync({
+          ...formData,
+          tag: createTag(formData.name)
+        });
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
-          utils.Payment.invalidate();
         } else {
           NotifyError(result.message);
         }
       }
     } catch (error) {
-      NotifyError('Error created Payment');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
@@ -74,22 +69,7 @@ export default function CreatePayment({ setOpened }: { setOpened: any }) {
             )}
           />
         </Grid.Col>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                label='Tag'
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                placeholder='Sẽ tạo tự động'
-                error={errors.name?.message}
-                readOnly
-              />
-            )}
-          />
-        </Grid.Col>
+
         <Grid.Col span={6}>
           <Controller
             control={control}

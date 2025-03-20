@@ -7,7 +7,7 @@ import { IconArrowLeft, IconGift } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/app/_components/Button';
 import ModalShowVoucher from '~/app/_components/Modals/ModalShowVoucher';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { api } from '~/trpc/react';
 import { ButtonCheckout } from './ButtonCheckout';
 import CartItemPayment from './CartItemPayment';

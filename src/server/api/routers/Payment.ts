@@ -1,5 +1,6 @@
 import { PaymentType } from '@prisma/client';
 import { z } from 'zod';
+import { seedPayments } from '~/app/lib/utils/data-test/seed';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
@@ -85,8 +86,6 @@ export const paymentRouter = createTRPCRouter({
         record: existingpayment
       };
     }),
-  //----------------------------------------------------//----------------------------------------------------
-  //----------------------------------------------------delete//----------------------------------------------------
   delete: publicProcedure
     .input(
       z.object({
@@ -100,13 +99,7 @@ export const paymentRouter = createTRPCRouter({
 
       return payment;
     }),
-  //
-  //
-  //
-  //
-  //
-  //
-  //----------------------------------------------------get filter
+
   getFilter: publicProcedure
     .input(
       z.object({
@@ -142,7 +135,13 @@ export const paymentRouter = createTRPCRouter({
       return payment;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const payment = await ctx.db.payment.findMany();
+    let payment = await ctx.db.payment.findMany();
+    if (!payment?.length) {
+      await ctx.db.payment.createMany({
+        data: seedPayments
+      });
+      payment = await ctx.db.payment.findMany();
+    }
     return payment;
   }),
 

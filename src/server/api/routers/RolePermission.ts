@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { seedPermissions, seedRoles } from '~/app/lib/utils/data-test/seed';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const rolePermissionRouter = createTRPCRouter({
@@ -53,10 +54,19 @@ export const rolePermissionRouter = createTRPCRouter({
       };
     }),
 
-  getRoles: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.role.findMany({
+  getAllRole: publicProcedure.query(async ({ ctx }) => {
+    let roles = await ctx.db.role.findMany({
       include: { permissions: true }
     });
+    if (!roles?.length) {
+      await ctx.db.role.createMany({
+        data: seedRoles
+      });
+      roles = await ctx.db.role.findMany({
+        include: { permissions: true }
+      });
+    }
+    return roles;
   }),
   getOne: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     return await ctx.db.role.findUnique({
@@ -87,7 +97,50 @@ export const rolePermissionRouter = createTRPCRouter({
         }
       });
     }),
+  createManyRole: publicProcedure
+    .input(
+      z.object({
+        data: z.array(
+          z.object({
+            name: z.string().min(1, 'Name is required'),
+            permissionIds: z.array(z.string())
+          })
+        )
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.db.role.findMany({
+        where: {
+          name: { in: input.data.map(item => item.name) }
+        }
+      });
 
+      const existingSet = new Set(existing.map(item => item.name));
+      const newData = input.data.filter(item => !existingSet.has(item.name));
+
+      if (newData.length === 0) {
+        return { success: false, message: 'Tất cả vai trò đều đã tồn tại.' };
+      }
+      const permissions = await Promise.all(
+        newData.map(async item => {
+          const role = await ctx.db.role.create({
+            data: {
+              name: item.name,
+              permissions: {
+                connect: item.permissionIds.map(id => ({ id }))
+              }
+            }
+          });
+          return role;
+        })
+      );
+
+      return {
+        success: true,
+        message: `Đã thêm ${permissions.length} vai trò mới.`,
+        record: newData
+      };
+    }),
   updateRole: publicProcedure
     .input(
       z.object({
@@ -115,10 +168,15 @@ export const rolePermissionRouter = createTRPCRouter({
       };
     }),
 
-  deleteRole: publicProcedure.input(z.object({ roleId: z.string() })).mutation(async ({ ctx, input }) => {
-    return await ctx.db.role.delete({
-      where: { id: input.roleId }
+  deleteRole: publicProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+    const role = await ctx.db.role.delete({
+      where: { id: input.id }
     });
+    return {
+      success: true,
+      message: 'Xóa vai trò thành công',
+      record: role
+    };
   }),
 
   findPermission: publicProcedure
@@ -138,14 +196,20 @@ export const rolePermissionRouter = createTRPCRouter({
         ctx.db.permission.count(),
         ctx.db.permission.count({
           where: {
-            name: { contains: query?.trim(), mode: 'insensitive' }
+            OR: [
+              { id: { contains: query?.trim(), mode: 'insensitive' } },
+              { name: { contains: query?.trim(), mode: 'insensitive' } }
+            ]
           }
         }),
         ctx.db.permission.findMany({
           skip: startPageItem,
           take,
           where: {
-            name: { contains: query?.trim(), mode: 'insensitive' }
+            OR: [
+              { id: { contains: query?.trim(), mode: 'insensitive' } },
+              { name: { contains: query?.trim(), mode: 'insensitive' } }
+            ]
           },
           include: {
             roles: true
@@ -176,6 +240,41 @@ export const rolePermissionRouter = createTRPCRouter({
       data: { name: input.name }
     });
   }),
+  createManyPermission: publicProcedure
+    .input(
+      z.object({
+        data: z.array(
+          z.object({
+            name: z.string().min(1, 'Name is required')
+          })
+        )
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existing = await ctx.db.permission.findMany({
+        where: {
+          name: { in: input.data.map(item => item.name) }
+        }
+      });
+
+      const existingSet = new Set(existing.map(item => item.name));
+      const newData = input.data.filter(item => !existingSet.has(item.name));
+
+      if (newData.length === 0) {
+        return { success: false, message: 'Tất cả quyền đều đã tồn tại.' };
+      }
+
+      const permissions = await ctx.db.permission.createMany({
+        data: newData
+      });
+
+      return {
+        success: true,
+        message: `Đã thêm ${permissions.count} quyền mới.`,
+        record: newData
+      };
+    }),
+
   updatePermission: publicProcedure
     .input(
       z.object({
@@ -202,5 +301,19 @@ export const rolePermissionRouter = createTRPCRouter({
     return await ctx.db.permission.delete({
       where: { id: input.permisssionId }
     });
+  }),
+  getAllPermission: publicProcedure.query(async ({ ctx }) => {
+    let permissions = await ctx.db.permission.findMany({
+      include: { roles: true }
+    });
+    if (!permissions?.length) {
+      await ctx.db.permission.createMany({
+        data: seedPermissions
+      });
+      permissions = await ctx.db.permission.findMany({
+        include: { roles: true }
+      });
+    }
+    return permissions;
   })
 });

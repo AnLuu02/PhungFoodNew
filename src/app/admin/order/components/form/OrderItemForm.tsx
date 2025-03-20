@@ -2,11 +2,11 @@
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
 
-const OrderItemForm = ({ register, index, removeOrderItem, control, watch, setValue, getValues, errors }: any) => {
+const OrderItemForm = ({ index, removeOrderItem, control, watch, setValue, getValues, errors }: any) => {
   const [productOrderItem, setProductOrderItem] = useState<any>({});
   const { data: products } = api.Product.getAll.useQuery({
     hasCategory: true,

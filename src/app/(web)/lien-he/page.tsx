@@ -1,8 +1,9 @@
-'use client';
 import { Button, Flex, Grid, GridCol, Input, Text, Textarea, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
+import { api } from '~/trpc/server';
 
-const Contact = () => {
+const Contact = async () => {
+  const restaurant = await api.Restaurant.getOne();
   return (
     <Grid w={'100%'}>
       <GridCol className='flex justify-between' span={12}>
@@ -12,7 +13,7 @@ const Contact = () => {
               <Text size='md' fw={900} mb={10}>
                 NƠI GIẢI ĐÁP TOÀN BỘ MỌI THẮC MẮC CỦA BẠN?
               </Text>
-              <Text size='sm'>Bean Farm- Siêu thị trực tuyến mua sắm nông sản, chất lượng, tươi xanh.</Text>
+              <Text size='sm'>Phụng Food- Siêu thị trực tuyến mua sắm nông sản, chất lượng, tươi xanh.</Text>
               <Text size='sm' fw={900} c={'green.9'} mb={20}>
                 Giá siêu tốt - Giao siêu tốc.
               </Text>
@@ -20,19 +21,21 @@ const Contact = () => {
                 <ThemeIcon radius='xl' size='sm' bg={'green.9'} mr={12}>
                   <IconBrand4chan style={{ width: '70%', height: '70%' }} />
                 </ThemeIcon>
-                <Text size='sm'>PhungFood Việt Nam</Text>
+                <Text size='sm'>{restaurant?.name} Việt Nam</Text>
               </Flex>
               <Flex mb={10} align={'center'}>
                 <ThemeIcon radius='xl' size='sm' bg={'green.9'} mr={12}>
                   <IconPhone style={{ width: '70%', height: '70%' }} />
                 </ThemeIcon>
-                <Text size='sm'>0911862581</Text>
+                <Text size='sm'>{restaurant?.phone}</Text>
               </Flex>
               <Flex mb={20} align={'flex-start'}>
                 <ThemeIcon radius='xl' size='sm' bg={'green.9'} mr={12}>
                   <IconLocation style={{ width: '70%', height: '70%' }} />
                 </ThemeIcon>
-                <Text size='sm'>Đầu lộ Tân Thành, Khóm 9, phường 6, thành phố Cà Mau, tỉnh Cà Mau</Text>
+                <Text size='sm'>
+                  {restaurant?.address || `Đầu lộ Tân Thành, Khóm 9, phường 6, thành phố Cà Mau, tỉnh Cà Mau`}
+                </Text>
               </Flex>
 
               <Text size='md' fw={900} mb={10}>

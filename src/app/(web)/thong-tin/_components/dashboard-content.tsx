@@ -37,8 +37,6 @@ export default function DashboardContent() {
       onChange={setActiveTab}
       classNames={classes}
     >
-      {/* <Paper h={'max-content'} py='md'> */}
-
       <Paper className='h-fit' pos={'sticky'} top={70} mr={'md'} mb={{ base: 'md', sm: 'md', md: 0, lg: 0 }}>
         <Tabs.List pos={'sticky'} top={0}>
           <Tabs.Tab size={'lg'} fw={700} value='user-info' leftSection={<IconUser size={24} />}>

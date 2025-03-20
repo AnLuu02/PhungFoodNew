@@ -2,9 +2,9 @@
 import { Button, Checkbox, Group, Menu, Table, Text } from '@mantine/core';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
-import Search from '~/app/_components/Admin/Search';
-import LoadingComponent from '~/app/_components/Loading';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import LoadingComponent from '~/app/_components/Loading/Loading';
+import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { api } from '~/trpc/react';
 
 export default function TableRevenue({ query }: { query: string }) {
@@ -58,7 +58,7 @@ export default function TableRevenue({ query }: { query: string }) {
         <Group justify='space-between' mt={'md'} w={'100%'}>
           <Text fw={500}>Số lượng bản ghi: {currentItems?.length || 0}</Text>
           <Group>
-            <Search />
+            <SearchQueryParams />
           </Group>
         </Group>
         <Menu shadow='md' width={220}>

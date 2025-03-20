@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
   const transactionId = vnp_Params['vnp_TxnRef'];
   const responseCode = vnp_Params['vnp_ResponseCode'];
-  const status = responseCode === '00' ? OrderStatus.COMPLETED : OrderStatus.FAILED;
+  const status = responseCode === '00' ? OrderStatus.PENDING : OrderStatus.CANCELLED;
   const transDate = vnp_Params['vnp_PayDate'];
   await api.Order.update({
     where: { id: transactionId },

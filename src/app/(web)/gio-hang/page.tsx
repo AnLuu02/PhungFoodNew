@@ -18,7 +18,7 @@ import {
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { breakpoints } from '~/app/lib/utils/constants/device';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import Empty from '../../_components/Empty';
 import RecapCart from '../thanh-toan/_components/recapCart';
@@ -100,18 +100,6 @@ export default function ShoppingCart() {
                       </Text>
                     </Table.Td>
                     <Table.Td>
-                      {/* <Group>
-                      <Button variant='outline' size='xs' onClick={() => updateQuantity(item.id, item.quantity - 1)}>
-                        -
-                      </Button>
-                      <Text w={rem(40)} ta='center'>
-                        {item.quantity}
-                      </Text>
-                      <Button variant='outline' size='xs' onClick={() => updateQuantity(item.id, item.quantity + 1)}>
-                        +
-                      </Button>
-                    </Group> */}
-
                       <NumberInput
                         thousandSeparator=','
                         clampBehavior='strict'

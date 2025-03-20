@@ -1,13 +1,12 @@
 'use client';
-import { ActionIcon, Box, Center, Flex, Group, Image, rem, Stack, Text } from '@mantine/core';
-import { IconPhone } from '@tabler/icons-react';
+import { Box, Center, Flex, Group, Image, rem } from '@mantine/core';
 import Link from 'next/link';
-import GlobalSearchMenu from '~/app/(web)/thuc-don/_components/GlobalSearchMenu';
+import SearchComponentClient from '~/app/_components/Search/SearchClient';
 import CartButton from '../_components/gio-hang-button';
 import PromotionButton from '../_components/khuyen-mai';
 import LikeButton from '../_components/yeu-thich';
 
-const Header2 = () => {
+const Header2 = ({ subCategories }: { subCategories: any }) => {
   return (
     <>
       <Flex
@@ -28,7 +27,7 @@ const Header2 = () => {
             <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={250} h={80} p={0} />
           </Center>
         </Link>
-        <Group gap={10} className='hidden xl:flex'>
+        {/* <Group gap={10} className='hidden xl:flex'>
           <ActionIcon variant='outline' color='green' radius='xl' size={'xl'}>
             <IconPhone color='green' />
           </ActionIcon>
@@ -41,8 +40,11 @@ const Header2 = () => {
             </Text>
           </Stack>
         </Group>
-        <Box pos={'relative'} px={rem(20)}>
-          <GlobalSearchMenu width={{ base: 300, sm: 250, md: 300 }} />
+        <Group gap={10} className='hidden xl:flex'>
+          <ImageSearchModal />
+        </Group> */}
+        <Box w={{ base: '100%', md: 400, lg: 550 }}>
+          <SearchComponentClient subCategories={subCategories} />
         </Box>
         <Group>
           <Box className='hidden xl:block'>

@@ -92,7 +92,6 @@ export default function Chatbox() {
         </Group>
       </UnstyledButton>
       <ScrollArea className='mb-4 flex-grow' scrollbarSize={7} viewportRef={scrollAreaRef}>
-        {/* Chat Content */}
         <Box bg='gray.0' p='md'>
           <Stack gap='md'>
             {messages.map((message, index) =>
@@ -132,7 +131,6 @@ export default function Chatbox() {
               )
             )}
 
-            {/* Typing Indicator */}
             {loading && (
               <Box>
                 <Group gap={4} justify='center' h={rem(24)} w={'max-content'} pl={'xs'}>

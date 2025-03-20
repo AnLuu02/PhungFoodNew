@@ -17,14 +17,7 @@ export function CartItemFastMenu({ image, name, price, quantity, onQuantityChang
       <Paper radius='md' w={80} h={80}>
         <Image loading='lazy' src={image || '/images/jpg/empty-300x240.jpg'} alt={name} w={80} h={80} radius='md' />
       </Paper>
-      {/* <Image loading='lazy'  
-        src={image || '/images/jpg/empty-300x240.jpg'}
-        alt={name}
-        w={80}
-        h={80}
-        radius='md'
-        className='hidden sm:block'
-      /> */}
+
       <Box className='flex-grow'>
         <Group justify='space-between' wrap='nowrap'>
           <Tooltip label={name}>

@@ -281,7 +281,7 @@ export const voucherRouter = createTRPCRouter({
 
       return {
         success: false,
-        message: 'khuyến mãi đã tồn tại. Hãy thử lại.',
+        message: 'Khuyến mãi đã tồn tại. Hãy thử lại.',
         record: existingVoucher
       };
     })

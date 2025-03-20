@@ -11,7 +11,12 @@ import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { type AppRouter } from '~/server/api/root';
 import { createQueryClient } from './query-client';
-
+declare global {
+  interface Window {
+    OneSignalDeferred: any;
+    OneSignal: any;
+  }
+}
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 const getQueryClient = () => {
   if (typeof window === 'undefined') {

@@ -5,8 +5,8 @@ import { UserLevel } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import LoadingComponent from '~/app/_components/Loading';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import LoadingComponent from '~/app/_components/Loading/Loading';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { api } from '~/trpc/react';
 

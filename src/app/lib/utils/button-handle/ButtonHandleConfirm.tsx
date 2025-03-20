@@ -25,14 +25,14 @@ export const handleConfirm = (
         const result = id
           ? await mutation.mutateAsync({ id: id as string, ...formData })
           : await mutation.mutateAsync(formData);
-        if (result.success) {
+        if (result.success || result?.id) {
           callback();
           NotifySuccess('Thành công!', `${title}`);
         } else {
           NotifyError('Lỗi!', 'Đã có lỗi xảy ra.');
         }
       } catch (e) {
-        NotifyError('Lỗi!', 'Đã có lỗi xảy ra.' + e);
+        NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
       }
     }
   });

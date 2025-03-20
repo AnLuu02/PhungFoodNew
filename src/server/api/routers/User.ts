@@ -115,11 +115,13 @@ export const userRouter = createTRPCRouter({
         ctx.db.role.findMany({})
       ]);
       let defaultRole = roles.find(role => role.name === UserRole.CUSTOMER)?.id;
-
+      if (input?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN) {
+        defaultRole = UserRole.SUPER_ADMIN;
+      }
       if (existed) {
         return {
           success: false,
-          message: 'người dùng đã tồn tại. Hãy thử lại.',
+          message: 'Người dùng đã tồn tại. Hãy thử lại.',
           record: existed
         };
       }
@@ -162,7 +164,7 @@ export const userRouter = createTRPCRouter({
               }
             : undefined,
           role:
-            input.roleId || input.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN
+            input.roleId || input.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || roles.length > 0
               ? {
                   connect: {
                     id: input.roleId || defaultRole

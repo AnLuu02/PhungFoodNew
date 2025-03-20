@@ -49,7 +49,7 @@ export default function Empty({
       </Text>
       <Text size={size}>{content}</Text>
       {hasButton && (
-        <Link href={url} className='text-white no-underline'>
+        <Link href={url} className='text-white'>
           <Button
             color='red'
             size={size}

@@ -1,8 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionIcon, Button, FileInput, Grid, GridCol, Image, Select, Textarea, TextInput } from '@mantine/core';
-import { IconFile, IconTag } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { IconFile } from '@tabler/icons-react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { SubCategory } from '~/app/Entity/SubCategoryEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
@@ -16,8 +15,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
-    setValue
+    watch
   } = useForm<SubCategory>({
     resolver: zodResolver(subCategorySchema),
     defaultValues: {
@@ -30,15 +28,13 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
     }
   });
 
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
   const { data: categoryData, isLoading } = api.Category.getAll.useQuery();
   const utils = api.useUtils();
-  const mutation = api.SubCategory.create.useMutation();
+  const mutation = api.SubCategory.create.useMutation({
+    onSuccess: () => {
+      utils.SubCategory.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<SubCategory> = async formData => {
     try {
@@ -48,6 +44,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
         const base64 = file ? await fileToBase64(file) : '';
         let result = await mutation.mutateAsync({
           ...formData,
+          tag: createTag(formData.name),
           thumbnail: {
             fileName: fileName as string,
             base64: base64 as string
@@ -56,7 +53,6 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
-          utils.SubCategory.invalidate();
         } else {
           NotifyError(result.message);
         }
@@ -138,24 +134,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
                 )}
               />
             </Grid.Col>
-            <Grid.Col span={6}>
-              <Controller
-                control={control}
-                name='tag'
-                render={({ field }) => (
-                  <TextInput
-                    {...field}
-                    size='sm'
-                    required
-                    readOnly
-                    label='Tag'
-                    leftSection={<IconTag size={18} stroke={1.5} />}
-                    placeholder='Sẽ tạo tự động'
-                    error={errors.tag?.message}
-                  />
-                )}
-              />
-            </Grid.Col>
+
             <Grid.Col span={12}>
               <Controller
                 control={control}

@@ -7,8 +7,8 @@ import Empty from '~/app/_components/Empty';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import NavigationHeader from '../_components/NavigationHeader';
 
-const Header3 = ({ data }: any) => {
-  const formatData: any = data.flatMap((i: any) => i.subCategory) || [];
+const Header3 = ({ categories, subCategories }: any) => {
+  const formatData: any = subCategories || [];
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const notDesktop = useMediaQuery(`(min-width: ${breakpoints.sm}px) and ( max-width: 1023px) `);
   const [opened, { open, close, toggle }] = useDisclosure();
@@ -71,11 +71,7 @@ const Header3 = ({ data }: any) => {
               {formatData?.length > 0 ? (
                 formatData?.map((item: any, index: number) => {
                   return (
-                    <Link
-                      href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
-                      key={index}
-                      className='no-underline'
-                    >
+                    <Link href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`} key={index}>
                       <Menu.Item
                         key={index}
                         leftSection={
@@ -103,7 +99,7 @@ const Header3 = ({ data }: any) => {
         </Menu>
       </Group>
 
-      <NavigationHeader categories={data} opened={opened} toggle={toggle} close={close} />
+      <NavigationHeader categories={categories} opened={opened} toggle={toggle} close={close} />
     </Flex>
   );
 };

@@ -1,9 +1,9 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { getServerSession } from 'next-auth';
-import Search from '~/app/_components/Admin/Search';
+import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
-import { CreateCategoryButton } from './components/Button';
+import { CreateCategoryButton, CreateManyCategoryButton } from './components/Button';
 import TableCategory from './components/Table/TableCategory';
 
 export default async function CategoryManagementPage({
@@ -20,6 +20,7 @@ export default async function CategoryManagementPage({
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.Category.getAll();
   const user = await getServerSession(authOptions);
+  const data = await api.Category.find({ skip: +currentPage, take: +limit, query });
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -31,14 +32,17 @@ export default async function CategoryManagementPage({
           Số lượng bản ghi: {totalData && totalData?.length}
         </Text>
         <Group>
-          <Search />
+          <SearchQueryParams />
           {(user?.user?.role === 'ADMIN' || user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN) && (
-            <CreateCategoryButton />
+            <>
+              <CreateCategoryButton />
+              <CreateManyCategoryButton />
+            </>
           )}
         </Group>
       </Group>
 
-      <TableCategory currentPage={currentPage} query={query} limit={limit} user={user} />
+      <TableCategory data={data} currentPage={currentPage} query={query} limit={limit} user={user} />
     </Card>
   );
 }

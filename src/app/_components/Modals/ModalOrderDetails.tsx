@@ -4,6 +4,7 @@ import {
   Avatar,
   Badge,
   Card,
+  Flex,
   Grid,
   Group,
   Image,
@@ -17,12 +18,12 @@ import {
   Title,
   rem
 } from '@mantine/core';
-import { ImageType, OrderStatus } from '@prisma/client';
+import { ImageType } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTruck } from '@tabler/icons-react';
 import { useState } from 'react';
-import { formatDate } from '~/app/lib/utils/format/formatDate';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { getStatusColor } from '~/app/lib/utils/func-handler/get-status-color';
+import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import InvoiceToPrint from '../Invoices/InvoceToPrint';
 
@@ -66,12 +67,16 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                       <Text fw={700} size='md'>
                         Chi tiết
                       </Text>
-                      <Badge color={getStatusColor(order?.status)}>
-                        {order?.status == OrderStatus.PENDING
-                          ? 'Chưa thanh toán'
-                          : order?.status == OrderStatus.CANCELLED
-                            ? 'Đã hủy'
-                            : 'Hoàn thành'}
+                      <Badge
+                        size='xs'
+                        color={getStatusColor(order.status)}
+                        p={'xs'}
+                        className='align-items-center flex'
+                      >
+                        <Flex align={'center'}>
+                          {getStatusText(order.status)}
+                          {getStatusIcon(order.status)}
+                        </Flex>
                       </Badge>
                     </Group>
                     <Stack gap={5}>

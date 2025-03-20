@@ -29,7 +29,11 @@ export default function UpdateRole({ setOpened, roleId }: { setOpened: any; role
   const utils = api.useUtils();
   const { data: permissionsData } = api.RolePermission.getPermissions.useQuery();
   const { data: roleData } = api.RolePermission.getOne.useQuery({ id: roleId });
-  const mutation = api.RolePermission.updateRole.useMutation();
+  const mutation = api.RolePermission.updateRole.useMutation({
+    onSuccess: () => {
+      utils.RolePermission.invalidate();
+    }
+  });
 
   useEffect(() => {
     if (roleData) {
@@ -45,7 +49,6 @@ export default function UpdateRole({ setOpened, roleId }: { setOpened: any; role
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
-        utils.RolePermission.invalidate();
       } else {
         NotifyError(result.message);
       }

@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Card,
+  Center,
   Group,
   Image,
   Paper,
@@ -30,7 +31,6 @@ export default async function AboutPage() {
   const dataProduct: any = productBestSaller.products || [];
   return (
     <Box>
-      {/* Hero Section */}
       <div style={{ textAlign: 'center', padding: '4rem 0' }}>
         <Title order={1} size='h1' style={{ color: '#2e7d32' }}>
           Chào mừng đến với Hương Vị Sài Gòn Mama Reastaurant
@@ -43,7 +43,6 @@ export default async function AboutPage() {
         </Button>
       </div>
 
-      {/* About Section */}
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' mt={50}>
         <div>
           <Title order={2} size='h2' style={{ color: '#2e7d32' }}>
@@ -60,19 +59,19 @@ export default async function AboutPage() {
             của mình thông qua ẩm thực, kết hợp các công thức nấu ăn truyền thống với những cách chế biến hiện đại để
             tạo ra những trải nghiệm ăn uống khó quên.
           </Text>
-          <Group mt='md'>
+          <Group mt='md' wrap='nowrap'>
             <ThemeIcon size='lg' color='green'>
               <IconChefHat />
             </ThemeIcon>
             <Text>Công thức nấu ăn đích thực được truyền qua nhiều thế hệ</Text>
           </Group>
-          <Group mt='md'>
+          <Group mt='md' wrap='nowrap'>
             <ThemeIcon size='lg' color='yellow'>
               <IconMapPin />
             </ThemeIcon>
             <Text>Hương vị từ miền Tây Việt Nam và hơn thế nữa</Text>
           </Group>
-          <Group mt='md'>
+          <Group mt='md' wrap='nowrap'>
             <ThemeIcon size='lg' color='green'>
               <IconStar />
             </ThemeIcon>
@@ -100,7 +99,6 @@ export default async function AboutPage() {
         </>
       )}
 
-      {/* Menu Section */}
       <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
         Thực đơn của chúng tôi
       </Title>
@@ -119,7 +117,11 @@ export default async function AboutPage() {
                 })}
               </SimpleGrid>
             ) : (
-              <h1>Hiện nhà hàng đang hết món</h1>
+              <Center>
+                <Text size='sm' c={'dimmed'}>
+                  <i>--- Đang cập nhật ---</i>
+                </Text>
+              </Center>
             )}
           </AccordionPanel>
         </AccordionItem>
@@ -133,7 +135,11 @@ export default async function AboutPage() {
                 })}
               </SimpleGrid>
             ) : (
-              <h1>Hiện nhà hàng đang hết món</h1>
+              <Center>
+                <Text size='sm' c={'dimmed'}>
+                  <i>--- Đang cập nhật ---</i>
+                </Text>
+              </Center>
             )}
           </AccordionPanel>
         </AccordionItem>
@@ -147,13 +153,16 @@ export default async function AboutPage() {
                 })}
               </SimpleGrid>
             ) : (
-              <h1>Hiện nhà hàng đang hết món</h1>
+              <Center>
+                <Text size='sm' c={'dimmed'}>
+                  <i>--- Đang cập nhật ---</i>
+                </Text>
+              </Center>
             )}
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
 
-      {/* About the Chef */}
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' mt={50}>
         <Image
           src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
@@ -182,7 +191,6 @@ export default async function AboutPage() {
         </div>
       </SimpleGrid>
 
-      {/* Customer Reviews */}
       <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
         Khách hàng của chúng tôi nói gì?
       </Title>
@@ -207,11 +215,10 @@ export default async function AboutPage() {
         ))}
       </SimpleGrid>
 
-      {/* Location and Hours */}
       <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
         Ghé thăm chúng tôi
       </Title>
-      <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' mt='xl'>
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 2 }} spacing='xl' mt='xl'>
         <div>
           <Text fw={500}>Địa chỉ :</Text>
           <Text>123 Sài Gòn, Quận Ẩm Thực, Thành Phố Của Chúng Tôi</Text>
@@ -242,7 +249,6 @@ export default async function AboutPage() {
         />
       </SimpleGrid>
 
-      {/* Special Events */}
       <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
         Sự kiện đặc biệt & Dịch vụ ăn uống
       </Title>
@@ -271,7 +277,6 @@ export default async function AboutPage() {
         </Card>
       </SimpleGrid>
 
-      {/* Call to Action */}
       <Group justify='center' mt={50} mb={50}>
         <Button size='lg' style={{ backgroundColor: '#f9a825', color: '#000' }}>
           Đặt chỗ

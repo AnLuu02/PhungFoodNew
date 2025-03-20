@@ -15,7 +15,7 @@ export const createTag = (input: string): string => {
 
 export function getTagFromQuery(queryString: any) {
   const query = Object.fromEntries(new URLSearchParams(queryString));
-  const { loai, 'danh-muc': danhMuc, 'loai-san-pham': loaiSanPham } = query;
+  const { loai, 'danh-muc': danhMuc, 'nguyen-lieu': nguyenLieu, 'loai-san-pham': loaiSanPham } = query;
   if (loai) {
     return tags?.[loai] || tags?.loai || 'Loại sản phẩm';
   }

@@ -3,24 +3,23 @@ import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { api } from '~/trpc/react';
 import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';
 
 export default function TableCategory({
   currentPage,
+  data,
   query,
   limit,
   user
 }: {
   currentPage: string;
   query: string;
+  data: any;
   limit: string;
   user: any;
 }) {
-  const { data: result, isLoading } = api.Category.find.useQuery({ skip: +currentPage, take: +limit, query });
-  const currentItems = result?.categories || [];
+  const currentItems = data?.categories || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
@@ -64,9 +63,7 @@ export default function TableCategory({
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel()
   });
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Group pb={'lg'}>
         <Menu shadow='md' width={220}>
@@ -132,7 +129,7 @@ export default function TableCategory({
 
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
-        <CustomPagination totalPages={result?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
     </>
   );

@@ -107,6 +107,51 @@ export const materialRouter = createTRPCRouter({
         record: existingMaterial
       };
     }),
+  createMany: publicProcedure
+    .input(
+      z.object({
+        data: z.array(
+          z.object({
+            name: z.string().min(1, 'Name is required'),
+            tag: z.string(),
+            description: z.string().optional(),
+            category: z.string().min(1, 'Category is required')
+          })
+        )
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existingTags = await ctx.db.material.findMany({
+        where: {
+          tag: { in: input.data.map(item => item.tag) }
+        },
+        select: { tag: true }
+      });
+
+      const existingTagSet = new Set(existingTags.map(item => item.tag));
+      const newData = input.data.filter(item => !existingTagSet.has(item.tag));
+
+      if (newData.length === 0) {
+        return { success: false, message: 'Tất cả nguyên liệu đều đã tồn tại.' };
+      }
+
+      const materials = await ctx.db.material.createMany({
+        data: newData
+      });
+
+      if (newData?.length > 0) {
+        for (const material of newData) {
+          await CreateTagVi({ old: [], new: material });
+        }
+      }
+
+      return {
+        success: true,
+        message: `Đã thêm ${materials.count} nguyên liệu mới.`,
+        record: newData
+      };
+    }),
+
   delete: publicProcedure
     .input(
       z.object({
@@ -150,6 +195,7 @@ export const materialRouter = createTRPCRouter({
         products: true
       }
     });
+
     return material;
   }),
 

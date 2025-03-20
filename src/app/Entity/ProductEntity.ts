@@ -23,7 +23,7 @@ export type Product = {
 
   gallery: File[];
 
-  tag: string;
+  tag?: string;
 
   soldQuantity: number;
 

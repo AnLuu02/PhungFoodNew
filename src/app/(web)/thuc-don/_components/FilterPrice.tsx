@@ -2,7 +2,7 @@ import { Button, Divider, Flex, Grid, GridCol, NumberInput, Popover, RangeSlider
 import { IconMoneybag } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 
 function FilterPriceMenu() {
   const [valuePrice, setValuePrice] = useState<number[]>([20000, 200000]);

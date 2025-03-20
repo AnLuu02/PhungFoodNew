@@ -21,8 +21,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import { z } from 'zod';
 import BButton from '~/app/_components/Button';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 import { deliverySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -188,13 +188,6 @@ export default function CheckoutClient({ order, orderId }: any) {
       <Grid>
         <GridCol span={{ base: 12, sm: 6, md: 8, lg: 8 }}>
           <Grid gutter='md'>
-            {/* <GridCol span={12}>
-              <Link href={'/'}>
-                <Center>
-                  <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={250} h={80} p={0} />
-                </Center>
-              </Link>
-            </GridCol> */}
             <GridCol span={{ base: 12, sm: 12, md: 6 }}>
               <DeliveryCard
                 control={control}

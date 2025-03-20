@@ -1,6 +1,6 @@
 import { Badge, Group, Image, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
 import { ImageType } from '@prisma/client';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 export function ProductDetails({ product }: { product: any }) {

@@ -1,6 +1,6 @@
 import { Badge, Box, Group, Image, Text } from '@mantine/core';
 import { ImageType } from '@prisma/client';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 export default function CartItemPayment({ item, index }: any) {

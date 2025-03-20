@@ -28,7 +28,6 @@ import OrderItemForm from './OrderItemForm';
 export default function CreateOrder({ setOpened }: { setOpened: any }) {
   const {
     control,
-    register,
     handleSubmit,
     watch,
     setValue,
@@ -39,7 +38,7 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
     defaultValues: {
       id: '',
       total: 0,
-      status: OrderStatus.PENDING,
+      status: OrderStatus.PROCESSING,
       userId: '',
       paymentId: '',
       orderItems: [],
@@ -88,7 +87,11 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
   const { data: payments } = api.Payment.getAll.useQuery();
   const { data: users } = api.User.getAll.useQuery();
   const utils = api.useUtils();
-  const mutation = api.Order.create.useMutation();
+  const mutation = api.Order.create.useMutation({
+    onSuccess: () => {
+      utils.Order.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Order> = async formData => {
     try {
@@ -125,14 +128,13 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
           if (result.success) {
             NotifySuccess(result.message);
             setOpened(false);
-            utils.Order.invalidate();
           } else {
             NotifyError(result.message);
           }
         }
       }
     } catch (error) {
-      NotifyError('Error created Order');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
@@ -354,7 +356,6 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
             </Title>
             {orderItemFields.map((field, index) => (
               <OrderItemForm
-                register={register}
                 key={field.id}
                 {...field}
                 index={index}

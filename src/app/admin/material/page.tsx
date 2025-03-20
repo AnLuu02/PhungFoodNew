@@ -1,9 +1,9 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { getServerSession } from 'next-auth';
-import Search from '~/app/_components/Admin/Search';
+import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
-import { CreateMaterialButton } from './components/Button';
+import { CreateManyMaterialButton, CreateMaterialButton } from './components/Button';
 import TableMaterial from './components/Table/TableMaterial';
 export default async function MaterialManagementPage({
   searchParams
@@ -19,6 +19,7 @@ export default async function MaterialManagementPage({
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.Material.getAll();
   const user = await getServerSession(authOptions);
+  const data = await api.Material.find({ skip: +currentPage, take: +limit, query });
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -30,13 +31,18 @@ export default async function MaterialManagementPage({
           Số lượng bản ghi: {totalData && totalData?.length}
         </Text>
         <Group>
-          <Search />
+          <SearchQueryParams />
           {user?.user?.role === 'ADMIN' ||
-            (user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && <CreateMaterialButton />)}
+            (user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && (
+              <>
+                <CreateMaterialButton />
+                <CreateManyMaterialButton />
+              </>
+            ))}
         </Group>
       </Group>
 
-      <TableMaterial currentPage={currentPage} query={query} limit={limit} user={user} />
+      <TableMaterial data={data} currentPage={currentPage} query={query} limit={limit} user={user} />
     </Card>
   );
 }

@@ -1,19 +1,19 @@
 'use client';
 
-import { BarChart, LineChart } from '@mantine/charts';
+import { LineChart } from '@mantine/charts';
 import {
-  Avatar,
-  Box,
+  ActionIcon,
+  Badge,
   Card,
   Center,
   Grid,
   Group,
-  Paper,
   RingProgress,
   SegmentedControl,
   SimpleGrid,
   Skeleton,
   Stack,
+  Table,
   Text,
   Title,
   useMantineTheme
@@ -25,8 +25,10 @@ import {
   IconCardboards,
   IconCategory,
   IconCategory2,
+  IconEye,
   IconImageInPicture,
   IconMeat,
+  IconPencil,
   IconShoppingCart,
   IconStar,
   IconTicket,
@@ -36,6 +38,7 @@ import {
 import Link from 'next/link';
 import React from 'react';
 import { api } from '~/trpc/react';
+import { getStatusColor } from '../lib/utils/func-handler/get-status-order';
 
 function CardWithIcon({
   icon: Icon,
@@ -58,7 +61,7 @@ function CardWithIcon({
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder className='cursor-pointer hover:border-red-400'>
-      <Link href={`/admin/${href}`} className='no-underline'>
+      <Link href={`/admin/${href}`}>
         <Group>
           <Icon size={32} stroke={1.5} />
           <div>
@@ -107,6 +110,14 @@ const categoryData = [
   { category: 'Home', sales: 280 }
 ];
 
+const recentOrders = [
+  { id: '#ORD-5531', customer: 'John Smith', date: '2023-03-15', total: '$45.50', status: 'Completed' },
+  { id: '#ORD-5530', customer: 'Sarah Johnson', date: '2023-03-15', total: '$86.25', status: 'Processing' },
+  { id: '#ORD-5529', customer: 'Michael Brown', date: '2023-03-14', total: '$32.80', status: 'Completed' },
+  { id: '#ORD-5528', customer: 'Emily Davis', date: '2023-03-14', total: '$124.00', status: 'Delivered' },
+  { id: '#ORD-5527', customer: 'Robert Wilson', date: '2023-03-13', total: '$65.75', status: 'Cancelled' }
+];
+
 export default function Dashboard() {
   const theme = useMantineTheme();
   const [period, setPeriod] = React.useState<'7 ngày' | '30 ngày' | '3 tháng'>('7 ngày');
@@ -120,7 +131,7 @@ export default function Dashboard() {
   const { data: reviews, isLoading: reviewsLoading } = api.Review.getAll.useQuery();
   const { data: subCategories, isLoading: subCategoriesLoading } = api.SubCategory.getAll.useQuery();
   const { data: images, isLoading: imagesLoading } = api.Image.getAll.useQuery();
-  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getRoles.useQuery();
+  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
 
   const { data: revenue, isLoading: revenueLoading } = api.Revenue.getRevenueByDuringDate.useQuery({
     period: period
@@ -276,7 +287,7 @@ export default function Dashboard() {
         </Grid.Col>
       </Grid>
 
-      <Grid gutter='md'>
+      {/* <Grid gutter='md'>
         <Grid.Col span={{ base: 12, md: 6 }}>
           <Card shadow='sm' padding='lg' radius='md' withBorder>
             <Title order={4} mb='md'>
@@ -324,7 +335,109 @@ export default function Dashboard() {
             </Stack>
           </Card>
         </Grid.Col>
-      </Grid>
+      </Grid> */}
+      <SimpleGrid cols={{ base: 1, md: 2 }} mt='md'>
+        <Card withBorder padding='md' radius='md'>
+          <Card.Section withBorder inheritPadding py='xs'>
+            <Group justify='space-between'>
+              <Text fw={700}>Đơn đặt hàng gần đây</Text>
+              <Text size='sm' c='dimmed'>
+                Hôm nay
+              </Text>
+            </Group>
+          </Card.Section>
+
+          <Table striped highlightOnHover>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Order ID</Table.Th>
+                <Table.Th>Khách hàng</Table.Th>
+                <Table.Th>Ngày đặt</Table.Th>
+                <Table.Th>Tổng</Table.Th>
+                <Table.Th>Trạng thái</Table.Th>
+                <Table.Th>Thao tác</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {recentOrders.map(order => (
+                <Table.Tr key={order.id}>
+                  <Table.Td>{order.id}</Table.Td>
+                  <Table.Td>{order.customer}</Table.Td>
+                  <Table.Td>{order.date}</Table.Td>
+                  <Table.Td>{order.total}</Table.Td>
+                  <Table.Td>
+                    <Badge color={getStatusColor(order.status)}>{order.status}</Badge>
+                  </Table.Td>
+                  <Table.Td>
+                    <Group gap='xs'>
+                      <ActionIcon size='sm' variant='subtle'>
+                        <IconEye size='1rem' stroke={1.5} />
+                      </ActionIcon>
+                      <ActionIcon size='sm' variant='subtle'>
+                        <IconPencil size='1rem' stroke={1.5} />
+                      </ActionIcon>
+                    </Group>
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
+        </Card>
+
+        <Card withBorder padding='md' radius='md'>
+          <Card.Section withBorder inheritPadding py='xs'>
+            <Group justify='space-between'>
+              <Text fw={700}>Món ăn phổ biến</Text>
+              <Text size='sm' c='dimmed'>
+                Trong tháng này
+              </Text>
+            </Group>
+          </Card.Section>
+
+          <Table striped highlightOnHover>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Sản phẩm</Table.Th>
+                <Table.Th>Danh mục</Table.Th>
+                <Table.Th>Giá</Table.Th>
+                <Table.Th>Số lượng đặt</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              <Table.Tr>
+                <Table.Td>Margherita Pizza</Table.Td>
+                <Table.Td>Pizza</Table.Td>
+                <Table.Td>$12.99</Table.Td>
+                <Table.Td>145</Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Chicken Alfredo</Table.Td>
+                <Table.Td>Pasta</Table.Td>
+                <Table.Td>$14.50</Table.Td>
+                <Table.Td>132</Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Caesar Salad</Table.Td>
+                <Table.Td>Salads</Table.Td>
+                <Table.Td>$8.99</Table.Td>
+                <Table.Td>98</Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Garlic Bread</Table.Td>
+                <Table.Td>Sides</Table.Td>
+                <Table.Td>$4.50</Table.Td>
+                <Table.Td>87</Table.Td>
+              </Table.Tr>
+              <Table.Tr>
+                <Table.Td>Tiramisu</Table.Td>
+                <Table.Td>Desserts</Table.Td>
+                <Table.Td>$6.99</Table.Td>
+                <Table.Td>76</Table.Td>
+              </Table.Tr>
+            </Table.Tbody>
+          </Table>
+        </Card>
+      </SimpleGrid>
     </Stack>
   );
 }

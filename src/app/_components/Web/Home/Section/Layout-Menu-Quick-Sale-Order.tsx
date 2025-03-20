@@ -3,11 +3,11 @@ import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import ProductCardCarouselHorizontal from '../_Components/ProductCardCarouselHorizontal';
 
-const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any } }) => {
+const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh: any } }) => {
   const getRandomItems = (arr: any[], count: number) => arr.sort(() => 0.5 - Math.random()).slice(0, count);
   const anVatFilter = getRandomItems(data.anVat?.flatMap((i: any) => i.product) || [], 3);
   const thucUongFilter = getRandomItems(data.thucUong?.flatMap((i: any) => i.product) || [], 3);
-  const trangMiengFilter = getRandomItems(data.anVat?.flatMap((i: any) => i.product) || [], 3);
+  const monChinhFilter = getRandomItems(data.monChinh?.flatMap((i: any) => i.product) || [], 3);
   return (
     <Grid>
       {anVatFilter?.length > 0 && (
@@ -15,10 +15,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any } }) => {
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title
-                  order={1}
-                  className='cursor-pointer font-quicksand font-bold text-black no-underline hover:text-[#008b4b]'
-                >
+                <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
                   Ăn vặt
                 </Title>
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
@@ -59,10 +56,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any } }) => {
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title
-                  order={1}
-                  className='cursor-pointer font-quicksand font-bold text-black no-underline hover:text-[#008b4b]'
-                >
+                <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
                   Thức uống
                 </Title>
                 <Link href='/thuc-don?danh-muc=thuc-uong'>
@@ -99,15 +93,12 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any } }) => {
         </GridCol>
       )}
 
-      {anVatFilter?.length > 0 && (
+      {monChinhFilter?.length > 0 && (
         <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title
-                  order={1}
-                  className='cursor-pointer font-quicksand font-bold text-black no-underline hover:text-[#008b4b]'
-                >
+                <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
                   Tráng miệng
                 </Title>
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
@@ -133,7 +124,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any } }) => {
                 className='rounded-full'
               />
             </GridCol>
-            {trangMiengFilter.map((item: any, index: number) => {
+            {monChinhFilter.map((item: any, index: number) => {
               return (
                 <GridCol span={12} key={index}>
                   <ProductCardCarouselHorizontal key={index} data={item} />

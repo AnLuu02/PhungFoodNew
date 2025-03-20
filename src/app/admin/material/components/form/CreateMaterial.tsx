@@ -1,8 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
-import { IconTag } from '@tabler/icons-react';
-import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Material } from '~/app/Entity/MaterialEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
@@ -51,29 +49,29 @@ export default function CreateMaterial({ setOpened }: { setOpened: any }) {
     }
   });
 
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
   const utils = api.useUtils();
-  const mutation = api.Material.create.useMutation();
+  const mutation = api.Material.create.useMutation({
+    onSuccess: () => {
+      utils.Material.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Material> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync(formData);
-        if (result.success) {
-          NotifySuccess(result.message);
-          setOpened(false);
-          utils.Material.invalidate();
-        } else {
+        let result = await mutation.mutateAsync({
+          ...formData,
+          tag: createTag(formData.name)
+        });
+        setOpened(false);
+        if (!result.success) {
           NotifyError(result.message);
+          return;
         }
+        NotifySuccess(result.message);
       }
     } catch (error) {
-      NotifyError('Error created Material');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
@@ -95,23 +93,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: any }) {
             )}
           />
         </Grid.Col>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                size='sm'
-                readOnly
-                label='Tag'
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                placeholder='Sẽ tạo tự động'
-                error={errors.tag?.message}
-              />
-            )}
-          />
-        </Grid.Col>
+
         <Grid.Col span={6}>
           <Controller
             control={control}

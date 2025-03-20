@@ -18,8 +18,8 @@ import {
   TextInput
 } from '@mantine/core';
 import { ProductStatus } from '@prisma/client';
-import { IconFile, IconTag, IconTrash } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { IconFile, IconTrash } from '@tabler/icons-react';
+import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Product } from '~/app/Entity/ProductEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
@@ -56,8 +56,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,
-    setValue
+    watch
   } = useForm<Product>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -76,15 +75,12 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
       materials: []
     }
   });
-  const nameValue = watch('name', '');
-
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
   const utils = api.useUtils();
-  const mutation = api.Product.create.useMutation();
+  const mutation = api.Product.create.useMutation({
+    onSuccess: () => {
+      utils.Product.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Product> = async formData => {
     try {
@@ -112,17 +108,19 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
           gallery: gallery_format
         };
 
-        let result = await mutation.mutateAsync(formDataWithImages);
+        let result = await mutation.mutateAsync({
+          ...formDataWithImages,
+          tag: createTag(formData.name)
+        });
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
-          utils.Product.invalidate();
         } else {
           NotifyError(result.message);
         }
       }
     } catch (error) {
-      NotifyError('Lỗi khi tạo sản phẩm');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
@@ -282,7 +280,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             )}
           />
         </Grid.Col>
-        <Grid.Col span={6}>
+        {/* <Grid.Col span={6} hidden>
           <Controller
             control={control}
             name='tag'
@@ -297,7 +295,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
               />
             )}
           />
-        </Grid.Col>
+        </Grid.Col> */}
         <Grid.Col span={6}>
           <Controller
             name='subCategoryId'

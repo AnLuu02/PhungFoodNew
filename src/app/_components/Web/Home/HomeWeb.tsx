@@ -2,18 +2,19 @@ import { Card, CardSection, Container, Flex, Image, Space, Stack, Text } from '@
 import BButton from '../../Button';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
 import LayoutAds from './Section/Layout-Ads';
-import LayoutBannerOverview from './Section/Layout-Banner-Overview';
 import LayoutCarouselSimple from './Section/Layout-Carousel-Simple';
 import FastMenuSection from './Section/Layout-Menu-Quick-Sale-Order';
 import LayoutProductCarouselOnly from './Section/Layout-Product-Carousel-Only';
 import LayoutProductCarouselWithImage from './Section/Layout-Product-Carousel-With-Image';
 import LayoutProductCarouselWithImage2 from './Section/Layout-Product-Carousel-With-Image-2';
 import LayoutPromotion from './Section/Layout-Promotion';
+import BannerSection from './Section/banner-section';
 
 const HomeWeb = ({
   data
 }: {
   data: {
+    banner: any;
     category: IDataCategory;
     materials: any;
     productDiscount: any;
@@ -24,7 +25,7 @@ const HomeWeb = ({
 }) => {
   return (
     <>
-      <LayoutBannerOverview />
+      {data.banner?.id && <BannerSection banner={data.banner} />}
       <Space h='xl' />
       <Container pl={0} pr={0} size='xl'>
         {data.category?.anVat && (
@@ -157,8 +158,10 @@ const HomeWeb = ({
         </Card>
         <Space h='xl' className='hidden md:block' />
 
-        {data.category.anVat && data.category.thucUong && (
-          <FastMenuSection data={{ anVat: data.category.anVat, thucUong: data.category.thucUong }} />
+        {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (
+          <FastMenuSection
+            data={{ anVat: data.category.anVat, thucUong: data.category.thucUong, monChinh: data.category.monChinh }}
+          />
         )}
       </Container>
     </>

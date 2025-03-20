@@ -15,12 +15,13 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Gender, OrderStatus, UserLevel } from '@prisma/client';
+import { Gender, UserLevel } from '@prisma/client';
 import { IconUpload } from '@tabler/icons-react';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
-import { formatDate } from '~/app/lib/utils/format/formatDate';
+import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
+import { getTotalOrderStatus } from '~/app/lib/utils/func-handler/get-status-order';
 export const mockOrders = [
   { id: '1', date: '2023-05-01', total: 99.99, status: 'completed' },
   { id: '2', date: '2023-05-15', total: 149.99, status: 'processing' },
@@ -61,16 +62,7 @@ export default function UserInfo({ user, isLoading }: any) {
       status: order.status
     })) || [];
 
-  const getOrderStats = () => {
-    const completed = mockOrders.filter((order: any) => order.status === OrderStatus.COMPLETED).length || 0;
-    const processing = mockOrders.filter((order: any) => order.status === OrderStatus.PENDING).length || 0;
-    const canceled = mockOrders.filter((order: any) => order.status === OrderStatus.CANCELLED).length || 0;
-    const total = mockOrders.length || 0;
-    const completionRate = (completed / total) * 100 || 0;
-    return { completed, processing, canceled, completionRate };
-  };
-
-  const stats = getOrderStats();
+  const statusObj = getTotalOrderStatus(mockOrders);
 
   return isLoading ? (
     <LoadingComponent />
@@ -175,7 +167,7 @@ export default function UserInfo({ user, isLoading }: any) {
                 <Badge color='green' size='lg' w={'100%'}>
                   <Text ta='center' fw={700} size={'sm'}>
                     <Text component='span' fw={700} mr={5}>
-                      {stats.completed}
+                      {statusObj.completed}
                     </Text>
                     Hoàn thành
                   </Text>
@@ -185,9 +177,29 @@ export default function UserInfo({ user, isLoading }: any) {
                 <Badge color='yellow.9' size='lg' w={'100%'}>
                   <Text ta='center' fw={700} size={'sm'}>
                     <Text component='span' fw={700} mr={5}>
-                      {stats.processing}
+                      {statusObj.processing}
                     </Text>
-                    Đang xử lý
+                    Chưa thanh toán
+                  </Text>
+                </Badge>
+              </GridCol>
+              <GridCol span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
+                <Badge color='yellow.9' size='lg' w={'100%'}>
+                  <Text ta='center' fw={700} size={'sm'}>
+                    <Text component='span' fw={700} mr={5}>
+                      {statusObj.pending}
+                    </Text>
+                    Chờ xử lý
+                  </Text>
+                </Badge>
+              </GridCol>
+              <GridCol span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
+                <Badge color='yellow.9' size='lg' w={'100%'}>
+                  <Text ta='center' fw={700} size={'sm'}>
+                    <Text component='span' fw={700} mr={5}>
+                      {statusObj.delivered}
+                    </Text>
+                    Đang giao hàng
                   </Text>
                 </Badge>
               </GridCol>
@@ -195,7 +207,7 @@ export default function UserInfo({ user, isLoading }: any) {
                 <Badge color='red' size='lg' w={'100%'}>
                   <Text ta='center' fw={700} size={'sm'}>
                     <Text component='span' fw={700} mr={5}>
-                      {stats.canceled}
+                      {statusObj.canceled}
                     </Text>
                     Đã hủy
                   </Text>
@@ -207,9 +219,9 @@ export default function UserInfo({ user, isLoading }: any) {
               <Text fw={700} size='sm' mb='xs'>
                 Tỷ lệ hoàn thành đơn hàng
               </Text>
-              <Progress value={stats.completionRate} size='sm' radius='xl' />
+              <Progress value={statusObj.completionRate} size='sm' radius='xl' />
               <Text size='sm' color='dimmed' mt='xs'>
-                {stats.completionRate.toFixed(2)}% đơn đặt hàng của bạn đã được hoàn thành thành công
+                {statusObj.completionRate.toFixed(2)}% đơn đặt hàng của bạn đã được hoàn thành thành công
               </Text>
             </Box>
 
@@ -217,7 +229,6 @@ export default function UserInfo({ user, isLoading }: any) {
               <Text fw={700} size='sm' mb='xs'>
                 Cấp V.I.P: {getLevelUser(user?.level as UserLevel)}
               </Text>
-              {/* <Progress value={getVIPProgress(user)} size='sm' radius='xl' /> */}
               <Progress.Root size={'xl'}>
                 <Tooltip label='ĐỒNG'>
                   <Progress.Section value={33} color='#CD7F32'>
@@ -247,14 +258,6 @@ export default function UserInfo({ user, isLoading }: any) {
                   </Progress.Section>
                 </Tooltip>
               </Progress.Root>
-
-              {/* <Group mt='xs'>
-                {vipLevels.map(level => (
-                  <Text key={level} size='sm' color='dimmed'>
-                    {level}
-                  </Text>
-                ))}
-              </Group> */}
             </Box>
           </Stack>
         </Card>

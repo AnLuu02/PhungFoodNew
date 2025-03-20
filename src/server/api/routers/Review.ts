@@ -113,8 +113,6 @@ export const reviewRouter = createTRPCRouter({
         }
       };
     }),
-  //----------------------------------------------------//----------------------------------------------------
-  //----------------------------------------------------Create//----------------------------------------------------
   create: publicProcedure
     .input(
       z.object({
@@ -150,7 +148,7 @@ export const reviewRouter = createTRPCRouter({
 
       return {
         success: true,
-        message: 'Tạo danh mục thành công.',
+        message: 'Đánh giá thành công.',
         record: review
       };
     }),
@@ -230,48 +228,34 @@ export const reviewRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const existingreview: any = await ctx.db.review.findMany({
-        where: {
-          id: input?.reviewId
+      const review = await ctx.db.review.update({
+        where: { id: input?.reviewId },
+        data: {
+          userId: input.userId,
+          productId: input.productId,
+          rating: input.rating,
+          comment: input.comment
         }
       });
 
-      if (!existingreview || (existingreview && existingreview?.some((item: any) => item?.id == input?.reviewId))) {
-        const review = await ctx.db.review.update({
-          where: { id: input?.reviewId },
-          data: {
-            userId: input.userId,
-            productId: input.productId,
-            rating: input.rating,
-            comment: input.comment
-          }
-        });
+      const starReview = await ctx.db.review.findMany({
+        where: { productId: input.productId }
+      });
 
-        const starReview = await ctx.db.review.findMany({
-          where: { productId: input.productId }
-        });
+      const averageRating = starReview.reduce((acc, review) => acc + review.rating, 0) / starReview.length;
 
-        const averageRating = starReview.reduce((acc, review) => acc + review.rating, 0) / starReview.length;
-
-        await ctx.db.product.update({
-          where: { id: input.productId },
-          data: {
-            rating: averageRating,
-            totalRating: starReview.length
-          }
-        });
-
-        return {
-          success: true,
-          message: 'Cập nhật danh mục thành công.',
-          record: review
-        };
-      }
+      await ctx.db.product.update({
+        where: { id: input.productId },
+        data: {
+          rating: averageRating,
+          totalRating: starReview.length
+        }
+      });
 
       return {
-        success: false,
-        message: 'Danh mục đã tồn tại. Hãy thử lại.',
-        record: existingreview
+        success: true,
+        message: 'Cập nhật đánh giá thành công.',
+        record: review
       };
     })
 });

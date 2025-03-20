@@ -2,7 +2,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
 import { PaymentType } from '@prisma/client';
-import { IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Payment } from '~/app/Entity/PaymentEntity';
@@ -17,7 +16,6 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
 
   const {
     control,
-    register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
@@ -35,12 +33,6 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
     }
   });
 
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
   useEffect(() => {
     if (data?.id) {
       reset({
@@ -55,19 +47,26 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
   }, [data, reset]);
 
   const utils = api.useUtils();
-  const updateMutation = api.Payment.update.useMutation();
+  const updateMutation = api.Payment.update.useMutation({
+    onSuccess: () => {
+      utils.Payment.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Payment> = async formData => {
-    if (paymentId) {
-      const updatedFormData = { ...formData };
-      let result = await updateMutation.mutateAsync({ paymentId, ...updatedFormData });
-      if (result.success) {
-        NotifySuccess(result.message);
-        setOpened(false);
-        utils.Payment.invalidate();
-      } else {
-        NotifyError(result.message);
+    try {
+      if (paymentId) {
+        const updatedFormData = { ...formData, tag: createTag(formData.name) };
+        let result = await updateMutation.mutateAsync({ paymentId, ...updatedFormData });
+        if (result.success) {
+          NotifySuccess(result.message);
+          setOpened(false);
+        } else {
+          NotifyError(result.message);
+        }
       }
+    } catch (error) {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
@@ -88,22 +87,7 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
             )}
           />
         </Grid.Col>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                label='Tag'
-                placeholder='Sẽ tạo tự động'
-                error={errors.name?.message}
-                readOnly
-              />
-            )}
-          />
-        </Grid.Col>
+
         <Grid.Col span={6}>
           <Controller
             control={control}

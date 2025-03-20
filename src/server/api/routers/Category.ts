@@ -1,5 +1,6 @@
 import { Prisma, ProductStatus } from '@prisma/client';
 import { z } from 'zod';
+import { seedCategory } from '~/app/lib/utils/data-test/seed';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 const findExistingCategory = async (ctx: any, tag: string) => {
@@ -132,7 +133,7 @@ export const categoryRouter = createTRPCRouter({
       return category;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const category = await ctx.db.category.findMany({
+    let category = await ctx.db.category.findMany({
       include: {
         subCategory: {
           include: {
@@ -140,12 +141,38 @@ export const categoryRouter = createTRPCRouter({
             product: {
               where: {
                 status: ProductStatus.ACTIVE
+              },
+              include: {
+                images: true
               }
             }
           }
         }
       }
     });
+
+    if (!category?.length) {
+      await ctx.db.category.createMany({
+        data: seedCategory
+      });
+      category = await ctx.db.category.findMany({
+        include: {
+          subCategory: {
+            include: {
+              image: true,
+              product: {
+                where: {
+                  status: ProductStatus.ACTIVE
+                },
+                include: {
+                  images: true
+                }
+              }
+            }
+          }
+        }
+      });
+    }
     return category;
   }),
   create: publicProcedure
@@ -169,6 +196,50 @@ export const categoryRouter = createTRPCRouter({
       }
       return { success: true, message: 'Tạo danh mục thành công.', record: category };
     }),
+  createMany: publicProcedure
+    .input(
+      z.object({
+        data: z.array(
+          z.object({
+            name: z.string().min(1, 'Name is required'),
+            description: z.string().optional(),
+            tag: z.string()
+          })
+        )
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existingTags = await ctx.db.category.findMany({
+        where: {
+          tag: { in: input.data.map(item => item.tag) }
+        },
+        select: { tag: true }
+      });
+
+      const existingTagSet = new Set(existingTags.map(item => item.tag));
+      const newData = input.data.filter(item => !existingTagSet.has(item.tag));
+
+      if (newData.length === 0) {
+        return { success: false, message: 'Tất cả danh mục đều đã tồn tại.' };
+      }
+
+      const categories = await ctx.db.category.createMany({
+        data: newData
+      });
+
+      if (newData?.length > 0) {
+        for (const category of newData) {
+          await CreateTagVi({ old: [], new: [category] });
+        }
+      }
+
+      return {
+        success: true,
+        message: `Đã thêm ${categories.count} danh mục mới.`,
+        record: newData
+      };
+    }),
+
   update: publicProcedure
     .input(
       z.object({

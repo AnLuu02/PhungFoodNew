@@ -1,8 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
-import { IconTag } from '@tabler/icons-react';
-import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Category } from '~/app/Entity/CategoryEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
@@ -13,7 +11,6 @@ import { api } from '~/trpc/react';
 export default function CreateCategory({ setOpened }: { setOpened: any }) {
   const {
     control,
-    register,
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
@@ -28,29 +25,29 @@ export default function CreateCategory({ setOpened }: { setOpened: any }) {
     }
   });
 
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
   const utils = api.useUtils();
-  const mutation = api.Category.create.useMutation();
+  const mutation = api.Category.create.useMutation({
+    onSuccess: () => {
+      utils.Category.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Category> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync(formData);
-        if (result.success) {
-          NotifySuccess(result.message);
-          setOpened(false);
-          utils.Category.invalidate();
-        } else {
+        let result = await mutation.mutateAsync({
+          ...formData,
+          tag: createTag(formData.name)
+        });
+        setOpened(false);
+        if (!result.success) {
           NotifyError(result.message);
+          return;
         }
+        NotifySuccess(result.message);
       }
     } catch (error) {
-      NotifyError('Error created Category');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
@@ -68,23 +65,6 @@ export default function CreateCategory({ setOpened }: { setOpened: any }) {
                 size='sm'
                 placeholder='Nhập tên danh mục'
                 error={errors.name?.message}
-              />
-            )}
-          />
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                size='sm'
-                readOnly
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                label='Tag'
-                placeholder='Sẽ tạo tự động'
-                error={errors.tag?.message}
               />
             )}
           />

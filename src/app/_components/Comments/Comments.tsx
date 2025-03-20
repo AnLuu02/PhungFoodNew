@@ -2,7 +2,7 @@
 
 import { Box, ScrollAreaAutosize } from '@mantine/core';
 import { memo } from 'react';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import { api } from '~/trpc/react';
 import { CommentsForm } from './CommentsForm';
 import { CommentsList } from './CommentsList';

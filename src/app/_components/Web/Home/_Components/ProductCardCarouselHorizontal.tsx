@@ -10,7 +10,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import BButton from '~/app/_components/Button';
 import { useModal } from '~/app/contexts/ModalContext';
 import { breakpoints } from '~/app/lib/utils/constants/device';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
@@ -76,7 +76,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
           </Box>
         </Box>
         <Flex direction={'column'} align={'flex-start'} w={'64%'} gap={'xs'} justify={'center'} pr={'md'}>
-          <Link href={`/san-pham/${data?.tag}`} className='no-underline'>
+          <Link href={`/san-pham/${data?.tag}`}>
             <Tooltip label={data?.name}>
               <Text
                 lineClamp={1}
@@ -111,7 +111,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
               {formatPriceLocaleVi((data?.price || 0) - (data?.discount || 0))}
             </Text>
           </Group>
-          <Flex align={'center'} gap={10} justify={'space-between'}>
+          <Flex w={'100%'} align={'center'} gap={10} justify={'space-between'}>
             <BButton
               onClick={() => {
                 const existingItem = cart.find((item: any) => item.id === data?.id);
@@ -152,7 +152,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
       )}
 
       <Badge color='red' radius={'md'} pos={'absolute'} top={0} right={0} className='animate-wiggle'>
-        {data?.rating.toFixed(1) || 0} ⭐
+        {data?.rating !== 0 ? data?.rating.toFixed(1) : Number(5).toFixed(1)} ⭐
       </Badge>
     </Card>
   );

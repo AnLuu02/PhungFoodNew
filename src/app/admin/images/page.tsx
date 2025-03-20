@@ -1,5 +1,5 @@
 import { Card, Group, Text, Title } from '@mantine/core';
-import Search from '~/app/_components/Admin/Search';
+import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 import { CreateImageButton } from './components/Button';
 import ListImage from './components/ListImages/ListImages';
@@ -27,7 +27,7 @@ export default async function ImageManagementPage({
       <Group justify='space-between' mb='md'>
         <Text fw={500}>Số lượng bản ghi: {totalData && totalData?.length}</Text>
         <Group>
-          <Search />
+          <SearchQueryParams />
           <CreateImageButton />
         </Group>
       </Group>

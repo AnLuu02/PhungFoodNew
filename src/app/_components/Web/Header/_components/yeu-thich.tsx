@@ -15,7 +15,7 @@ const LikeButton = () => {
         radius={'xl'}
         className='border-[#008b4b] text-[#008b4b] hover:bg-[#008b4b] hover:text-white'
         leftSection={
-          <Indicator label={data?.length || 0} size={rem(15)} color={'green.9'}>
+          <Indicator label={data?.length || 0} size={rem(15)} color={'green.9'} zIndex={100}>
             <IconHeart size={20} />
           </Indicator>
         }

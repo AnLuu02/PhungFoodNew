@@ -20,7 +20,7 @@ import { VoucherType } from '@prisma/client';
 import { useState } from 'react';
 import BButton from '~/app/_components/Button';
 import Empty from '~/app/_components/Empty';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
 import LayoutAds from '~/app/_components/Web/Home/Section/Layout-Ads';

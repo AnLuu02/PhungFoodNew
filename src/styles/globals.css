@@ -5,7 +5,6 @@
 html {
   scroll-behavior: smooth;
 }
-/* css slider image */
 body {
   box-sizing: border-box;
   margin: 0;
@@ -25,7 +24,10 @@ main {
     transform: translateY(-4px);
   }
 }
-
+a {
+  color: inherit;
+  text-decoration: none;
+}
 .scrollbar {
   &,
   &:hover {
@@ -44,4 +46,25 @@ main {
 .corner {
   opacity: 1;
   background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+/* Toàn bộ trang */
+::-webkit-scrollbar {
+  width: 6px; /* Độ rộng thanh cuộn */
+}
+
+/* Track (đường ray của thanh cuộn) */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: #f1f1f1;
+}
+
+/* Thanh cuộn */
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #888;
+}
+
+/* Hover vào thanh cuộn */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

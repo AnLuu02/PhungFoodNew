@@ -10,9 +10,7 @@ export const handleDelete = (id: {}, mutationDelete: any, type?: String, callbac
       </Title>
     ),
     children: (
-      <Text size='sm'>
-        Bạn có chắc chắn muốn xóa {type || 'đơn hàng'} không? Hành động này sẽ không hỗ trợ khôi phục dữ liệu của bạn.
-      </Text>
+      <Text size='sm'>Bạn có chắc chắn muốn xóa {type || 'đơn hàng'} không? Hành động này sẽ không thể khôi phục.</Text>
     ),
     labels: { confirm: `Xóa ${type || 'đơn hàng'}`, cancel: 'Không, đừng xóa nó' },
     confirmProps: { color: 'red' },
@@ -20,14 +18,14 @@ export const handleDelete = (id: {}, mutationDelete: any, type?: String, callbac
     onConfirm: async () => {
       try {
         const result = await mutationDelete.mutateAsync({ ...id });
-        if (result.success) {
+        if (result.success || result?.id) {
           await callback();
           NotifySuccess('Thành công!', `Xóa ${type || 'Đơn hàng'} thành công.`);
         } else {
-          NotifyError('Lỗi!', 'Đã có lỗi xảy ra.');
+          NotifyError('Thất bại!', 'Đã có lỗi xảy ra.');
         }
       } catch (e) {
-        NotifyError('Lỗi!', 'Đã có lỗi xảy ra. catch' + e);
+        NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
       }
     }
   });

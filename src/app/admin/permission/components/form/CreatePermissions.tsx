@@ -25,7 +25,11 @@ export default function CreatePermission({ setOpened }: { setOpened: any }) {
   });
 
   const utils = api.useUtils();
-  const createPermissionMutation = api.RolePermission.createPermission.useMutation();
+  const createPermissionMutation = api.RolePermission.createPermission.useMutation({
+    onSuccess: () => {
+      utils.RolePermission.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<PermissionForm> = async formData => {
     try {
@@ -36,7 +40,7 @@ export default function CreatePermission({ setOpened }: { setOpened: any }) {
         utils.RolePermission.invalidate();
       }
     } catch (error) {
-      NotifyError('Không thể tạo vai trò');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 

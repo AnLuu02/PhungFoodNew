@@ -2,7 +2,7 @@
 import { Badge, Grid, Group, Image, Modal, Stack, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import CustomPagination from '~/app/_components/Pagination';
 import { vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { api } from '~/trpc/react';

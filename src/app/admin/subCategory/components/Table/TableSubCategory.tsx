@@ -3,24 +3,23 @@ import { Avatar, Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { api } from '~/trpc/react';
 import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
 export default function TableSubCategory({
   currentPage,
   query,
+  data,
   limit,
   user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  data: any;
   user?: any;
 }) {
-  const { data: result, isLoading } = api.SubCategory.find.useQuery({ skip: +currentPage, take: +limit, query });
-  const currentItems = result?.subCategories || [];
+  const currentItems = data?.subCategories || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
@@ -76,9 +75,7 @@ export default function TableSubCategory({
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel()
   });
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Group pb={'lg'}>
         <Menu shadow='md' width={220}>
@@ -144,7 +141,7 @@ export default function TableSubCategory({
 
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
-        <CustomPagination totalPages={result?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
     </>
   );

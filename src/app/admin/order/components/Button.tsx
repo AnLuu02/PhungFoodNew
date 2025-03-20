@@ -2,7 +2,15 @@
 
 import { ActionIcon, Button, Group, Modal, Title, Tooltip } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
-import { IconCircleCheck, IconEdit, IconPlus, IconPrinter, IconTrash, IconXboxX } from '@tabler/icons-react';
+import {
+  IconCircleCheck,
+  IconEdit,
+  IconPlus,
+  IconPrinter,
+  IconTrash,
+  IconTruckDelivery,
+  IconXboxX
+} from '@tabler/icons-react';
 import { useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
@@ -190,7 +198,88 @@ export function SuccessOrderButton({ id }: { id: string }) {
   );
 }
 
-export function CancleOrderButton({ id, formData }: { id: string; formData: any }) {
+export function SendMessageAllUserOrderButton({ orderProcessing }: any) {
+  const [loading, setLoading] = useState(false);
+
+  const handleSendNotification = async () => {};
+  return (
+    <>
+      <Tooltip label='Nhắc nhở thanh toán.'>
+        <Button variant='outline' onClick={handleSendNotification} loading={loading}>
+          Gửi thông báo
+        </Button>
+      </Tooltip>
+    </>
+  );
+}
+export function SendMessageOrderButton({ id }: any) {
+  const [loading, setLoading] = useState(false);
+  const { data, isLoading } = api.Order.getFilter.useQuery({
+    query: OrderStatus.PROCESSING
+  });
+
+  const userIds = (data || [])?.map((item: any) => item?.user?.id) || [];
+
+  const handleSendNotification = async () => {
+    setLoading(true);
+    await fetch('/api/send-notification', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: 'Nhắc nhở thanh toán',
+        message: 'Bạn có đơn hàng chưa thanh toán! Vui lòng hoàn tất sớm.',
+        userIds: [...userIds] // Lấy từ DB
+      })
+    });
+    setLoading(false);
+    alert('Thông báo đã được gửi!');
+  };
+  return (
+    <>
+      <Tooltip label='Nhắc nhở thanh toán.'>
+        <Button variant='outline' onClick={handleSendNotification} loading={loading}>
+          Gửi thông báo
+        </Button>
+      </Tooltip>
+    </>
+  );
+}
+export function DeliveryOrderButton({ id }: { id: string }) {
+  const untils = api.useUtils();
+  const mutation = api.Order.update.useMutation();
+
+  return (
+    <>
+      <Tooltip label='Giao hàng'>
+        <ActionIcon
+          variant='subtle'
+          onClick={() => {
+            handleConfirm(
+              id,
+              mutation,
+              {
+                where: {
+                  id: id
+                },
+                data: {
+                  status: OrderStatus.DELIVERED
+                }
+              },
+              'Giao hàng',
+              'Bạn chắc chắn muốn giao đơn hàng này?',
+              () => {
+                untils.Order.invalidate();
+              }
+            );
+          }}
+        >
+          <IconTruckDelivery size={24} />
+        </ActionIcon>
+      </Tooltip>
+    </>
+  );
+}
+
+export function CancleOrderButton({ id }: { id: string }) {
   const untils = api.useUtils();
   const mutation = api.Order.update.useMutation();
 
@@ -201,9 +290,23 @@ export function CancleOrderButton({ id, formData }: { id: string; formData: any 
           variant='subtle'
           color='red'
           onClick={() => {
-            handleConfirm(id, mutation, formData, 'Hủy  đơn hàng', 'Bạn chắc chắn muốn hủy đơn hàng này?', () => {
-              untils.Order.invalidate();
-            });
+            handleConfirm(
+              id,
+              mutation,
+              {
+                where: {
+                  id: id
+                },
+                data: {
+                  status: OrderStatus.CANCELLED
+                }
+              },
+              'Hủy  đơn hàng',
+              'Bạn chắc chắn muốn hủy đơn hàng này?',
+              () => {
+                untils.Order.invalidate();
+              }
+            );
           }}
         >
           <IconXboxX size={24} />

@@ -3,8 +3,8 @@ import { ActionIcon, Divider, Flex, Grid, GridCol, Image, NumberInput, Text } fr
 import { useLocalStorage } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
-import { formatDate } from '~/app/lib/utils/format/formatDate';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 const CartItem = ({ item, index }: any) => {

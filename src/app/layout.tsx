@@ -3,7 +3,6 @@ import '@mantine/charts/styles.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
-import '@mantine/spotlight/styles.css';
 import '~/styles/globals.css';
 
 import { Box, ColorSchemeScript, createTheme, MantineProvider, rem } from '@mantine/core';
@@ -18,6 +17,7 @@ import ScrollToTop from './_components/ScrollToTop';
 import { authOptions } from './api/auth/[...nextauth]/options';
 
 import localFont from 'next/font/local';
+import Script from 'next/script';
 import FloatingWidget from './_components/FloatingWidget/FloatingWidget';
 import FooterWeb from './_components/Web/Footer/FooterWeb';
 import HeaderWeb from './_components/Web/Header/HeaderWeb';
@@ -79,6 +79,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang='en'>
       <head>
         <ColorSchemeScript defaultColorScheme='light' />
+        <Script src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js' defer />
       </head>
       <body className={`${quickSandFont.className} ${font.variable}`}>
         <TRPCReactProvider session={session as Session}>

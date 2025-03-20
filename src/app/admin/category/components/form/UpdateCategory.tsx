@@ -1,7 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
-import { IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Category } from '~/app/Entity/CategoryEntity';
@@ -11,7 +10,7 @@ import { categorySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateCategory({ categoryId, setOpened }: { categoryId: string; setOpened: any }) {
-  const queryResult = categoryId ? api.Category.getFilter.useQuery({ query: categoryId || '' }) : { data: null };
+  const queryResult = categoryId ? api.Category.getOne.useQuery({ query: categoryId || '' }) : { data: null };
   const { data } = queryResult;
 
   const {
@@ -31,44 +30,41 @@ export default function UpdateCategory({ categoryId, setOpened }: { categoryId: 
     }
   });
 
-  const nameValue = watch('name', '');
   useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
-  useEffect(() => {
-    if (data && data.length > 0) {
+    if (data?.id) {
       reset({
-        id: data?.[0]?.id,
-        name: data?.[0]?.name,
-        tag: data?.[0]?.tag,
-        description: data?.[0]?.description || ''
+        id: data?.id,
+        name: data?.name,
+        tag: data?.tag,
+        description: data?.description || ''
       });
     }
   }, [data, reset]);
 
   const utils = api.useUtils();
-  const updateMutation = api.Category.update.useMutation();
+  const updateMutation = api.Category.update.useMutation({
+    onSuccess: () => {
+      utils.Category.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Category> = async formData => {
     if (categoryId) {
-      // let result = await updateMutation.mutateAsync(formData);
       let result = await updateMutation.mutateAsync({
         where: {
           id: categoryId
         },
         data: {
-          ...formData
+          ...formData,
+          tag: createTag(formData.name)
         }
       });
-      if (result.success) {
-        NotifySuccess(result.message);
-        setOpened(false);
-        utils.Category.invalidate();
-      } else {
+      setOpened(false);
+      if (!result.success) {
         NotifyError(result.message);
+        return;
       }
+      NotifySuccess(result.message);
     }
   };
 
@@ -90,23 +86,7 @@ export default function UpdateCategory({ categoryId, setOpened }: { categoryId: 
             )}
           />
         </Grid.Col>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                size='sm'
-                readOnly
-                label='Tag'
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                placeholder='Sẽ tạo tự động'
-                error={errors.name?.message}
-              />
-            )}
-          />
-        </Grid.Col>
+
         <Grid.Col span={12}>
           <Controller
             control={control}

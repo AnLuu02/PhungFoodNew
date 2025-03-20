@@ -7,7 +7,7 @@ import { IconCalendar } from '@tabler/icons-react';
 import Empty from '~/app/_components/Empty';
 import { HEIGHT_HEADER } from '~/app/_components/Web/Header/_components/NavigationHeader';
 import { CartItemFastMenu } from '~/app/_components/Web/Home/_Components/CartItemFastMenu';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { ButtonCheckout } from '../../thanh-toan/_components/ButtonCheckout';
 

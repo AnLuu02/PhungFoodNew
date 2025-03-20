@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   Center,
+  Flex,
   Grid,
   GridCol,
   Group,
@@ -20,12 +21,17 @@ import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
-import { formatDate } from '~/app/lib/utils/format/formatDate';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { getStatusColor } from '~/app/lib/utils/func-handler/get-status-color';
+import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import {
+  getStatusColor,
+  getStatusIcon,
+  getStatusText,
+  getTotalOrderStatus
+} from '~/app/lib/utils/func-handler/get-status-order';
 import { api } from '~/trpc/react';
 export default function OrderList({ orders, isLoading }: any) {
   const [activeTab, setActiveTab] = useState<string | null>('all');
@@ -37,19 +43,10 @@ export default function OrderList({ orders, isLoading }: any) {
     })) || [];
   const mutationDelete = api.Order.delete.useMutation();
 
-  const getOrderStats = () => {
-    const completed = mockOrders.filter((order: any) => order.status === OrderStatus.COMPLETED).length || 0;
-    const processing = mockOrders.filter((order: any) => order.status === OrderStatus.PENDING).length || 0;
-    const canceled = mockOrders.filter((order: any) => order.status === OrderStatus.CANCELLED).length || 0;
-    const total = mockOrders.length || 0;
-    const completionRate = (completed / total) * 100 || 0;
-    return { completed, processing, canceled, completionRate };
-  };
-
   const filteredOrders =
     activeTab === 'all' ? mockOrders : mockOrders.filter((order: any) => order.status === activeTab);
 
-  const stats = getOrderStats();
+  const statusObj = getTotalOrderStatus(mockOrders);
   const { openModal } = useModal();
 
   return isLoading ? (
@@ -61,7 +58,7 @@ export default function OrderList({ orders, isLoading }: any) {
           <Badge color='green' size='lg' w={'100%'}>
             <Text ta='center' fw={700} size={'sm'}>
               <Text component='span' fw={700} mr={5}>
-                {stats.completed}
+                {statusObj.completed}
               </Text>
               Hoàn thành
             </Text>
@@ -71,7 +68,7 @@ export default function OrderList({ orders, isLoading }: any) {
           <Badge color='yellow.9' size='lg' w={'100%'}>
             <Text ta='center' fw={700} size={'sm'}>
               <Text component='span' fw={700} mr={5}>
-                {stats.processing}
+                {statusObj.processing}
               </Text>
               Đang xử lý
             </Text>
@@ -81,7 +78,7 @@ export default function OrderList({ orders, isLoading }: any) {
           <Badge color='red' size='lg' w={'100%'}>
             <Text ta='center' fw={700} size={'sm'}>
               <Text component='span' fw={700} mr={5}>
-                {stats.canceled}
+                {statusObj.canceled}
               </Text>
               Đã hủy
             </Text>
@@ -92,9 +89,9 @@ export default function OrderList({ orders, isLoading }: any) {
       <Text fw={500} mb='xs' size='sm'>
         Tỷ lệ hoàn thành đơn hàng
       </Text>
-      <Progress value={stats.completionRate} size='xl' radius='xl' mb='xs' />
+      <Progress value={statusObj.completionRate} size='xl' radius='xl' mb='xs' />
       <Text size='sm' color='dimmed' mb='md'>
-        {stats.completionRate?.toFixed(1)}% đơn đặt hàng của bạn đã được hoàn thành thành công
+        {statusObj.completionRate?.toFixed(1)}% đơn đặt hàng của bạn đã được hoàn thành thành công
       </Text>
 
       <Tabs variant='pills' content='center' value={activeTab} onChange={setActiveTab}>
@@ -107,8 +104,16 @@ export default function OrderList({ orders, isLoading }: any) {
               Hoàn thành
             </Tabs.Tab>
 
+            <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PROCESSING}>
+              Chưa thanh toán
+            </Tabs.Tab>
+
             <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PENDING}>
-              Đang xử lý
+              Chờ xử lý
+            </Tabs.Tab>
+
+            <Tabs.Tab size={'md'} fw={700} value={OrderStatus.DELIVERED}>
+              Đang giao hàng
             </Tabs.Tab>
 
             <Tabs.Tab size={'md'} fw={700} value={OrderStatus.CANCELLED}>
@@ -136,12 +141,16 @@ export default function OrderList({ orders, isLoading }: any) {
                     <Table.Td>{formatDate(order.date)}</Table.Td>
                     <Table.Td>{formatPriceLocaleVi(order.total)}</Table.Td>
                     <Table.Td style={{ textTransform: 'capitalize' }}>
-                      <Badge color={getStatusColor(order.status)}>
-                        {order.status == OrderStatus.PENDING
-                          ? 'Chưa thanh toán'
-                          : order.status == OrderStatus.CANCELLED
-                            ? 'Đã hủy'
-                            : 'Hoàn thành'}
+                      <Badge
+                        size='xs'
+                        color={getStatusColor(order.status)}
+                        p={'xs'}
+                        className='align-items-center flex'
+                      >
+                        <Flex align={'center'}>
+                          {getStatusText(order.status)}
+                          {getStatusIcon(order.status)}
+                        </Flex>
                       </Badge>
                     </Table.Td>
                     <Table.Td>
@@ -159,7 +168,7 @@ export default function OrderList({ orders, isLoading }: any) {
 
                         {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
 
-                        {order?.status === OrderStatus.PENDING && (
+                        {order?.status === OrderStatus.PROCESSING && (
                           <Link href={`/thanh-toan/${order.id}`}>
                             <Tooltip label='Tiếp tục thanh toán'>
                               <Button size='xs'>Thanh toán</Button>

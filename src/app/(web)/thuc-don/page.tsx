@@ -1,12 +1,13 @@
 'use client';
-import { Box, Flex, Grid, GridCol, Image, Indicator, Text } from '@mantine/core';
+import { Box, Flex, Grid, GridCol, Indicator, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconBell, IconGardenCart } from '@tabler/icons-react';
 import Link from 'next/link';
+import Empty from '~/app/_components/Empty';
 import CustomPagination from '~/app/_components/Pagination';
 import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
 import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { api } from '~/trpc/react';
 import HeaderMenu from './_components/HeaderMenu';
 
@@ -16,9 +17,9 @@ const MenuSection = ({
   searchParams?: {
     tag?: string;
     query?: string;
-    'sort-price'?: string;
-    'sort-name'?: string;
+    sort?: any;
     price?: string;
+    'nguyen-lieu'?: any;
     page?: string;
     limit?: string;
     'danh-muc'?: string;
@@ -29,11 +30,14 @@ const MenuSection = ({
   const { data: foderItems, isLoading } = api.Product.find.useQuery({
     skip: Number(searchParams?.page) || 0,
     take: Number(searchParams?.limit) || 12,
-    sort: {
-      price: searchParams?.['sort-price'],
-      name: searchParams?.['sort-name']
-    },
+    sort: (searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort])?.filter(
+      Boolean
+    ),
     query: searchParams?.tag || searchParams?.query,
+    'nguyen-lieu': (searchParams?.['nguyen-lieu'] && Array.isArray(searchParams?.['nguyen-lieu'])
+      ? searchParams?.['nguyen-lieu']
+      : [searchParams?.['nguyen-lieu']]
+    ).filter(Boolean),
     'danh-muc': searchParams?.['danh-muc'],
     'loai-san-pham': searchParams?.['loai-san-pham'],
     newProduct: searchParams?.loai === 'san-pham-moi',
@@ -41,20 +45,17 @@ const MenuSection = ({
     hotProduct: searchParams?.loai === 'san-pham-hot',
     bestSaler: searchParams?.loai === 'san-pham-ban-chay',
     price: {
-      min: Number(searchParams?.price?.split('-')[0]) || undefined,
-      max: Number(searchParams?.price?.split('-')[1]) || undefined
+      min: Number(searchParams?.price?.split(',')[0]) || undefined,
+      max: Number(searchParams?.price?.split(',')[1]) || undefined
     }
   });
   const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
   const data = foderItems?.products || [];
+
   return (
     <Box pos={'relative'}>
-      <HeaderMenu
-        isLoading={isLoading}
-        products={data}
-        category={(searchParams?.['loai-san-pham'] || searchParams?.['danh-muc']) && data?.[0]?.subCategory}
-      />
+      <HeaderMenu isLoading={isLoading} products={data} />
       <Flex direction={'column'} align={'flex-start'}>
         {isLoading ? (
           <Grid w={'100%'}>
@@ -74,12 +75,7 @@ const MenuSection = ({
               ))
             ) : (
               <GridCol span={12}>
-                <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
-                  <Image loading='lazy' src={'/images/png/empty_cart.png'} w={100} h={100} alt={'empty cart'} />
-                  <Text size='xl' fw={700} c={'dimmed'}>
-                    Không có sản phẩm phù hợp
-                  </Text>
-                </Flex>
+                <Empty title={'Không tìm thấy sản phẩm'} content='' hasButton={false} />
               </GridCol>
             )}
           </Grid>

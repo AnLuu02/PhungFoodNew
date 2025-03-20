@@ -29,26 +29,27 @@ export const CommentsForm = ({ product }: { product: any }) => {
       comment: ''
     }
   });
-  const mutation = api.Review.create.useMutation();
+  const mutation = api.Review.create.useMutation({
+    onSuccess: () => {
+      utils.Review.invalidate();
+      utils.Product.invalidate();
+    }
+  });
   const utils = api.useUtils();
   const onSubmit: SubmitHandler<Review> = async formData => {
     try {
-      setValue('productId', product.id);
-      if (user?.user?.id) {
-        let result = await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
-        if (result.success) {
-          utils.Review.invalidate();
-          utils.Product.invalidate();
-          reset();
-          NotifySuccess(result.message);
-        } else {
-          NotifyError(result.message);
-        }
-      } else {
+      if (!user?.user?.id) {
         NotifyError('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
+        return;
+      }
+      setValue('productId', product.id);
+      let result = await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
+      if (result.success) {
+        reset();
+        NotifySuccess(result.message);
       }
     } catch (error) {
-      NotifyError('Error created Category');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
   return (

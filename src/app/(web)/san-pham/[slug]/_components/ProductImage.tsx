@@ -2,7 +2,7 @@
 
 // import { Box, Flex, Image, Modal, Paper, Text } from '@mantine/core';
 // import { useState } from 'react';
-// import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+// import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 // import { SocialShare } from './SocialShare';
 
 // interface ProductImageProps {
@@ -89,7 +89,7 @@ import { Box, Flex, Image, Modal, Paper, Text, UnstyledButton } from '@mantine/c
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { SocialShare } from './SocialShare';
 
 interface ProductImageProps {

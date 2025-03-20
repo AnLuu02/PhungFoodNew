@@ -15,7 +15,6 @@ export default function UpdateReview({ reviewId, setOpened }: { reviewId: string
   const { data } = queryResult;
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
@@ -44,19 +43,24 @@ export default function UpdateReview({ reviewId, setOpened }: { reviewId: string
   }, [data, reset]);
 
   const utils = api.useUtils();
-  const updateMutation = api.Review.update.useMutation();
+  const updateMutation = api.Review.update.useMutation({
+    onSuccess: () => {
+      utils.Review.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Review> = async formData => {
-    if (reviewId) {
-      const updatedFormData = { ...formData };
-      let result = await updateMutation.mutateAsync({ reviewId, ...updatedFormData });
-      if (result.success) {
-        NotifySuccess(result.message);
-        setOpened(false);
-        utils.Review.invalidate();
-      } else {
-        NotifyError(result.message);
+    try {
+      if (reviewId) {
+        const updatedFormData = { ...formData };
+        let result = await updateMutation.mutateAsync({ reviewId, ...updatedFormData });
+        if (result.success) {
+          NotifySuccess(result.message);
+          setOpened(false);
+        }
       }
+    } catch (error) {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 

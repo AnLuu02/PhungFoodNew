@@ -3,24 +3,23 @@ import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { api } from '~/trpc/react';
 import { DeleteRoleButton, UpdateRoleButton } from '../Button';
 
 export default function TableRole({
   currentPage,
   query,
+  data,
   limit,
   user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  data: any;
   user?: any;
 }) {
-  const { data: result, isLoading } = api.RolePermission.find.useQuery({ skip: +currentPage, take: +limit, query });
-  const currentItems = result?.roles || [];
+  const currentItems = data?.roles || [];
 
   const columns: ColumnDef<any>[] = [
     {
@@ -59,9 +58,7 @@ export default function TableRole({
     getCoreRowModel: getCoreRowModel()
   });
 
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Group pb={'lg'}>
         <Menu shadow='md' width={220}>
@@ -127,7 +124,7 @@ export default function TableRole({
 
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
-        <CustomPagination totalPages={result?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
     </>
   );

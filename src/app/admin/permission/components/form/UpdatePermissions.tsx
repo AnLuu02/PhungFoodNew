@@ -27,7 +27,11 @@ export default function UpdatePermission({ setOpened, permissionId }: { setOpene
 
   const utils = api.useUtils();
   const { data: permissionData } = api.RolePermission.getOnePermission.useQuery({ id: permissionId });
-  const mutation = api.RolePermission.updatePermission.useMutation();
+  const mutation = api.RolePermission.updatePermission.useMutation({
+    onSuccess: () => {
+      utils.RolePermission.invalidate();
+    }
+  });
 
   useEffect(() => {
     if (permissionData) {
@@ -41,12 +45,11 @@ export default function UpdatePermission({ setOpened, permissionId }: { setOpene
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
-        utils.RolePermission.invalidate();
       } else {
         NotifyError(result.message);
       }
     } catch (error) {
-      NotifyError('Có lỗi xảy ra khi cập nhật quyền');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 

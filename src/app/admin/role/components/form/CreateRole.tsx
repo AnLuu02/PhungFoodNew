@@ -16,7 +16,7 @@ type RoleForm = z.infer<typeof roleSchema>;
 export default function CreateRole({ setOpened }: { setOpened: any }) {
   const {
     control,
-    register,
+
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue
@@ -29,7 +29,11 @@ export default function CreateRole({ setOpened }: { setOpened: any }) {
   });
 
   const utils = api.useUtils();
-  const createRoleMutation = api.RolePermission.createRole.useMutation();
+  const createRoleMutation = api.RolePermission.createRole.useMutation({
+    onSuccess: () => {
+      utils.RolePermission.invalidate();
+    }
+  });
   const { data: permissions } = api.RolePermission.getPermissions.useQuery();
 
   const onSubmit: SubmitHandler<RoleForm> = async formData => {
@@ -38,10 +42,9 @@ export default function CreateRole({ setOpened }: { setOpened: any }) {
       if (result) {
         NotifySuccess('Tạo vai trò thành công');
         setOpened(false);
-        utils.RolePermission.invalidate();
       }
     } catch (error) {
-      NotifyError('Không thể tạo vai trò');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 

@@ -186,8 +186,19 @@ model User {
   roleId           String?
   role             Role?           @relation(fields: [roleId], references: [id])
   address          Address?
+  notifications    Notification[]
   createdAt        DateTime?       @default(now())
   updatedAt        DateTime?       @updatedAt
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  user        User[]
+  title       String
+  message     String
+  isRead      Boolean  @default(false)
+  isSendToAll Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model Address {
@@ -213,6 +224,40 @@ model Address {
 enum AddressType {
   USER
   DELIVERY
+}
+
+model Restaurant {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  logo        Image?
+  email       String   @unique
+  phone       String
+  website     String?
+  socials     Social[]
+  address     String
+  openedHours String?
+  closedHours String?
+  isClose     Boolean
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Social {
+  id           String      @id @default(cuid())
+  key          String      @unique
+  url          String
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
+}
+
+model Banner {
+  id        String    @id @default(cuid())
+  images    Image[]
+  isActive  Boolean
+  startDate DateTime?
+  endDate   DateTime?
+  createdAt DateTime  @default(now())
 }
 
 model Role {
@@ -256,14 +301,17 @@ model FavouriteFood {
 }
 
 model Image {
-  id         String     @id @default(cuid())
-  url        String
-  altText    String?
-  type       ImageType
-  entityType EntityType
-
+  id            String       @id @default(cuid())
+  url           String
+  altText       String?
+  type          ImageType
+  entityType    EntityType
+  bannerId      String?
+  banner        Banner?      @relation(fields: [bannerId], references: [id])
   subCategoryId String?      @unique
   subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  restaurantId  String?      @unique
+  restaurant    Restaurant?  @relation(fields: [restaurantId], references: [id])
   userId        String?      @unique
   user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId     String?
@@ -272,6 +320,7 @@ model Image {
   @@unique([id, subCategoryId, entityType, type])
   @@unique([id, userId, entityType, type])
   @@unique([id, productId, entityType, type])
+  @@unique([id, bannerId, entityType, type])
   @@index([subCategoryId, entityType])
   @@index([userId, entityType])
   @@index([productId, entityType])
@@ -280,12 +329,15 @@ model Image {
 enum ImageType {
   THUMBNAIL
   GALLERY
+  LOGO
+  BANNER
 }
 
 enum EntityType {
   PRODUCT
   USER
   CATEGORY
+  RESTAURANT
 }
 
 enum VoucherType {
@@ -299,10 +351,11 @@ enum PaymentType {
 }
 
 enum OrderStatus {
-  PENDING
   COMPLETED
+  PENDING
+  PROCESSING
+  DELIVERED
   CANCELLED
-  FAILED
 }
 
 enum Gender {

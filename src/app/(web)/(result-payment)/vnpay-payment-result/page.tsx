@@ -1,12 +1,13 @@
 'use client';
-import { Button, Card, Flex, Group, Paper, Text, Title } from '@mantine/core';
+import { Badge, Button, Card, Flex, Group, Paper, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconArrowLeft, IconCircleCheck, IconCircleX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
+import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
 
 function formatCustomTimestamp(timestamp: string) {
   if (!timestamp || timestamp.length !== 14) return 'N/A';
@@ -42,12 +43,13 @@ export default function PaymentResult() {
         payDate: searchParams.get('vnp_PayDate') || searchParams.get('transDate'),
         responseCode: searchParams.get('vnp_ResponseCode'),
         error: searchParams.get('error'),
-        message: searchParams.get('message')
+        message: searchParams.get('message'),
+        statusOrder: searchParams.get('statusOrder')
       };
 
-      setQueryParams(params);
-
-      const hasOtherFields = Object.keys(params).some(key => key !== 'orderId' && key !== 'payDate' && params[key]);
+      const hasOtherFields = Object.keys(params).some(
+        key => key !== 'orderId' && key !== 'payDate' && key !== 'statusOrder' && key !== 'message' && params[key]
+      );
       if (params.orderId && params.payDate && !hasOtherFields) {
         hasFetched.current = true;
         fetch('/api/vnpay/querydr', {
@@ -57,15 +59,15 @@ export default function PaymentResult() {
         })
           .then(res => res.json())
           .then(data => {
-            setQueryParams((prev: any) => ({
-              ...prev,
+            setQueryParams({
+              ...params,
               transactionStatus: data.vnp_TransactionStatus,
               amount: Number(data.vnp_Amount) / 100,
               bankCode: data.vnp_BankCode,
               payDate: data.vnp_PayDate,
               responseCode: data.vnp_ResponseCode,
               error: data.vnp_Message
-            }));
+            });
           })
           .catch(err => {
             console.error('Lỗi fetch trạng thái đơn hàng:', err);
@@ -81,7 +83,8 @@ export default function PaymentResult() {
     return <LoadingComponent />;
   }
 
-  const { transactionStatus, orderId, amount, bankCode, payDate, responseCode, error, message } = queryParams;
+  const { transactionStatus, orderId, amount, bankCode, payDate, responseCode, error, message, statusOrder } =
+    queryParams;
   const isSuccess = responseCode === '00' && transactionStatus === '00';
 
   const TransactionInfo = () => (
@@ -115,6 +118,12 @@ export default function PaymentResult() {
             <Title order={3} className='font-quicksand'>
               Chào, {user?.user?.name || 'Khách'}
             </Title>
+            <Badge size='md' p={'xs'} color={getStatusColor(statusOrder)}>
+              <Flex>
+                {getStatusText(statusOrder)}
+                {getStatusIcon(statusOrder)}
+              </Flex>
+            </Badge>
             <Text>Bạn vừa đặt hàng thành công, hàng sẽ được gửi đến bạn thời gian sớm nhất.</Text>
             <Text>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</Text>
           </>

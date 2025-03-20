@@ -3,9 +3,9 @@ import { VoucherType } from '@prisma/client';
 
 import clsx from 'clsx';
 import Link from 'next/link';
-import { formatDate } from '~/app/lib/utils/format/formatDate';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers';
+import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers-calculate';
 
 export default function ModalDetailVoucher({ opened, onClose, data, products }: any) {
   return (
@@ -79,7 +79,7 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
             <Flex p='xs' justify={'space-between'} align={'center'} h={'100%'} flex={1}>
               <Flex h={'100%'} direction={'column'} flex={1} pr={30}>
                 <Group>
-                  <Link href={`/san-pham/${data?.tag}`} className='no-underline'>
+                  <Link href={`/san-pham/${data?.tag}`}>
                     <Tooltip label={data?.name}>
                       <Text
                         lineClamp={1}

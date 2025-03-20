@@ -4,10 +4,12 @@ import {
   Accordion,
   Box,
   Button,
+  Checkbox,
   CheckIcon,
   Divider,
   Drawer,
   Flex,
+  Group,
   Paper,
   Radio,
   ScrollArea,
@@ -22,6 +24,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Empty from '~/app/_components/Empty';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { api } from '~/trpc/react';
 import FilterPriceMenu from './FilterPrice';
@@ -49,38 +52,19 @@ const priceRanges = [
 export function CategoryNav() {
   const [drawerOpened, setDrawerOpened] = useState(false);
   const { data, isLoading } = api.Category.getAll.useQuery();
-  const { data: materialData } = api.Material.getAll.useQuery();
+  const { data: materialData, isLoading: isLoadingMaterials } = api.Material.getAll.useQuery();
   const categories = data ?? [];
   const materials = materialData ?? [];
-
-  const [valuePrice, setValuePrice] = useState<any>(null);
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
-  const [valueSort, setValueSort] = useState<any[]>(
-    params
-      .getAll('sort')
-      .join(',')
-      .split(',')
-      .filter(i => i != '')
-  );
+  const query = new URLSearchParams(params);
+  const [valueMaterials, setValueMaterials] = useState<string[]>([...params.getAll('nguyen-lieu')]);
 
   useEffect(() => {
-    const query = new URLSearchParams(params);
-    if (valuePrice?.length > 0) {
-      query.set(
-        'price',
-        valuePrice
-          ?.split(',')
-          .filter((i: any) => i != '')
-          .join('-')
-      );
-    } else {
-      query.delete('price');
-    }
-    router.push(`${pathname}?${query.toString()}`);
-  }, [valuePrice]);
+    setValueMaterials([...params.getAll('nguyen-lieu')]);
+  }, [params]);
 
   const content = (
     <>
@@ -93,11 +77,11 @@ export function CategoryNav() {
 
         {isLoading ? (
           [1, 2, 3, 4, 5].map(item => {
-            return <Skeleton key={item} height={40} my={6} width='100%' radius='xs' />;
+            return <Skeleton key={item} height={20} my={6} width='100%' radius='md' />;
           })
         ) : (
           <Accordion p={0}>
-            <Link className='h-full w-full text-white no-underline' href={`/thuc-don`}>
+            <Link className='h-full w-full' href={`/thuc-don`}>
               <Button
                 w={'100%'}
                 h={'100%'}
@@ -136,7 +120,7 @@ export function CategoryNav() {
                     {category.subCategory.map(item => (
                       <Link
                         key={item?.id}
-                        className='h-full w-full text-white no-underline'
+                        className='h-full w-full'
                         href={`/thuc-don?danh-muc=${category.tag}&loai-san-pham=${item.tag}`}
                       >
                         <Button
@@ -174,16 +158,19 @@ export function CategoryNav() {
                 <Text size='md' fw={700}>
                   CHỌN MỨC GIÁ
                 </Text>
-                {valuePrice && (
+                {params.get('price') && (
                   <Button
                     size='sm'
                     fw={700}
                     w={'max-content'}
                     color='red'
-                    onClick={() => setValuePrice(null)}
+                    onClick={() => {
+                      query.delete('price');
+                      router.push(`${pathname}?${query.toString()}`);
+                    }}
                     variant='subtle'
                   >
-                    Xóa lọc
+                    Xóa
                   </Button>
                 )}
               </Flex>
@@ -194,10 +181,15 @@ export function CategoryNav() {
                       <Radio
                         icon={CheckIcon}
                         color='green.9'
-                        checked={valuePrice === range.value.toString()}
+                        checked={params.get('price') === range.value.toString()}
                         key={range.value + range.label}
                         value={range.value.toString()}
-                        onChange={e => setValuePrice(e.currentTarget.value)}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            query.set('price', e.target.value);
+                          }
+                          router.push(`${pathname}?${query.toString()}`);
+                        }}
                         name='range-price'
                         label={range.label}
                         className='hover:text-green-700'
@@ -209,29 +201,78 @@ export function CategoryNav() {
             </Stack>
 
             <Divider p={0} m={0} />
-
-            {materials?.length > 0 && (
+            {isLoading ? (
+              [1, 2, 3, 4, 5].map(item => {
+                return <Skeleton key={item} height={20} width='100%' radius='md' />;
+              })
+            ) : materials?.length > 0 ? (
               <Stack gap='xs'>
-                <Text size='md' fw={700}>
-                  LOẠI
-                </Text>
+                <Flex align={'center'} justify={'space-between'}>
+                  <Text size='md' fw={700}>
+                    NGUYÊN LIỆU
+                  </Text>
+                  {valueMaterials?.length > 0 && (
+                    <>
+                      <Button
+                        size='sm'
+                        fw={700}
+                        w={'max-content'}
+                        onClick={() => {
+                          if (valueMaterials?.length > 0) {
+                            query.delete('nguyen-lieu');
+                            valueMaterials.map((item, index) => {
+                              query.append('nguyen-lieu', item);
+                            });
+                          } else {
+                            query.delete('nguyen-lieu');
+                          }
+                          router.push(`${pathname}?${query.toString()}`);
+                        }}
+                        variant='subtle'
+                      >
+                        Tìm kiếm
+                      </Button>
+                      <Button
+                        size='sm'
+                        fw={700}
+                        w={'max-content'}
+                        color='red'
+                        onClick={() => {
+                          setValueMaterials([]);
+                          query.delete('nguyen-lieu');
+                          router.push(`${pathname}?${query.toString()}`);
+                        }}
+                        variant='subtle'
+                      >
+                        Xóa
+                      </Button>
+                    </>
+                  )}
+                </Flex>
                 <ScrollAreaAutosize mah={260} scrollbarSize={6} type='auto'>
                   <Stack gap='xs'>
-                    {materials.map(type => (
-                      <>
-                        <Radio
-                          icon={CheckIcon}
-                          color='green.9'
-                          name='type'
-                          key={type?.id}
-                          label={type?.name}
-                          className='hover:text-green-700'
-                        />
-                      </>
-                    ))}
+                    <Checkbox.Group value={valueMaterials} onChange={setValueMaterials}>
+                      <Group mt='xs'>
+                        {materials.map(type => (
+                          <>
+                            <Checkbox
+                              icon={CheckIcon}
+                              color='green.9'
+                              name='type'
+                              value={type?.tag}
+                              key={type?.id}
+                              label={type?.name}
+                              className='hover:text-green-700'
+                            />
+                          </>
+                        ))}
+                      </Group>
+                    </Checkbox.Group>
                   </Stack>
                 </ScrollAreaAutosize>
               </Stack>
+            ) : (
+              <Empty title='Chưa có nguyên liệu nào' hasButton={false} size='sm' content='' />
             )}
           </Stack>
         </ScrollArea>
@@ -253,7 +294,7 @@ export function CategoryNav() {
           </Button>
 
           <FilterPriceMenu />
-          <FilterMenu valueSort={valueSort} setValueSort={setValueSort} />
+          <FilterMenu />
         </Flex>
         <Drawer
           opened={drawerOpened}

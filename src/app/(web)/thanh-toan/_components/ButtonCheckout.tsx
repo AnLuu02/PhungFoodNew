@@ -44,7 +44,7 @@ export const ButtonCheckout = ({
     if (order) {
       const resp: any = await mutationOrder.mutateAsync({
         total: total,
-        status: OrderStatus.PENDING,
+        status: OrderStatus.PROCESSING,
         userId: user?.user?.id || '',
         orderItems: order?.map((item: any) => ({
           productId: item.id,

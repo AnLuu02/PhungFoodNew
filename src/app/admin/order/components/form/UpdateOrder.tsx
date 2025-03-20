@@ -19,7 +19,7 @@ import { IconMail, IconPhone } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import { Order } from '~/app/Entity/OrderEntity';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
@@ -31,7 +31,6 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
   const { data, isLoading } = orderId ? api.Order.getOne.useQuery({ query: orderId || '' }) : {};
   const {
     control,
-    register,
     handleSubmit,
     reset,
     watch,
@@ -43,7 +42,7 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
     defaultValues: {
       id: '',
       total: 0,
-      status: OrderStatus.PENDING,
+      status: OrderStatus.PROCESSING,
       userId: '',
       paymentId: '',
       orderItems: [],
@@ -112,58 +111,65 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
   const { data: payments } = api.Payment.getAll.useQuery();
   const { data: users } = api.User.getAll.useQuery();
   const utils = api.useUtils();
-  const updateMutation = api.Order.update.useMutation();
+  const updateMutation = api.Order.update.useMutation({
+    onSuccess: () => {
+      utils.Order.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Order> = async formData => {
-    if (orderId) {
-      let result = await updateMutation.mutateAsync({
-        where: { id: formData.id },
-        data: {
-          ...formData,
-          total: Number(formData.total) || 0,
-          orderItems: {
-            deleteMany: {
-              id: {
-                notIn: formData?.orderItems?.map(item => item?.id)?.filter(Boolean)
-              }
-            },
-            upsert: formData.orderItems.map(item => ({
-              where: { id: item.id || '' },
-              update: {
-                productId: item.productId,
-                quantity: item.quantity,
-                price: item.price
+    try {
+      if (orderId) {
+        let result = await updateMutation.mutateAsync({
+          where: { id: formData.id },
+          data: {
+            ...formData,
+            total: Number(formData.total) || 0,
+            orderItems: {
+              deleteMany: {
+                id: {
+                  notIn: formData?.orderItems?.map(item => item?.id)?.filter(Boolean)
+                }
               },
-              create: {
-                productId: item.productId,
-                quantity: item.quantity,
-                price: item.price
-              }
-            }))
-          },
-          delivery: {
-            update: {
-              name: formData.delivery.name,
-              email: formData.delivery.email,
-              phone: formData.delivery.phone,
-              note: formData.delivery.note,
-              address: {
+              upsert: formData.orderItems.map(item => ({
+                where: { id: item.id || '' },
                 update: {
-                  ...formData.delivery.address
+                  productId: item.productId,
+                  quantity: item.quantity,
+                  price: item.price
+                },
+                create: {
+                  productId: item.productId,
+                  quantity: item.quantity,
+                  price: item.price
+                }
+              }))
+            },
+            delivery: {
+              update: {
+                name: formData.delivery.name,
+                email: formData.delivery.email,
+                phone: formData.delivery.phone,
+                note: formData.delivery.note,
+                address: {
+                  update: {
+                    ...formData.delivery.address
+                  }
                 }
               }
             }
           }
-        }
-      });
+        });
 
-      if (result.success) {
-        NotifySuccess(result.message);
-        setOpened(false);
-        utils.Order.invalidate();
-      } else {
-        NotifyError(result.message);
+        if (result.success) {
+          NotifySuccess(result.message);
+          setOpened(false);
+        } else {
+          NotifyError(result.message);
+        }
       }
+    } catch (error) {
+      NotifyError('Đã xây ra ngoại lệ. Vui lòng kiểm tra lai.');
     }
   };
 
@@ -387,7 +393,6 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
             </Title>
             {orderItemFields.map((field, index) => (
               <OrderItemForm
-                register={register}
                 key={field.id}
                 {...field}
                 index={index}

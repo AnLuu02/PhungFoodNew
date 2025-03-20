@@ -3,30 +3,30 @@ import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { api } from '~/trpc/react';
 import { DeletePermissionButton, UpdatePermissionButton } from '../Button';
 
 export default function TablePermission({
   currentPage,
   query,
+  data,
   limit,
   user
 }: {
   currentPage: string;
   query: string;
+  data: any;
   limit: string;
   user?: any;
 }) {
-  const { data: result, isLoading } = api.RolePermission.findPermission.useQuery({
-    skip: +currentPage,
-    take: +limit,
-    query
-  });
-  const currentItems = result?.permissions || [];
+  const currentItems = data?.permissions || [];
 
   const columns: ColumnDef<any>[] = [
+    {
+      header: 'ID',
+      accessorKey: 'id',
+      cell: info => <Highlight highlight={query}>{info.row.original.id}</Highlight>
+    },
     {
       header: 'Tên quyền',
       accessorKey: 'name',
@@ -59,9 +59,7 @@ export default function TablePermission({
     getCoreRowModel: getCoreRowModel()
   });
 
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Group pb={'lg'}>
         <Menu shadow='md' width={220}>
@@ -127,7 +125,7 @@ export default function TablePermission({
 
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
-        <CustomPagination totalPages={result?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
     </>
   );

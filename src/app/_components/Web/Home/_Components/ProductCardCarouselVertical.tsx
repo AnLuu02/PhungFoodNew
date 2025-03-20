@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import BButton from '~/app/_components/Button';
 import { useModal } from '~/app/contexts/ModalContext';
 import { breakpoints } from '~/app/lib/utils/constants/device';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
@@ -37,10 +37,9 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
   }, [product, user]);
 
   const mutationAddFavourite = api.FavouriteFood.create.useMutation({
-    onSuccess: data => {
+    onSuccess: () => {
       setLike(true);
       setLoading(false);
-
       utils.FavouriteFood.invalidate();
     },
     onError: error => {
@@ -48,7 +47,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
     }
   });
   const mutationCancleFavourite = api.FavouriteFood.delete.useMutation({
-    onSuccess: data => {
+    onSuccess: () => {
       setLike(false);
       setLoading(false);
       utils.FavouriteFood.invalidate();
@@ -143,7 +142,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
       </Card.Section>
       <Card.Section h={'50%'} pos={'relative'}>
         <Flex direction='column' gap='sm' pt={10} align='center' className='w-full' h='100%'>
-          <Link href={`/san-pham/${product?.tag}`} className='no-underline'>
+          <Link href={`/san-pham/${product?.tag}`}>
             <Tooltip label={product?.name}>
               <Text
                 lineClamp={1}
@@ -183,7 +182,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
             >
               {pathname === '/' ? (
                 <Link
-                  className='cursor-pointer text-gray-400 no-underline transition-all duration-200 ease-in-out hover:text-[#f8c144] hover:underline'
+                  className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-[#f8c144] hover:underline'
                   href={`/san-pham/${product?.tag}/danh-gia`}
                 >
                   Có {product?.totalRating || 0} đánh giá

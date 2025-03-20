@@ -5,7 +5,7 @@ export type Payment = {
 
   name: string;
 
-  tag: string;
+  tag?: string;
 
   type: PaymentType;
 

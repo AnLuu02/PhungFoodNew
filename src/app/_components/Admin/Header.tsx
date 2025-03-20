@@ -21,7 +21,7 @@ import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { breakpoints } from '~/app/lib/utils/constants/device';
-import { GlobalSearch } from './GlobalSearch';
+import { GlobalSearch } from '../Search/GlobalSearch';
 
 interface HeaderProps {
   opened: boolean;

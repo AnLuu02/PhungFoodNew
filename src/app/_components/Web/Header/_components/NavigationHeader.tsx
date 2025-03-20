@@ -65,8 +65,7 @@ export default function NavigationHeader({
   const pathname = usePathname();
   const notDesktop = useMediaQuery(`(max-width: 1023px)`);
   const scroll = useScrollPosition(HEIGHT_HEADER);
-
-  const cssLink = 'duration-600 rounded-t-lg no-underline transition ease-in-out h-[max-content] ';
+  const cssLink = 'duration-600 rounded-t-lg  transition ease-in-out h-[max-content] ';
   return !notDesktop ? (
     <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }}>
       {navigationItem.map((item, index) =>
@@ -75,8 +74,19 @@ export default function NavigationHeader({
             shadow='md'
             key={index}
             trigger={'hover'}
+            withOverlay
+            onOpen={() => {
+              document.body.style.overflow = 'hidden';
+            }}
+            onClose={() => {
+              document.body.style.overflow = '';
+            }}
+            overlayProps={{
+              zIndex: 99
+            }}
             disabled={(categories && categories.length > 0) || !notDesktop ? false : true}
             width={1000}
+            offset={16}
             transitionProps={{ transition: 'fade-up', duration: 300 }}
           >
             <Menu.Target>
@@ -170,14 +180,14 @@ export default function NavigationHeader({
                       radius='lg'
                       size={30}
                     />
-                    <div className='text-left'>
+                    <Box className='text-left'>
                       <Text fw={700} size='sm' lh={1} className='text-black'>
                         {user?.user?.name}
                       </Text>
                       <Text size='xs' fw={700} className='text-gray-500'>
                         {user?.user?.email}
                       </Text>
-                    </div>
+                    </Box>
                   </Group>
                   <IconChevronDown
                     style={{ width: rem(12), height: rem(12) }}
@@ -188,7 +198,7 @@ export default function NavigationHeader({
               </UnstyledButton>
             </Menu.Target>
             <Menu.Dropdown className='bg-[#f8c144]'>
-              <Link href={`/thong-tin`} className='text-white no-underline'>
+              <Link href={`/thong-tin`} className='text-white'>
                 <Menu.Item
                   fw={500}
                   leftSection={
@@ -200,7 +210,7 @@ export default function NavigationHeader({
               </Link>
               <Divider />
 
-              <Link href={`/don-hang-cua-toi`} className='text-white no-underline'>
+              <Link href={`/don-hang-cua-toi`} className='text-white'>
                 <Menu.Item
                   fw={500}
                   leftSection={
@@ -273,28 +283,22 @@ export default function NavigationHeader({
       {!user?.user?.email && (
         <Flex pr={10} align={'center'} justify={'center'}>
           <IconUserCircle size={20} className='mr-1' />
-          <Text
-            size='sm'
-            className={clsx(cssLink, 'cursor-pointer font-bold no-underline hover:underline', 'text-black')}
-          >
+          <Text size='sm' className={clsx(cssLink, 'cursor-pointer font-bold hover:underline', 'text-black')}>
             Đăng kí
           </Text>
           <Text pl={'xs'} pr={'xs'}>
             /
           </Text>
-          <Text
-            size='sm'
-            className={clsx(cssLink, 'cursor-pointer font-bold no-underline hover:underline', 'text-black')}
-          >
+          <Text size='sm' className={clsx(cssLink, 'cursor-pointer font-bold hover:underline', 'text-black')}>
             Đăng nhập
           </Text>
         </Flex>
       )}
       <Box className='flex justify-center gap-4 lg:justify-start'>
-        <Link href='#' className='rounded-sm text-white no-underline hover:underline hover:opacity-80'>
+        <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80'>
           <Image loading='lazy' src='/images/png/logo_playstore.png' alt='Google Play' w={140} h={42} />
         </Link>
-        <Link href='#' className='rounded-sm text-white no-underline hover:underline hover:opacity-80'>
+        <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80'>
           <Image loading='lazy' src='/images/png/logo_appstore.png' alt='App Store' w={140} h={42} />
         </Link>
       </Box>

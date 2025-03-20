@@ -3,8 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Grid, MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { UserLevel, VoucherType } from '@prisma/client';
-import { IconCalendar, IconTag } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { IconCalendar } from '@tabler/icons-react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Voucher } from '~/app/Entity/VoucherEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
@@ -55,27 +54,26 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
       products: []
     }
   });
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
 
   const utils = api.useUtils();
-  const mutation = api.Voucher.create.useMutation();
+  const mutation = api.Voucher.create.useMutation({
+    onSuccess: () => {
+      utils.Voucher.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Voucher> = async formData => {
     try {
       if (formData) {
         let result = await mutation.mutateAsync({
           ...formData,
+          tag: createTag(formData.name),
           availableQuantity: formData.quantity,
           vipLevel: Number(formData.vipLevel) || 0
         });
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
-          utils.Voucher.invalidate();
         } else {
           NotifyError(result.message);
         }
@@ -88,7 +86,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
-        {/* Tên voucher */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -105,26 +102,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
           />
         </Grid.Col>
 
-        {/* Tag */}
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                required
-                label='Tag'
-                placeholder='Sẽ tạo tự động'
-                error={errors.tag?.message}
-                readOnly
-              />
-            )}
-          />
-        </Grid.Col>
-
-        {/* Mô tả */}
         <Grid.Col span={12}>
           <Controller
             control={control}
@@ -135,7 +112,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
           />
         </Grid.Col>
 
-        {/* Hình thức khuyến mãi */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -157,7 +133,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
           />
         </Grid.Col>
 
-        {/* Giá trị giảm giá */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -211,7 +186,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
           />
         </Grid.Col>
 
-        {/* Số lượng voucher */}
         <Grid.Col span={4}>
           <Controller
             control={control}
@@ -247,7 +221,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
           />
         </Grid.Col> */}
 
-        {/* Còn lại */}
         {/* <Grid.Col span={4}>
           <Controller
             control={control}
@@ -267,7 +240,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
           />
         </Grid.Col> */}
 
-        {/* Ngày bắt đầu */}
         <Grid.Col span={4}>
           <Controller
             control={control}

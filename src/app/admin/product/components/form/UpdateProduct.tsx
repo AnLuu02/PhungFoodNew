@@ -18,10 +18,10 @@ import {
   TextInput
 } from '@mantine/core';
 import { ImageType, ProductStatus } from '@prisma/client';
-import { IconFile, IconTag, IconTrash } from '@tabler/icons-react';
+import { IconFile, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingSpiner from '~/app/_components/Loading/LoadingSpiner';
 import { Product } from '~/app/Entity/ProductEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
@@ -67,11 +67,6 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
       materials: []
     }
   });
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
 
   useEffect(() => {
     setLoading(true);
@@ -113,47 +108,55 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
   }, [imageAddition]);
 
   const utils = api.useUtils();
-  const updateMutation = api.Product.update.useMutation();
+  const updateMutation = api.Product.update.useMutation({
+    onSuccess: () => {
+      utils.Product.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Product> = async formData => {
-    if (productId) {
-      const thumbnail_format =
-        formData.thumbnail &&
-        formData.thumbnail instanceof File &&
-        (await Promise.resolve({
-          fileName: formData?.thumbnail?.name || '',
-          base64: (await fileToBase64(formData.thumbnail)) as string
-        }));
-      const images_format =
-        formData.gallery && formData.gallery?.length > 0
-          ? await Promise?.all(
-              formData.gallery?.map(async (image: any) => {
-                return {
-                  fileName: image.name,
-                  base64: (await fileToBase64(image)) as string
-                };
-              })
-            )
-          : [];
+    try {
+      if (productId) {
+        const thumbnail_format =
+          formData.thumbnail &&
+          formData.thumbnail instanceof File &&
+          (await Promise.resolve({
+            fileName: formData?.thumbnail?.name || '',
+            base64: (await fileToBase64(formData.thumbnail)) as string
+          }));
+        const images_format =
+          formData.gallery && formData.gallery?.length > 0
+            ? await Promise?.all(
+                formData.gallery?.map(async (image: any) => {
+                  return {
+                    fileName: image.name,
+                    base64: (await fileToBase64(image)) as string
+                  };
+                })
+              )
+            : [];
 
-      const formDataWithImageUrlAsString = {
-        ...formData,
-        thumbnail: thumbnail_format as any,
-        gallery: images_format as any
-      };
-      let result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
-      if (result.success) {
-        NotifySuccess(result.message);
-        setOpened(false);
-        utils.Product.invalidate();
-      } else {
-        NotifyError(result.message);
+        const formDataWithImageUrlAsString = {
+          ...formData,
+          tag: createTag(formData.name),
+          thumbnail: thumbnail_format as any,
+          gallery: images_format as any
+        };
+        let result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
+        if (result.success) {
+          NotifySuccess(result.message);
+          setOpened(false);
+        } else {
+          NotifyError(result.message);
+        }
       }
+    } catch (error) {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
   return loading ? (
-    <LoadingComponent />
+    <LoadingSpiner />
   ) : (
     <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
       <Grid>
@@ -310,7 +313,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             )}
           />
         </Grid.Col>
-        <Grid.Col span={6}>
+        {/* <Grid.Col span={6}>
           <Controller
             control={control}
             name='tag'
@@ -325,7 +328,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
               />
             )}
           />
-        </Grid.Col>
+        </Grid.Col> */}
         <Grid.Col span={6}>
           <Controller
             name='subCategoryId'

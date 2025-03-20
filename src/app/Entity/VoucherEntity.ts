@@ -3,7 +3,7 @@ import { VoucherType } from '@prisma/client';
 export type Voucher = {
   id: string;
 
-  tag: string;
+  tag?: string;
 
   name: string;
 

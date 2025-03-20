@@ -1,13 +1,168 @@
 'use client';
 
-import { ActionIcon, Button, Modal, Title } from '@mantine/core';
+import { ActionIcon, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
+import * as XLSX from 'xlsx';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
+import { formatDataExcel } from '~/app/lib/utils/func-handler/FormatDataExcel';
+import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
 import CreatePermission from './form/CreatePermissions';
 import UpdatePermission from './form/UpdatePermissions';
+const mapFields: Record<string, string> = {
+  Quyền: 'name'
+};
 
+export function CreateManyPermissionButton() {
+  const [data, setData] = useState<any[]>([]);
+  const [opened, setOpened] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const utils = api.useUtils();
+
+  const resetFileInput = () => {
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  };
+  const importMutation = api.RolePermission.createManyPermission.useMutation({
+    onSuccess: data => {
+      if (data.success) {
+        NotifySuccess(data.message);
+        utils.RolePermission.invalidate();
+      } else {
+        NotifyError(data.message);
+      }
+      setOpened(false);
+      setData([]);
+      setLoading(false);
+      resetFileInput();
+    },
+    onError: error => {
+      setLoading(false);
+      NotifyError('Import thất bại! Sai định dạng dữ liệu.');
+    }
+  });
+
+  const handleFileUpload = async (file: File) => {
+    const allowedExtensions = ['xlsx', 'xls'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+      resetFileInput();
+      return NotifyError('Định dạng file không hợp lệ. Vui lòng chọn file Excel (.xlsx, .xls)');
+    }
+
+    try {
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: 'buffer' });
+
+      const firstSheetName = workbook.SheetNames[0];
+      if (!firstSheetName) {
+        resetFileInput();
+        return NotifyError('Không tìm thấy sheet nào trong file Excel');
+      }
+      const sheet = workbook.Sheets[firstSheetName];
+      if (!sheet) {
+        resetFileInput();
+        return NotifyError('Không thể đọc sheet từ file Excel');
+      }
+      const rows = XLSX.utils.sheet_to_json(sheet);
+      setData(rows);
+      setOpened(true);
+    } catch (error) {
+      resetFileInput();
+      NotifyError('Lỗi khi đọc file. Vui lòng kiểm tra lại.');
+    }
+  };
+
+  const handleImport = async () => {
+    try {
+      setLoading(true);
+      const formatData_: any = formatDataExcel(mapFields, data);
+      await importMutation.mutateAsync({ data: formatData_ });
+    } catch (error) {
+      setLoading(false);
+      NotifyError('Import thất bại! Sai định dạng dữ liệu.');
+    }
+  };
+  const fetchPermission = api.RolePermission.getAllPermission.useQuery();
+  const handleExport = () => {
+    if (!fetchPermission.data || fetchPermission.data.length === 0) {
+      return NotifyError('Không có dữ liệu để xuất.');
+    }
+
+    const exportData = fetchPermission.data.map((item: any) => ({
+      ID: item.id,
+      Quyền: item.name
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Permission');
+
+    XLSX.writeFile(workbook, `Quyền - ${new Date().getTime()}.xlsx`);
+  };
+
+  return (
+    <>
+      <Group>
+        <FileButton disabled={opened} onChange={file => file && handleFileUpload(file)} accept='xlsx,xls'>
+          {props => (
+            <Button disabled={opened} variant='outline' {...props}>
+              Import dữ liệu
+            </Button>
+          )}
+        </FileButton>
+        <Button color={'red'} onClick={handleExport} disabled={fetchPermission?.data?.length === 0}>
+          Export Excel
+        </Button>
+      </Group>
+
+      <Modal
+        size={'xl'}
+        opened={opened}
+        onClose={() => {
+          setOpened(false);
+          resetFileInput();
+        }}
+        title={<Title order={3}>Xem trước dữ liệu</Title>}
+      >
+        <ScrollAreaAutosize mah={480} scrollbarSize={5}>
+          <Table striped highlightOnHover withTableBorder withColumnBorders>
+            <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+              <Table.Tr>
+                <Table.Th>STT</Table.Th>
+                <Table.Th>Quyền</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {data.map((row, index) => (
+                <Table.Tr key={index}>
+                  <Table.Td>{index + 1}</Table.Td>
+                  <Table.Td>{row['Quyền']}</Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
+        </ScrollAreaAutosize>
+        <Group mt='md' align='flex-end' justify='flex-end' w={'100%'}>
+          <Button
+            color='red'
+            onClick={() => {
+              setOpened(false);
+              resetFileInput();
+            }}
+          >
+            Hủy
+          </Button>
+          <Button onClick={handleImport} loading={loading}>
+            Import
+          </Button>
+        </Group>
+      </Modal>
+    </>
+  );
+}
 export function CreatePermissionButton() {
   const [opened, setOpened] = useState(false);
   return (
@@ -38,7 +193,7 @@ export function UpdatePermissionButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật danh mục</Title>}
+        title={<Title order={2}>Cập nhật quyền</Title>}
       >
         <UpdatePermission permissionId={id.toString()} setOpened={setOpened} />
       </Modal>
@@ -55,7 +210,7 @@ export function DeletePermissionButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Danh mục', () => {
+          handleDelete({ id }, deleteMutation, 'quyền', () => {
             untils.RolePermission.invalidate();
           });
         }}

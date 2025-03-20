@@ -21,12 +21,12 @@ const showNotification = ({
     withCloseButton: true,
     autoClose: 2000,
     title: (
-      <Text size='sm' fw={700} c={'black'} w={'max-content'}>
+      <Text size='sm' fw={700} w={'max-content'}>
         {title}
       </Text>
     ),
     message: (
-      <Text size='sm' c={'black'} w={'max-content'}>
+      <Text size='sm' w={'max-content'}>
         {message}
       </Text>
     ),
@@ -37,7 +37,7 @@ const showNotification = ({
   });
 };
 
-export const NotifySuccess = (title = 'Success', message = 'Operation successful!') => {
+export const NotifySuccess = (title = 'Success', message = 'Thao tác thành công./') => {
   showNotification({
     id: 'toast-success',
     title: title,
@@ -46,7 +46,7 @@ export const NotifySuccess = (title = 'Success', message = 'Operation successful
   });
 };
 
-export const NotifyError = (title = 'Error', message = 'An error occurred!') => {
+export const NotifyError = (title = 'Error', message = 'Thao tác thất bại. Hãy thử lại./') => {
   showNotification({
     id: 'toast-error',
     title: title,

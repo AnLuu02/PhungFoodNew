@@ -2,6 +2,7 @@
 
 import { Button, Container, Group, Text, Title } from '@mantine/core';
 import { IconHome } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
@@ -18,11 +19,13 @@ export default function NotFound() {
       <Text size='lg' ta='center' mt='xl'>
         The page you're looking for doesn't exist or has been moved.
       </Text>
-      <Group justify='center' mt='xl'>
-        <Button size='md' leftSection={<IconHome size={20} />} onClick={() => router.push('/')}>
-          Về trang chủ
-        </Button>
-      </Group>
+      <Link href='/'>
+        <Group justify='center' mt='xl'>
+          <Button size='md' leftSection={<IconHome size={20} />}>
+            Về trang chủ
+          </Button>
+        </Group>
+      </Link>
     </Container>
   );
 }

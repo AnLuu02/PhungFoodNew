@@ -72,7 +72,11 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
     fetcher
   );
   const utils = api.useUtils();
-  const mutation = api.User.create.useMutation();
+  const mutation = api.User.create.useMutation({
+    onSuccess: () => {
+      utils.User.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<User> = async formData => {
     try {
@@ -107,7 +111,6 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
-          utils.User.invalidate();
         } else {
           NotifyError(result.message);
         }
@@ -117,7 +120,7 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
     }
   };
 
-  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getRoles.useQuery();
+  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

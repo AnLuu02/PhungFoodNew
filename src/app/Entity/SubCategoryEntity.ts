@@ -5,7 +5,7 @@ export type SubCategory = {
 
   name: string;
 
-  tag: string;
+  tag?: string;
 
   thumbnail?: Image;
 

@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Grid, MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { UserLevel, VoucherType } from '@prisma/client';
-import { IconCalendar, IconTag } from '@tabler/icons-react';
+import { IconCalendar } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Voucher } from '~/app/Entity/VoucherEntity';
@@ -50,16 +50,8 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
     }
   });
 
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
-
   useEffect(() => {
     if (data?.id) {
-      console.log(data?.products?.map(product => product.id));
-
       reset({
         id: data.id,
         tag: data.tag,
@@ -82,15 +74,14 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
   }, [data, reset]);
 
   const utils = api.useUtils();
-  const updateMutation = api.Voucher.update.useMutation();
+  const updateMutation = api.Voucher.update.useMutation({
+    onSuccess: () => {
+      utils.Voucher.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Voucher> = async formData => {
     if (voucherId) {
-      // let result = await updateMutation.mutateAsync({
-      //   ...formData,
-      //   vipLevel: Number(formData.vipLevel) || 0
-      // });
-
       const currentProductIds = data?.products.map(p => p.id) || [];
       const newProductIds = formData.products;
       const productsToConnect = newProductIds.filter(id => !currentProductIds.includes(id)).map(id => ({ id }));
@@ -103,6 +94,7 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
         where: { id: voucherId },
         data: {
           ...formData,
+          tag: createTag(formData.name),
           vipLevel: Number(formData.vipLevel) || 0,
           products: {
             connect: productsToConnect,
@@ -113,7 +105,6 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
-        utils.Voucher.invalidate();
       } else {
         NotifyError(result.message);
       }
@@ -135,25 +126,6 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
                 label='Tên voucher'
                 placeholder='Nhập tên voucher'
                 error={errors.name?.message}
-              />
-            )}
-          />
-        </Grid.Col>
-
-        {/* Tag */}
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                required
-                label='Tag'
-                placeholder='Sẽ tạo tự động'
-                error={errors.tag?.message}
-                readOnly
               />
             )}
           />

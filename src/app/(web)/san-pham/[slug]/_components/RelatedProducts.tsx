@@ -3,7 +3,7 @@
 import { Center, Group, Image, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import Link from 'next/link';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 interface RelatedProduct {
@@ -65,7 +65,7 @@ export function RelatedProducts({ data }: any) {
                 radius='md'
               />
               <div>
-                <Link href={`/san-pham/${product?.tag}`} className='no-underline'>
+                <Link href={`/san-pham/${product?.tag}`}>
                   <Tooltip label={product?.name}>
                     <Text lineClamp={1} size='md' fw={700} className='cursor-pointer text-black hover:text-[#008b4b]'>
                       {product?.name || 'Cá thu'}

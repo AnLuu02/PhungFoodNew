@@ -1,5 +1,5 @@
 import { Text } from '@mantine/core';
-import { hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers';
+import { hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers-calculate';
 
 const DateVoucher = ({ item }: { item: any }) => {
   return hoursRemainingVoucher(item.startDate, item?.endDate)?.type == 'active' ? (

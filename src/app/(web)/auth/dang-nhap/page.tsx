@@ -64,7 +64,7 @@ export default function Page() {
         }
       }
     } catch (error) {
-      NotifyError('Error created Category');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 

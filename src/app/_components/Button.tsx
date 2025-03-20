@@ -51,9 +51,6 @@ const BButton = ({
         active && 'bg-[#008b4b] text-white'
       )}
     >
-      {/*
-        hover:border-[#f8c144],
-        */}
       {title}
     </Button>
   );

@@ -97,10 +97,7 @@ const LayoutCarouselSimple = () => {
             direction={{ base: 'column', sm: 'row', md: 'row' }}
             gap={'md'}
           >
-            <Title
-              order={1}
-              className='cursor-pointer font-quicksand font-bold text-black no-underline hover:text-[#008b4b]'
-            >
+            <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
               Video hướng dẫn
             </Title>
 

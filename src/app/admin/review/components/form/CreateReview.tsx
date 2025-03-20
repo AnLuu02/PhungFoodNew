@@ -33,7 +33,11 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
   const { data: users } = api.User.getAll.useQuery();
 
   const utils = api.useUtils();
-  const mutation = api.Review.create.useMutation();
+  const mutation = api.Review.create.useMutation({
+    onSuccess: () => {
+      utils.Review.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<Review> = async formData => {
     try {
@@ -42,13 +46,10 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
-          utils.Review.invalidate();
-        } else {
-          NotifyError(result.message);
         }
       }
     } catch (error) {
-      NotifyError('Error created Review');
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 

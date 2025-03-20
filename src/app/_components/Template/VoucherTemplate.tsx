@@ -1,8 +1,8 @@
 import { Box, Button, Card, Checkbox, Divider, Flex, Group, Image, Progress, Text, Tooltip } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import clsx from 'clsx';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { allowedVoucher, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { allowedVoucher, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers-calculate';
 import DateVoucher from '../Modals/_components/DateVoucher';
 const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
   return (

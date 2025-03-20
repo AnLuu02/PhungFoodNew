@@ -1,10 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionIcon, Button, FileInput, Grid, GridCol, Image, Select, Textarea, TextInput } from '@mantine/core';
-import { IconFile, IconTag } from '@tabler/icons-react';
+import { IconFile } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import { SubCategory } from '~/app/Entity/SubCategoryEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
@@ -13,8 +13,10 @@ import { subCategorySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCategoryId: string; setOpened: any }) {
-  const queryResult = subCategoryId ? api.SubCategory.getOne.useQuery({ query: subCategoryId || '' }) : { data: null };
-  const { data } = queryResult;
+  const queryResult: any = subCategoryId
+    ? api.SubCategory.getOne.useQuery({ query: subCategoryId || '' })
+    : { data: null };
+  const { data, isLoading: isLoadingDataSubCategory } = queryResult;
   const [loading, setLoading] = useState(false);
 
   const {
@@ -35,12 +37,6 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
       thumbnail: undefined
     }
   });
-
-  const nameValue = watch('name', '');
-  useEffect(() => {
-    const generatedTag = createTag(nameValue);
-    setValue('tag', generatedTag);
-  }, [nameValue, setValue]);
 
   useEffect(() => {
     setLoading(true);
@@ -68,7 +64,11 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
   const { data: categoryData, isLoading } = api.Category.getAll.useQuery();
 
   const utils = api.useUtils();
-  const updateMutation = api.SubCategory.update.useMutation();
+  const updateMutation = api.SubCategory.update.useMutation({
+    onSuccess: () => {
+      utils.SubCategory.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<SubCategory> = async formData => {
     if (subCategoryId) {
@@ -82,18 +82,20 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
           base64: base64 as string
         }
       };
-      let result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
+      let result = await updateMutation.mutateAsync({
+        ...formDataWithImageUrlAsString,
+        tag: createTag(formDataWithImageUrlAsString.name)
+      });
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
-        utils.SubCategory.invalidate();
       } else {
         NotifyError(result.message);
       }
     }
   };
 
-  return loading ? (
+  return isLoadingDataSubCategory || loading ? (
     <LoadingComponent />
   ) : (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -144,24 +146,7 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
                 )}
               />
             </GridCol>
-            <GridCol span={6}>
-              <Controller
-                control={control}
-                name='tag'
-                render={({ field }) => (
-                  <TextInput
-                    {...field}
-                    size='sm'
-                    readOnly
-                    label='Tag'
-                    required
-                    leftSection={<IconTag size={18} stroke={1.5} />}
-                    placeholder='Sẽ tạo tự động'
-                    error={errors.tag?.message}
-                  />
-                )}
-              />
-            </GridCol>
+
             <GridCol span={12}>
               <Controller
                 control={control}

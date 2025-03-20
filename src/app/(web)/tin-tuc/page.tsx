@@ -1,9 +1,9 @@
 import { Box, Center, Flex, Grid, GridCol, Group, Highlight, Image, Paper, Stack, Text } from '@mantine/core';
 import { IconClockHour10 } from '@tabler/icons-react';
 import Link from 'next/link';
-import Search from '~/app/_components/Admin/Search';
 import Empty from '~/app/_components/Empty';
 import CustomPagination from '~/app/_components/Pagination';
+import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 
 const News = async ({
@@ -53,7 +53,7 @@ const News = async ({
                   />
                 </Paper>
                 <Stack gap={5} flex={1}>
-                  <Link href={item.link} target='_blank' className='no-underline'>
+                  <Link href={item.link} target='_blank'>
                     <Highlight highlight={query} size='xl' fw={700} className='text-black hover:text-[#008b4b]'>
                       {item.title}
                     </Highlight>
@@ -94,8 +94,7 @@ const News = async ({
         top={{ base: 0, sm: 70, md: 70, lg: 70 }}
       >
         <Stack gap={'md'}>
-          {/* <GlobalSearch /> */}
-          <Search />
+          <SearchQueryParams />
           <Paper radius={'md'} withBorder className='h-[max-content] border-green-600' mb={20}>
             <Box className='rounded-t-md bg-green-600 p-2 text-white'>
               <Text size='sm' fw={700}>
@@ -105,7 +104,7 @@ const News = async ({
             <Stack gap={'sm'} p={'xs'}>
               {news && news?.length > 0 ? (
                 news?.slice(0, 4).map((item: any) => (
-                  <Link key={item.id} className='h-full w-full no-underline' href={item.link} target='_blank'>
+                  <Link key={item.id} className='h-full w-full' href={item.link} target='_blank'>
                     <Flex gap={'sm'} align={'flex-start'} justify={'flex-start'}>
                       <Paper radius={0} className='overflow-hidden' w={100} h={64}>
                         <Image

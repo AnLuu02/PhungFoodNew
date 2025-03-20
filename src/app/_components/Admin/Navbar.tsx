@@ -10,6 +10,7 @@ import {
   IconLayoutDashboard,
   IconLogout,
   IconMenuOrder,
+  IconSettings,
   IconTicket,
   IconUser
 } from '@tabler/icons-react';
@@ -18,6 +19,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 const navItems = [
   { label: 'Tổng quan', icon: IconLayoutDashboard, href: '/admin' },
+
   {
     label: 'Quản lý doanh thu',
     icon: IconDatabaseDollar,
@@ -54,6 +56,11 @@ const navItems = [
     label: 'Quản lý ảnh',
     icon: IconImageInPicture,
     children: [{ label: 'Ảnh', icon: IconImageInPicture, href: '/admin/images' }]
+  },
+  {
+    label: 'Cài đặt',
+    icon: IconSettings,
+    children: [{ label: 'Nhà hàng', icon: IconImageInPicture, href: '/admin/settings/restaurant' }]
   }
 ];
 
@@ -79,7 +86,7 @@ export default function Navbar() {
                 >
                   {item.children.map(child => (
                     <Box key={child.label} py={'xs'} pl={'md'} w={'100%'}>
-                      <Link key={child.label} href={child.href} className='no-underline hover:text-red-500'>
+                      <Link key={child.label} href={child.href} className='hover:text-red-500'>
                         <Text size='sm' fw={700}>
                           {child.label}
                         </Text>

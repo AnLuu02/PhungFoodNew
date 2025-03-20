@@ -1,4 +1,4 @@
-import { formatDate } from '../format/formatDate';
+import { formatDate } from './formatDate';
 
 export const calculateMoney = (product: any) => {
   return product?.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0);

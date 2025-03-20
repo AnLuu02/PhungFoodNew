@@ -33,7 +33,8 @@ type FilterOptions = {
   newProduct?: boolean;
   hotProduct?: boolean;
   price?: { min?: number; max?: number };
-  sort?: { price?: string; name?: string };
+  sort?: string[];
+  'nguyen-lieu'?: string[];
   'danh-muc'?: string;
   'loai-san-pham'?: string;
 };
@@ -41,15 +42,15 @@ type FilterOptions = {
 const buildSortFilter = (sort: any) => {
   const orderBy: any[] = [];
 
-  if (sort?.price) {
+  if (sort?.includes('price-asc') || sort?.includes('price-desc')) {
     orderBy.push({
-      price: sort.price === 'price-asc' ? 'asc' : 'desc'
+      price: sort.includes('price-asc') ? 'asc' : 'desc'
     });
   }
 
-  if (sort?.name) {
+  if (sort?.includes('name-asc') || sort?.includes('name-desc')) {
     orderBy.push({
-      name: sort.name === 'name-asc' ? 'asc' : 'desc'
+      name: sort.includes('name-asc') ? 'asc' : 'desc'
     });
   }
   return orderBy?.map(item => item).filter(Boolean);
@@ -61,6 +62,8 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
     bestSaler,
     newProduct,
     hotProduct,
+    sort,
+    'nguyen-lieu': nguyenLieu,
     price,
     'danh-muc': danhMuc,
     'loai-san-pham': loaiSanPham
@@ -112,7 +115,24 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
     bestSaler ? { soldQuantity: { gt: 20 } } : undefined,
     newProduct ? { createdAt: { gte: new Date(new Date().setDate(new Date().getDate() - 7)) } } : undefined,
     hotProduct ? { rating: { gte: 4 } } : undefined,
-
+    sort && sort?.length > 0 && sort?.includes('best-seller')
+      ? { soldQuantity: { gt: 20 } }
+      : sort?.includes('old')
+        ? { createdAt: { lte: new Date(new Date().setDate(new Date().getDate() - 7)) } }
+        : sort?.includes('new')
+          ? { createdAt: { gte: new Date(new Date().setDate(new Date().getDate() - 7)) } }
+          : undefined,
+    nguyenLieu && nguyenLieu?.length > 0
+      ? {
+          materials: {
+            some: {
+              tag: {
+                in: nguyenLieu
+              }
+            }
+          }
+        }
+      : undefined,
     price
       ? {
           price: {
@@ -131,12 +151,8 @@ export const productRouter = createTRPCRouter({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
         query: z.string().optional(),
-        sort: z
-          .object({
-            price: z.string().optional(),
-            name: z.string().optional()
-          })
-          .optional(),
+        sort: z.array(z.string()).optional(),
+        'nguyen-lieu': z.array(z.string()).optional(),
         discount: z.boolean().optional(),
         bestSaler: z.boolean().optional(),
         newProduct: z.boolean().optional(),
@@ -163,7 +179,7 @@ export const productRouter = createTRPCRouter({
         bestSaler,
         newProduct,
         hotProduct,
-
+        'nguyen-lieu': nguyenLieu,
         'danh-muc': danhMuc,
         'loai-san-pham': loaiSanPham
       } = input;
@@ -179,6 +195,7 @@ export const productRouter = createTRPCRouter({
           hotProduct,
           price,
           sort,
+          'nguyen-lieu': nguyenLieu,
           'danh-muc': danhMuc,
           'loai-san-pham': loaiSanPham
         },
@@ -212,7 +229,7 @@ export const productRouter = createTRPCRouter({
             review: true,
             favouriteFood: true
           },
-          orderBy: sort ? buildSortFilter(sort) : undefined
+          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort) : undefined
         })
       ]);
       const totalPages = Math.ceil(
@@ -583,6 +600,7 @@ export const productRouter = createTRPCRouter({
                   {
                     tag: query?.trim()
                   },
+
                   {
                     category: {
                       tag: query?.trim()

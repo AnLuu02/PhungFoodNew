@@ -16,9 +16,9 @@ async function CheckoutPage({ params }: { params: { slug: string } }) {
     redirect(`/vnpay-payment-result?error=Không tìm thấy đơn hàng hoặc ngày giao dịch&message=Đơn hàng không tồn tại.`);
   }
 
-  if (order.status === OrderStatus.COMPLETED) {
+  if (order.status !== OrderStatus.PROCESSING && order.status !== OrderStatus.CANCELLED) {
     redirect(
-      `/vnpay-payment-result?orderId=${orderId}&transDate=${formatTransDate(order.transDate || new Date())}&message=Đơn hàng đã được thanh toán`
+      `/vnpay-payment-result?orderId=${orderId}&transDate=${formatTransDate(order.transDate || new Date())}&statusOrder=${order.status}&message=Đơn hàng đã được thanh toán`
     );
   }
   return <CheckoutClient order={order} orderId={orderId} />;

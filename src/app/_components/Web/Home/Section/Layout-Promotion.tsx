@@ -84,24 +84,6 @@ const LayoutPromotion = ({ data }: any) => {
               <ProductCardCarouselHorizontal data={item} key={item.id} />
             </GridCol>
           ))}
-          {/* <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
-            <ProductCardCarouselHorizontal />
-          </GridCol>
-          <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
-            <ProductCardCarouselHorizontal />
-          </GridCol>
-          <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
-            <ProductCardCarouselHorizontal />
-          </GridCol>
-          <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
-            <ProductCardCarouselHorizontal />
-          </GridCol>
-          <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
-            <ProductCardCarouselHorizontal />
-          </GridCol>
-          <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
-            <ProductCardCarouselHorizontal />
-          </GridCol> */}
         </Grid>
       </Flex>
     </Card>

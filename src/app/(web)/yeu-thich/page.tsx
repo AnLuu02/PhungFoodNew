@@ -3,7 +3,7 @@
 import { Grid, GridCol } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import Empty from '~/app/_components/Empty';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
 import { api } from '~/trpc/react';
 

@@ -34,7 +34,7 @@ import {
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import BButton from '~/app/_components/Button';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 
@@ -147,7 +147,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                       Có {product?.totalRating} đánh giá
                     </Text>
                   </Flex>
-                  <Link href={`/san-pham/${product?.tag}`} className='no-underline' onClick={close}>
+                  <Link href={`/san-pham/${product?.tag}`} onClick={close}>
                     <Text
                       fw={700}
                       className='cursor-pointer text-3xl text-black transition-all duration-200 ease-in-out hover:text-[#008b4b]'

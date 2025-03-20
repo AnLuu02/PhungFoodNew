@@ -45,10 +45,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
           direction={{ base: 'column', sm: 'row', md: 'row' }}
           gap={'md'}
         >
-          <Title
-            order={2}
-            className='cursor-pointer font-quicksand font-bold text-black no-underline hover:text-[#008b4b]'
-          >
+          <Title order={2} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
             {title || 'Sản phẩm mới'}
           </Title>
 
@@ -105,7 +102,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
               ))}
             </Carousel>
             <Flex align={'center'} justify={'center'} mt={30}>
-              <Link href={`/thuc-don?filter=san-pham-moi`} className='no-underline'>
+              <Link href={`/thuc-don?filter=san-pham-moi`}>
                 <BButton title={'Xem tất cả'} variant='outline' size='sm' />
               </Link>
             </Flex>

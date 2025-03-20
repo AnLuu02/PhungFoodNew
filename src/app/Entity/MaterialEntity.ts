@@ -3,7 +3,7 @@ export type Material = {
 
   name: string;
 
-  tag: string;
+  tag?: string;
 
   description?: string;
 

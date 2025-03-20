@@ -1,7 +1,6 @@
 import { Button, Checkbox, Grid, GridCol, Popover, Text } from '@mantine/core';
 import { IconSort09 } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
 export const dataSort = [
   {
@@ -35,28 +34,12 @@ export const dataSort = [
   }
 ];
 
-function FilterMenu({ valueSort, setValueSort }: { valueSort: string[]; setValueSort: (value: string[]) => void }) {
+function FilterMenu() {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  useEffect(() => {
-    const query = new URLSearchParams(params);
-    if (valueSort?.length > 0) {
-      const priceQuery = valueSort.find(item => item === 'price-asc' || item === 'price-desc');
-      const nameQuery = valueSort.find(item => item === 'name-asc' || item === 'name-desc');
-
-      if (priceQuery) {
-        query.set('sort-price', priceQuery as string);
-      }
-      if (nameQuery) {
-        query.set('sort-name', nameQuery as string);
-      }
-    } else {
-      query.delete('sort-price');
-      query.delete('sort-name');
-    }
-    router.push(`${pathname}?${query.toString()}`);
-  }, [valueSort]);
+  const query = new URLSearchParams(params);
+  const valueSort = params.getAll('sort') || [];
 
   return (
     <Popover width={250} position='bottom' radius={'md'} arrowSize={10} withArrow shadow='lg'>
@@ -91,16 +74,22 @@ function FilterMenu({ valueSort, setValueSort }: { valueSort: string[]; setValue
                       (category.tag === 'name-asc' && valueSort.includes('name-desc')) ||
                       (category.tag === 'name-desc' && valueSort.includes('name-asc')) ||
                       (category.tag === 'new' && valueSort.includes('old')) ||
-                      (category.tag === 'old' && valueSort.includes('new'))
+                      (category.tag === 'best-seller' && valueSort.includes('old')) ||
+                      (category.tag === 'old' && valueSort.includes('new')) ||
+                      (category.tag === 'best-seller' && valueSort.includes('new')) ||
+                      (category.tag === 'old' && valueSort.includes('best-seller')) ||
+                      (category.tag === 'new' && valueSort.includes('best-seller'))
                     }
                     key={category.tag}
                     label={category.name}
+                    value={category.tag}
                     onChange={event => {
                       if (event.target.checked) {
-                        setValueSort([...valueSort, category.tag]);
+                        query.append('sort', category.tag);
                       } else {
-                        setValueSort(valueSort?.filter(tag => tag !== category.tag));
+                        query.delete('sort', category.tag);
                       }
+                      router.push(`${pathname}?${query.toString()}`);
                     }}
                   />
                 </GridCol>
@@ -114,7 +103,8 @@ function FilterMenu({ valueSort, setValueSort }: { valueSort: string[]; setValue
               size='sm'
               fullWidth
               onClick={() => {
-                setValueSort([]);
+                query.delete('sort');
+                router.push(`${pathname}?${query.toString()}`);
               }}
               color='red'
               className='bg-[#008b4b] text-white transition-all duration-200 ease-in-out hover:bg-[#f8c144] hover:text-black'

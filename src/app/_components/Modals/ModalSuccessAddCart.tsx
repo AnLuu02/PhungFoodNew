@@ -5,7 +5,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/_components/ButtonCheckout';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 interface SuccessModalProps {
@@ -28,7 +28,6 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
       centered
     >
       <div className='relative'>
-        {/* Success Header */}
         <div className='flex items-center gap-2 bg-emerald-600 p-2 text-white'>
           <IconCheck size={24} />
           <Text size='md' fw={700}>
@@ -42,7 +41,6 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
           />
         </div>
 
-        {/* Content */}
         <Stack p='md' gap='md'>
           <Group>
             <div className='relative h-16 w-16'>
@@ -66,7 +64,6 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
             Giỏ hàng của bạn hiện có {cart?.length || 0} sản phẩm
           </Text>
 
-          {/* Actions */}
           <Group grow>
             <Button variant='filled' color='dark' onClick={onClose} radius='sm' size='xs'>
               Tiếp tục mua hàng

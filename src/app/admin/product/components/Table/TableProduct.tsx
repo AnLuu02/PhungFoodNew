@@ -4,29 +4,24 @@ import { ImageType, ProductStatus } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { api } from '~/trpc/react';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
 export default function TableProduct({
   currentPage,
   query,
   limit,
+  data,
   user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  data: any;
   user?: any;
 }) {
-  const { data: result, isLoading } = api.Product.find.useQuery({
-    skip: +currentPage,
-    take: +limit,
-    userRole: 'ADMIN'
-  });
-  const currentItems = result?.products || [];
+  const currentItems = data?.products || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
@@ -115,9 +110,7 @@ export default function TableProduct({
     getCoreRowModel: getCoreRowModel(),
     columnResizeMode: 'onChange'
   });
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Group pb={'lg'}>
         <Menu shadow='md' width={220}>
@@ -181,7 +174,7 @@ export default function TableProduct({
       </Table>
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
-        <CustomPagination totalPages={result?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
     </>
   );

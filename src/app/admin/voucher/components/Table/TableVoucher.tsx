@@ -4,25 +4,24 @@ import { VoucherType } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading';
 import CustomPagination from '~/app/_components/Pagination';
-import { formatPriceLocaleVi } from '~/app/lib/utils/format/formatPrice';
-import { api } from '~/trpc/react';
+import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { DeleteVoucherButton, UpdateVoucherButton } from '../Button';
 
 export default function TableVoucher({
   currentPage,
   query,
+  data,
   limit,
   user
 }: {
   currentPage: string;
   query: string;
   limit: string;
+  data: any;
   user?: any;
 }) {
-  const { data: result, isLoading } = api.Voucher.find.useQuery({ skip: +currentPage, take: +limit, query });
-  const currentItems = result?.vouchers || [];
+  const currentItems = data?.vouchers || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
@@ -119,9 +118,7 @@ export default function TableVoucher({
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel()
   });
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Group pb={'lg'}>
         <Menu shadow='md' width={220}>
@@ -185,7 +182,7 @@ export default function TableVoucher({
       </Table>
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
-        <CustomPagination totalPages={result?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
     </>
   );

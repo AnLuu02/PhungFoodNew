@@ -20,7 +20,7 @@ import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import LoadingComponent from '~/app/_components/Loading';
+import LoadingComponent from '~/app/_components/Loading/Loading';
 import { User } from '~/app/Entity/UserEntity';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
@@ -97,7 +97,11 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
     });
   }, [data, reset]);
   const utils = api.useUtils();
-  const updateMutation = api.User.update.useMutation();
+  const updateMutation = api.User.update.useMutation({
+    onSuccess: () => {
+      utils.User.getAll.invalidate();
+    }
+  });
 
   const onSubmit: SubmitHandler<User> = async formData => {
     if (email) {
@@ -133,14 +137,13 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
-        utils.User.invalidate();
       } else {
         NotifyError(result.message);
       }
     }
   };
 
-  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getRoles.useQuery();
+  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
 
   return loading || isLoading ? (
     <LoadingComponent />

@@ -24,7 +24,10 @@ const Page = async () => {
 
     const materialPromises = materials.map(query => api.Product.find({ skip: 0, take: 10, query }));
 
+    const bannerPromise = api.Restaurant.getOneBanner({ isActive: true });
+
     const [
+      banner,
       anVat,
       monChinh,
       monChay,
@@ -37,12 +40,13 @@ const Page = async () => {
       haiSan,
       rauCu,
       cacLoaiNam
-    ]: any = await Promise.all([...categoryPromises, ...productPromises, ...materialPromises]);
+    ]: any = await Promise.all([bannerPromise, ...categoryPromises, ...productPromises, ...materialPromises]);
 
     return (
       <Box className='w-full' pl={{ base: rem(20), lg: rem(130) }} pr={{ base: rem(20), lg: rem(130) }}>
         <HomeWeb
           data={{
+            banner: banner || {},
             category: {
               anVat: anVat?.subCategories || [],
               monChinh: monChinh?.subCategories || [],
