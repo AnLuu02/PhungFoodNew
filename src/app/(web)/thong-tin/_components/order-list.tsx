@@ -7,8 +7,6 @@ import {
   Card,
   Center,
   Flex,
-  Grid,
-  GridCol,
   Group,
   Progress,
   Table,
@@ -53,38 +51,48 @@ export default function OrderList({ orders, isLoading }: any) {
     <LoadingComponent />
   ) : (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
-      <Grid p={0} mb={'md'}>
-        <GridCol span={{ base: 12, sm: 4, md: 4, lg: 4 }}>
-          <Badge color='green' size='lg' w={'100%'}>
-            <Text ta='center' fw={700} size={'sm'}>
-              <Text component='span' fw={700} mr={5}>
-                {statusObj.completed}
-              </Text>
-              Hoàn thành
+      <Flex wrap={'wrap'} align={'center'} gap={10} mb={'xs'}>
+        <Badge color={getStatusColor(OrderStatus.COMPLETED)} size='lg' w={'max-content'}>
+          <Text ta='center' fw={700} size={'sm'}>
+            <Text component='span' fw={700} mr={5}>
+              {statusObj.completed}
             </Text>
-          </Badge>
-        </GridCol>
-        <GridCol span={{ base: 12, sm: 4, md: 4, lg: 4 }}>
-          <Badge color='yellow.9' size='lg' w={'100%'}>
-            <Text ta='center' fw={700} size={'sm'}>
-              <Text component='span' fw={700} mr={5}>
-                {statusObj.processing}
-              </Text>
-              Đang xử lý
+            Hoàn thành
+          </Text>
+        </Badge>
+        <Badge color={getStatusColor(OrderStatus.PROCESSING)} size='lg' w={'max-content'}>
+          <Text ta='center' fw={700} size={'sm'}>
+            <Text component='span' fw={700} mr={5}>
+              {statusObj.processing}
             </Text>
-          </Badge>
-        </GridCol>
-        <GridCol span={{ base: 12, sm: 4, md: 4, lg: 4 }}>
-          <Badge color='red' size='lg' w={'100%'}>
-            <Text ta='center' fw={700} size={'sm'}>
-              <Text component='span' fw={700} mr={5}>
-                {statusObj.canceled}
-              </Text>
-              Đã hủy
+            Chưa thanh toán
+          </Text>
+        </Badge>
+        <Badge color={getStatusColor(OrderStatus.PENDING)} size='lg' w={'max-content'}>
+          <Text ta='center' fw={700} size={'sm'}>
+            <Text component='span' fw={700} mr={5}>
+              {statusObj.pending}
             </Text>
-          </Badge>
-        </GridCol>
-      </Grid>
+            Chờ xử lý
+          </Text>
+        </Badge>
+        <Badge color={getStatusColor(OrderStatus.DELIVERED)} size='lg' w={'max-content'}>
+          <Text ta='center' fw={700} size={'sm'}>
+            <Text component='span' fw={700} mr={5}>
+              {statusObj.delivered}
+            </Text>
+            Đang giao hàng
+          </Text>
+        </Badge>
+        <Badge color={getStatusColor(OrderStatus.CANCELLED)} size='lg' w={'max-content'}>
+          <Text ta='center' fw={700} size={'sm'}>
+            <Text component='span' fw={700} mr={5}>
+              {statusObj.canceled}
+            </Text>
+            Đã hủy
+          </Text>
+        </Badge>
+      </Flex>
 
       <Text fw={500} mb='xs' size='sm'>
         Tỷ lệ hoàn thành đơn hàng

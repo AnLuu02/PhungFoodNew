@@ -19,6 +19,7 @@ import {
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconClock, IconX } from '@tabler/icons-react';
+import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -116,7 +117,7 @@ export default function SearchComponentClient({ subCategories }: any) {
         wrap={'nowrap'}
         align={'center'}
         gap={5}
-        className='z-[100] mx-auto w-full max-w-6xl px-4'
+        className='z-[100] mx-auto hidden w-full max-w-6xl px-4 md:flex'
         pos={'absolute'}
         bottom={-22}
         left={0}
@@ -125,7 +126,11 @@ export default function SearchComponentClient({ subCategories }: any) {
           subCategories.map((item: any, index: number) => {
             return (
               index < 9 && (
-                <Tooltip key={item.id} label={item.name}>
+                <Tooltip
+                  key={item.id}
+                  label={item.name}
+                  className={clsx('hidden', index < 6 ? 'md:block' : index < 7 ? 'lg:block' : 'xl:block')}
+                >
                   <Link href={`/tim-kiem?s=${encodeURIComponent(item?.name)}`}>
                     <Badge
                       variant='outline'

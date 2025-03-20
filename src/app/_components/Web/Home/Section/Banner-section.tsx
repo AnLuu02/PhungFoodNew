@@ -72,7 +72,13 @@ export default function BannerSection({ banner }: any) {
         </Box>
 
         {/* Right side - Static banners */}
-        <Flex direction='column' align='center' justify='space-between' w={{ base: '100%', lg: '33.333333%' }}>
+        <Flex
+          direction={{ base: 'column', sm: 'row', md: 'row', lg: 'column' }}
+          align='center'
+          justify='space-between'
+          w={{ base: '100%', lg: '33.333333%' }}
+          className='hidden xl:flex'
+        >
           {/* Top banner */}
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
             <Image src={banners?.[0]?.url || '/images/jpg/empty-300x240.jpg'} alt={''} w={'100%'} h='100%' />

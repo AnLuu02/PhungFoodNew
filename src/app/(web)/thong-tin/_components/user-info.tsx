@@ -15,13 +15,13 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Gender, UserLevel } from '@prisma/client';
+import { Gender, OrderStatus, UserLevel } from '@prisma/client';
 import { IconUpload } from '@tabler/icons-react';
 import LoadingComponent from '~/app/_components/Loading/Loading';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
-import { getTotalOrderStatus } from '~/app/lib/utils/func-handler/get-status-order';
+import { getStatusColor, getTotalOrderStatus } from '~/app/lib/utils/func-handler/get-status-order';
 export const mockOrders = [
   { id: '1', date: '2023-05-01', total: 99.99, status: 'completed' },
   { id: '2', date: '2023-05-15', total: 149.99, status: 'processing' },
@@ -68,7 +68,7 @@ export default function UserInfo({ user, isLoading }: any) {
     <LoadingComponent />
   ) : (
     <Grid p={0}>
-      <GridCol span={{ base: 12, sm: 6, md: 6 }}>
+      <GridCol span={{ base: 12, sm: 12, md: 6 }}>
         <Card shadow='lg' padding='lg' radius='md' withBorder>
           <Group mb='xs'>
             <Tooltip label={'Change Avatar'}>
@@ -159,61 +159,51 @@ export default function UserInfo({ user, isLoading }: any) {
           </Grid>
         </Card>
       </GridCol>
-      <GridCol span={{ base: 12, sm: 6, md: 6 }}>
+      <GridCol span={{ base: 12, sm: 12, md: 6 }}>
         <Card shadow='sm' padding='lg' radius='md' withBorder>
           <Stack gap='md'>
-            <Grid p={0} m={0}>
-              <GridCol span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
-                <Badge color='green' size='lg' w={'100%'}>
-                  <Text ta='center' fw={700} size={'sm'}>
-                    <Text component='span' fw={700} mr={5}>
-                      {statusObj.completed}
-                    </Text>
-                    Hoàn thành
+            <Flex wrap={'wrap'} align={'center'} gap={10}>
+              <Badge color={getStatusColor(OrderStatus.COMPLETED)} size='lg' w={'max-content'}>
+                <Text ta='center' fw={700} size={'sm'}>
+                  <Text component='span' fw={700} mr={5}>
+                    {statusObj.completed}
                   </Text>
-                </Badge>
-              </GridCol>
-              <GridCol span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
-                <Badge color='yellow.9' size='lg' w={'100%'}>
-                  <Text ta='center' fw={700} size={'sm'}>
-                    <Text component='span' fw={700} mr={5}>
-                      {statusObj.processing}
-                    </Text>
-                    Chưa thanh toán
+                  Hoàn thành
+                </Text>
+              </Badge>
+              <Badge color={getStatusColor(OrderStatus.PROCESSING)} size='lg' w={'max-content'}>
+                <Text ta='center' fw={700} size={'sm'}>
+                  <Text component='span' fw={700} mr={5}>
+                    {statusObj.processing}
                   </Text>
-                </Badge>
-              </GridCol>
-              <GridCol span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
-                <Badge color='yellow.9' size='lg' w={'100%'}>
-                  <Text ta='center' fw={700} size={'sm'}>
-                    <Text component='span' fw={700} mr={5}>
-                      {statusObj.pending}
-                    </Text>
-                    Chờ xử lý
+                  Chưa thanh toán
+                </Text>
+              </Badge>
+              <Badge color={getStatusColor(OrderStatus.PENDING)} size='lg' w={'max-content'}>
+                <Text ta='center' fw={700} size={'sm'}>
+                  <Text component='span' fw={700} mr={5}>
+                    {statusObj.pending}
                   </Text>
-                </Badge>
-              </GridCol>
-              <GridCol span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
-                <Badge color='yellow.9' size='lg' w={'100%'}>
-                  <Text ta='center' fw={700} size={'sm'}>
-                    <Text component='span' fw={700} mr={5}>
-                      {statusObj.delivered}
-                    </Text>
-                    Đang giao hàng
+                  Chờ xử lý
+                </Text>
+              </Badge>
+              <Badge color={getStatusColor(OrderStatus.DELIVERED)} size='lg' w={'max-content'}>
+                <Text ta='center' fw={700} size={'sm'}>
+                  <Text component='span' fw={700} mr={5}>
+                    {statusObj.delivered}
                   </Text>
-                </Badge>
-              </GridCol>
-              <GridCol span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
-                <Badge color='red' size='lg' w={'100%'}>
-                  <Text ta='center' fw={700} size={'sm'}>
-                    <Text component='span' fw={700} mr={5}>
-                      {statusObj.canceled}
-                    </Text>
-                    Đã hủy
+                  Đang giao hàng
+                </Text>
+              </Badge>
+              <Badge color={getStatusColor(OrderStatus.CANCELLED)} size='lg' w={'max-content'}>
+                <Text ta='center' fw={700} size={'sm'}>
+                  <Text component='span' fw={700} mr={5}>
+                    {statusObj.canceled}
                   </Text>
-                </Badge>
-              </GridCol>
-            </Grid>
+                  Đã hủy
+                </Text>
+              </Badge>
+            </Flex>
 
             <Box>
               <Text fw={700} size='sm' mb='xs'>

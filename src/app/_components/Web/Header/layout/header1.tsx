@@ -10,15 +10,21 @@ import {
   Image,
   Menu,
   rem,
+  Switch,
   Text,
-  UnstyledButton
+  UnstyledButton,
+  useComputedColorScheme,
+  useMantineColorScheme
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import {
   IconChevronDown,
   IconClock,
+  IconLighter,
   IconLogout,
+  IconMoon,
   IconShoppingBag,
+  IconSun,
   IconUser,
   IconUserCircle,
   IconWorld
@@ -33,6 +39,8 @@ export const Header1 = ({ restaurant }: any) => {
     key: 'vouchers',
     defaultValue: []
   });
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
   const { data: user } = useSession();
   const [langue, setLangue] = useLocalStorage<any>({ key: 'langue', defaultValue: 'vn' });
   return (
@@ -86,6 +94,7 @@ export const Header1 = ({ restaurant }: any) => {
           ) : (
             ''
           )}
+
           <Menu position='bottom-end' shadow='md'>
             <Menu.Target>
               <ActionIcon variant='subtle' color='gray.0' radius='xl'>
@@ -150,6 +159,19 @@ export const Header1 = ({ restaurant }: any) => {
                 </UnstyledButton>
               </Menu.Target>
               <Menu.Dropdown className='bg-[#f8c144]'>
+                <Group fw={500} pl={'xs'}>
+                  <IconLighter fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                  <Switch
+                    size='md'
+                    label={<Text size='sm'>Chế độ nền</Text>}
+                    labelPosition='left'
+                    onChange={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+                    onLabel={<IconSun style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
+                    offLabel={<IconMoon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
+                  />
+                </Group>
+
+                <Divider />
                 <Link href={`/thong-tin`} className='text-white'>
                   <Menu.Item
                     fw={500}
@@ -209,13 +231,6 @@ export const Header1 = ({ restaurant }: any) => {
             </Group>
           )}
         </Group>
-        {/* <Switch
-              size='md'
-              color='dark.4'
-              onChange={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-              onLabel={<IconSun style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
-              offLabel={<IconMoon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
-            /> */}
       </Group>
     </Flex>
   );
