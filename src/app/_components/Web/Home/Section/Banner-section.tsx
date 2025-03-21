@@ -21,7 +21,7 @@ export default function BannerSection({ banner }: any) {
       } else {
         embla.scrollTo(0);
       }
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(autoplay);
   }, [embla]);
