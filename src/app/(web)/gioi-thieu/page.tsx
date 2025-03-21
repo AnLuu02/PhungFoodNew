@@ -3,12 +3,17 @@ import {
   AccordionControl,
   AccordionItem,
   AccordionPanel,
+  BackgroundImage,
   Box,
   Button,
   Card,
   Center,
+  Flex,
+  Grid,
+  GridCol,
   Group,
   Image,
+  Overlay,
   Paper,
   SimpleGrid,
   Text,
@@ -16,6 +21,8 @@ import {
   Title
 } from '@mantine/core';
 import { IconChefHat, IconMail, IconMapPin, IconPhone, IconStar } from '@tabler/icons-react';
+import Link from 'next/link';
+import BButton from '~/app/_components/Button';
 import ProductCardCarouselHorizontal from '~/app/_components/Web/Home/_Components/ProductCardCarouselHorizontal';
 import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
 import { api } from '~/trpc/server';
@@ -30,18 +37,27 @@ export default async function AboutPage() {
   ]);
   const dataProduct: any = productBestSaller.products || [];
   return (
-    <Box>
-      <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-        <Title order={1} size='h1' style={{ color: '#2e7d32' }}>
-          Chào mừng đến với Hương Vị Sài Gòn Mama Reastaurant
-        </Title>
-        <Text size='xl' mt='xl' style={{ color: '#33691e' }}>
-          Trải nghiệm hương vị đích thực của miền Tây Việt Nam và hơn thế nữa!
-        </Text>
-        <Button size='lg' mt='xl' style={{ backgroundColor: '#f9a825', color: '#000' }}>
-          Xem thực đơn
-        </Button>
-      </div>
+    <Box pos={'relative'}>
+      <BackgroundImage
+        src='/images/banner/banner_about.jpg'
+        style={{ textAlign: 'center', padding: '4rem 0' }}
+        radius={'md'}
+        pos={'relative'}
+      >
+        <Flex direction={'column'} pos={'relative'} align={'center'} justify={'center'} className='z-10' gap={'md'}>
+          <Title order={1} size='h1' c={'white'}>
+            Chào mừng đến với Hương Vị Sài Gòn Mama Reastaurant
+          </Title>
+          <Text size='xl' my='xl' c={'white'}>
+            Trải nghiệm hương vị đích thực của miền Tây Việt Nam và hơn thế nữa!
+          </Text>
+
+          <Link href={'/thuc-don'}>
+            <BButton size='lg' w={'max-content'} title={'Xem thực đơn'} radius='md' />
+          </Link>
+        </Flex>
+        <Overlay opacity={0.5} color='#000' zIndex={1} radius='md' />
+      </BackgroundImage>
 
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' mt={50}>
         <div>
@@ -110,12 +126,19 @@ export default async function AboutPage() {
         <AccordionItem value='western'>
           <AccordionControl>Đặc sản miền Tây Việt Nam</AccordionControl>
           <AccordionPanel>
-            {mienTay?.products && mienTay?.products?.length > 0 ? (
-              <SimpleGrid cols={5}>
-                {mienTay?.products?.map((item: any, index: number) => {
-                  return <ProductCardCarouselVertical product={item} key={index} />;
+            {(mienTay?.products && mienTay?.products?.length > 0) ||
+            (mienNam?.products && mienNam?.products?.length > 0) ? (
+              <Grid>
+                {[...mienTay?.products, ...mienNam.products]?.map((item: any, index: number) => {
+                  return (
+                    index < 3 && (
+                      <GridCol span={{ base: 12, md: 6, lg: 3 }} key={index}>
+                        <ProductCardCarouselVertical product={item} key={index} />
+                      </GridCol>
+                    )
+                  );
                 })}
-              </SimpleGrid>
+              </Grid>
             ) : (
               <Center>
                 <Text size='sm' c={'dimmed'}>
@@ -129,11 +152,17 @@ export default async function AboutPage() {
           <AccordionControl>Món ngon miền Bắc</AccordionControl>
           <AccordionPanel>
             {mienBac?.products && mienBac?.products?.length > 0 ? (
-              <SimpleGrid cols={5}>
+              <Grid>
                 {mienBac?.products?.map((item: any, index: number) => {
-                  return <ProductCardCarouselVertical product={item} key={index} />;
+                  return (
+                    index < 3 && (
+                      <GridCol span={{ base: 12, md: 6, lg: 3 }} key={index}>
+                        <ProductCardCarouselVertical product={item} key={index} />
+                      </GridCol>
+                    )
+                  );
                 })}
-              </SimpleGrid>
+              </Grid>
             ) : (
               <Center>
                 <Text size='sm' c={'dimmed'}>
@@ -147,11 +176,17 @@ export default async function AboutPage() {
           <AccordionControl>Miền Trung Việt Nam Được Yêu Thích</AccordionControl>
           <AccordionPanel>
             {mienTrung?.products && mienTrung?.products?.length > 0 ? (
-              <SimpleGrid cols={5}>
+              <Grid>
                 {mienTrung?.products?.map((item: any, index: number) => {
-                  return <ProductCardCarouselVertical product={item} key={index} />;
+                  return (
+                    index < 3 && (
+                      <GridCol span={{ base: 12, md: 6, lg: 3 }} key={index}>
+                        <ProductCardCarouselVertical product={item} key={index} />
+                      </GridCol>
+                    )
+                  );
                 })}
-              </SimpleGrid>
+              </Grid>
             ) : (
               <Center>
                 <Text size='sm' c={'dimmed'}>

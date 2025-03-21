@@ -125,18 +125,18 @@ export default function SearchComponentClient({ subCategories }: any) {
         {subCategories &&
           subCategories.map((item: any, index: number) => {
             return (
-              index < 9 && (
+              index < 8 && (
                 <Tooltip
                   key={item.id}
                   label={item.name}
-                  className={clsx('hidden', index < 6 ? 'md:block' : index < 7 ? 'lg:block' : 'xl:block')}
+                  className={clsx('hidden', index < 5 ? 'md:block' : index < 6 ? 'lg:block' : 'xl:block')}
                 >
                   <Link href={`/tim-kiem?s=${encodeURIComponent(item?.name)}`}>
                     <Badge
                       variant='outline'
-                      color='gray.5'
+                      color='gray.6'
                       key={index}
-                      size='xs'
+                      size='sm'
                       className='cursor-pointer hover:opacity-70'
                     >
                       {item.name}

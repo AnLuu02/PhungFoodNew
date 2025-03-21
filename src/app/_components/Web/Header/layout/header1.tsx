@@ -16,7 +16,7 @@ import {
   useComputedColorScheme,
   useMantineColorScheme
 } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import {
   IconChevronDown,
   IconClock,
@@ -32,6 +32,7 @@ import {
 import clsx from 'clsx';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { breakpoints } from '~/app/lib/utils/constants/device';
 
 export const Header1 = ({ restaurant }: any) => {
   const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -41,6 +42,7 @@ export const Header1 = ({ restaurant }: any) => {
   });
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
   const { data: user } = useSession();
   const [langue, setLangue] = useLocalStorage<any>({ key: 'langue', defaultValue: 'vn' });
   return (
@@ -55,9 +57,9 @@ export const Header1 = ({ restaurant }: any) => {
       justify={{ base: 'flex-start', sm: 'space-between', md: 'space-between' }}
       className='z-[100] text-white'
     >
-      <Center w={{ sm: '30%', lg: 'max-content' }}>
+      <Center py={{ base: 'md' }}>
         <Text size='sm' lineClamp={2}>
-          Chào mừng bạn đến với Phụng Food!
+          <b>Phụng Food!</b> xin chào quý khách !!!
         </Text>
       </Center>
 
@@ -77,7 +79,7 @@ export const Header1 = ({ restaurant }: any) => {
             className={clsx(langue === 'us' ? '' : 'cursor-pointer')}
           />
         </Group> */}
-        <Group gap='md'>
+        <Group gap='md' align={'center'} justify='center'>
           {restaurant?.openedHours && restaurant?.closedHours ? (
             <Button
               size='xs'

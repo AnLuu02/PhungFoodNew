@@ -93,7 +93,13 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
   ) : (
     <Box>
       <Grid>
-        <Grid.Col span={{ base: 12, sm: 6, md: 6 }} pl={0} pos={'sticky'} top={70} className='h-fit'>
+        <Grid.Col
+          span={{ base: 12, sm: 6, md: 6 }}
+          pl={0}
+          pos={isMobile ? 'relative' : 'sticky'}
+          top={isMobile ? 0 : 70}
+          className='h-fit'
+        >
           <ProductImage
             thumbnail={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             gallery={
@@ -282,6 +288,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
         )}
 
         <Grid.Col
+          mt={{ base: 'md', sm: 0 }}
           span={{
             base: 12,
             sm: hintProducts?.length > 0 ? 7 : 12,

@@ -53,7 +53,12 @@ export default function MyOrderPage() {
 
   return (
     <Grid gutter='md'>
-      <Grid.Col span={{ base: 12, md: 4, lg: 4 }} className='h-fit' pos={'sticky'} top={70}>
+      <Grid.Col
+        span={{ base: 12, md: 4, lg: 4 }}
+        className='h-fit'
+        pos={{ base: 'relative', lg: 'sticky' }}
+        top={{ base: 0, lg: 70 }}
+      >
         <Paper withBorder shadow='sm' p='md' className='h-full'>
           <Title order={3} className='mb-4 font-quicksand'>
             Thống kê nhanh

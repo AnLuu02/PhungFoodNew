@@ -136,8 +136,8 @@ export default function ShoppingCart() {
       <GridCol
         span={{ base: 12, md: 4 }}
         className='h-fit'
-        pos={'sticky'}
-        top={70}
+        pos={isMobile ? 'relative' : 'sticky'}
+        top={isMobile ? 0 : 70}
         order={{ base: 1, sm: 2, md: 2, lg: 2 }}
       >
         <RecapCart order={cart} loading={false} paymentMethod={''} type={'cart'} />

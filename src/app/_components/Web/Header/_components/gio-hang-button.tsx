@@ -13,7 +13,7 @@ import {
   Stack,
   Text
 } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -23,6 +23,7 @@ import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { CartItemFastMenu } from '../../Home/_Components/CartItemFastMenu';
 
 const CartButton = () => {
+  const notDesktop = useMediaQuery(`(max-width: 1023px)`);
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
   const updateQuantity = (id: number, quantity: number) => {
@@ -40,6 +41,7 @@ const CartButton = () => {
       shadow='md'
       width={350}
       trigger='hover'
+      disabled={notDesktop}
       transitionProps={{ transition: 'fade-down', duration: 300, exitDelay: 300, enterDelay: 300 }}
     >
       <Menu.Target>

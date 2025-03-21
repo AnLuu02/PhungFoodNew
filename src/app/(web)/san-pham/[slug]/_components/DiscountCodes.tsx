@@ -7,7 +7,6 @@ import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
 
 export function DiscountCodes() {
-  const [checked, setChecked] = useState(false);
   const [openDetail, setOpenDetail] = useState<any>({});
 
   return (
@@ -31,7 +30,7 @@ export function DiscountCodes() {
         <Grid mt='md'>
           {mockPromotions?.length > 0 &&
             mockPromotions.map(promo => (
-              <GridCol span={4} key={promo.id}>
+              <GridCol span={{ base: 12, sm: 6, md: 6, lg: 4 }} key={promo.id}>
                 <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
               </GridCol>
             ))}

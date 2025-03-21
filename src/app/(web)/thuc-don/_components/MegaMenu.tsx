@@ -102,7 +102,7 @@ export function MegaMenu({ categories }: any) {
         <ScrollAreaAutosize mih={'50vh'} className='flex-1' scrollbarSize={5}>
           {categories?.length > 0 &&
             categories?.map((item: any) => (
-              <Tabs.Panel value={item.tag}>
+              <Tabs.Panel value={item.tag} key={item.id}>
                 <Box p={'lg'}>
                   <Box mb={'xs'} className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
                     {item?.subCategory?.map((category: any) => (
@@ -143,7 +143,7 @@ export function MegaMenu({ categories }: any) {
                     <Grid>
                       {bestSellerProducts?.length > 0 ? (
                         bestSellerProducts?.map((product: any) => (
-                          <GridCol span={3}>
+                          <GridCol span={3} key={product.id}>
                             <Link key={product.id} href='#'>
                               <Stack gap={0}>
                                 <Paper
