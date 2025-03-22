@@ -51,7 +51,7 @@ export const favouriteFoodRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string(),
+        s: z.string(),
         hasReview: z.boolean().optional(),
         hasUser: z.boolean().optional(),
         hasCategory: z.boolean().optional(),
@@ -62,15 +62,15 @@ export const favouriteFoodRouter = createTRPCRouter({
       const favourite_food = await ctx.db.favouriteFood.findMany({
         where: {
           OR: [
-            { id: input.query?.trim() },
+            { id: input.s?.trim() },
             {
               product: {
                 OR: [
                   {
-                    tag: input.query?.trim()
+                    tag: input.s?.trim()
                   },
                   {
-                    name: input.query?.trim()
+                    name: input.s?.trim()
                   }
                 ]
               }
@@ -79,10 +79,10 @@ export const favouriteFoodRouter = createTRPCRouter({
               user: {
                 OR: [
                   {
-                    email: input.query?.trim()
+                    email: input.s?.trim()
                   },
                   {
-                    name: input.query?.trim()
+                    name: input.s?.trim()
                   }
                 ]
               }

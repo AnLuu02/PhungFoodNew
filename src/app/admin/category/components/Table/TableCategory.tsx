@@ -6,30 +6,18 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';
 
-export default function TableCategory({
-  currentPage,
-  data,
-  query,
-  limit,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  data: any;
-  limit: string;
-  user: any;
-}) {
+export default function TableCategory({ data, s, user }: { s: string; data: any; user: any }) {
   const currentItems = data?.categories || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
       accessorKey: 'name',
-      cell: info => <Highlight highlight={query}>{info.row.original.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
     },
     {
       header: 'Mô tả',
       accessorKey: 'description',
-      cell: info => <Highlight highlight={query}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Ngày tạo',

@@ -5,46 +5,6 @@ import { ImageType } from '@prisma/client';
 import Link from 'next/link';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
-
-interface RelatedProduct {
-  id: number;
-  name: string;
-  price: number;
-  originalPrice: number;
-  image: string;
-}
-
-const relatedProducts: RelatedProduct[] = [
-  {
-    id: 1,
-    name: 'Hành Tây',
-    price: 120000,
-    originalPrice: 145000,
-    image: '/images/hanh-tay.png'
-  },
-  {
-    id: 2,
-    name: 'Bún Gạo Khô',
-    price: 89000,
-    originalPrice: 99000,
-    image: '/images/bun-gao.png'
-  },
-  {
-    id: 3,
-    name: 'Bún Gạo Huyết Rồng',
-    price: 37000,
-    originalPrice: 42000,
-    image: '/images/bun-huyet-rong.png'
-  },
-  {
-    id: 4,
-    name: 'Miến Dong',
-    price: 85000,
-    originalPrice: 90000,
-    image: '/images/mien-dong.png'
-  }
-];
-
 export function RelatedProducts({ data }: any) {
   return (
     <Paper radius='md' withBorder h={400} pos={'sticky'} top={50} right={0} mt={{ base: 50, sm: 0, md: 0, lg: 0 }}>

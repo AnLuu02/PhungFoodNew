@@ -30,10 +30,10 @@ import { api } from '~/trpc/server';
 export default async function AboutPage() {
   const [productBestSaller, mienTay, mienBac, mienTrung, mienNam] = await Promise.all([
     api.Product.find({ bestSaler: true, take: 4, skip: 0 }),
-    api.Product.find({ query: 'mien-tay', take: 4, skip: 0 }),
-    api.Product.find({ query: 'mien-bac', take: 4, skip: 0 }),
-    api.Product.find({ query: 'mien-trung', take: 4, skip: 0 }),
-    api.Product.find({ query: 'mien-nam', take: 4, skip: 0 })
+    api.Product.find({ s: 'mien-tay', take: 4, skip: 0 }),
+    api.Product.find({ s: 'mien-bac', take: 4, skip: 0 }),
+    api.Product.find({ s: 'mien-trung', take: 4, skip: 0 }),
+    api.Product.find({ s: 'mien-nam', take: 4, skip: 0 })
   ]);
   const dataProduct: any = productBestSaller.products || [];
   return (

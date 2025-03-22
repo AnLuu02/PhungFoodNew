@@ -11,29 +11,29 @@ export const paymentRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalPayments, totalPaymentsQuery, payments] = await ctx.db.$transaction([
         ctx.db.payment.count(),
         ctx.db.payment.count({
           where: {
-            name: { contains: query, mode: 'insensitive' }
+            name: { contains: s, mode: 'insensitive' }
           }
         }),
         ctx.db.payment.findMany({
           skip: startPageItem,
           take,
           where: {
-            name: { contains: query, mode: 'insensitive' }
+            name: { contains: s, mode: 'insensitive' }
           }
         })
       ]);
       const totalPages = Math.ceil(
-        query ? (totalPaymentsQuery == 0 ? 1 : totalPaymentsQuery / take) : totalPayments / take
+        s ? (totalPaymentsQuery == 0 ? 1 : totalPaymentsQuery / take) : totalPayments / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
       return {
@@ -103,13 +103,13 @@ export const paymentRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const payment = await ctx.db.payment.findMany({
         where: {
-          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
+          OR: [{ id: { contains: input.s, mode: 'insensitive' } }]
         }
       });
       if (!payment) {
@@ -120,13 +120,13 @@ export const paymentRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const payment = await ctx.db.payment.findFirst({
         where: {
-          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
+          OR: [{ id: { contains: input.s, mode: 'insensitive' } }]
         }
       });
       if (!payment) {

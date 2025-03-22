@@ -10,11 +10,11 @@ export const notificationRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalNotifications, totalNotificationsQuery, notifications] = await ctx.db.$transaction([
@@ -23,20 +23,20 @@ export const notificationRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                title: { contains: query?.trim(), mode: 'insensitive' }
+                title: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                message: { contains: query?.trim(), mode: 'insensitive' }
+                message: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
                 user: {
                   some: {
                     OR: [
                       {
-                        name: { contains: query?.trim(), mode: 'insensitive' }
+                        name: { contains: s?.trim(), mode: 'insensitive' }
                       },
                       {
-                        email: { contains: query?.trim(), mode: 'insensitive' }
+                        email: { contains: s?.trim(), mode: 'insensitive' }
                       }
                     ]
                   }
@@ -51,20 +51,20 @@ export const notificationRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                title: { contains: query?.trim(), mode: 'insensitive' }
+                title: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                message: { contains: query?.trim(), mode: 'insensitive' }
+                message: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
                 user: {
                   some: {
                     OR: [
                       {
-                        name: { contains: query?.trim(), mode: 'insensitive' }
+                        name: { contains: s?.trim(), mode: 'insensitive' }
                       },
                       {
-                        email: { contains: query?.trim(), mode: 'insensitive' }
+                        email: { contains: s?.trim(), mode: 'insensitive' }
                       }
                     ]
                   }
@@ -84,7 +84,7 @@ export const notificationRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalNotificationsQuery == 0 ? 1 : totalNotificationsQuery / take) : totalNotifications / take
+        s?.trim() ? (totalNotificationsQuery == 0 ? 1 : totalNotificationsQuery / take) : totalNotifications / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -118,25 +118,25 @@ export const notificationRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!input.query?.trim()) return [];
+      if (!input.s?.trim()) return [];
 
       const notification = await ctx.db.notification.findMany({
         where: {
           OR: [
-            { id: input.query?.trim() },
+            { id: input.s?.trim() },
             {
               user: {
                 some: {
                   OR: [
                     {
-                      id: input.query?.trim()
+                      id: input.s?.trim()
                     },
                     {
-                      email: input.query?.trim()
+                      email: input.s?.trim()
                     }
                   ]
                 }
@@ -160,14 +160,14 @@ export const notificationRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string(),
+        s: z.string(),
         isRead: z.boolean().optional()
       })
     )
     .query(async ({ ctx, input }) => {
       const notification = await ctx.db.notification.findFirst({
         where: {
-          OR: [{ id: { equals: input.query?.trim() } }, { ...(input.isRead ? { isRead: input.isRead } : undefined) }]
+          OR: [{ id: { equals: input.s?.trim() } }, { ...(input.isRead ? { isRead: input.isRead } : undefined) }]
         },
         include: {
           user: {

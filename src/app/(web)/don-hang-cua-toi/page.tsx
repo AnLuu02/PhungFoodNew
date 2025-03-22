@@ -31,7 +31,7 @@ import { default as Empty } from '../../_components/Empty';
 
 export default function MyOrderPage() {
   const { data: user } = useSession();
-  const { data, isLoading } = api.Order.getFilter.useQuery({ query: user?.user?.email || '' });
+  const { data } = api.Order.getFilter.useQuery({ s: user?.user?.email || '' });
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const orders = data ?? [];
   const filteredOrders = selectedStatus

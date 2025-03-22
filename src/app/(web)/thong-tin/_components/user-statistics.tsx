@@ -37,7 +37,7 @@ export const userVIPLevel = 'Vàng';
 export default function UserStatistics() {
   const [selectedYear, setSelectedYear] = useState('2025');
   const { data: user } = useSession();
-  const { data: userDb, isLoading: isLoadingUserDb } = api.User.getOne.useQuery({ query: user?.user?.email || '' });
+  const { data: userDb, isLoading: isLoadingUserDb } = api.User.getOne.useQuery({ s: user?.user?.email || '' });
   const { data: revenue, isLoading } = api.Revenue.getTotalSpentInMonthByUser.useQuery({
     userId: user?.user?.id || '',
     year: Number(selectedYear) || 2025

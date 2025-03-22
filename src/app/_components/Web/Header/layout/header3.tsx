@@ -99,7 +99,7 @@ const Header3 = ({ categories, subCategories }: any) => {
         </Menu>
       </Group>
 
-      <NavigationHeader categories={categories} opened={opened} toggle={toggle} close={close} />
+      <NavigationHeader categories={categories} opened={opened} close={close} />
     </Flex>
   );
 };

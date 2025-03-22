@@ -14,7 +14,6 @@ import {
   Text,
   Tooltip
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { Gender, OrderStatus, UserLevel } from '@prisma/client';
 import { IconUpload } from '@tabler/icons-react';
 import LoadingComponent from '~/app/_components/Loading/Loading';
@@ -40,20 +39,6 @@ const mockUser = {
 };
 
 export default function UserInfo({ user, isLoading }: any) {
-  const [opened, { open, close }] = useDisclosure(false);
-  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      mockUser.avatar = imageUrl;
-      close();
-      open();
-    }
-  };
-  const getVIPProgress = (userDb: any) => {
-    return (userDb?.pointLevel || 0) * 100;
-  };
-
   const mockOrders =
     user?.order?.map((order: any) => ({
       id: order.id,
@@ -77,7 +62,7 @@ export default function UserInfo({ user, isLoading }: any) {
                 <Flex className='absolute inset-0 hidden cursor-pointer group-hover:block group-hover:bg-[rgba(0,0,0,0.4)]'>
                   <Center className='h-full w-full' component='label'>
                     <IconUpload size={24} stroke={1.5} color='white' />
-                    <input type='file' hidden accept='image/*' onChange={handleAvatarChange} />
+                    <input type='file' hidden accept='image/*' />
                   </Center>
                 </Flex>
               </Box>

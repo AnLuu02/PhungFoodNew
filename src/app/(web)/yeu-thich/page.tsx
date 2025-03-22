@@ -9,7 +9,7 @@ import { api } from '~/trpc/react';
 
 export default function FavouritePage() {
   const { data: user } = useSession();
-  const { data, isLoading } = api.FavouriteFood.getFilter.useQuery({ query: user?.user?.email || '' });
+  const { data, isLoading } = api.FavouriteFood.getFilter.useQuery({ s: user?.user?.email || '' });
   const favourite_food = data ?? [];
 
   return (

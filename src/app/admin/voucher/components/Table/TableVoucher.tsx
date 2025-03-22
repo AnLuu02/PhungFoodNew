@@ -8,19 +8,7 @@ import CustomPagination from '~/app/_components/Pagination';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { DeleteVoucherButton, UpdateVoucherButton } from '../Button';
 
-export default function TableVoucher({
-  currentPage,
-  query,
-  data,
-  limit,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  limit: string;
-  data: any;
-  user?: any;
-}) {
+export default function TableVoucher({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.vouchers || [];
   const columns: ColumnDef<any>[] = [
     {
@@ -31,7 +19,7 @@ export default function TableVoucher({
     {
       header: 'Mô tả',
       accessorKey: 'description',
-      cell: info => <Highlight highlight={query}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Hình thức',

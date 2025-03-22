@@ -8,7 +8,7 @@ import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
 const CartItem = ({ item, index }: any) => {
-  const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const updateQuantity = (id: number, quantity: number) => {
     setCart(items => items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item)));
   };

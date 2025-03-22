@@ -8,25 +8,25 @@ export const imageRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalImages, totalImagesQuery, images] = await ctx.db.$transaction([
         ctx.db.image.count(),
         ctx.db.image.count({
           where: {
-            altText: { contains: query?.trim(), mode: 'insensitive' }
+            altText: { contains: s?.trim(), mode: 'insensitive' }
           }
         }),
         ctx.db.image.findMany({
           skip: startPageItem,
           take,
           where: {
-            altText: { contains: query?.trim(), mode: 'insensitive' }
+            altText: { contains: s?.trim(), mode: 'insensitive' }
           },
           include: {
             product: {
@@ -53,7 +53,7 @@ export const imageRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalImagesQuery == 0 ? 1 : totalImagesQuery / take) : totalImages / take
+        s?.trim() ? (totalImagesQuery == 0 ? 1 : totalImagesQuery / take) : totalImages / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 

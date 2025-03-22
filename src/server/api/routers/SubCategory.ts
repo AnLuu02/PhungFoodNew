@@ -13,11 +13,11 @@ export const subCategoryRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalSubCategory, totalSubCategoryQuery, subCategories] = await ctx.db.$transaction([
         ctx.db.subCategory.count(),
@@ -25,17 +25,17 @@ export const subCategoryRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
                 category: {
-                  tag: { contains: query?.trim(), mode: 'insensitive' }
+                  tag: { contains: s?.trim(), mode: 'insensitive' }
                 }
               }
             ]
@@ -47,17 +47,17 @@ export const subCategoryRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
                 category: {
-                  tag: { contains: query?.trim(), mode: 'insensitive' }
+                  tag: { contains: s?.trim(), mode: 'insensitive' }
                 }
               }
             ]
@@ -78,7 +78,7 @@ export const subCategoryRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / take) : totalSubCategory / take
+        s?.trim() ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / take) : totalSubCategory / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -278,13 +278,13 @@ export const subCategoryRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const subCategory = await ctx.db.subCategory.findMany({
         where: {
-          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
+          OR: [{ id: { contains: input.s, mode: 'insensitive' } }]
         }
       });
 
@@ -293,25 +293,25 @@ export const subCategoryRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const subCategory = await ctx.db.subCategory.findFirst({
         where: {
           OR: [
-            { id: input.query?.trim() },
+            { id: input.s?.trim() },
             {
-              tag: input.query?.trim()
+              tag: input.s?.trim()
             },
             {
               category: {
                 OR: [
                   {
-                    tag: input.query?.trim()
+                    tag: input.s?.trim()
                   },
                   {
-                    name: input.query?.trim()
+                    name: input.s?.trim()
                   }
                 ]
               }

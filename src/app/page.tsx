@@ -14,7 +14,7 @@ const Page = async () => {
       { key: 'hotProduct', value: true }
     ];
 
-    const categoryPromises = categories.map(query => api.SubCategory.find({ skip: 0, take: 10, query }));
+    const categoryPromises = categories.map(s => api.SubCategory.find({ skip: 0, take: 10, s }));
 
     const productPromises = productFilters.map(filter =>
       api.Product.find({ skip: 0, take: 10, [filter.key]: filter.value })
@@ -22,7 +22,7 @@ const Page = async () => {
 
     const materials = ['thit-tuoi', 'hai-san', 'rau-cu', 'cac-loai-nam'];
 
-    const materialPromises = materials.map(query => api.Product.find({ skip: 0, take: 10, query }));
+    const materialPromises = materials.map(s => api.Product.find({ skip: 0, take: 10, s }));
 
     const bannerPromise = api.Restaurant.getOneBanner({ isActive: true });
 

@@ -10,18 +10,18 @@ export default async function OrderManagementPage({
   searchParams
 }: {
   searchParams?: {
-    query?: string;
+    s?: string;
     page?: string;
     limit?: string;
   };
 }) {
-  const query = searchParams?.query || '';
+  const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.Order.getAll();
   const user = await getServerSession(authOptions);
-  const data = await api.Order.find({ skip: +currentPage, take: +limit, query });
-  const orderProcessing = await api.Order.getFilter({ query: OrderStatus.PENDING });
+  const data = await api.Order.find({ skip: +currentPage, take: +limit, s });
+  const orderProcessing = await api.Order.getFilter({ s: OrderStatus.PENDING });
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
       <Title mb='xs' className='font-quicksand'>
@@ -36,7 +36,7 @@ export default async function OrderManagementPage({
         </Group>
       </Group>
 
-      <TableOrder data={data} currentPage={currentPage} query={query} limit={limit} user={user} />
+      <TableOrder data={data} s={s} user={user} />
     </Card>
   );
 }

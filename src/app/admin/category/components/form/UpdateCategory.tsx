@@ -10,7 +10,7 @@ import { categorySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateCategory({ categoryId, setOpened }: { categoryId: string; setOpened: any }) {
-  const queryResult = categoryId ? api.Category.getOne.useQuery({ query: categoryId || '' }) : { data: null };
+  const queryResult = categoryId ? api.Category.getOne.useQuery({ s: categoryId || '' }) : { data: null };
   const { data } = queryResult;
 
   const {

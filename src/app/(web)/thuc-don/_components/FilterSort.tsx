@@ -38,7 +38,7 @@ function FilterMenu() {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const query = new URLSearchParams(params);
+  const s = new URLSearchParams(params);
   const valueSort = params.getAll('sort') || [];
 
   return (
@@ -85,11 +85,11 @@ function FilterMenu() {
                     value={category.tag}
                     onChange={event => {
                       if (event.target.checked) {
-                        query.append('sort', category.tag);
+                        s.append('sort', category.tag);
                       } else {
-                        query.delete('sort', category.tag);
+                        s.delete('sort', category.tag);
                       }
-                      router.push(`${pathname}?${query.toString()}`);
+                      router.push(`${pathname}?${s.toString()}`);
                     }}
                   />
                 </GridCol>
@@ -103,8 +103,8 @@ function FilterMenu() {
               size='sm'
               fullWidth
               onClick={() => {
-                query.delete('sort');
-                router.push(`${pathname}?${query.toString()}`);
+                s.delete('sort');
+                router.push(`${pathname}?${s.toString()}`);
               }}
               color='red'
               className='bg-[#008b4b] text-white transition-all duration-200 ease-in-out hover:bg-[#f8c144] hover:text-black'

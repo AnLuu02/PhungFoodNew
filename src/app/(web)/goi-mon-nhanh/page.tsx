@@ -2,13 +2,6 @@ import { Grid, GridCol } from '@mantine/core';
 import { api } from '~/trpc/server';
 import QuickCart from './components/quick-cart';
 import QuickMenu from './components/quick-menu';
-interface CartItemType {
-  id: number;
-  name: string;
-  image: string;
-  price: number;
-  quantity: number;
-}
 
 const FastMenu = async ({
   searchParams

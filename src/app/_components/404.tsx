@@ -3,11 +3,8 @@
 import { Button, Container, Group, Text, Title } from '@mantine/core';
 import { IconHome } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 export default function NotFound() {
-  const router = useRouter();
-
   return (
     <Container size={420} my={40}>
       <Title ta='center' className='text-9xl font-extrabold'>

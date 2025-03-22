@@ -215,7 +215,7 @@ export function SendMessageAllUserOrderButton({ orderProcessing }: any) {
 export function SendMessageOrderButton({ id }: any) {
   const [loading, setLoading] = useState(false);
   const { data, isLoading } = api.Order.getFilter.useQuery({
-    query: OrderStatus.PROCESSING
+    s: OrderStatus.PROCESSING
   });
 
   const userIds = (data || [])?.map((item: any) => item?.user?.id) || [];

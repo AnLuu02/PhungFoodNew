@@ -9,17 +9,17 @@ export default async function PaymentManagementPage({
   searchParams
 }: {
   searchParams?: {
-    query?: string;
+    s?: string;
     page?: string;
     limit?: string;
   };
 }) {
-  const query = searchParams?.query || '';
+  const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.Payment.getAll();
   const user = await getServerSession(authOptions);
-  const data = await api.Payment.find({ skip: +currentPage, take: +limit, query });
+  const data = await api.Payment.find({ skip: +currentPage, take: +limit, s });
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -36,7 +36,7 @@ export default async function PaymentManagementPage({
         </Group>
       </Group>
 
-      <TablePayment data={data} currentPage={currentPage} query={query} limit={limit} user={user} />
+      <TablePayment data={data} s={s} user={user} />
     </Card>
   );
 }

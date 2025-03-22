@@ -15,7 +15,7 @@ export default function ForgotPassword() {
   const [opened, { open, close }] = useDisclosure();
 
   const requestPasswordReset = api.User.requestPasswordReset.useMutation({
-    onSuccess: data => {
+    onSuccess: () => {
       setLoading(false);
       open();
     },

@@ -12,17 +12,17 @@ export const orderRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalOrders, totalOrdersQuery, orders] = await ctx.db.$transaction([
         ctx.db.order.count(),
         ctx.db.order.count({
-          where: query?.trim()
+          where: s?.trim()
             ? {
                 OR: [
                   {
@@ -30,13 +30,13 @@ export const orderRouter = createTRPCRouter({
                       OR: [
                         {
                           name: {
-                            contains: query?.trim(),
+                            contains: s?.trim(),
                             mode: 'insensitive'
                           }
                         },
                         {
                           tag: {
-                            contains: query?.trim(),
+                            contains: s?.trim(),
                             mode: 'insensitive'
                           }
                         }
@@ -48,13 +48,13 @@ export const orderRouter = createTRPCRouter({
                       OR: [
                         {
                           name: {
-                            contains: query?.trim(),
+                            contains: s?.trim(),
                             mode: 'insensitive'
                           }
                         },
                         {
                           email: {
-                            contains: query?.trim(),
+                            contains: s?.trim(),
                             mode: 'insensitive'
                           }
                         }
@@ -63,7 +63,7 @@ export const orderRouter = createTRPCRouter({
                   },
                   {
                     total: {
-                      equals: Number(query?.trim()) || 0
+                      equals: Number(s?.trim()) || 0
                     }
                   }
                 ]
@@ -73,7 +73,7 @@ export const orderRouter = createTRPCRouter({
         ctx.db.order.findMany({
           skip: startPageItem,
           take,
-          where: query?.trim()
+          where: s?.trim()
             ? {
                 OR: [
                   {
@@ -81,13 +81,13 @@ export const orderRouter = createTRPCRouter({
                       OR: [
                         {
                           name: {
-                            contains: query?.trim(),
+                            contains: s?.trim(),
                             mode: 'insensitive'
                           }
                         },
                         {
                           tag: {
-                            contains: query?.trim(),
+                            contains: s?.trim(),
                             mode: 'insensitive'
                           }
                         }
@@ -97,14 +97,14 @@ export const orderRouter = createTRPCRouter({
                   {
                     user: {
                       name: {
-                        contains: query?.trim(),
+                        contains: s?.trim(),
                         mode: 'insensitive'
                       }
                     }
                   },
                   {
                     total: {
-                      equals: Number(query?.trim()) || 0
+                      equals: Number(s?.trim()) || 0
                     }
                   }
                 ]
@@ -132,7 +132,7 @@ export const orderRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalOrdersQuery == 0 ? 1 : totalOrdersQuery / take) : totalOrders / take
+        s?.trim() ? (totalOrdersQuery == 0 ? 1 : totalOrdersQuery / take) : totalOrders / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -259,7 +259,7 @@ export const orderRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
@@ -267,12 +267,12 @@ export const orderRouter = createTRPCRouter({
         where: {
           OR: [
             {
-              id: input.query?.trim()
+              id: input.s?.trim()
             },
             {
               user: {
                 email: {
-                  contains: input.query?.trim(),
+                  contains: input.s?.trim(),
                   mode: 'insensitive'
                 }
               }
@@ -310,7 +310,7 @@ export const orderRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
@@ -318,12 +318,12 @@ export const orderRouter = createTRPCRouter({
         where: {
           OR: [
             {
-              id: input.query?.trim()
+              id: input.s?.trim()
             },
             {
               user: {
                 email: {
-                  contains: input.query?.trim(),
+                  contains: input.s?.trim(),
                   mode: 'insensitive'
                 }
               }

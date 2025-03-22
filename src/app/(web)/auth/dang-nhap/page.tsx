@@ -31,7 +31,6 @@ export default function Page() {
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const {
     control,
-    getValues,
     handleSubmit,
     formState: { errors, isSubmitting }
   } = useForm({

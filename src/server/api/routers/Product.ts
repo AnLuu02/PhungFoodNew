@@ -27,7 +27,7 @@ export async function updatePointLevel(ctx: any, userId: string, orderTotal: num
 }
 
 type FilterOptions = {
-  query?: string;
+  s?: string;
   discount?: boolean;
   bestSaler?: boolean;
   newProduct?: boolean;
@@ -57,7 +57,7 @@ const buildSortFilter = (sort: any) => {
 };
 const buildFilter = (input: FilterOptions, userRole: any) => {
   const {
-    query,
+    s,
     discount,
     bestSaler,
     newProduct,
@@ -88,25 +88,25 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
           }
         }
       : undefined,
-    query
+    s
       ? {
           OR: [
             {
               materials: {
                 some: {
-                  category: { equals: query?.trim() }
+                  category: { equals: s?.trim() }
                 }
               }
             },
             {
               tags: {
-                has: query?.trim()
+                has: s?.trim()
               }
             },
-            { name: { contains: query?.trim(), mode: 'insensitive' } },
-            { subCategory: { tag: { equals: query?.trim() } } },
+            { name: { contains: s?.trim(), mode: 'insensitive' } },
+            { subCategory: { tag: { equals: s?.trim() } } },
             {
-              region: { contains: query?.trim(), mode: 'insensitive' }
+              region: { contains: s?.trim(), mode: 'insensitive' }
             }
           ]
         }
@@ -150,7 +150,7 @@ export const productRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional(),
+        s: z.string().optional(),
         sort: z.array(z.string()).optional(),
         'nguyen-lieu': z.array(z.string()).optional(),
         discount: z.boolean().optional(),
@@ -172,7 +172,7 @@ export const productRouter = createTRPCRouter({
       const {
         skip,
         take,
-        query,
+        s,
         sort,
         price,
         discount,
@@ -188,7 +188,7 @@ export const productRouter = createTRPCRouter({
 
       const filter = buildFilter(
         {
-          query,
+          s,
           discount,
           bestSaler,
           newProduct,
@@ -233,7 +233,7 @@ export const productRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query || danhMuc || loaiSanPham || sort || discount || price
+        s || danhMuc || loaiSanPham || sort || discount || price
           ? totalProductsQuery == 0
             ? 1
             : totalProductsQuery / take
@@ -568,7 +568,7 @@ export const productRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string().optional(),
+        s: z.string().optional(),
         hasCategory: z.boolean().default(false).optional(),
         hasCategoryChild: z.boolean().default(false).optional(),
         hasReview: z.boolean().default(false).optional(),
@@ -576,7 +576,7 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { query, hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
+      const { s, hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
       const product = await ctx.db.product.findMany({
         where: {
           ...(userRole && userRole != UserRole.CUSTOMER
@@ -585,12 +585,12 @@ export const productRouter = createTRPCRouter({
                 status: ProductStatus.ACTIVE
               }),
           OR: [
-            { id: query?.trim() },
-            { tag: query?.trim() },
+            { id: s?.trim() },
+            { tag: s?.trim() },
             {
               materials: {
                 some: {
-                  category: query?.trim()
+                  category: s?.trim()
                 }
               }
             },
@@ -598,12 +598,12 @@ export const productRouter = createTRPCRouter({
               subCategory: {
                 OR: [
                   {
-                    tag: query?.trim()
+                    tag: s?.trim()
                   },
 
                   {
                     category: {
-                      tag: query?.trim()
+                      tag: s?.trim()
                     }
                   }
                 ]
@@ -636,7 +636,7 @@ export const productRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string(),
+        s: z.string(),
         hasCategory: z.boolean().default(false).optional(),
         hasCategoryChild: z.boolean().default(false).optional(),
         hasReview: z.boolean().default(false).optional(),
@@ -645,7 +645,7 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { query, hasCategory, hasCategoryChild, hasReview, hasUser, userRole }: any = input;
+      const { s, hasCategory, hasCategoryChild, hasReview, hasUser, userRole }: any = input;
 
       const product = await ctx.db.product.findFirst({
         where: {
@@ -655,7 +655,7 @@ export const productRouter = createTRPCRouter({
                 status: ProductStatus.ACTIVE
               }),
 
-          OR: [{ id: { equals: query } }, { tag: { equals: query?.trim() } }]
+          OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
         },
         include: {
           images: true,

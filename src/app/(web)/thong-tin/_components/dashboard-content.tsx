@@ -21,9 +21,9 @@ export default function DashboardContent() {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const { data, isLoading } =
     activeTab === 'user-info'
-      ? api.User.getOne.useQuery({ query: user?.user?.email || '', hasOrders: true })
+      ? api.User.getOne.useQuery({ s: user?.user?.email || '', hasOrders: true })
       : activeTab === 'orders'
-        ? api.Order.getFilter.useQuery({ query: user?.user?.email || '' })
+        ? api.Order.getFilter.useQuery({ s: user?.user?.email || '' })
         : api.Voucher.getFilter.useQuery({
             applyAllProduct: true,
             someLevel: getValueLevelUser(user?.user?.details?.level || UserLevel.BRONZE)

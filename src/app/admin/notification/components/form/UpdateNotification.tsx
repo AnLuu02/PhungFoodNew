@@ -12,9 +12,7 @@ import { api } from '~/trpc/react';
 export default function UpdateNotification({ notificationId, setOpened }: { notificationId: string; setOpened: any }) {
   const { data: user, isLoading: isLoadingUser } = api.User.getAll.useQuery();
 
-  const queryResult = notificationId
-    ? api.Notification.getOne.useQuery({ query: notificationId || '' })
-    : { data: null };
+  const queryResult = notificationId ? api.Notification.getOne.useQuery({ s: notificationId || '' }) : { data: null };
   const { data } = queryResult;
 
   const {

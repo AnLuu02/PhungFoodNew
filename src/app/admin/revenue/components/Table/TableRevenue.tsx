@@ -7,23 +7,23 @@ import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { api } from '~/trpc/react';
 
-export default function TableRevenue({ query }: { query: string }) {
+export default function TableRevenue({ s }: { s: string }) {
   const { data: revenues, isLoading } =
-    query === 'user' ? api.Revenue.getRevenueByUser.useQuery() : api.Revenue.getRevenueByDate.useQuery();
+    s === 'user' ? api.Revenue.getRevenueByUser.useQuery() : api.Revenue.getRevenueByDate.useQuery();
   const currentItems = revenues || [];
 
   const columns: ColumnDef<any>[] = [
     {
-      header: query === 'user' ? 'Người dùng' : query === 'date' ? 'Ngày' : query === 'month' ? 'Tháng' : 'Năm',
-      accessorKey: query === 'user' ? 'user.name' : 'createdAt',
+      header: s === 'user' ? 'Người dùng' : s === 'date' ? 'Ngày' : s === 'month' ? 'Tháng' : 'Năm',
+      accessorKey: s === 'user' ? 'user.name' : 'createdAt',
       cell: info => {
-        if (query === 'user') {
+        if (s === 'user') {
           return info.getValue();
         }
         const date = info.row.original.date;
         const month = info.row.original.month;
         const year = info.row.original.year;
-        return query === 'date' ? `${date}/${month}/${year}` : query === 'month' ? `${month}/${year}` : `${year}`;
+        return s === 'date' ? `${date}/${month}/${year}` : s === 'month' ? `${month}/${year}` : `${year}`;
       }
     },
     {

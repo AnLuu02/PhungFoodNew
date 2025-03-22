@@ -10,13 +10,13 @@ function FilterPriceMenu() {
   const router = useRouter();
   const pathname = usePathname();
   const handleApply = () => {
-    const query = new URLSearchParams(params);
+    const s = new URLSearchParams(params);
     if (valuePrice?.length > 0 && (valuePrice[0] !== 20000 || valuePrice[1] !== 200000)) {
-      query.set('price', valuePrice?.join('-'));
+      s.set('price', valuePrice?.join('-'));
     } else {
-      query.delete('price');
+      s.delete('price');
     }
-    router.push(`${pathname}?${query.toString()}`);
+    router.push(`${pathname}?${s.toString()}`);
   };
   return (
     <Popover width={250} position='bottom' radius={'md'} arrowSize={10} withArrow shadow='lg'>

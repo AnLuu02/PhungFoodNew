@@ -13,13 +13,13 @@ import { ButtonCheckout } from './ButtonCheckout';
 import CartItemPayment from './CartItemPayment';
 
 const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
-  const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [seletedVouchers, setSelectedVouchers, resetSelectedVouchers] = useLocalStorage<any[]>({
     key: 'vouchers',
     defaultValue: []
   });
 
-  const { data, isLoading } = api.Voucher.getAll.useQuery();
+  const { data } = api.Voucher.getAll.useQuery();
 
   const [showVoucher, setShowVoucher] = useState(false);
 

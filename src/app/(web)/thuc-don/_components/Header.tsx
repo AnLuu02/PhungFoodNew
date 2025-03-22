@@ -29,7 +29,7 @@ export default function HeaderSearchResults({ products }: any) {
           Sản phẩm
         </Title>
       </Group>
-      <Text c='dimmed'>
+      <Text c='dimmed' fw={600}>
         Tìm thấy{' '}
         <Text span fw={500}>
           {products?.length || 0}

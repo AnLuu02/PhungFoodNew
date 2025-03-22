@@ -13,9 +13,7 @@ import { subCategorySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCategoryId: string; setOpened: any }) {
-  const queryResult: any = subCategoryId
-    ? api.SubCategory.getOne.useQuery({ query: subCategoryId || '' })
-    : { data: null };
+  const queryResult: any = subCategoryId ? api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }) : { data: null };
   const { data, isLoading: isLoadingDataSubCategory } = queryResult;
   const [loading, setLoading] = useState(false);
 

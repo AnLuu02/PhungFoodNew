@@ -6,31 +6,19 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { DeleteReviewButton, UpdateReviewButton } from '../Button';
 
-export default function TableReview({
-  currentPage,
-  query,
-  data,
-  limit,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  data: any;
-  limit: string;
-  user?: any;
-}) {
+export default function TableReview({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.reviews || [];
 
   const columns: ColumnDef<any>[] = [
     {
       header: 'Khách hàng',
       accessorKey: 'user.name',
-      cell: info => <Highlight highlight={query}>{info.row.original.user.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.user.name}</Highlight>
     },
     {
       header: 'Sản phẩm',
       accessorKey: 'product.name',
-      cell: info => <Highlight highlight={query}>{info.row.original.product.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.product.name}</Highlight>
     },
     {
       header: 'Đánh giá',
@@ -40,7 +28,7 @@ export default function TableReview({
     {
       header: 'Bình luận',
       accessorKey: 'comment',
-      cell: info => <Highlight highlight={query}>{info.row.original.comment}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.comment}</Highlight>
     },
     {
       header: 'Ngày tạo',

@@ -9,10 +9,10 @@ const PageSizeSelector = () => {
   const limit = params.get('limit') || '3';
 
   const handlePageSizeChange = (value: string | null) => {
-    const query = new URLSearchParams(params);
-    query.delete('limit');
-    query.set('limit', value ?? '3');
-    const url = `${pathname}?${query.toString()}`;
+    const s = new URLSearchParams(params);
+    s.delete('limit');
+    s.set('limit', value ?? '3');
+    const url = `${pathname}?${s.toString()}`;
     router.push(url);
   };
 

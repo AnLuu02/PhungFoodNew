@@ -6,25 +6,13 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
-export default function TableSubCategory({
-  currentPage,
-  query,
-  data,
-  limit,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  limit: string;
-  data: any;
-  user?: any;
-}) {
+export default function TableSubCategory({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.subCategories || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
       accessorKey: 'name',
-      cell: info => <Highlight highlight={query}>{info.row.original.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
     },
     {
       header: 'Ảnh',
@@ -36,12 +24,12 @@ export default function TableSubCategory({
     {
       header: 'Thuộc loại',
       accessorKey: 'category.name',
-      cell: info => <Highlight highlight={query}>{info.row.original.category.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.category.name}</Highlight>
     },
     {
       header: 'Mô tả',
       accessorKey: 'description',
-      cell: info => <Highlight highlight={query}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Ngày tạo',

@@ -237,7 +237,7 @@ export default function VoiceSearchModal() {
             )}
           </Stack>
 
-          <Link href={`/tim-kiem?s=${state.transcript}`}>
+          <Link href={`/thuc-don?s=${state.transcript}`}>
             <Button
               fullWidth
               size='md'

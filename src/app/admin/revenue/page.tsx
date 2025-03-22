@@ -35,16 +35,16 @@ export default function RevenueManagementPage({
         </Tabs.List>
 
         <Tabs.Panel value='user'>
-          <TableRevenue query={tab} />
+          <TableRevenue s={tab} />
         </Tabs.Panel>
         <Tabs.Panel value='date'>
-          <TableRevenue query={tab} />
+          <TableRevenue s={tab} />
         </Tabs.Panel>
         <Tabs.Panel value='month'>
-          <TableRevenue query={tab} />
+          <TableRevenue s={tab} />
         </Tabs.Panel>
         <Tabs.Panel value='year'>
-          <TableRevenue query={tab} />
+          <TableRevenue s={tab} />
         </Tabs.Panel>
       </Tabs>
     </Card>

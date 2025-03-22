@@ -64,10 +64,10 @@ function HeaderMenu({ isLoading, products }: { isLoading: boolean; products: any
                     <IconX
                       size={16}
                       onClick={() => {
-                        const query = new URLSearchParams(params);
-                        query.delete('sort', tag);
-                        query.delete('nguyen-lieu', tag);
-                        router.push(`${pathname}?${query.toString()}`);
+                        const s = new URLSearchParams(params);
+                        s.delete('sort', tag);
+                        s.delete('nguyen-lieu', tag);
+                        router.push(`${pathname}?${s.toString()}`);
                       }}
                     />
                   }

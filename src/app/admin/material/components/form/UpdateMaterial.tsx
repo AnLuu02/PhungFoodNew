@@ -11,7 +11,7 @@ import { api } from '~/trpc/react';
 import { categories } from './CreateMaterial';
 
 export default function UpdateMaterial({ materialId, setOpened }: { materialId: string; setOpened: any }) {
-  const queryResult = materialId ? api.Material.getOne.useQuery({ query: materialId || '' }) : { data: null };
+  const queryResult = materialId ? api.Material.getOne.useQuery({ s: materialId || '' }) : { data: null };
   const { data } = queryResult;
 
   const {

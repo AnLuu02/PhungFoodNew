@@ -9,6 +9,7 @@ import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
 import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { api } from '~/trpc/react';
+import HeaderSearchResults from './_components/Header';
 import HeaderMenu from './_components/HeaderMenu';
 
 const MenuSection = ({
@@ -16,7 +17,7 @@ const MenuSection = ({
 }: {
   searchParams?: {
     tag?: string;
-    query?: string;
+    s?: string;
     sort?: any;
     price?: string;
     'nguyen-lieu'?: any;
@@ -33,7 +34,7 @@ const MenuSection = ({
     sort: (searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort])?.filter(
       Boolean
     ),
-    query: searchParams?.tag || searchParams?.query,
+    s: searchParams?.tag || searchParams?.s,
     'nguyen-lieu': (searchParams?.['nguyen-lieu'] && Array.isArray(searchParams?.['nguyen-lieu'])
       ? searchParams?.['nguyen-lieu']
       : [searchParams?.['nguyen-lieu']]
@@ -49,12 +50,13 @@ const MenuSection = ({
       max: Number(searchParams?.price?.split(',')[1]) || undefined
     }
   });
-  const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
   const data = foderItems?.products || [];
 
   return (
     <Box pos={'relative'}>
+      <HeaderSearchResults products={data} />
       <HeaderMenu isLoading={isLoading} products={data} />
       <Flex direction={'column'} align={'flex-start'}>
         {isLoading ? (

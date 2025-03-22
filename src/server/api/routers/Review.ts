@@ -8,29 +8,29 @@ export const reviewRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalReviews, totalReviewsQuery, reviews] = await ctx.db.$transaction([
         ctx.db.review.count(),
         ctx.db.review.count({
-          where: query?.trim()
+          where: s?.trim()
             ? {
                 OR: [
                   {
                     comment: {
-                      contains: query?.trim(),
+                      contains: s?.trim(),
                       mode: 'insensitive'
                     }
                   },
                   {
                     user: {
                       name: {
-                        contains: query?.trim(),
+                        contains: s?.trim(),
                         mode: 'insensitive'
                       }
                     }
@@ -38,7 +38,7 @@ export const reviewRouter = createTRPCRouter({
                   {
                     product: {
                       name: {
-                        contains: query?.trim(),
+                        contains: s?.trim(),
                         mode: 'insensitive'
                       }
                     }
@@ -50,19 +50,19 @@ export const reviewRouter = createTRPCRouter({
         ctx.db.review.findMany({
           skip: startPageItem,
           take,
-          where: query?.trim()
+          where: s?.trim()
             ? {
                 OR: [
                   {
                     comment: {
-                      contains: query?.trim(),
+                      contains: s?.trim(),
                       mode: 'insensitive'
                     }
                   },
                   {
                     user: {
                       name: {
-                        contains: query?.trim(),
+                        contains: s?.trim(),
                         mode: 'insensitive'
                       }
                     }
@@ -70,7 +70,7 @@ export const reviewRouter = createTRPCRouter({
                   {
                     product: {
                       name: {
-                        contains: query?.trim(),
+                        contains: s?.trim(),
                         mode: 'insensitive'
                       }
                     }
@@ -101,7 +101,7 @@ export const reviewRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalReviewsQuery == 0 ? 1 : totalReviewsQuery / take) : totalReviews / take
+        s?.trim() ? (totalReviewsQuery == 0 ? 1 : totalReviewsQuery / take) : totalReviews / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -193,13 +193,13 @@ export const reviewRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const review = await ctx.db.review.findMany({
         where: {
-          OR: [{ id: { equals: input.query?.trim() } }, { productId: { equals: input.query?.trim() } }]
+          OR: [{ id: { equals: input.s?.trim() } }, { productId: { equals: input.s?.trim() } }]
         },
         include: {
           user: {

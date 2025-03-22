@@ -14,16 +14,8 @@ export const formatBytes = (bytes: number) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
-export default function ListImage({
-  currentPage,
-  query,
-  limit
-}: {
-  currentPage: string;
-  query: string;
-  limit: string;
-}) {
-  const { data: result, isLoading } = api.Image.find.useQuery({ skip: +currentPage, take: +limit, query });
+export default function ListImage({ currentPage, s, limit }: { currentPage: string; s: string; limit: string }) {
+  const { data: result, isLoading } = api.Image.find.useQuery({ skip: +currentPage, take: +limit, s });
   const currentItems = result?.images || [];
   const [imageUrls, setImageUrls] = useState<any[]>([]);
   const [showfullImage, setShowfullImage] = useState<any>('');

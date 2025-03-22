@@ -9,7 +9,7 @@ import { reviewSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateReview({ reviewId, setOpened }: { reviewId: string; setOpened: any }) {
-  const queryResult = reviewId ? api.Review.getFilter.useQuery({ query: reviewId || '' }) : { data: null };
+  const queryResult = reviewId ? api.Review.getFilter.useQuery({ s: reviewId || '' }) : { data: null };
   const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: 'ADMIN' });
   const { data: users } = api.User.getAll.useQuery();
   const { data } = queryResult;

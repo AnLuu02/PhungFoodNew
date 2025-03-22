@@ -28,7 +28,7 @@ import { api } from '~/trpc/react';
 import OrderItemForm from './OrderItemForm';
 
 export default function UpdateOrder({ orderId, setOpened }: { orderId: string; setOpened: any }) {
-  const { data, isLoading } = orderId ? api.Order.getOne.useQuery({ query: orderId || '' }) : {};
+  const { data, isLoading } = orderId ? api.Order.getOne.useQuery({ s: orderId || '' }) : {};
   const {
     control,
     handleSubmit,

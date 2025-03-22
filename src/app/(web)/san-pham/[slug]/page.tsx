@@ -48,16 +48,16 @@ import { ShippingInfo } from './_components/ShippingInfo';
 import classes from './_components/TabsStyles.module.css';
 export default function ProductDetail({ params }: { params: { slug: string } }) {
   const { data, isLoading } = api.Product.getOne.useQuery({
-    query: params.slug || '',
+    s: params.slug || '',
     hasCategory: true,
     hasCategoryChild: true
   });
   const product: any = data || {};
-  const { data: dataRelatedProducts, isLoading: isLoadingRelated } = api.Product.getFilter.useQuery({
-    query: product?.subCategory?.tag || ''
+  const { data: dataRelatedProducts } = api.Product.getFilter.useQuery({
+    s: product?.subCategory?.tag || ''
   });
-  const { data: dataHintProducts, isLoading: isLoadingHint } = api.Product.getFilter.useQuery({
-    query: product?.subCategory?.category?.tag || ''
+  const { data: dataHintProducts } = api.Product.getFilter.useQuery({
+    s: product?.subCategory?.category?.tag || ''
   });
   const relatedProducts = dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [];
   const hintProducts = dataHintProducts?.filter((item: any) => item.id !== product?.id) || [];

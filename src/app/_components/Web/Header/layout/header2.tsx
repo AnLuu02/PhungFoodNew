@@ -27,22 +27,6 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
             <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={250} h={80} p={0} />
           </Center>
         </Link>
-        {/* <Group gap={10} className='hidden xl:flex'>
-          <ActionIcon variant='outline' color='green' radius='xl' size={'xl'}>
-            <IconPhone color='green' />
-          </ActionIcon>
-          <Stack gap={0}>
-            <Text size='xs' c={'dimmed'} fw={600}>
-              Số điện thoại đường dây nóng
-            </Text>
-            <Text size='xl' c={'green.9'} className='font-bold'>
-              0123456789
-            </Text>
-          </Stack>
-        </Group>
-        <Group gap={10} className='hidden xl:flex'>
-          <ImageSearchModal />
-        </Group> */}
         <Box w={{ base: '100%', md: 400, lg: 550 }}>
           <SearchComponentClient subCategories={subCategories} />
         </Box>

@@ -29,7 +29,7 @@ import { userSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateUser({ email, setOpened }: { email: string; setOpened: any }) {
-  const queryResult = email ? api.User.getOne.useQuery({ query: email || '' }) : { data: null };
+  const queryResult = email ? api.User.getOne.useQuery({ s: email || '' }) : { data: null };
   const { data } = queryResult;
   const [loading, setLoading] = useState(false);
 

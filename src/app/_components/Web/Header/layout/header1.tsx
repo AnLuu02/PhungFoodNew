@@ -16,7 +16,7 @@ import {
   useComputedColorScheme,
   useMantineColorScheme
 } from '@mantine/core';
-import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { useLocalStorage } from '@mantine/hooks';
 import {
   IconChevronDown,
   IconClock,
@@ -32,7 +32,6 @@ import {
 import clsx from 'clsx';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { breakpoints } from '~/app/lib/utils/constants/device';
 
 export const Header1 = ({ restaurant }: any) => {
   const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -42,7 +41,6 @@ export const Header1 = ({ restaurant }: any) => {
   });
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
   const { data: user } = useSession();
   const [langue, setLangue] = useLocalStorage<any>({ key: 'langue', defaultValue: 'vn' });
   return (

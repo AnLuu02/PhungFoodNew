@@ -17,36 +17,24 @@ import {
   UpdateOrderButton
 } from '../Button';
 
-export default function TableOrder({
-  currentPage,
-  query,
-  data,
-  limit,
-  user
-}: {
-  currentPage: string;
-  data: any;
-  query: string;
-  limit: string;
-  user?: any;
-}) {
+export default function TableOrder({ s, data, user }: { data: any; s: string; user?: any }) {
   const currentItems = data?.orders || [];
 
   const columns: ColumnDef<any>[] = [
     {
       header: 'Mã hóa đơn',
       accessorKey: 'id',
-      cell: info => <Highlight highlight={query}>{info.row.original.id}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.id}</Highlight>
     },
     {
       header: 'Khách hàng',
       accessorKey: 'user.name',
-      cell: info => <Highlight highlight={query}>{info.row.original.user?.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.user?.name}</Highlight>
     },
     {
       header: 'Thanh toán',
       accessorKey: 'payment.name',
-      cell: info => <Highlight highlight={query}>{info.row.original.payment?.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.payment?.name}</Highlight>
     },
     {
       header: 'Tổng hóa đơn',

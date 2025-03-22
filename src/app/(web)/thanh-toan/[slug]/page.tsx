@@ -11,7 +11,7 @@ const formatTransDate = (date: Date) => {
 async function CheckoutPage({ params }: { params: { slug: string } }) {
   const orderId = params?.slug;
 
-  const order = await api.Order.getOne({ query: orderId });
+  const order = await api.Order.getOne({ s: orderId });
   if (!order?.id) {
     redirect(`/vnpay-payment-result?error=Không tìm thấy đơn hàng hoặc ngày giao dịch&message=Đơn hàng không tồn tại.`);
   }

@@ -1,4 +1,3 @@
-'use client';
 import { Box, NavLink, rem, ScrollArea, Stack, Text } from '@mantine/core';
 import {
   IconBrandPolymer,
@@ -16,7 +15,6 @@ import {
 } from '@tabler/icons-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 const navItems = [
   { label: 'Tổng quan', icon: IconLayoutDashboard, href: '/admin' },
 
@@ -65,8 +63,6 @@ const navItems = [
 ];
 
 export default function Navbar() {
-  const pathname = usePathname();
-
   return (
     <>
       <ScrollArea.Autosize scrollbarSize={6}>

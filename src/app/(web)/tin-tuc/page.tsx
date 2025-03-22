@@ -12,14 +12,14 @@ const News = async ({
   searchParams: {
     page: string;
     limit: string;
-    query: string;
+    s: string;
   };
 }) => {
-  const { page, limit, query } = searchParams;
+  const { page, limit, s } = searchParams;
   const data = await api.news.fetchNews({
     skip: (Number(page || 1) - 1) * Number(limit || 5),
     take: Number(limit || 5),
-    query: query
+    s: s
   });
   const {
     news,
@@ -54,7 +54,7 @@ const News = async ({
                 </Paper>
                 <Stack gap={5} flex={1}>
                   <Link href={item.link} target='_blank'>
-                    <Highlight highlight={query} size='xl' fw={700} className='text-black hover:text-[#008b4b]'>
+                    <Highlight highlight={s} size='xl' fw={700} className='text-black hover:text-[#008b4b]'>
                       {item.title}
                     </Highlight>
                   </Link>
@@ -118,7 +118,7 @@ const News = async ({
 
                       <Highlight
                         flex={1}
-                        highlight={query}
+                        highlight={s}
                         size='sm'
                         fw={500}
                         lineClamp={2}

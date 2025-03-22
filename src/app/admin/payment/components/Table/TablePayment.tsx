@@ -7,19 +7,7 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 
-export default function TablePayment({
-  currentPage,
-  query,
-  data,
-  limit,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  data: any;
-  limit: string;
-  user?: any;
-}) {
+export default function TablePayment({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.payments || [];
   const columns: ColumnDef<any>[] = [
     {

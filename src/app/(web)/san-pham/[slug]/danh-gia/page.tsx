@@ -10,7 +10,7 @@ import { RatingStatistics } from '../_components/RatingStatistics';
 export default function ProductPage({ params }: { params: { slug: string } }) {
   let ratingCountsDefault = [0, 0, 0, 0, 0];
   const productTag = params.slug;
-  const { data, isLoading } = api.Product.getOne.useQuery({ query: productTag, hasReview: true, hasUser: true });
+  const { data, isLoading } = api.Product.getOne.useQuery({ s: productTag, hasReview: true, hasUser: true });
   const product: any = data ?? [];
   const ratingCounts =
     product?.review?.reduce((acc: any, item: any) => {

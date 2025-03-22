@@ -8,11 +8,11 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
@@ -20,14 +20,14 @@ export const rolePermissionRouter = createTRPCRouter({
         ctx.db.role.count(),
         ctx.db.role.count({
           where: {
-            name: { contains: query?.trim(), mode: 'insensitive' }
+            name: { contains: s?.trim(), mode: 'insensitive' }
           }
         }),
         ctx.db.role.findMany({
           skip: startPageItem,
           take,
           where: {
-            name: { contains: query?.trim(), mode: 'insensitive' }
+            name: { contains: s?.trim(), mode: 'insensitive' }
           },
           include: {
             permissions: {
@@ -41,7 +41,7 @@ export const rolePermissionRouter = createTRPCRouter({
       ]);
 
       const totalPages = Math.ceil(
-        query?.trim() ? (totalRolesQuery === 0 ? 1 : totalRolesQuery / take) : totalRoles / take
+        s?.trim() ? (totalRolesQuery === 0 ? 1 : totalRolesQuery / take) : totalRoles / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -184,11 +184,11 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
@@ -197,8 +197,8 @@ export const rolePermissionRouter = createTRPCRouter({
         ctx.db.permission.count({
           where: {
             OR: [
-              { id: { contains: query?.trim(), mode: 'insensitive' } },
-              { name: { contains: query?.trim(), mode: 'insensitive' } }
+              { id: { contains: s?.trim(), mode: 'insensitive' } },
+              { name: { contains: s?.trim(), mode: 'insensitive' } }
             ]
           }
         }),
@@ -207,8 +207,8 @@ export const rolePermissionRouter = createTRPCRouter({
           take,
           where: {
             OR: [
-              { id: { contains: query?.trim(), mode: 'insensitive' } },
-              { name: { contains: query?.trim(), mode: 'insensitive' } }
+              { id: { contains: s?.trim(), mode: 'insensitive' } },
+              { name: { contains: s?.trim(), mode: 'insensitive' } }
             ]
           },
           include: {
@@ -218,7 +218,7 @@ export const rolePermissionRouter = createTRPCRouter({
       ]);
 
       const totalPages = Math.ceil(
-        query?.trim() ? (totalPermissionsQuery === 0 ? 1 : totalPermissionsQuery / take) : totalPermissions / take
+        s?.trim() ? (totalPermissionsQuery === 0 ? 1 : totalPermissionsQuery / take) : totalPermissions / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 

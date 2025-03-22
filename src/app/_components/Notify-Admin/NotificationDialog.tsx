@@ -23,16 +23,16 @@ import { api } from '~/trpc/react';
 
 export default function NotificationDialog() {
   const { data: user } = useSession();
-  const { data, isLoading } = api.Notification.getFilter.useQuery({ query: user?.user?.email || '' });
+  const { data, isLoading } = api.Notification.getFilter.useQuery({ s: user?.user?.email || '' });
 
   const notificationsData = data ?? [];
   const [notifications, setNotifications] = useState<any[]>([...notificationsData]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setNotifications([...notificationsData]);
   }, [notificationsData]);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 

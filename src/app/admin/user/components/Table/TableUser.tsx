@@ -7,30 +7,18 @@ import CustomPagination from '~/app/_components/Pagination';
 import { UserRole } from '~/app/lib/utils/constants/roles';
 import { DeleteUserButton, UpdateUserButton } from '../Button';
 
-export default function TableUser({
-  currentPage,
-  query,
-  limit,
-  data,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  limit: string;
-  data: any;
-  user?: any;
-}) {
+export default function TableUser({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.users || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
       accessorKey: 'name',
-      cell: info => <Highlight highlight={query}>{info.row.original.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
     },
     {
       header: 'Email',
       accessorKey: 'email',
-      cell: info => <Highlight highlight={query}>{info.row.original.email}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.email}</Highlight>
     },
     {
       header: 'Vai trò',
@@ -52,12 +40,12 @@ export default function TableUser({
     {
       header: 'Điện thoại',
       accessorKey: 'phone',
-      cell: info => <Highlight highlight={query}>{info.row.original.phone}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.phone}</Highlight>
     },
     {
       header: 'Địa chỉ',
       accessorKey: 'address.fullAddress',
-      cell: info => <Highlight highlight={query}>{info.row.original?.address?.fullAddress}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original?.address?.fullAddress}</Highlight>
     },
     {
       header: 'Ngày tạo',

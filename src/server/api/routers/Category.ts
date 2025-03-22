@@ -12,11 +12,11 @@ export const categoryRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalCategories, totalCategoriesQuery, categories] = await ctx.db.$transaction([
@@ -25,13 +25,13 @@ export const categoryRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               }
             ]
           }
@@ -42,13 +42,13 @@ export const categoryRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               }
             ]
           },
@@ -63,7 +63,7 @@ export const categoryRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalCategoriesQuery == 0 ? 1 : totalCategoriesQuery / take) : totalCategories / take
+        s?.trim() ? (totalCategoriesQuery == 0 ? 1 : totalCategoriesQuery / take) : totalCategories / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -97,16 +97,16 @@ export const categoryRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const category = await ctx.db.category.findMany({
         where: {
           OR: [
-            { id: { equals: input.query?.trim() } },
-            { name: { equals: input.query?.trim() } },
-            { tag: { equals: input.query?.trim() } }
+            { id: { equals: input.s?.trim() } },
+            { name: { equals: input.s?.trim() } },
+            { tag: { equals: input.s?.trim() } }
           ]
         }
       });
@@ -116,16 +116,16 @@ export const categoryRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const category = await ctx.db.category.findFirst({
         where: {
           OR: [
-            { id: { equals: input.query?.trim() } },
-            { name: { equals: input.query?.trim() } },
-            { tag: { equals: input.query?.trim() } }
+            { id: { equals: input.s?.trim() } },
+            { name: { equals: input.s?.trim() } },
+            { tag: { equals: input.s?.trim() } }
           ]
         }
       });

@@ -8,7 +8,7 @@ import { CommentsForm } from './CommentsForm';
 import { CommentsList } from './CommentsList';
 
 function Comments({ product, max_height_scroll }: any) {
-  const { data, isLoading } = api.Review.getFilter.useQuery({ query: product?.id });
+  const { data, isLoading } = api.Review.getFilter.useQuery({ s: product?.id });
   const review = data ?? [];
   return (
     <>

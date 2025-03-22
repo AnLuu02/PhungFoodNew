@@ -8,12 +8,12 @@ export default async function ImageManagementPage({
   searchParams
 }: {
   searchParams?: {
-    query?: string;
+    s?: string;
     page?: string;
     limit?: string;
   };
 }) {
-  const query = searchParams?.query || '';
+  const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.Image.getAll();
@@ -32,7 +32,7 @@ export default async function ImageManagementPage({
         </Group>
       </Group>
 
-      <ListImage currentPage={currentPage} query={query} limit={limit} />
+      <ListImage currentPage={currentPage} s={s} limit={limit} />
     </Card>
   );
 }

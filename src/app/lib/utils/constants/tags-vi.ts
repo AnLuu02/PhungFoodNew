@@ -105,7 +105,8 @@ const tags: Record<string, string> = {
   "banh-trang-cha-bong": "Bánh tráng chà bông",
   "banh-da-lon": "Bánh da lợn",
   "banh-khoai-mo-chien": "Bánh khoai mỡ chiên",
-  "banh-trang-tac": "Bánh tráng tắc"
+  "banh-trang-tac": "Bánh tráng tắc",
+  "chao-ga-xe-phay": "Cháo gà xé phay"
 };
 
 export default tags;

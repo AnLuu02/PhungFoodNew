@@ -25,7 +25,7 @@ import RecapCart from '../thanh-toan/_components/recapCart';
 import ShoppingCartMobile from './_mobile/gio-hang-mobile';
 
 export default function ShoppingCart() {
-  const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
   const updateQuantity = (id: number, quantity: number) => {
     setCart(items => items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item)));

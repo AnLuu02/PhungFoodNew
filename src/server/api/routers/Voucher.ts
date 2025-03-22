@@ -9,11 +9,11 @@ export const voucherRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalVouchers, totalVouchersQuery, vouchers] = await ctx.db.$transaction([
@@ -22,13 +22,13 @@ export const voucherRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               }
             ]
           }
@@ -39,20 +39,20 @@ export const voucherRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               }
             ]
           }
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalVouchersQuery == 0 ? 1 : totalVouchersQuery / take) : totalVouchers / take
+        s?.trim() ? (totalVouchersQuery == 0 ? 1 : totalVouchersQuery / take) : totalVouchers / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -168,13 +168,13 @@ export const voucherRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const voucher = await ctx.db.voucher.findFirst({
         where: {
-          OR: [{ id: { contains: input.query, mode: 'insensitive' } }]
+          OR: [{ id: { contains: input.s, mode: 'insensitive' } }]
         },
         include: {
           products: true

@@ -6,7 +6,7 @@ import { api } from '~/trpc/react';
 
 const LikeButton = () => {
   const { data: user } = useSession();
-  const { data, isLoading } = api.FavouriteFood.getFilter.useQuery({ query: user?.user?.email || '' });
+  const { data } = api.FavouriteFood.getFilter.useQuery({ s: user?.user?.email || '' });
 
   return (
     <Link href={`/yeu-thich`}>

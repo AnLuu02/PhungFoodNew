@@ -16,12 +16,6 @@ import {
 import { IconMicrophone, IconSend } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
-const hintAnswers = [
-  'How can I track my order?',
-  'What are your return policies?',
-  'Do you offer international shipping?',
-  'How can I contact customer support?'
-];
 
 export default function Chatbox() {
   const { data: user } = useSession();

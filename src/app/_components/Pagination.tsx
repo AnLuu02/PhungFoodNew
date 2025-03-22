@@ -10,7 +10,7 @@ export default function CustomPagination({ totalPages }: { totalPages: number })
   const router = useRouter();
 
   useEffect(() => {
-    if (currentPage == 1 && !searchParams.get('query')) {
+    if (currentPage == 1 && !searchParams.get('s')) {
       const params = new URLSearchParams(searchParams);
       params.delete('page');
       router.push(`${pathname}?${params.toString()}`);

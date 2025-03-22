@@ -47,13 +47,11 @@ export const HEIGHT_HEADER = 110;
 export default function NavigationHeader({
   categories,
   opened,
-  close,
-  toggle
+  close
 }: {
   categories?: any;
   opened?: boolean;
   close?: () => void;
-  toggle?: () => void;
 }) {
   const { data: user } = useSession();
   const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });

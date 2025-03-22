@@ -8,25 +8,13 @@ import CustomPagination from '~/app/_components/Pagination';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
-export default function TableProduct({
-  currentPage,
-  query,
-  limit,
-  data,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  limit: string;
-  data: any;
-  user?: any;
-}) {
+export default function TableProduct({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.products || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên',
       accessorKey: 'name',
-      cell: info => <Highlight highlight={query}>{info.row.original.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
     },
     {
       header: 'Ảnh',
@@ -51,7 +39,7 @@ export default function TableProduct({
       size: 400,
       cell: info => (
         <Spoiler maxHeight={60} showLabel='Xem thêm' hideLabel='Ẩn'>
-          <Highlight highlight={query} size='sm'>
+          <Highlight highlight={s} size='sm'>
             {info.row.original.description || 'Đang cập nhật.'}
           </Highlight>
         </Spoiler>

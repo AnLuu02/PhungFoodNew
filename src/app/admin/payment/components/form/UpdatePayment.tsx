@@ -11,7 +11,7 @@ import { paymentSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdatePayment({ paymentId, setOpened }: { paymentId: string; setOpened: any }) {
-  const queryResult = paymentId ? api.Payment.getOne.useQuery({ query: paymentId || '' }) : { data: null };
+  const queryResult = paymentId ? api.Payment.getOne.useQuery({ s: paymentId || '' }) : { data: null };
   const { data } = queryResult;
 
   const {

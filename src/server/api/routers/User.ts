@@ -17,11 +17,11 @@ export const userRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalUsers, totalUsersQuery, users] = await ctx.db.$transaction([
         ctx.db.user.count(),
@@ -29,18 +29,18 @@ export const userRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query, mode: 'insensitive' }
+                name: { contains: s, mode: 'insensitive' }
               },
               {
                 address: {
-                  detail: { contains: query, mode: 'insensitive' }
+                  detail: { contains: s, mode: 'insensitive' }
                 }
               },
               {
-                phone: { contains: query, mode: 'insensitive' }
+                phone: { contains: s, mode: 'insensitive' }
               },
               {
-                email: { contains: query, mode: 'insensitive' }
+                email: { contains: s, mode: 'insensitive' }
               }
             ]
           }
@@ -51,18 +51,18 @@ export const userRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query, mode: 'insensitive' }
+                name: { contains: s, mode: 'insensitive' }
               },
               {
                 address: {
-                  detail: { contains: query, mode: 'insensitive' }
+                  detail: { contains: s, mode: 'insensitive' }
                 }
               },
               {
-                phone: { contains: query, mode: 'insensitive' }
+                phone: { contains: s, mode: 'insensitive' }
               },
               {
-                email: { contains: query, mode: 'insensitive' }
+                email: { contains: s, mode: 'insensitive' }
               }
             ]
           },
@@ -71,7 +71,7 @@ export const userRouter = createTRPCRouter({
           }
         })
       ]);
-      const totalPages = Math.ceil(query ? (totalUsersQuery == 0 ? 1 : totalUsersQuery / take) : totalUsers / take);
+      const totalPages = Math.ceil(s ? (totalUsersQuery == 0 ? 1 : totalUsersQuery / take) : totalUsers / take);
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
       return {
         users,
@@ -315,16 +315,16 @@ export const userRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const user = await ctx.db.user.findMany({
         where: {
           OR: [
-            { id: { equals: input.query?.trim() } },
-            { name: { equals: input.query?.trim() } },
-            { email: { equals: input.query?.trim() } }
+            { id: { equals: input.s?.trim() } },
+            { name: { equals: input.s?.trim() } },
+            { email: { equals: input.s?.trim() } }
           ]
         }
       });
@@ -336,7 +336,7 @@ export const userRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string().optional(),
+        s: z.string().optional(),
         hasOrders: z.boolean().optional()
       })
     )
@@ -344,9 +344,9 @@ export const userRouter = createTRPCRouter({
       const user = await ctx.db.user.findFirst({
         where: {
           OR: [
-            { id: { equals: input.query?.trim() } },
-            { name: { equals: input.query?.trim() } },
-            { email: { equals: input.query?.trim() } }
+            { id: { equals: input.s?.trim() } },
+            { name: { equals: input.s?.trim() } },
+            { email: { equals: input.s?.trim() } }
           ]
         },
         include: {

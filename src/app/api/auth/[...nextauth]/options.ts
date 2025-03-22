@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Vui lòng nhập đầy đủ email và mật khẩu.');
         }
 
-        const user = await api.User.getOne({ query: credentials?.email || '' });
+        const user = await api.User.getOne({ s: credentials?.email || '' });
         if (!user) {
           throw new Error('Tài khoản không tồn tại.');
         }
@@ -65,7 +65,7 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token }) {
       try {
-        const userFromDb = await api.User.getOne({ query: token?.email || '' });
+        const userFromDb = await api.User.getOne({ s: token?.email || '' });
 
         if (userFromDb?.id) {
           token.role = userFromDb?.role?.name;

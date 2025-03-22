@@ -24,7 +24,6 @@ export default function ShoppingCartMobile() {
   const updateQuantity = (id: number, quantity: number) => {
     setCart(items => items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item)));
   };
-  const coupon = 0;
   return cart.map((item: any) => {
     return (
       <Paper shadow='xs' radius='md' p={'xs'} mb={'xs'} withBorder key={item.id}>

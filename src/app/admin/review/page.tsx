@@ -9,17 +9,17 @@ export default async function ReviewManagementPage({
   searchParams
 }: {
   searchParams?: {
-    query?: string;
+    s?: string;
     page?: string;
     limit?: string;
   };
 }) {
-  const query = searchParams?.query || '';
+  const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.Review.getAll();
   const user = await getServerSession(authOptions);
-  const data = await api.Review.find({ skip: +currentPage, take: +limit, query });
+  const data = await api.Review.find({ skip: +currentPage, take: +limit, s });
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -35,7 +35,7 @@ export default async function ReviewManagementPage({
         </Group>
       </Group>
 
-      <TableReview data={data} currentPage={currentPage} query={query} limit={limit} user={user} />
+      <TableReview data={data} s={s} user={user} />
     </Card>
   );
 }

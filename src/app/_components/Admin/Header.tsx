@@ -1,5 +1,4 @@
 'use client';
-
 import {
   ActionIcon,
   Avatar,
@@ -23,10 +22,6 @@ import { useState } from 'react';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { GlobalSearch } from '../Search/GlobalSearch';
 
-interface HeaderProps {
-  opened: boolean;
-  toggle: () => void;
-}
 export default function Header() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { colorScheme, setColorScheme } = useMantineColorScheme();

@@ -9,11 +9,11 @@ export const materialRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, query } = input;
+      const { skip, take, s } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalMaterials, totalMaterialsQuery, materials] = await ctx.db.$transaction([
@@ -22,13 +22,13 @@ export const materialRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               }
             ]
           }
@@ -39,13 +39,13 @@ export const materialRouter = createTRPCRouter({
           where: {
             OR: [
               {
-                name: { contains: query?.trim(), mode: 'insensitive' }
+                name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: query?.trim(), mode: 'insensitive' }
+                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                description: { contains: query?.trim(), mode: 'insensitive' }
+                description: { contains: s?.trim(), mode: 'insensitive' }
               }
             ]
           },
@@ -55,7 +55,7 @@ export const materialRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        query?.trim() ? (totalMaterialsQuery == 0 ? 1 : totalMaterialsQuery / take) : totalMaterials / take
+        s?.trim() ? (totalMaterialsQuery == 0 ? 1 : totalMaterialsQuery / take) : totalMaterials / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -173,16 +173,16 @@ export const materialRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        query: z.string()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
       const material = await ctx.db.material.findFirst({
         where: {
           OR: [
-            { id: { equals: input.query?.trim() } },
-            { name: { equals: input.query?.trim() } },
-            { tag: { equals: input.query?.trim() } }
+            { id: { equals: input.s?.trim() } },
+            { name: { equals: input.s?.trim() } },
+            { tag: { equals: input.s?.trim() } }
           ]
         }
       });

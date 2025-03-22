@@ -68,15 +68,15 @@ export const GlobalSearch = () => {
   const [debounced] = useDebouncedValue(value, 500);
 
   const { data: category, isLoading: isLoadingCategory } = api.Category.find.useQuery(
-    { skip: 0, take: 10, query: debounced ?? '' },
+    { skip: 0, take: 10, s: debounced ?? '' },
     { enabled: !!debounced }
   );
   const { data: product, isLoading: isLoadingProduct } = api.Product.find.useQuery(
-    { skip: 0, take: 10, query: debounced ?? '', userRole: 'ADMIN' },
+    { skip: 0, take: 10, s: debounced ?? '', userRole: 'ADMIN' },
     { enabled: !!debounced }
   );
   const { data: user, isLoading: isLoadingUser } = api.User.find.useQuery(
-    { skip: 0, take: 10, query: debounced ?? '' },
+    { skip: 0, take: 10, s: debounced ?? '' },
     { enabled: !!debounced }
   );
   useWindowEvent('keydown', event => {

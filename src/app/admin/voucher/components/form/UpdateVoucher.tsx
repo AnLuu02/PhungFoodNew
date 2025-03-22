@@ -14,7 +14,7 @@ import { voucherSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: string; setOpened: any }) {
-  const queryResult = voucherId ? api.Voucher.getOne.useQuery({ query: voucherId || '' }) : { data: null };
+  const queryResult = voucherId ? api.Voucher.getOne.useQuery({ s: voucherId || '' }) : { data: null };
   const { data: products, isLoading } = api.Product.getAll.useQuery({
     hasCategoryChild: false,
     userRole: 'ADMIN'

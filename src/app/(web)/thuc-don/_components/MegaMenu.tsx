@@ -21,28 +21,6 @@ import { useState } from 'react';
 import Empty from '~/app/_components/Empty';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 
-const bestSellerProducts = [
-  {
-    title: 'Viên uống NutriGrow Nutrimed bổ sung canxi, vitamin D3',
-    image: '/images/png/momo.png'
-  },
-  {
-    title: 'Siro ống uống Canxi-D3-K2 5ml Kingphar bổ sung canxi',
-    image: '/images/png/momo.png'
-  },
-  {
-    title: 'Siro Brauer Baby Kids D3+K2 High Potency MK-7 Drops',
-    image: '/images/png/momo.png'
-  },
-  {
-    title: 'Viên uống Omexxel 3-6-9 Premium hỗ trợ tốt cho não và tim mạch',
-    image: '/images/png/momo.png'
-  },
-  {
-    title: 'Viên uống hỗ trợ phụ nữ mang thai và phụ nữ cho con bú',
-    image: '/images/png/momo.png'
-  }
-];
 export function MegaMenu({ categories }: any) {
   const [hoveredTab, setHoveredTab] = useState<string | null>(categories?.[0]?.tag as string);
   const bestSellerProducts = categories.flatMap((item: any) =>

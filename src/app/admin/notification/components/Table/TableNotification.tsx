@@ -6,18 +6,18 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { DeleteNotificationButton, UpdateNotificationButton } from '../Button';
 
-export default function TableNotification({ data, query, user }: { query: string; data: any; user: any }) {
+export default function TableNotification({ data, s, user }: { s: string; data: any; user: any }) {
   const currentItems = data?.notifications || [];
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tiêu đề',
       accessorKey: 'title',
-      cell: info => <Highlight highlight={query}>{info.row.original.title}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.title}</Highlight>
     },
     {
       header: 'Nội dung',
       accessorKey: 'message',
-      cell: info => <Highlight highlight={query}>{info.row.original.message || 'Đang cập nhật.'}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.message || 'Đang cập nhật.'}</Highlight>
     },
     {
       header: 'Người nhận',

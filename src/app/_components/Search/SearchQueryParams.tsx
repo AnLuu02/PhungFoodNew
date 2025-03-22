@@ -22,9 +22,9 @@ export default function SearchQueryParams() {
     const params = new URLSearchParams(searchParams);
     params.set('page', '1');
     if (term) {
-      params.set('query', term);
+      params.set('s', term);
     } else {
-      params.delete('query');
+      params.delete('s');
     }
     router.replace(`${pathname}?${params.toString()}`);
   }, 500);
@@ -33,7 +33,7 @@ export default function SearchQueryParams() {
     <TextInput
       ref={searchInputRef}
       placeholder='Tìm kiếm'
-      defaultValue={searchParams.get('query') || ''}
+      defaultValue={searchParams.get('s') || ''}
       onChange={event => handleSearch(event.currentTarget.value)}
       leftSection={<IconSearch size={16} className='text-gray-300' />}
       rightSectionWidth={40}

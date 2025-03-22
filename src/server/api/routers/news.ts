@@ -11,16 +11,16 @@ export const newsRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        query: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ input }) => {
       try {
-        const { skip, take, query } = input;
+        const { skip, take, s } = input;
         const feed: any = await parser.parseURL(urlRss);
 
-        const filteredItems = input?.query
-          ? feed.items.filter((item: any) => item.title.toLowerCase().includes(query?.toLowerCase()))
+        const filteredItems = input?.s
+          ? feed.items.filter((item: any) => item.title.toLowerCase().includes(s?.toLowerCase()))
           : feed.items;
 
         const pagedItems = filteredItems.slice(skip, skip + take);

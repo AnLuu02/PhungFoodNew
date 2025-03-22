@@ -6,26 +6,14 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { DeleteRoleButton, UpdateRoleButton } from '../Button';
 
-export default function TableRole({
-  currentPage,
-  query,
-  data,
-  limit,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  limit: string;
-  data: any;
-  user?: any;
-}) {
+export default function TableRole({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.roles || [];
 
   const columns: ColumnDef<any>[] = [
     {
       header: 'Tên vai trò',
       accessorKey: 'name',
-      cell: info => <Highlight highlight={query}>{info.row.original.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
     },
     {
       header: 'Quyền',

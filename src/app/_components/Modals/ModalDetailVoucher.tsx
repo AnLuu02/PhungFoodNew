@@ -92,7 +92,7 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
                     </Tooltip>
                   </Link>
                   {!allowedVoucher(data?.minOrderPrice || 0, products) && (
-                    <Text size='xs' color='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
+                    <Text size='xs' c='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
                       Không đủ điều kiện
                     </Text>
                   )}
@@ -103,15 +103,15 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
                 </Text>
                 <Progress value={Math.floor((data?.quantity / 10) * 100)} radius='xs' mt={8} mb={8} styles={{}} />
                 {hoursRemainingVoucher(data?.startDate, data?.endDate)?.type == 'active' ? (
-                  <Text color='dimmed' size='xs' pr={4}>
+                  <Text c='dimmed' size='xs' pr={4}>
                     {hoursRemainingVoucher(data?.startDate, data?.endDate)?.value}
                   </Text>
                 ) : hoursRemainingVoucher(data?.startDate, data?.endDate)?.type == 'upcoming' ? (
-                  <Text color='dimmed' size='xs' pr={4}>
+                  <Text c='dimmed' size='xs' pr={4}>
                     {hoursRemainingVoucher(data?.startDate, data?.endDate)?.value}
                   </Text>
                 ) : (
-                  <Text color='dimmed' size='xs' pr={4}>
+                  <Text c='dimmed' size='xs' pr={4}>
                     {hoursRemainingVoucher(data?.startDate, data?.endDate)?.value}
                   </Text>
                 )}

@@ -59,7 +59,7 @@ export function CategoryNav() {
   const pathname = usePathname();
   const params = useSearchParams();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
-  const query = new URLSearchParams(params);
+  const s = new URLSearchParams(params);
   const [valueMaterials, setValueMaterials] = useState<string[]>([...params.getAll('nguyen-lieu')]);
 
   useEffect(() => {
@@ -165,8 +165,8 @@ export function CategoryNav() {
                     w={'max-content'}
                     color='red'
                     onClick={() => {
-                      query.delete('price');
-                      router.push(`${pathname}?${query.toString()}`);
+                      s.delete('price');
+                      router.push(`${pathname}?${s.toString()}`);
                     }}
                     variant='subtle'
                   >
@@ -186,9 +186,9 @@ export function CategoryNav() {
                         value={range.value.toString()}
                         onChange={e => {
                           if (e.target.checked) {
-                            query.set('price', e.target.value);
+                            s.set('price', e.target.value);
                           }
-                          router.push(`${pathname}?${query.toString()}`);
+                          router.push(`${pathname}?${s.toString()}`);
                         }}
                         name='range-price'
                         label={range.label}
@@ -219,14 +219,14 @@ export function CategoryNav() {
                         w={'max-content'}
                         onClick={() => {
                           if (valueMaterials?.length > 0) {
-                            query.delete('nguyen-lieu');
+                            s.delete('nguyen-lieu');
                             valueMaterials.map((item, index) => {
-                              query.append('nguyen-lieu', item);
+                              s.append('nguyen-lieu', item);
                             });
                           } else {
-                            query.delete('nguyen-lieu');
+                            s.delete('nguyen-lieu');
                           }
-                          router.push(`${pathname}?${query.toString()}`);
+                          router.push(`${pathname}?${s.toString()}`);
                         }}
                         variant='subtle'
                       >
@@ -239,8 +239,8 @@ export function CategoryNav() {
                         color='red'
                         onClick={() => {
                           setValueMaterials([]);
-                          query.delete('nguyen-lieu');
-                          router.push(`${pathname}?${query.toString()}`);
+                          s.delete('nguyen-lieu');
+                          router.push(`${pathname}?${s.toString()}`);
                         }}
                         variant='subtle'
                       >

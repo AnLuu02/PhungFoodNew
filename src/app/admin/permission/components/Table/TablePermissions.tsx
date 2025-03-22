@@ -6,31 +6,19 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { DeletePermissionButton, UpdatePermissionButton } from '../Button';
 
-export default function TablePermission({
-  currentPage,
-  query,
-  data,
-  limit,
-  user
-}: {
-  currentPage: string;
-  query: string;
-  data: any;
-  limit: string;
-  user?: any;
-}) {
+export default function TablePermission({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.permissions || [];
 
   const columns: ColumnDef<any>[] = [
     {
       header: 'ID',
       accessorKey: 'id',
-      cell: info => <Highlight highlight={query}>{info.row.original.id}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.id}</Highlight>
     },
     {
       header: 'Tên quyền',
       accessorKey: 'name',
-      cell: info => <Highlight highlight={query}>{info.row.original.name}</Highlight>
+      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
     },
 
     {

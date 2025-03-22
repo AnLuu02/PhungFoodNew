@@ -26,8 +26,7 @@ import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { api } from '~/trpc/react';
-import ImageSearchModal from '../Web/Header/_components/SearchAsImage';
-import VoiceSearchModal from '../Web/Header/_components/SearchAsVoice';
+import VoiceSearchModal from './SearchAsVoice';
 
 interface Product {
   id: number;
@@ -44,41 +43,15 @@ export default function SearchComponentClient({ subCategories }: any) {
   const [historySearch, setHistorySearch] = useLocalStorage<any>({ key: 'historySearch', defaultValue: [] });
   const [debounced] = useDebouncedValue(searchQuery, 500);
   const { data, isLoading: isLoadingProduct } = api.Product.find.useQuery(
-    { skip: 0, take: 10, query: debounced ?? '' },
+    { skip: 0, take: 10, s: debounced ?? '' },
     { enabled: !!debounced }
   );
 
   const productData = data?.products || [];
-
-  // const [products] = useState<Product[]>([
-  //   {
-  //     id: 1,
-  //     name: 'Viên uống NutriGrow Nutrimed bổ sung canxi, vitamin D3, vitamin K2',
-  //     price: 480000,
-  //     image: '/images/png/momo.png',
-  //     unit: 'Hộp'
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Siro Canxi-D3-K2 5ml Kingphar bổ sung canxi & vitamin D3',
-  //     price: 105000,
-  //     image: '/images/png/momo.png',
-  //     unit: 'Hộp'
-  //   }
-  // ]);
-
-  const handleFocus = () => {
-    setShowDropdown(true);
-  };
-
-  const handleSearch = (term: string) => {
-    setSearchQuery(term);
-    // Handle search logic here
-  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/tim-kiem?s=${encodeURIComponent(searchQuery)}`);
+      router.push(`/thuc-don?s=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -89,7 +62,7 @@ export default function SearchComponentClient({ subCategories }: any) {
           value={searchQuery}
           radius={'xl'}
           onChange={e => setSearchQuery(e.target.value)}
-          onFocus={handleFocus}
+          onFocus={() => setShowDropdown(true)}
           onBlur={e => {
             setShowDropdown(false);
           }}
@@ -98,7 +71,6 @@ export default function SearchComponentClient({ subCategories }: any) {
           rightSection={
             <Group gap={8}>
               <VoiceSearchModal />
-              <ImageSearchModal />
             </Group>
           }
           styles={{
@@ -131,7 +103,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                   label={item.name}
                   className={clsx('hidden', index < 5 ? 'md:block' : index < 6 ? 'lg:block' : 'xl:block')}
                 >
-                  <Link href={`/tim-kiem?s=${encodeURIComponent(item?.name)}`}>
+                  <Link href={`/thuc-don?s=${encodeURIComponent(item?.name)}`}>
                     <Badge
                       variant='outline'
                       color='gray.6'
@@ -178,7 +150,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                         variant='transparent'
                         leftSection={<IconClock size={16} />}
                         onClick={() => {
-                          router.push(`/tim-kiem?s=${encodeURIComponent(item)}`);
+                          router.push(`/thuc-don?s=${encodeURIComponent(item)}`);
                         }}
                         styles={{
                           root: {
@@ -215,7 +187,7 @@ export default function SearchComponentClient({ subCategories }: any) {
               <Flex gap={8} wrap='wrap'>
                 {subCategories &&
                   subCategories.map((term: any, index: number) => (
-                    <Link href={`/tim-kiem?s=${encodeURIComponent(term?.name)}`}>
+                    <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`}>
                       <Badge
                         key={index}
                         variant='outline'

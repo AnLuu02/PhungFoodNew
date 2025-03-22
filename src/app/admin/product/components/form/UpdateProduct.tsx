@@ -36,7 +36,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
   const { data: materials, isLoading } = api.Material.getAll.useQuery();
 
   const queryResult = productId
-    ? api.Product.getOne.useQuery({ query: productId || '', userRole: 'ADMIN' })
+    ? api.Product.getOne.useQuery({ s: productId || '', userRole: 'ADMIN' })
     : { data: null };
   const { data } = queryResult;
 

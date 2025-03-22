@@ -9,17 +9,17 @@ export default async function SubCategoryManagementPage({
   searchParams
 }: {
   searchParams?: {
-    query?: string;
+    s?: string;
     page?: string;
     limit?: string;
   };
 }) {
-  const query = searchParams?.query || '';
+  const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const totalData = await api.SubCategory.getAll();
   const user = await getServerSession(authOptions);
-  const data = await api.SubCategory.find({ skip: +currentPage, take: +limit, query });
+  const data = await api.SubCategory.find({ skip: +currentPage, take: +limit, s });
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
@@ -37,7 +37,7 @@ export default async function SubCategoryManagementPage({
         </Group>
       </Group>
 
-      <TableSubCategory data={data} currentPage={currentPage} query={query} limit={limit} user={user} />
+      <TableSubCategory data={data} s={s} user={user} />
     </Card>
   );
 }
