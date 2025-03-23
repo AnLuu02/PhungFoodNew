@@ -102,7 +102,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
               ))}
             </Carousel>
             <Flex align={'center'} justify={'center'} mt={30}>
-              <Link href={`/thuc-don?filter=san-pham-moi`}>
+              <Link href={`/thuc-don?loai=san-pham-moi`}>
                 <BButton title={'Xem tất cả'} variant='outline' size='sm' />
               </Link>
             </Flex>
