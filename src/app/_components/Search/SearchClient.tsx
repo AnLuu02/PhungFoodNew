@@ -139,7 +139,15 @@ export default function SearchComponentClient({ subCategories }: any) {
                   <Text size='sm' fw={700} c={'black'}>
                     Lịch sử tìm kiếm
                   </Text>
-                  <Button variant='transparent' color='blue' style={{ height: 'auto' }} p={0} m={0} w={'max-content'}>
+                  <Button
+                    variant='transparent'
+                    color='blue'
+                    style={{ height: 'auto' }}
+                    p={0}
+                    m={0}
+                    w={'max-content'}
+                    onClick={() => setHistorySearch([])}
+                  >
                     Xóa tất cả
                   </Button>
                 </Flex>

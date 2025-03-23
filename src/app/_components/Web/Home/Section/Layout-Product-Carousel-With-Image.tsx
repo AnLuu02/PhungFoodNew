@@ -1,5 +1,18 @@
 'use client';
-import { Box, Button, Card, Flex, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
+import {
+  BackgroundImage,
+  Box,
+  Card,
+  Flex,
+  Overlay,
+  Stack,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab,
+  Text,
+  Title
+} from '@mantine/core';
 import Link from 'next/link';
 import BButton from '~/app/_components/Button';
 import TabsPanelCarousel from './TabsPenel';
@@ -8,11 +21,13 @@ const LayoutProductCarouselWithImage = ({
   title,
   content,
   loai,
+  imageUrl,
   data,
   reverseGrid
 }: {
   title?: string;
   content?: string;
+  imageUrl?: string;
   loai: string;
   data: any;
   reverseGrid?: boolean;
@@ -24,35 +39,32 @@ const LayoutProductCarouselWithImage = ({
   return (
     <Card h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'gray.1'} p={0}>
       <Flex h={'100%'} direction={{ base: 'column', md: reverseGrid ? 'row-reverse' : 'row' }}>
-        <Box
-          className='relative bg-[url(/images/webp/noi_bat_bg.webp)] bg-cover bg-no-repeat'
+        <BackgroundImage
+          src={imageUrl || '/images/jpg/best-saller.jpg'}
+          className='relative bg-cover bg-no-repeat'
           h={'100%'}
           w={{ base: '100%', md: '25%' }}
-          p={'lg'}
+          pos={'relative'}
         >
-          <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
-          <Title order={2} className='font-quicksand' c={'white'} mb={'xs'}>
-            {title || 'Bán chạy nhất hàng ngày'}
-          </Title>
-          <Text td='underline' fs='italic' size='md' c={'white'} fw={700} mb={'xs'}>
-            {content || 'Ưu đãi độc quyền - Giảm giá 20%'}
-          </Text>
-          <Title order={3} c={'white'} className='font-quicksand' mb={'xs'}>
-            Mua sắm thoải mái chỉ từ 10.000 VNĐ
-          </Title>
+          <Overlay color='#000' opacity={0.5} zIndex={1} radius='md' />
+          <Stack pos={'absolute'} className='inset-0 z-10' p={'lg'}>
+            <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
+            <Title order={2} className='font-quicksand' c={'white'}>
+              {title || 'Bán chạy nhất hàng ngày'}
+            </Title>
+            <Text td='underline' fs='italic' size='md' c={'white'} fw={700}>
+              {content || 'Ưu đãi độc quyền - Giảm giá 20%'}
+            </Text>
+            <Title order={3} c={'white'} className='font-quicksand'>
+              Mua sắm thoải mái chỉ từ 10.000 VNĐ
+            </Title>
 
-          <Text size='md' c={'white'} fw={700} mb={'xs'}>
-            Chỉ trong tuần này. Đừng bỏ lỡ...
-          </Text>
-          <Button
-            radius={'xl'}
-            c={'black'}
-            mb={'xs'}
-            className='bg-white transition-all duration-200 ease-in-out hover:bg-[#f8c144]'
-          >
-            Mua ngay
-          </Button>
-        </Box>
+            <Text size='md' c={'white'} fw={700}>
+              Chỉ trong tuần này. Đừng bỏ lỡ...
+            </Text>
+            <BButton title={'Mua ngay'} radius='xl' size='sm' w={'max-content'} />
+          </Stack>
+        </BackgroundImage>
         <Tabs
           defaultValue='an-vat-trang-mieng'
           variant='pills'

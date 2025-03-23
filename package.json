@@ -42,6 +42,7 @@
     "crypto-js": "^4.2.0",
     "cssnano": "^7.0.6",
     "dayjs": "^1.11.13",
+    "embla-carousel-autoplay": "^7.1.0",
     "embla-carousel-react": "^7.1.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",

@@ -1,30 +1,15 @@
 'use client';
 
-import { Carousel, type Embla } from '@mantine/carousel';
+import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Image, Paper, rem, SimpleGrid, Text } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Autoplay from 'embla-carousel-autoplay';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 
 export default function BannerSection({ banner }: any) {
-  const [embla, setEmbla] = useState<Embla | null>(null);
-
-  useEffect(() => {
-    if (!embla) return;
-
-    const autoplay = setInterval(() => {
-      if (!embla) return;
-
-      if (embla.canScrollNext()) {
-        embla.scrollNext();
-      } else {
-        embla.scrollTo(0);
-      }
-    }, 10000);
-
-    return () => clearInterval(autoplay);
-  }, [embla]);
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
 
   const gallery = banner?.images?.filter((image: any) => image?.type === ImageType.GALLERY) || [];
   const banners = banner?.images?.filter((image: any) => image?.type === ImageType.BANNER) || [];
@@ -46,7 +31,7 @@ export default function BannerSection({ banner }: any) {
             withControls
             withIndicators
             loop
-            getEmblaApi={setEmbla}
+            plugins={[autoplay.current]}
             nextControlIcon={<IconChevronRight size={24} />}
             previousControlIcon={<IconChevronLeft size={24} />}
             controlSize={40}

@@ -37,7 +37,11 @@ const HomeWeb = ({
 
         {data.productBestSaler?.products?.length > 0 && (
           <>
-            <LayoutProductCarouselWithImage data={data.productBestSaler?.products} loai='san-pham-ban-chay' />
+            <LayoutProductCarouselWithImage
+              imageUrl='/images/jpg/best-saller.jpg'
+              data={data.productBestSaler?.products}
+              loai='san-pham-ban-chay'
+            />
             <Space h='xl' />
           </>
         )}
@@ -54,6 +58,7 @@ const HomeWeb = ({
         {data.productHot?.products?.length > 0 && (
           <>
             <LayoutProductCarouselWithImage
+              imageUrl='/images/jpg/hot.jpg'
               data={data.productHot?.products}
               reverseGrid={true}
               title='Sản phẩm nổi bật trong cửa hàng'
