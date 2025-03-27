@@ -28,14 +28,6 @@ import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  unit?: string;
-}
-
 export default function SearchComponentClient({ subCategories }: any) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +55,7 @@ export default function SearchComponentClient({ subCategories }: any) {
           radius={'xl'}
           onChange={e => setSearchQuery(e.target.value)}
           onFocus={() => setShowDropdown(true)}
-          onBlur={e => {
+          onBlur={() => {
             setShowDropdown(false);
           }}
           placeholder='Tìm kiếm sản phẩm...'

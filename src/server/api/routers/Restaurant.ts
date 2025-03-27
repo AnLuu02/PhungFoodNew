@@ -316,8 +316,6 @@ export const restaurantRouter = createTRPCRouter({
       ]);
 
       const newImages = results.filter(Boolean);
-      console.log('newImages', newImages);
-
       const updated = await ctx.db.banner.update({
         where: {
           id: input.id

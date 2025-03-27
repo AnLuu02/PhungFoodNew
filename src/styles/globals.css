@@ -68,3 +68,17 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.tableAdmin::-webkit-scrollbar {
+  width: 6px; /* Độ rộng */
+  height: 6px;
+}
+
+.tableAdmin::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: #a0aec0; /* Màu thanh cuộn */
+}
+
+.tableAdmin::-webkit-scrollbar-track {
+  background-color: #edf2f7; /* Màu nền track */
+}

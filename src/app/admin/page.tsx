@@ -94,22 +94,6 @@ function CardWithIcon({
   );
 }
 
-const salesData = [
-  { date: 'Jan', sales: 20 },
-  { date: 'Feb', sales: 34 },
-  { date: 'Mar', sales: 28 },
-  { date: 'Apr', sales: 42 },
-  { date: 'May', sales: 38 },
-  { date: 'Jun', sales: 51 }
-];
-
-const categoryData = [
-  { category: 'Electronics', sales: 450 },
-  { category: 'Clothing', sales: 320 },
-  { category: 'Books', sales: 180 },
-  { category: 'Home', sales: 280 }
-];
-
 const recentOrders = [
   { id: '#ORD-5531', customer: 'John Smith', date: '2023-03-15', total: '$45.50', status: 'Completed' },
   { id: '#ORD-5530', customer: 'Sarah Johnson', date: '2023-03-15', total: '$86.25', status: 'Processing' },

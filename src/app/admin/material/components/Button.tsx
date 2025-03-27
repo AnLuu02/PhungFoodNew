@@ -10,6 +10,7 @@ import CreateMaterial from './form/CreateMaterial';
 import UpdateMaterial from './form/UpdateMaterial';
 
 import { FileButton, ScrollAreaAutosize, Table } from '@mantine/core';
+import clsx from 'clsx';
 import * as XLSX from 'xlsx';
 import { formatDataExcel } from '~/app/lib/utils/func-handler/FormatDataExcel';
 const mapFields: Record<string, string> = {
@@ -135,26 +136,28 @@ export function CreateManyMaterialButton() {
         title={<Title order={3}>Xem trước dữ liệu</Title>}
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-              <Table.Tr>
-                <Table.Th>Tên nguyên liệu</Table.Th>
-                <Table.Th>Tag</Table.Th>
-                <Table.Th>Mô tả</Table.Th>
-                <Table.Th>Loại nguyên liệu</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {data.map((row, index) => (
-                <Table.Tr key={index}>
-                  <Table.Td>{row['Tên nguyên liệu']}</Table.Td>
-                  <Table.Td>{row['Tag']}</Table.Td>
-                  <Table.Td>{row['Mô tả']}</Table.Td>
-                  <Table.Th>{row['Loại nguyên liệu']}</Table.Th>
+          <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+            <Table striped highlightOnHover withTableBorder withColumnBorders>
+              <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+                <Table.Tr>
+                  <Table.Th style={{ minWidth: 100 }}>Tên nguyên liệu</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Tag</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Mô tả</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Loại nguyên liệu</Table.Th>
                 </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
+              </Table.Thead>
+              <Table.Tbody>
+                {data.map((row, index) => (
+                  <Table.Tr key={index}>
+                    <Table.Td>{row['Tên nguyên liệu']}</Table.Td>
+                    <Table.Td>{row['Tag']}</Table.Td>
+                    <Table.Td>{row['Mô tả']}</Table.Td>
+                    <Table.Th>{row['Loại nguyên liệu']}</Table.Th>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </div>
         </ScrollAreaAutosize>
         <Flex align={'center'} gap={'md'} mt='md' justify='flex-end'>
           <Button

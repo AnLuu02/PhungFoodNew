@@ -13,14 +13,21 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
-        breakpoint: 'sm',
+        width: 250,
+        breakpoint: 'md',
         collapsed: { mobile: !opened }
       }}
       padding='md'
     >
-      <AppShell.Header>
-        <Burger opened={opened} onClick={toggle} hiddenFrom='sm' size='sm' />
+      <AppShell.Header className='flex items-center justify-between' px={'sm'} w={'100%'}>
+        <Burger
+          opened={opened}
+          fw={700}
+          onClick={toggle}
+          hiddenFrom='md'
+          size='md'
+          w={{ base: '20%', sm: '20%', md: 'max-content', lg: 'max-content' }}
+        />
         <Header />
       </AppShell.Header>
 

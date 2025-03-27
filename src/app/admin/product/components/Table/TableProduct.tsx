@@ -2,6 +2,7 @@
 import { Avatar, Badge, Button, Checkbox, Group, Highlight, Menu, Spoiler, Table, Text, Tooltip } from '@mantine/core';
 import { ImageType, ProductStatus } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import clsx from 'clsx';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
@@ -126,40 +127,42 @@ export default function TableProduct({ s, data, user }: { s: string; data: any; 
           </Menu.Dropdown>
         </Menu>
       </Group>
-      <Table striped highlightOnHover withTableBorder withColumnBorders>
-        <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-          {table.getHeaderGroups().map((headerGroup, index) => (
-            <Table.Tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <Table.Th key={header.id} colSpan={header.colSpan}>
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </Table.Th>
-              ))}
-            </Table.Tr>
-          ))}
-        </Table.Thead>
-        <Table.Tbody>
-          {currentItems.length > 0 ? (
-            table.getRowModel().rows.map((row, index) => (
-              <Table.Tr key={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <Table.Td key={cell.id} style={{ width: cell.column.getSize() }}>
-                    <Text size='sm'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Text>
-                  </Table.Td>
+      <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+            {table.getHeaderGroups().map(headerGroup => (
+              <Table.Tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <Table.Th key={header.id} colSpan={header.colSpan} style={{ minWidth: 100 }}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </Table.Th>
                 ))}
               </Table.Tr>
-            ))
-          ) : (
-            <Table.Tr>
-              <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
-                <Text size='md' color='dimmed'>
-                  Không có bản ghi phù hợp./
-                </Text>
-              </Table.Td>
-            </Table.Tr>
-          )}
-        </Table.Tbody>
-      </Table>
+            ))}
+          </Table.Thead>
+          <Table.Tbody>
+            {currentItems.length > 0 ? (
+              table.getRowModel().rows.map((row, index) => (
+                <Table.Tr key={row.id}>
+                  {row.getVisibleCells().map(cell => (
+                    <Table.Td key={cell.id} style={{ width: cell.column.getSize() }}>
+                      <Text size='sm'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Text>
+                    </Table.Td>
+                  ))}
+                </Table.Tr>
+              ))
+            ) : (
+              <Table.Tr>
+                <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
+                  <Text size='md' color='dimmed'>
+                    Không có bản ghi phù hợp./
+                  </Text>
+                </Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </div>
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />

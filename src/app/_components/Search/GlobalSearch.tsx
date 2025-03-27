@@ -61,7 +61,7 @@ const defaultGlobalSearchData = [
   }
 ];
 
-export const GlobalSearch = () => {
+export const GlobalSearch = ({ width }: any) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [value, setValue] = useState('');
   const [results, setResults] = useState<{ type: string; title: string; data: any }[]>([]);
@@ -130,6 +130,7 @@ export const GlobalSearch = () => {
         leftSection={<IconSearch size={24} className='text-gray-300' />}
         rightSectionWidth={80}
         pointer
+        w={width}
         rightSection={
           <Box
             style={{

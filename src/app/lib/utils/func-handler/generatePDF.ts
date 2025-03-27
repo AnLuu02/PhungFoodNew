@@ -2,150 +2,312 @@ import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import path from 'path';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { formatPriceLocaleVi } from './formatPrice';
 
 export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
-  const pdfDoc = await PDFDocument.create();
-  pdfDoc.registerFontkit(fontkit);
+  try {
+    const discount =
+      invoiceData?.orderItems?.reduce((sum: number, item: any) => {
+        const itemDiscount = item.discount || item.product?.discount || 0;
+        return sum + itemDiscount * item.quantity;
+      }, 0) || 0;
 
-  const fontPath = path.join(process.cwd(), 'public', 'fonts', 'my-font-mergeblack.ttf');
-  let customFont;
-  if (fs.existsSync(fontPath)) {
-    const fontBytes = fs.readFileSync(fontPath);
-    customFont = await pdfDoc.embedFont(fontBytes);
-  } else {
-    customFont = await pdfDoc.embedStandardFont(StandardFonts.Helvetica);
-  }
+    const subtotal =
+      invoiceData?.orderItems?.reduce((total: number, item: any) => total + item.price * item.quantity, 0) || 0;
 
-  const logoPath = path.join(process.cwd(), 'public', 'logo', 'logo_phungfood_1.png');
-  let logoImage;
-  if (fs.existsSync(logoPath)) {
-    const logoBytes = fs.readFileSync(logoPath);
-    logoImage = await pdfDoc.embedPng(logoBytes);
-  }
+    const tax = Math.round((subtotal - discount) * 0.1);
+    const finalTotal = subtotal - discount + tax;
 
-  const page = pdfDoc.addPage([600, 800]);
-  const { width, height } = page.getSize();
+    const pdfDoc = await PDFDocument.create();
+    pdfDoc.registerFontkit(fontkit);
 
-  let y = height - 50;
+    let customFont;
+    try {
+      const fontPath = path.join(process.cwd(), 'public', 'fonts', 'my-font-mergeblack.ttf');
+      if (fs.existsSync(fontPath)) {
+        const fontBytes = fs.readFileSync(fontPath);
+        customFont = await pdfDoc.embedFont(fontBytes);
+      } else {
+        console.warn('Custom font not found, using Helvetica');
+        customFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      }
+    } catch (error) {
+      console.error('Error loading font:', error);
+      customFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    }
 
-  if (logoImage) {
-    page.drawImage(logoImage, { x: 180, y: y - 60, width: 240, height: 80 });
-    y -= 80;
-  }
-  page.drawText('Đầu lộ Tân Thành, khóm 9, phường 6, Cà Mau', { x: 140, y: y - 20, size: 14, font: customFont });
-  page.drawText('webp/hotline: 0937842680', { x: 230, y: y - 40, size: 14, font: customFont });
-  page.drawText('https://www.phungfood.vn', { x: 190, y: y - 60, size: 14, font: customFont });
-  y -= 90;
+    let logoImage;
+    try {
+      const logoPath = path.join(process.cwd(), 'public', 'logo', 'logo_phungfood_1.png');
+      if (fs.existsSync(logoPath)) {
+        const logoBytes = fs.readFileSync(logoPath);
+        logoImage = await pdfDoc.embedPng(logoBytes);
+      }
+    } catch (error) {
+      console.error('Error loading logo:', error);
+    }
 
-  page.drawText('HÓA ĐƠN BÁN HÀNG', { x: 200, y: y, size: 24, font: customFont });
-  y -= 40;
+    const page = pdfDoc.addPage([595, 842]);
+    const { width, height } = page.getSize();
+    const margin = 50;
+    const centerX = width / 2;
+    let y = height - margin;
 
-  page.drawText(`Thu Ngân: An Luu`, { x: 50, y: y, size: 14, font: customFont });
-  page.drawText(`Seller: An Luu`, { x: 50, y: y - 20, size: 14, font: customFont });
-  page.drawText(`Khách Hàng: ${invoiceData?.user?.name || 'Khách lẻ'}`, {
-    x: 50,
-    y: y - 40,
-    size: 14,
-    font: customFont
-  });
-  y -= 80;
+    if (logoImage) {
+      const logoWidth = 200;
+      const logoHeight = 70;
+      page.drawImage(logoImage, {
+        x: centerX - logoWidth / 2,
+        y: y - logoHeight,
+        width: logoWidth,
+        height: logoHeight
+      });
+      y -= logoHeight + 20;
+    } else {
+      page.drawText("Mama's restaurant", {
+        x: centerX - customFont.widthOfTextAtSize("Mama's restaurant", 24) / 2,
+        y: y,
+        size: 24,
+        font: customFont,
+        color: rgb(0, 0.8, 0.4)
+      });
+      y -= 30;
+    }
 
-  const headers = ['STT', 'Sản phẩm', 'SL', 'Giá', 'Giảm', 'Tổng'];
-  const columnWidths = [30, 200, 40, 80, 80, 80];
-  const xStart = 50;
-
-  page.drawRectangle({
-    x: xStart,
-    y: y - 5,
-    width: columnWidths.reduce((a, b) => a + b, 0),
-    height: 25,
-    borderWidth: 1,
-    borderColor: rgb(0, 0, 0)
-  });
-
-  headers.forEach((header, index) => {
-    page.drawText(header, {
-      x: xStart + columnWidths.slice(0, index).reduce((a, b) => a + b, 0) + 5,
+    const address = 'Đầu lộ Tân Thành, khóm 9, phường 6, Cà Mau';
+    page.drawText(address, {
+      x: centerX - customFont.widthOfTextAtSize(address, 10) / 2,
       y: y,
-      size: 12,
-      font: customFont
-    });
-  });
-  let xPos = xStart;
-  columnWidths.forEach(width => {
-    xPos += width;
-    page.drawLine({
-      start: { x: xPos, y: y + 20 },
-      end: { x: xPos, y: y - invoiceData?.orderItems?.length * 25 },
-      thickness: 1,
+      size: 10,
+      font: customFont,
       color: rgb(0, 0, 0)
     });
-  });
+    y -= 20;
 
-  y -= 25;
+    const contact = 'webp/hotline: 0937842680';
+    page.drawText(contact, {
+      x: centerX - customFont.widthOfTextAtSize(contact, 10) / 2,
+      y: y,
+      size: 10,
+      font: customFont,
+      color: rgb(0, 0, 0)
+    });
+    y -= 20;
 
-  invoiceData?.orderItems?.forEach((item: any, index: number) => {
-    const values = [
-      `${index + 1}`,
-      item?.product?.name || 'SP Không xác định',
-      `${item?.quantity || 1}`,
-      formatPriceLocaleVi(item?.price || 0),
-      formatPriceLocaleVi(item?.product?.discount || 0),
-      formatPriceLocaleVi(
-        (item?.price || 0) * (item?.quantity || 0) - (item?.product?.discount || 0) * (item?.quantity || 0)
-      )
-    ];
+    const website = 'https://www.phungfood.vn';
+    page.drawText(website, {
+      x: centerX - customFont.widthOfTextAtSize(website, 10) / 2,
+      y: y,
+      size: 10,
+      font: customFont,
+      color: rgb(0, 0.4, 0.8)
+    });
+    y -= 40;
 
+    const title = 'HÓA ĐƠN BÁN HÀNG';
+    page.drawText(title, {
+      x: centerX - customFont.widthOfTextAtSize(title, 18) / 2,
+      y: y,
+      size: 18,
+      font: customFont,
+      color: rgb(0, 0, 0)
+    });
+    y -= 30;
+
+    page.drawText(`Thu Ngân: An Luu`, {
+      x: margin,
+      y: y,
+      size: 10,
+      font: customFont,
+      color: rgb(0, 0, 0)
+    });
+    y -= 20;
+
+    page.drawText(`Seller: An Luu`, {
+      x: margin,
+      y: y,
+      size: 10,
+      font: customFont,
+      color: rgb(0, 0, 0)
+    });
+    y -= 20;
+
+    page.drawText(`Khách Hàng: ${invoiceData?.user?.name || 'Khách lẻ'}`, {
+      x: margin,
+      y: y,
+      size: 10,
+      font: customFont,
+      color: rgb(0, 0, 0)
+    });
+    y -= 30;
+
+    const tableTop = y;
+    const tableWidth = width - 2 * margin;
+    const colWidths: any = [30, 190, 40, 75, 75, 135];
+    const colStarts = colWidths.reduce((acc: any, width: any, index: any) => {
+      const start = index === 0 ? margin : acc[index - 1] + colWidths[index - 1];
+      acc.push(start);
+      return acc;
+    }, [] as number[]);
+
+    const rowHeight = 25;
     page.drawRectangle({
-      x: xStart,
-      y: y - 5,
-      width: columnWidths.reduce((a, b) => a + b, 0),
-      height: 25,
-      borderWidth: 1,
-      borderColor: rgb(0, 0, 0)
+      x: margin,
+      y: tableTop - rowHeight,
+      width: tableWidth,
+      height: rowHeight,
+      borderColor: rgb(0, 0, 0),
+      borderWidth: 1
     });
 
-    values.forEach((value, colIndex) => {
-      page.drawText(value, {
-        x: xStart + columnWidths.slice(0, colIndex).reduce((a, b) => a + b, 0) + 5,
-        y: y,
-        size: 12,
-        font: customFont
-      });
-    });
-    xPos = xStart;
-    columnWidths.forEach(width => {
-      xPos += width;
-      page.drawLine({
-        start: { x: xPos, y: y + 20 },
-        end: { x: xPos, y: y - 5 },
-        thickness: 1,
+    const headers = ['STT', 'Sản phẩm', 'SL', 'Giá', 'Giảm giá', 'Thành tiền'];
+    headers.forEach((header, i) => {
+      page.drawText(header, {
+        x: colStarts[i] + 5,
+        y: tableTop - 15,
+        size: 10,
+        font: customFont,
         color: rgb(0, 0, 0)
       });
+
+      if (i < headers.length - 1) {
+        page.drawLine({
+          start: { x: colStarts[i + 1], y: tableTop },
+          end: { x: colStarts[i + 1], y: tableTop - rowHeight },
+          thickness: 1,
+          color: rgb(0, 0, 0)
+        });
+      }
     });
 
-    y -= 25;
-  });
+    y = tableTop - rowHeight;
 
-  y -= 20;
-  page.drawText(`Tổng hóa đơn: ${invoiceData?.total || 0} VND`, { x: 50, y: y, size: 14, font: customFont });
-  y -= 20;
-  page.drawText(`Giảm giá: -${invoiceData?.discount || 0} VND`, { x: 50, y: y, size: 14, font: customFont });
-  y -= 20;
-  page.drawText(`Thuế (10%): -${invoiceData?.tax || 0} VND`, { x: 50, y: y, size: 14, font: customFont });
-  y -= 20;
-  page.drawText(`Giá cuối: ${invoiceData?.finalTotal || 0} VND`, {
-    x: 50,
-    y: y,
-    size: 16,
-    font: customFont,
-    color: rgb(1, 0, 0)
-  });
+    if (invoiceData?.orderItems && invoiceData.orderItems.length > 0) {
+      invoiceData.orderItems.forEach((item: any, index: number) => {
+        const itemTotal = item.price * item.quantity;
+        const itemDiscount = (item.discount || item.product?.discount || 0) * item.quantity;
+        const finalItemTotal = itemTotal - itemDiscount;
 
-  y -= 40;
-  page.drawText('CẢM ƠN QUÝ KHÁCH ĐÃ TIN TƯỞNG PHUNGFOOD!', { x: 100, y: y, size: 14, font: customFont });
+        page.drawRectangle({
+          x: margin,
+          y: y - rowHeight,
+          width: tableWidth,
+          height: rowHeight,
+          borderColor: rgb(0, 0, 0),
+          borderWidth: 1
+        });
 
-  const pdfBytes = await pdfDoc.save();
-  return Buffer.from(pdfBytes);
+        const rowData = [
+          (index + 1).toString(),
+          item.product?.name || 'SP Không xác định',
+          item.quantity.toString(),
+          formatPriceLocaleVi(item.price),
+          formatPriceLocaleVi(item.discount || item.product?.discount || 0),
+          formatPriceLocaleVi(finalItemTotal)
+        ];
+
+        rowData.forEach((value, i) => {
+          let displayValue = value;
+          if (i === 1 && customFont.widthOfTextAtSize(value, 10) > colWidths[i] - 10) {
+            let truncated = value;
+            while (customFont.widthOfTextAtSize(truncated + '...', 10) > colWidths[i] - 10 && truncated.length > 0) {
+              truncated = truncated.slice(0, -1);
+            }
+            displayValue = truncated + '...';
+          }
+
+          page.drawText(displayValue, {
+            x: colStarts[i] + 5,
+            y: y - 15,
+            size: 10,
+            font: customFont,
+            color: rgb(0, 0, 0)
+          });
+
+          if (i < rowData.length - 1) {
+            page.drawLine({
+              start: { x: colStarts[i + 1], y: y },
+              end: { x: colStarts[i + 1], y: y - rowHeight },
+              thickness: 1,
+              color: rgb(0, 0, 0)
+            });
+          }
+        });
+
+        y -= rowHeight;
+      });
+    } else {
+      page.drawRectangle({
+        x: margin,
+        y: y - rowHeight,
+        width: tableWidth,
+        height: rowHeight,
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 1
+      });
+
+      page.drawText('Không có sản phẩm', {
+        x: centerX - customFont.widthOfTextAtSize('Không có sản phẩm', 10) / 2,
+        y: y - 15,
+        size: 10,
+        font: customFont,
+        color: rgb(0, 0, 0)
+      });
+
+      y -= rowHeight;
+    }
+
+    y -= 20;
+
+    const summaryLabels: any = ['Tổng hoá đơn:', 'Giảm giá:', 'Khuyến mãi (voucher):', 'Thuế (10%):', 'Giá cuối:'];
+
+    const summaryValues: any = [
+      formatPriceLocaleVi(subtotal),
+      '- ' + formatPriceLocaleVi(discount),
+      '- 0₫',
+      '- ' + formatPriceLocaleVi(tax),
+      formatPriceLocaleVi(finalTotal)
+    ];
+
+    for (let i = 0; i < summaryLabels.length; i++) {
+      const isLastItem = i === summaryLabels.length - 1;
+      const fontSize = isLastItem ? 12 : 10;
+      const fontColor = isLastItem ? rgb(0.8, 0, 0) : rgb(0, 0, 0);
+
+      page.drawText(summaryLabels[i], {
+        x: margin,
+        y: y,
+        size: fontSize,
+        font: customFont,
+        color: fontColor
+      });
+
+      page.drawText(summaryValues[i], {
+        x: width - margin - customFont.widthOfTextAtSize(summaryValues[i], fontSize),
+        y: y,
+        size: fontSize,
+        font: customFont,
+        color: fontColor
+      });
+
+      y -= 20;
+    }
+
+    y -= 20;
+
+    const thankYouMsg = 'CẢM ƠN QUÝ KHÁCH ĐÃ TIN TƯỞNG PHUNGFOOD!';
+    page.drawText(thankYouMsg, {
+      x: centerX - customFont.widthOfTextAtSize(thankYouMsg, 12) / 2,
+      y: y,
+      size: 12,
+      font: customFont,
+      color: rgb(0, 0, 0)
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    return Buffer.from(pdfBytes);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw new Error('Failed to generate PDF invoice');
+  }
 };

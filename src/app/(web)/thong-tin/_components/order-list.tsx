@@ -16,6 +16,7 @@ import {
 } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
+import clsx from 'clsx';
 import Link from 'next/link';
 import { useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
@@ -131,93 +132,95 @@ export default function OrderList({ orders, isLoading }: any) {
         </Tabs.List>
 
         <Tabs.Panel value={activeTab || 'all'}>
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-              <Table.Tr>
-                <Table.Th>Mã đơn</Table.Th>
-                <Table.Th>Ngày đặt hàng</Table.Th>
-                <Table.Th>Tổng tiền</Table.Th>
-                <Table.Th>Trạng thái</Table.Th>
-                <Table.Th></Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {filteredOrders?.length > 0 ? (
-                filteredOrders.map((order: any) => (
-                  <Table.Tr key={order.id}>
-                    <Table.Td>{order.id}</Table.Td>
-                    <Table.Td>{formatDate(order.date)}</Table.Td>
-                    <Table.Td>{formatPriceLocaleVi(order.total)}</Table.Td>
-                    <Table.Td style={{ textTransform: 'capitalize' }}>
-                      <Badge
-                        size='xs'
-                        color={getStatusColor(order.status)}
-                        p={'xs'}
-                        className='align-items-center flex'
-                      >
-                        <Flex align={'center'}>
-                          {getStatusText(order.status)}
-                          {getStatusIcon(order.status)}
-                        </Flex>
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap={8}>
-                        <Tooltip label='Delete Order'>
-                          <ActionIcon
-                            color='red'
-                            onClick={() => {
-                              handleDelete({ id: order.id }, mutationDelete, 'Order');
-                            }}
-                          >
-                            <IconTrash size={16} />
-                          </ActionIcon>
-                        </Tooltip>
+          <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+            <Table striped highlightOnHover withTableBorder withColumnBorders>
+              <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+                <Table.Tr>
+                  <Table.Th style={{ minWidth: 100 }}>Mã đơn</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Ngày đặt hàng</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Tổng tiền</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Trạng thái</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}></Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {filteredOrders?.length > 0 ? (
+                  filteredOrders.map((order: any) => (
+                    <Table.Tr key={order.id}>
+                      <Table.Td>{order.id}</Table.Td>
+                      <Table.Td>{formatDate(order.date)}</Table.Td>
+                      <Table.Td>{formatPriceLocaleVi(order.total)}</Table.Td>
+                      <Table.Td style={{ textTransform: 'capitalize' }}>
+                        <Badge
+                          size='xs'
+                          color={getStatusColor(order.status)}
+                          p={'xs'}
+                          className='align-items-center flex'
+                        >
+                          <Flex align={'center'}>
+                            {getStatusText(order.status)}
+                            {getStatusIcon(order.status)}
+                          </Flex>
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Group gap={8}>
+                          <Tooltip label='Delete Order'>
+                            <ActionIcon
+                              color='red'
+                              onClick={() => {
+                                handleDelete({ id: order.id }, mutationDelete, 'Order');
+                              }}
+                            >
+                              <IconTrash size={16} />
+                            </ActionIcon>
+                          </Tooltip>
 
-                        {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
+                          {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
 
-                        {order?.status === OrderStatus.PROCESSING && (
-                          <Link href={`/thanh-toan/${order.id}`}>
-                            <Tooltip label='Tiếp tục thanh toán'>
-                              <Button size='xs'>Thanh toán</Button>
-                            </Tooltip>
-                          </Link>
-                        )}
+                          {order?.status === OrderStatus.PROCESSING && (
+                            <Link href={`/thanh-toan/${order.id}`}>
+                              <Tooltip label='Tiếp tục thanh toán'>
+                                <Button size='xs'>Thanh toán</Button>
+                              </Tooltip>
+                            </Link>
+                          )}
 
-                        {order?.status === OrderStatus.CANCELLED && (
-                          <Link href={`/thanh-toan/${order.id}`}>
-                            <Tooltip label='Đặt lại đơn hàng'>
-                              <Button size='xs'>Đặt lại</Button>
-                            </Tooltip>
-                          </Link>
-                        )}
-                        <Tooltip label='Chi tiết'>
-                          <Button
-                            size='xs'
-                            onClick={() => {
-                              openModal('orders', null, order);
-                            }}
-                          >
-                            Chi tiết
-                          </Button>
-                        </Tooltip>
-                      </Group>
+                          {order?.status === OrderStatus.CANCELLED && (
+                            <Link href={`/thanh-toan/${order.id}`}>
+                              <Tooltip label='Đặt lại đơn hàng'>
+                                <Button size='xs'>Đặt lại</Button>
+                              </Tooltip>
+                            </Link>
+                          )}
+                          <Tooltip label='Chi tiết'>
+                            <Button
+                              size='xs'
+                              onClick={() => {
+                                openModal('orders', null, order);
+                              }}
+                            >
+                              Chi tiết
+                            </Button>
+                          </Tooltip>
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))
+                ) : (
+                  <Table.Tr>
+                    <Table.Td colSpan={4}>
+                      <Center>
+                        <Text size='sm' color='dimmed'>
+                          Không có đơn hàng
+                        </Text>
+                      </Center>
                     </Table.Td>
                   </Table.Tr>
-                ))
-              ) : (
-                <Table.Tr>
-                  <Table.Td colSpan={4}>
-                    <Center>
-                      <Text size='sm' color='dimmed'>
-                        Không có đơn hàng
-                      </Text>
-                    </Center>
-                  </Table.Td>
-                </Table.Tr>
-              )}
-            </Table.Tbody>
-          </Table>
+                )}
+              </Table.Tbody>
+            </Table>
+          </div>
         </Tabs.Panel>
       </Tabs>
     </Card>

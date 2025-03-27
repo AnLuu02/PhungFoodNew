@@ -122,7 +122,7 @@ model Product {
   region            String
   soldQuantity      Int             @default(0)
   availableQuantity Int             @default(100)
-  rating            Float           @default(0.0)
+  rating            Float           @default(5.0)
   totalRating       Int             @default(0)
   orderItem         OrderItem[]
   review            Review[]

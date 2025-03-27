@@ -62,21 +62,6 @@ export const Header1 = ({ restaurant }: any) => {
       </Center>
 
       <Group align={'center'} justify='center' gap={0}>
-        {/* <Group align={'center'} gap={'sm'}>
-          <Image
-            src={'/images/png/co vn.png'}
-            w={langue === 'vn' ? 35 : 20}
-            onClick={() => setLangue('vn')}
-            className={clsx(langue === 'vn' ? '' : 'cursor-pointer')}
-          />
-          <Text>|</Text>
-          <Image
-            src={'/images/png/co anh.png'}
-            w={langue === 'us' ? 35 : 20}
-            onClick={() => setLangue('us')}
-            className={clsx(langue === 'us' ? '' : 'cursor-pointer')}
-          />
-        </Group> */}
         <Group gap='md' align={'center'} justify='center'>
           {restaurant?.openedHours && restaurant?.closedHours ? (
             <Button
@@ -143,10 +128,10 @@ export const Header1 = ({ restaurant }: any) => {
                   <Group gap={7}>
                     <Avatar src={user?.user?.image} alt='User avatar' radius='lg' size={30} />
                     <div className='hidden text-left sm:block'>
-                      <Text fw={700} size='sm' lh={1} className='text-black'>
+                      <Text fw={700} size='sm' lh={1} c={'black'}>
                         {user?.user?.name}
                       </Text>
-                      <Text size='xs' fw={700} className='text-gray-500'>
+                      <Text size='xs' fw={700} c={'dimmed'}>
                         {user?.user?.email}
                       </Text>
                     </div>
@@ -160,10 +145,19 @@ export const Header1 = ({ restaurant }: any) => {
               </Menu.Target>
               <Menu.Dropdown className='bg-[#f8c144]'>
                 <Group fw={500} pl={'xs'}>
-                  <IconLighter fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                  <IconLighter
+                    color='black'
+                    fontWeight={'bold'}
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
                   <Switch
                     size='md'
-                    label={<Text size='sm'>Chế độ nền</Text>}
+                    label={
+                      <Text size='sm' c={'black'}>
+                        Chế độ nền
+                      </Text>
+                    }
                     labelPosition='left'
                     onChange={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
                     onLabel={<IconSun style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
@@ -172,26 +166,40 @@ export const Header1 = ({ restaurant }: any) => {
                 </Group>
 
                 <Divider />
-                <Link href={`/thong-tin`} className='text-white'>
+                <Link href={`/thong-tin`}>
                   <Menu.Item
                     fw={500}
                     leftSection={
-                      <IconUser fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                      <IconUser
+                        color='black'
+                        fontWeight={'bold'}
+                        style={{ width: rem(16), height: rem(16) }}
+                        stroke={1.5}
+                      />
                     }
                   >
-                    Thông tin cá nhân
+                    <Text size='sm' c={'black'} p={0}>
+                      Thông tin cá nhân
+                    </Text>
                   </Menu.Item>
                 </Link>
                 <Divider />
 
-                <Link href={`/don-hang-cua-toi`} className='text-white'>
+                <Link href={`/don-hang-cua-toi`}>
                   <Menu.Item
                     fw={500}
                     leftSection={
-                      <IconShoppingBag fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                      <IconShoppingBag
+                        color='black'
+                        fontWeight={'bold'}
+                        style={{ width: rem(16), height: rem(16) }}
+                        stroke={1.5}
+                      />
                     }
                   >
-                    Đơn hàng của tôi
+                    <Text size='sm' c={'black'} p={0}>
+                      Đơn hàng của tôi
+                    </Text>
                   </Menu.Item>
                 </Link>
                 <Divider />

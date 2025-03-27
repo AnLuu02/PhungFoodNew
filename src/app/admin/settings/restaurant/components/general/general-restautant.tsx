@@ -112,18 +112,12 @@ export default function GeneralSettingsManagement() {
   const updateMutation = api.Restaurant.update.useMutation({
     onSuccess: () => {
       utils.SubCategory.invalidate();
-    },
-    onError: e => {
-      console.log(e);
     }
   });
 
   const createMutation = api.Restaurant.create.useMutation({
     onSuccess: () => {
       utils.SubCategory.invalidate();
-    },
-    onError: e => {
-      console.log(e);
     }
   });
 

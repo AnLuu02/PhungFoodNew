@@ -54,8 +54,8 @@ export default function NavigationHeader({
   close?: () => void;
 }) {
   const { data: user } = useSession();
-  const [cart, setCart, resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [seletedVouchers, setSelectedVouchers, resetSelectedVouchers] = useLocalStorage<any[]>({
+  const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [, , resetSelectedVouchers] = useLocalStorage<any[]>({
     key: 'vouchers',
     defaultValue: []
   });

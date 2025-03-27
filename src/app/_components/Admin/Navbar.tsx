@@ -1,20 +1,43 @@
-import { Box, NavLink, rem, ScrollArea, Stack, Text } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Divider,
+  Group,
+  Menu,
+  NavLink,
+  rem,
+  ScrollArea,
+  Stack,
+  Switch,
+  Text,
+  UnstyledButton,
+  useComputedColorScheme,
+  useMantineColorScheme
+} from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import {
   IconBrandPolymer,
   IconCategory,
   IconCheese,
+  IconChevronDown,
   IconCreditCardPay,
   IconDatabaseDollar,
   IconImageInPicture,
   IconLayoutDashboard,
+  IconLighter,
   IconLogout,
   IconMenuOrder,
+  IconMoon,
   IconSettings,
+  IconSun,
   IconTicket,
   IconUser
 } from '@tabler/icons-react';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { breakpoints } from '~/app/lib/utils/constants/device';
+import { GlobalSearch } from '../Search/GlobalSearch';
+
 const navItems = [
   { label: 'Tổng quan', icon: IconLayoutDashboard, href: '/admin' },
 
@@ -63,8 +86,82 @@ const navItems = [
 ];
 
 export default function Navbar() {
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
+  const notDesktop = useMediaQuery(`(max-width: 1023px)`);
+
+  const { data: user } = useSession();
+
   return (
     <>
+      {notDesktop && (
+        <Group px={'md'} mt={'md'} align='flex-end'>
+          <Menu width={200} position='bottom-end' transitionProps={{ transition: 'fade-down' }} offset={0} withinPortal>
+            <Menu.Target>
+              <UnstyledButton
+                className={`flex items-center rounded-full p-1 transition-colors duration-200 hover:opacity-95`}
+              >
+                <Group gap={7}>
+                  <Avatar src={user?.user?.image} alt='User avatar' radius='lg' size={30} />
+                  <div className='text-left'>
+                    <Text fw={700} size='sm' lh={1}>
+                      {user?.user?.name}
+                    </Text>
+                    <Text size='xs' fw={700} c={'dimmed'}>
+                      {user?.user?.email}
+                    </Text>
+                  </div>
+                  <IconChevronDown style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
+                </Group>
+              </UnstyledButton>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Group fw={500} pl={'xs'}>
+                <IconLighter fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                <Switch
+                  size='md'
+                  label={<Text size='sm'>Chế độ nền</Text>}
+                  labelPosition='left'
+                  onChange={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
+                  onLabel={<IconSun style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
+                  offLabel={<IconMoon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
+                />
+              </Group>
+
+              <Divider />
+              <Link href={`/thong-tin`} className='text-white'>
+                <Menu.Item
+                  fw={500}
+                  leftSection={
+                    <IconUser fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                  }
+                >
+                  Thông tin cá nhân
+                </Menu.Item>
+              </Link>
+              <Divider />
+
+              <Menu.Item
+                fw={500}
+                leftSection={
+                  <IconLogout fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
+                }
+                color='white'
+                mt={'xs'}
+                className='bg-red-500 hover:bg-red-600'
+                onClick={() => {
+                  signOut({ callbackUrl: 'https://www.facebook.com/' });
+                }}
+              >
+                Đăng xuất
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+
+          {isMobile && <GlobalSearch width={400} />}
+        </Group>
+      )}
       <ScrollArea.Autosize scrollbarSize={6}>
         <Stack p={10} gap='xs'>
           {navItems.map(item => {

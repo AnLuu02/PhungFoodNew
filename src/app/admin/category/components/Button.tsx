@@ -2,6 +2,7 @@
 
 import { ActionIcon, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
+import clsx from 'clsx';
 import { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
@@ -132,24 +133,26 @@ export function CreateManyCategoryButton() {
         title={<Title order={3}>Xem trước dữ liệu</Title>}
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-              <Table.Tr>
-                <Table.Th>Tên danh mục</Table.Th>
-                <Table.Th>Tag</Table.Th>
-                <Table.Th>Mô tả</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {data.map((row, index) => (
-                <Table.Tr key={index}>
-                  <Table.Td>{row['Tên danh mục']}</Table.Td>
-                  <Table.Td>{row['Tag']}</Table.Td>
-                  <Table.Td>{row['Mô tả']}</Table.Td>
+          <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+            <Table striped highlightOnHover withTableBorder withColumnBorders>
+              <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+                <Table.Tr>
+                  <Table.Th style={{ minWidth: 100 }}>Tên danh mục</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Tag</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Mô tả</Table.Th>
                 </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
+              </Table.Thead>
+              <Table.Tbody>
+                {data.map((row, index) => (
+                  <Table.Tr key={index}>
+                    <Table.Td>{row['Tên danh mục']}</Table.Td>
+                    <Table.Td>{row['Tag']}</Table.Td>
+                    <Table.Td>{row['Mô tả']}</Table.Td>
+                  </Table.Tr>
+                ))}
+              </Table.Tbody>
+            </Table>
+          </div>
         </ScrollAreaAutosize>
         <Group mt='md' align='flex-end'>
           <Button
