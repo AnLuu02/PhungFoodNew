@@ -157,7 +157,7 @@ model Review {
   id        String    @id @default(cuid())
   userId    String
   productId String
-  rating    Float     @default(0.0)
+  rating    Float     @default(5.0)
   comment   String?
   createdAt DateTime? @default(now())
   user      User      @relation(fields: [userId], references: [id])
