@@ -67,7 +67,7 @@ const TabsPanelCarousel = ({ data }: any) => {
       ) : (
         <Carousel
           w='100%'
-          slideSize={{ base: '100%', sm: '50%', md: '33.33333%', xl: '25%' }}
+          slideSize={{ base: '100%', sm: '33.33333%', md: '33.33333%', xl: '25%' }}
           slideGap={{ base: rem(20) }}
           h={320}
           dragFree

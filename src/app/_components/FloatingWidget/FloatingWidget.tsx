@@ -11,7 +11,7 @@ export default function FloatingWidget() {
   return (
     !pathname.includes('admin') && (
       <>
-        <Box className='fixed bottom-20 left-4 flex flex-col space-y-4'>
+        <Box className='fixed bottom-20 left-4 z-[9999] flex flex-col space-y-4'>
           <Menu shadow='md' width={'max-content'} position='top-start' offset={0}>
             <Menu.Target>
               <Center
@@ -31,7 +31,7 @@ export default function FloatingWidget() {
             </Menu.Dropdown>
           </Menu>
         </Box>
-        <Box className='fixed bottom-20 right-4 flex flex-col space-y-4'>
+        <Box className='fixed bottom-20 right-4 z-[9999] flex flex-col space-y-4'>
           <Menu shadow='md' width={250} position='top'>
             <Menu.Target>
               <Center

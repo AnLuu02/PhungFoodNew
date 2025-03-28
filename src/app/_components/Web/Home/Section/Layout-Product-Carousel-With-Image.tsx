@@ -41,7 +41,7 @@ const LayoutProductCarouselWithImage = ({
       <Flex h={'100%'} direction={{ base: 'column', md: reverseGrid ? 'row-reverse' : 'row' }}>
         <BackgroundImage
           src={imageUrl || '/images/jpg/best-saller.jpg'}
-          className='relative bg-cover bg-no-repeat'
+          className='relative hidden bg-cover bg-no-repeat lg:block'
           h={'100%'}
           w={{ base: '100%', md: '25%' }}
           pos={'relative'}

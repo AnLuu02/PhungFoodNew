@@ -81,6 +81,8 @@ export default function NotificationDialog() {
         arrowSize={12}
         onChange={setIsOpen}
         position='bottom-end'
+        withOverlay
+        overlayProps={{ opacity: 0.5 }}
         width={360}
         shadow='md'
         closeOnItemClick={false}
