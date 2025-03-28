@@ -8,7 +8,10 @@ import {
   Center,
   Flex,
   Group,
+  Pagination,
   Progress,
+  Select,
+  Stack,
   Table,
   Tabs,
   Text,
@@ -21,6 +24,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
 import LoadingComponent from '~/app/_components/Loading/Loading';
+import SearchLocal from '~/app/_components/Search/SearchLocal';
 import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
@@ -34,6 +38,10 @@ import {
 import { api } from '~/trpc/react';
 export default function OrderList({ orders, isLoading }: any) {
   const [activeTab, setActiveTab] = useState<string | null>('all');
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
+  const [valueSearch, setValueSearch] = useState<string | null>(null);
+
   const mockOrders =
     orders?.map((order: any) => ({
       ...order,
@@ -44,7 +52,17 @@ export default function OrderList({ orders, isLoading }: any) {
 
   const filteredOrders =
     activeTab === 'all' ? mockOrders : mockOrders.filter((order: any) => order.status === activeTab);
+  const filteredOrdersSearch = valueSearch
+    ? filteredOrders?.filter((order: any) => {
+        const search = valueSearch?.toLowerCase() || '';
+        return [order?.payment?.name, order?.status, order?.total?.toString(), order?.id?.toString()]
+          .filter(Boolean)
+          .some((field: any) => field?.toLowerCase().includes(search));
+      })
+    : filteredOrders;
 
+  const totalPages = Math.ceil(filteredOrdersSearch.length / perPage);
+  const displayedOrders = filteredOrdersSearch.slice((page - 1) * perPage, page * perPage);
   const statusObj = getTotalOrderStatus(mockOrders);
   const { openModal } = useModal();
 
@@ -104,31 +122,34 @@ export default function OrderList({ orders, isLoading }: any) {
       </Text>
 
       <Tabs variant='pills' content='center' value={activeTab} onChange={setActiveTab}>
-        <Tabs.List className='flex justify-end' bg={'gray.1'} mb={'md'}>
-          <Group gap={0}>
-            <Tabs.Tab size={'md'} fw={700} value='all'>
-              Tất cả
-            </Tabs.Tab>
-            <Tabs.Tab size={'md'} fw={700} value={OrderStatus.COMPLETED}>
-              Hoàn thành
-            </Tabs.Tab>
+        <Tabs.List bg={'gray.1'} mb={'md'}>
+          <Flex w={'100%'} direction={{ base: 'column', sm: 'column', md: 'column', lg: 'row' }}>
+            <Group gap={0}>
+              <Tabs.Tab size={'md'} fw={700} value='all'>
+                Tất cả
+              </Tabs.Tab>
+              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.COMPLETED}>
+                Hoàn thành
+              </Tabs.Tab>
 
-            <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PROCESSING}>
-              Chưa thanh toán
-            </Tabs.Tab>
+              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PENDING}>
+                Chờ xử lý
+              </Tabs.Tab>
+              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PROCESSING}>
+                Chưa thanh toán
+              </Tabs.Tab>
 
-            <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PENDING}>
-              Chờ xử lý
-            </Tabs.Tab>
-
-            <Tabs.Tab size={'md'} fw={700} value={OrderStatus.DELIVERED}>
-              Đang giao hàng
-            </Tabs.Tab>
-
-            <Tabs.Tab size={'md'} fw={700} value={OrderStatus.CANCELLED}>
-              Đã hủy
-            </Tabs.Tab>
-          </Group>
+              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.DELIVERED}>
+                Đang giao hàng
+              </Tabs.Tab>
+              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.CANCELLED}>
+                Đã hủy
+              </Tabs.Tab>
+            </Group>
+            <Stack flex={1} ml={{ base: 0, sm: 0, md: 0, lg: 'md' }} mt={{ base: 'xs', sm: 'xs', md: 'xs', lg: 0 }}>
+              <SearchLocal setValue={setValueSearch} />
+            </Stack>
+          </Flex>
         </Tabs.List>
 
         <Tabs.Panel value={activeTab || 'all'}>
@@ -140,12 +161,12 @@ export default function OrderList({ orders, isLoading }: any) {
                   <Table.Th style={{ minWidth: 100 }}>Ngày đặt hàng</Table.Th>
                   <Table.Th style={{ minWidth: 100 }}>Tổng tiền</Table.Th>
                   <Table.Th style={{ minWidth: 100 }}>Trạng thái</Table.Th>
-                  <Table.Th style={{ minWidth: 100 }}></Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Thao tác</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
-                {filteredOrders?.length > 0 ? (
-                  filteredOrders.map((order: any) => (
+                {displayedOrders?.length > 0 ? (
+                  displayedOrders.map((order: any) => (
                     <Table.Tr key={order.id}>
                       <Table.Td>{order.id}</Table.Td>
                       <Table.Td>{formatDate(order.date)}</Table.Td>
@@ -223,6 +244,18 @@ export default function OrderList({ orders, isLoading }: any) {
           </div>
         </Tabs.Panel>
       </Tabs>
+      <Flex mt='xl' justify='flex-end' align={'center'} gap={'md'} direction={{ base: 'column-reverse', md: 'row' }}>
+        <Pagination total={totalPages} value={page} onChange={setPage} />
+        <Select
+          value={String(perPage)}
+          w={100}
+          onChange={value => {
+            setPerPage(Number(value));
+            setPage(1);
+          }}
+          data={['5', '10', '15', '20']}
+        />
+      </Flex>
     </Card>
   );
 }

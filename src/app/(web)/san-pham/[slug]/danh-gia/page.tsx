@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Divider, Grid, GridCol, ScrollAreaAutosize, Stack } from '@mantine/core';
+import { Box, Divider, Grid, GridCol, ScrollAreaAutosize } from '@mantine/core';
 import { CommentsForm } from '~/app/_components/Comments/CommentsForm';
 import { CommentsList } from '~/app/_components/Comments/CommentsList';
 import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
@@ -18,34 +18,42 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       return acc;
     }, ratingCountsDefault) || ratingCountsDefault;
   return (
-    <Container size='xl' py='xl'>
-      <Grid gutter='xl'>
-        <GridCol span={12}>
-          <Stack gap='xl'>
-            <Grid>
-              <GridCol span={3}>
-                {isLoading ? <CardSkeleton /> : <ProductCardCarouselVertical product={product} />}
-              </GridCol>
-              <GridCol span={4}>
-                {isLoading ? <CardSkeleton /> : <RatingStatistics ratings={ratingCounts} />}
-                <Divider my='xl' />
-              </GridCol>
-              <GridCol span={5}>
-                {isLoading ? (
-                  <CardSkeleton />
-                ) : (
-                  <>
-                    <ScrollAreaAutosize mah={500}>
-                      <CommentsList data={product?.review || []} />
-                    </ScrollAreaAutosize>
-                    <CommentsForm product={product} />
-                  </>
-                )}
-              </GridCol>
-            </Grid>
-          </Stack>
+    <Box py='md'>
+      <Grid>
+        <GridCol
+          pos={{ base: 'relative', md: 'sticky' }}
+          top={{ base: 0, md: 70 }}
+          className='h-fit'
+          span={{ base: 12, sm: 5, md: 3, lg: 3 }}
+        >
+          {isLoading ? <CardSkeleton /> : <ProductCardCarouselVertical product={product} />}
+        </GridCol>
+        <GridCol
+          pos={{ base: 'relative', md: 'sticky' }}
+          top={{ base: 0, md: 70 }}
+          className='h-fit'
+          span={{ base: 12, sm: 6, md: 3, lg: 3 }}
+        >
+          {isLoading ? <CardSkeleton /> : <RatingStatistics ratings={ratingCounts} />}
+          <Divider my='xl' />
+        </GridCol>
+        <GridCol
+          className='h-fit'
+          span={{ base: 12, sm: 12, md: 6, lg: 6 }}
+          mt={{ base: 'md', sm: 'md', md: 0, lg: 0 }}
+        >
+          {isLoading ? (
+            <CardSkeleton />
+          ) : (
+            <>
+              <ScrollAreaAutosize mah={500}>
+                <CommentsList data={product?.review || []} />
+              </ScrollAreaAutosize>
+              <CommentsForm product={product} />
+            </>
+          )}
         </GridCol>
       </Grid>
-    </Container>
+    </Box>
   );
 }

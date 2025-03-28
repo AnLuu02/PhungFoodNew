@@ -10,7 +10,7 @@ export function RatingStatistics({ ratings }: RatingStatisticsProps) {
   const averageRating = ratings.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings || 0;
   return (
     <Paper withBorder p='md'>
-      <Stack>
+      <Stack gap={'xs'}>
         <Group>
           <Text size='xl' fw={700}>
             {averageRating.toFixed(1)}

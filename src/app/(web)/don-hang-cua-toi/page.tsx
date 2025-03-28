@@ -8,8 +8,11 @@ import {
   Flex,
   Grid,
   Group,
+  Pagination,
   Paper,
   RingProgress,
+  Select,
+  Stack,
   Table,
   Text,
   Title,
@@ -17,10 +20,12 @@ import {
 } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
+import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
+import SearchLocal from '~/app/_components/Search/SearchLocal';
 import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
@@ -30,6 +35,9 @@ import { api } from '~/trpc/react';
 import { default as Empty } from '../../_components/Empty';
 
 export default function MyOrderPage() {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
+  const [valueSearch, setValueSearch] = useState<string | null>(null);
   const { data: user } = useSession();
   const { data } = api.Order.getFilter.useQuery({ s: user?.user?.email || '' });
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
@@ -37,20 +45,28 @@ export default function MyOrderPage() {
   const filteredOrders = selectedStatus
     ? orders?.filter(order => order.status.toLowerCase() === selectedStatus.toLowerCase())
     : orders;
-  const statusCounts = [
-    { status: OrderStatus.PROCESSING, count: orders?.filter(i => i.status === OrderStatus.PROCESSING)?.length || 0 },
-    { status: OrderStatus.PENDING, count: orders?.filter(i => i.status === OrderStatus.PENDING)?.length || 0 },
-    { status: OrderStatus.DELIVERED, count: orders?.filter(i => i.status === OrderStatus.DELIVERED)?.length || 0 },
-    { status: OrderStatus.COMPLETED, count: orders?.filter(i => i.status === OrderStatus.COMPLETED)?.length || 0 },
-    { status: OrderStatus.CANCELLED, count: orders?.filter(i => i.status === OrderStatus.CANCELLED)?.length || 0 }
-  ];
+  const filteredOrdersSearch = valueSearch
+    ? filteredOrders?.filter(order => {
+        const search = valueSearch?.toLowerCase() || '';
+        return [order?.payment?.name, order?.status, order?.total?.toString(), order?.id?.toString()]
+          .filter(Boolean)
+          .some((field: any) => field?.toLowerCase().includes(search));
+      })
+    : filteredOrders;
+
+  const totalPages = Math.ceil(filteredOrdersSearch.length / perPage);
+  const displayedOrders = filteredOrdersSearch.slice((page - 1) * perPage, page * perPage);
+  const statusCounts = Object.values(OrderStatus).map(status => ({
+    status,
+    count: orders?.reduce((acc, order) => (order.status === status ? acc + 1 : acc), 0) || 0
+  }));
+
   const totalOrders = orders?.length || 0;
   const totalAmount = React.useMemo(() => {
     return orders?.reduce((total: number, item) => total + item.total, 0) || 0;
   }, [orders]);
   const mutationDelete = api.Order.delete.useMutation();
   const { openModal } = useModal();
-
   return (
     <Grid gutter='md'>
       <Grid.Col
@@ -74,7 +90,7 @@ export default function MyOrderPage() {
                   }`}
                   onClick={() => setSelectedStatus(status === selectedStatus ? null : status)}
                 >
-                  <Group>
+                  <Flex align={'center'} gap={'md'}>
                     <RingProgress
                       size={80}
                       roundCaps
@@ -90,10 +106,10 @@ export default function MyOrderPage() {
                         {status}
                       </Text>
                       <Text size='xs' c='dimmed'>
-                        {((count / (totalOrders || 1)) * 100).toFixed(1)}% of total
+                        Chiếm {((count / (totalOrders || 1)) * 100).toFixed(1)}%
                       </Text>
                     </div>
-                  </Group>
+                  </Flex>
                 </Card>
               </Grid.Col>
             ))}
@@ -102,7 +118,12 @@ export default function MyOrderPage() {
       </Grid.Col>
       <Grid.Col span={{ base: 12, md: 8, lg: 8 }} className='h-fit'>
         <Paper withBorder shadow='sm' p='md' className='h-full'>
-          <Flex justify={'space-between'} align={'flex-start'}>
+          <Flex
+            justify={'space-between'}
+            align={'flex-start'}
+            direction={{ base: 'column', sm: 'row', md: 'row', lg: 'row' }}
+            mb={{ base: 20, sm: 0, md: 0, lg: 0 }}
+          >
             <Title order={3} className='mb-4 font-quicksand'>
               Chi tiết đặt hàng
             </Title>
@@ -115,95 +136,120 @@ export default function MyOrderPage() {
               </Text>
             </Group>
           </Flex>
-          <Table striped highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Thanh toán</Table.Th>
-                <Table.Th>Tổng đơn</Table.Th>
-                <Table.Th>Tạo ngày</Table.Th>
-                <Table.Th>Trạng thái</Table.Th>
-                <Table.Th></Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-
-            <Table.Tbody>
-              {!filteredOrders?.length ? (
-                <Table.Tr bg={'transparent'}>
-                  <Table.Td colSpan={12}>
-                    <Empty
-                      title='Chưa có hóa đơn'
-                      content={'Vui lòng mua hàng để tạo hóa đơn'}
-                      url='/gio-hang'
-                      size='md'
-                    />
-                  </Table.Td>
+          <Stack my='md'>
+            <SearchLocal setValue={setValueSearch} />
+          </Stack>
+          <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+            <Table striped highlightOnHover withTableBorder withColumnBorders>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th style={{ minWidth: 100 }}>Mã đơn</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Thanh toán</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Tổng đơn</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Tạo ngày</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Trạng thái</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Thao tác</Table.Th>
                 </Table.Tr>
-              ) : (
-                filteredOrders.map((order: any) => (
-                  <Table.Tr key={order.id}>
-                    <Table.Td>{order.payment?.name}</Table.Td>
-                    <Table.Td>{formatPriceLocaleVi(order.total)}</Table.Td>
-                    <Table.Td>{formatDate(order.createdAt)}</Table.Td>
-                    <Table.Td>
-                      <Badge
-                        size='xs'
-                        color={getStatusColor(order.status)}
-                        p={'xs'}
-                        className='align-items-center flex'
-                      >
-                        <Flex align={'center'}>
-                          {getStatusText(order.status)}
-                          {getStatusIcon(order.status)}
-                        </Flex>
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap={8}>
-                        <Tooltip label='Delete Order'>
-                          <ActionIcon
-                            color='red'
-                            onClick={() => {
-                              handleDelete({ id: order.id }, mutationDelete, 'Order');
-                            }}
-                          >
-                            <IconTrash size={16} />
-                          </ActionIcon>
-                        </Tooltip>
+              </Table.Thead>
 
-                        {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
-
-                        {order?.status === OrderStatus.PROCESSING && (
-                          <Link href={`/thanh-toan/${order.id}`}>
-                            <Tooltip label='Tiếp tục thanh toán'>
-                              <Button size='xs'>Thanh toán</Button>
-                            </Tooltip>
-                          </Link>
-                        )}
-
-                        {order?.status === OrderStatus.CANCELLED && (
-                          <Link href={`/thanh-toan/${order.id}`}>
-                            <Tooltip label='Đặt lại đơn hàng'>
-                              <Button size='xs'>Đặt lại</Button>
-                            </Tooltip>
-                          </Link>
-                        )}
-                        <Tooltip label='Chi tiết'>
-                          <Button
-                            size='xs'
-                            onClick={() => {
-                              openModal('orders', null, order);
-                            }}
-                          >
-                            Chi tiết
-                          </Button>
-                        </Tooltip>
-                      </Group>
+              <Table.Tbody>
+                {!displayedOrders?.length ? (
+                  <Table.Tr bg={'transparent'}>
+                    <Table.Td colSpan={12}>
+                      <Empty
+                        title='Chưa có hóa đơn'
+                        content={'Vui lòng mua hàng để tạo hóa đơn'}
+                        url='/gio-hang'
+                        size='md'
+                      />
                     </Table.Td>
                   </Table.Tr>
-                ))
-              )}
-            </Table.Tbody>
-          </Table>
+                ) : (
+                  displayedOrders.map((order: any) => (
+                    <Table.Tr key={order.id}>
+                      <Table.Td>ORDER-{order.id}</Table.Td>
+                      <Table.Td>{order.payment?.name}</Table.Td>
+                      <Table.Td>{formatPriceLocaleVi(order.total)}</Table.Td>
+                      <Table.Td>{formatDate(order.createdAt)}</Table.Td>
+                      <Table.Td>
+                        <Badge
+                          size='xs'
+                          color={getStatusColor(order.status)}
+                          p={'xs'}
+                          className='align-items-center flex'
+                        >
+                          <Flex align={'center'}>
+                            {getStatusText(order.status)}
+                            {getStatusIcon(order.status)}
+                          </Flex>
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Group gap={8}>
+                          <Tooltip label='Delete Order'>
+                            <ActionIcon
+                              color='red'
+                              onClick={() => {
+                                handleDelete({ id: order.id }, mutationDelete, 'Order');
+                              }}
+                            >
+                              <IconTrash size={16} />
+                            </ActionIcon>
+                          </Tooltip>
+
+                          {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
+
+                          {order?.status === OrderStatus.PROCESSING && (
+                            <Link href={`/thanh-toan/${order.id}`}>
+                              <Tooltip label='Tiếp tục thanh toán'>
+                                <Button size='xs'>Thanh toán</Button>
+                              </Tooltip>
+                            </Link>
+                          )}
+
+                          {order?.status === OrderStatus.CANCELLED && (
+                            <Link href={`/thanh-toan/${order.id}`}>
+                              <Tooltip label='Đặt lại đơn hàng'>
+                                <Button size='xs'>Đặt lại</Button>
+                              </Tooltip>
+                            </Link>
+                          )}
+                          <Tooltip label='Chi tiết'>
+                            <Button
+                              size='xs'
+                              onClick={() => {
+                                openModal('orders', null, order);
+                              }}
+                            >
+                              Chi tiết
+                            </Button>
+                          </Tooltip>
+                        </Group>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))
+                )}
+              </Table.Tbody>
+            </Table>
+          </div>
+          <Flex
+            mt='xl'
+            justify='flex-end'
+            align={'center'}
+            gap={'md'}
+            direction={{ base: 'column-reverse', md: 'row' }}
+          >
+            <Pagination total={totalPages} value={page} onChange={setPage} />
+            <Select
+              value={String(perPage)}
+              w={100}
+              onChange={value => {
+                setPerPage(Number(value));
+                setPage(1);
+              }}
+              data={['5', '10', '15', '20']}
+            />
+          </Flex>
         </Paper>
       </Grid.Col>
     </Grid>
