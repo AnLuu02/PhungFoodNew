@@ -6,10 +6,10 @@ import { ImageType } from '@prisma/client';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Link from 'next/link';
-import { useRef } from 'react';
+import { useMemo } from 'react';
 
 export default function BannerSection({ banner }: any) {
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
+  const autoplay = useMemo(() => Autoplay({ delay: 5000 }), []);
 
   const gallery = banner?.images?.filter((image: any) => image?.type === ImageType.GALLERY) || [];
   const banners = banner?.images?.filter((image: any) => image?.type === ImageType.BANNER) || [];
@@ -25,13 +25,12 @@ export default function BannerSection({ banner }: any) {
   return (
     <Box py='xl'>
       <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
-        {/* Left side - Carousel */}
         <Box w={{ base: '100%', lg: '66.666667%' }}>
           <Carousel
             withControls
             withIndicators
             loop
-            plugins={[autoplay.current]}
+            plugins={[autoplay]}
             nextControlIcon={<IconChevronRight size={24} />}
             previousControlIcon={<IconChevronLeft size={24} />}
             controlSize={40}
