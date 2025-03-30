@@ -3,6 +3,7 @@
 ## 📝 Giới Thiệu
 Đây là ứng dụng website nhà hàng fast food được xây dựng bằng **Next.js 14**, sử dụng **App Router**, **tRPC**, **Prisma**, **PostgreSQL** và các công nghệ hiện đại khác. Ứng dụng hỗ trợ:
 
+- Tìm kiếm bằng voice (chỉ hỗ trợ trình duyệt PC/Laptop)
 - 🛒 Đặt hàng trực tuyến.
 - 💳 Thanh toán qua VNPAY.
 - 📜 Xuất hóa đơn PDF.
@@ -83,6 +84,7 @@ Mở trình duyệt tại: [http://localhost:3000](http://localhost:3000)
 - [x] Responsive trên mọi thiết bị.
 - [x] Hệ thống đánh giá sản phẩm.
 - [x] Thống kê doanh thu và đơn hàng.
+- [x] Tìm kiếm bằng voice (chỉ hỗ trợ trình duyệt PC/Laptop)
 
 ## 🎥 Demo
 Truy cập bản demo tại: [Phung Food](https://phung-food-new.vercel.app/)
