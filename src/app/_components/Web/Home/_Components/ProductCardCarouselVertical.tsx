@@ -29,7 +29,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
 
   useEffect(() => {
     if (user) {
-      const favourite = product?.favourite_food?.find((item: any) => item.userId === user?.user?.id);
+      const favourite = product?.favouriteFood?.find((item: any) => item.userId === user?.user?.id);
       if (favourite) {
         setLike(true);
       }
