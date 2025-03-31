@@ -15,6 +15,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@google/genai": "^0.7.0",
     "@hookform/resolvers": "^3.9.0",
     "@mantine/carousel": "^7.16.2",
     "@mantine/charts": "^7.14.3",
@@ -46,6 +47,7 @@
     "embla-carousel-react": "^7.1.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
+    "html-react-parser": "^5.2.2",
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
     "next": "^14.2.4",

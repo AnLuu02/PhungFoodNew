@@ -11,8 +11,8 @@ export default function FloatingWidget() {
   return (
     !pathname.includes('admin') && (
       <>
-        <Box className='fixed bottom-20 left-4 z-[9999] flex flex-col space-y-4'>
-          <Menu shadow='md' width={'max-content'} position='top-start' offset={0}>
+        <Box pos={'fixed'} bottom={100} left={20} className='z-[9999] flex flex-col space-y-4'>
+          <Menu shadow='md' width={'max-content'} position='top-start' offset={0} zIndex={10000}>
             <Menu.Target>
               <Center
                 className='relative flex h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-[#008b4b] text-white duration-200 ease-in-out hover:opacity-80'
@@ -31,7 +31,7 @@ export default function FloatingWidget() {
             </Menu.Dropdown>
           </Menu>
         </Box>
-        <Box className='fixed bottom-20 right-4 z-[9999] flex flex-col space-y-4'>
+        <Box pos={'fixed'} bottom={100} right={20} className='z-[9999] flex flex-col space-y-4'>
           <Menu shadow='md' width={250} position='top'>
             <Menu.Target>
               <Center

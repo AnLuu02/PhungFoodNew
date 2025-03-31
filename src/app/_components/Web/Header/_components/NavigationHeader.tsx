@@ -68,7 +68,6 @@ export default function NavigationHeader({
       {navigationItem.map((item, index) =>
         item.href === '/thuc-don' ? (
           <Menu
-            shadow='md'
             key={index}
             trigger={'hover'}
             withOverlay
@@ -83,7 +82,7 @@ export default function NavigationHeader({
             }}
             disabled={(categories && categories.length > 0) || !notDesktop ? false : true}
             width={1000}
-            offset={16}
+            offset={0}
             transitionProps={{ transition: 'fade-up', duration: 300 }}
           >
             <Menu.Target>

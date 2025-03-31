@@ -1,8 +1,10 @@
 'use client';
+
 import {
   Avatar,
   Box,
   Button,
+  Center,
   Flex,
   Group,
   Paper,
@@ -13,9 +15,29 @@ import {
   TextInput,
   UnstyledButton
 } from '@mantine/core';
-import { IconMicrophone, IconSend } from '@tabler/icons-react';
+import { IconMicrophone, IconSend, IconSquareFilled } from '@tabler/icons-react';
+import parse from 'html-react-parser';
 import { useSession } from 'next-auth/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
+import { NotifyError } from '~/app/lib/utils/func-handler/toast';
+
+const initialState: any = {
+  searchState: 'initial',
+  transcript: ''
+};
+
+function reducer(state: any, action: any) {
+  switch (action.type) {
+    case 'START_RECORDING':
+      return { ...state, searchState: 'recording', transcript: '' };
+    case 'STOP_RECORDING':
+      return { ...state, searchState: 'completed' };
+    case 'SET_TRANSCRIPT':
+      return { ...state, transcript: action.payload };
+    default:
+      return state;
+  }
+}
 
 export default function Chatbox() {
   const { data: user } = useSession();
@@ -27,6 +49,58 @@ export default function Chatbox() {
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  const [stateRecord, dispatch] = useReducer(reducer, initialState);
+  const recognitionRef = useRef<any>(null);
+  const mediaRecorderRef = useRef<any>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
+  const startRecording = async () => {
+    if (!('webkitSpeechRecognition' in window) || !navigator.mediaDevices) {
+      alert('Trình duyệt không hỗ trợ chức năng này!');
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+
+      mediaRecorderRef.current.ondataavailable = (event: any) => {
+        if (event.data && event.data.size > 0) {
+          audioChunksRef.current.push(event.data as Blob);
+        }
+      };
+
+      dispatch({ type: 'START_RECORDING' });
+      recognitionRef.current = new (window as any).webkitSpeechRecognition();
+      recognitionRef.current.lang = 'vi-VN';
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+
+      recognitionRef.current.onresult = (event: any) => {
+        dispatch({ type: 'SET_TRANSCRIPT', payload: event.results[0][0].transcript });
+      };
+      recognitionRef.current.start();
+      mediaRecorderRef.current.start();
+    } catch (error) {
+      NotifyError('Không có quyền truy cập microphone');
+      dispatch({ type: 'RESET' });
+    }
+  };
+
+  const stopRecording = () => {
+    recognitionRef.current?.stop();
+
+    if (mediaRecorderRef.current?.state === 'recording') {
+      mediaRecorderRef.current.stop();
+    }
+
+    // Dừng tất cả tracks của microphone
+    if (mediaRecorderRef.current?.stream) {
+      mediaRecorderRef.current.stream.getTracks().forEach((track: any) => track.stop());
+    }
+
+    dispatch({ type: 'STOP_RECORDING' });
+  };
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
       if (scrollAreaRef.current) {
@@ -39,10 +113,17 @@ export default function Chatbox() {
   };
 
   useEffect(() => {
+    if (stateRecord.transcript) {
+      setMessage(stateRecord.transcript);
+    }
+  }, [stateRecord.transcript]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   const sendMessage = async () => {
+    stopRecording();
     if (!message.trim()) return;
     setMessages(prev => [...prev, { sender: 'User', text: message }]);
     setLoading(true);
@@ -66,13 +147,10 @@ export default function Chatbox() {
   };
 
   return (
-    <Box className='flex h-[400px] w-[300px] flex-col overflow-hidden'>
+    <Box className='flex h-[400px] w-[300px] flex-col overflow-hidden' bg='gray.1'>
       <UnstyledButton p={'xs'} bg={'green.9'}>
         <Group>
-          <Avatar
-            src={`https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png`}
-            radius='xl'
-          />
+          <Avatar src={`/images/jpg/bot.jpg`} radius='xl' />
 
           <div style={{ flex: 1 }}>
             <Text size='md' fw={700} c={'white'}>
@@ -80,46 +158,44 @@ export default function Chatbox() {
             </Text>
 
             <Text c={'white'} size='xs'>
-              hspoonlicker@outlook.com
+              phungfood@contact.com
             </Text>
           </div>
         </Group>
       </UnstyledButton>
       <ScrollArea className='mb-4 flex-grow' scrollbarSize={7} viewportRef={scrollAreaRef}>
-        <Box bg='gray.0' p='md'>
+        <Box p='md' w={'100%'}>
           <Stack gap='md'>
             {messages.map((message, index) =>
               message.sender === 'Bot' ? (
-                <Box>
+                <Box maw={'86%'}>
                   <Paper
-                    bg='gray.1'
+                    bg='white'
                     p='xs'
                     style={{
-                      maxWidth: rem(280),
                       borderRadius: '16px 16px 16px 4px'
                     }}
                   >
-                    <Text size='sm'>{message.text}</Text>
+                    <Text size='sm'>{parse(message.text)}</Text>
                   </Paper>
                   <Text size='xs' c='dimmed' ml={8} mt={4}>
-                    BOT
+                    Chat support
                   </Text>
                 </Box>
               ) : (
-                <Box ml='auto'>
+                <Box ml='auto' w={'max-content'} maw={'86%'}>
                   <Paper
                     bg='grape.7'
                     c='white'
                     p='xs'
                     style={{
-                      maxWidth: rem(280),
                       borderRadius: '16px 16px 4px 16px'
                     }}
                   >
-                    <Text size='sm'>{message.text}</Text>
+                    <Text size='sm'>{parse(message.text)}</Text>
                   </Paper>
                   <Text size='xs' c='dimmed' mr={8} mt={4} ta='right'>
-                    {user?.user?.name || 'Operator'}
+                    {user?.user?.name || 'User'}
                   </Text>
                 </Box>
               )
@@ -128,7 +204,7 @@ export default function Chatbox() {
             {loading && (
               <Box>
                 <Group gap={4} justify='center' h={rem(24)} w={'max-content'} pl={'xs'}>
-                  {[0, 1, 2].map(i => (
+                  {[0, 1, 2].map((i: number) => (
                     <Box
                       key={i}
                       className='typing-dot'
@@ -144,37 +220,58 @@ export default function Chatbox() {
                   ))}
                 </Group>
                 <Text size='xs' c='dimmed' ml={8} mt={4}>
-                  BOT đang nhập...
+                  Chat support đang nhập...
                 </Text>
               </Box>
             )}
           </Stack>
         </Box>
       </ScrollArea>
-      <Flex align={'center'} gap={'xs'} p={'xs'} justify={'space-between'}>
-        <Button variant='transparent' size='md' p={0}>
-          😄
-        </Button>
-        <Button variant='transparent' size='md' p={0}>
-          <IconMicrophone size={20} />
-        </Button>
-        <TextInput
-          radius={'xl'}
-          size='xs'
-          className='flex-grow'
-          placeholder='Type your message...'
-          value={message}
-          onChange={event => setMessage(event.currentTarget.value)}
-          onKeyPress={event => {
-            if (event.key === 'Enter') {
-              sendMessage();
-            }
-          }}
-        />
-        <Button onClick={sendMessage} variant='transparent' disabled={loading} p={0}>
-          <IconSend size={20} />
-        </Button>
-      </Flex>
+      <Stack p={'xs'} gap={2}>
+        {stateRecord.searchState === 'recording' && (
+          <>
+            <Center>
+              <Text size='xs' c='dimmed' fs={'italic'}>
+                Đang lắng nghe. . .
+              </Text>
+            </Center>
+          </>
+        )}
+        <Flex align={'center'} gap={'xs'} justify={'space-between'}>
+          {(stateRecord.searchState === 'initial' || stateRecord.searchState === 'completed') && (
+            <>
+              <Button variant='transparent' onClick={startRecording} disabled={loading} p={0}>
+                <IconMicrophone size={20} />
+              </Button>
+            </>
+          )}
+
+          {stateRecord.searchState === 'recording' && (
+            <>
+              <Button variant='transparent' disabled={loading} p={0} onClick={stopRecording}>
+                <IconSquareFilled color='red' size={20} />
+              </Button>
+            </>
+          )}
+          <TextInput
+            radius={'xl'}
+            size='xs'
+            className='flex-grow'
+            placeholder='Type your message...'
+            disabled={loading}
+            value={message}
+            onChange={event => setMessage(event.currentTarget.value)}
+            onKeyPress={event => {
+              if (event.key === 'Enter') {
+                sendMessage();
+              }
+            }}
+          />
+          <Button onClick={sendMessage} variant='transparent' disabled={loading} p={0}>
+            <IconSend size={20} />
+          </Button>
+        </Flex>
+      </Stack>
     </Box>
   );
 }

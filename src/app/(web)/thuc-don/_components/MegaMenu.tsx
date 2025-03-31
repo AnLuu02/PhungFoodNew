@@ -82,26 +82,28 @@ export function MegaMenu({ categories }: any) {
             categories?.map((item: any) => (
               <Tabs.Panel value={item.tag} key={item.id}>
                 <Box p={'lg'}>
-                  <Box mb={'xs'} className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
+                  <Grid mb={'xs'}>
                     {item?.subCategory?.map((category: any) => (
-                      <Link
-                        key={category.id}
-                        href={`/thuc-don?danh-muc=${item.tag}&loai-san-pham=${category.tag}`}
-                        className='flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:shadow-md'
-                      >
-                        <Image
-                          src={category.image?.url}
-                          alt={category.name}
-                          w={60}
-                          h={60}
-                          className='h-16 w-16 object-contain'
-                        />
-                        <Text size='sm' className='font-medium text-gray-800'>
-                          {category.name}
-                        </Text>
-                      </Link>
+                      <GridCol span={4} key={category.id}>
+                        <Link
+                          key={category.id}
+                          href={`/thuc-don?danh-muc=${item.tag}&loai-san-pham=${category.tag}`}
+                          className='flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:shadow-md'
+                        >
+                          <Image
+                            src={category.image?.url}
+                            alt={category.name}
+                            w={60}
+                            h={60}
+                            className='h-16 w-16 object-contain'
+                          />
+                          <Text size='sm' className='font-medium text-gray-800'>
+                            {category.name}
+                          </Text>
+                        </Link>
+                      </GridCol>
                     ))}
-                  </Box>
+                  </Grid>
                   <Divider />
                   <Box>
                     <Box className='flex items-center justify-between'>
@@ -126,7 +128,7 @@ export function MegaMenu({ categories }: any) {
                               <Stack gap={0}>
                                 <Paper
                                   withBorder
-                                  w={120}
+                                  w={'100%'}
                                   h={120}
                                   radius={'md'}
                                   className='overflow-hidden border border-transparent p-1 transition-all hover:border-red-500'
