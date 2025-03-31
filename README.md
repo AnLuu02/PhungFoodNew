@@ -62,9 +62,9 @@ EMAIL_SERVER=...
 EMAIL_FROM=...
 ```
 
-### 4️⃣ Chạy Prisma Migrations
+### 4️⃣ Chạy Prisma Db Push
 ```sh
-yarn prisma migrate dev --name init
+npx prisma db push
 ```
 
 ### 5️⃣ Chạy Ứng Dụng
