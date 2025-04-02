@@ -147,7 +147,12 @@ export default function Chatbox() {
   };
 
   return (
-    <Box className='flex h-[400px] w-[300px] flex-col overflow-hidden' bg='gray.1'>
+    <Box
+      w={{ base: 335, sm: 450, md: 450, lg: 450 }}
+      h={{ base: 400, sm: 500, md: 500, lg: 500 }}
+      className='flex flex-col overflow-hidden'
+      bg='gray.1'
+    >
       <UnstyledButton p={'xs'} bg={'green.9'}>
         <Group>
           <Avatar src={`/images/jpg/bot.jpg`} radius='xl' />

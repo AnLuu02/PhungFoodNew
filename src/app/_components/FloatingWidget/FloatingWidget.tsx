@@ -26,7 +26,11 @@ export default function FloatingWidget() {
               </Center>
             </Menu.Target>
 
-            <Menu.Dropdown className='overflow-hidden rounded-md bg-white shadow-md' ml={40} p={0}>
+            <Menu.Dropdown
+              className='overflow-hidden rounded-md bg-white shadow-md'
+              ml={{ base: 0, sm: 40, md: 40, lg: 40 }}
+              p={0}
+            >
               <Chatbox />
             </Menu.Dropdown>
           </Menu>
