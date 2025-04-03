@@ -7,7 +7,16 @@ import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 export function RelatedProducts({ data }: any) {
   return (
-    <Paper radius='md' withBorder h={400} pos={'sticky'} top={50} right={0} mt={{ base: 50, sm: 0, md: 0, lg: 0 }}>
+    <Paper
+      radius='md'
+      withBorder
+      mah={400}
+      pos={'sticky'}
+      top={70}
+      right={0}
+      className='h-fit'
+      mt={{ base: 50, sm: 0, md: 0, lg: 0 }}
+    >
       <Center className='rounded-t-md bg-green-600 p-2 text-white'>
         <Text size='sm' fw={700}>
           Có thể bạn thích

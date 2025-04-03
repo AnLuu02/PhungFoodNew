@@ -17,7 +17,6 @@ import {
 } from '@mantine/core';
 import { IconMicrophone, IconSend, IconSquareFilled } from '@tabler/icons-react';
 import parse from 'html-react-parser';
-import { useSession } from 'next-auth/react';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 
@@ -40,8 +39,8 @@ function reducer(state: any, action: any) {
 }
 
 export default function Chatbox() {
-  const { data: user } = useSession();
-  const [message, setMessage] = useState('');
+  const messageRef = useRef('');
+  const inputRef = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState<{ sender: string; text: string }[]>([
     { sender: 'Bot', text: 'Tôi là chatbox của PhungFood. Tôi có thể giúp gì cho bạn?' }
   ]);
@@ -114,7 +113,7 @@ export default function Chatbox() {
 
   useEffect(() => {
     if (stateRecord.transcript) {
-      setMessage(stateRecord.transcript);
+      messageRef.current = stateRecord.transcript;
     }
   }, [stateRecord.transcript]);
 
@@ -124,18 +123,21 @@ export default function Chatbox() {
 
   const sendMessage = async () => {
     stopRecording();
-    if (!message.trim()) return;
-    setMessages(prev => [...prev, { sender: 'User', text: message }]);
+    if (!messageRef.current.trim()) return;
+    setMessages([...messages, { sender: 'Người dùng', text: messageRef.current }]);
     setLoading(true);
     scrollToBottom();
-    setMessage('');
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
 
     try {
       const res = await fetch('/api/chatbox', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ message: messageRef.current })
       });
+      messageRef.current = '';
 
       const data = await res.json();
       setMessages(prev => [...prev, { sender: 'Bot', text: data.reply }]);
@@ -200,7 +202,7 @@ export default function Chatbox() {
                     <Text size='sm'>{parse(message.text)}</Text>
                   </Paper>
                   <Text size='xs' c='dimmed' mr={8} mt={4} ta='right'>
-                    {user?.user?.name || 'User'}
+                    Người dùng
                   </Text>
                 </Box>
               )
@@ -259,13 +261,15 @@ export default function Chatbox() {
             </>
           )}
           <TextInput
+            ref={inputRef}
             radius={'xl'}
             size='xs'
             className='flex-grow'
             placeholder='Type your message...'
             disabled={loading}
-            value={message}
-            onChange={event => setMessage(event.currentTarget.value)}
+            onChange={e => {
+              messageRef.current = e.target.value;
+            }}
             onKeyPress={event => {
               if (event.key === 'Enter') {
                 sendMessage();

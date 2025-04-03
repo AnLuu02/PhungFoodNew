@@ -43,6 +43,7 @@ export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps
         w='100%'
       >
         <Flex
+          w={{ base: '100%', sm: 'max-content', md: 'max-content', lg: 'max-content' }}
           direction={{ base: 'row', sm: 'row', md: 'row', lg: 'column' }}
           gap='xs'
           justify='space-between'
@@ -133,6 +134,8 @@ export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps
           initialSlide={activeSlide}
           onSlideChange={index => setActiveSlide(index)}
           nextControlIcon={<IconChevronRight size={30} />}
+          nextControlProps={{ style: { backgroundColor: 'gray', color: 'white' } }}
+          previousControlProps={{ style: { backgroundColor: 'gray', color: 'white' } }}
           previousControlIcon={<IconChevronLeft size={30} />}
           styles={{
             control: {

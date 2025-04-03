@@ -95,7 +95,6 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
       <Grid>
         <Grid.Col
           span={{ base: 12, sm: 6, md: 6 }}
-          pl={0}
           pos={isMobile ? 'relative' : 'sticky'}
           top={isMobile ? 0 : 70}
           className='h-fit'
@@ -289,6 +288,7 @@ export default function ProductDetail({ params }: { params: { slug: string } }) 
 
         <Grid.Col
           mt={{ base: 'md', sm: 0 }}
+          className='h-fit'
           span={{
             base: 12,
             sm: hintProducts?.length > 0 ? 7 : 12,
