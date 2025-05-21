@@ -1,9 +1,7 @@
 'use client';
 import { Box, Card, Center, Divider, Group, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
-import { DateTimePicker } from '@mantine/dates';
 import { useLocalStorage } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
-import { IconCalendar } from '@tabler/icons-react';
 import Empty from '~/app/_components/Empty';
 import { HEIGHT_HEADER } from '~/app/_components/Web/Header/_components/NavigationHeader';
 import { CartItemFastMenu } from '~/app/_components/Web/Home/_Components/CartItemFastMenu';
@@ -27,7 +25,7 @@ const QuickCart = () => {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <Card radius={'md'} bg={'gray.1'}>
+    <Card radius={'md'} bg={'gray.2'}>
       <Card.Section>
         <Stack>
           <ScrollAreaAutosize mah={'40vh'}>
@@ -64,21 +62,12 @@ const QuickCart = () => {
             </Text>
           </Group>
 
-          <Stack gap='md' className='px-4'>
-            <DateTimePicker
-              valueFormat='DD-MM-YYYY'
-              label={'Thời gian giao hàng'}
-              leftSection={<IconCalendar size={18} stroke={1.5} />}
-              dropdownType='modal'
-              placeholder='Thời gian giao hàng'
+          <Stack gap='md' className='px-4' mb={10}>
+            <ButtonCheckout
+              total={total}
+              data={cart}
+              stylesButtonCheckout={{ title: 'Thanh toán', fullWidth: true, size: 'md', radius: 'sm' }}
             />
-            <Box mb={10}>
-              <ButtonCheckout
-                total={total}
-                data={cart}
-                stylesButtonCheckout={{ title: 'Thanh toán', fullWidth: true, size: 'md', radius: 'sm' }}
-              />
-            </Box>
           </Stack>
         </Stack>
       </Card.Section>

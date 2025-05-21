@@ -1,13 +1,13 @@
 'use client';
 
-import { Box, Card, Center, Flex, Group, Progress, Select, Space, Stack, Text } from '@mantine/core';
+import { Box, Card, Center, Divider, Flex, Group, Progress, Select, Space, Stack, Text } from '@mantine/core';
 import { UserLevel } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import LoadingComponent from '~/app/_components/Loading/Loading';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
-import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
+import { getColorLevelUser, getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { api } from '~/trpc/react';
 
 const mockYearlySpending = {
@@ -90,29 +90,36 @@ export default function UserStatistics() {
           </Box>
         </Box>
 
-        <Box>
-          <Text fw={700} mb='xs'>
-            Tỷ lệ hoàn thành đơn hàng
-          </Text>
-          <Progress value={orderCompletionRate} size='xl' radius='xl' />
-          <Text size='sm' color='dimmed' mt='xs'>
-            {orderCompletionRate}% đơn đặt hàng của bạn đã được hoàn thành thành công
-          </Text>
-        </Box>
+        <Flex gap={{ base: 'xs', md: 'md' }} justify={'space-between'} direction={{ base: 'column', md: 'row' }}>
+          <Box w={{ base: '100%', md: '50%' }}>
+            <Text fw={700} mb='xs'>
+              Tỷ lệ hoàn thành đơn hàng
+            </Text>
+            <Progress value={orderCompletionRate} size='sm' radius='xl' />
+            <Text size='sm' c='dimmed' mt='xs'>
+              {orderCompletionRate}% đơn đặt hàng của bạn đã được hoàn thành thành công
+            </Text>
+          </Box>
 
-        <Box>
-          <Text fw={700} mb='xs'>
-            Cấp V.I.P: {getLevelUser(userDb?.level as UserLevel)}
-          </Text>
-          <Progress value={getVIPProgress(userDb)} size='xl' radius='xl' />
-          <Group mt='xs'>
-            {vipLevels.map(level => (
-              <Text key={level} size='sm' color='dimmed'>
-                {level}
+          <Divider orientation='vertical' size={2} mx={'xl'} />
+
+          <Box w={{ base: '100%', md: '50%' }}>
+            <Flex align={'center'} mb='xs' gap={5}>
+              <Text fw={700}>Cấp V.I.P:</Text>
+              <Text fw={700} c={getColorLevelUser(userDb?.level as UserLevel)}>
+                {getLevelUser(userDb?.level as UserLevel)}
               </Text>
-            ))}
-          </Group>
-        </Box>
+            </Flex>
+            <Progress value={getVIPProgress(userDb)} size='sm' radius='xl' />
+            <Group mt='xs'>
+              {vipLevels.map(level => (
+                <Text key={level} size='sm' c='dimmed'>
+                  {level}
+                </Text>
+              ))}
+            </Group>
+          </Box>
+        </Flex>
       </Stack>
     </Card>
   );

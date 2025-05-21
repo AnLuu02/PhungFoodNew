@@ -38,10 +38,11 @@ export const ButtonCheckout = ({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const mutationOrder = api.Order.create.useMutation();
-  const order: any = data ?? {};
+  const order: any = data ?? [];
   const handleCreateOrder = async () => {
     setLoading(true);
-    if (order) {
+    console.log('order', order);
+    if (order?.length > 0) {
       const resp: any = await mutationOrder.mutateAsync({
         total: total,
         status: OrderStatus.PROCESSING,
@@ -59,12 +60,14 @@ export const ButtonCheckout = ({
       } else {
         NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
       }
+    } else {
+      NotifyError('Lỗi!', 'Đơn hàng không hợp lệ.');
     }
   };
   return (
     <BButton
       loading={loading}
-      disabled={loading}
+      disabled={loading || order?.length === 0}
       {...stylesButtonCheckout}
       onClick={() => {
         if (user?.user?.email) {

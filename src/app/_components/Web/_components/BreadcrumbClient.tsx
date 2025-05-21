@@ -2,7 +2,7 @@
 
 import { Carousel } from '@mantine/carousel';
 import { Box, Card, Flex, Image, Text, rem } from '@mantine/core';
-import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { getTagFromQuery } from '~/app/lib/utils/func-handler/generateTag';
 import { api } from '~/trpc/react';
@@ -33,9 +33,16 @@ export function BreadcrumbClient() {
             className='w-full'
             controlsOffset='xs'
             containScroll='trimSnaps'
+            withControls
             dragFree
-            nextControlIcon={<IconArrowRight style={{ width: rem(16), height: rem(16) }} />}
-            previousControlIcon={<IconArrowLeft style={{ width: rem(16), height: rem(16) }} />}
+            nextControlProps={{
+              style: { backgroundColor: '#008b4b', color: 'white', transform: 'translate(20px,-40px)' }
+            }}
+            previousControlProps={{
+              style: { backgroundColor: '#008b4b', color: 'white', transform: 'translate(-20px,-40px)' }
+            }}
+            previousControlIcon={<IconChevronLeft size={30} />}
+            nextControlIcon={<IconChevronRight size={30} />}
           >
             {categories.map((category: any) => (
               <Carousel.Slide key={category.id}>

@@ -7,7 +7,10 @@ const authPages = ['/auth/dang-nhap', '/auth/dang-ki'];
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
+  const ip = request.headers.get('x-forwarded-for') || request.ip;
   const currentUrl = request.nextUrl.pathname + request.nextUrl.search;
+
+  console.log(`--------IP User: ${ip}`);
 
   if (token && authPages.some(route => request.nextUrl.pathname.startsWith(route))) {
     return NextResponse.redirect(new URL('/', request.url));

@@ -15,7 +15,7 @@ export function RatingStatistics({ ratings }: RatingStatisticsProps) {
           <Text size='xl' fw={700}>
             {averageRating.toFixed(1)}
           </Text>
-          <Text size='sm' color='dimmed'>
+          <Text size='sm' c='dimmed'>
             {totalRatings} đánh giá
           </Text>
         </Group>
@@ -29,7 +29,7 @@ export function RatingStatistics({ ratings }: RatingStatisticsProps) {
             </Group>
             <Group gap='xs' style={{ flex: 1 }}>
               <Progress value={(count / totalRatings) * 100} size='md' radius='xl' style={{ flex: 1 }} />
-              <Text size='xs' color='dimmed' style={{ minWidth: '30px', textAlign: 'right' }}>
+              <Text size='xs' c='dimmed' style={{ minWidth: '30px', textAlign: 'right' }}>
                 {count}
               </Text>
             </Group>

@@ -158,7 +158,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
           <Group m={0}>
             {product?.discount > 0 && (
               <Text size='sm' c={'dimmed'} fw={700} td='line-through'>
-                {product?.discount ? `-${formatPriceLocaleVi(product?.price)}` : `180.000đ`}
+                {product?.discount ? `${formatPriceLocaleVi(product?.price)}` : `180.000đ`}
               </Text>
             )}
             <Text size='md' fw={700} className='text-[#008b4b]'>

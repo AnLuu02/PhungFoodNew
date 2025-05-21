@@ -4,6 +4,15 @@ import HomeWeb from './_components/Web/Home/HomeWeb';
 
 export const revalidate = 60;
 
+const fetchData = async (promises: Promise<any>[]) => {
+  try {
+    return await Promise.all(promises);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw new Error('Failed to fetch data');
+  }
+};
+
 const Page = async () => {
   try {
     const categories = ['an-vat-trang-mieng', 'mon-chinh', 'mon-chay', 'do-uong'];
@@ -13,35 +22,25 @@ const Page = async () => {
       { key: 'newProduct', value: true },
       { key: 'hotProduct', value: true }
     ];
-
-    const categoryPromises = categories.map(s => api.SubCategory.find({ skip: 0, take: 10, s }));
-
+    const materials = ['thit-tuoi', 'hai-san', 'rau-cu', 'cac-loai-nam'];
+    const categoryPromises = categories.map(category => api.SubCategory.find({ skip: 0, take: 10, s: category }));
     const productPromises = productFilters.map(filter =>
       api.Product.find({ skip: 0, take: 10, [filter.key]: filter.value })
     );
-
-    const materials = ['thit-tuoi', 'hai-san', 'rau-cu', 'cac-loai-nam'];
-
-    const materialPromises = materials.map(s => api.Product.find({ skip: 0, take: 10, s }));
-
+    const materialPromises = materials.map(material => api.Product.find({ skip: 0, take: 10, s: material }));
     const bannerPromise = api.Restaurant.getOneBanner({ isActive: true });
-
-    const [
-      banner,
-      anVat,
-      monChinh,
-      monChay,
-      thucUong,
-      productDiscount,
-      productBestSaler,
-      productNew,
-      productHot,
-      thitTuoi,
-      haiSan,
-      rauCu,
-      cacLoaiNam
-    ]: any = await Promise.all([bannerPromise, ...categoryPromises, ...productPromises, ...materialPromises]);
-
+    const [banner, ...categoryResults] = await fetchData([
+      bannerPromise,
+      ...categoryPromises,
+      ...productPromises,
+      ...materialPromises
+    ]);
+    const [anVat, monChinh, monChay, thucUong] = categoryResults.slice(0, categories.length);
+    const [productDiscount, productBestSaler, productNew, productHot] = categoryResults.slice(
+      categories.length,
+      categories.length + productFilters.length
+    );
+    const [thitTuoi, haiSan, rauCu, cacLoaiNam] = categoryResults.slice(categories.length + productFilters.length);
     return (
       <Box className='w-full' pl={{ base: rem(20), lg: rem(130) }} pr={{ base: rem(20), lg: rem(130) }}>
         <HomeWeb
@@ -68,9 +67,8 @@ const Page = async () => {
       </Box>
     );
   } catch (error) {
-    console.error('Failed to fetch data:', error);
+    console.error('Failed to load page data:', error);
     return <div>Đã xảy ra lỗi khi tải dữ liệu</div>;
   }
 };
-
 export default Page;

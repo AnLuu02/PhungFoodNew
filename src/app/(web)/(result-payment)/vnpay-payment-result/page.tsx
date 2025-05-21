@@ -120,7 +120,9 @@ export default function PaymentResult() {
             </Title>
             <Badge size='md' p={'xs'} color={getStatusColor(statusOrder)}>
               <Flex>
-                {getStatusText(statusOrder)}
+                <Text size='10px' fw={700}>
+                  {getStatusText(statusOrder)}
+                </Text>
                 {getStatusIcon(statusOrder)}
               </Flex>
             </Badge>

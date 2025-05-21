@@ -7,7 +7,6 @@ import {
   Flex,
   Grid,
   Group,
-  Image,
   Modal,
   ScrollAreaAutosize,
   Spoiler,
@@ -18,9 +17,9 @@ import {
   Title,
   rem
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTruck } from '@tabler/icons-react';
-import { useState } from 'react';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
@@ -28,9 +27,7 @@ import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import InvoiceToPrint from '../Invoices/InvoceToPrint';
 
 function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {
-  const [currentImage, setCurrentImage] = useState('');
-  const [showfullImage, setShowfullImage] = useState(false);
-
+  const notDesktop = useMediaQuery(`(max-width: 1023px)`);
   return (
     <>
       <Modal
@@ -39,7 +36,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
         opened={opened && type === 'orders'}
         radius={'md'}
         onClose={close}
-        size='70%'
+        size={notDesktop ? '100%' : '70%'}
         h={'max-content'}
         transitionProps={{ transition: 'fade-down', duration: 200 }}
         padding='md'
@@ -59,7 +56,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
       >
         {type === 'orders' && (
           <Grid gutter='md'>
-            <Grid.Col span={{ base: 12, md: 5 }}>
+            <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 5 }}>
               <ScrollAreaAutosize scrollbarSize={5} mah={540}>
                 <Stack>
                   <Card withBorder radius='md'>
@@ -74,7 +71,9 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                         className='align-items-center flex'
                       >
                         <Flex align={'center'}>
-                          {getStatusText(order.status)}
+                          <Text size='10px' fw={700}>
+                            {getStatusText(order.status)}
+                          </Text>
                           {getStatusIcon(order.status)}
                         </Flex>
                       </Badge>
@@ -153,7 +152,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
               </ScrollAreaAutosize>
             </Grid.Col>
 
-            <Grid.Col span={7}>
+            <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 7 }}>
               <ScrollAreaAutosize scrollbarSize={5} mah={540}>
                 <Card withBorder radius='md'>
                   <Group gap='md' mb='md'>
@@ -199,9 +198,6 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
             </Grid.Col>
           </Grid>
         )}
-      </Modal>
-      <Modal size={'xl'} opened={showfullImage} onClose={() => setShowfullImage(false)} centered>
-        <Image loading='lazy' src={currentImage} h={400} fit='contain' />
       </Modal>
     </>
   );

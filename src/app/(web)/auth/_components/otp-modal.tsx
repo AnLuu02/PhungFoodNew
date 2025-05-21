@@ -95,7 +95,7 @@ export default function OtpModal({ opened, onClose, email }: OtpModalProps) {
       </Text>
       {timeLeft === 0 && (
         <Group gap={5}>
-          <Text color='red' size='md'>
+          <Text c='red' size='md'>
             Hết thời gian
           </Text>
           <Button

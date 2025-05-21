@@ -25,6 +25,7 @@ export default function SearchLocal({ setValue }: { setValue: (value: string) =>
       onChange={event => handleSearch(event.currentTarget.value)}
       leftSection={<IconSearch size={16} className='text-gray-300' />}
       rightSectionWidth={40}
+      w={'100%'}
       rightSection={
         <Box
           style={{

@@ -154,7 +154,7 @@ export default function TableProduct({ s, data, user }: { s: string; data: any; 
             ) : (
               <Table.Tr>
                 <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
-                  <Text size='md' color='dimmed'>
+                  <Text size='md' c='dimmed'>
                     Không có bản ghi phù hợp./
                   </Text>
                 </Table.Td>

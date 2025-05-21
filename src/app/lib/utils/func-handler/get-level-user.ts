@@ -16,3 +16,20 @@ export const getLevelUser = (key: UserLevel) => {
       return 'KIM CƯƠNG';
   }
 };
+
+export const getColorLevelUser = (key: UserLevel) => {
+  switch (key) {
+    case UserLevel.BRONZE:
+      return 'orange.7';
+    case UserLevel.SILVER:
+      return 'gray.5';
+    case UserLevel.GOLD:
+      return 'yellow.6';
+    case UserLevel.PLATINUM:
+      return 'blue.4';
+    case UserLevel.DIAMOND:
+      return 'cyan.4';
+    default:
+      return 'cyan.4';
+  }
+};

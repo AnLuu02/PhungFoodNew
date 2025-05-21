@@ -17,7 +17,7 @@ import {
   Text
 } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import BButton from '~/app/_components/Button';
 import Empty from '~/app/_components/Empty';
 import LoadingComponent from '~/app/_components/Loading/Loading';
@@ -41,14 +41,19 @@ export default function FoodPromotionPage() {
     discount: true
   });
 
-  const getFilteredPromotions = () => {
+  // Filter promotions based on the active tab
+  const filteredPromotions = useMemo(() => {
     if (activeTab === 'all') return voucherData || [];
     return voucherData?.filter(promo => promo.type === activeTab) || [];
-  };
+  }, [voucherData, activeTab]);
 
-  const filteredPromotions = getFilteredPromotions();
-  const totalPages = Math.ceil(filteredPromotions.length / ITEMS_PER_PAGE);
-  const paginatedPromotions = filteredPromotions.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  // Paginate promotions
+  const paginatedPromotions = useMemo(() => {
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    return filteredPromotions.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredPromotions, page]);
+
+  const totalPages = useMemo(() => Math.ceil(filteredPromotions.length / ITEMS_PER_PAGE), [filteredPromotions]);
 
   if (isProductLoading || isVoucherLoading) {
     return <LoadingComponent />;

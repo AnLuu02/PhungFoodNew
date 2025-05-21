@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import BButton from '~/app/_components/Button';
 import { useModal } from '~/app/contexts/ModalContext';
 import { breakpoints } from '~/app/lib/utils/constants/device';
@@ -20,6 +21,9 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const { openModal } = useModal();
+  const totalQuantityProduct = useMemo(() => {
+    return (data?.availableQuantity || 0) + (data?.soldQuantity || 0);
+  }, [data]);
 
   return (
     <Card radius={'md'} withBorder bg={'white'} p={0} pos={'relative'}>
@@ -84,24 +88,22 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             </Tooltip>
           </Link>
           <Flex direction={'column'} w={'100%'}>
-            <Progress
-              size={'sm'}
-              color={'#008b4b'}
-              value={((data?.soldQuantity || 0) / (data?.availableQuantity || 0)) * 100}
-            />
+            <Progress size={'sm'} color={'#008b4b'} value={((data?.soldQuantity || 0) / totalQuantityProduct) * 100} />
             <Flex align={'center'} justify={'space-between'}>
               <Text size='xs' c={'dimmed'}>
-                Đã bán: {data?.soldQuantity || 0}/{data?.availableQuantity || 0}
+                Đã bán: {data?.soldQuantity || 0}/{totalQuantityProduct}
               </Text>
               <Text size='xs' className='text-[#008b4b]'>
-                {(((data?.soldQuantity || 0) / (data?.availableQuantity || 0)) * 100)?.toFixed(2)}%
+                {(((data?.soldQuantity || 0) / totalQuantityProduct) * 100)?.toFixed(2)}%
               </Text>
             </Flex>
           </Flex>
           <Group>
-            <Text size='sm' c={'dimmed'} td='line-through'>
-              {formatPriceLocaleVi(data?.price || 0)}
-            </Text>
+            {data?.discount && (
+              <Text size='sm' c={'dimmed'} td='line-through'>
+                {formatPriceLocaleVi(data?.price || 0)}
+              </Text>
+            )}
             <Text size='md' fw={700} className='text-[#008b4b]'>
               {formatPriceLocaleVi((data?.price || 0) - (data?.discount || 0))}
             </Text>

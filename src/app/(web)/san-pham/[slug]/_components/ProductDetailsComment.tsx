@@ -20,7 +20,7 @@ export function ProductDetails({ product }: { product: any }) {
           </Badge>
           <Group gap='xs'>
             <Rating value={product.rating} readOnly />
-            <Text size='sm' color='dimmed'>
+            <Text size='sm' c='dimmed'>
               ({product.totalRating} đánh giá)
             </Text>
           </Group>
@@ -37,7 +37,7 @@ export function ProductDetails({ product }: { product: any }) {
             {product.description}
           </Text>
         </Spoiler>
-        <Text size='sm' color='dimmed'>
+        <Text size='sm' c='dimmed'>
           Product ID: {product.id}
         </Text>
       </Stack>

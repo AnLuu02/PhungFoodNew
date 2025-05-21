@@ -1,4 +1,3 @@
-import { Text } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { IconCircleCheck, IconClock, IconTruckDelivery, IconUxCircle } from '@tabler/icons-react';
 
@@ -22,56 +21,32 @@ export const getStatusColor = (status: string) => {
 export const getStatusText = (status: string) => {
   switch (status) {
     case OrderStatus.COMPLETED:
-      return (
-        <Text size='xs' fw={700}>
-          Hoàn thành
-        </Text>
-      );
+      return 'Hoàn thành';
     case OrderStatus.PROCESSING:
-      return (
-        <Text size='xs' fw={700}>
-          Chưa thanh toán
-        </Text>
-      );
+      return 'Chưa thanh toán';
     case OrderStatus.DELIVERED:
-      return (
-        <Text size='xs' fw={700}>
-          Đang giao hàng
-        </Text>
-      );
+      return 'Đang giao hàng';
     case OrderStatus.PENDING:
-      return (
-        <Text size='xs' fw={700}>
-          Chờ xử lý
-        </Text>
-      );
+      return 'Chờ xử lý';
     case OrderStatus.CANCELLED:
-      return (
-        <Text size='xs' fw={700}>
-          Đã hủy
-        </Text>
-      );
+      return 'Đã hủy';
     default:
-      return (
-        <Text size='xs' fw={700}>
-          Không xác định
-        </Text>
-      );
+      return 'Không xác định';
   }
 };
 
 export const getStatusIcon = (status: string) => {
   switch (status) {
     case OrderStatus.COMPLETED:
-      return <IconCircleCheck size={16} className='ml-1' color='white' />;
+      return <IconCircleCheck size={14} className='ml-1' color='white' />;
     case OrderStatus.PROCESSING:
-      return <IconClock size={16} className='ml-1' color='white' />;
+      return <IconClock size={14} className='ml-1' color='white' />;
     case OrderStatus.DELIVERED:
-      return <IconTruckDelivery size={16} className='ml-1' color='white' />;
+      return <IconTruckDelivery size={14} className='ml-1' color='white' />;
     case OrderStatus.PENDING:
-      return <IconClock size={16} className='ml-1' color='white' />;
+      return <IconClock size={14} className='ml-1' color='white' />;
     case OrderStatus.CANCELLED:
-      return <IconUxCircle size={16} className='ml-1' color='white' />;
+      return <IconUxCircle size={14} className='ml-1' color='white' />;
     default:
       return null;
   }

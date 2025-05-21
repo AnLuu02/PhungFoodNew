@@ -19,7 +19,7 @@ import { IconUpload } from '@tabler/icons-react';
 import LoadingComponent from '~/app/_components/Loading/Loading';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
-import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
+import { getColorLevelUser, getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { getStatusColor, getTotalOrderStatus } from '~/app/lib/utils/func-handler/get-status-order';
 export const mockOrders = [
   { id: '1', date: '2023-05-01', total: 99.99, status: 'completed' },
@@ -72,7 +72,14 @@ export default function UserInfo({ user, isLoading }: any) {
                 {user?.name}
               </Text>
               <Badge color='gray' variant='transparent' bg={'gray.2'}>
-                Cấp V.I.P: <b className='text-[#F8C144]'>{getLevelUser(user?.level)}</b>
+                <Flex align={'center'} gap={5}>
+                  <Text fw={700} size='xs'>
+                    Cấp V.I.P:
+                  </Text>
+                  <Text fw={700} size='xs' c={getColorLevelUser(user?.level as UserLevel)}>
+                    {getLevelUser(user?.level as UserLevel)}
+                  </Text>
+                </Flex>
               </Badge>
               <Badge ml={5}>{user?.pointLevel}</Badge>
             </div>
@@ -195,15 +202,20 @@ export default function UserInfo({ user, isLoading }: any) {
                 Tỷ lệ hoàn thành đơn hàng
               </Text>
               <Progress value={statusObj.completionRate} size='sm' radius='xl' />
-              <Text size='sm' color='dimmed' mt='xs'>
+              <Text size='sm' c='dimmed' mt='xs'>
                 {statusObj.completionRate.toFixed(2)}% đơn đặt hàng của bạn đã được hoàn thành thành công
               </Text>
             </Box>
 
             <Box>
-              <Text fw={700} size='sm' mb='xs'>
-                Cấp V.I.P: {getLevelUser(user?.level as UserLevel)}
-              </Text>
+              <Flex align={'center'} gap={5} mb='xs'>
+                <Text fw={700} size='sm'>
+                  Cấp V.I.P:
+                </Text>
+                <Text fw={700} size='sm' c={getColorLevelUser(user?.level as UserLevel)}>
+                  {getLevelUser(user?.level as UserLevel)}
+                </Text>
+              </Flex>
               <Progress.Root size={'xl'}>
                 <Tooltip label='ĐỒNG'>
                   <Progress.Section value={33} color='#CD7F32'>

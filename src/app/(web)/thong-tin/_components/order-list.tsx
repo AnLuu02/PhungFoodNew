@@ -3,6 +3,7 @@
 import {
   ActionIcon,
   Badge,
+  Box,
   Button,
   Card,
   Center,
@@ -11,7 +12,6 @@ import {
   Pagination,
   Progress,
   Select,
-  Stack,
   Table,
   Tabs,
   Text,
@@ -21,7 +21,7 @@ import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
 import LoadingComponent from '~/app/_components/Loading/Loading';
 import SearchLocal from '~/app/_components/Search/SearchLocal';
@@ -36,39 +36,57 @@ import {
   getTotalOrderStatus
 } from '~/app/lib/utils/func-handler/get-status-order';
 import { api } from '~/trpc/react';
-export default function OrderList({ orders, isLoading }: any) {
-  const [activeTab, setActiveTab] = useState<string | null>('all');
+interface OrderListProps {
+  orders: any[];
+  isLoading: boolean;
+}
+
+export default function OrderList({ orders, isLoading }: OrderListProps) {
+  const [activeTab, setActiveTab] = useState<any>('all');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [valueSearch, setValueSearch] = useState<string | null>(null);
 
-  const mockOrders =
-    orders?.map((order: any) => ({
-      ...order,
-      date: new Date(order.createdAt).toISOString().split('T')[0] || new Date('yyyy-mm-dd'),
-      total: order.total
-    })) || [];
+  const mockOrders = useMemo(
+    () =>
+      orders?.map(order => ({
+        ...order,
+        date: new Date(order.createdAt).toISOString().split('T')[0],
+        total: order.total
+      })) || [],
+    [orders]
+  );
+
   const mutationDelete = api.Order.delete.useMutation();
 
-  const filteredOrders =
-    activeTab === 'all' ? mockOrders : mockOrders.filter((order: any) => order.status === activeTab);
-  const filteredOrdersSearch = valueSearch
-    ? filteredOrders?.filter((order: any) => {
-        const search = valueSearch?.toLowerCase() || '';
-        return [order?.payment?.name, order?.status, order?.total?.toString(), order?.id?.toString()]
-          .filter(Boolean)
-          .some((field: any) => field?.toLowerCase().includes(search));
-      })
-    : filteredOrders;
+  const filteredOrders = useMemo(() => {
+    if (activeTab === 'all') return mockOrders;
+    return mockOrders.filter(order => order.status === activeTab);
+  }, [mockOrders, activeTab]);
 
-  const totalPages = Math.ceil(filteredOrdersSearch.length / perPage);
-  const displayedOrders = filteredOrdersSearch.slice((page - 1) * perPage, page * perPage);
-  const statusObj = getTotalOrderStatus(mockOrders);
+  const filteredOrdersSearch = useMemo(() => {
+    if (!valueSearch) return filteredOrders;
+    const search = valueSearch.toLowerCase();
+    return filteredOrders.filter(order =>
+      [order?.payment?.name, order?.status, order?.total?.toString(), order?.id?.toString()]
+        .filter(Boolean)
+        .some(field => field.toLowerCase().includes(search))
+    );
+  }, [filteredOrders, valueSearch]);
+
+  const totalPages = useMemo(() => Math.ceil(filteredOrdersSearch.length / perPage), [filteredOrdersSearch, perPage]);
+  const displayedOrders = useMemo(
+    () => filteredOrdersSearch.slice((page - 1) * perPage, page * perPage),
+    [filteredOrdersSearch, page, perPage]
+  );
+
+  const statusObj = useMemo(() => getTotalOrderStatus(mockOrders), [mockOrders]);
   const { openModal } = useModal();
 
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+  return (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
       <Flex wrap={'wrap'} align={'center'} gap={10} mb={'xs'}>
         <Badge color={getStatusColor(OrderStatus.COMPLETED)} size='lg' w={'max-content'}>
@@ -117,38 +135,55 @@ export default function OrderList({ orders, isLoading }: any) {
         Tỷ lệ hoàn thành đơn hàng
       </Text>
       <Progress value={statusObj.completionRate} size='xl' radius='xl' mb='xs' />
-      <Text size='sm' color='dimmed' mb='md'>
+      <Text size='sm' c='dimmed' mb='md'>
         {statusObj.completionRate?.toFixed(1)}% đơn đặt hàng của bạn đã được hoàn thành thành công
       </Text>
 
-      <Tabs variant='pills' content='center' value={activeTab} onChange={setActiveTab}>
-        <Tabs.List bg={'gray.1'} mb={'md'}>
+      <Tabs
+        variant='pills'
+        content='center'
+        value={activeTab}
+        onChange={setActiveTab}
+        styles={{
+          tab: {
+            border: '1px solid #228be6',
+            margin: 6
+          }
+        }}
+      >
+        <Tabs.List bg={'gray.1'} mb={'md'} p={'xs'}>
           <Flex w={'100%'} direction={{ base: 'column', sm: 'column', md: 'column', lg: 'row' }}>
             <Group gap={0}>
-              <Tabs.Tab size={'md'} fw={700} value='all'>
+              <Tabs.Tab size={'md'} fw={500} value='all'>
                 Tất cả
               </Tabs.Tab>
-              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.COMPLETED}>
+              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.COMPLETED}>
                 Hoàn thành
               </Tabs.Tab>
 
-              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PENDING}>
+              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.PENDING}>
                 Chờ xử lý
               </Tabs.Tab>
-              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.PROCESSING}>
+              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.PROCESSING}>
                 Chưa thanh toán
               </Tabs.Tab>
 
-              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.DELIVERED}>
+              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.DELIVERED}>
                 Đang giao hàng
               </Tabs.Tab>
-              <Tabs.Tab size={'md'} fw={700} value={OrderStatus.CANCELLED}>
+              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.CANCELLED}>
                 Đã hủy
               </Tabs.Tab>
             </Group>
-            <Stack flex={1} ml={{ base: 0, sm: 0, md: 0, lg: 'md' }} mt={{ base: 'xs', sm: 'xs', md: 'xs', lg: 0 }}>
+            {/* <Stack flex={1} ml={{ base: 0, sm: 0, md: 0, lg: 'md' }} mt={{ base: 'xs', sm: 'xs', md: 'xs', lg: 0 }}>
               <SearchLocal setValue={setValueSearch} />
-            </Stack>
+            </Stack> */}
+            <Flex flex={1} justify={'space-between'} align={'center'} mt={{ base: 'xs', sm: 'xs', md: 'xs', lg: 0 }}>
+              <Box w={0}></Box>
+              <Box w={{ base: '100%', sm: 300, md: 300, lg: 300 }}>
+                <SearchLocal setValue={setValueSearch} />
+              </Box>
+            </Flex>
           </Flex>
         </Tabs.List>
 
@@ -179,7 +214,9 @@ export default function OrderList({ orders, isLoading }: any) {
                           className='align-items-center flex'
                         >
                           <Flex align={'center'}>
-                            {getStatusText(order.status)}
+                            <Text size='10px' fw={700}>
+                              {getStatusText(order.status)}
+                            </Text>
                             {getStatusIcon(order.status)}
                           </Flex>
                         </Badge>
@@ -232,7 +269,7 @@ export default function OrderList({ orders, isLoading }: any) {
                   <Table.Tr>
                     <Table.Td colSpan={4}>
                       <Center>
-                        <Text size='sm' color='dimmed'>
+                        <Text size='sm' c='dimmed'>
                           Không có đơn hàng
                         </Text>
                       </Center>

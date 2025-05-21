@@ -2,10 +2,33 @@
 
 import { Card, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
+import React, { useEffect } from 'react';
 import ProductCardCarouselHorizontal from '../_Components/ProductCardCarouselHorizontal';
 
 const LayoutPromotion = ({ data }: any) => {
   const productDiscount = data ?? [];
+  const [timeExpire, setTimeExpire] = React.useState({
+    day: 0,
+    hour: 0,
+    minute: 0,
+    second: 0
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const day = 30 - new Date().getDate();
+      const hour = 23 - new Date().getHours();
+      const minute = 59 - new Date().getMinutes();
+      const second = 59 - new Date().getSeconds();
+      if (day < 0 && hour < 0 && minute < 0 && second < 0) {
+        clearInterval(interval);
+        return;
+      }
+      setTimeExpire({ day, hour, minute, second });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Card
       h={'max-content'}
@@ -44,7 +67,7 @@ const LayoutPromotion = ({ data }: any) => {
             <Group gap={'xs'}>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
                 <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
-                  172
+                  {timeExpire.day < 10 ? `0${timeExpire.day}` : timeExpire.day}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>
                   Ngày
@@ -52,7 +75,7 @@ const LayoutPromotion = ({ data }: any) => {
               </Flex>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
                 <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
-                  21
+                  {timeExpire.hour < 10 ? `0${timeExpire.hour}` : timeExpire.hour}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>
                   Giờ
@@ -60,7 +83,7 @@ const LayoutPromotion = ({ data }: any) => {
               </Flex>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
                 <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
-                  51
+                  {timeExpire.minute < 10 ? `0${timeExpire.minute}` : timeExpire.minute}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>
                   Phút
@@ -68,7 +91,7 @@ const LayoutPromotion = ({ data }: any) => {
               </Flex>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
                 <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
-                  23
+                  {timeExpire.second < 10 ? `0${timeExpire.second}` : timeExpire.second}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>
                   Giây

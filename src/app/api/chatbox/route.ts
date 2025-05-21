@@ -6,24 +6,16 @@ import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { api } from '~/trpc/server';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+
 export async function POST(req: Request) {
   const { message } = await req.json();
-  const containsProductKeyword = message.match(
-    /sản phẩm|món|mặt hàng|giá|menu|thực đơn|có|bán|giảm|khuyến mãi|đánh giá|nổi bật/i
-  );
-  const containsRestaurantKeyword = message.match(/cửa hàng|địa chỉ|giờ|số điện thoại|nhà hàng|liên hệ|email/i);
-
-  let prompt = `Bạn là trợ lý bán hàng chuyên nghiệp của cửa hàng Phụng Food (Mama Reastaurant). Cửa hàng chỉ bán online.`;
-
-  if (containsProductKeyword?.[0]) {
-    let subPrompt = `
-      Bây giờ bạn là trợ lí bán hàng của website của tôi. Đây là câu hỏi của người dùng: ${message}
-
-      Bạn chỉ cần trả về cho tôi JSON js với các thuộc tính có giá trị, không cần nói gì thêm. Các thuộc tính có thể có hoặc không.
+  const restaurant = await api.Restaurant.getOne();
+  let subPrompt = `
+      Đây là câu hỏi của người dùng: ${message}
      
       Dưới đây là các thuộc tính để lọc sản phầm:
           
-      - s kiểu string là key để tìm kiếm. s phải là tên ăn (ví dụ: s="cơm tắm sườn bì chả") hoặc s phải là tên 1 danh mục của món ăn (ví dụ: s="kem", s="cơm", s="món chính")
+      - s kiểu string là key để tìm kiếm. giá trị s phải là tên món ăn (ví dụ: s="cơm tắm sườn bì chả") hoặc s phải là tên 1 danh mục của món ăn (ví dụ: s="kem", s="cơm", s="món chính")
 
       - discount kiểu boolean bằng true nếu trong câu hỏi người dùng có liên quan đến khuyến mãi
 
@@ -37,23 +29,27 @@ export async function POST(req: Request) {
       
       - sort kiểu string array nếu trong câu hỏi người dùng có liên quan đến sắp xếp. Sort thường có các giá trị sau name-acs, name-desc, price-asc, price-desc, price-asc, price-desc, old, new, best-seller. Ví dụ ["price-asc", "name-desc"]
       
-      - nguyen-lieu kiểu string array nếu trong câu hỏi người dùng có liên quan đến nguyên liệu. Ví dụ ["thịt", "rau", "trứng", "cá", "tôm", "mực", "hải sản", "gà", "bò", "heo", "nguyên liệu tươi sống"]
+      - nguyen-lieu kiểu string array nếu trong câu hỏi người dùng có liên quan đến nguyên liệu. Ví dụ ["thịt", "rau", "trứng", "cá", "tôm", "mực", "hải sản", "thịt gà", "thịt bò", "thịt heo", "nguyên liệu tươi sống"]
+
+      CHỈ CẦN TRẢ VỀ JSON TRONG JS với các thuộc tính có giá trị khác null, không cần nói gì thêm. Các thuộc tính không bắt buộc có thể không có trong JSON. Nếu không có thuộc tính nào thì trả về JSON rỗng {}. Không cần nói gì thêm.
     `;
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.0-flash-001',
+    contents: subPrompt
+  });
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-001',
-      contents: subPrompt
-    });
+  let keywordsJSON = response.text;
+  keywordsJSON = keywordsJSON?.replace(/```(javascript|json|plaintext)?\n?/g, '').trim();
+  console.log('keywordsJSON', keywordsJSON);
+  const keywords = JSON.parse(keywordsJSON || '{}');
+  console.log('keywordsparse JSON', keywords);
 
-    let keywordsJSON = response.text;
-    keywordsJSON = keywordsJSON?.replace(/```(javascript|json|plaintext)?\n?/g, '').trim();
-    console.log('keywordsJSON', keywordsJSON);
+  const products = await api.Product.find({ skip: 0, take: 4, ...keywords });
 
-    const keywords = JSON.parse(keywordsJSON || '{}');
-    const products = await api.Product.find({ skip: 0, take: 4, ...keywords });
-    const productHTML = products?.products
-      .map(
-        product => `
+  let prompt = `Bạn là trợ lý bán hàng chuyên nghiệp của cửa hàng Phụng Food (Mama Reastaurant). Cửa hàng chỉ bán online.`;
+  const productHTML = products?.products
+    .map(
+      product => `
             <div
               style="margin-top: 8px; margin-bottom: 8px; padding: 8px; background-color: #f3f4f6; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; align-items: flex-start; gap: 16px;"
             >
@@ -93,20 +89,10 @@ export async function POST(req: Request) {
               </div>
             </div>
         `
-      )
-      .join('');
-    prompt += ` 
-    Đây là danh sách sản phẩm hiện có trong cửa hàng (dưới dạng HTML): 
-    ${productHTML}
-    
-    Câu hỏi của khách: ${message}
-      
-    Nếu kết quả trả về có nhiều hơn 3 sản phẩm thì trả về 3 sản phẩm dạng HTML và thêm 1 thẻ HTML và CSS chiếm trọn hàng, căn trái phải trên dưới phù hợp có nội dung "Xem thực đơn" để điều hướng đến đường dẫn ${process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/thuc-don
+    )
+    .join('');
 
-    Nếu không có kết quả, hãy trả lời rằng cửa hàng không có sản phẩm phù hợp.`;
-  } else if (containsRestaurantKeyword?.[0]) {
-    const restaurant = await api.Restaurant.getOne();
-    const restaurantHTML = `
+  const restaurantHTML = `
         <div style="margin: 10px 0; max-width: 400px; padding: 16px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
         <h3 style="margin: 0; padding-bottom: 8px; color: #333; border-bottom: 2px solid #ddd;">An Luu</h3>
         <p style="margin: 8px 0; color: #555;"><strong>Địa chỉ:</strong> ${restaurant?.address}</p>
@@ -130,17 +116,38 @@ export async function POST(req: Request) {
         }
       </div>
   `;
-    prompt += ` 
+
+  prompt += ` 
+    Câu hỏi của khách: ${message}.
+
+    Đây là danh sách sản phẩm tìm được trong cửa hàng dưới dạng HTML: 
+    ${productHTML}
+          
+    Nếu kết quả trả về có nhiều hơn 3 sản phẩm thì trả về 3 sản phẩm dạng HTML và thêm 1 thẻ HTML và CSS chiếm trọn hàng, căn trái phải trên dưới phù hợp có nội dung "Xem thêm". Đây là các đường dẫn tương ứng với câu hỏi của người dùng:
+    (
+       thuc-don
+       thuc-don?loai=san-pham-ban-chay
+       thuc-don?loai=san-pham-giam-gia
+       thuc-don?loai=san-pham-moi
+       thuc-don?loai=san-pham-hot
+       thuc-don?nguyen-lieu=thit&nguyen-lieu=rau&...
+       thuc-don?s=
+    ) 
+    
+    Thay thế cho phù hợp. Ví dụ nếu câu hỏi có liên quan đến sản phẩm bán chạy sẽ điều hương đến đường dẫn ${process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/thuc-don?loai=san-pham-ban-chay.
+
+    Nếu không có kết quả, hãy trả lời rằng cửa hàng không có sản phẩm phù hợp.`;
+
+  prompt += ` 
     Đây là thông tin cửa hàng (dưới dạng HTML):
     ${restaurantHTML}
     
-    Câu hỏi của khách: ${message}
+    Câu hỏi của khách: ${message}.
     
     Nếu câu hỏi của khách có thông tin liên quan đến cửa hàng, trả về thông tin phù hợp với câu hỏi của khách hàng về cửa hàng với định dạng thân thiện, hợp lí. Hãy hiển thị dưới dạng HTML. 
     
     Nếu không có thông tin, hãy trả lời phù hợp.`;
-  } else {
-    prompt += ` 
+  prompt += ` 
     
     Câu hỏi của khách hàng: ${message}. 
 
@@ -153,15 +160,13 @@ export async function POST(req: Request) {
     https://firebasestorage.googleapis.com/v0/b/easybookingapp-87ed5.appspot.com/o/LINH%2F98.png?alt=media&token=ece10c2a-9676-4b84-aa41-e219969b845f
     https://firebasestorage.googleapis.com/v0/b/easybookingapp-87ed5.appspot.com/o/LINH%2F93.jpg?alt=media&token=11783ce9-1449-43f8-8233-441e6b971c97
     
-   
     Đây là facebook của cô ấy: https://www.facebook.com/tlinh1423
 
-    Sử dụng HTML CSS để thể hiện hợp lí các thông tin về Thùy Linh.
+    Sử dụng HTML CSS để thể hiện hợp lí các thông tin về Thùy Linh, sử dụng các thuộc tính css phù hợp, không vỡ layout.
 
     Nếu câu hỏi của khách hàng không có liên quan đến Thùy Linh, hãy trả lời một cách thân thiện mà không cần HTML.
     
     `;
-  }
 
   try {
     const response = await ai.models.generateContent({

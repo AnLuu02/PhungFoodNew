@@ -120,7 +120,7 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
             ) : (
               <Table.Tr>
                 <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
-                  <Text size='md' color='dimmed'>
+                  <Text size='md' c='dimmed'>
                     Không có bản ghi phù hợp./
                   </Text>
                 </Table.Td>

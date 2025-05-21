@@ -139,7 +139,7 @@ export default function TableNotification({ data, s, user }: { s: string; data: 
             ) : (
               <Table.Tr>
                 <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
-                  <Text size='md' color='dimmed'>
+                  <Text size='md' c='dimmed'>
                     Không có bản ghi phù hợp./
                   </Text>
                 </Table.Td>

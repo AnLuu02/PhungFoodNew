@@ -1,150 +1,182 @@
-export const dataVoucher = [
+export const mockPromotions = [
   {
-    id: 1,
-    name: 'Giảm giá 15%',
-    description: 'Giảm giá 15% áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-    type: 'Percentage',
-    discountValue: 15,
-    voucherVariants: [
-      {
-        id: 11,
-        name: 'Giảm tối đa 100k',
-        description:
-          'Giảm giá 15%, Giảm tối 100k cho đơn hàng tối thiểu 500k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Percentage',
-        maxDiscount: 100000,
-        minOrderPrice: 50000000,
-        status: 'Active',
-        quantity: 10,
-        startDate: '2024-11-15T00:00:00.000Z',
-        endDate: '2025-11-20T00:00:00.000Z'
-      },
-      {
-        id: 12,
-        name: 'Giảm tối đa 50k',
-        description:
-          'Giảm giá 10%, Giảm tối đa 50k cho đơn hàng tối thiểu 300k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Percentage',
-        maxDiscount: 50000,
-        minOrderPrice: 300000,
-        status: 'Active',
-        quantity: 15,
-        startDate: '2024-11-14T00:00:00.000Z',
-        endDate: '2025-11-15T00:00:00.000Z'
-      },
-      {
-        id: 13,
-        name: 'Giảm tối đa 200k',
-        description:
-          'Giảm giá 20%, Giảm tối đa 200k cho đơn hàng tối thiểu 800k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Percentage',
-        maxDiscount: 200000,
-        minOrderPrice: 800000,
-        status: 'Active',
-        quantity: 5,
-        startDate: '2024-11-14T00:00:00.000Z',
-        endDate: '2025-11-20T00:00:00.000Z'
-      }
-    ]
+    id: 'voucher-1',
+    name: 'Giảm 20%',
+    description: 'Giảm 20% cho đơn hàng từ 150k',
+    type: 'PERCENTAGE',
+    discountValue: 20,
+    maxDiscount: 20000,
+    minOrderPrice: 150000,
+    applyAll: true,
+    availableQuantity: 10,
+    quantity: 10,
+    usedQuantity: 0,
+    vipLevel: 0,
+    tag: 'giam-20',
+    startDate: new Date('2025-02-15'),
+    endDate: new Date('2025-04-15'),
+    createdAt: new Date()
   },
   {
-    id: 2,
-    name: 'Giảm giá 50k',
-    description: 'Giảm giá trực tiếp 50k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-    type: 'Fixed',
+    id: 'voucher-2',
+    name: 'Giảm 50k',
+    description: 'Giảm ngay 50k cho đơn từ 300k',
+    type: 'FIXED',
     discountValue: 50000,
-    voucherVariants: [
-      {
-        id: 21,
-        name: 'Giảm ngay 50k',
-        description: 'Giảm ngay 50k cho đơn hàng tối thiểu 300k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Fixed',
-        discountValue: 50000,
-        minOrderPrice: 300000,
-        status: 'Active',
-        quantity: 10,
-        startDate: '2024-11-16T00:00:00.000Z',
-        endDate: '2025-11-25T00:00:00.000Z'
-      },
-      {
-        id: 22,
-        name: 'Giảm ngay 100k',
-        description:
-          'Giảm ngay 100k cho đơn hàng tối thiểu 500k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Fixed',
-        discountValue: 100000,
-        minOrderPrice: 500000,
-        status: 'Active',
-        quantity: 8,
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 2))
-      },
-      {
-        id: 23,
-        name: 'Giảm ngay 150k',
-        description:
-          'Giảm ngay 150k cho đơn hàng tối thiểu 700k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Fixed',
-        discountValue: 150000,
-        minOrderPrice: 700000,
-        status: 'Active',
-        quantity: 5,
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 3))
-      }
-    ]
+    maxDiscount: null,
+    minOrderPrice: 300000,
+    applyAll: true,
+    availableQuantity: 15,
+    quantity: 15,
+    usedQuantity: 0,
+    vipLevel: 0,
+    tag: 'giam-50k',
+    startDate: new Date('2025-02-20'),
+    endDate: new Date('2025-04-20'),
+    createdAt: new Date()
   },
   {
-    id: 3,
-    name: 'Giảm giá 100k',
-    description: 'Giảm giá trực tiếp 100k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-    type: 'Fixed',
+    id: 'voucher-3',
+    name: 'Giảm 15%',
+    description: 'Giảm 15% tối đa 30k cho đơn từ 200k',
+    type: 'PERCENTAGE',
+    discountValue: 15,
+    maxDiscount: 30000,
+    minOrderPrice: 200000,
+    applyAll: true,
+    availableQuantity: 20,
+    quantity: 20,
+    usedQuantity: 0,
+    vipLevel: 1,
+    tag: 'giam-15',
+    startDate: new Date('2025-02-10'),
+    endDate: new Date('2025-04-10'),
+    createdAt: new Date()
+  },
+  {
+    id: 'voucher-4',
+    name: 'Giảm 30k',
+    description: 'Giảm 30k cho đơn hàng từ 250k',
+    type: 'FIXED',
+    discountValue: 30000,
+    maxDiscount: null,
+    minOrderPrice: 250000,
+    applyAll: true,
+    availableQuantity: 12,
+    quantity: 12,
+    usedQuantity: 0,
+    vipLevel: 0,
+    tag: 'giam-30k',
+    startDate: new Date('2025-02-12'),
+    endDate: new Date('2025-04-12'),
+    createdAt: new Date()
+  },
+  {
+    id: 'voucher-5',
+    name: 'Giảm 25%',
+    description: 'Giảm 25% tối đa 50k cho đơn từ 300k',
+    type: 'PERCENTAGE',
+    discountValue: 25,
+    maxDiscount: 50000,
+    minOrderPrice: 300000,
+    applyAll: true,
+    availableQuantity: 8,
+    quantity: 8,
+    usedQuantity: 0,
+    vipLevel: 2,
+    tag: 'giam-25',
+    startDate: new Date('2025-02-18'),
+    endDate: new Date('2025-04-18'),
+    createdAt: new Date()
+  },
+  {
+    id: 'voucher-6',
+    name: 'Giảm 100k',
+    description: 'Giảm 100k cho đơn từ 500k',
+    type: 'FIXED',
     discountValue: 100000,
-    images: [
-      {
-        url: '/img/background-lookup-fengshui.jpg'
-      }
-    ],
-    voucherVariants: [
-      {
-        id: 24,
-        name: 'Giảm ngay 100k',
-        description:
-          'Giảm ngay 100k cho đơn hàng tối thiểu 400k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Fixed',
-        discountValue: 100000,
-        minOrderPrice: 400000,
-        status: 'Active',
-        quantity: 7,
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 1))
-      },
-      {
-        id: 25,
-        name: 'Giảm ngay 120k',
-        description:
-          'Giảm ngay 120k cho đơn hàng tối thiểu 600k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Fixed',
-        discountValue: 120000,
-        minOrderPrice: 600000,
-        status: 'Active',
-        quantity: 6,
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 2))
-      },
-      {
-        id: 26,
-        name: 'Giảm ngay 200k',
-        description:
-          'Giảm ngay 200k cho đơn hàng tối thiểu 1000k áp dụng cho toàn bộ sản phẩm của cửa hàng Kamala Shop.',
-        type: 'Fixed',
-        discountValue: 200000,
-        minOrderPrice: 1000000,
-        status: 'Active',
-        quantity: 4,
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 3))
-      }
-    ]
+    maxDiscount: null,
+    minOrderPrice: 500000,
+    applyAll: true,
+    availableQuantity: 5,
+    quantity: 5,
+    usedQuantity: 0,
+    vipLevel: 3,
+    tag: 'giam-100k',
+    startDate: new Date('2025-02-25'),
+    endDate: new Date('2025-04-25'),
+    createdAt: new Date()
+  },
+  {
+    id: 'voucher-7',
+    name: 'Giảm 10%',
+    description: 'Giảm 10% tối đa 20k cho đơn từ 100k',
+    type: 'PERCENTAGE',
+    discountValue: 10,
+    maxDiscount: 20000,
+    minOrderPrice: 100000,
+    applyAll: true,
+    availableQuantity: 30,
+    quantity: 30,
+    usedQuantity: 0,
+    vipLevel: 0,
+    tag: 'giam-10',
+    startDate: new Date('2025-02-08'),
+    endDate: new Date('2025-04-08'),
+    createdAt: new Date()
+  },
+  {
+    id: 'voucher-8',
+    name: 'Giảm 5%',
+    description: 'Giảm 5% tối đa 10k cho đơn từ 50k',
+    type: 'PERCENTAGE',
+    discountValue: 5,
+    maxDiscount: 10000,
+    minOrderPrice: 50000,
+    applyAll: true,
+    availableQuantity: 50,
+    quantity: 50,
+    usedQuantity: 0,
+    vipLevel: 0,
+    tag: 'giam-5',
+    startDate: new Date('2025-02-01'),
+    endDate: new Date('2025-02-28'),
+    createdAt: new Date()
+  },
+  {
+    id: 'voucher-9',
+    name: 'Giảm 70k',
+    description: 'Giảm 70k cho đơn từ 400k',
+    type: 'FIXED',
+    discountValue: 70000,
+    maxDiscount: null,
+    minOrderPrice: 400000,
+    applyAll: true,
+    availableQuantity: 7,
+    quantity: 7,
+    usedQuantity: 0,
+    vipLevel: 1,
+    tag: 'giam-70k',
+    startDate: new Date('2025-02-22'),
+    endDate: new Date('2025-04-22'),
+    createdAt: new Date()
+  },
+  {
+    id: 'voucher-10',
+    name: 'Giảm 40%',
+    description: 'Giảm 40% tối đa 80k cho đơn từ 500k',
+    type: 'PERCENTAGE',
+    discountValue: 40,
+    maxDiscount: 80000,
+    minOrderPrice: 500000,
+    applyAll: true,
+    availableQuantity: 6,
+    quantity: 6,
+    usedQuantity: 0,
+    vipLevel: 2,
+    tag: 'giam-40',
+    startDate: new Date('2025-02-28'),
+    endDate: new Date('2025-04-30'),
+    createdAt: new Date()
   }
 ];

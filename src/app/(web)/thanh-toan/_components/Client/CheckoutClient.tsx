@@ -61,7 +61,7 @@ export default function CheckoutClient({ order, orderId }: any) {
     ),
     mode: 'onChange',
     defaultValues: {
-      paymentId: '',
+      paymentId: 'vnpay',
       name: '',
       email: '',
       phone: '',

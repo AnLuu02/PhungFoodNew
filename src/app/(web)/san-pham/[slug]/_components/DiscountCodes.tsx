@@ -2,9 +2,9 @@
 
 import { Center, Grid, GridCol, Paper, Spoiler, Title } from '@mantine/core';
 import { useState } from 'react';
-import { mockPromotions } from '~/app/(web)/thong-tin/_components/promotions';
 import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
+import { mockPromotions } from '~/app/lib/utils/data-test/data-voucher';
 
 export function DiscountCodes() {
   const [openDetail, setOpenDetail] = useState<any>({});

@@ -250,7 +250,7 @@ export function CategoryNav() {
                   )}
                 </Flex>
                 <ScrollAreaAutosize mah={260} scrollbarSize={6} type='auto'>
-                  <Stack gap='xs'>
+                  <Stack gap='xs' pr={'xs'}>
                     <Checkbox.Group value={valueMaterials} onChange={setValueMaterials}>
                       <Group mt='xs'>
                         {materials.map(type => (

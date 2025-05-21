@@ -114,6 +114,7 @@ export default function Chatbox() {
   useEffect(() => {
     if (stateRecord.transcript) {
       messageRef.current = stateRecord.transcript;
+      inputRef.current!.value = stateRecord.transcript;
     }
   }, [stateRecord.transcript]);
 
