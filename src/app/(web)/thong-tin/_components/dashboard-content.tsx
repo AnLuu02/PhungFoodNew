@@ -63,7 +63,7 @@ export default function DashboardContent() {
       <Tabs.Panel value={activeTab || 'user-info'} className='h-fit'>
         {activeTab === 'user-info' && <UserInfo user={data} isLoading={isLoading} />}
         {activeTab === 'statistics' && <UserStatistics />}
-        {activeTab === 'orders' && <OrderList orders={data} isLoading={isLoading} />}
+        {activeTab === 'orders' && <OrderList orders={data ?? ([] as any)} isLoading={isLoading} />}
         {activeTab === 'promotions' && <Promotions promotions={data} isLoading={isLoading} />}
       </Tabs.Panel>
     </Tabs>
