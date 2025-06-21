@@ -77,7 +77,7 @@ export default function FloatingWidget() {
             </Menu.Dropdown>
           </Menu>
 
-          <Link href='https://m.me/your-facebook-page' target='_blank'>
+          <Link href='https://m.me/your-facebook-page' target='_blank' prefetch={false}>
             <Image loading='lazy' src={'/images/svg/icon-messager.svg'} w={50} h={50} className='animate-wiggle' />
           </Link>
         </Box>

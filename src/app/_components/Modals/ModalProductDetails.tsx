@@ -22,7 +22,6 @@ import {
   Text
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import {
   IconBrandFacebook,
   IconBrandPinterest,
@@ -37,6 +36,7 @@ import BButton from '~/app/_components/Button';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 
 function ModalProductDetails({ type, product, opened, close }: { type: any; product: any; opened: any; close: any }) {
   const [quantity, setQuantity] = useState(1);
@@ -79,13 +79,13 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
               <GridCol span={5}>
                 <Image
                   loading='lazy'
-                  src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/temp/xa lach.png'}
+                  src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/temp/xa lach.png'}
                   alt={product?.name}
                   className='cursor-pointer rounded-md object-cover'
                   w={350}
                   h={350}
                   onClick={() => {
-                    setCurrentImage(getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '');
+                    setCurrentImage(getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '');
                     setShowfullImage(true);
                   }}
                 />
@@ -109,7 +109,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                             className='cursor-pointer'
                             onClick={() => {
                               setCurrentImage(
-                                item?.type === ImageType.GALLERY
+                                item?.type === LocalImageType.GALLERY
                                   ? item?.url
                                   : 'https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80'
                               );
@@ -123,7 +123,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                               className='border-2 border-[#008b4b] object-cover'
                               h={74}
                               src={
-                                item?.type === ImageType.GALLERY
+                                item?.type === LocalImageType.GALLERY
                                   ? item?.url
                                   : 'https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80'
                               }
@@ -147,7 +147,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                       Có {product?.totalRating} đánh giá
                     </Text>
                   </Flex>
-                  <Link href={`/san-pham/${product?.tag}`} onClick={close}>
+                  <Link href={`/san-pham/${product?.tag}`} onClick={close} prefetch={false}>
                     <Text
                       fw={700}
                       className='cursor-pointer text-3xl text-black transition-all duration-200 ease-in-out hover:text-[#008b4b]'

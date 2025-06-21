@@ -130,7 +130,7 @@ export default function Navbar() {
               </Group>
 
               <Divider />
-              <Link href={`/thong-tin`} className='text-white'>
+              <Link href={`/thong-tin`} className='text-white' prefetch={false}>
                 <Menu.Item
                   fw={500}
                   leftSection={

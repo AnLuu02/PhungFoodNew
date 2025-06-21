@@ -91,6 +91,7 @@ export const Header1 = ({ restaurant }: any) => {
                 onClick={() => setLangue('vn')}
                 leftSection={
                   <Image
+                    loading='lazy'
                     src={'/images/png/co vn.png'}
                     w={langue === 'vn' ? 35 : 20}
                     className={clsx(langue === 'vn' ? '' : 'cursor-pointer')}
@@ -103,6 +104,7 @@ export const Header1 = ({ restaurant }: any) => {
                 onClick={() => setLangue('us')}
                 leftSection={
                   <Image
+                    loading='lazy'
                     src={'/images/png/co anh.png'}
                     w={langue === 'us' ? 35 : 20}
                     className={clsx(langue === 'us' ? '' : 'cursor-pointer')}

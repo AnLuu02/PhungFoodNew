@@ -117,7 +117,7 @@ const LayoutProductCarouselWithImage = ({
             <TabsPanelCarousel data={productMonChay} />
           </TabsPanel>
           <Flex align={'center'} justify={'center'} mt={30}>
-            <Link href={`/thuc-don?loai=${loai}`}>
+            <Link href={`/thuc-don?loai=${loai}`} prefetch={false}>
               <BButton title={'Xem tất cả'} variant='outline' size='sm' />
             </Link>
           </Flex>

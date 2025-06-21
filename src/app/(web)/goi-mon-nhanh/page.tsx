@@ -1,4 +1,5 @@
 import { Grid, GridCol } from '@mantine/core';
+import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { api } from '~/trpc/server';
 import QuickCart from './components/quick-cart';
 import QuickMenu from './components/quick-menu';
@@ -26,7 +27,14 @@ const FastMenu = async ({
       <GridCol span={{ base: 12, sm: 6, md: 7, lg: 9 }} className='h-fit' p={0} pt={'xs'}>
         <QuickMenu categories={categories} products={products} searchParams={searchParams} />
       </GridCol>
-      <GridCol span={{ base: 12, sm: 6, md: 5, lg: 3 }} className='h-fit' pos={'sticky'} top={70} p={0} pt={'xs'}>
+      <GridCol
+        span={{ base: 12, sm: 6, md: 5, lg: 3 }}
+        className='h-fit'
+        pos={'sticky'}
+        top={TOP_POSITION_STICKY}
+        p={0}
+        pt={'xs'}
+      >
         <QuickCart />
       </GridCol>
     </Grid>

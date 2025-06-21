@@ -1,4 +1,4 @@
-import { EntityType, Gender, ImageType, UserLevel } from '@prisma/client';
+import { Gender, UserLevel } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { compare } from 'bcryptjs';
 import { randomInt } from 'crypto';
@@ -7,6 +7,7 @@ import { UserRole } from '~/app/lib/utils/constants/roles';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { hashPassword } from '~/app/lib/utils/func-handler/hashPassword';
 import { getOtpEmail, sendEmail } from '~/app/lib/utils/func-handler/sendEmail';
+import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/app/lib/utils/zod/EnumType';
 import { addressSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
@@ -85,7 +86,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1, 'Name is required'),
-        gender: z.nativeEnum(Gender).default(Gender.OTHER),
+        gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
         email: z.string().email({ message: 'Invalid email' }),
         image: z
           .object({
@@ -98,7 +99,7 @@ export const userRouter = createTRPCRouter({
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
         address: addressSchema.optional(),
         pointLevel: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE),
+        level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
         roleId: z.string().optional()
       })
     )
@@ -156,10 +157,10 @@ export const userRouter = createTRPCRouter({
           image: imgURL
             ? {
                 create: {
-                  entityType: EntityType.USER,
+                  entityType: LocalEntityType.USER,
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
-                  type: ImageType.THUMBNAIL
+                  type: LocalImageType.THUMBNAIL
                 }
               }
             : undefined,
@@ -196,13 +197,13 @@ export const userRouter = createTRPCRouter({
             base64: z.string()
           })
           .optional(),
-        gender: z.nativeEnum(Gender).default(Gender.OTHER),
+        gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
         dateOfBirth: z.date().optional(),
         password: z.string().min(6, { message: 'Password should include at least 6 characters' }),
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
         address: addressSchema,
         pointLevel: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE),
+        level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
         roleId: z.string().optional()
       })
     )
@@ -256,16 +257,16 @@ export const userRouter = createTRPCRouter({
                   upsert: {
                     where: { id: oldImage?.id || '' },
                     update: {
-                      entityType: EntityType.USER,
+                      entityType: LocalEntityType.USER,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: ImageType.THUMBNAIL
+                      type: LocalImageType.THUMBNAIL
                     },
                     create: {
-                      entityType: EntityType.USER,
+                      entityType: LocalEntityType.USER,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: ImageType.THUMBNAIL
+                      type: LocalImageType.THUMBNAIL
                     }
                   }
                 }

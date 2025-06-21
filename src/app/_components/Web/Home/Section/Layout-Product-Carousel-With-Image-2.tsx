@@ -1,21 +1,8 @@
 'use client';
 import { Carousel } from '@mantine/carousel';
-import {
-  Box,
-  Card,
-  Flex,
-  Grid,
-  GridCol,
-  Image,
-  rem,
-  Tabs,
-  TabsList,
-  TabsPanel,
-  TabsTab,
-  Text,
-  Title
-} from '@mantine/core';
+import { Box, Card, Flex, Grid, GridCol, rem, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import clsx from 'clsx';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import BButton from '~/app/_components/Button';
@@ -89,21 +76,21 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
               >
                 <Box mb={'xs'} w={'100%'} h={190} className='cursor-pointer overflow-hidden rounded-xl'>
                   <Image
+                    objectFit='cover'
                     loading='lazy'
                     src='/images/webp/img_3banner_1.webp'
                     alt='Restaurant Image 1'
-                    w={'100%'}
-                    h={'100%'}
+                    fill
                     className='cursor-pointer transition-all duration-500 ease-in-out hover:scale-105'
                   />
                 </Box>
                 <Box mb={'xs'} w={'100%'} h={190} className='cursor-pointer overflow-hidden rounded-xl'>
                   <Image
+                    objectFit='cover'
                     loading='lazy'
                     src='/images/webp/img_3banner_2.webp'
                     alt='Restaurant Image 1'
-                    w={'100%'}
-                    h={'100%'}
+                    fill
                     className='cursor-pointer transition-all duration-500 ease-in-out hover:scale-105'
                   />
                 </Box>
@@ -145,7 +132,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                         )}
                       </Carousel>
                       <Flex align={'center'} justify={'center'} mt={30}>
-                        <Link href={`/thuc-don?loai=${tab}`}>
+                        <Link href={`/thuc-don?loai=${tab}`} prefetch={false}>
                           <BButton title={'Xem tất cả'} variant='outline' size='sm' />
                         </Link>
                       </Flex>

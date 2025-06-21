@@ -1,7 +1,8 @@
 'use client';
 import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
-import { ActionIcon, Card, CardSection, Center, Flex, Group, Image, rem, Stack, Text } from '@mantine/core';
+import { ActionIcon, Card, CardSection, Center, Flex, Group, rem, Stack, Text, Tooltip } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 
 const TabsPanelCarouselSimple = ({ data }: any) => {
@@ -58,7 +59,14 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
       </Center>
       {data?.length <= 0 ? (
         <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
-          <Image loading='lazy' src={'/images/png/empty_cart.png'} w={100} h={100} alt={'empty cart'} />
+          <Image
+            objectFit='cover'
+            loading='lazy'
+            src={'/images/png/empty_cart.png'}
+            width={100}
+            height={100}
+            alt={'empty cart'}
+          />
           <Text size='xl' fw={700} c={'dimmed'}>
             Không có sản phẩm phù hợp
           </Text>
@@ -90,17 +98,22 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                 className='hover:border-10 cursor-pointer hover:border-[#008b4b] hover:shadow-lg'
               >
                 <CardSection>
-                  <Image
-                    loading='lazy'
-                    src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
-                    height={120}
-                    alt='Norway'
-                  />
+                  <div style={{ position: 'relative', width: '100%', height: '120px' }}>
+                    <Image
+                      objectFit='cover'
+                      loading='lazy'
+                      src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                      fill
+                      alt={item?.name || 'Cà chua'}
+                    />
+                  </div>
                 </CardSection>
                 <Stack gap={rem(1)} mt={'xs'} align='center'>
-                  <Text size={'md'} fw={700}>
-                    {item?.name || 'Cà chua'}
-                  </Text>
+                  <Tooltip label={item?.name || 'Cà chua'} withArrow>
+                    <Text size={'md'} fw={700} lineClamp={1} className='hover:text-[#008b4b]'>
+                      {item?.name || 'Cà chua'}
+                    </Text>
+                  </Tooltip>
                   <Text c='dimmed' size='xs'>
                     {item?.product?.length || 0} sản phẩm
                   </Text>

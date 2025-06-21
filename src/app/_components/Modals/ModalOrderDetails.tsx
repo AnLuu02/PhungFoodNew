@@ -18,12 +18,12 @@ import {
   rem
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTruck } from '@tabler/icons-react';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import InvoiceToPrint from '../Invoices/InvoceToPrint';
 
 function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {
@@ -180,7 +180,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                             <Avatar
                               size={40}
                               src={
-                                getImageProduct(item?.product?.images || [], ImageType.THUMBNAIL) ||
+                                getImageProduct(item?.product?.images || [], LocalImageType.THUMBNAIL) ||
                                 '/images/jpg/empty-300x240.jpg'
                               }
                               radius={'md'}

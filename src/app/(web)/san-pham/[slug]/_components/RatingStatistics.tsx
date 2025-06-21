@@ -5,7 +5,7 @@ interface RatingStatisticsProps {
   ratings: number[];
 }
 
-export function RatingStatistics({ ratings }: RatingStatisticsProps) {
+export default function RatingStatistics({ ratings }: RatingStatisticsProps) {
   const totalRatings = ratings.reduce((sum, count) => sum + count, 0) || 0;
   const averageRating = ratings.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings || 0;
   return (

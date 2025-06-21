@@ -14,12 +14,12 @@ import {
   Text
 } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
 import BButton from '~/app/_components/Button';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import { CartItemFastMenu } from '../../Home/_Components/CartItemFastMenu';
 
 const CartButton = () => {
@@ -68,7 +68,9 @@ const CartButton = () => {
                 <Box key={item?.id}>
                   <CartItemFastMenu
                     key={item?.id}
-                    image={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                    image={
+                      getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+                    }
                     name={item?.name}
                     price={item?.price}
                     quantity={item?.quantity}

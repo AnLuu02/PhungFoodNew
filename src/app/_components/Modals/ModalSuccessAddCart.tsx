@@ -2,11 +2,11 @@
 
 import { Button, Group, Image, Modal, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/_components/ButtonCheckout';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 
 interface SuccessModalProps {
   type: any;
@@ -45,7 +45,10 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
           <Group>
             <div className='relative h-16 w-16'>
               <Image
-                src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                loading='lazy'
+                src={
+                  getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+                }
                 alt={product?.name || 'Hành tây'}
                 fit='contain'
                 h={60}

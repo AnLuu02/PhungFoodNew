@@ -1,6 +1,6 @@
 import { Box, Image, Table, Text } from '@mantine/core';
-import { VoucherType } from '@prisma/client';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 
 type invoicePrintProps = {
   data: any;
@@ -21,7 +21,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
     }, 0) || 0;
 
   const totalDiscountVoucher = data?.vouchers?.reduce((acc: any, voucher: any) => {
-    if (voucher.type === VoucherType.PERCENTAGE) {
+    if (voucher.type === LocalVoucherType.PERCENTAGE) {
       const discount =
         (productSale?.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0) * voucher.discountValue) /
         100;
@@ -30,7 +30,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
       } else {
         acc += discount;
       }
-    } else if (voucher.type === VoucherType.FIXED) {
+    } else if (voucher.type === LocalVoucherType.FIXED) {
       acc += voucher.discountValue;
     }
     return acc;
@@ -40,7 +40,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
   return (
     <Box ref={printRef} p={'xl'}>
       <Box display={'flex'} style={{ flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <Image src='/logo/logo_phungfood_1.png' alt='logo' w={250} p={0} />
+        <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={250} p={0} />
         <Text c={'dark'} fz={18}>
           Đầu lộ Tân Thành, khóm 9, phường 6, Cà Mau
         </Text>

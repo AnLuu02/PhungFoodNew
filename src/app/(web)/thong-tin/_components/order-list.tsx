@@ -17,7 +17,6 @@ import {
   Text,
   Tooltip
 } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -35,6 +34,7 @@ import {
   getStatusText,
   getTotalOrderStatus
 } from '~/app/lib/utils/func-handler/get-status-order';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 interface OrderListProps {
   orders: any[];
@@ -89,7 +89,7 @@ export default function OrderList({ orders, isLoading }: OrderListProps) {
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
       <Flex wrap={'wrap'} align={'center'} gap={10} mb={'xs'}>
-        <Badge color={getStatusColor(OrderStatus.COMPLETED)} size='lg' w={'max-content'}>
+        <Badge color={getStatusColor(LocalOrderStatus.COMPLETED)} size='lg' w={'max-content'}>
           <Text ta='center' fw={700} size={'sm'}>
             <Text component='span' fw={700} mr={5}>
               {statusObj.completed}
@@ -97,7 +97,7 @@ export default function OrderList({ orders, isLoading }: OrderListProps) {
             Hoàn thành
           </Text>
         </Badge>
-        <Badge color={getStatusColor(OrderStatus.PROCESSING)} size='lg' w={'max-content'}>
+        <Badge color={getStatusColor(LocalOrderStatus.PROCESSING)} size='lg' w={'max-content'}>
           <Text ta='center' fw={700} size={'sm'}>
             <Text component='span' fw={700} mr={5}>
               {statusObj.processing}
@@ -105,7 +105,7 @@ export default function OrderList({ orders, isLoading }: OrderListProps) {
             Chưa thanh toán
           </Text>
         </Badge>
-        <Badge color={getStatusColor(OrderStatus.PENDING)} size='lg' w={'max-content'}>
+        <Badge color={getStatusColor(LocalOrderStatus.PENDING)} size='lg' w={'max-content'}>
           <Text ta='center' fw={700} size={'sm'}>
             <Text component='span' fw={700} mr={5}>
               {statusObj.pending}
@@ -113,7 +113,7 @@ export default function OrderList({ orders, isLoading }: OrderListProps) {
             Chờ xử lý
           </Text>
         </Badge>
-        <Badge color={getStatusColor(OrderStatus.DELIVERED)} size='lg' w={'max-content'}>
+        <Badge color={getStatusColor(LocalOrderStatus.DELIVERED)} size='lg' w={'max-content'}>
           <Text ta='center' fw={700} size={'sm'}>
             <Text component='span' fw={700} mr={5}>
               {statusObj.delivered}
@@ -121,7 +121,7 @@ export default function OrderList({ orders, isLoading }: OrderListProps) {
             Đang giao hàng
           </Text>
         </Badge>
-        <Badge color={getStatusColor(OrderStatus.CANCELLED)} size='lg' w={'max-content'}>
+        <Badge color={getStatusColor(LocalOrderStatus.CANCELLED)} size='lg' w={'max-content'}>
           <Text ta='center' fw={700} size={'sm'}>
             <Text component='span' fw={700} mr={5}>
               {statusObj.canceled}
@@ -157,21 +157,21 @@ export default function OrderList({ orders, isLoading }: OrderListProps) {
               <Tabs.Tab size={'md'} fw={500} value='all'>
                 Tất cả
               </Tabs.Tab>
-              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.COMPLETED}>
+              <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.COMPLETED}>
                 Hoàn thành
               </Tabs.Tab>
 
-              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.PENDING}>
+              <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.PENDING}>
                 Chờ xử lý
               </Tabs.Tab>
-              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.PROCESSING}>
+              <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.PROCESSING}>
                 Chưa thanh toán
               </Tabs.Tab>
 
-              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.DELIVERED}>
+              <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.DELIVERED}>
                 Đang giao hàng
               </Tabs.Tab>
-              <Tabs.Tab size={'md'} fw={500} value={OrderStatus.CANCELLED}>
+              <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.CANCELLED}>
                 Đã hủy
               </Tabs.Tab>
             </Group>
@@ -234,18 +234,18 @@ export default function OrderList({ orders, isLoading }: OrderListProps) {
                             </ActionIcon>
                           </Tooltip>
 
-                          {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
+                          {order?.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
 
-                          {order?.status === OrderStatus.PROCESSING && (
-                            <Link href={`/thanh-toan/${order.id}`}>
+                          {order?.status === LocalOrderStatus.PROCESSING && (
+                            <Link href={`/thanh-toan/${order.id}`} prefetch={false}>
                               <Tooltip label='Tiếp tục thanh toán'>
                                 <Button size='xs'>Thanh toán</Button>
                               </Tooltip>
                             </Link>
                           )}
 
-                          {order?.status === OrderStatus.CANCELLED && (
-                            <Link href={`/thanh-toan/${order.id}`}>
+                          {order?.status === LocalOrderStatus.CANCELLED && (
+                            <Link href={`/thanh-toan/${order.id}`} prefetch={false}>
                               <Tooltip label='Đặt lại đơn hàng'>
                                 <Button size='xs'>Đặt lại</Button>
                               </Tooltip>

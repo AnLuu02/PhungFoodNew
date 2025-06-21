@@ -152,7 +152,7 @@ export default function PaymentResult() {
           </>
         )}
         <Group justify='center' mt='md'>
-          <Link href='/'>
+          <Link href='/' prefetch={false}>
             <Button variant='outline' leftSection={<IconArrowLeft size={16} />}>
               Quay về trang chủ
             </Button>

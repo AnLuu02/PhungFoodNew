@@ -1,13 +1,20 @@
 'use client';
+
+import dynamic from 'next/dynamic';
 import React from 'react';
-import ModalOrderDetails from '../_components/Modals/ModalOrderDetails';
-import ModalProductComments from '../_components/Modals/ModalProductComments';
-import ModalProductDetails from '../_components/Modals/ModalProductDetails';
-import ModalSuccessAddToCart from '../_components/Modals/ModalSuccessAddCart';
 import { useModal } from './ModalContext';
+
+const ModalProductComments = dynamic(() => import('../_components/Modals/ModalProductComments'), { ssr: false });
+
+const ModalProductDetails = dynamic(() => import('../_components/Modals/ModalProductDetails'), { ssr: false });
+
+const ModalOrderDetails = dynamic(() => import('../_components/Modals/ModalOrderDetails'), { ssr: false });
+
+const ModalSuccessAddToCart = dynamic(() => import('../_components/Modals/ModalSuccessAddCart'), { ssr: false });
 
 export const GlobalModal: React.FC = () => {
   const { opened, modalType, modalContent, modalData, closeModal } = useModal();
+
   return (
     <>
       <ModalProductComments

@@ -1,11 +1,11 @@
 import { Box, Button, Flex, Group, Image, Modal, Paper, Progress, ScrollArea, Text, Tooltip } from '@mantine/core';
-import { VoucherType } from '@prisma/client';
 
 import clsx from 'clsx';
 import Link from 'next/link';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers-calculate';
+import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 
 export default function ModalDetailVoucher({ opened, onClose, data, products }: any) {
   return (
@@ -36,7 +36,7 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
                   h={120}
                   w={120}
                   src={
-                    data?.type === VoucherType.PERCENTAGE
+                    data?.type === LocalVoucherType.PERCENTAGE
                       ? '/images/png/voucher_bg_green.png'
                       : '/images/png/voucher_bg_red.png'
                   }
@@ -79,7 +79,7 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
             <Flex p='xs' justify={'space-between'} align={'center'} h={'100%'} flex={1}>
               <Flex h={'100%'} direction={'column'} flex={1} pr={30}>
                 <Group>
-                  <Link href={`/san-pham/${data?.tag}`}>
+                  <Link href={`/san-pham/${data?.tag}`} prefetch={false}>
                     <Tooltip label={data?.name}>
                       <Text
                         lineClamp={1}

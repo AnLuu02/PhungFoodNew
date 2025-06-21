@@ -2,7 +2,7 @@
 import { Box, Card, Grid, GridCol, Title } from '@mantine/core';
 import BButton from '~/app/_components/Button';
 
-const LayoutAds = () => {
+const LayoutGrid3Col = () => {
   return (
     <Grid>
       <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
@@ -60,4 +60,4 @@ const LayoutAds = () => {
   );
 };
 
-export default LayoutAds;
+export default LayoutGrid3Col;

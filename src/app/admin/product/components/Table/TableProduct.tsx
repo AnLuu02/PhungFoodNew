@@ -1,12 +1,12 @@
 'use client';
 import { Avatar, Badge, Button, Checkbox, Group, Highlight, Menu, Spoiler, Table, Text, Tooltip } from '@mantine/core';
-import { ImageType, ProductStatus } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { LocalImageType, LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
 export default function TableProduct({ s, data, user }: { s: string; data: any; user?: any }) {
@@ -21,7 +21,8 @@ export default function TableProduct({ s, data, user }: { s: string; data: any; 
       header: 'Ảnh',
       accessorKey: 'images',
       cell: info => {
-        const thumbnail = info.row.original.images?.find((img: any) => img.type === ImageType.THUMBNAIL)?.url as string;
+        const thumbnail = info.row.original.images?.find((img: any) => img.type === LocalImageType.THUMBNAIL)
+          ?.url as string;
         return <Avatar src={thumbnail} alt={info.row.original.name} size={40} radius={'md'} />;
       }
     },
@@ -60,8 +61,8 @@ export default function TableProduct({ s, data, user }: { s: string; data: any; 
       accessorKey: 'status',
       cell: info => (
         <Tooltip label={info.row.original.status}>
-          <Badge color={info.cell.row.original.status == ProductStatus.ACTIVE ? '' : 'red'}>
-            {info.cell.row.original.status == ProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'}
+          <Badge color={info.cell.row.original.status == LocalProductStatus.ACTIVE ? '' : 'red'}>
+            {info.cell.row.original.status == LocalProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'}
           </Badge>
         </Tooltip>
       )

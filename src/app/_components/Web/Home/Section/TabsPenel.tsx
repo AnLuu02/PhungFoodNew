@@ -1,7 +1,8 @@
 'use client';
 import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
-import { ActionIcon, Center, Flex, Group, Image, rem, Text } from '@mantine/core';
+import { ActionIcon, Center, Flex, Group, rem, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import ProductCardCarouselVertical from '../_Components/ProductCardCarouselVertical';
 
@@ -59,7 +60,14 @@ const TabsPanelCarousel = ({ data }: any) => {
       </Center>
       {data?.length <= 0 ? (
         <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
-          <Image loading='lazy' src={'/images/png/empty_cart.png'} w={100} h={100} alt={'empty cart'} />
+          <Image
+            objectFit='cover'
+            loading='lazy'
+            src={'/images/png/empty_cart.png'}
+            width={100}
+            height={100}
+            alt={'empty cart'}
+          />
           <Text size='xl' fw={700} c={'dimmed'}>
             Không có sản phẩm phù hợp
           </Text>

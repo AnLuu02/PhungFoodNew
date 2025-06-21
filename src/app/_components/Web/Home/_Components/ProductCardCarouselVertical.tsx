@@ -1,7 +1,6 @@
 'use client';
 import { Badge, Box, Button, Card, Flex, Group, Image, Rating, Text, Tooltip } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconEye, IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
@@ -14,6 +13,7 @@ import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; quickOrder?: boolean }) => {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -62,7 +62,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
       <Card.Section pos={'relative'} className='group/item cursor-pointer' h={'50%'}>
         <Image
           loading='lazy'
-          src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+          src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           h={'100%'}
         />
         <Box
@@ -142,7 +142,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
       </Card.Section>
       <Card.Section h={'50%'} pos={'relative'}>
         <Flex direction='column' gap='sm' pt={10} align='center' className='w-full' h='100%'>
-          <Link href={`/san-pham/${product?.tag}`}>
+          <Link href={`/san-pham/${product?.tag}`} prefetch={false}>
             <Tooltip label={product?.name}>
               <Text
                 lineClamp={1}

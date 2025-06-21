@@ -14,13 +14,14 @@ import {
   Text,
   Tooltip
 } from '@mantine/core';
-import { Gender, OrderStatus, UserLevel } from '@prisma/client';
+import { UserLevel } from '@prisma/client';
 import { IconUpload } from '@tabler/icons-react';
 import LoadingComponent from '~/app/_components/Loading/Loading';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { getColorLevelUser, getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { getStatusColor, getTotalOrderStatus } from '~/app/lib/utils/func-handler/get-status-order';
+import { LocalGender, LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 export const mockOrders = [
   { id: '1', date: '2023-05-01', total: 99.99, status: 'completed' },
   { id: '2', date: '2023-05-15', total: 149.99, status: 'processing' },
@@ -29,14 +30,6 @@ export const mockOrders = [
   { id: '5', date: '2023-06-10', total: 59.99, status: 'processing' },
   { id: '6', date: '2023-06-15', total: 129.99, status: 'completed' }
 ];
-const mockUser = {
-  name: 'John Doe',
-  email: 'john@example.com',
-  phone: '+1 (555) 123-4567',
-  address: '123 Main St, Anytown, USA',
-  avatar: '/placeholder.svg',
-  vipLevel: 'Gold'
-};
 
 export default function UserInfo({ user, isLoading }: any) {
   const mockOrders =
@@ -101,7 +94,7 @@ export default function UserInfo({ user, isLoading }: any) {
                 Gender
               </Text>
               <Text size='sm' c='dimmed'>
-                {user?.gender || Gender.OTHER}
+                {user?.gender || LocalGender.OTHER}
               </Text>
             </Grid.Col>
 
@@ -155,7 +148,7 @@ export default function UserInfo({ user, isLoading }: any) {
         <Card shadow='sm' padding='lg' radius='md' withBorder>
           <Stack gap='md'>
             <Flex wrap={'wrap'} align={'center'} gap={10}>
-              <Badge color={getStatusColor(OrderStatus.COMPLETED)} size='lg' w={'max-content'}>
+              <Badge color={getStatusColor(LocalOrderStatus.COMPLETED)} size='lg' w={'max-content'}>
                 <Text ta='center' fw={700} size={'sm'}>
                   <Text component='span' fw={700} mr={5}>
                     {statusObj.completed}
@@ -163,7 +156,7 @@ export default function UserInfo({ user, isLoading }: any) {
                   Hoàn thành
                 </Text>
               </Badge>
-              <Badge color={getStatusColor(OrderStatus.PROCESSING)} size='lg' w={'max-content'}>
+              <Badge color={getStatusColor(LocalOrderStatus.PROCESSING)} size='lg' w={'max-content'}>
                 <Text ta='center' fw={700} size={'sm'}>
                   <Text component='span' fw={700} mr={5}>
                     {statusObj.processing}
@@ -171,7 +164,7 @@ export default function UserInfo({ user, isLoading }: any) {
                   Chưa thanh toán
                 </Text>
               </Badge>
-              <Badge color={getStatusColor(OrderStatus.PENDING)} size='lg' w={'max-content'}>
+              <Badge color={getStatusColor(LocalOrderStatus.PENDING)} size='lg' w={'max-content'}>
                 <Text ta='center' fw={700} size={'sm'}>
                   <Text component='span' fw={700} mr={5}>
                     {statusObj.pending}
@@ -179,7 +172,7 @@ export default function UserInfo({ user, isLoading }: any) {
                   Chờ xử lý
                 </Text>
               </Badge>
-              <Badge color={getStatusColor(OrderStatus.DELIVERED)} size='lg' w={'max-content'}>
+              <Badge color={getStatusColor(LocalOrderStatus.DELIVERED)} size='lg' w={'max-content'}>
                 <Text ta='center' fw={700} size={'sm'}>
                   <Text component='span' fw={700} mr={5}>
                     {statusObj.delivered}
@@ -187,7 +180,7 @@ export default function UserInfo({ user, isLoading }: any) {
                   Đang giao hàng
                 </Text>
               </Badge>
-              <Badge color={getStatusColor(OrderStatus.CANCELLED)} size='lg' w={'max-content'}>
+              <Badge color={getStatusColor(LocalOrderStatus.CANCELLED)} size='lg' w={'max-content'}>
                 <Text ta='center' fw={700} size={'sm'}>
                   <Text component='span' fw={700} mr={5}>
                     {statusObj.canceled}

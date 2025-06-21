@@ -1,7 +1,9 @@
-import { Prisma, ProductStatus } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { seedCategory } from '~/app/lib/utils/data-test/seed';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
+import { withRedisCache } from '~/app/lib/utils/func-handler/withRedisCache';
+import { LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 const findExistingCategory = async (ctx: any, tag: string) => {
   return await ctx.db.category.findFirst({ where: { tag } });
@@ -133,47 +135,54 @@ export const categoryRouter = createTRPCRouter({
       return category;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    let category = await ctx.db.category.findMany({
-      include: {
-        subCategory: {
+    return await withRedisCache(
+      'category:getAll',
+      async () => {
+        let category = await ctx.db.category.findMany({
           include: {
-            image: true,
-            product: {
-              where: {
-                status: ProductStatus.ACTIVE
-              },
+            subCategory: {
               include: {
-                images: true
-              }
-            }
-          }
-        }
-      }
-    });
-
-    if (!category?.length) {
-      await ctx.db.category.createMany({
-        data: seedCategory
-      });
-      category = await ctx.db.category.findMany({
-        include: {
-          subCategory: {
-            include: {
-              image: true,
-              product: {
-                where: {
-                  status: ProductStatus.ACTIVE
-                },
-                include: {
-                  images: true
+                image: true,
+                product: {
+                  where: {
+                    status: LocalProductStatus.ACTIVE
+                  },
+                  include: {
+                    images: true
+                  }
                 }
               }
             }
           }
+        });
+
+        if (!category?.length) {
+          await ctx.db.category.createMany({
+            data: seedCategory
+          });
+          category = await ctx.db.category.findMany({
+            include: {
+              subCategory: {
+                include: {
+                  image: true,
+                  product: {
+                    where: {
+                      status: LocalProductStatus.ACTIVE
+                    },
+                    include: {
+                      images: true
+                    }
+                  }
+                }
+              }
+            }
+          });
         }
-      });
-    }
-    return category;
+
+        return category;
+      },
+      60 * 60 // Cache for 1 hour
+    );
   }),
   create: publicProcedure
     .input(

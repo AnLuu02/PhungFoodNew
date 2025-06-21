@@ -14,8 +14,8 @@ import {
   Title
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { AddressType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
+import dynamic from 'next/dynamic';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
@@ -24,12 +24,12 @@ import BButton from '~/app/_components/Button';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
+import { LocalAddressType } from '~/app/lib/utils/zod/EnumType';
 import { deliverySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import CartItemPayment from '../CartItemPayment';
-import DeliveryCard from '../DeliveryCard';
-import { PaymentForm } from '../PyamentForm';
-
+const DeliveryCard = dynamic(() => import('../DeliveryCard'), { ssr: false });
+const PaymentForm = dynamic(() => import('../PaymentForm'), { ssr: false });
 export default function CheckoutClient({ order, orderId }: any) {
   const [loading, setLoading] = React.useState(false);
   const updateMutationOrder = api.Order.update.useMutation();
@@ -75,7 +75,7 @@ export default function CheckoutClient({ order, orderId }: any) {
         fullAddress: '',
         postalCode: '',
         detail: '',
-        type: AddressType.DELIVERY
+        type: LocalAddressType.DELIVERY
       },
       note: '',
       orderId: ''

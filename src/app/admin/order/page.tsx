@@ -1,8 +1,8 @@
 import { Card, Group, Text, Title } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserOrderButton } from './components/Button';
 import TableOrder from './components/Table/TableOrder';
@@ -21,7 +21,7 @@ export default async function OrderManagementPage({
   const totalData = await api.Order.getAll();
   const user = await getServerSession(authOptions);
   const data = await api.Order.find({ skip: +currentPage, take: +limit, s });
-  const orderProcessing = await api.Order.getFilter({ s: OrderStatus.PENDING });
+  const orderProcessing = await api.Order.getFilter({ s: LocalOrderStatus.PENDING });
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
       <Title mb='xs' className='font-quicksand'>

@@ -1,6 +1,5 @@
 'use client';
 import { Badge, Button, Checkbox, Flex, Group, Highlight, Menu, Table, Text } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
@@ -8,6 +7,7 @@ import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import {
   CancleOrderButton,
   DeleteOrderButton,
@@ -67,10 +67,12 @@ export default function TableOrder({ s, data, user }: { data: any; s: string; us
               {getStatusIcon(info.row.original.status)}
             </Flex>
           </Badge>
-          {info.row.original.status === OrderStatus.DELIVERED && <SuccessOrderButton id={info.row.original.id} />}
-          {info.row.original.status === OrderStatus.PENDING && <DeliveryOrderButton id={info.row.original.id} />}
-          {info.row.original.status === OrderStatus.PROCESSING && <SendMessageOrderButton id={info.row.original.id} />}
-          {info.row.original.status !== OrderStatus.CANCELLED && <CancleOrderButton id={info.row.original.id} />}
+          {info.row.original.status === LocalOrderStatus.DELIVERED && <SuccessOrderButton id={info.row.original.id} />}
+          {info.row.original.status === LocalOrderStatus.PENDING && <DeliveryOrderButton id={info.row.original.id} />}
+          {info.row.original.status === LocalOrderStatus.PROCESSING && (
+            <SendMessageOrderButton id={info.row.original.id} />
+          )}
+          {info.row.original.status !== LocalOrderStatus.CANCELLED && <CancleOrderButton id={info.row.original.id} />}
         </Group>
       )
     },

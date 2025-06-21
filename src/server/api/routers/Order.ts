@@ -1,6 +1,7 @@
 import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { deliverySchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { updatePointLevel, updateSales } from './Product';
@@ -198,7 +199,7 @@ export const orderRouter = createTRPCRouter({
           record: order
         };
       }
-      if (order && order.status === OrderStatus.COMPLETED) {
+      if (order && order.status === LocalOrderStatus.COMPLETED) {
         updatePointLevel(ctx, input.userId, Number(input.total) || 0);
       }
       return {
@@ -223,7 +224,7 @@ export const orderRouter = createTRPCRouter({
         }
       });
 
-      if (order && order.status === OrderStatus.COMPLETED) {
+      if (order && order.status === LocalOrderStatus.COMPLETED) {
         updateRevenue(ctx, order.status, order.userId, order.total);
         updatePointLevel(ctx, order.userId, order.total);
         await Promise.all(

@@ -25,6 +25,7 @@ import { Product } from '~/app/Entity/ProductEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
 import { fileToBase64 } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
 import { productSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
@@ -69,7 +70,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
       thumbnail: undefined,
       gallery: [],
       tags: [],
-      status: ProductStatus.ACTIVE,
+      status: LocalProductStatus.ACTIVE,
       region: 'Miền Nam',
       subCategoryId: '',
       materials: []
@@ -404,7 +405,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
                 placeholder='Hiển thị hay ẩn'
                 data={Object.values(ProductStatus)?.map(category => ({
                   value: category,
-                  label: category === ProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
+                  label: category === LocalProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
                 }))}
                 value={field.value}
                 onChange={field.onChange}

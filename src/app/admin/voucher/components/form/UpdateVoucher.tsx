@@ -2,7 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Checkbox, Grid, MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
-import { UserLevel, VoucherType } from '@prisma/client';
+import { UserLevel } from '@prisma/client';
 import { IconCalendar } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { Voucher } from '~/app/Entity/VoucherEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
 import { getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 import { voucherSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
@@ -35,7 +36,7 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
       tag: '',
       name: '',
       description: '',
-      type: VoucherType.FIXED,
+      type: LocalVoucherType.FIXED,
       discountValue: 0,
       minOrderPrice: 0,
       maxDiscount: 0,
@@ -153,8 +154,8 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
                 searchable
                 placeholder='Chọn phương thức'
                 data={[
-                  { value: VoucherType.FIXED, label: 'Tiền mặt' },
-                  { value: VoucherType.PERCENTAGE, label: '% đơn hàng' }
+                  { value: LocalVoucherType.FIXED, label: 'Tiền mặt' },
+                  { value: LocalVoucherType.PERCENTAGE, label: '% đơn hàng' }
                 ]}
                 error={errors.type?.message}
                 value={field.value}
@@ -172,12 +173,12 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
             render={({ field }) => (
               <NumberInput
                 {...field}
-                leftSection={watch('type') === VoucherType.PERCENTAGE ? '%' : '$'}
+                leftSection={watch('type') === LocalVoucherType.PERCENTAGE ? '%' : '$'}
                 thousandSeparator=','
                 label='Giá trị giảm giá'
                 clampBehavior='strict'
                 placeholder='Nhập số tiền hoặc %'
-                max={watch('type') === VoucherType.FIXED ? 100000000 : 100}
+                max={watch('type') === LocalVoucherType.FIXED ? 100000000 : 100}
                 error={errors.discountValue?.message}
               />
             )}
@@ -211,7 +212,7 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
                 thousandSeparator=','
                 label='Giảm giá tối đa'
                 placeholder='Nhập giá trị'
-                value={watch('type') === VoucherType.FIXED ? watch('discountValue') : field.value}
+                value={watch('type') === LocalVoucherType.FIXED ? watch('discountValue') : field.value}
                 error={errors.maxDiscount?.message}
               />
             )}

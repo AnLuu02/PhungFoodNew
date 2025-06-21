@@ -2,19 +2,20 @@
 
 import { Paper, Tabs } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { UserLevel } from '@prisma/client';
 import { IconChartBar, IconGift, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
+import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { getValueLevelUser } from '~/app/lib/utils/func-handler/get--value-level-user';
+import { LocalUserLevel } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 import classes from './dashboard-content.module.css';
-import OrderList from './order-list';
-import Promotions from './promotions';
-import UserInfo from './user-info';
-import UserStatistics from './user-statistics';
-
+const UserInfo = dynamic(() => import('./user-info'));
+const UserStatistics = dynamic(() => import('./user-statistics'));
+const OrderList = dynamic(() => import('./order-list'));
+const Promotions = dynamic(() => import('./promotions'));
 export default function DashboardContent() {
   const { data: user } = useSession();
   const [activeTab, setActiveTab] = useState<string | null>('user-info');
@@ -26,7 +27,7 @@ export default function DashboardContent() {
         ? api.Order.getFilter.useQuery({ s: user?.user?.email || '' })
         : api.Voucher.getFilter.useQuery({
             applyAllProduct: true,
-            someLevel: getValueLevelUser(user?.user?.details?.level || UserLevel.BRONZE)
+            someLevel: getValueLevelUser(user?.user?.details?.level || LocalUserLevel.BRONZE)
           });
 
   return (
@@ -40,7 +41,7 @@ export default function DashboardContent() {
       <Paper
         className='h-fit'
         pos={{ base: 'relative', sm: 'sticky', xl: 'sticky' }}
-        top={{ base: 0, sm: 70, xl: 70 }}
+        top={{ base: 0, sm: TOP_POSITION_STICKY, xl: TOP_POSITION_STICKY }}
         mr={'md'}
         mb={{ base: 'md', sm: 'md', md: 0, lg: 0 }}
       >

@@ -1,24 +1,9 @@
 'use client';
-import { DateTimePicker } from '@mantine/dates';
-
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Button,
-  Card,
-  Center,
-  Grid,
-  GridCol,
-  PasswordInput,
-  rem,
-  Select,
-  Text,
-  Textarea,
-  TextInput,
-  Title
-} from '@mantine/core';
+import { Button, Card, Center, Grid, GridCol, PasswordInput, rem, Select, Text, TextInput, Title } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { AddressType, Gender, UserLevel } from '@prisma/client';
 import { IconCalendar, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -26,8 +11,11 @@ import useSWR from 'swr';
 import { User } from '~/app/Entity/UserEntity';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalAddressType, LocalGender, LocalUserLevel } from '~/app/lib/utils/zod/EnumType';
 import { userSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+const DateTimePicker = dynamic(() => import('@mantine/dates').then(m => m.DateTimePicker), { ssr: false });
+const AddressSection = dynamic(() => import('../_components/AdressSection'), { ssr: false });
 
 export default function Page() {
   const router = useRouter();
@@ -44,7 +32,7 @@ export default function Page() {
       name: '',
       email: '',
       image: undefined,
-      gender: Gender.OTHER,
+      gender: LocalGender.OTHER,
       dateOfBirth: new Date(),
       password: '',
       phone: '',
@@ -53,7 +41,7 @@ export default function Page() {
         provinceId: '',
         districtId: '',
         wardId: '',
-        type: AddressType.USER,
+        type: LocalAddressType.USER,
         province: '',
         district: '',
         ward: '',
@@ -61,7 +49,7 @@ export default function Page() {
         postalCode: ''
       },
       pointLevel: 0,
-      level: UserLevel.BRONZE
+      level: LocalUserLevel.BRONZE
     }
   });
 
@@ -187,20 +175,6 @@ export default function Page() {
                   )}
                 />
               </GridCol>
-              {/* <GridCol span={12}>
-                <Controller
-                  control={control}
-                  name='password'
-                  render={({ field }) => (
-                    <PasswordInput
-                      
-                      placeholder='Xác nhận mật khẻu'
-                      {...field}
-                      error={errors.password?.message}
-                    />
-                  )}
-                />
-              </GridCol> */}
               <GridCol span={12}>
                 <Controller
                   control={control}
@@ -231,90 +205,25 @@ export default function Page() {
                       placeholder='Giới tính'
                       {...field}
                       data={[
-                        { value: Gender.MALE, label: 'Nam' },
-                        { value: Gender.FEMALE, label: 'Nữ' },
-                        { value: Gender.OTHER, label: 'Khác' }
+                        { value: LocalGender.MALE, label: 'Nam' },
+                        { value: LocalGender.FEMALE, label: 'Nữ' },
+                        { value: LocalGender.OTHER, label: 'Khác' }
                       ]}
                     />
                   )}
                 />
               </GridCol>
-              <GridCol span={12}>
-                <Controller
-                  control={control}
-                  name={`address.provinceId`}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      searchable
-                      placeholder='Chọn tỉnh thành'
-                      data={provinces?.results?.map((item: any) => ({
-                        value: item.province_id,
-                        label: item.province_name
-                      }))}
-                      nothingFoundMessage='Nothing found...'
-                      error={errors?.address?.province?.message}
-                    />
-                  )}
-                />
-              </GridCol>
-              <GridCol span={12}>
-                <Controller
-                  control={control}
-                  name={`address.districtId`}
-                  disabled={!watch('address.provinceId')}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      searchable
-                      placeholder='Chọn quận huyện'
-                      data={districts?.results?.map((item: any) => ({
-                        value: item.district_id,
-                        label: item.district_name
-                      }))}
-                      nothingFoundMessage='Nothing found...'
-                      error={errors?.address?.district?.message}
-                    />
-                  )}
-                />
-              </GridCol>
-              <GridCol span={12}>
-                <Controller
-                  control={control}
-                  name={`address.wardId`}
-                  disabled={!watch('address.districtId')}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      searchable
-                      placeholder='Chọn phường xã'
-                      data={wards?.results?.map((item: any) => ({
-                        value: item.ward_id,
-                        label: item.ward_name
-                      }))}
-                      nothingFoundMessage='Nothing found...'
-                      error={errors?.address?.ward?.message}
-                    />
-                  )}
-                />
-              </GridCol>
-              <GridCol span={12}>
-                <Controller
-                  control={control}
-                  name={`address.detail`}
-                  render={({ field }) => (
-                    <Textarea
-                      {...field}
-                      label='Địa chỉ'
-                      placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
-                      resize='block'
-                      error={errors?.address?.detail?.message}
-                    />
-                  )}
-                />
-              </GridCol>
+              <AddressSection
+                control={control}
+                errors={errors}
+                watch={watch}
+                provinces={provinces}
+                districts={districts}
+                wards={wards}
+              />
+
               <GridCol span={12} className='flex justify-end'>
-                <Link href={'/auth/dang-nhap'} className='text-white'>
+                <Link href={'/auth/dang-nhap'} className='text-white' prefetch={false}>
                   <Text size='sm' className='cursor-pointer text-black underline hover:text-red-500'>
                     Bạn đã có tài khoản?
                   </Text>

@@ -15,7 +15,7 @@ export default function NotFound() {
         The page you're looking for doesn't exist or has been moved.
       </Text>
       <Group justify='center' mt='xl'>
-        <Link href='/'>
+        <Link href='/' prefetch={false}>
           <Button size='md' leftSection={<IconHome size={20} />}>
             Về trang chủ
           </Button>

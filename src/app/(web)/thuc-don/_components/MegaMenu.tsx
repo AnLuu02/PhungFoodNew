@@ -14,12 +14,12 @@ import {
   Text,
   Title
 } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/app/_components/Empty';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 
 export function MegaMenu({ categories }: any) {
   const [hoveredTab, setHoveredTab] = useState<string | null>(categories?.[0]?.tag as string);
@@ -66,7 +66,7 @@ export function MegaMenu({ categories }: any) {
                       />
                     }
                   >
-                    <Link key={item.title} href={`/thuc-don?danh-muc=${item.tag}`}>
+                    <Link key={item.title} href={`/thuc-don?danh-muc=${item.tag}`} prefetch={false}>
                       <Text size='md' className='text-gray-700' fw={600}>
                         {item.name}
                       </Text>
@@ -86,11 +86,13 @@ export function MegaMenu({ categories }: any) {
                     {item?.subCategory?.map((category: any) => (
                       <GridCol span={4} key={category.id}>
                         <Link
+                          prefetch={false}
                           key={category.id}
                           href={`/thuc-don?danh-muc=${item.tag}&loai-san-pham=${category.tag}`}
                           className='flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:shadow-md'
                         >
                           <Image
+                            loading='lazy'
                             src={category.image?.url}
                             alt={category.name}
                             w={60}
@@ -109,6 +111,7 @@ export function MegaMenu({ categories }: any) {
                     <Box className='flex items-center justify-between'>
                       <h2 className='text-xl font-bold'>Bán chạy nhất {item.title} </h2>
                       <Link
+                        prefetch={false}
                         href='/thuc-don?loai=san-pham-ban-chay'
                         className='flex items-center text-blue-600 hover:underline'
                       >
@@ -124,7 +127,7 @@ export function MegaMenu({ categories }: any) {
                       {bestSellerProducts?.length > 0 ? (
                         bestSellerProducts?.map((product: any) => (
                           <GridCol span={3} key={product.id}>
-                            <Link key={product.id} href='#'>
+                            <Link key={product.id} href='#' prefetch={false}>
                               <Stack gap={0}>
                                 <Paper
                                   withBorder
@@ -134,7 +137,11 @@ export function MegaMenu({ categories }: any) {
                                   className='overflow-hidden border border-transparent p-1 transition-all hover:border-red-500'
                                 >
                                   <Image
-                                    src={getImageProduct(product?.images, ImageType.THUMBNAIL) || '/placeholder.svg'}
+                                    loading='lazy'
+                                    src={
+                                      getImageProduct(product?.images, LocalImageType.THUMBNAIL) ||
+                                      '/images/jpg/empty-300x240.jpg'
+                                    }
                                     alt={product.name}
                                     w={'100%'}
                                     h={'100%'}

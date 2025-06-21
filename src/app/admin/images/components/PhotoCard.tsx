@@ -44,6 +44,7 @@ export function PhotoCard({ id, name, file, postingDate, onOpened }: PhotoCardPr
     <Card shadow='sm' padding='lg' radius='md' withBorder>
       <Card.Section>
         <Image
+          loading='lazy'
           src={file instanceof File ? URL.createObjectURL(file) : '/images/empty-300x240.jpg'}
           height={160}
           alt={name}

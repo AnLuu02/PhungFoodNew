@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
+import { withRedisCache } from '~/app/lib/utils/func-handler/withRedisCache';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -190,13 +191,19 @@ export const materialRouter = createTRPCRouter({
       return material;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const material = await ctx.db.material.findMany({
-      include: {
-        products: true
-      }
-    });
+    return await withRedisCache(
+      'material:getAll',
+      async () => {
+        const material = await ctx.db.material.findMany({
+          include: {
+            products: true
+          }
+        });
 
-    return material;
+        return material;
+      },
+      60 * 60 * 24 // Cache for 24 hours
+    );
   }),
 
   update: publicProcedure

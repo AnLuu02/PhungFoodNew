@@ -1,9 +1,8 @@
-import { EntityType, ProductStatus } from '.prisma/client';
-import { ImageType } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
+import { LocalEntityType, LocalImageType, LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -67,7 +66,7 @@ export const subCategoryRouter = createTRPCRouter({
             image: true,
             product: {
               where: {
-                status: ProductStatus.ACTIVE
+                status: LocalProductStatus.ACTIVE
               },
               include: {
                 favouriteFood: true,
@@ -138,10 +137,10 @@ export const subCategoryRouter = createTRPCRouter({
           image: imgURL
             ? {
                 create: {
-                  entityType: EntityType.CATEGORY,
+                  entityType: LocalEntityType.CATEGORY,
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
-                  type: ImageType.THUMBNAIL
+                  type: LocalImageType.THUMBNAIL
                 } as any
               }
             : undefined
@@ -214,16 +213,16 @@ export const subCategoryRouter = createTRPCRouter({
                     upsert: {
                       where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
                       update: {
-                        entityType: EntityType.CATEGORY,
+                        entityType: LocalEntityType.CATEGORY,
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
-                        type: ImageType.THUMBNAIL
+                        type: LocalImageType.THUMBNAIL
                       } as any,
                       create: {
-                        entityType: EntityType.CATEGORY,
+                        entityType: LocalEntityType.CATEGORY,
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
-                        type: ImageType.THUMBNAIL
+                        type: LocalImageType.THUMBNAIL
                       } as any
                     }
                   }

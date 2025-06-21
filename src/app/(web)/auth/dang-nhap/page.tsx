@@ -129,7 +129,7 @@ export default function Page() {
               </GridCol>
 
               <GridCol span={12} className='flex justify-end'>
-                <Link href={'/auth/forgot-password'} className='text-sm text-black hover:text-red-500'>
+                <Link href={'/auth/forgot-password'} className='text-sm text-black hover:text-red-500' prefetch={false}>
                   Bạn quên mật khẩu?
                 </Link>
               </GridCol>
@@ -150,7 +150,7 @@ export default function Page() {
               <GridCol span={12} className='flex justify-center'>
                 <Flex align={'center'}>
                   <Text size='sm'>Bạn chưa có tài khoản?</Text>
-                  <Link href={'/auth/dang-ki'} className='text-white'>
+                  <Link href={'/auth/dang-ki'} className='text-white' prefetch={false}>
                     <Text className='cursor-pointer text-black underline hover:text-red-500' size='sm'>
                       Đăng ký ngay
                     </Text>

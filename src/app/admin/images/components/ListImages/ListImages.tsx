@@ -78,7 +78,8 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
       )}
       <Modal opened={showfullImage?.file} onClose={() => setShowfullImage({})} size='xl' centered>
         <Image
-          src={(showfullImage.file && URL.createObjectURL(showfullImage.file)) || '/placeholder.svg'}
+          loading='lazy'
+          src={(showfullImage.file && URL.createObjectURL(showfullImage.file)) || '/images/jpg/empty-300x240.jpg'}
           alt={showfullImage.name || ''}
           fit='contain'
           height={400}

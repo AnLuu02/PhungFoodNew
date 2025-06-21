@@ -18,7 +18,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                 <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
                   Ăn vặt
                 </Title>
-                <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
+                <Link href='/thuc-don?danh-muc=an-vat-trang-mieng' prefetch={false}>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
                     radius={'xl'}
@@ -59,7 +59,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                 <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
                   Thức uống
                 </Title>
-                <Link href='/thuc-don?danh-muc=thuc-uong'>
+                <Link href='/thuc-don?danh-muc=thuc-uong' prefetch={false}>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
                     radius={'xl'}
@@ -101,7 +101,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                 <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
                   Tráng miệng
                 </Title>
-                <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
+                <Link href='/thuc-don?danh-muc=an-vat-trang-mieng' prefetch={false}>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
                     radius={'xl'}

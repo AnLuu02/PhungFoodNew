@@ -1,10 +1,10 @@
-import { PaymentType } from '@prisma/client';
+import { LocalPaymentType } from '../zod/EnumType';
 
 export const seedPayments = [
   {
     name: 'Thanh toán VnPay',
     tag: 'thanh-toan-vnpay',
-    type: PaymentType.E_WALLET,
+    type: LocalPaymentType.E_WALLET,
     provider: 'vnpay',
     isDefault: true
   }

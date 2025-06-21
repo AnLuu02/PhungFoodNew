@@ -81,7 +81,7 @@ export function CategoryNav() {
           })
         ) : (
           <Accordion p={0}>
-            <Link className='h-full w-full' href={`/thuc-don`}>
+            <Link className='h-full w-full' href={`/thuc-don`} prefetch={false}>
               <Button
                 w={'100%'}
                 h={'100%'}

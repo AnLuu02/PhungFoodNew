@@ -52,7 +52,7 @@ export default async function AboutPage() {
             Trải nghiệm hương vị đích thực của miền Tây Việt Nam và hơn thế nữa!
           </Text>
 
-          <Link href={'/thuc-don'}>
+          <Link href={'/thuc-don'} prefetch={false}>
             <BButton size='lg' w={'max-content'} title={'Xem thực đơn'} radius='md' />
           </Link>
         </Flex>
@@ -95,6 +95,7 @@ export default async function AboutPage() {
           </Group>
         </div>
         <Image
+          loading='lazy'
           src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
           alt='Restaurant interior'
           height={300}
@@ -200,6 +201,7 @@ export default async function AboutPage() {
 
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' mt={50}>
         <Image
+          loading='lazy'
           src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
           alt='Chef portrait'
           height={300}
@@ -277,6 +279,7 @@ export default async function AboutPage() {
           </Group>
         </div>
         <Image
+          loading='lazy'
           src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
           alt='Map'
           height={300}

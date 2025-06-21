@@ -95,7 +95,7 @@ export default function ModalShowVoucher({ opened, products, data, onClose }: Vo
                             //         height={120}
                             //         width={120}
                             //         src={
-                            //           item?.type === VoucherType.PERCENTAGE
+                            //           item?.type === LocalVoucherType.PERCENTAGE
                             //             ? '/images/png/voucher_bg_green.png'
                             //             : '/images/png/voucher_bg_red.png'
                             //         }

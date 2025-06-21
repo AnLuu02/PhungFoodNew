@@ -45,8 +45,8 @@ export default function Header() {
         align='center'
         w={{ base: '100%', sm: 'max-content', md: 'max-content', lg: 'max-content' }}
       >
-        <Link href={'/'}>
-          <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={150} h={50} p={0} />
+        <Link href={'/'} prefetch={false}>
+          <Image src='/logo/logo_phungfood_1.png' alt='logo' w={150} h={50} p={0} />
         </Link>
         {!notDesktop && (
           <Badge bg={'red'} radius={'sm'}>

@@ -30,9 +30,9 @@ import clsx from 'clsx';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { MegaMenu } from '~/app/(web)/thuc-don/_components/MegaMenu';
-import useScrollPosition from '~/app/_components/Hooks/use-on-scroll';
-import CartButton from './gio-hang-button';
+import DynamicCartButton from './DynamicCartButton';
 import PromotionButton from './khuyen-mai';
 
 const navigationItem = [
@@ -43,16 +43,9 @@ const navigationItem = [
   { label: 'Tin tức', href: '/tin-tuc' },
   { label: 'Mua hàng nhanh', href: '/goi-mon-nhanh' }
 ];
-export const HEIGHT_HEADER = 110;
-export default function NavigationHeader({
-  categories,
-  opened,
-  close
-}: {
-  categories?: any;
-  opened?: boolean;
-  close?: () => void;
-}) {
+function NavigationHeader({ categories, opened, close }: { categories?: any; opened?: boolean; close?: () => void }) {
+  const [imgMounted, setImgMounted] = useState(false);
+
   const { data: user } = useSession();
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [, , resetSelectedVouchers] = useLocalStorage<any[]>({
@@ -61,8 +54,8 @@ export default function NavigationHeader({
   });
   const pathname = usePathname();
   const notDesktop = useMediaQuery(`(max-width: 1023px)`);
-  const scroll = useScrollPosition(HEIGHT_HEADER);
   const cssLink = 'duration-600 rounded-t-lg  transition ease-in-out h-[max-content] ';
+
   return !notDesktop ? (
     <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }}>
       {navigationItem.map((item, index) =>
@@ -72,6 +65,7 @@ export default function NavigationHeader({
             trigger={'hover'}
             withOverlay
             onOpen={() => {
+              setImgMounted(true);
               document.body.style.overflow = 'hidden';
             }}
             onClose={() => {
@@ -104,9 +98,7 @@ export default function NavigationHeader({
                 </Button>
               </Link>
             </Menu.Target>
-            <Menu.Dropdown>
-              <MegaMenu categories={categories} />
-            </Menu.Dropdown>
+            <Menu.Dropdown>{imgMounted ? <MegaMenu categories={categories} /> : <Box></Box>}</Menu.Dropdown>
           </Menu>
         ) : (
           <Link key={index} href={item.href} style={{ transition: 'all 0.3s' }} className={clsx(cssLink)}>
@@ -129,11 +121,7 @@ export default function NavigationHeader({
           </Link>
         )
       )}
-      {scroll >= HEIGHT_HEADER && (
-        <Box className={clsx('animate-fadeTop')}>
-          <CartButton />
-        </Box>
-      )}
+      <DynamicCartButton />
     </Flex>
   ) : (
     <Drawer.Root
@@ -148,7 +136,7 @@ export default function NavigationHeader({
       <Drawer.Content>
         <Drawer.Header>
           <Drawer.Title>
-            <Link href={'/'}>
+            <Link href={'/'} prefetch={false}>
               <Center w={'100%'} flex={1}>
                 <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={250} h={80} p={0} />
               </Center>
@@ -204,7 +192,7 @@ export default function NavigationHeader({
                   </UnstyledButton>
                 </Menu.Target>
                 <Menu.Dropdown className='bg-[#f8c144]'>
-                  <Link href={`/thong-tin`} className='text-white'>
+                  <Link href={`/thong-tin`} className='text-white' prefetch={false}>
                     <Menu.Item
                       fw={500}
                       leftSection={
@@ -216,7 +204,7 @@ export default function NavigationHeader({
                   </Link>
                   <Divider />
 
-                  <Link href={`/don-hang-cua-toi`} className='text-white'>
+                  <Link href={`/don-hang-cua-toi`} className='text-white' prefetch={false}>
                     <Menu.Item
                       fw={500}
                       leftSection={
@@ -292,18 +280,14 @@ export default function NavigationHeader({
               </Link>
             ))}
             <PromotionButton />
-            {scroll >= HEIGHT_HEADER && (
-              <Box className={clsx('animate-fadeTop')}>
-                <CartButton />
-              </Box>
-            )}
+            <DynamicCartButton />
           </Flex>
 
           <Box className='flex justify-center gap-4 lg:justify-start'>
-            <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80'>
+            <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80' prefetch={false}>
               <Image loading='lazy' src='/images/png/logo_playstore.png' alt='Google Play' w={140} h={42} />
             </Link>
-            <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80'>
+            <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80' prefetch={false}>
               <Image loading='lazy' src='/images/png/logo_appstore.png' alt='App Store' w={140} h={42} />
             </Link>
           </Box>
@@ -312,3 +296,5 @@ export default function NavigationHeader({
     </Drawer.Root>
   );
 }
+
+export default NavigationHeader;

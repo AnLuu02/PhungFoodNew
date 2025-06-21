@@ -20,22 +20,24 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
-import SearchLocal from '~/app/_components/Search/SearchLocal';
 import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
+import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
-import Empty from '../../_components/Empty';
 
+const InvoiceToPrint = dynamic(() => import('~/app/_components/Invoices/InvoceToPrint'), { ssr: false });
+const SearchLocal = dynamic(() => import('~/app/_components/Search/SearchLocal'));
+const Empty = dynamic(() => import('../../_components/Empty'));
 export default function MyOrderPage() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
@@ -94,7 +96,7 @@ export default function MyOrderPage() {
         span={{ base: 12, sm: 12, md: 5, lg: 4 }}
         className='h-fit'
         pos={{ base: 'relative', lg: 'sticky' }}
-        top={{ base: 0, lg: 70 }}
+        top={{ base: 0, lg: TOP_POSITION_STICKY }}
       >
         <Paper withBorder shadow='sm' p='md' className='h-full'>
           <Title order={3} className='mb-4 font-quicksand'>
@@ -249,16 +251,16 @@ export default function MyOrderPage() {
                                 <IconTrash size={16} />
                               </ActionIcon>
                             </Tooltip>
-                            {order.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order.id} />}
-                            {order.status === OrderStatus.PROCESSING && (
-                              <Link href={`/thanh-toan/${order.id}`}>
+                            {order.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order.id} />}
+                            {order.status === LocalOrderStatus.PROCESSING && (
+                              <Link href={`/thanh-toan/${order.id}`} prefetch={false}>
                                 <Tooltip label='Tiếp tục thanh toán'>
                                   <Button size='xs'>Thanh toán</Button>
                                 </Tooltip>
                               </Link>
                             )}
-                            {order.status === OrderStatus.CANCELLED && (
-                              <Link href={`/thanh-toan/${order.id}`}>
+                            {order.status === LocalOrderStatus.CANCELLED && (
+                              <Link href={`/thanh-toan/${order.id}`} prefetch={false}>
                                 <Tooltip label='Đặt lại đơn hàng'>
                                   <Button size='xs'>Đặt lại</Button>
                                 </Tooltip>

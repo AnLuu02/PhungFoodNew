@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || request.ip;
   const currentUrl = request.nextUrl.pathname + request.nextUrl.search;
 
-  console.log(`--------IP User: ${ip}`);
+  console.log(`-------- IP User: ${token?.email} - ${ip} - ${new Date().toDateString()} --------`);
 
   if (token && authPages.some(route => request.nextUrl.pathname.startsWith(route))) {
     return NextResponse.redirect(new URL('/', request.url));

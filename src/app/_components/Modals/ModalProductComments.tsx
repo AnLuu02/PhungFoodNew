@@ -1,5 +1,5 @@
 import { Grid, Modal, Title } from '@mantine/core';
-import { RatingStatistics } from '~/app/(web)/san-pham/[slug]/_components/RatingStatistics';
+import RatingStatistics from '~/app/(web)/san-pham/[slug]/_components/RatingStatistics';
 import Comments from '../Comments/Comments';
 import ProductCardCarouselVertical from '../Web/Home/_Components/ProductCardCarouselVertical';
 

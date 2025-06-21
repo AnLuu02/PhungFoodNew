@@ -1,12 +1,12 @@
 'use client';
 import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/core';
-import { VoucherType } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 import { DeleteVoucherButton, UpdateVoucherButton } from '../Button';
 
 export default function TableVoucher({ s, data, user }: { s: string; data: any; user?: any }) {
@@ -25,14 +25,14 @@ export default function TableVoucher({ s, data, user }: { s: string; data: any; 
     {
       header: 'Hình thức',
       accessorKey: 'type',
-      cell: info => <Text>{info.row.original.type === VoucherType.FIXED ? 'Tiền mặt' : '% đơn hàng'}</Text>
+      cell: info => <Text>{info.row.original.type === LocalVoucherType.FIXED ? 'Tiền mặt' : '% đơn hàng'}</Text>
     },
     {
       header: 'Giá trị giảm',
       accessorKey: 'discountValue',
       cell: info => (
         <Text>
-          {info.row.original.type === VoucherType.FIXED
+          {info.row.original.type === LocalVoucherType.FIXED
             ? formatPriceLocaleVi(String(info.getValue()))
             : String(info.getValue()) + '%'}
         </Text>

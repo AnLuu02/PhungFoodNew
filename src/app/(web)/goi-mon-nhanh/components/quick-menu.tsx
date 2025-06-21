@@ -10,7 +10,7 @@ const QuickMenu = ({ categories, products, searchParams }: any) => {
     <>
       <Flex align={'center'} gap={'xs'} mb={20} wrap={{ base: 'wrap', md: 'wrap', lg: 'nowrap' }}>
         {categories?.map((item: any, index: number) => (
-          <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`}>
+          <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`} prefetch={false}>
             <BButton
               active={item.tag === searchParams?.['danh-muc']}
               key={index}

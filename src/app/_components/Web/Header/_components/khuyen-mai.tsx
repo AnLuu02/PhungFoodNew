@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const PromotionButton = () => {
   return (
-    <Link href={`/khuyen-mai`}>
+    <Link href={`/khuyen-mai`} prefetch={false}>
       <Button
         variant='outline'
         className='border-[#008b4b] text-[#008b4b] hover:bg-[#008b4b] hover:text-white'

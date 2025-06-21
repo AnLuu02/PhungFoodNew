@@ -1,12 +1,8 @@
-import { OrderStatus } from '@prisma/client';
 import { redirect } from 'next/navigation';
+import { formatTransDate } from '~/app/lib/utils/func-handler/formatDate';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/server';
 import CheckoutClient from '../_components/Client/CheckoutClient';
-
-const formatTransDate = (date: Date) => {
-  const pad = (num: number) => num.toString().padStart(2, '0');
-  return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}`;
-};
 
 async function CheckoutPage({ params }: { params: { slug: string } }) {
   const orderId = params?.slug;
@@ -16,7 +12,7 @@ async function CheckoutPage({ params }: { params: { slug: string } }) {
     redirect(`/vnpay-payment-result?error=Không tìm thấy đơn hàng hoặc ngày giao dịch&message=Đơn hàng không tồn tại.`);
   }
 
-  if (order.status !== OrderStatus.PROCESSING && order.status !== OrderStatus.CANCELLED) {
+  if (order.status !== LocalOrderStatus.PROCESSING && order.status !== LocalOrderStatus.CANCELLED) {
     redirect(
       `/vnpay-payment-result?orderId=${orderId}&transDate=${formatTransDate(order.transDate || new Date())}&statusOrder=${order.status}&message=Đơn hàng đã được thanh toán`
     );

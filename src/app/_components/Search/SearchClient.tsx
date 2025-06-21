@@ -17,7 +17,6 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconClock, IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -25,6 +24,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
 
@@ -95,7 +95,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                   label={item.name}
                   className={clsx('hidden', index < 5 ? 'md:block' : index < 6 ? 'lg:block' : 'xl:block')}
                 >
-                  <Link href={`/thuc-don?s=${encodeURIComponent(item?.name)}`}>
+                  <Link href={`/thuc-don?s=${encodeURIComponent(item?.name)}`} prefetch={false}>
                     <Badge
                       variant='outline'
                       color='gray.6'
@@ -187,7 +187,7 @@ export default function SearchComponentClient({ subCategories }: any) {
               <Flex gap={8} wrap='wrap'>
                 {subCategories &&
                   subCategories.map((term: any, index: number) => (
-                    <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`}>
+                    <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`} prefetch={false} key={index}>
                       <Badge
                         key={index}
                         variant='outline'
@@ -206,7 +206,7 @@ export default function SearchComponentClient({ subCategories }: any) {
             {searchQuery && (
               <Box style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
                 {productData.map((product: any) => (
-                  <Link key={product.id} href={`/san-pham/${product.tag}`} className='text-black'>
+                  <Link key={product.id} href={`/san-pham/${product.tag}`} className='text-black' prefetch={false}>
                     <Flex
                       key={product.id}
                       p='md'
@@ -220,7 +220,8 @@ export default function SearchComponentClient({ subCategories }: any) {
                       }}
                     >
                       <Image
-                        src={getImageProduct(product.images, ImageType.THUMBNAIL) || '/images/png/momo.png'}
+                        loading='lazy'
+                        src={getImageProduct(product.images, LocalImageType.THUMBNAIL) || '/images/png/momo.png'}
                         alt={product.name}
                         w={60}
                         h={60}

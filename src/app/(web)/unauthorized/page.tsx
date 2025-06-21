@@ -7,7 +7,7 @@ export default function UnauthorizedPage() {
       <Image loading='lazy' src='/images/png/403.png' alt='403' w={400} h={400} />
       <h1 className='text-4xl font-bold text-red-500'>403 - Không có quyền truy cập</h1>
       <p className='mt-2 text-gray-600'>Bạn không có quyền truy cập vào trang này.</p>
-      <Link href='/' className='mt-4 rounded-sm text-black hover:underline'>
+      <Link href='/' className='mt-4 rounded-sm text-black hover:underline' prefetch={false}>
         <Button>Quay lại trang chủ</Button>
       </Link>
     </Center>

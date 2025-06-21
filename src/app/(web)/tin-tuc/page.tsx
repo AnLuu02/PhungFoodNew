@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Empty from '~/app/_components/Empty';
 import CustomPagination from '~/app/_components/Pagination';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
+import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { api } from '~/trpc/server';
 
 const News = async ({
@@ -53,7 +54,7 @@ const News = async ({
                   />
                 </Paper>
                 <Stack gap={5} flex={1}>
-                  <Link href={item.link} target='_blank'>
+                  <Link href={item.link} target='_blank' prefetch={false}>
                     <Highlight highlight={s} size='xl' fw={700} className='text-black hover:text-[#008b4b]'>
                       {item.title}
                     </Highlight>
@@ -67,7 +68,7 @@ const News = async ({
                   <Text size='sm' lineClamp={1}>
                     {item.description}
                   </Text>
-                  <Link href={item.link} className='text-lg hover:text-[#008b4b]' target='_blank'>
+                  <Link href={item.link} className='text-lg hover:text-[#008b4b]' target='_blank' prefetch={false}>
                     Đọc tiếp
                   </Link>
                 </Stack>
@@ -91,7 +92,7 @@ const News = async ({
         order={{ base: 1, sm: 1, md: 2, lg: 2 }}
         className='h-fit'
         pos={{ base: 'static', sm: 'static', md: 'sticky', lg: 'sticky' }}
-        top={{ base: 0, sm: 70, md: 70, lg: 70 }}
+        top={{ base: 0, sm: TOP_POSITION_STICKY, md: TOP_POSITION_STICKY, lg: TOP_POSITION_STICKY }}
       >
         <Stack gap={'md'}>
           <SearchQueryParams />
@@ -104,7 +105,7 @@ const News = async ({
             <Stack gap={'sm'} p={'xs'}>
               {news && news?.length > 0 ? (
                 news?.slice(0, 4).map((item: any) => (
-                  <Link key={item.id} className='h-full w-full' href={item.link} target='_blank'>
+                  <Link key={item.id} className='h-full w-full' href={item.link} target='_blank' prefetch={false}>
                     <Flex gap={'sm'} align={'flex-start'} justify={'flex-start'}>
                       <Paper radius={0} className='overflow-hidden' w={100} h={64}>
                         <Image

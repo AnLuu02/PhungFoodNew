@@ -8,6 +8,9 @@ const config = {
   },
   eslint: {
     ignoreDuringBuilds: true
+  },
+  images: {
+    domains: ['aoetaifwgjb4klqx.public.blob.vercel-storage.com']
   }
 };
 

@@ -1,7 +1,7 @@
 import { Badge, Group, Image, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 
 export function ProductDetails({ product }: { product: any }) {
   return (
@@ -9,7 +9,7 @@ export function ProductDetails({ product }: { product: any }) {
       <Stack>
         <Image
           loading='lazy'
-          src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+          src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           w={300}
           fit='contain'
         />

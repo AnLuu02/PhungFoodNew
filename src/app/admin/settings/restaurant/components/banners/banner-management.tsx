@@ -18,13 +18,13 @@ import {
   Text,
   Tooltip
 } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { IconChevronLeft, IconChevronRight, IconFile, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Banner } from '~/app/Entity/RestaurantEntity';
 import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import { bannerSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
@@ -66,8 +66,8 @@ export default function BannerManagement() {
       const gallery: string[] = [];
 
       data.images.forEach(image => {
-        if (image.type === ImageType.BANNER) banners.push(image.url);
-        else if (image.type === ImageType.GALLERY) gallery.push(image.url);
+        if (image.type === LocalImageType.BANNER) banners.push(image.url);
+        else if (image.type === LocalImageType.GALLERY) gallery.push(image.url);
       });
 
       Promise.all([

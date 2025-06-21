@@ -15,7 +15,7 @@ interface ProductImageProps {
   discount?: number;
 }
 
-export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps) {
+export default function ProductImage({ thumbnail, gallery, discount }: ProductImageProps) {
   const notDesktop = useMediaQuery(`(max-width:1023px)`);
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showFullImage, setShowFullImage] = useState(false);
@@ -149,7 +149,7 @@ export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps
           {allImages.map((item, index) => (
             <Carousel.Slide key={index}>
               <Flex align='center' justify='center' h={400}>
-                <Image loading='lazy' src={item.url || '/placeholder.svg'} fit='contain' h={400} />
+                <Image loading='lazy' src={item.url || '/images/jpg/empty-300x240.jpg'} fit='contain' h={400} />
               </Flex>
             </Carousel.Slide>
           ))}
@@ -167,7 +167,13 @@ export function ProductImage({ thumbnail, gallery, discount }: ProductImageProps
                 overflow: 'hidden'
               }}
             >
-              <Image src={item.url || '/placeholder.svg'} width={60} height={60} fit='cover' />
+              <Image
+                loading='lazy'
+                src={item.url || '/images/jpg/empty-300x240.jpg'}
+                width={60}
+                height={60}
+                fit='cover'
+              />
             </UnstyledButton>
           ))}
         </Flex>

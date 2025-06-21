@@ -22,9 +22,9 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
         py={{ base: 20, md: 0 }}
         gap={{ base: 'md', md: 0 }}
       >
-        <Link href={'/'}>
+        <Link href={'/'} prefetch={false}>
           <Center>
-            <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={250} h={80} p={0} />
+            <Image src='/logo/logo_phungfood_1.png' alt='logo' w={250} h={80} p={0} />
           </Center>
         </Link>
         <Box w={{ base: '100%', md: 400, lg: 550 }}>

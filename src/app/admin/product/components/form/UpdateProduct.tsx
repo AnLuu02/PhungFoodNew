@@ -17,7 +17,7 @@ import {
   Textarea,
   TextInput
 } from '@mantine/core';
-import { ImageType, ProductStatus } from '@prisma/client';
+import { ProductStatus } from '@prisma/client';
 import { IconFile, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -26,6 +26,7 @@ import { Product } from '~/app/Entity/ProductEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalImageType, LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
 import { productSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { regions } from './CreateProduct';
@@ -60,7 +61,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
       discount: 0,
       region: 'Miền Nam',
       tags: [],
-      status: ProductStatus.ACTIVE,
+      status: LocalProductStatus.ACTIVE,
       thumbnail: undefined,
       gallery: [],
       subCategoryId: '',
@@ -71,8 +72,9 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
   useEffect(() => {
     setLoading(true);
     if (data) {
-      const thumnailDb = data?.images?.find(image => image.type === ImageType.THUMBNAIL)?.url || '';
-      const galleries = data?.images?.filter(image => image.type === ImageType.GALLERY).map(image => image.url) || [];
+      const thumnailDb = data?.images?.find(image => image.type === LocalImageType.THUMBNAIL)?.url || '';
+      const galleries =
+        data?.images?.filter(image => image.type === LocalImageType.GALLERY).map(image => image.url) || [];
       Promise.all([
         thumnailDb && thumnailDb !== '' && vercelBlobToFile(thumnailDb as string),
         galleries && galleries?.length > 0 ? vercelBlobToFile(galleries as string[], { type: 'multiple' }) : []
@@ -437,7 +439,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
                 placeholder='Hiển thị hay ẩn'
                 data={Object.values(ProductStatus)?.map(category => ({
                   value: category,
-                  label: category === ProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
+                  label: category === LocalProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
                 }))}
                 value={field.value}
                 onChange={field.onChange}

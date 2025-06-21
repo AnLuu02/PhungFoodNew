@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import { LocalOrderStatus } from '../zod/EnumType';
 
 export const sampleOrders = Array.from({ length: 20 }, (_, i) => ({
   id: `order_${i + 1}`,
@@ -17,11 +17,11 @@ export const generateSampleOrdersInfoUser = (count = 50) => {
   const getRandomPrice = () => Math.floor(Math.random() * 4950000) + 50000;
 
   const statuses = [
-    OrderStatus.PROCESSING,
-    OrderStatus.PENDING,
-    OrderStatus.DELIVERED,
-    OrderStatus.COMPLETED,
-    OrderStatus.CANCELLED
+    LocalOrderStatus.PROCESSING,
+    LocalOrderStatus.PENDING,
+    LocalOrderStatus.DELIVERED,
+    LocalOrderStatus.COMPLETED,
+    LocalOrderStatus.CANCELLED
   ];
 
   return Array.from({ length: count }, (_, i) => ({

@@ -1,11 +1,11 @@
 'use client';
 import { Button, Checkbox, Group, Menu, Table, Text } from '@mantine/core';
-import { PaymentType } from '@prisma/client';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import CustomPagination from '~/app/_components/Pagination';
+import { LocalPaymentType } from '~/app/lib/utils/zod/EnumType';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 
 export default function TablePayment({ s, data, user }: { s: string; data: any; user?: any }) {
@@ -18,7 +18,9 @@ export default function TablePayment({ s, data, user }: { s: string; data: any; 
     {
       header: 'Hình thức',
       accessorKey: 'type',
-      cell: info => <Text>{info.row.original.type === PaymentType.CREDIT_CARD ? 'Thẻ tín dụng' : 'Ví điện tử'}</Text>
+      cell: info => (
+        <Text>{info.row.original.type === LocalPaymentType.CREDIT_CARD ? 'Thẻ tín dụng' : 'Ví điện tử'}</Text>
+      )
     },
     {
       header: 'Nhà cung cấp',

@@ -5,8 +5,9 @@ import { CommentsForm } from '~/app/_components/Comments/CommentsForm';
 import { CommentsList } from '~/app/_components/Comments/CommentsList';
 import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
 import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
+import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { api } from '~/trpc/react';
-import { RatingStatistics } from '../_components/RatingStatistics';
+import RatingStatistics from '../_components/RatingStatistics';
 export default function ProductPage({ params }: { params: { slug: string } }) {
   let ratingCountsDefault = [0, 0, 0, 0, 0];
   const productTag = params.slug;
@@ -22,7 +23,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       <Grid>
         <GridCol
           pos={{ base: 'relative', md: 'sticky' }}
-          top={{ base: 0, md: 70 }}
+          top={{ base: 0, md: TOP_POSITION_STICKY }}
           className='h-fit'
           span={{ base: 12, sm: 5, md: 3, lg: 3 }}
         >

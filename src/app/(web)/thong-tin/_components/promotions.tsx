@@ -1,11 +1,11 @@
 'use client';
 
 import { Card, Flex, Grid, GridCol, Group, Pagination, Select, Tabs } from '@mantine/core';
-import { VoucherType } from '@prisma/client';
 import { useMemo, useState } from 'react';
 import Empty from '~/app/_components/Empty';
 import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
+import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 
 export default function Promotions({ promotions, isLoading }: any) {
   const [page, setPage] = useState(1);
@@ -44,10 +44,10 @@ export default function Promotions({ promotions, isLoading }: any) {
             <Tabs.Tab size={'md'} fw={700} value='all'>
               Tất cả
             </Tabs.Tab>
-            <Tabs.Tab size={'md'} fw={700} value={VoucherType.PERCENTAGE}>
+            <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.PERCENTAGE}>
               Phầm trăm
             </Tabs.Tab>
-            <Tabs.Tab size={'md'} fw={700} value={VoucherType.FIXED}>
+            <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.FIXED}>
               Tiền mặt
             </Tabs.Tab>
           </Group>

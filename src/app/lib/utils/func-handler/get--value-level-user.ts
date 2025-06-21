@@ -1,16 +1,17 @@
 import { UserLevel } from '@prisma/client';
+import { LocalUserLevel } from '../zod/EnumType';
 
 export const getValueLevelUser = (key: UserLevel) => {
   switch (key) {
-    case UserLevel.BRONZE:
+    case LocalUserLevel.BRONZE:
       return 0;
-    case UserLevel.SILVER:
+    case LocalUserLevel.SILVER:
       return 1;
-    case UserLevel.GOLD:
+    case LocalUserLevel.GOLD:
       return 2;
-    case UserLevel.PLATINUM:
+    case LocalUserLevel.PLATINUM:
       return 3;
-    case UserLevel.DIAMOND:
+    case LocalUserLevel.DIAMOND:
       return 4;
     default:
       return 4;

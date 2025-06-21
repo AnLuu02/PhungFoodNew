@@ -9,6 +9,7 @@ import {
   UserLevel
 } from '@prisma/client';
 import { z } from 'zod';
+import { LocalAddressType, LocalGender, LocalProductStatus, LocalUserLevel } from './EnumType';
 export const imageSchema = z.object({
   id: z.string().optional(),
   url: z.instanceof(File).optional(),
@@ -50,7 +51,7 @@ export const productSchema = z.object({
   region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
   tag: z.string().optional(),
   tags: z.array(z.string()),
-  status: z.nativeEnum(ProductStatus).default(ProductStatus.ACTIVE),
+  status: z.nativeEnum(ProductStatus).default(LocalProductStatus.ACTIVE),
   price: z.number().min(10000, 'Giá trị phải lớn hơn hoặc bằng 10.000').default(10000),
   discount: z.number().min(0, 'Giá trị không được nhỏ hơn 0').optional().default(0),
   thumbnail: z.instanceof(File).optional(),
@@ -65,7 +66,7 @@ export const productSchema = z.object({
 
 export const addressSchema = z.object({
   id: z.string().optional(),
-  type: z.nativeEnum(AddressType).default(AddressType.USER),
+  type: z.nativeEnum(AddressType).default(LocalAddressType.USER),
   provinceId: z.string().min(1, 'Tinh/thanh phố là bắt buộc'),
   districtId: z.string().min(1, 'Quan/huyen là bắt buộc'),
   wardId: z.string().min(1, 'Phuong/xa la bắt buộc'),
@@ -183,7 +184,7 @@ export const userSchema = z.object({
   name: z.string().min(1, 'Tên không được để trống'),
   email: z.string().email({ message: 'Email không hợp lệ (vd: example@gmail.com)' }),
   image: imageSchema.optional(),
-  gender: z.nativeEnum(Gender).default(Gender.OTHER),
+  gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
   roleId: z.string().optional(),
   dateOfBirth: z.date().optional(),
   password: z
@@ -196,7 +197,7 @@ export const userSchema = z.object({
   phone: z.string().max(10, { message: 'Số điện thoại không được quá 10 ký tự' }),
   address: addressSchema.optional(),
   pointLevel: z.number().default(0),
-  level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
+  level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE)
 });
 
 export const notificationSchema = z.object({

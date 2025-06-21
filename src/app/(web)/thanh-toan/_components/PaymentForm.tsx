@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { api } from '~/trpc/react';
 
-export const PaymentForm = ({ control }: any) => {
+const PaymentForm = ({ control }: any) => {
   const { data: paymentData, isLoading } = api.Payment.getAll.useQuery();
   const payment = paymentData ?? [];
   const [paymentMethod, setPaymentMethod] = useState('cod');
@@ -92,7 +92,7 @@ export const PaymentForm = ({ control }: any) => {
     //               <Group mt='sm'>
     //                 {payment?.map(
     //                   (item: any, index: number) =>
-    //                     item.type === PaymentType.E_WALLET && (
+    //                     item.type === LocalPaymentType.E_WALLET && (
     //                       <Radio key={index} value={item.id} label={item.name} error={fieldState.error?.message} />
     //                     )
     //                 )}
@@ -203,3 +203,4 @@ export const PaymentForm = ({ control }: any) => {
     </Paper>
   );
 };
+export default PaymentForm;

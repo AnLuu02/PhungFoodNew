@@ -2,12 +2,12 @@
 
 import { Button, Card, Divider, Flex, Group, Pill, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { PaymentType, VoucherType } from '@prisma/client';
 import { IconArrowLeft, IconGift } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import BButton from '~/app/_components/Button';
 import ModalShowVoucher from '~/app/_components/Modals/ModalShowVoucher';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import { LocalPaymentType, LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 import { ButtonCheckout } from './ButtonCheckout';
 import CartItemPayment from './CartItemPayment';
@@ -19,25 +19,24 @@ const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
     defaultValue: []
   });
 
-  const { data } = api.Voucher.getAll.useQuery();
+  const { data } = api.Voucher.getAll.useQuery(undefined, {
+    enabled: false
+  });
+  const utils = api.useUtils();
 
   const [showVoucher, setShowVoucher] = useState(false);
-
-  const discount = cart.reduce((sum, item) => {
-    if (item.discount) {
-      return sum + item.discount * item.quantity;
-    }
-    return sum;
-  }, 0);
-  const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-  const tax = (subtotal - discount) * 0.1;
-
-  const promotionTotal = (seletedVouchers ?? []).reduce((sum: any, item: any) => {
-    if (!item?.discountValue) return sum;
-    const discount = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * subtotal) / 100;
-    return sum + discount;
-  }, 0);
-  const total = subtotal + tax - discount - promotionTotal;
+  const { subtotal, discount, tax, promotionTotal, total } = useMemo(() => {
+    const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    const discount = cart.reduce((sum, item) => (item.discount ? sum + item.discount * item.quantity : sum), 0);
+    const tax = (subtotal - discount) * 0.1;
+    const promotionTotal = (seletedVouchers ?? []).reduce((sum, item) => {
+      if (!item?.discountValue) return sum;
+      const value = item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * subtotal) / 100;
+      return sum + value;
+    }, 0);
+    const total = subtotal + tax - discount - promotionTotal;
+    return { subtotal, discount, tax, promotionTotal, total };
+  }, [cart, seletedVouchers]);
 
   return (
     <Card shadow='sm' radius='md' withBorder>
@@ -79,6 +78,7 @@ const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
               )}
               <Button
                 onClick={() => {
+                  utils.Voucher.getAll.refetch();
                   setShowVoucher(true);
                 }}
                 px={0}
@@ -165,7 +165,7 @@ const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
               size='md'
               type='submit'
               loading={loading}
-              disabled={paymentMethod === PaymentType.CREDIT_CARD}
+              disabled={paymentMethod === LocalPaymentType.CREDIT_CARD}
               title={'THANH TOÁN'}
             />
           </Flex>

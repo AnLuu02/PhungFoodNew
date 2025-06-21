@@ -1,7 +1,6 @@
 'use client';
 
 import { ActionIcon, Button, Group, Modal, Title, Tooltip } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import {
   IconCircleCheck,
   IconEdit,
@@ -16,6 +15,7 @@ import InvoiceToPrint from '~/app/_components/Invoices/InvoceToPrint';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { handleConfirm } from '~/app/lib/utils/button-handle/ButtonHandleConfirm';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 import CreateOrder from './form/CreateOrder';
 import UpdateOrder from './form/UpdateOrder';
@@ -180,7 +180,7 @@ export function SuccessOrderButton({ id }: { id: string }) {
                   id: id
                 },
                 data: {
-                  status: OrderStatus.COMPLETED
+                  status: LocalOrderStatus.COMPLETED
                 }
               },
               'Hoàn thành đơn hàng',
@@ -215,7 +215,7 @@ export function SendMessageAllUserOrderButton({ orderProcessing }: any) {
 export function SendMessageOrderButton({ id }: any) {
   const [loading, setLoading] = useState(false);
   const { data, isLoading } = api.Order.getFilter.useQuery({
-    s: OrderStatus.PROCESSING
+    s: LocalOrderStatus.PROCESSING
   });
 
   const userIds = (data || [])?.map((item: any) => item?.user?.id) || [];
@@ -261,7 +261,7 @@ export function DeliveryOrderButton({ id }: { id: string }) {
                   id: id
                 },
                 data: {
-                  status: OrderStatus.DELIVERED
+                  status: LocalOrderStatus.DELIVERED
                 }
               },
               'Giao hàng',
@@ -298,7 +298,7 @@ export function CancleOrderButton({ id }: { id: string }) {
                   id: id
                 },
                 data: {
-                  status: OrderStatus.CANCELLED
+                  status: LocalOrderStatus.CANCELLED
                 }
               },
               'Hủy  đơn hàng',

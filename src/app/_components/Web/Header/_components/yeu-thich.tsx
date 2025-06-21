@@ -6,10 +6,11 @@ import { api } from '~/trpc/react';
 
 const LikeButton = () => {
   const { data: user } = useSession();
-  const { data } = api.FavouriteFood.getFilter.useQuery({ s: user?.user?.email || '' });
-
+  const { data } = user?.user?.email
+    ? api.FavouriteFood.getFilter.useQuery({ s: user?.user?.email || '' })
+    : { data: [] };
   return (
-    <Link href={`/yeu-thich`}>
+    <Link href={`/yeu-thich`} prefetch={false}>
       <Button
         variant='outline'
         radius={'xl'}

@@ -1,16 +1,18 @@
 'use client';
-import { Box, Flex, Grid, GridCol, Indicator, Text } from '@mantine/core';
+import { Box, Flex, Grid, GridCol } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconBell, IconGardenCart } from '@tabler/icons-react';
-import Link from 'next/link';
-import Empty from '~/app/_components/Empty';
-import CustomPagination from '~/app/_components/Pagination';
-import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
-import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
+import dynamic from 'next/dynamic';
 import { api } from '~/trpc/react';
-import HeaderSearchResults from './_components/Header';
+import CartFloating from './_components/CartFloating';
 import HeaderMenu from './_components/HeaderMenu';
+const CustomPagination = dynamic(() => import('~/app/_components/Pagination'), { ssr: false });
+const Empty = dynamic(() => import('~/app/_components/Empty'), { ssr: false });
+const ProductCardCarouselVertical = dynamic(
+  () => import('~/app/_components/Web/Home/_Components/ProductCardCarouselVertical'),
+  { ssr: false }
+);
+const CardSkeleton = dynamic(() => import('~/app/_components/Web/_components/CardSkeleton'), { ssr: false });
+const HeaderSearchResults = dynamic(() => import('./_components/Header'), { ssr: false });
 
 const MenuSection = ({
   searchParams
@@ -87,33 +89,7 @@ const MenuSection = ({
           <CustomPagination totalPages={foderItems?.pagination?.totalPages || 1} />
         </Flex>
       </Flex>
-      {cart?.length > 0 && (
-        <Link href='/gio-hang'>
-          <Indicator
-            inline
-            size={40}
-            color='green.9'
-            bg={'green.9'}
-            label={<IconBell size={30} color='white' className='animate-shake' />}
-            className='fixed bottom-0 right-[80px] z-50 cursor-pointer rounded-t-xl hover:opacity-80'
-          >
-            <Box mr={20}>
-              <Flex align={'center'} justify={'center'} gap={10} pt={4} pb={4} pl={20} pr={20}>
-                <IconGardenCart size={50} color='white' />
-                <Text className='text-xl font-bold' color='white'>
-                  {formatPriceLocaleVi(
-                    cart.reduce(
-                      (total: number, item: any) =>
-                        total + (Number(item?.price || 0) - Number(item?.discount || 0)) * Number(item?.quantity || 0),
-                      0
-                    )
-                  )}
-                </Text>
-              </Flex>
-            </Box>
-          </Indicator>
-        </Link>
-      )}
+      {cart?.length > 0 && <CartFloating cart={cart} />}
     </Box>
   );
 };

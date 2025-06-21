@@ -61,7 +61,7 @@ function CardWithIcon({
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder className='cursor-pointer hover:border-red-400'>
-      <Link href={`/admin/${href}`}>
+      <Link href={`/admin/${href}`} prefetch={false}>
         <Group>
           <Icon size={32} stroke={1.5} />
           <div>
@@ -271,55 +271,6 @@ export default function Dashboard() {
         </Grid.Col>
       </Grid>
 
-      {/* <Grid gutter='md'>
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card shadow='sm' padding='lg' radius='md' withBorder>
-            <Title order={4} mb='md'>
-              Danh mục hàng đầu
-            </Title>
-            <BarChart
-              h={300}
-              data={categoryData}
-              dataKey='category'
-              series={[{ name: 'sales', color: theme.colors.violet[6] }]}
-              tickLine='y'
-            />
-          </Card>
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6 }}>
-          <Card shadow='sm' padding='lg' radius='md' withBorder>
-            <Title order={4} mb='md'>
-              Hoạt động gần đây
-            </Title>
-            <Stack>
-              {[
-                { name: 'Olivia Martin', action: 'Commented on your post', time: '1h ago' },
-                { name: 'Jackson Lee', action: 'Liked your comment', time: '2h ago' },
-                { name: 'Isabella Nguyen', action: 'Shared your post', time: '3h ago' },
-                { name: 'Ethan Chen', action: 'Placed a new order', time: '4h ago' },
-                { name: 'Sophia Kim', action: 'Registered as a new user', time: '5h ago' }
-              ].map((activity, index) => (
-                <Paper key={index} p='xs' withBorder>
-                  <Group>
-                    <Avatar radius='xl' />
-                    <Box style={{ flex: 1 }}>
-                      <Text size='sm' fw={500}>
-                        {activity.name}
-                      </Text>
-                      <Text size='xs' c='dimmed'>
-                        {activity.action}
-                      </Text>
-                    </Box>
-                    <Text size='xs' c='dimmed'>
-                      {activity.time}
-                    </Text>
-                  </Group>
-                </Paper>
-              ))}
-            </Stack>
-          </Card>
-        </Grid.Col>
-      </Grid> */}
       <SimpleGrid cols={{ base: 1, md: 2 }} mt='md'>
         <Card withBorder padding='md' radius='md'>
           <Card.Section withBorder inheritPadding py='xs'>

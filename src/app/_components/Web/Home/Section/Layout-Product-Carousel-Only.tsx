@@ -1,7 +1,8 @@
 'use client';
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Card, Flex, Image, rem, Space, Text, Title } from '@mantine/core';
+import { ActionIcon, Card, Flex, rem, Space, Text, Title } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import BButton from '~/app/_components/Button';
@@ -75,7 +76,14 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
         </Flex>
         {products?.length <= 0 ? (
           <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
-            <Image loading='lazy' src={'/images/png/empty_cart.png'} w={100} h={100} alt={'empty cart'} />
+            <Image
+              objectFit='cover'
+              loading='lazy'
+              src={'/images/png/empty_cart.png'}
+              width={100}
+              height={100}
+              alt={'empty cart'}
+            />
             <Text size='xl' fw={700} c={'dimmed'}>
               Không có sản phẩm phù hợp
             </Text>
@@ -102,7 +110,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
               ))}
             </Carousel>
             <Flex align={'center'} justify={'center'} mt={30}>
-              <Link href={`/thuc-don?loai=san-pham-moi`}>
+              <Link href={`/thuc-don?loai=san-pham-moi`} prefetch={false}>
                 <BButton title={'Xem tất cả'} variant='outline' size='sm' />
               </Link>
             </Flex>

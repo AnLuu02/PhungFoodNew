@@ -37,6 +37,7 @@ export default function Empty({
     <Center w={'100%'} h={'100%'} className='flex-col'>
       {!noLogo && (
         <Image
+          loading='lazy'
           src={logoUrl || '/images/png/empty_cart.png'}
           alt='Empty Cart'
           className='mx-auto'
@@ -49,7 +50,7 @@ export default function Empty({
       </Text>
       <Text size={size}>{content}</Text>
       {hasButton && (
-        <Link href={url} className='text-white'>
+        <Link href={url} className='text-white' prefetch={false}>
           <Button
             color='red'
             size={size}

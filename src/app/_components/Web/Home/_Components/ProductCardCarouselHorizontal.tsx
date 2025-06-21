@@ -1,10 +1,10 @@
 'use client';
-import { Badge, Box, Button, Card, Flex, Group, Image, Progress, Text, Tooltip } from '@mantine/core';
+import { Badge, Box, Button, Card, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconEye, IconHeart } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
@@ -14,6 +14,7 @@ import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const { data: user } = useSession();
@@ -31,9 +32,10 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
         <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center'>
           <Image
             loading='lazy'
-            src={getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            w={'100%'}
-            h={'100%'}
+            src={getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+            fill
+            objectFit='cover'
+            alt={data?.name || 'Product Image'}
           />
 
           <Box
@@ -80,7 +82,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
           </Box>
         </Box>
         <Flex direction={'column'} align={'flex-start'} w={'64%'} gap={'xs'} justify={'center'} pr={'md'}>
-          <Link href={`/san-pham/${data?.tag}`}>
+          <Link href={`/san-pham/${data?.tag}`} prefetch={false}>
             <Tooltip label={data?.name}>
               <Text lineClamp={1} size='md' fw={700} className='cursor-pointer text-center hover:text-[#008b4b]'>
                 {data?.name || 'Cá thu'}

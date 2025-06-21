@@ -14,7 +14,7 @@ import {
   Title
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { AddressType, OrderStatus } from '@prisma/client';
+import { OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
@@ -23,6 +23,7 @@ import LoadingComponent from '~/app/_components/Loading/Loading';
 import { Order } from '~/app/Entity/OrderEntity';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalAddressType, LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { orderSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import OrderItemForm from './OrderItemForm';
@@ -42,7 +43,7 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
     defaultValues: {
       id: '',
       total: 0,
-      status: OrderStatus.PROCESSING,
+      status: LocalOrderStatus.PROCESSING,
       userId: '',
       paymentId: '',
       orderItems: [],
@@ -54,7 +55,7 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
           detail: '',
           postalCode: '',
           fullAddress: '',
-          type: AddressType.DELIVERY,
+          type: LocalAddressType.DELIVERY,
           province: '',
           district: '',
           ward: ''

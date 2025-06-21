@@ -1,10 +1,10 @@
 import { useLocalStorage } from '@mantine/hooks';
-import { OrderStatus } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import BButton from '~/app/_components/Button';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 type IStylesButtonCheckout = {
   title?: string;
@@ -41,11 +41,10 @@ export const ButtonCheckout = ({
   const order: any = data ?? [];
   const handleCreateOrder = async () => {
     setLoading(true);
-    console.log('order', order);
     if (order?.length > 0) {
       const resp: any = await mutationOrder.mutateAsync({
         total: total,
-        status: OrderStatus.PROCESSING,
+        status: LocalOrderStatus.PROCESSING,
         userId: user?.user?.id || '',
         orderItems: order?.map((item: any) => ({
           productId: item.id,

@@ -1,7 +1,7 @@
-import { EntityType, ImageType } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
+import { LocalEntityType, LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const restaurantRouter = createTRPCRouter({
@@ -55,10 +55,10 @@ export const restaurantRouter = createTRPCRouter({
           logo: imgURL
             ? {
                 create: {
-                  entityType: EntityType.RESTAURANT,
+                  entityType: LocalEntityType.RESTAURANT,
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
-                  type: ImageType.LOGO
+                  type: LocalImageType.LOGO
                 } as any
               }
             : undefined
@@ -135,16 +135,16 @@ export const restaurantRouter = createTRPCRouter({
                   upsert: {
                     where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
                     update: {
-                      entityType: EntityType.RESTAURANT,
+                      entityType: LocalEntityType.RESTAURANT,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: ImageType.LOGO
+                      type: LocalImageType.LOGO
                     } as any,
                     create: {
-                      entityType: EntityType.RESTAURANT,
+                      entityType: LocalEntityType.RESTAURANT,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: ImageType.LOGO
+                      type: LocalImageType.LOGO
                     } as any
                   }
                 }
@@ -201,7 +201,7 @@ export const restaurantRouter = createTRPCRouter({
             const buffer = Buffer.from(item.base64, 'base64');
             const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
             const uploadedUrl = blob.url;
-            return uploadedUrl ? { url: uploadedUrl, type: ImageType.BANNER } : null;
+            return uploadedUrl ? { url: uploadedUrl, type: LocalImageType.BANNER } : null;
           })
         ).then(results => results.filter(item => item !== null));
       }
@@ -212,7 +212,7 @@ export const restaurantRouter = createTRPCRouter({
             const buffer = Buffer.from(item.base64, 'base64');
             const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
             const uploadedUrl = blob.url;
-            return uploadedUrl ? { url: uploadedUrl, type: ImageType.GALLERY } : null;
+            return uploadedUrl ? { url: uploadedUrl, type: LocalImageType.GALLERY } : null;
           })
         ).then(results => results.filter(item => item !== null));
       }
@@ -226,14 +226,14 @@ export const restaurantRouter = createTRPCRouter({
               ...bannerURLs.map((item: any) => ({
                 url: item.url,
                 type: item.type,
-                entityType: EntityType.RESTAURANT,
-                altText: `Ảnh ${item?.url} loại ${ImageType.BANNER}`
+                entityType: LocalEntityType.RESTAURANT,
+                altText: `Ảnh ${item?.url} loại ${LocalImageType.BANNER}`
               })),
               ...galleryURLs.map((item: any) => ({
                 url: item.url,
                 type: item.type,
-                entityType: EntityType.RESTAURANT,
-                altText: `Ảnh ${item?.url} loại ${ImageType.GALLERY}`
+                entityType: LocalEntityType.RESTAURANT,
+                altText: `Ảnh ${item?.url} loại ${LocalImageType.GALLERY}`
               }))
             ]
           }
@@ -288,9 +288,9 @@ export const restaurantRouter = createTRPCRouter({
             const uploadedImage = blob.url;
             return {
               url: uploadedImage,
-              type: ImageType.GALLERY,
-              altText: `Ảnh ${item.fileName} loại ${ImageType.GALLERY}`,
-              entityType: EntityType.RESTAURANT
+              type: LocalImageType.GALLERY,
+              altText: `Ảnh ${item.fileName} loại ${LocalImageType.GALLERY}`,
+              entityType: LocalEntityType.RESTAURANT
             };
           } catch (error) {
             console.error('Failed to upload image:', item.fileName, error);
@@ -304,9 +304,9 @@ export const restaurantRouter = createTRPCRouter({
             const uploadedImage = blob.url;
             return {
               url: uploadedImage,
-              type: ImageType.BANNER,
-              altText: `Ảnh ${item.fileName} loại ${ImageType.BANNER}`,
-              entityType: EntityType.RESTAURANT
+              type: LocalImageType.BANNER,
+              altText: `Ảnh ${item.fileName} loại ${LocalImageType.BANNER}`,
+              entityType: LocalEntityType.RESTAURANT
             };
           } catch (error) {
             console.error('Failed to upload image:', item.fileName, error);

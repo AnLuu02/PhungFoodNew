@@ -23,8 +23,8 @@ import Empty from '~/app/_components/Empty';
 import LoadingComponent from '~/app/_components/Loading/Loading';
 import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
-import LayoutAds from '~/app/_components/Web/Home/Section/Layout-Ads';
 import LayoutPromotion from '~/app/_components/Web/Home/Section/Layout-Promotion';
+import LayoutAds from '~/app/_components/Web/Home/Section/LayoutGrid3Col';
 import { api } from '~/trpc/react';
 
 const ITEMS_PER_PAGE = 4;

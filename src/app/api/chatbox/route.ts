@@ -1,8 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
-import { ImageType } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/server';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
@@ -40,10 +40,7 @@ export async function POST(req: Request) {
 
   let keywordsJSON = response.text;
   keywordsJSON = keywordsJSON?.replace(/```(javascript|json|plaintext)?\n?/g, '').trim();
-  console.log('keywordsJSON', keywordsJSON);
   const keywords = JSON.parse(keywordsJSON || '{}');
-  console.log('keywordsparse JSON', keywords);
-
   const products = await api.Product.find({ skip: 0, take: 4, ...keywords });
 
   let prompt = `Bạn là trợ lý bán hàng chuyên nghiệp của cửa hàng Phụng Food (Mama Reastaurant). Cửa hàng chỉ bán online.`;
@@ -54,7 +51,7 @@ export async function POST(req: Request) {
               style="margin-top: 8px; margin-bottom: 8px; padding: 8px; background-color: #f3f4f6; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; align-items: flex-start; gap: 16px;"
             >
               <img
-                src="${getImageProduct(product?.images || [], ImageType.THUMBNAIL)}"
+                src="${getImageProduct(product?.images || [], LocalImageType.THUMBNAIL)}"
                 alt="${product.name}"
                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"
               />

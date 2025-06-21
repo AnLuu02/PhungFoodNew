@@ -1,8 +1,8 @@
 import { Box, Button, Card, Checkbox, Divider, Flex, Group, Image, Progress, Text, Tooltip } from '@mantine/core';
-import { VoucherType } from '@prisma/client';
 import clsx from 'clsx';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { allowedVoucher, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers-calculate';
+import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 import DateVoucher from '../Modals/_components/DateVoucher';
 const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
   return (
@@ -22,7 +22,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
             h={120}
             w={120}
             src={
-              voucher?.type === VoucherType.PERCENTAGE
+              voucher?.type === LocalVoucherType.PERCENTAGE
                 ? '/images/png/voucher_bg_green.png'
                 : '/images/png/voucher_bg_red.png'
             }

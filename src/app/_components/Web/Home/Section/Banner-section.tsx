@@ -1,23 +1,30 @@
 'use client';
 
 import { Carousel } from '@mantine/carousel';
-import { Box, Flex, Image, Paper, rem, SimpleGrid, Text } from '@mantine/core';
-import { ImageType } from '@prisma/client';
+import { Box, Flex, Paper, rem, SimpleGrid, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Autoplay from 'embla-carousel-autoplay';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 
 export default function BannerSection({ banner }: any) {
   const autoplay = useMemo(() => Autoplay({ delay: 5000 }), []);
 
-  const gallery = banner?.images?.filter((image: any) => image?.type === ImageType.GALLERY) || [];
-  const banners = banner?.images?.filter((image: any) => image?.type === ImageType.BANNER) || [];
+  const gallery = banner?.images?.filter((image: any) => image?.type === LocalImageType.GALLERY) || [];
+  const banners = banner?.images?.filter((image: any) => image?.type === LocalImageType.BANNER) || [];
 
   const slides = gallery.map((slide: any) => (
     <Carousel.Slide key={slide.id} className='rounded-md'>
       <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
-        <Image src={slide.url || '/placeholder.svg'} alt={slide.altText} w={'100%'} h='100%' className='rounded-md' />
+        <Image
+          objectFit='cover'
+          src={slide.url || '/images/jpg/empty-300x240.jpg'}
+          alt={slide.altText}
+          fill
+          className='rounded-md'
+        />
       </Box>
     </Carousel.Slide>
   ));
@@ -65,12 +72,12 @@ export default function BannerSection({ banner }: any) {
         >
           {/* Top banner */}
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
-            <Image src={banners?.[0]?.url || '/images/jpg/empty-300x240.jpg'} alt={''} w={'100%'} h='100%' />
+            <Image objectFit='cover' src={banners?.[0]?.url || '/images/jpg/empty-300x240.jpg'} alt={''} fill />
           </Paper>
 
           {/* Bottom banner */}
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
-            <Image src={banners?.[1]?.url || '/images/jpg/empty-300x240.jpg'} alt={''} w={'100%'} h='100%' />
+            <Image objectFit='cover' src={banners?.[1]?.url || '/images/jpg/empty-300x240.jpg'} alt={''} fill />
           </Paper>
         </Flex>
       </Flex>
@@ -86,7 +93,7 @@ export default function BannerSection({ banner }: any) {
             { icon: '🎉', title: 'Đặt bàn & sự kiện' },
             { icon: '⭐', title: 'Đánh giá & phản hồi' }
           ].map((service, index) => (
-            <Link href={service.href || ''} key={index}>
+            <Link href={service.href || ''} key={index} prefetch={false}>
               <Paper
                 key={index}
                 bg={'gray.1'}

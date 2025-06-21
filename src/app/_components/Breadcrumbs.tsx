@@ -15,6 +15,7 @@ const BreadcrumbsComponent = () => {
     <Breadcrumbs separator='>' classNames={{ separator: 'mx-2 text-gray-500' }}>
       <Link
         href='/'
+        prefetch={false}
         className={`hover:text-[#f8c144] hover:underline ${pathname !== '/' ? 'text-[#f8c144] hover:text-[#f8c144] hover:underline' : 'text-gray-500'}`}
       >
         <Text size='sm' fw={700}>

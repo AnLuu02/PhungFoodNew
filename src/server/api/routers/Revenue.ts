@@ -1,5 +1,6 @@
 import { OrderStatus } from '@prisma/client';
 import { z } from 'zod';
+import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -12,8 +13,8 @@ export async function updateRevenue(ctx: any, status: OrderStatus, userId: strin
   await ctx.db.revenue.upsert({
     where: { userId_year_month_date: { userId, year, month, date } },
     update: {
-      totalSpent: status === OrderStatus.COMPLETED ? { increment: orderTotal } : { decrement: orderTotal },
-      totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 }
+      totalSpent: status === LocalOrderStatus.COMPLETED ? { increment: orderTotal } : { decrement: orderTotal },
+      totalOrders: status === LocalOrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 }
     },
     create: { userId, date, year, month, totalSpent: orderTotal, totalOrders: 1 }
   });

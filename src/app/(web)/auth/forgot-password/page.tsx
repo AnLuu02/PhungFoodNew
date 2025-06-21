@@ -3,11 +3,12 @@
 import { Card, Center, Grid, GridCol, rem, TextInput, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMail } from '@tabler/icons-react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import BButton from '~/app/_components/Button';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
-import OtpModal from '../_components/otp-modal';
+const OtpModal = dynamic(() => import('../_components/otp-modal'), { ssr: false });
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -69,7 +70,7 @@ export default function ForgotPassword() {
           </Card>
         </Center>
       </form>
-      <OtpModal opened={opened} onClose={close} email={email} />
+      {opened && <OtpModal opened={opened} onClose={close} email={email} />}
     </>
   );
 }

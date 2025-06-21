@@ -15,7 +15,6 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
-import { AddressType, Gender } from '@prisma/client';
 import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -25,6 +24,7 @@ import { User } from '~/app/Entity/UserEntity';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalAddressType, LocalGender } from '~/app/lib/utils/zod/EnumType';
 import { userSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
@@ -47,12 +47,12 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
       name: '',
       email: '',
       image: undefined,
-      gender: Gender.OTHER,
+      gender: LocalGender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       password: '',
       phone: '',
       roleId: '',
-      address: { detail: '', type: AddressType.USER },
+      address: { detail: '', type: LocalAddressType.USER },
       pointLevel: 0
     }
   });
@@ -89,7 +89,7 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
       email: data?.email,
       password: data?.password,
       dateOfBirth: data?.dateOfBirth || new Date(),
-      gender: data?.gender || Gender.OTHER,
+      gender: data?.gender || LocalGender.OTHER,
       phone: data?.phone || '',
       roleId: data?.roleId || '',
       address: data?.address as any,
@@ -364,9 +364,9 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
                     label='Giới tính'
                     {...field}
                     data={[
-                      { value: Gender.MALE, label: 'Nam' },
-                      { value: Gender.FEMALE, label: 'Nữ' },
-                      { value: Gender.OTHER, label: 'Khác' }
+                      { value: LocalGender.MALE, label: 'Nam' },
+                      { value: LocalGender.FEMALE, label: 'Nữ' },
+                      { value: LocalGender.OTHER, label: 'Khác' }
                     ]}
                   />
                 )}

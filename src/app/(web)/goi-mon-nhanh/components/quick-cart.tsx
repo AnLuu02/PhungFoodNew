@@ -1,16 +1,13 @@
 'use client';
 import { Box, Card, Center, Divider, Group, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
+import { useMemo } from 'react';
 import Empty from '~/app/_components/Empty';
-import { HEIGHT_HEADER } from '~/app/_components/Web/Header/_components/NavigationHeader';
 import { CartItemFastMenu } from '~/app/_components/Web/Home/_Components/CartItemFastMenu';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
+import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
 import { ButtonCheckout } from '../../thanh-toan/_components/ButtonCheckout';
-
-export const HEIGHT_HEADER_AND_BREADCRUMB = HEIGHT_HEADER + 100;
-export const TOP_POSITION_STICKY = 70;
 
 const QuickCart = () => {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -22,7 +19,9 @@ const QuickCart = () => {
     setCart(cart.filter(item => item.id !== id));
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = useMemo(() => {
+    return cart.reduce((acc, item) => acc + (item.price * item.quantity || 0), 0);
+  }, [cart]);
 
   return (
     <Card radius={'md'} bg={'gray.2'}>
@@ -41,7 +40,9 @@ const QuickCart = () => {
                 <Box key={item?.id}>
                   <CartItemFastMenu
                     key={item?.id}
-                    image={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                    image={
+                      getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+                    }
                     name={item?.name}
                     price={item?.price}
                     quantity={item?.quantity}

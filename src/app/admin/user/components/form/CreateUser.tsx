@@ -15,7 +15,6 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
-import { AddressType, Gender, UserLevel } from '@prisma/client';
 import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
@@ -23,6 +22,7 @@ import { User } from '~/app/Entity/UserEntity';
 import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { fileToBase64 } from '~/app/lib/utils/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalAddressType, LocalGender, LocalUserLevel } from '~/app/lib/utils/zod/EnumType';
 import { userSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
@@ -39,7 +39,7 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
       name: '',
       email: '',
       image: undefined,
-      gender: Gender.OTHER,
+      gender: LocalGender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       password: '',
       phone: '',
@@ -51,11 +51,11 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
         district: '',
         ward: '',
         detail: '',
-        type: AddressType.USER
+        type: LocalAddressType.USER
       },
       roleId: '',
       pointLevel: 0,
-      level: UserLevel.BRONZE
+      level: LocalUserLevel.BRONZE
     }
   });
   const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
@@ -339,9 +339,9 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
                     label='Giới tính'
                     {...field}
                     data={[
-                      { value: Gender.MALE, label: 'Nam' },
-                      { value: Gender.FEMALE, label: 'Nữ' },
-                      { value: Gender.OTHER, label: 'Khác' }
+                      { value: LocalGender.MALE, label: 'Nam' },
+                      { value: LocalGender.FEMALE, label: 'Nữ' },
+                      { value: LocalGender.OTHER, label: 'Khác' }
                     ]}
                   />
                 )}

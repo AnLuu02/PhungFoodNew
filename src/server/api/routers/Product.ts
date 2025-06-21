@@ -1,9 +1,10 @@
-import { EntityType, ImageType, OrderStatus, ProductStatus } from '@prisma/client';
+import { OrderStatus, ProductStatus } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { UserRole } from '~/app/lib/utils/constants/roles';
 import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
+import { LocalEntityType, LocalImageType, LocalOrderStatus, LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -11,8 +12,9 @@ export async function updateSales(ctx: any, status: OrderStatus, productId: stri
   await ctx.db.product.update({
     where: { id: productId },
     data: {
-      soldQuantity: status === OrderStatus.COMPLETED ? { increment: soldQuantity } : { decrement: soldQuantity },
-      availableQuantity: status === OrderStatus.COMPLETED ? { decrement: soldQuantity } : { increment: soldQuantity }
+      soldQuantity: status === LocalOrderStatus.COMPLETED ? { increment: soldQuantity } : { decrement: soldQuantity },
+      availableQuantity:
+        status === LocalOrderStatus.COMPLETED ? { decrement: soldQuantity } : { increment: soldQuantity }
     }
   });
 }
@@ -72,7 +74,7 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
     userRole && userRole != UserRole.CUSTOMER
       ? undefined
       : {
-          status: ProductStatus.ACTIVE
+          status: LocalProductStatus.ACTIVE
         },
     loaiSanPham || danhMuc
       ? {
@@ -259,7 +261,7 @@ export const productRouter = createTRPCRouter({
         price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
         discount: z.number().min(0, 'Giảm giá không được âm').default(0),
         tags: z.array(z.string()).optional(),
-        status: z.nativeEnum(ProductStatus).default(ProductStatus.ACTIVE),
+        status: z.nativeEnum(ProductStatus).default(LocalProductStatus.ACTIVE),
         region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
         thumbnail: z
           .object({
@@ -304,7 +306,7 @@ export const productRouter = createTRPCRouter({
           const buffer = Buffer.from(item.base64, 'base64');
           const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
           const uploadedUrl = blob.url;
-          return uploadedUrl ? { url: uploadedUrl, type: ImageType.GALLERY } : null;
+          return uploadedUrl ? { url: uploadedUrl, type: LocalImageType.GALLERY } : null;
         })
       ).then(results => results.filter(item => item !== null));
 
@@ -326,17 +328,17 @@ export const productRouter = createTRPCRouter({
                 ? [
                     {
                       url: thumbnailURL,
-                      type: ImageType.THUMBNAIL,
-                      entityType: EntityType.PRODUCT,
-                      altText: `Ảnh ${input?.thumbnail?.fileName} loại ${ImageType.THUMBNAIL}`
+                      type: LocalImageType.THUMBNAIL,
+                      entityType: LocalEntityType.PRODUCT,
+                      altText: `Ảnh ${input?.thumbnail?.fileName} loại ${LocalImageType.THUMBNAIL}`
                     }
                   ]
                 : []),
               ...galleryURLs.map(item => ({
                 url: item.url,
                 type: item.type,
-                entityType: EntityType.PRODUCT,
-                altText: `Ảnh ${item?.url} loại ${ImageType.GALLERY}`
+                entityType: LocalEntityType.PRODUCT,
+                altText: `Ảnh ${item?.url} loại ${LocalImageType.GALLERY}`
               }))
             ]
           }
@@ -365,7 +367,7 @@ export const productRouter = createTRPCRouter({
         discount: z.number().min(0, 'Giảm giá không được âm').default(0),
         region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
         tags: z.array(z.string()).optional(),
-        status: z.nativeEnum(ProductStatus).default(ProductStatus.ACTIVE),
+        status: z.nativeEnum(ProductStatus).default(LocalProductStatus.ACTIVE),
         thumbnail: z
           .object({
             fileName: z.string(),
@@ -411,8 +413,8 @@ export const productRouter = createTRPCRouter({
       }
 
       const oldImages = existingProduct.images || [];
-      const oldThumbnail = oldImages.find(img => img?.type === ImageType.THUMBNAIL);
-      const oldGallery = oldImages.filter(img => img?.type === ImageType.GALLERY);
+      const oldThumbnail = oldImages.find(img => img?.type === LocalImageType.THUMBNAIL);
+      const oldGallery = oldImages.filter(img => img?.type === LocalImageType.GALLERY);
 
       let newThumbnail: any = oldThumbnail;
       if (input.thumbnail?.fileName) {
@@ -426,9 +428,9 @@ export const productRouter = createTRPCRouter({
           )?.url;
           newThumbnail = {
             url: url,
-            type: ImageType.THUMBNAIL,
-            altText: `Ảnh ${input.thumbnail.fileName} loại ${ImageType.THUMBNAIL}`,
-            entityType: EntityType.PRODUCT
+            type: LocalImageType.THUMBNAIL,
+            altText: `Ảnh ${input.thumbnail.fileName} loại ${LocalImageType.THUMBNAIL}`,
+            entityType: LocalEntityType.PRODUCT
           };
 
           if (oldThumbnail) await del(oldThumbnail.url, { token: tokenBlobVercel });
@@ -457,9 +459,9 @@ export const productRouter = createTRPCRouter({
             const uploadedImage = blob.url;
             return {
               url: uploadedImage,
-              type: ImageType.GALLERY,
-              altText: `Ảnh ${item.fileName} loại ${ImageType.GALLERY}`,
-              entityType: EntityType.PRODUCT
+              type: LocalImageType.GALLERY,
+              altText: `Ảnh ${item.fileName} loại ${LocalImageType.GALLERY}`,
+              entityType: LocalEntityType.PRODUCT
             };
           } catch (error) {
             console.error('Failed to upload image:', item.fileName, error);
@@ -582,7 +584,7 @@ export const productRouter = createTRPCRouter({
           ...(userRole && userRole != UserRole.CUSTOMER
             ? {}
             : {
-                status: ProductStatus.ACTIVE
+                status: LocalProductStatus.ACTIVE
               }),
           OR: [
             { id: s?.trim() },
@@ -652,7 +654,7 @@ export const productRouter = createTRPCRouter({
           ...(userRole && userRole != UserRole.CUSTOMER
             ? {}
             : {
-                status: ProductStatus.ACTIVE
+                status: LocalProductStatus.ACTIVE
               }),
 
           OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
@@ -711,7 +713,7 @@ export const productRouter = createTRPCRouter({
           ...(userRole && userRole != UserRole.CUSTOMER
             ? {}
             : {
-                status: ProductStatus.ACTIVE
+                status: LocalProductStatus.ACTIVE
               })
         },
         include: {

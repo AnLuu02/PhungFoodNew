@@ -16,7 +16,7 @@ export default function NotFound() {
       <Text size='lg' ta='center' mt='xl'>
         The page you're looking for doesn't exist or has been moved.
       </Text>
-      <Link href='/'>
+      <Link href='/' prefetch={false}>
         <Group justify='center' mt='xl'>
           <Button size='md' leftSection={<IconHome size={20} />}>
             Về trang chủ

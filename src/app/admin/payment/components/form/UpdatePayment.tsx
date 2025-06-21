@@ -1,12 +1,12 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
-import { PaymentType } from '@prisma/client';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { Payment } from '~/app/Entity/PaymentEntity';
 import { createTag } from '~/app/lib/utils/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { LocalPaymentType } from '~/app/lib/utils/zod/EnumType';
 import { paymentSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
@@ -27,7 +27,7 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
       id: '',
       name: '',
       tag: '',
-      type: PaymentType.CREDIT_CARD,
+      type: LocalPaymentType.CREDIT_CARD,
       provider: '',
       isDefault: false
     }
@@ -98,8 +98,8 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
                 searchable
                 placeholder='Chọn phương thức '
                 data={[
-                  { value: PaymentType.CREDIT_CARD, label: 'Thẻ tín dụng' },
-                  { value: PaymentType.E_WALLET, label: 'Ví điện tử' }
+                  { value: LocalPaymentType.CREDIT_CARD, label: 'Thẻ tín dụng' },
+                  { value: LocalPaymentType.E_WALLET, label: 'Ví điện tử' }
                 ]}
                 error={errors.type?.message}
                 value={field.value}

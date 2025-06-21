@@ -1,13 +1,15 @@
-import { Burger, Button, Flex, Group, Image, Menu, rem, ScrollAreaAutosize, Text } from '@mantine/core';
+import { Box, Burger, Button, Flex, Group, Image, Menu, rem, ScrollAreaAutosize, Text } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { IconCategory, IconChevronCompactDown } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { useState } from 'react';
 import Empty from '~/app/_components/Empty';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import NavigationHeader from '../_components/NavigationHeader';
 
 const Header3 = ({ categories, subCategories }: any) => {
+  const [imgMounted, setImgMounted] = useState(false);
   const formatData: any = subCategories || [];
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
   const notDesktop = useMediaQuery(`(min-width: ${breakpoints.sm}px) and ( max-width: 1023px) `);
@@ -46,6 +48,7 @@ const Header3 = ({ categories, subCategories }: any) => {
             dropdown: 'border-[#008b4b] bg-white',
             item: 'hover:bg-[#008b4b] hover:text-white'
           }}
+          onOpen={() => setImgMounted(true)}
           width={200}
           offset={0}
           transitionProps={{ transition: 'rotate-right', duration: 500 }}
@@ -67,34 +70,42 @@ const Header3 = ({ categories, subCategories }: any) => {
           </Menu.Target>
 
           <Menu.Dropdown>
-            <ScrollAreaAutosize mah={rem(400)} scrollbarSize={5}>
-              {formatData?.length > 0 ? (
-                formatData?.map((item: any, index: number) => {
-                  return (
-                    <Link href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`} key={index}>
-                      <Menu.Item
+            {imgMounted ? (
+              <ScrollAreaAutosize mah={rem(400)} scrollbarSize={5}>
+                {formatData?.length > 0 ? (
+                  formatData?.map((item: any, index: number) => {
+                    return (
+                      <Link
+                        href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
                         key={index}
-                        leftSection={
-                          <Image
-                            loading='lazy'
-                            src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
-                            alt='logo'
-                            w={30}
-                            h={30}
-                          />
-                        }
+                        prefetch={false}
                       >
-                        <Text size='sm' fw={700}>
-                          {item?.name}
-                        </Text>
-                      </Menu.Item>
-                    </Link>
-                  );
-                })
-              ) : (
-                <Empty size='xs' hasButton={false} title='Danh mục trống' content='' />
-              )}
-            </ScrollAreaAutosize>
+                        <Menu.Item
+                          key={index}
+                          leftSection={
+                            <Image
+                              loading='lazy'
+                              src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                              alt='logo'
+                              w={30}
+                              h={30}
+                            />
+                          }
+                        >
+                          <Text size='sm' fw={700}>
+                            {item?.name}
+                          </Text>
+                        </Menu.Item>
+                      </Link>
+                    );
+                  })
+                ) : (
+                  <Empty size='xs' hasButton={false} title='Danh mục trống' content='' />
+                )}
+              </ScrollAreaAutosize>
+            ) : (
+              <Box></Box>
+            )}
           </Menu.Dropdown>
         </Menu>
       </Group>
