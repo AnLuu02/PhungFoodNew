@@ -74,7 +74,13 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                 w={{ base: 0, sm: 0, md: '40%', lg: '25%' }}
                 className={clsx(imgaePositon && 'order-2', 'hidden lg:block', 'overflow-hidden')}
               >
-                <Box mb={'xs'} w={'100%'} h={190} className='cursor-pointer overflow-hidden rounded-xl'>
+                <Box
+                  mb={'xs'}
+                  w={'100%'}
+                  h={190}
+                  className='cursor-pointer overflow-hidden rounded-xl'
+                  pos={'relative'}
+                >
                   <Image
                     objectFit='cover'
                     loading='lazy'
@@ -84,7 +90,13 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                     className='cursor-pointer transition-all duration-500 ease-in-out hover:scale-105'
                   />
                 </Box>
-                <Box mb={'xs'} w={'100%'} h={190} className='cursor-pointer overflow-hidden rounded-xl'>
+                <Box
+                  mb={'xs'}
+                  w={'100%'}
+                  h={190}
+                  className='cursor-pointer overflow-hidden rounded-xl'
+                  pos={'relative'}
+                >
                   <Image
                     objectFit='cover'
                     loading='lazy'

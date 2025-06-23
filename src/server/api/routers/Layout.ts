@@ -101,5 +101,17 @@ export const layoutRouter = createTRPCRouter({
     ]);
 
     return results;
+  }),
+  getDataAboutUs: publicProcedure.query(async ({ ctx }) => {
+    const caller = createCaller(ctx);
+    const results: any = await Promise.allSettled([
+      caller.Product.find({ bestSaler: true, take: 4, skip: 0 }),
+      caller.Product.find({ s: 'mien-tay', take: 4, skip: 0 }),
+      caller.Product.find({ s: 'mien-bac', take: 4, skip: 0 }),
+      caller.Product.find({ s: 'mien-trung', take: 4, skip: 0 }),
+      caller.Product.find({ s: 'mien-nam', take: 4, skip: 0 })
+    ]);
+
+    return results;
   })
 });

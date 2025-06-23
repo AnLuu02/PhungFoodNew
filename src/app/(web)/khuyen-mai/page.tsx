@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Box,
   Card,
   CardSection,
   Center,
@@ -9,7 +10,6 @@ import {
   Grid,
   GridCol,
   Group,
-  Image,
   Pagination,
   Space,
   Stack,
@@ -17,15 +17,18 @@ import {
   Text
 } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import BButton from '~/app/_components/Button';
 import Empty from '~/app/_components/Empty';
 import LoadingComponent from '~/app/_components/Loading/Loading';
-import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
-import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
-import LayoutPromotion from '~/app/_components/Web/Home/Section/Layout-Promotion';
 import LayoutAds from '~/app/_components/Web/Home/Section/LayoutGrid3Col';
 import { api } from '~/trpc/react';
+
+const ModalDetailVoucher = dynamic(() => import('~/app/_components/Modals/ModalDetailVoucher'), { ssr: false });
+const VoucherTemplate = dynamic(() => import('~/app/_components/Template/VoucherTemplate'), { ssr: false });
+const LayoutPromotion = dynamic(() => import('~/app/_components/Web/Home/Section/Layout-Promotion'), { ssr: false });
 
 const ITEMS_PER_PAGE = 4;
 
@@ -63,13 +66,16 @@ export default function FoodPromotionPage() {
     <>
       <Card radius={'lg'} bg={'gray.1'} p={0} className='hidden md:block'>
         <CardSection pos={'relative'}>
-          <Image
-            loading='lazy'
-            className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
-            w={'100%'}
-            h={500}
-            src='/images/png/banner_food.png'
-          />
+          <Box w={'100%'} h={500} pos={'relative'}>
+            <Image
+              loading='lazy'
+              className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
+              fill
+              objectFit='cover'
+              alt='Khuyến mãi đặc biệt'
+              src='/images/png/banner_food.png'
+            />
+          </Box>
           <Flex
             justify={'center'}
             align={'center'}

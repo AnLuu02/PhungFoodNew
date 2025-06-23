@@ -1,5 +1,6 @@
-import { Badge, Button, Card, Group, Image, Stack, Text } from '@mantine/core';
+import { Badge, Button, Card, Group, Stack, Text } from '@mantine/core';
 import { IconMaximize, IconTrash } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { NotifySuccess } from '~/app/lib/utils/func-handler/toast';
@@ -47,6 +48,7 @@ export function PhotoCard({ id, name, file, postingDate, onOpened }: PhotoCardPr
           loading='lazy'
           src={file instanceof File ? URL.createObjectURL(file) : '/images/empty-300x240.jpg'}
           height={160}
+          objectFit='contain'
           alt={name}
           onClick={() => onOpened({ id, name, file, dimensions, postingDate })}
           style={{ cursor: 'pointer' }}

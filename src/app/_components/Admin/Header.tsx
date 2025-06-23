@@ -5,7 +5,6 @@ import {
   Divider,
   Flex,
   Group,
-  Image,
   Menu,
   Switch,
   Text,
@@ -17,6 +16,7 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import { IconChevronDown, IconLogout, IconMoon, IconSettings, IconSun, IconUser } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { breakpoints } from '~/app/lib/utils/constants/device';
@@ -46,7 +46,7 @@ export default function Header() {
         w={{ base: '100%', sm: 'max-content', md: 'max-content', lg: 'max-content' }}
       >
         <Link href={'/'} prefetch={false}>
-          <Image src='/logo/logo_phungfood_1.png' alt='logo' w={150} h={50} p={0} />
+          <Image src='/logo/logo_phungfood_1.png' alt='logo' width={150} height={50} objectFit='cover' />
         </Link>
         {!notDesktop && (
           <Badge bg={'red'} radius={'sm'}>

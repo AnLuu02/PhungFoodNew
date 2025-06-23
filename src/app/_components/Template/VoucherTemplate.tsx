@@ -1,5 +1,6 @@
-import { Box, Button, Card, Checkbox, Divider, Flex, Group, Image, Progress, Text, Tooltip } from '@mantine/core';
+import { Box, Button, Card, Checkbox, Divider, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
 import clsx from 'clsx';
+import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { allowedVoucher, hoursRemainingVoucher } from '~/app/lib/utils/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
@@ -19,8 +20,8 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
         >
           <Image
             loading='lazy'
-            h={120}
-            w={120}
+            height={120}
+            width={120}
             src={
               voucher?.type === LocalVoucherType.PERCENTAGE
                 ? '/images/png/voucher_bg_green.png'

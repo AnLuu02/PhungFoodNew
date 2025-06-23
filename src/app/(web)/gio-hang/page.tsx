@@ -3,13 +3,13 @@
 import { Divider, Grid, GridCol, Paper } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import dynamic from 'next/dynamic';
+import Empty from '~/app/_components/Empty';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { breakpoints } from '~/app/lib/utils/constants/device';
-import RecapCart from '../thanh-toan/_components/recapCart';
-import ShoppingCartMobile from './_mobile/gio-hang-mobile';
-import CartTable from './components/CartTable';
 
-const Empty = dynamic(() => import('../../_components/Empty'), { ssr: false });
+const RecapCart = dynamic(() => import('../thanh-toan/_components/recapCart'), { ssr: false });
+const ShoppingCartMobile = dynamic(() => import('./_mobile/gio-hang-mobile'), { ssr: false });
+const CartTable = dynamic(() => import('./components/CartTable'), { ssr: false });
 
 export default function ShoppingCart() {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -23,7 +23,7 @@ export default function ShoppingCart() {
     <Grid>
       <GridCol span={{ base: 12, md: 8 }} className='h-fit' order={{ base: 2, sm: 1, md: 1, lg: 1 }}>
         {isMobile ? (
-          <ShoppingCartMobile />
+          <ShoppingCartMobile cart={cart} setCart={setCart} />
         ) : (
           <Paper shadow='xs' radius='md' className='p-0 md:p-6'>
             <CartTable cart={cart} setCart={setCart} updateQuantity={updateQuantity} />

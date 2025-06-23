@@ -6,7 +6,7 @@ import ModalDetailVoucher from '~/app/_components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/app/_components/Template/VoucherTemplate';
 import { mockPromotions } from '~/app/lib/utils/data-test/data-voucher';
 
-export function DiscountCodes() {
+export default function DiscountCodes() {
   const [openDetail, setOpenDetail] = useState<any>({});
 
   return (

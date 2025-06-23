@@ -1,9 +1,10 @@
 'use client';
-import { Badge, Box, Button, Card, Flex, Group, Image, Rating, Text, Tooltip } from '@mantine/core';
+import { Badge, Box, Button, Card, Flex, Group, Rating, Text, Tooltip } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { IconEye, IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -63,7 +64,9 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
         <Image
           loading='lazy'
           src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-          h={'100%'}
+          fill
+          objectFit='cover'
+          alt={product?.name || 'Product Image'}
         />
         <Box
           pos={'absolute'}

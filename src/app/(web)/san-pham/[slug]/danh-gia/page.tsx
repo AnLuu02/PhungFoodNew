@@ -1,23 +1,33 @@
 'use client';
 
 import { Box, Divider, Grid, GridCol, ScrollAreaAutosize } from '@mantine/core';
+import dynamic from 'next/dynamic';
+import { useMemo } from 'react';
 import { CommentsForm } from '~/app/_components/Comments/CommentsForm';
 import { CommentsList } from '~/app/_components/Comments/CommentsList';
+import LazySection from '~/app/_components/LazySection';
 import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
-import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { api } from '~/trpc/react';
-import RatingStatistics from '../_components/RatingStatistics';
+const RatingStatistics = dynamic(() => import('../_components/RatingStatistics'), { ssr: false });
+const ProductCardCarouselVertical = dynamic(
+  () => import('~/app/_components/Web/Home/_Components/ProductCardCarouselVertical'),
+  { ssr: false }
+);
 export default function ProductPage({ params }: { params: { slug: string } }) {
-  let ratingCountsDefault = [0, 0, 0, 0, 0];
   const productTag = params.slug;
   const { data, isLoading } = api.Product.getOne.useQuery({ s: productTag, hasReview: true, hasUser: true });
+  let ratingCountsDefault = [0, 0, 0, 0, 0];
   const product: any = data ?? [];
-  const ratingCounts =
-    product?.review?.reduce((acc: any, item: any) => {
-      acc[item.rating - 1] += 1;
-      return acc;
-    }, ratingCountsDefault) || ratingCountsDefault;
+  const ratingCounts = useMemo(() => {
+    return (
+      product?.review?.reduce((acc: any, item: any) => {
+        acc[item.rating - 1] += 1;
+        return acc;
+      }, ratingCountsDefault) || ratingCountsDefault
+    );
+  }, [product?.review]);
+
   return (
     <Box py='md'>
       <Grid>
@@ -48,9 +58,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           ) : (
             <>
               <ScrollAreaAutosize mah={500}>
-                <CommentsList data={product?.review || []} />
+                <LazySection>
+                  <CommentsList data={product?.review || []} />
+                </LazySection>
               </ScrollAreaAutosize>
-              <CommentsForm product={product} />
+              <LazySection>
+                <CommentsForm product={product} />
+              </LazySection>
             </>
           )}
         </GridCol>

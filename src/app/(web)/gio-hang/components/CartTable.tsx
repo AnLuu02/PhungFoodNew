@@ -1,11 +1,9 @@
-'use client';
-
-import { Badge, Box, Button, Group, Image, NumberInput, Stack, Table, Text } from '@mantine/core';
-import { memo } from 'react';
+import { Badge, Box, Button, Group, NumberInput, Stack, Table, Text } from '@mantine/core';
+import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
-const CartTable = memo(({ cart, setCart, updateQuantity }: any) => {
+const CartTable = ({ cart, setCart, updateQuantity }: any) => {
   return (
     <Table className='mb-6'>
       <Table.Thead>
@@ -22,15 +20,14 @@ const CartTable = memo(({ cart, setCart, updateQuantity }: any) => {
           <Table.Tr key={item.id}>
             <Table.Td>
               <Group wrap='nowrap'>
-                <Box w={80} h={80} className='hidden md:block'>
+                <Box w={80} h={80} className='hidden overflow-hidden rounded-md md:block' pos={'relative'}>
                   <Image
                     loading='lazy'
                     src={
                       getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                     }
-                    w={80}
-                    h={80}
-                    radius='md'
+                    fill
+                    objectFit='cover'
                     alt={item.name}
                   />
                 </Box>
@@ -96,6 +93,6 @@ const CartTable = memo(({ cart, setCart, updateQuantity }: any) => {
       </Table.Tbody>
     </Table>
   );
-});
+};
 
 export default CartTable;

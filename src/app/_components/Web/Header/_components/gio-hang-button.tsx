@@ -5,7 +5,6 @@ import {
   Divider,
   Flex,
   Group,
-  Image,
   Indicator,
   Menu,
   rem,
@@ -15,6 +14,7 @@ import {
 } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { IconShoppingBag } from '@tabler/icons-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import BButton from '~/app/_components/Button';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
@@ -100,7 +100,7 @@ const CartButton = () => {
           </Stack>
         ) : (
           <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
-            <Image loading='lazy' src={'/images/png/empty_cart.png'} w={100} h={100} alt={'empty cart'} />
+            <Image loading='lazy' src={'/images/png/empty_cart.png'} width={100} height={100} alt={'empty cart'} />
             <Text size='sm' c={'dimmed'}>
               Không có sản phẩm nào trong giỏ hàng
             </Text>

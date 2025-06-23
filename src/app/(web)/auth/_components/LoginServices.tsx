@@ -1,7 +1,8 @@
 'use client';
 
-import { Button, Flex, Image } from '@mantine/core';
+import { Button, Flex } from '@mantine/core';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -30,7 +31,7 @@ const LoginServices = () => {
         loaderProps={{ size: 'xs', color: 'red' }}
         onClick={() => handleLoginServices('google')}
       >
-        <Image loading='lazy' src='/images/png/google.png' alt='bottom' w={30} h={30} />
+        <Image loading='lazy' src='/images/png/google.png' alt='bottom' width={30} height={30} />
       </Button>
       <Button
         w={50}
@@ -38,7 +39,7 @@ const LoginServices = () => {
         h={50}
         className='hover: flex cursor-pointer items-center justify-center rounded-full bg-white opacity-100 hover:bg-white hover:opacity-80'
       >
-        <Image loading='lazy' src='/images/png/facebook.png' alt='bottom' w={30} h={30} />
+        <Image loading='lazy' src='/images/png/facebook.png' alt='bottom' width={30} height={30} />
       </Button>
       <Button
         w={50}
@@ -46,7 +47,7 @@ const LoginServices = () => {
         loaderProps={{ size: 'xs', color: 'red' }}
         className='hover: flex cursor-pointer items-center justify-center rounded-full bg-white opacity-100 hover:bg-white hover:opacity-80'
       >
-        <Image loading='lazy' src='/images/png/zalo.png' alt='bottom' w={30} h={30} />
+        <Image loading='lazy' src='/images/png/zalo.png' alt='bottom' width={30} height={30} />
       </Button>
     </Flex>
   );

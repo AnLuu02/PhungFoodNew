@@ -1,6 +1,7 @@
 'use client';
 
-import { Button, Center, Image, Text } from '@mantine/core';
+import { Button, Center, Text } from '@mantine/core';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -41,8 +42,8 @@ export default function Empty({
           src={logoUrl || '/images/png/empty_cart.png'}
           alt='Empty Cart'
           className='mx-auto'
-          w={sizeImage[size]}
-          h={sizeImage[size]}
+          width={sizeImage[size]}
+          height={sizeImage[size]}
         />
       )}
       <Text size={'lg'} mb={4} fw={700}>

@@ -1,6 +1,7 @@
 'use client';
-import { ActionIcon, Box, Group, Image, NumberInput, Paper, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Box, Group, NumberInput, Paper, Text, Tooltip } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
+import Image from 'next/image';
 
 interface CartItemProps {
   image: string;
@@ -15,7 +16,14 @@ export function CartItemFastMenu({ image, name, price, quantity, onQuantityChang
   return (
     <Group wrap='nowrap' className='w-full gap-4 p-4'>
       <Paper radius='md' w={80} h={80}>
-        <Image loading='lazy' src={image || '/images/jpg/empty-300x240.jpg'} alt={name} w={80} h={80} radius='md' />
+        <Image
+          loading='lazy'
+          src={image || '/images/jpg/empty-300x240.jpg'}
+          alt={name}
+          width={80}
+          height={80}
+          className='rounded-md'
+        />
       </Paper>
 
       <Box className='flex-grow'>

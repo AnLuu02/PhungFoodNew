@@ -1,5 +1,6 @@
 'use client';
-import { Card, Flex, Grid, GridCol, Image, rem, Text } from '@mantine/core';
+import { Box, Card, Flex, Grid, GridCol, rem, Text } from '@mantine/core';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { noHeadersLayoutCondition } from '~/app/lib/utils/constants/no-headers-layout-condition';
 const ServiceComponent = () => {
@@ -10,7 +11,9 @@ const ServiceComponent = () => {
         <GridCol span={{ base: 12, xs: 6, xl: 3 }}>
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
-              <Image loading='lazy' src={'/images/webp/car.webp'} w={40} h={40} alt={'empty'} mr={20} />
+              <Box mr={20}>
+                <Image loading='lazy' src={'/images/webp/car.webp'} width={40} height={40} alt={'empty'} />
+              </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>
                   Vận chuyển miễn phí
@@ -23,7 +26,9 @@ const ServiceComponent = () => {
         <GridCol span={{ base: 12, xs: 6, xl: 3 }}>
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
-              <Image loading='lazy' src={'/images/webp/stock.webp'} w={40} h={40} alt={'empty'} mr={20} />
+              <Box mr={20}>
+                <Image loading='lazy' src={'/images/webp/stock.webp'} width={40} height={40} alt={'empty'} />
+              </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>
                   Đổi trả miễn phí
@@ -36,7 +41,9 @@ const ServiceComponent = () => {
         <GridCol span={{ base: 12, xs: 6, xl: 3 }}>
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
-              <Image loading='lazy' src={'/images/webp/bill.webp'} w={40} h={40} alt={'empty'} mr={20} />
+              <Box mr={20}>
+                <Image loading='lazy' src={'/images/webp/bill.webp'} width={40} height={40} alt={'empty'} />
+              </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>
                   100% Hoàn tiền
@@ -49,7 +56,9 @@ const ServiceComponent = () => {
         <GridCol span={{ base: 12, xs: 6, xl: 3 }}>
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
-              <Image loading='lazy' src={'/images/webp/hotline.webp'} w={40} h={40} alt={'empty'} mr={20} />
+              <Box mr={20}>
+                <Image loading='lazy' src={'/images/webp/hotline.webp'} width={40} height={40} alt={'empty'} />
+              </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>
                   webp/hotline: 1900 6750

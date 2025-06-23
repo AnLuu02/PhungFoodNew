@@ -10,7 +10,12 @@ const config = {
     ignoreDuringBuilds: true
   },
   images: {
-    domains: ['aoetaifwgjb4klqx.public.blob.vercel-storage.com']
+    domains: [
+      'aoetaifwgjb4klqx.public.blob.vercel-storage.com',
+      'images.unsplash.com',
+      'raw.githubusercontent.com',
+      'lh3.googleusercontent.com'
+    ]
   }
 };
 

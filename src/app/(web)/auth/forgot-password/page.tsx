@@ -8,7 +8,9 @@ import { useState } from 'react';
 import BButton from '~/app/_components/Button';
 import { NotifyError } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
-const OtpModal = dynamic(() => import('../_components/otp-modal'), { ssr: false });
+const OtpModal = dynamic(() => import('../_components/otp-modal'), {
+  ssr: false
+});
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');

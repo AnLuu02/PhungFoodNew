@@ -10,7 +10,6 @@ import {
   Grid,
   GridCol,
   Group,
-  Image,
   Modal,
   NumberInput,
   Paper,
@@ -30,6 +29,7 @@ import {
   IconMail,
   IconX
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import BButton from '~/app/_components/Button';
@@ -82,8 +82,8 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                   src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/temp/xa lach.png'}
                   alt={product?.name}
                   className='cursor-pointer rounded-md object-cover'
-                  w={350}
-                  h={350}
+                  width={350}
+                  height={350}
                   onClick={() => {
                     setCurrentImage(getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '');
                     setShowfullImage(true);
@@ -116,18 +116,20 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                               setShowfullImage(true);
                             }}
                           >
-                            <Image
-                              loading='lazy'
-                              w={'100%'}
-                              radius={'sm'}
-                              className='border-2 border-[#008b4b] object-cover'
-                              h={74}
-                              src={
-                                item?.type === LocalImageType.GALLERY
-                                  ? item?.url
-                                  : 'https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80'
-                              }
-                            />
+                            <Box w={'100%'} h={74} className='overflow-hidden rounded-sm' pos={'relative'}>
+                              <Image
+                                loading='lazy'
+                                className='border-2 border-[#008b4b] object-cover'
+                                fill
+                                objectFit='cover'
+                                alt='Product Image'
+                                src={
+                                  item?.type === LocalImageType.GALLERY
+                                    ? item?.url
+                                    : 'https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80'
+                                }
+                              />
+                            </Box>
                           </Card.Section>
                         </Card>
                       </Carousel.Slide>
@@ -278,7 +280,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
         )}
       </Modal>
       <Modal size={'xl'} opened={showfullImage} onClose={() => setShowfullImage(false)} centered>
-        <Image loading='lazy' src={currentImage} fit='contain' height={400} />
+        <Image loading='lazy' src={currentImage} objectFit='contain' height={400} alt=' ' />
       </Modal>
     </>
   );

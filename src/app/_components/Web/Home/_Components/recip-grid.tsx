@@ -1,9 +1,10 @@
 'use client';
 
-import { Badge, Card, Grid, Group, Image, Text } from '@mantine/core';
+import { Badge, Card, Grid, Group, Text } from '@mantine/core';
 import { IconClock } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useState } from 'react';
-import { RecipeModal } from './recipe-modal';
+import RecipeModal from './recipe-modal';
 
 const recipes = [
   {
@@ -78,7 +79,7 @@ export function RecipeGrid() {
               onClick={() => setSelectedRecipe(recipe)}
             >
               <Card.Section>
-                <Image loading='lazy' src={recipe.image} h={160} alt={recipe.title} />
+                <Image loading='lazy' src={recipe.image} height={160} objectFit='cover' alt={recipe.title} />
               </Card.Section>
 
               <Text fw={500} size='lg' mt='md' lineClamp={2}>

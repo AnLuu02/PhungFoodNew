@@ -26,6 +26,7 @@ import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import Empty from '~/app/_components/Empty';
 import { useModal } from '~/app/contexts/ModalContext';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
@@ -35,10 +36,14 @@ import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/fu
 import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 
-const InvoiceToPrint = dynamic(() => import('~/app/_components/Invoices/InvoceToPrint'), { ssr: false });
-const SearchLocal = dynamic(() => import('~/app/_components/Search/SearchLocal'));
-const Empty = dynamic(() => import('../../_components/Empty'));
+const InvoiceToPrint = dynamic(() => import('~/app/_components/Invoices/InvoceToPrint'), {
+  ssr: false
+});
+const SearchLocal = dynamic(() => import('~/app/_components/Search/SearchLocal'), {
+  ssr: false
+});
 export default function MyOrderPage() {
+  const { openModal } = useModal();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [valueSearch, setValueSearch] = useState<string | null>(null);
@@ -69,7 +74,10 @@ export default function MyOrderPage() {
     );
   }, [filteredOrders, valueSearch]);
 
-  const totalPages = Math.ceil(filteredOrdersSearch.length / perPage);
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredOrdersSearch.length / perPage);
+  }, [filteredOrdersSearch]);
+
   const displayedOrders = useMemo(() => {
     const start = (page - 1) * perPage;
     return filteredOrdersSearch.slice(start, start + perPage);
@@ -87,7 +95,6 @@ export default function MyOrderPage() {
   const totalAmount = useMemo(() => orders.reduce((sum, order) => sum + order.total, 0), [orders]);
 
   const mutationDelete = api.Order.delete.useMutation();
-  const { openModal } = useModal();
 
   return (
     <Grid gutter='md'>

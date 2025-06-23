@@ -1,7 +1,8 @@
-import { Box, Burger, Button, Flex, Group, Image, Menu, rem, ScrollAreaAutosize, Text } from '@mantine/core';
+import { Box, Burger, Button, Flex, Group, Menu, rem, ScrollAreaAutosize, Text } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { IconCategory, IconChevronCompactDown } from '@tabler/icons-react';
 import clsx from 'clsx';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/app/_components/Empty';
@@ -87,8 +88,8 @@ const Header3 = ({ categories, subCategories }: any) => {
                               loading='lazy'
                               src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                               alt='logo'
-                              w={30}
-                              h={30}
+                              width={30}
+                              height={30}
                             />
                           }
                         >

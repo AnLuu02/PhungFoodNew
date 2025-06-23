@@ -1,8 +1,9 @@
 'use client';
 
-import { Button, Group, Image, Modal, Stack, Text } from '@mantine/core';
+import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import Image from 'next/image';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/_components/ButtonCheckout';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
@@ -50,8 +51,8 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
                   getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                 }
                 alt={product?.name || 'Hành tây'}
-                fit='contain'
-                h={60}
+                objectFit='contain'
+                height={60}
                 className='rounded object-cover'
               />
             </div>

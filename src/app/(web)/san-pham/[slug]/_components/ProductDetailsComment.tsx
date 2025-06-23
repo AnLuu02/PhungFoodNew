@@ -1,4 +1,5 @@
-import { Badge, Group, Image, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
+import { Badge, Group, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
+import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
@@ -10,8 +11,9 @@ export function ProductDetails({ product }: { product: any }) {
         <Image
           loading='lazy'
           src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-          w={300}
-          fit='contain'
+          width={300}
+          alt='Hình ảnh sản phẩm'
+          objectFit='contain'
         />
         <Title order={2}>{product.name}</Title>
         <Group>

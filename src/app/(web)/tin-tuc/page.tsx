@@ -1,12 +1,17 @@
-import { Box, Center, Flex, Grid, GridCol, Group, Highlight, Image, Paper, Stack, Text } from '@mantine/core';
+import { Box, Center, Flex, Grid, GridCol, Group, Highlight, Paper, Stack, Text } from '@mantine/core';
 import { IconClockHour10 } from '@tabler/icons-react';
+import { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import Empty from '~/app/_components/Empty';
 import CustomPagination from '~/app/_components/Pagination';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { api } from '~/trpc/server';
-
+export const metadata: Metadata = {
+  title: 'Tin tức',
+  description: 'Tin tức'
+};
 const News = async ({
   searchParams
 }: {
@@ -42,15 +47,16 @@ const News = async ({
                 <Paper
                   radius={'md'}
                   className='overflow-hidden'
+                  pos={'relative'}
                   w={{ base: '100%', sm: 190, md: 190, lg: 250 }}
                   h={{ base: '100%', sm: 180, md: 180, lg: 158 }}
                 >
                   <Image
                     loading='lazy'
                     src={item.image || '/images/jpg/empty-300x240.jpg'}
-                    w={'100%'}
-                    h={'100%'}
+                    fill
                     alt={item.title}
+                    objectFit='cover'
                   />
                 </Paper>
                 <Stack gap={5} flex={1}>
@@ -111,8 +117,8 @@ const News = async ({
                         <Image
                           loading='lazy'
                           src={item.image || '/images/jpg/empty-300x240.jpg'}
-                          w={'100%'}
-                          h={'100%'}
+                          fill
+                          objectFit='cover'
                           alt={item.title}
                         />
                       </Paper>

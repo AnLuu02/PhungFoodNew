@@ -1,23 +1,10 @@
 'use client';
 
-import { AspectRatio, Badge, Group, Image, List, Modal, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
+import { AspectRatio, Badge, Group, List, Modal, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { IconChefHat, IconClock, IconListCheck, IconVideo } from '@tabler/icons-react';
+import Image from 'next/image';
 
-interface RecipeModalProps {
-  recipe: {
-    title: string;
-    image: string;
-    duration: string;
-    category: string;
-    ingredients?: string[];
-    steps?: string[];
-    videoId?: string;
-  };
-  opened: boolean;
-  onClose: () => void;
-}
-
-export function RecipeModal({ recipe, opened, onClose }: any) {
+export default function RecipeModal({ recipe, opened, onClose }: any) {
   return (
     <Modal
       opened={opened}
@@ -34,7 +21,14 @@ export function RecipeModal({ recipe, opened, onClose }: any) {
       }}
     >
       <Stack>
-        <Image loading='lazy' src={recipe.image} h={300} alt={recipe.title} radius='md' />
+        <Image
+          loading='lazy'
+          src={recipe.image}
+          height={300}
+          alt={recipe.title}
+          objectFit='cover'
+          className='rounded-md'
+        />
 
         <Group gap='xs'>
           <Badge variant='light' color='blue' leftSection={<IconClock size={14} />}>

@@ -2,10 +2,10 @@
 
 import { Container, Space } from '@mantine/core';
 import dynamic from 'next/dynamic';
+import LazySection from '../../LazySection';
 import BannerSection from './Section/Banner-section';
 import { IDataCategory } from './Section/Category-Carousel-Horizontal';
 
-// ✅ Dynamic imports (tách khỏi bundle ban đầu)
 const CategoryCarouselHorizontal = dynamic(() => import('./Section/Category-Carousel-Horizontal'), { ssr: false });
 const LayoutBannerPromotion = dynamic(() => import('./Section/Layout-Banner-Promotion'), { ssr: false });
 const LayoutCarouselSimple = dynamic(() => import('./Section/Layout-Carousel-Simple'), { ssr: false });
@@ -41,21 +41,21 @@ const HomeWeb = ({
       <Space h='xl' />
       <Container pl={0} pr={0} size='xl'>
         {data.category?.anVat && (
-          <>
+          <LazySection>
             <CategoryCarouselHorizontal data={data.category} />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
         {data.productBestSaler?.products?.length > 0 && (
-          <>
+          <LazySection>
             <LayoutProductCarouselWithImage
               imageUrl='/images/jpg/best-saller.jpg'
               data={data.productBestSaler?.products}
               loai='san-pham-ban-chay'
             />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
         <>
@@ -64,14 +64,14 @@ const HomeWeb = ({
         </>
 
         {data.productDiscount?.products?.length > 0 && (
-          <>
+          <LazySection>
             <LayoutPromotion data={data.productDiscount?.products} />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
         {data.productHot?.products?.length > 0 && (
-          <>
+          <LazySection>
             <LayoutProductCarouselWithImage
               imageUrl='/images/jpg/hot.jpg'
               data={data.productHot?.products}
@@ -81,25 +81,25 @@ const HomeWeb = ({
               loai='san-pham-hot'
             />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
         {data.productHot?.products?.length > 0 && (
-          <>
+          <LazySection>
             <LayoutProductCarouselOnly title='Sản phẩm nổi bật' data={data.productHot?.products} />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
         {data.productNew?.products?.length > 0 && (
-          <>
+          <LazySection>
             <LayoutProductCarouselOnly title='Sản phẩm mới' data={data.productNew?.products} />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
         {data.materials?.rauCu?.products?.length > 0 && (
-          <>
+          <LazySection>
             <LayoutProductCarouselWithImage2
               data={{ 'rau-cu': data.materials.rauCu, 'cac-loai-nam': data.materials.cacLoaiNam }}
               title='Chay thanh đạm'
@@ -109,11 +109,11 @@ const HomeWeb = ({
               ]}
             />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
         {data.materials?.thitTuoi?.products?.length > 0 && (
-          <>
+          <LazySection>
             <LayoutProductCarouselWithImage2
               data={{ 'hai-san': data.materials.haiSan, 'thit-tuoi': data.materials.thitTuoi }}
               title='Mặn tươi ngon'
@@ -124,16 +124,16 @@ const HomeWeb = ({
               ]}
             />
             <Space h='xl' />
-          </>
+          </LazySection>
         )}
 
-        <>
+        <LazySection>
           <LayoutCarouselSimple />
           <Space h='xl' className='hidden md:block' />
-        </>
+        </LazySection>
 
         {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (
-          <>
+          <LazySection>
             <FastMenuSection
               data={{
                 anVat: data.category.anVat,
@@ -141,7 +141,7 @@ const HomeWeb = ({
                 monChinh: data.category.monChinh
               }}
             />
-          </>
+          </LazySection>
         )}
       </Container>
     </>

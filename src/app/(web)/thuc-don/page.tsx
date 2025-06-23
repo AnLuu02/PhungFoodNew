@@ -2,16 +2,16 @@
 import { Box, Flex, Grid, GridCol } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import dynamic from 'next/dynamic';
+import Empty from '~/app/_components/Empty';
+import CardSkeleton from '~/app/_components/Web/_components/CardSkeleton';
 import { api } from '~/trpc/react';
 import CartFloating from './_components/CartFloating';
 import HeaderMenu from './_components/HeaderMenu';
-const CustomPagination = dynamic(() => import('~/app/_components/Pagination'), { ssr: false });
-const Empty = dynamic(() => import('~/app/_components/Empty'), { ssr: false });
+const CustomPagination = dynamic(() => import('~/app/_components/Pagination'));
 const ProductCardCarouselVertical = dynamic(
   () => import('~/app/_components/Web/Home/_Components/ProductCardCarouselVertical'),
   { ssr: false }
 );
-const CardSkeleton = dynamic(() => import('~/app/_components/Web/_components/CardSkeleton'), { ssr: false });
 const HeaderSearchResults = dynamic(() => import('./_components/Header'), { ssr: false });
 
 const MenuSection = ({

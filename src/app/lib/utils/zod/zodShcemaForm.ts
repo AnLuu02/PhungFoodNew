@@ -1,13 +1,4 @@
-import {
-  AddressType,
-  EntityType,
-  Gender,
-  ImageType,
-  OrderStatus,
-  PaymentType,
-  ProductStatus,
-  UserLevel
-} from '@prisma/client';
+import { AddressType, EntityType, ImageType, OrderStatus, PaymentType, ProductStatus } from '@prisma/client';
 import { z } from 'zod';
 import { LocalAddressType, LocalGender, LocalProductStatus, LocalUserLevel } from './EnumType';
 export const imageSchema = z.object({
@@ -184,20 +175,18 @@ export const userSchema = z.object({
   name: z.string().min(1, 'Tên không được để trống'),
   email: z.string().email({ message: 'Email không hợp lệ (vd: example@gmail.com)' }),
   image: imageSchema.optional(),
-  gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
+  gender: z.nativeEnum(LocalGender).default(LocalGender.OTHER),
   roleId: z.string().optional(),
   dateOfBirth: z.date().optional(),
   password: z
     .string()
-    .min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
-    .regex(/[A-Z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ hoa' })
-    .regex(/[a-z]/, { message: 'Mật khẩu phải chứa ít nhất một chữ thường' })
-    .regex(/[0-9]/, { message: 'Mật khẩu phải chứa ít nhất một số' })
-    .regex(/[^A-Za-z0-9]/, { message: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt' }),
-  phone: z.string().max(10, { message: 'Số điện thoại không được quá 10 ký tự' }),
+    .min(6, { message: 'Tối thiểu 6 ký tự' })
+    .regex(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])/, {
+      message: 'Mật khẩu phải đủ mạnh (hoa, thường, số, đặc biệt)'
+    }),
   address: addressSchema.optional(),
   pointLevel: z.number().default(0),
-  level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE)
+  level: z.nativeEnum(LocalUserLevel).default(LocalUserLevel.BRONZE)
 });
 
 export const notificationSchema = z.object({

@@ -12,7 +12,6 @@ import {
   Grid,
   GridCol,
   Group,
-  Image,
   Overlay,
   Paper,
   SimpleGrid,
@@ -21,11 +20,30 @@ import {
   Title
 } from '@mantine/core';
 import { IconChefHat, IconMail, IconMapPin, IconPhone, IconStar } from '@tabler/icons-react';
+import { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
 import BButton from '~/app/_components/Button';
-import ProductCardCarouselHorizontal from '~/app/_components/Web/Home/_Components/ProductCardCarouselHorizontal';
-import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
 import { api } from '~/trpc/server';
+
+const ProductCardCarouselHorizontal = dynamic(
+  () => import('~/app/_components/Web/Home/_Components/ProductCardCarouselHorizontal'),
+  {
+    ssr: false
+  }
+);
+const ProductCardCarouselVertical = dynamic(
+  () => import('~/app/_components/Web/Home/_Components/ProductCardCarouselVertical'),
+  {
+    ssr: false
+  }
+);
+
+export const metadata: Metadata = {
+  title: 'Về chúng tôi',
+  description: 'Về chúng tôi'
+};
 
 export default async function AboutPage() {
   const [productBestSaller, mienTay, mienBac, mienTrung, mienNam] = await Promise.all([
@@ -94,13 +112,14 @@ export default async function AboutPage() {
             <Text>Gia đình sở hữu và điều hành bằng tình yêu</Text>
           </Group>
         </div>
-        <Image
-          loading='lazy'
-          src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
-          alt='Restaurant interior'
-          height={300}
-          radius='md'
-        />
+        <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
+          <Image
+            loading='lazy'
+            src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
+            alt='Restaurant interior'
+            fill
+          />
+        </Box>
       </SimpleGrid>
 
       {dataProduct?.length > 0 && (
@@ -200,13 +219,14 @@ export default async function AboutPage() {
       </Accordion>
 
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' mt={50}>
-        <Image
-          loading='lazy'
-          src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
-          alt='Chef portrait'
-          height={300}
-          radius='md'
-        />
+        <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
+          <Image
+            loading='lazy'
+            src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
+            alt='Chef portrait'
+            fill
+          />
+        </Box>
         <div>
           <Title order={2} size='h2' style={{ color: '#2e7d32' }}>
             Gặp gỡ đầu bếp của chúng tôi
@@ -278,13 +298,15 @@ export default async function AboutPage() {
             <Text>info@saigonflavors.com</Text>
           </Group>
         </div>
-        <Image
-          loading='lazy'
-          src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
-          alt='Map'
-          height={300}
-          radius='md'
-        />
+
+        <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
+          <Image
+            loading='lazy'
+            src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
+            alt='Map'
+            fill
+          />
+        </Box>
       </SimpleGrid>
 
       <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>

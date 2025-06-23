@@ -1,21 +1,16 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Center, Grid, GridCol, PasswordInput, rem, Select, Text, TextInput, Title } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
-import { IconCalendar, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
-import dynamic from 'next/dynamic';
-import Link from 'next/link';
+import { Card, Center, Grid, GridCol, PasswordInput, rem, TextInput, Title } from '@mantine/core';
+import { IconKey, IconMail, IconPhone } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import useSWR from 'swr';
 import { User } from '~/app/Entity/UserEntity';
-import fetcher from '~/app/lib/utils/func-handler/fetcher';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { LocalAddressType, LocalGender, LocalUserLevel } from '~/app/lib/utils/zod/EnumType';
+import { LocalGender, LocalUserLevel } from '~/app/lib/utils/zod/EnumType';
 import { userSchema } from '~/app/lib/utils/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
-const DateTimePicker = dynamic(() => import('@mantine/dates').then(m => m.DateTimePicker), { ssr: false });
-const AddressSection = dynamic(() => import('../_components/AdressSection'), { ssr: false });
+// const DateTimePicker = dynamic(() => import('@mantine/dates').then(m => m.DateTimePicker), { ssr: false });
+// const AddressSection = dynamic(() => import('../_components/AdressSection'), { ssr: false });
 
 export default function Page() {
   const router = useRouter();
@@ -36,46 +31,46 @@ export default function Page() {
       dateOfBirth: new Date(),
       password: '',
       phone: '',
-      address: {
-        detail: '',
-        provinceId: '',
-        districtId: '',
-        wardId: '',
-        type: LocalAddressType.USER,
-        province: '',
-        district: '',
-        ward: '',
-        fullAddress: '',
-        postalCode: ''
-      },
+      // address: {
+      //   detail: '',
+      //   provinceId: '',
+      //   districtId: '',
+      //   wardId: '',
+      //   type: LocalAddressType.USER,
+      //   province: '',
+      //   district: '',
+      //   ward: '',
+      //   fullAddress: '',
+      //   postalCode: ''
+      // },
       pointLevel: 0,
       level: LocalUserLevel.BRONZE
     }
   });
 
-  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
-  const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
-  const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
+  // const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  // const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
+  // const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
 
-  const { data: districts } = useSWR<any>(
-    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
-    fetcher
-  );
+  // const { data: districts } = useSWR<any>(
+  //   debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
+  //   fetcher
+  // );
 
-  const { data: wards } = useSWR<any>(
-    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
-    fetcher
-  );
+  // const { data: wards } = useSWR<any>(
+  //   debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
+  //   fetcher
+  // );
 
   const mutation = api.User.create.useMutation();
 
   const onSubmit: SubmitHandler<User> = async formData => {
     try {
       if (formData) {
-        const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
-        const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
-        const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
-        const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+        // const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
+        // const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
+        // const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
+        // const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
 
         const result = await mutation.mutateAsync({
           ...formData,
@@ -83,17 +78,18 @@ export default function Page() {
             fileName: '',
             base64: ''
           },
-          address: {
-            ...formData.address,
-            provinceId: formData.address?.provinceId || '',
-            districtId: formData.address?.districtId || '',
-            wardId: formData.address?.wardId || '',
-            detail: formData.address?.detail || '',
-            province: province?.province_name || '',
-            district: district?.district_name || '',
-            ward: ward?.ward_name || '',
-            fullAddress: fullAddress
-          }
+          address: undefined
+          // address: {
+          //   ...formData.address,
+          //   provinceId: formData.address?.provinceId || '',
+          //   districtId: formData.address?.districtId || '',
+          //   wardId: formData.address?.wardId || '',
+          //   detail: formData.address?.detail || '',
+          //   province: province?.province_name || '',
+          //   district: district?.district_name || '',
+          //   ward: ward?.ward_name || '',
+          //   fullAddress: fullAddress
+          // }
         });
         if (result.success) {
           NotifySuccess('Thành công!', `${result.message}`);
@@ -175,7 +171,7 @@ export default function Page() {
                   )}
                 />
               </GridCol>
-              <GridCol span={12}>
+              {/* <GridCol span={12}>
                 <Controller
                   control={control}
                   name='dateOfBirth'
@@ -239,7 +235,7 @@ export default function Page() {
                 >
                   ĐĂNG KÍ
                 </Button>
-              </GridCol>
+              </GridCol> */}
             </Grid>
           </Card.Section>
         </Card>

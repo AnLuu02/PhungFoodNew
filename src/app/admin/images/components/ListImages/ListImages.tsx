@@ -1,5 +1,6 @@
 'use client';
-import { Badge, Grid, Group, Image, Modal, Stack, Text } from '@mantine/core';
+import { Badge, Grid, Group, Modal, Stack, Text } from '@mantine/core';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import PageSizeSelector from '~/app/_components/Admin/Perpage';
 import LoadingComponent from '~/app/_components/Loading/Loading';
@@ -81,7 +82,7 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
           loading='lazy'
           src={(showfullImage.file && URL.createObjectURL(showfullImage.file)) || '/images/jpg/empty-300x240.jpg'}
           alt={showfullImage.name || ''}
-          fit='contain'
+          objectFit='contain'
           height={400}
         />
         <Stack mt='md' gap='xs'>

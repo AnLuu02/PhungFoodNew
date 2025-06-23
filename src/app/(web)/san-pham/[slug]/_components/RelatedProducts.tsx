@@ -1,6 +1,7 @@
 'use client';
 
-import { Center, Group, Image, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
+import { Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
+import Image from 'next/image';
 import Link from 'next/link';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
@@ -32,9 +33,10 @@ export default function RelatedProducts({ data }: any) {
                 src={
                   getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                 }
-                w={60}
-                h={60}
-                radius='md'
+                width={60}
+                height={60}
+                alt='Hình ảnh sản phẩm'
+                className='rounded-md'
               />
               <div>
                 <Link href={`/san-pham/${product?.tag}`} prefetch={false}>

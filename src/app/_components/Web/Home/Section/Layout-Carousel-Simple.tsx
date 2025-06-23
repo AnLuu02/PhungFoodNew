@@ -1,12 +1,15 @@
 'use client';
 
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Box, Card, CardSection, Center, Flex, Image, rem, Space, Text, Title } from '@mantine/core';
+import { ActionIcon, Box, Card, CardSection, Center, Flex, rem, Space, Text, Title } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconPlayerPlayFilled } from '@tabler/icons-react';
 import clsx from 'clsx';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import BButton from '~/app/_components/Button';
-import { RecipeModal } from '~/app/_components/Web/Home/_Components/recipe-modal';
+
+const RecipeModal = dynamic(() => import('~/app/_components/Web/Home/_Components/recipe-modal'), { ssr: false });
 
 const recipes = [
   {
@@ -148,15 +151,17 @@ const LayoutCarouselSimple = () => {
                   h={320}
                 >
                   <CardSection pos={'relative'} className='group/item cursor-pointer'>
-                    <Image
-                      loading='lazy'
-                      w={'100%'}
-                      h={210}
-                      src={
-                        recipe.image ||
-                        'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'
-                      }
-                    />
+                    <Box w={'100%'} h={210} pos={'relative'}>
+                      <Image
+                        loading='lazy'
+                        fill
+                        src={
+                          recipe.image ||
+                          'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'
+                        }
+                        alt='Recipe Image'
+                      />
+                    </Box>
                     <Box
                       pos={'absolute'}
                       left={0}

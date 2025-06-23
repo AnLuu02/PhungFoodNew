@@ -1,8 +1,9 @@
 'use client';
 
 import { Carousel } from '@mantine/carousel';
-import { Box, Card, Flex, Image, Text, rem } from '@mantine/core';
+import { Box, Card, Flex, Text, rem } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { getTagFromQuery } from '~/app/lib/utils/func-handler/generateTag';
 import { api } from '~/trpc/react';
@@ -59,9 +60,10 @@ export function BreadcrumbClient() {
                         category?.image?.url ||
                         'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'
                       }
-                      h={130}
-                      w={130}
-                      radius={'50%'}
+                      height={130}
+                      width={130}
+                      alt={category.name}
+                      className='rounded-full'
                     />
                   </Card.Section>
                   <Text size='md' fw={700} mt={20} className='text-center'>

@@ -1,7 +1,8 @@
 'use client';
-import { ActionIcon, Divider, Flex, Grid, GridCol, Image, NumberInput, Text } from '@mantine/core';
+import { ActionIcon, Divider, Flex, Grid, GridCol, NumberInput, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconTrash } from '@tabler/icons-react';
+import Image from 'next/image';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
@@ -20,8 +21,8 @@ const CartItem = ({ item, index }: any) => {
           <Image
             loading='lazy'
             src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            w={80}
-            h={80}
+            width={80}
+            height={80}
             alt={item.name}
           />
         </GridCol>

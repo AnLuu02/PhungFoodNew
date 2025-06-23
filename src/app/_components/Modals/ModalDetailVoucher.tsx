@@ -1,6 +1,7 @@
-import { Box, Button, Flex, Group, Image, Modal, Paper, Progress, ScrollArea, Text, Tooltip } from '@mantine/core';
+import { Box, Button, Flex, Group, Modal, Paper, Progress, ScrollArea, Text, Tooltip } from '@mantine/core';
 
 import clsx from 'clsx';
+import Image from 'next/image';
 import Link from 'next/link';
 import { formatDate } from '~/app/lib/utils/func-handler/formatDate';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
@@ -33,8 +34,8 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
               <Box h={120} w={120} pos={'absolute'} left={'-3px'}>
                 <Image
                   loading='lazy'
-                  h={120}
-                  w={120}
+                  height={120}
+                  width={120}
                   src={
                     data?.type === LocalVoucherType.PERCENTAGE
                       ? '/images/png/voucher_bg_green.png'

@@ -31,13 +31,13 @@ import {
 import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import BButton from '~/app/_components/Button';
+import LazySection from '~/app/_components/LazySection';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
-import { DiscountCodes } from './DiscountCodes';
 import { ShippingInfo } from './ShippingInfo';
 import classes from './TabsStyles.module.css';
 
@@ -48,9 +48,11 @@ const Comments = dynamic(() => import('~/app/_components/Comments/Comments'), { 
 const ProductSectionBase = dynamic(() => import('~/app/_components/Web/Home/Section/Layout-Product-Carousel-Only'), {
   ssr: false
 });
+const DiscountCodes = dynamic(() => import('./DiscountCodes'), { ssr: false });
 
 export default function ProductDetailClient(data: any) {
   const [activeTab, setActiveTab] = useState('description');
+  const [quantity, setQuantity] = useState(1);
   const { product, dataRelatedProducts, dataHintProducts }: any = data?.data || {
     product: {},
     dataRelatedProducts: [],
@@ -62,10 +64,8 @@ export default function ProductDetailClient(data: any) {
 
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
-  const [quantity, setQuantity] = useState(1);
-
   const discount = product?.discount || 0;
-  const inStock = product?.availableQuantity - product?.soldQuantity > 0;
+  const inStock = useMemo(() => product?.availableQuantity - product?.soldQuantity > 0, [product]);
 
   const ratingCounts = useMemo(() => {
     let ratingCountsDefault = [0, 0, 0, 0, 0];
@@ -420,15 +420,19 @@ export default function ProductDetailClient(data: any) {
         </Grid.Col>
 
         {hintProducts?.length > 0 && (
-          <Grid.Col span={{ base: 12, sm: 5, md: 4, lg: 3 }}>
-            <RelatedProducts data={hintProducts} />
-          </Grid.Col>
+          <LazySection>
+            <Grid.Col span={{ base: 12, sm: 5, md: 4, lg: 3 }}>
+              <RelatedProducts data={hintProducts} />
+            </Grid.Col>
+          </LazySection>
         )}
 
         {relatedProducts?.length > 0 && (
-          <Grid.Col span={12}>
-            <ProductSectionBase data={relatedProducts} title='Sản phẩm liên quan' />
-          </Grid.Col>
+          <LazySection>
+            <Grid.Col span={12}>
+              <ProductSectionBase data={relatedProducts} title='Sản phẩm liên quan' />
+            </Grid.Col>
+          </LazySection>
         )}
       </Grid>
     </Box>

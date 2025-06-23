@@ -1,7 +1,8 @@
 'use client';
 
-import { Box, Center, Image, Menu } from '@mantine/core';
+import { Box, Center, Menu } from '@mantine/core';
 import { IconMessageCircle } from '@tabler/icons-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Chatbox from '../Web/_components/Chatbox';
@@ -43,7 +44,14 @@ export default function FloatingWidget() {
                 w={50}
                 h={50}
               >
-                <Image src={'/images/svg/icon-lienhe.svg'} c={'white'} className='animate-wiggle' />
+                <Image
+                  src={'/images/svg/icon-lienhe.svg'}
+                  alt='phone'
+                  width={32}
+                  height={32}
+                  loading='lazy'
+                  className='animate-wiggle'
+                />
                 <span className='absolute z-[-1] h-full w-full animate-pulse rounded-full bg-green-300 opacity-0'></span>
                 <span className='absolute z-[-1] h-[80%] w-[80%] animate-pulse rounded-full bg-green-500 opacity-25'></span>
                 <span className='absolute z-[-1] h-[60%] w-[60%] animate-pulse rounded-full bg-green-700 opacity-50'></span>
@@ -52,14 +60,14 @@ export default function FloatingWidget() {
 
             <Menu.Dropdown className='rounded-lg bg-white shadow-md' py={5}>
               <Menu.Item
-                leftSection={<Image src={'/images/svg/icon-phone.svg'} alt='phone' w={24} h={24} />}
+                leftSection={<Image src={'/images/svg/icon-phone.svg'} alt='phone' width={24} height={24} />}
                 component='a'
                 href='tel:0123456789'
               >
                 Gọi ngay cho chúng tôi
               </Menu.Item>
               <Menu.Item
-                leftSection={<Image src={'/images/svg/icon-zalo.svg'} alt='phone' w={24} h={24} />}
+                leftSection={<Image src={'/images/svg/icon-zalo.svg'} alt='zalo' width={24} height={24} />}
                 component='a'
                 href='https://zalo.me/your-zalo-id'
                 target='_blank'
@@ -67,7 +75,7 @@ export default function FloatingWidget() {
                 Chat với chúng tôi qua Zalo
               </Menu.Item>
               <Menu.Item
-                leftSection={<Image src={'/images/svg/icon-location.svg'} alt='phone' w={24} h={24} />}
+                leftSection={<Image src={'/images/svg/icon-location.svg'} alt='location' width={24} height={24} />}
                 component='a'
                 href='https://maps.google.com?q=your-location'
                 target='_blank'
@@ -78,7 +86,14 @@ export default function FloatingWidget() {
           </Menu>
 
           <Link href='https://m.me/your-facebook-page' target='_blank' prefetch={false}>
-            <Image loading='lazy' src={'/images/svg/icon-messager.svg'} w={50} h={50} className='animate-wiggle' />
+            <Image
+              loading='lazy'
+              src={'/images/svg/icon-messager.svg'}
+              width={50}
+              height={50}
+              alt='messager'
+              className='animate-wiggle'
+            />
           </Link>
         </Box>
       </>

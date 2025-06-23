@@ -1,13 +1,12 @@
 'use client';
 import {
   ActionIcon,
-  Avatar,
+  Box,
   Button,
   Center,
   Divider,
   Flex,
   Group,
-  Image,
   Menu,
   rem,
   Switch,
@@ -31,6 +30,7 @@ import {
 } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const Header1 = ({ restaurant }: any) => {
@@ -93,7 +93,10 @@ export const Header1 = ({ restaurant }: any) => {
                   <Image
                     loading='lazy'
                     src={'/images/png/co vn.png'}
-                    w={langue === 'vn' ? 35 : 20}
+                    width={langue === 'vn' ? 35 : 20}
+                    height={langue === 'vn' ? 35 : 20}
+                    alt='vietnam-flag'
+                    objectFit='cover'
                     className={clsx(langue === 'vn' ? '' : 'cursor-pointer')}
                   />
                 }
@@ -106,7 +109,10 @@ export const Header1 = ({ restaurant }: any) => {
                   <Image
                     loading='lazy'
                     src={'/images/png/co anh.png'}
-                    w={langue === 'us' ? 35 : 20}
+                    width={langue === 'us' ? 35 : 20}
+                    height={langue === 'us' ? 35 : 20}
+                    alt='english-flag'
+                    objectFit='cover'
                     className={clsx(langue === 'us' ? '' : 'cursor-pointer')}
                   />
                 }
@@ -128,7 +134,9 @@ export const Header1 = ({ restaurant }: any) => {
                   className={`flex items-center rounded-full bg-[#f8c144] p-1 transition-colors duration-200 hover:opacity-95`}
                 >
                   <Group gap={7}>
-                    <Avatar src={user?.user?.image} alt='User avatar' radius='lg' size={30} />
+                    <Box pos={'relative'} w={30} h={30} className='overflow-hidden rounded-full'>
+                      <Image src={user?.user?.image || ''} alt='User avatar' fill objectFit='cover' />
+                    </Box>
                     <div className='hidden text-left sm:block'>
                       <Text fw={700} size='sm' lh={1} c={'black'}>
                         {user?.user?.name}

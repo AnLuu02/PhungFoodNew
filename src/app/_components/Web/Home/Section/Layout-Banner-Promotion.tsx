@@ -1,17 +1,19 @@
-'use client';
-import { Card, CardSection, Flex, Image, Stack, Text } from '@mantine/core';
+import { Box, Card, CardSection, Flex, Stack, Text } from '@mantine/core';
+import Image from 'next/image';
 import BButton from '~/app/_components/Button';
 
 const LayoutBannerPromotion = () => {
   return (
     <Card radius={'lg'} bg={'gray.1'} p={0} className='hidden md:block'>
       <CardSection pos={'relative'}>
-        <Image
-          className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
-          w={'100%'}
-          h={500}
-          src='/images/png/banner_food.png'
-        />
+        <Box w={'100%'} h={500} pos={'relative'}>
+          <Image
+            className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
+            src='/images/png/banner_food.png'
+            fill
+            alt='Banner Promotion'
+          />
+        </Box>
         <Flex
           justify={'center'}
           align={'center'}

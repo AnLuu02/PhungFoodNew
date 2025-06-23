@@ -1,5 +1,6 @@
 'use client';
 
+import { Box } from '@mantine/core';
 import { ReactNode } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -20,5 +21,5 @@ export default function LazySection({
     rootMargin: margin
   });
 
-  return <div ref={ref}>{inView ? children : null}</div>;
+  return <Box ref={ref}>{inView ? children : null}</Box>;
 }

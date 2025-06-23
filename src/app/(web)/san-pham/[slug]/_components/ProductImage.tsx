@@ -1,10 +1,11 @@
 'use client';
 
 import { Carousel } from '@mantine/carousel';
-import { Box, Flex, Image, Modal, Paper, Text, UnstyledButton } from '@mantine/core';
+import { Box, Flex, Modal, Paper, Text, UnstyledButton } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import clsx from 'clsx';
+import Image from 'next/image';
 import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { SocialShare } from './SocialShare';
@@ -66,13 +67,25 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
             >
               {index === (notDesktop ? 2 : 3) && remainingCount > 0 ? (
                 <Box pos='relative'>
-                  <Image loading='lazy' src={item.url || '/images/jpg/empty-300x240.jpg'} w={113} h={113} />
+                  <Image
+                    loading='lazy'
+                    src={item.url || '/images/jpg/empty-300x240.jpg'}
+                    width={113}
+                    height={113}
+                    alt='Thumbnail'
+                  />
                   <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
                     +{remainingCount}
                   </Box>
                 </Box>
               ) : (
-                <Image loading='lazy' src={item.url || '/images/jpg/empty-300x240.jpg'} w={113} h={113} />
+                <Image
+                  loading='lazy'
+                  src={item.url || '/images/jpg/empty-300x240.jpg'}
+                  width={113}
+                  height={113}
+                  alt='Thumbnail'
+                />
               )}
             </Paper>
           ))}
@@ -84,12 +97,10 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
               loading='lazy'
               src={currentImage || thumbnail}
               alt='Product'
-              className='object-cover'
-              radius='md'
-              w='100%'
-              h='100%'
+              className='cursor-pointer rounded-md object-cover'
+              objectFit='cover'
+              fill
               onClick={() => setShowFullImage(true)}
-              style={{ cursor: 'pointer' }}
             />
             <Box mt='md'>
               <SocialShare />
@@ -149,7 +160,13 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
           {allImages.map((item, index) => (
             <Carousel.Slide key={index}>
               <Flex align='center' justify='center' h={400}>
-                <Image loading='lazy' src={item.url || '/images/jpg/empty-300x240.jpg'} fit='contain' h={400} />
+                <Image
+                  loading='lazy'
+                  src={item.url || '/images/jpg/empty-300x240.jpg'}
+                  objectFit='contain'
+                  height={400}
+                  alt='Product Image'
+                />
               </Flex>
             </Carousel.Slide>
           ))}
@@ -172,7 +189,8 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
                 src={item.url || '/images/jpg/empty-300x240.jpg'}
                 width={60}
                 height={60}
-                fit='cover'
+                alt=''
+                objectFit='cover'
               />
             </UnstyledButton>
           ))}

@@ -12,10 +12,10 @@ import { getValueLevelUser } from '~/app/lib/utils/func-handler/get--value-level
 import { LocalUserLevel } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/react';
 import classes from './dashboard-content.module.css';
-const UserInfo = dynamic(() => import('./user-info'));
-const UserStatistics = dynamic(() => import('./user-statistics'));
-const OrderList = dynamic(() => import('./order-list'));
-const Promotions = dynamic(() => import('./promotions'));
+const UserInfo = dynamic(() => import('./user-info'), { ssr: false });
+const UserStatistics = dynamic(() => import('./user-statistics'), { ssr: false });
+const OrderList = dynamic(() => import('./order-list'), { ssr: false });
+const Promotions = dynamic(() => import('./promotions'), { ssr: false });
 export default function DashboardContent() {
   const { data: user } = useSession();
   const [activeTab, setActiveTab] = useState<string | null>('user-info');

@@ -1,4 +1,5 @@
-import { Box, Image, Table, Text } from '@mantine/core';
+import { Box, Table, Text } from '@mantine/core';
+import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
 
@@ -40,7 +41,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
   return (
     <Box ref={printRef} p={'xl'}>
       <Box display={'flex'} style={{ flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' w={250} p={0} />
+        <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' width={250} height={50} objectFit='cover' />
         <Text c={'dark'} fz={18}>
           Đầu lộ Tân Thành, khóm 9, phường 6, Cà Mau
         </Text>

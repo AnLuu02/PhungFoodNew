@@ -1,4 +1,5 @@
-import { Badge, Box, Group, Image, Text } from '@mantine/core';
+import { Badge, Box, Group, Text } from '@mantine/core';
+import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
 import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
@@ -11,9 +12,9 @@ export default function CartItemPayment({ item, index }: any) {
           <Image
             loading='lazy'
             src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            w={60}
-            h={60}
-            radius='md'
+            width={60}
+            height={60}
+            className='rounded-md'
             alt={item.name}
           />
           <Badge className='absolute -right-2 -top-2 bg-blue-500' radius='xl' size='sm'>

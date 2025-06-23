@@ -1,7 +1,11 @@
 import { Button, Flex, Grid, GridCol, Input, Text, Textarea, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
+import { Metadata } from 'next';
 import { api } from '~/trpc/server';
-
+export const metadata: Metadata = {
+  title: 'Liên hệ với chúng tôi',
+  description: 'Liên hệ với chúng tôi'
+};
 const Contact = async () => {
   const restaurant = await api.Restaurant.getOne();
   return (

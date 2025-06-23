@@ -1,5 +1,3 @@
-'use client';
-
 import { Group, Stack, Text, rem } from '@mantine/core';
 import { IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
 

@@ -1,5 +1,6 @@
 'use client';
-import { Box, Center, Flex, Group, Image, rem } from '@mantine/core';
+import { Box, Center, Flex, Group, rem } from '@mantine/core';
+import Image from 'next/image';
 import Link from 'next/link';
 import SearchComponentClient from '~/app/_components/Search/SearchClient';
 import CartButton from '../_components/gio-hang-button';
@@ -24,7 +25,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
       >
         <Link href={'/'} prefetch={false}>
           <Center>
-            <Image src='/logo/logo_phungfood_1.png' alt='logo' w={250} h={80} p={0} />
+            <Image src='/logo/logo_phungfood_1.png' alt='logo' width={250} height={80} />
           </Center>
         </Link>
         <Box w={{ base: '100%', md: 400, lg: 550 }}>

@@ -6,7 +6,6 @@ import {
   Divider,
   Grid,
   GridCol,
-  Image,
   Paper,
   ScrollAreaAutosize,
   Stack,
@@ -15,6 +14,7 @@ import {
   Title
 } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/app/_components/Empty';
@@ -61,8 +61,8 @@ export function MegaMenu({ categories }: any) {
                         loading='lazy'
                         src={item?.subCategory?.[0]?.image?.url || '/images/png/momo.png'}
                         alt={item.image?.altText}
-                        w={30}
-                        h={30}
+                        width={30}
+                        height={30}
                       />
                     }
                   >
@@ -95,9 +95,10 @@ export function MegaMenu({ categories }: any) {
                             loading='lazy'
                             src={category.image?.url}
                             alt={category.name}
-                            w={60}
-                            h={60}
-                            className='h-16 w-16 object-contain'
+                            width={60}
+                            height={60}
+                            objectFit='contain'
+                            className='h-16 w-16'
                           />
                           <Text size='sm' className='font-medium text-gray-800'>
                             {category.name}
@@ -134,6 +135,7 @@ export function MegaMenu({ categories }: any) {
                                   w={'100%'}
                                   h={120}
                                   radius={'md'}
+                                  pos={'relative'}
                                   className='overflow-hidden border border-transparent p-1 transition-all hover:border-red-500'
                                 >
                                   <Image
@@ -143,8 +145,8 @@ export function MegaMenu({ categories }: any) {
                                       '/images/jpg/empty-300x240.jpg'
                                     }
                                     alt={product.name}
-                                    w={'100%'}
-                                    h={'100%'}
+                                    fill
+                                    objectFit='cover'
                                   />
                                 </Paper>
                                 <h3 className='line-clamp-2 text-sm font-medium text-gray-800'>

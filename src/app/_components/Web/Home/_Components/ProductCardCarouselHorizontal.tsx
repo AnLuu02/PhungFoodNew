@@ -29,7 +29,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   return (
     <Card radius={'md'} withBorder bg={'white'} p={0} pos={'relative'}>
       <Flex h={162} gap={'xs'}>
-        <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center'>
+        <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center' pos={'relative'}>
           <Image
             loading='lazy'
             src={getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
@@ -81,6 +81,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             </Button.Group>
           </Box>
         </Box>
+
         <Flex direction={'column'} align={'flex-start'} w={'64%'} gap={'xs'} justify={'center'} pr={'md'}>
           <Link href={`/san-pham/${data?.tag}`} prefetch={false}>
             <Tooltip label={data?.name}>

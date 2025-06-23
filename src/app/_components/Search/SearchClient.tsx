@@ -7,7 +7,6 @@ import {
   Button,
   Flex,
   Group,
-  Image,
   Paper,
   rem,
   Skeleton,
@@ -19,6 +18,7 @@ import {
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { IconClock, IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -223,8 +223,8 @@ export default function SearchComponentClient({ subCategories }: any) {
                         loading='lazy'
                         src={getImageProduct(product.images, LocalImageType.THUMBNAIL) || '/images/png/momo.png'}
                         alt={product.name}
-                        w={60}
-                        h={60}
+                        width={60}
+                        height={60}
                         style={{ borderRadius: rem(8), objectFit: 'cover' }}
                       />
                       <Box>
