@@ -1,10 +1,18 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateUserButton } from './components/Button';
 import TableUser from './components/Table/TableUser';
+export const metadata: Metadata = {
+  title: {
+    default: 'Quản lý người dùng ',
+    absolute: 'Quản lý người dùng',
+    template: '%s | Quản lý người dùng'
+  }
+};
 export default async function UserManagementPage({
   searchParams
 }: {

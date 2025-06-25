@@ -86,13 +86,34 @@ export default function FooterWebLayout({ restaurant }: any) {
               <Text className='text-xl font-bold'>HÃY KẾT NỐI VỚI CHÚNG TÔI</Text>
               <Flex align={'center'} gap={'md'}>
                 <Link prefetch={false} href='#' className='rounded-sm hover:underline hover:opacity-80'>
-                  <Image loading='lazy' width={40} height={40} alt='zalo' src={'/images/svg/icon-zalo.svg'} />
+                  <Image
+                    loading='lazy'
+                    width={40}
+                    height={40}
+                    alt='zalo'
+                    src={'/images/svg/icon-zalo.svg'}
+                    objectFit='cover'
+                  />
                 </Link>
                 <Link prefetch={false} href='#' className='rounded-sm hover:underline hover:opacity-80'>
-                  <Image loading='lazy' width={40} height={40} alt='facebook' src={'/images/svg/icon-facebook.svg'} />
+                  <Image
+                    loading='lazy'
+                    width={40}
+                    height={40}
+                    alt='facebook'
+                    src={'/images/svg/icon-facebook.svg'}
+                    objectFit='cover'
+                  />
                 </Link>
                 <Link prefetch={false} href='#' className='rounded-sm hover:underline hover:opacity-80'>
-                  <Image loading='lazy' width={40} height={40} alt='phone' src={'/images/svg/icon-phone.svg'} />
+                  <Image
+                    loading='lazy'
+                    width={40}
+                    height={40}
+                    alt='phone'
+                    src={'/images/svg/icon-phone.svg'}
+                    objectFit='cover'
+                  />
                 </Link>
               </Flex>
               <Box className='flex justify-center lg:justify-start'>
@@ -108,10 +129,18 @@ export default function FooterWebLayout({ restaurant }: any) {
                       alt='Google Play'
                       width={140}
                       height={42}
+                      objectFit='cover'
                     />
                   </Link>
                   <Link prefetch={false} href='#' className='rounded-sm hover:underline hover:opacity-80'>
-                    <Image loading='lazy' src='/images/png/logo_appstore.png' alt='App Store' width={140} height={42} />
+                    <Image
+                      loading='lazy'
+                      src='/images/png/logo_appstore.png'
+                      alt='App Store'
+                      width={140}
+                      height={42}
+                      objectFit='cover'
+                    />
                   </Link>
                 </Box>
               </Box>

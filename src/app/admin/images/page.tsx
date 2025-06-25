@@ -1,9 +1,16 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { Metadata } from 'next';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 import { CreateImageButton } from './components/Button';
 import ListImage from './components/ListImages/ListImages';
-
+export const metadata: Metadata = {
+  title: {
+    default: 'Quản lý ảnh ',
+    absolute: 'Quản lý ảnh',
+    template: '%s | Quản lý ảnh'
+  }
+};
 export default async function ImageManagementPage({
   searchParams
 }: {

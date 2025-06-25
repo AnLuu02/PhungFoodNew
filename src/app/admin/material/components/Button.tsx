@@ -1,18 +1,15 @@
 'use client';
 
-import { ActionIcon, Button, Flex, Group, Modal, Title } from '@mantine/core';
+import { ActionIcon, Button, FileButton, Flex, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
+import clsx from 'clsx';
 import { useState } from 'react';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
+import { formatDataExcel } from '~/app/lib/utils/func-handler/FormatDataExcel';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
 import { api } from '~/trpc/react';
 import CreateMaterial from './form/CreateMaterial';
 import UpdateMaterial from './form/UpdateMaterial';
-
-import { FileButton, ScrollAreaAutosize, Table } from '@mantine/core';
-import clsx from 'clsx';
-import * as XLSX from 'xlsx';
-import { formatDataExcel } from '~/app/lib/utils/func-handler/FormatDataExcel';
 const mapFields: Record<string, string> = {
   'Tên nguyên liệu': 'name',
   Tag: 'tag',
@@ -59,6 +56,8 @@ export function CreateManyMaterialButton() {
     }
 
     try {
+      const XLSX = await import('xlsx');
+
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer, { type: 'buffer' });
 
@@ -92,10 +91,11 @@ export function CreateManyMaterialButton() {
     }
   };
   const fetchMaterials = api.Material.getAll.useQuery();
-  const handleExport = () => {
+  const handleExport = async () => {
     if (!fetchMaterials.data || fetchMaterials.data.length === 0) {
       return NotifyError('Không có dữ liệu để xuất.');
     }
+    const XLSX = await import('xlsx');
 
     const exportData = fetchMaterials.data.map((item: any) => ({
       ID: item.id,

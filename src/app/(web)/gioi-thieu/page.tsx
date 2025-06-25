@@ -118,6 +118,7 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Restaurant interior'
             fill
+            objectFit='cover'
           />
         </Box>
       </SimpleGrid>
@@ -225,6 +226,7 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Chef portrait'
             fill
+            objectFit='cover'
           />
         </Box>
         <div>
@@ -305,6 +307,7 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Map'
             fill
+            objectFit='cover'
           />
         </Box>
       </SimpleGrid>

@@ -12,7 +12,14 @@ export default function LoadingComponent() {
   }, []);
   return (
     <Flex align={'center'} justify={'center'} pos={'fixed'} top={0} left={0} bottom={0} right={0} className='z-[9999]'>
-      <Image src={'/images/gif/loading.gif'} width={200} height={200} alt={'loading'} className='z-[1000]' />
+      <Image
+        objectFit='cover'
+        src={'/images/gif/loading.gif'}
+        width={200}
+        height={200}
+        alt={'loading'}
+        className='z-[1000]'
+      />
       <Overlay color='#000' backgroundOpacity={0.15} blur={5} />
     </Flex>
   );

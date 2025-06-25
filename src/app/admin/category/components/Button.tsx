@@ -4,7 +4,6 @@ import { ActionIcon, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useState } from 'react';
-import * as XLSX from 'xlsx';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/app/lib/utils/func-handler/FormatDataExcel';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
@@ -56,6 +55,7 @@ export function CreateManyCategoryButton() {
     }
 
     try {
+      const XLSX = await import('xlsx');
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer, { type: 'buffer' });
 
@@ -89,11 +89,11 @@ export function CreateManyCategoryButton() {
     }
   };
   const fetchCategories = api.Category.getAll.useQuery();
-  const handleExport = () => {
+  const handleExport = async () => {
     if (!fetchCategories.data || fetchCategories.data.length === 0) {
       return NotifyError('Không có dữ liệu để xuất.');
     }
-
+    const XLSX = await import('xlsx');
     const exportData = fetchCategories.data.map((item: any) => ({
       ID: item.id,
       'Tên danh mục': item.name,

@@ -34,6 +34,7 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
               <Box h={120} w={120} pos={'absolute'} left={'-3px'}>
                 <Image
                   loading='lazy'
+                  objectFit='cover'
                   height={120}
                   width={120}
                   src={

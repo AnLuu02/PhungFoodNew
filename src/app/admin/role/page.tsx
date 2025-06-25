@@ -1,10 +1,18 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateManyRoleButton, CreateRoleButton } from './components/Button';
 import TableRole from './components/Table/TableCategory';
+export const metadata: Metadata = {
+  title: {
+    default: 'Quản lý quyền ',
+    absolute: 'Quản lý quyền',
+    template: '%s | Quản lý quyền'
+  }
+};
 export default async function RoleManagementPage({
   searchParams
 }: {

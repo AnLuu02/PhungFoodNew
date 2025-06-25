@@ -12,8 +12,9 @@ export function ProductDetails({ product }: { product: any }) {
           loading='lazy'
           src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           width={300}
+          height={300}
           alt='Hình ảnh sản phẩm'
-          objectFit='contain'
+          objectFit='cover'
         />
         <Title order={2}>{product.name}</Title>
         <Group>

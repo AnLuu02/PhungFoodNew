@@ -48,7 +48,8 @@ export function PhotoCard({ id, name, file, postingDate, onOpened }: PhotoCardPr
           loading='lazy'
           src={file instanceof File ? URL.createObjectURL(file) : '/images/empty-300x240.jpg'}
           height={160}
-          objectFit='contain'
+          width={160}
+          objectFit='cover'
           alt={name}
           onClick={() => onOpened({ id, name, file, dimensions, postingDate })}
           style={{ cursor: 'pointer' }}

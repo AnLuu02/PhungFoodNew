@@ -1,18 +1,21 @@
 import crypto from 'crypto';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { NextRequest, NextResponse } from 'next/server';
 import qs from 'qs';
 
-export async function POST(req: NextRequest) {
-  process.env.TZ = 'Asia/Ho_Chi_Minh';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
-  const date = new Date();
-  const createDate = moment(date).format('YYYYMMDDHHmmss');
+export async function POST(req: NextRequest) {
+  const date = dayjs().tz('Asia/Ho_Chi_Minh');
+  const createDate = date.format('YYYYMMDDHHmmss');
 
   const body = await req.json();
   const { amount, bankCode, language } = body;
 
-  const orderId = body.orderId || moment(date).format('DDHHmmss');
+  const orderId = body.orderId || date.format('DDHHmmss');
 
   const ipAddr = req.headers.get('x-forwarded-for') || req.ip || '127.0.0.1';
 

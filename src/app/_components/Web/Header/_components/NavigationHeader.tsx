@@ -138,7 +138,14 @@ function NavigationHeader({ categories, opened, close }: { categories?: any; ope
           <Drawer.Title>
             <Link href={'/'} prefetch={false}>
               <Center w={'100%'} flex={1}>
-                <Image loading='lazy' src='/logo/logo_phungfood_1.png' alt='logo' width={250} height={80} />
+                <Image
+                  loading='lazy'
+                  src='/logo/logo_phungfood_1.png'
+                  alt='logo'
+                  width={250}
+                  height={80}
+                  objectFit='cover'
+                />
               </Center>
             </Link>
           </Drawer.Title>
@@ -285,10 +292,24 @@ function NavigationHeader({ categories, opened, close }: { categories?: any; ope
 
           <Box className='flex justify-center gap-4 lg:justify-start'>
             <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80' prefetch={false}>
-              <Image loading='lazy' src='/images/png/logo_playstore.png' alt='Google Play' width={140} height={42} />
+              <Image
+                loading='lazy'
+                src='/images/png/logo_playstore.png'
+                alt='Google Play'
+                width={140}
+                height={42}
+                objectFit='cover'
+              />
             </Link>
             <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80' prefetch={false}>
-              <Image loading='lazy' src='/images/png/logo_appstore.png' alt='App Store' width={140} height={42} />
+              <Image
+                loading='lazy'
+                src='/images/png/logo_appstore.png'
+                alt='App Store'
+                width={140}
+                height={42}
+                objectFit='cover'
+              />
             </Link>
           </Box>
         </Drawer.Body>

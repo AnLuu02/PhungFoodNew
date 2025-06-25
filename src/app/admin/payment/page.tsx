@@ -1,10 +1,18 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreatePaymentButton } from './components/Button';
 import TablePayment from './components/Table/TablePayment';
+export const metadata: Metadata = {
+  title: {
+    default: 'Quản lý thanh toán ',
+    absolute: 'Quản lý thanh toán',
+    template: '%s | Quản lý thanh toán'
+  }
+};
 export default async function PaymentManagementPage({
   searchParams
 }: {

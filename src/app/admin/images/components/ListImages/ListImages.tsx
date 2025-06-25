@@ -82,8 +82,9 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
           loading='lazy'
           src={(showfullImage.file && URL.createObjectURL(showfullImage.file)) || '/images/jpg/empty-300x240.jpg'}
           alt={showfullImage.name || ''}
-          objectFit='contain'
+          objectFit='cover'
           height={400}
+          width={400}
         />
         <Stack mt='md' gap='xs'>
           <Text size='lg' fw={700}>

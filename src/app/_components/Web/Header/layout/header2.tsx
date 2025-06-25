@@ -25,7 +25,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
       >
         <Link href={'/'} prefetch={false}>
           <Center>
-            <Image src='/logo/logo_phungfood_1.png' alt='logo' width={250} height={80} />
+            <Image src='/logo/logo_phungfood_1.png' alt='logo' width={250} height={80} objectFit='cover' />
           </Center>
         </Link>
         <Box w={{ base: '100%', md: 400, lg: 550 }}>

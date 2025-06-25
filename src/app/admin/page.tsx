@@ -1,6 +1,5 @@
 'use client';
 
-import { LineChart } from '@mantine/charts';
 import {
   ActionIcon,
   Badge,
@@ -238,13 +237,13 @@ export default function Dashboard() {
                 size='xs'
               />
             </Group>
-            <LineChart
+            {/* <LineChart
               h={300}
               data={revenue?.map((item: any) => ({ date: item.date, sales: item.sales })) || []}
               dataKey='date'
               series={[{ name: 'sales', color: theme.colors.blue[6] }]}
               curveType='linear'
-            />
+            /> */}
           </Card>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 4 }}>

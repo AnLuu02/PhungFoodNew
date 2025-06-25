@@ -31,7 +31,6 @@ import {
 import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import BButton from '~/app/_components/Button';
-import LazySection from '~/app/_components/LazySection';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
 import { breakpoints } from '~/app/lib/utils/constants/device';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
@@ -420,19 +419,15 @@ export default function ProductDetailClient(data: any) {
         </Grid.Col>
 
         {hintProducts?.length > 0 && (
-          <LazySection>
-            <Grid.Col span={{ base: 12, sm: 5, md: 4, lg: 3 }}>
-              <RelatedProducts data={hintProducts} />
-            </Grid.Col>
-          </LazySection>
+          <Grid.Col span={{ base: 12, sm: 5, md: 4, lg: 3 }}>
+            <RelatedProducts data={hintProducts} />
+          </Grid.Col>
         )}
 
         {relatedProducts?.length > 0 && (
-          <LazySection>
-            <Grid.Col span={12}>
-              <ProductSectionBase data={relatedProducts} title='Sản phẩm liên quan' />
-            </Grid.Col>
-          </LazySection>
+          <Grid.Col span={12}>
+            <ProductSectionBase data={relatedProducts} title='Sản phẩm liên quan' />
+          </Grid.Col>
         )}
       </Grid>
     </Box>

@@ -12,7 +12,14 @@ const ServiceComponent = () => {
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
               <Box mr={20}>
-                <Image loading='lazy' src={'/images/webp/car.webp'} width={40} height={40} alt={'empty'} />
+                <Image
+                  loading='lazy'
+                  src={'/images/webp/car.webp'}
+                  width={40}
+                  height={40}
+                  alt={'empty'}
+                  objectFit='cover'
+                />
               </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>
@@ -27,7 +34,14 @@ const ServiceComponent = () => {
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
               <Box mr={20}>
-                <Image loading='lazy' src={'/images/webp/stock.webp'} width={40} height={40} alt={'empty'} />
+                <Image
+                  loading='lazy'
+                  src={'/images/webp/stock.webp'}
+                  width={40}
+                  height={40}
+                  alt={'empty'}
+                  objectFit='cover'
+                />
               </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>
@@ -42,7 +56,14 @@ const ServiceComponent = () => {
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
               <Box mr={20}>
-                <Image loading='lazy' src={'/images/webp/bill.webp'} width={40} height={40} alt={'empty'} />
+                <Image
+                  loading='lazy'
+                  src={'/images/webp/bill.webp'}
+                  width={40}
+                  height={40}
+                  alt={'empty'}
+                  objectFit='cover'
+                />
               </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>
@@ -57,7 +78,14 @@ const ServiceComponent = () => {
           <Card radius={'lg'} bg={'gray.1'} py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
               <Box mr={20}>
-                <Image loading='lazy' src={'/images/webp/hotline.webp'} width={40} height={40} alt={'empty'} />
+                <Image
+                  loading='lazy'
+                  src={'/images/webp/hotline.webp'}
+                  width={40}
+                  height={40}
+                  alt={'empty'}
+                  objectFit='cover'
+                />
               </Box>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' c={'green.9'} fw={700}>

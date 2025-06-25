@@ -63,6 +63,7 @@ export function MegaMenu({ categories }: any) {
                         alt={item.image?.altText}
                         width={30}
                         height={30}
+                        objectFit='cover'
                       />
                     }
                   >
@@ -97,7 +98,7 @@ export function MegaMenu({ categories }: any) {
                             alt={category.name}
                             width={60}
                             height={60}
-                            objectFit='contain'
+                            objectFit='cover'
                             className='h-16 w-16'
                           />
                           <Text size='sm' className='font-medium text-gray-800'>

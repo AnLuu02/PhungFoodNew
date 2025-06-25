@@ -3,13 +3,17 @@
 import { Box, Card, Center, Divider, Flex, Group, Progress, Select, Space, Stack, Text } from '@mantine/core';
 import { UserLevel } from '@prisma/client';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import LoadingComponent from '~/app/_components/Loading/Loading';
 import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
 import { getColorLevelUser, getLevelUser } from '~/app/lib/utils/func-handler/get-level-user';
 import { api } from '~/trpc/react';
 
+const LazyChart = dynamic(() => import('./UserSpendingChart'), {
+  ssr: false,
+  loading: () => <p>Đang tải biểu đồ...</p>
+});
 const mockYearlySpending = {
   '2025': 3280,
   '2024': 2800,
@@ -77,17 +81,7 @@ export default function UserStatistics() {
               </Center>
             </Text>
           </Flex>
-          <Box style={{ height: 200 }}>
-            <ResponsiveContainer width='100%' height='100%'>
-              <LineChart data={mockSpendingData}>
-                <CartesianGrid strokeDasharray='3 3' />
-                <XAxis dataKey='month' />
-                <YAxis dataKey={'amount'} />
-                <Tooltip />
-                <Line type='monotone' dataKey='amount' stroke='#8884d8' />
-              </LineChart>
-            </ResponsiveContainer>
-          </Box>
+          <LazyChart data={mockSpendingData} />
         </Box>
 
         <Flex gap={{ base: 'xs', md: 'md' }} justify={'space-between'} direction={{ base: 'column', md: 'row' }}>

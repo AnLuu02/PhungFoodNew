@@ -51,8 +51,9 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
                   getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                 }
                 alt={product?.name || 'Hành tây'}
-                objectFit='contain'
                 height={60}
+                width={60}
+                objectFit='cover'
                 className='rounded object-cover'
               />
             </div>

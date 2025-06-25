@@ -1,10 +1,18 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateManyPermissionButton, CreatePermissionButton } from './components/Button';
 import TablePermission from './components/Table/TablePermissions';
+export const metadata: Metadata = {
+  title: {
+    default: 'Quản lý quyền ',
+    absolute: 'Quản lý quyền',
+    template: '%s | Quản lý quyền'
+  }
+};
 export default async function PermissionManagementPage({
   searchParams
 }: {

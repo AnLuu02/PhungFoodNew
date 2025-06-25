@@ -4,7 +4,6 @@ import { ActionIcon, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { useState } from 'react';
-import * as XLSX from 'xlsx';
 import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/app/lib/utils/func-handler/FormatDataExcel';
 import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
@@ -54,6 +53,7 @@ export function CreateManyPermissionButton() {
     }
 
     try {
+      const XLSX = await import('xlsx');
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer, { type: 'buffer' });
 
@@ -87,11 +87,12 @@ export function CreateManyPermissionButton() {
     }
   };
   const fetchPermission = api.RolePermission.getAllPermission.useQuery();
-  const handleExport = () => {
+  const handleExport = async () => {
     if (!fetchPermission.data || fetchPermission.data.length === 0) {
       return NotifyError('Không có dữ liệu để xuất.');
     }
 
+    const XLSX = await import('xlsx');
     const exportData = fetchPermission.data.map((item: any) => ({
       ID: item.id,
       Quyền: item.name

@@ -1,6 +1,6 @@
 'use client';
 
-import { Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
+import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
@@ -28,16 +28,18 @@ export default function RelatedProducts({ data }: any) {
         <Stack p='md'>
           {data?.map((product: any) => (
             <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
-              <Image
-                loading='lazy'
-                src={
-                  getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-                }
-                width={60}
-                height={60}
-                alt='Hình ảnh sản phẩm'
-                className='rounded-md'
-              />
+              <Box w={60} h={60} pos={'relative'} className='overflow-hidden'>
+                <Image
+                  loading='lazy'
+                  src={
+                    getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+                  }
+                  fill
+                  objectFit='cover'
+                  alt='Hình ảnh sản phẩm'
+                  className='rounded-md'
+                />
+              </Box>
               <div>
                 <Link href={`/san-pham/${product?.tag}`} prefetch={false}>
                   <Tooltip label={product?.name}>

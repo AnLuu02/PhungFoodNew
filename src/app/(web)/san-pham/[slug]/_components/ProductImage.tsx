@@ -72,6 +72,7 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
                     src={item.url || '/images/jpg/empty-300x240.jpg'}
                     width={113}
                     height={113}
+                    objectFit='cover'
                     alt='Thumbnail'
                   />
                   <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
@@ -83,6 +84,7 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
                   loading='lazy'
                   src={item.url || '/images/jpg/empty-300x240.jpg'}
                   width={113}
+                  objectFit='cover'
                   height={113}
                   alt='Thumbnail'
                 />
@@ -93,15 +95,17 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
 
         <Paper radius='md' className='relative mb-4' w='100%'>
           <Flex direction='column' align='center' justify='center' w='100%'>
-            <Image
-              loading='lazy'
-              src={currentImage || thumbnail}
-              alt='Product'
-              className='cursor-pointer rounded-md object-cover'
-              objectFit='cover'
-              fill
-              onClick={() => setShowFullImage(true)}
-            />
+            <Box pos={'relative'} w={'100%'} mih={480} className='overflow-hidden'>
+              <Image
+                loading='lazy'
+                src={currentImage || thumbnail}
+                alt='Product'
+                className='cursor-pointer rounded-md object-cover'
+                objectFit='cover'
+                fill
+                onClick={() => setShowFullImage(true)}
+              />
+            </Box>
             <Box mt='md'>
               <SocialShare />
             </Box>
@@ -163,8 +167,9 @@ export default function ProductImage({ thumbnail, gallery, discount }: ProductIm
                 <Image
                   loading='lazy'
                   src={item.url || '/images/jpg/empty-300x240.jpg'}
-                  objectFit='contain'
+                  objectFit='cover'
                   height={400}
+                  width={600}
                   alt='Product Image'
                 />
               </Flex>

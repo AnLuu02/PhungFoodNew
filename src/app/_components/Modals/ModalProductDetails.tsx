@@ -83,6 +83,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                   alt={product?.name}
                   className='cursor-pointer rounded-md object-cover'
                   width={350}
+                  objectFit='cover'
                   height={350}
                   onClick={() => {
                     setCurrentImage(getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '');
@@ -280,7 +281,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
         )}
       </Modal>
       <Modal size={'xl'} opened={showfullImage} onClose={() => setShowfullImage(false)} centered>
-        <Image loading='lazy' src={currentImage} objectFit='contain' height={400} alt=' ' />
+        <Image loading='lazy' src={currentImage} width={400} height={400} alt=' ' objectFit='cover' />
       </Modal>
     </>
   );

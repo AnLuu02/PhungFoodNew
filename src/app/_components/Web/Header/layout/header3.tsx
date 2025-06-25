@@ -87,6 +87,7 @@ const Header3 = ({ categories, subCategories }: any) => {
                             <Image
                               loading='lazy'
                               src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                              objectFit='cover'
                               alt='logo'
                               width={30}
                               height={30}

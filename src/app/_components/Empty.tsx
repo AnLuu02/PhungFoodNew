@@ -42,6 +42,7 @@ export default function Empty({
           src={logoUrl || '/images/png/empty_cart.png'}
           alt='Empty Cart'
           className='mx-auto'
+          objectFit='cover'
           width={sizeImage[size]}
           height={sizeImage[size]}
         />

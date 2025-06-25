@@ -100,7 +100,14 @@ const CartButton = () => {
           </Stack>
         ) : (
           <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
-            <Image loading='lazy' src={'/images/png/empty_cart.png'} width={100} height={100} alt={'empty cart'} />
+            <Image
+              loading='lazy'
+              src={'/images/png/empty_cart.png'}
+              width={100}
+              height={100}
+              alt={'empty cart'}
+              objectFit='cover'
+            />
             <Text size='sm' c={'dimmed'}>
               Không có sản phẩm nào trong giỏ hàng
             </Text>

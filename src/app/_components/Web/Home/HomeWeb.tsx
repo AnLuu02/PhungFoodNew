@@ -3,22 +3,48 @@
 import { Container, Space } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import LazySection from '../../LazySection';
-import BannerSection from './Section/Banner-section';
+import SkeletonSection from '../../SkeletonSection';
 import { IDataCategory } from './Section/Category-Carousel-Horizontal';
-
-const CategoryCarouselHorizontal = dynamic(() => import('./Section/Category-Carousel-Horizontal'), { ssr: false });
-const LayoutBannerPromotion = dynamic(() => import('./Section/Layout-Banner-Promotion'), { ssr: false });
-const LayoutCarouselSimple = dynamic(() => import('./Section/Layout-Carousel-Simple'), { ssr: false });
-const FastMenuSection = dynamic(() => import('./Section/Layout-Menu-Quick-Sale-Order'), { ssr: false });
-const LayoutProductCarouselOnly = dynamic(() => import('./Section/Layout-Product-Carousel-Only'), { ssr: false });
+const BannerSection = dynamic(() => import('./Section/Banner-section'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='grid-2col-carousel' />
+});
+const LayoutBannerPromotion = dynamic(() => import('./Section/Layout-Banner-Promotion'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='simple' />
+});
+const CategoryCarouselHorizontal = dynamic(() => import('./Section/Category-Carousel-Horizontal'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='category-list' count={10} />
+});
+const LayoutCarouselSimple = dynamic(() => import('./Section/Layout-Carousel-Simple'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='promotion-banner-carousel' count={4} />
+});
+const FastMenuSection = dynamic(() => import('./Section/Layout-Menu-Quick-Sale-Order'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='promotion-banner-carousel' count={4} />
+});
+const LayoutProductCarouselOnly = dynamic(() => import('./Section/Layout-Product-Carousel-Only'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='promotion-banner-carousel' count={4} />
+});
 const LayoutProductCarouselWithImage = dynamic(() => import('./Section/Layout-Product-Carousel-With-Image'), {
-  ssr: false
+  ssr: false,
+  loading: () => <SkeletonSection type='promotion-banner-carousel' count={4} />
 });
 const LayoutProductCarouselWithImage2 = dynamic(() => import('./Section/Layout-Product-Carousel-With-Image-2'), {
-  ssr: false
+  ssr: false,
+  loading: () => <SkeletonSection type='promotion-banner-carousel' count={4} />
 });
-const LayoutPromotion = dynamic(() => import('./Section/Layout-Promotion'), { ssr: false });
-const LayoutGrid3Col = dynamic(() => import('./Section/LayoutGrid3Col'), { ssr: false });
+const LayoutPromotion = dynamic(() => import('./Section/Layout-Promotion'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='promotion-banner-carousel' count={4} />
+});
+const LayoutGrid3Col = dynamic(() => import('./Section/LayoutGrid3Col'), {
+  ssr: false,
+  loading: () => <SkeletonSection type='promotion-banner-carousel' count={4} />
+});
 
 const HomeWeb = ({
   data

@@ -154,6 +154,7 @@ const LayoutCarouselSimple = () => {
                     <Box w={'100%'} h={210} pos={'relative'}>
                       <Image
                         loading='lazy'
+                        objectFit='cover'
                         fill
                         src={
                           recipe.image ||

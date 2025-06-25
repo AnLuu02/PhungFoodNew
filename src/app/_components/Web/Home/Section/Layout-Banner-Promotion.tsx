@@ -11,6 +11,7 @@ const LayoutBannerPromotion = () => {
             className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
             src='/images/png/banner_food.png'
             fill
+            objectFit='cover'
             alt='Banner Promotion'
           />
         </Box>

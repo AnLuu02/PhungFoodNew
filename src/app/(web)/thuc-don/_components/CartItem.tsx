@@ -23,6 +23,7 @@ const CartItem = ({ item, index }: any) => {
             src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             width={80}
             height={80}
+            objectFit='cover'
             alt={item.name}
           />
         </GridCol>

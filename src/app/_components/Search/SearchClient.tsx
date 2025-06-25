@@ -225,6 +225,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                         alt={product.name}
                         width={60}
                         height={60}
+                        objectFit='cover'
                         style={{ borderRadius: rem(8), objectFit: 'cover' }}
                       />
                       <Box>

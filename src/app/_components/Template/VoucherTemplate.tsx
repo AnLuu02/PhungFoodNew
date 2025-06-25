@@ -22,6 +22,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
             loading='lazy'
             height={120}
             width={120}
+            objectFit='cover'
             src={
               voucher?.type === LocalVoucherType.PERCENTAGE
                 ? '/images/png/voucher_bg_green.png'

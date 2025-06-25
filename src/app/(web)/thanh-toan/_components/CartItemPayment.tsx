@@ -13,6 +13,7 @@ export default function CartItemPayment({ item, index }: any) {
             loading='lazy'
             src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             width={60}
+            objectFit='cover'
             height={60}
             className='rounded-md'
             alt={item.name}

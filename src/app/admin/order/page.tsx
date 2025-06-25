@@ -1,4 +1,5 @@
 import { Card, Group, Text, Title } from '@mantine/core';
+import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
@@ -6,6 +7,13 @@ import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
 import { api } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserOrderButton } from './components/Button';
 import TableOrder from './components/Table/TableOrder';
+export const metadata: Metadata = {
+  title: {
+    default: 'Quản lý hóa đơn ',
+    absolute: 'Quản lý hóa đơn',
+    template: '%s | Quản lý hóa đơn'
+  }
+};
 export default async function OrderManagementPage({
   searchParams
 }: {

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function UnauthorizedPage() {
   return (
     <Center className='flex-col'>
-      <Image loading='lazy' src='/images/png/403.png' alt='403' width={400} height={400} />
+      <Image loading='lazy' src='/images/png/403.png' alt='403' width={400} height={400} objectFit='cover' />
       <h1 className='text-4xl font-bold text-red-500'>403 - Không có quyền truy cập</h1>
       <p className='mt-2 text-gray-600'>Bạn không có quyền truy cập vào trang này.</p>
       <Link href='/' className='mt-4 rounded-sm text-black hover:underline' prefetch={false}>

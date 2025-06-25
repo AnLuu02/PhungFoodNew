@@ -56,6 +56,7 @@ export function BreadcrumbClient() {
                   <Card.Section>
                     <Image
                       loading='lazy'
+                      objectFit='cover'
                       src={
                         category?.image?.url ||
                         'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'

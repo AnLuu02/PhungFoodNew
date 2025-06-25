@@ -48,6 +48,7 @@ export default function FloatingWidget() {
                   src={'/images/svg/icon-lienhe.svg'}
                   alt='phone'
                   width={32}
+                  objectFit='cover'
                   height={32}
                   loading='lazy'
                   className='animate-wiggle'
@@ -91,6 +92,7 @@ export default function FloatingWidget() {
               src={'/images/svg/icon-messager.svg'}
               width={50}
               height={50}
+              objectFit='cover'
               alt='messager'
               className='animate-wiggle'
             />
