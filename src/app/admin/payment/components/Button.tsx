@@ -3,7 +3,7 @@
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
+import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreatePayment from './form/CreatePayment';
 import UpdatePayment from './form/UpdatePayment';

@@ -1,8 +1,9 @@
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
-import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
-import { LocalEntityType, LocalImageType, LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
+import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-upload';
+import { LocalEntityType, LocalImageType, LocalProductStatus } from '~/lib/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -326,12 +327,17 @@ export const subCategoryRouter = createTRPCRouter({
       return subCategory;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const subCategory = await ctx.db.subCategory.findMany({
-      include: {
-        image: true,
-        category: true
-      }
-    });
-    return subCategory;
+    return await withRedisCache(
+      'subCategory:getAll',
+      async () => {
+        return await ctx.db.subCategory.findMany({
+          include: {
+            image: true,
+            category: true
+          }
+        });
+      },
+      60 * 60 * 24
+    );
   })
 });

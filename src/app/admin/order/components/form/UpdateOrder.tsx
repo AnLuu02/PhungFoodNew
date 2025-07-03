@@ -19,12 +19,12 @@ import { IconMail, IconPhone } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import LoadingComponent from '~/app/_components/Loading/Loading';
-import { Order } from '~/app/Entity/OrderEntity';
-import fetcher from '~/app/lib/utils/func-handler/fetcher';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { LocalAddressType, LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
-import { orderSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { Order } from '~/Entity/OrderEntity';
+import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import fetcher from '~/lib/func-handler/fetcher';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { LocalAddressType, LocalOrderStatus } from '~/lib/zod/EnumType';
+import { orderSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import OrderItemForm from './OrderItemForm';
 
@@ -174,9 +174,9 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
     }
   };
 
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  if (isLoading) return <LoadingSpiner />;
+
+  return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
         <GridCol span={6}>

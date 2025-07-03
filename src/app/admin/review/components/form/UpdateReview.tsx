@@ -3,9 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Review } from '~/app/Entity/ReviewEntity';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { reviewSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { Review } from '~/Entity/ReviewEntity';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateReview({ reviewId, setOpened }: { reviewId: string; setOpened: any }) {

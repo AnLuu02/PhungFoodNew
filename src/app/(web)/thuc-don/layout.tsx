@@ -1,6 +1,6 @@
 import { Box, Grid, GridCol, rem } from '@mantine/core';
 import { Metadata } from 'next';
-import { CategoryNav } from './_components/CatgoryNavbar';
+import SidebarMenu from './components/SidebarMenu';
 
 export const metadata: Metadata = {
   title: 'Thực đơn',
@@ -12,7 +12,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <Box className='relative' w={'100%'}>
       <Grid gutter={rem(30)} columns={24}>
         <GridCol span={{ base: 24, sm: 24, md: 8, lg: 6 }} className='overflow-hidden'>
-          <CategoryNav />
+          <SidebarMenu />
         </GridCol>
         <GridCol span={{ base: 24, sm: 24, md: 16, lg: 18 }}>{children}</GridCol>
       </Grid>

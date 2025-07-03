@@ -1,8 +1,9 @@
 import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
-import { deliverySchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { deliverySchema } from '~/lib/zod/zodShcemaForm';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { updatePointLevel, updateSales } from './Product';
 import { updateRevenue } from './Revenue';
@@ -315,52 +316,67 @@ export const orderRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const order = await ctx.db.order.findFirst({
-        where: {
-          OR: [
-            {
-              id: input.s?.trim()
+      return await withRedisCache(
+        `order:${input.s}`,
+        async () => {
+          return await ctx.db.order.findFirst({
+            where: {
+              OR: [
+                {
+                  id: input.s?.trim()
+                },
+                {
+                  user: {
+                    email: {
+                      contains: input.s?.trim(),
+                      mode: 'insensitive'
+                    }
+                  }
+                }
+              ]
             },
-            {
-              user: {
-                email: {
-                  contains: input.s?.trim(),
-                  mode: 'insensitive'
-                }
-              }
-            }
-          ]
-        },
-        include: {
-          orderItems: {
             include: {
-              product: {
+              orderItems: {
                 include: {
-                  images: true
+                  product: {
+                    include: {
+                      images: true
+                    }
+                  }
+                }
+              },
+              vouchers: true,
+              user: {
+                include: {
+                  image: true,
+                  address: true
+                }
+              },
+              payment: true,
+              delivery: {
+                include: {
+                  address: true
                 }
               }
             }
-          },
-          vouchers: true,
-          user: {
-            include: {
-              image: true,
-              address: true
-            }
-          },
-          payment: true,
-          delivery: {
-            include: {
-              address: true
-            }
-          }
-        }
-      });
-
-      return order;
+          });
+        },
+        60 * 60
+      );
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const order = await ctx.db.order.findMany();
+    const order = await ctx.db.order.findMany({
+      include: {
+        orderItems: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      }
+    });
     return order;
   })
 });

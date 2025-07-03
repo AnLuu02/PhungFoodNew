@@ -1,7 +1,7 @@
 import { PaymentType } from '@prisma/client';
 import { z } from 'zod';
-import { seedPayments } from '~/app/lib/utils/data-test/seed';
-import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
+import { seedPayments } from '~/lib/data-test/seed';
+import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 

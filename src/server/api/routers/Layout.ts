@@ -94,13 +94,13 @@ export const layoutRouter = createTRPCRouter({
       caller.Review.getAll(),
       caller.SubCategory.getAll(),
       caller.Image.getAll(),
-      caller.RolePermission.getAllRole(),
-      caller.Revenue.getRevenueByDuringDate({
-        period: input?.period || '7 ngày'
-      })
+      caller.RolePermission.getAllRole()
+      // caller.Revenue.getRevenueByDuringDate({
+      //   period: input?.period || '7 ngày'
+      // })
     ]);
 
-    return results;
+    return results.map((item: any) => item.status === 'fulfilled' && item.value);
   }),
   getDataAboutUs: publicProcedure.query(async ({ ctx }) => {
     const caller = createCaller(ctx);

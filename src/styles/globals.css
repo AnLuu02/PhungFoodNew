@@ -48,26 +48,24 @@ a {
   opacity: 1;
   background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
 }
-/* Toàn bộ trang */
+/* Cho toàn bộ trình duyệt hiện thanh cuộn */
 ::-webkit-scrollbar {
-  width: 6px; /* Độ rộng thanh cuộn */
+  width: 6px; /* độ rộng thanh scroll */
 }
 
-/* Track (đường ray của thanh cuộn) */
 ::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background: #f1f1f1;
+  background: transparent; /* nền track (phần bên dưới thanh kéo) */
 }
 
-/* Thanh cuộn */
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: #888;
+  border-radius: 8px; /* bo góc thanh kéo */
+  background-color: rgba(0, 0, 0, 0.4); /* màu thanh kéo */
 }
 
-/* Hover vào thanh cuộn */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+/* Firefox */
+* {
+  scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
+  scrollbar-width: thin; /* mảnh */
 }
 
 .tableAdmin::-webkit-scrollbar {

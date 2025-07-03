@@ -19,13 +19,13 @@ import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import LoadingComponent from '~/app/_components/Loading/Loading';
-import { User } from '~/app/Entity/UserEntity';
-import fetcher from '~/app/lib/utils/func-handler/fetcher';
-import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { LocalAddressType, LocalGender } from '~/app/lib/utils/zod/EnumType';
-import { userSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { User } from '~/Entity/UserEntity';
+import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import fetcher from '~/lib/func-handler/fetcher';
+import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { LocalAddressType, LocalGender } from '~/lib/zod/EnumType';
+import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateUser({ email, setOpened }: { email: string; setOpened: any }) {
@@ -145,9 +145,9 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
 
   const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
 
-  return loading || isLoading ? (
-    <LoadingComponent />
-  ) : (
+  if (loading || isLoading) return <LoadingSpiner />;
+
+  return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
         <GridCol span={3}>

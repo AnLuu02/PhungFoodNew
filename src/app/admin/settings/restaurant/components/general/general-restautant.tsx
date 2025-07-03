@@ -33,11 +33,10 @@ import {
 } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import LoadingComponent from '~/app/_components/Loading/Loading';
-import { Restaurant } from '~/app/Entity/RestaurantEntity';
-import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { restaurantSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { Restaurant } from '~/Entity/RestaurantEntity';
+import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { restaurantSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 const SOCIAL_OPTIONS = [
@@ -46,8 +45,7 @@ const SOCIAL_OPTIONS = [
   { value: 'twitter', label: 'Twitter' }
 ];
 
-export default function GeneralSettingsManagement() {
-  const { data, isLoading }: any = api.Restaurant.getOne.useQuery();
+export default function GeneralSettingsManagement({ data }: { data: any }) {
   const {
     control,
     handleSubmit,
@@ -58,8 +56,8 @@ export default function GeneralSettingsManagement() {
   } = useForm<Restaurant>({
     resolver: zodResolver(restaurantSchema),
     defaultValues: {
-      id: '',
-      name: '',
+      id: data?.id,
+      name: data?.name,
       address: '',
       phone: '',
       openedHours: '',
@@ -80,7 +78,7 @@ export default function GeneralSettingsManagement() {
 
   useEffect(() => {
     if (data?.id) {
-      if (data && data?.logo?.url && data?.logo?.url !== '') {
+      if (data?.logo?.url && data?.logo?.url !== '') {
         vercelBlobToFile(data?.logo?.url as string)
           .then(file => {
             setValue('logo.url', file as File);
@@ -142,19 +140,22 @@ export default function GeneralSettingsManagement() {
     }
   };
 
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  return (
     <>
       <Paper withBorder p='md' radius='md'>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack>
-            <Title className='font-quicksand' order={3}>
-              Cài đặt nhà hàng
-            </Title>
+            <Group justify='space-between'>
+              <Title className='font-quicksand' order={3}>
+                Cài đặt nhà hàng
+              </Title>
+              <Button type='submit' loading={isSubmitting} leftSection={<IconSpacingVertical size={16} />}>
+                Lưu thay đổi
+              </Button>
+            </Group>
 
-            <Grid>
-              <GridCol span={6}>
+            <Grid justify='space-between' columns={24}>
+              <GridCol span={13}>
                 <Stack>
                   <Controller
                     control={control}
@@ -251,6 +252,99 @@ export default function GeneralSettingsManagement() {
                     )}
                   />
 
+                  <Divider label='Thời gian hoạt động' labelPosition='center' />
+
+                  <Stack gap='sm'>
+                    <Group justify='space-between'>
+                      <Text fw={500}>Thời gian hoạt động</Text>
+                      <Controller
+                        name='isClose'
+                        control={control}
+                        render={({ field }) => (
+                          <Switch
+                            label='Tạm đóng cửa'
+                            checked={field.value}
+                            onChange={e => field.onChange(e.currentTarget.checked)}
+                            error={errors.isClose?.message}
+                          />
+                        )}
+                      />
+                    </Group>
+
+                    <Grid>
+                      <Grid.Col span={6}>
+                        <Controller
+                          disabled={watch('isClose') || data?.isClose}
+                          name='openedHours'
+                          control={control}
+                          render={({ field }) => (
+                            <TimeInput
+                              label='Giờ mở cửa'
+                              placeholder='HH:MM'
+                              leftSection={<IconClock size={16} />}
+                              {...field}
+                              value={field.value as string}
+                              error={errors.openedHours?.message}
+                            />
+                          )}
+                        />
+                      </Grid.Col>
+                      <Grid.Col span={6}>
+                        <Controller
+                          name='closedHours'
+                          disabled={watch('isClose') || data?.isClose}
+                          control={control}
+                          render={({ field }) => (
+                            <TimeInput
+                              label='Giờ đóng cửa'
+                              placeholder='HH:MM'
+                              leftSection={<IconClock size={16} />}
+                              {...field}
+                              error={errors.closedHours?.message}
+                            />
+                          )}
+                        />
+                      </Grid.Col>
+                    </Grid>
+                  </Stack>
+                </Stack>
+              </GridCol>
+
+              <GridCol span={10}>
+                <Stack>
+                  <Image
+                    loading='lazy'
+                    src={
+                      watch('logo.url') instanceof File
+                        ? URL.createObjectURL(watch('logo.url') as File)
+                        : watch('logo.url') || '/images/jpg/empty-300x240.jpg'
+                    }
+                    alt='Product Image'
+                    className='mb-4'
+                    mah={240}
+                  />
+                  <Controller
+                    name='logo.url'
+                    control={control}
+                    rules={{
+                      validate: file =>
+                        file && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
+                          ? true
+                          : 'Only PNG, JPEG, or JPG files are allowed'
+                    }}
+                    render={({ field }) => (
+                      <FileInput
+                        leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                        label='Logo nhà hàng'
+                        placeholder='Choose a file'
+                        leftSectionPointerEvents='none'
+                        {...field}
+                        error={errors.logo?.message}
+                        accept='image/png,image/jpeg,image/jpg'
+                      />
+                    )}
+                  />
+
                   <Divider label='Mạng xã hội' labelPosition='center' />
 
                   {fields.map((item, index) => (
@@ -285,105 +379,17 @@ export default function GeneralSettingsManagement() {
                       <Button color='red' variant='outline' onClick={() => remove(index)}>
                         <IconTrash size={16} />
                       </Button>
+
+                      <Button
+                        mt='sm'
+                        w={'100%'}
+                        leftSection={<IconPlus size={16} />}
+                        onClick={() => append({ id: '', key: '', url: '' })}
+                      >
+                        Thêm liên kết
+                      </Button>
                     </Group>
                   ))}
-
-                  <Button
-                    mt='sm'
-                    leftSection={<IconPlus size={16} />}
-                    onClick={() => append({ id: '', key: '', url: '' })}
-                  >
-                    Thêm liên kết
-                  </Button>
-
-                  <Divider label='Thời gian hoạt động' labelPosition='center' />
-
-                  <Group align='center'>
-                    <Text size='sm' fw={500}>
-                      Thời gian hoạt động
-                    </Text>
-
-                    <Controller
-                      name='isClose'
-                      control={control}
-                      render={({ field }) => (
-                        <Switch
-                          label='Đóng cửa'
-                          checked={field.value}
-                          onChange={e => field.onChange(e.currentTarget.checked)}
-                          error={errors.isClose?.message}
-                        />
-                      )}
-                    />
-
-                    {!closed && (
-                      <>
-                        <Controller
-                          name='openedHours'
-                          control={control}
-                          render={({ field }) => (
-                            <TimeInput
-                              label='Mở cửa'
-                              leftSection={<IconClock size={16} />}
-                              {...field}
-                              value={field.value as string}
-                              error={errors.openedHours?.message}
-                            />
-                          )}
-                        />
-
-                        <Controller
-                          name='closedHours'
-                          control={control}
-                          render={({ field }) => (
-                            <TimeInput
-                              label='Đóng cửa'
-                              leftSection={<IconClock size={16} />}
-                              {...field}
-                              error={errors.closedHours?.message}
-                            />
-                          )}
-                        />
-                      </>
-                    )}
-                  </Group>
-                </Stack>
-              </GridCol>
-              <GridCol span={6}>
-                <Stack>
-                  <Image
-                    loading='lazy'
-                    src={
-                      watch('logo.url') instanceof File
-                        ? URL.createObjectURL(watch('logo.url') as File)
-                        : watch('logo.url') || '/images/jpg/empty-300x240.jpg'
-                    }
-                    alt='Product Image'
-                    className='mb-4'
-                    w={500}
-                    h={500}
-                  />
-                  <Controller
-                    name='logo.url'
-                    control={control}
-                    rules={{
-                      validate: file =>
-                        file && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
-                          ? true
-                          : 'Only PNG, JPEG, or JPG files are allowed'
-                    }}
-                    render={({ field }) => (
-                      <FileInput
-                        leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
-                        label='Ảnh chính'
-                        placeholder='Choose a file'
-                        leftSectionPointerEvents='none'
-                        {...field}
-                        error={errors.logo?.message}
-                        accept='image/png,image/jpeg,image/jpg'
-                      />
-                    )}
-                  />
                 </Stack>
               </GridCol>
             </Grid>

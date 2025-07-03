@@ -2,8 +2,8 @@ import { Badge, Button, Card, Group, Stack, Text } from '@mantine/core';
 import { IconMaximize, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
-import { NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import { formatBytes } from './ListImages/ListImages';
 
@@ -28,7 +28,7 @@ const getImageSizePixel = (file?: File): Promise<{ width: number; height: number
   });
 };
 
-export function PhotoCard({ id, name, file, postingDate, onOpened }: PhotoCardProps) {
+export default function PhotoCard({ id, name, file, postingDate, onOpened }: PhotoCardProps) {
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const mutation = api.Image.delete.useMutation();
   const utils = api.useUtils();
@@ -49,10 +49,10 @@ export function PhotoCard({ id, name, file, postingDate, onOpened }: PhotoCardPr
           src={file instanceof File ? URL.createObjectURL(file) : '/images/empty-300x240.jpg'}
           height={160}
           width={160}
-          objectFit='cover'
+          style={{ objectFit: 'cover' }}
           alt={name}
           onClick={() => onOpened({ id, name, file, dimensions, postingDate })}
-          style={{ cursor: 'pointer' }}
+          className='cursor-pointer'
         />
       </Card.Section>
 

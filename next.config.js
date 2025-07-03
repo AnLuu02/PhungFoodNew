@@ -15,11 +15,27 @@ const config = {
     ignoreDuringBuilds: true
   },
   images: {
-    domains: [
-      'aoetaifwgjb4klqx.public.blob.vercel-storage.com',
-      'images.unsplash.com',
-      'raw.githubusercontent.com',
-      'lh3.googleusercontent.com'
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'aoetaifwgjb4klqx.public.blob.vercel-storage.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**'
+      }
     ]
   }
 };

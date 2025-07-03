@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
-import { generatePDF } from '~/app/lib/utils/func-handler/generatePDF';
+import { generatePDF } from '~/lib/func-handler/generatePDF';
 
 export async function POST(req: NextRequest) {
   try {

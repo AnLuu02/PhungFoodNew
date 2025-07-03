@@ -1,17 +1,13 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
+import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 import { CreateSubCategoryButton } from './components/Button';
 import TableSubCategory from './components/Table/TableSubCategory';
 export const metadata: Metadata = {
-  title: {
-    default: 'Quản lý danh mục con ',
-    absolute: 'Quản lý danh mục con',
-    template: '%s | Quản lý danh mục con'
-  }
+  title: 'Quản lý danh mục con '
 };
 export default async function SubCategoryManagementPage({
   searchParams

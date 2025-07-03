@@ -1,38 +1,17 @@
-'use client';
-
-import { Group, Tabs, Title } from '@mantine/core';
-import { IconBuildingStore, IconPalette } from '@tabler/icons-react';
-import { useState } from 'react';
-import BannerManagement from './components/banners/banner-management';
-import GeneralSettingsManagement from './components/general/general-restautant';
-
-export default function SettingPage() {
-  const [activeTab, setActiveTab] = useState<string | null>('general');
-
+import { Metadata } from 'next';
+import { api } from '~/trpc/server';
+import SettingPageClient from './pageClient';
+export const metadata: Metadata = {
+  title: 'Quản lý cài đặt '
+};
+export default async function SettingPage() {
+  const [banner, restaurant] = await Promise.allSettled([api.Restaurant.getOneBanner({}), api.Restaurant.getOne()]);
   return (
-    <>
-      <Group justify='space-between' mb='lg'>
-        <Title order={2}>Cài đặt</Title>
-      </Group>
-
-      <Tabs value={activeTab} onChange={setActiveTab}>
-        <Tabs.List mb='xl'>
-          <Tabs.Tab value='general' leftSection={<IconBuildingStore size={16} />}>
-            Tổng quan
-          </Tabs.Tab>
-          <Tabs.Tab value='layout' leftSection={<IconPalette size={16} />}>
-            Cài đặt banner
-          </Tabs.Tab>
-        </Tabs.List>
-
-        <Tabs.Panel value='general'>
-          <GeneralSettingsManagement />
-        </Tabs.Panel>
-
-        <Tabs.Panel value='layout'>
-          <BannerManagement />
-        </Tabs.Panel>
-      </Tabs>
-    </>
+    <SettingPageClient
+      data={{
+        banner: banner.status === 'fulfilled' ? banner.value : {},
+        restaurant: restaurant.status === 'fulfilled' ? restaurant.value : {}
+      }}
+    />
   );
 }

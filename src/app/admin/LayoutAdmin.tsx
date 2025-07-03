@@ -2,9 +2,9 @@
 
 import { AppShell, Box, Burger } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import Header from '../_components/Admin/Header';
-import Navbar from '../_components/Admin/Navbar';
-import BreadcrumbsComponent from '../_components/Breadcrumbs';
+import Header from '~/components/Admin/Header';
+import Navbar from '~/components/Admin/Navbar';
+import BreadcrumbsBase from '~/components/BreadcrumbsBase';
 
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
@@ -37,7 +37,7 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
 
       <AppShell.Main w={'100%'} m={0}>
         <Box mb='md'>
-          <BreadcrumbsComponent />
+          <BreadcrumbsBase />
         </Box>
         {children}
       </AppShell.Main>

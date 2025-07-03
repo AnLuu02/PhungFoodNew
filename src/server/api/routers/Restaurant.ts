@@ -1,12 +1,20 @@
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
-import { LocalEntityType, LocalImageType } from '~/app/lib/utils/zod/EnumType';
+import { redis } from '~/lib/cache/redis';
+import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-upload';
+import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const restaurantRouter = createTRPCRouter({
   getOne: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.restaurant.findFirst({ include: { logo: true, socials: true } });
+    return await withRedisCache(
+      'getOne-restaurant',
+      async () => {
+        return await ctx.db.restaurant.findFirst({ include: { logo: true, socials: true } });
+      },
+      60 * 60 * 24
+    );
   }),
 
   create: publicProcedure
@@ -151,7 +159,7 @@ export const restaurantRouter = createTRPCRouter({
               : undefined
           }
         });
-
+        await redis.del('getOne-restaurant');
         return { success: true, message: 'Cập nhật nhà hàng thành công.', record: updatedRestaurant };
       }
     }),

@@ -1,16 +1,16 @@
 'use client';
 import { Flex, Grid, GridCol } from '@mantine/core';
 import Link from 'next/link';
-import BButton from '~/app/_components/Button';
-import Empty from '~/app/_components/Empty';
-import ProductCardCarouselVertical from '~/app/_components/Web/Home/_Components/ProductCardCarouselVertical';
+import BButton from '~/components/Button';
+import Empty from '~/components/Empty';
+import ProductCardCarouselVertical from '~/components/Web/Home/components/ProductCardCarouselVertical';
 
 const QuickMenu = ({ categories, products, searchParams }: any) => {
   return (
     <>
       <Flex align={'center'} gap={'xs'} mb={20} wrap={{ base: 'wrap', md: 'wrap', lg: 'nowrap' }}>
         {categories?.map((item: any, index: number) => (
-          <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`} prefetch={false}>
+          <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`}>
             <BButton
               active={item.tag === searchParams?.['danh-muc']}
               key={index}

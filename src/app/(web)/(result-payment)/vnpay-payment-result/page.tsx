@@ -6,19 +6,9 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import LoadingComponent from '~/app/_components/Loading/Loading';
-import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
-
-function formatCustomTimestamp(timestamp: string) {
-  if (!timestamp || timestamp.length !== 14) return 'N/A';
-  const year = timestamp.slice(0, 4);
-  const month = timestamp.slice(4, 6);
-  const day = timestamp.slice(6, 8);
-  const hour = timestamp.slice(8, 10);
-  const minute = timestamp.slice(10, 12);
-  const second = timestamp.slice(12, 14);
-  return ` ${hour}:${minute}:${second}, ${day}/${month}/${year} `;
-}
+import LoadingComponent from '~/components/Loading/Loading';
+import { formatCustomTimestamp } from '~/lib/func-handler/formatDate';
+import { getStatusColor, getStatusIcon, getStatusText } from '~/lib/func-handler/get-status-order';
 
 export default function PaymentResult() {
   const searchParams = useSearchParams();
@@ -152,7 +142,7 @@ export default function PaymentResult() {
           </>
         )}
         <Group justify='center' mt='md'>
-          <Link href='/' prefetch={false}>
+          <Link href='/'>
             <Button variant='outline' leftSection={<IconArrowLeft size={16} />}>
               Quay về trang chủ
             </Button>

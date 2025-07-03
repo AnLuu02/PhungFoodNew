@@ -1,17 +1,13 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
+import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 import { CreateNotificationButton } from './components/Button';
 import TableNotification from './components/Table/TableNotification';
 export const metadata: Metadata = {
-  title: {
-    default: 'Quản lý thông báo ',
-    absolute: 'Quản lý thông báo',
-    template: '%s | Quản lý thông báo'
-  }
+  title: 'Quản lý thông báo '
 };
 export default async function NotificationManagementPage({
   searchParams

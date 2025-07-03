@@ -1,9 +1,10 @@
-'use client';
-import { Card, Tabs, Title } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import TableRevenue from './components/Table/TableRevenue';
-
-export default function RevenueManagementPage({
+import { Metadata } from 'next';
+import { api } from '~/trpc/server';
+import RevenueManagementPageClient from './components/pageClient';
+export const metadata: Metadata = {
+  title: 'Quản lý doanh thu '
+};
+export default async function RevenueManagementPage({
   searchParams
 }: {
   searchParams?: {
@@ -12,41 +13,7 @@ export default function RevenueManagementPage({
     limit?: string;
   };
 }) {
-  const [tab, setTab] = useState('user');
-  const limit = searchParams?.limit ?? '3';
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    params.set('revenue', tab);
-    const url = `${location.pathname}?${params.toString()}`;
-    history.replaceState(null, '', url);
-  }, [tab]);
-
-  return (
-    <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
-      <Title mb='xs' className='font-quicksand'>
-        Quản lý doanh thu
-      </Title>
-      <Tabs value={tab} onChange={value => setTab(value ?? 'user')}>
-        <Tabs.List>
-          <Tabs.Tab value='user'>Người dùng</Tabs.Tab>
-          <Tabs.Tab value='date'>Theo ngày</Tabs.Tab>
-          <Tabs.Tab value='month'>Theo tháng</Tabs.Tab>
-          <Tabs.Tab value='year'>Theo năm</Tabs.Tab>
-        </Tabs.List>
-
-        <Tabs.Panel value='user'>
-          <TableRevenue s={tab} />
-        </Tabs.Panel>
-        <Tabs.Panel value='date'>
-          <TableRevenue s={tab} />
-        </Tabs.Panel>
-        <Tabs.Panel value='month'>
-          <TableRevenue s={tab} />
-        </Tabs.Panel>
-        <Tabs.Panel value='year'>
-          <TableRevenue s={tab} />
-        </Tabs.Panel>
-      </Tabs>
-    </Card>
-  );
+  const revenues =
+    searchParams?.revenue === 'user' ? await api.Revenue.getRevenueByUser() : await api.Revenue.getRevenueByDate();
+  return <RevenueManagementPageClient revenues={revenues} searchParams={searchParams} />;
 }

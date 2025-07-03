@@ -4,7 +4,7 @@ import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '~/styles/globals.css';
 
-import { Box, ColorSchemeScript, createTheme, MantineProvider, rem } from '@mantine/core';
+import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { type Metadata } from 'next';
@@ -12,16 +12,11 @@ import { getServerSession, Session } from 'next-auth';
 import { Quicksand } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import { TRPCReactProvider } from '~/trpc/react';
-import ScrollToTop from './_components/ScrollToTop';
-import { authOptions } from './api/auth/[...nextauth]/options';
 
 import localFont from 'next/font/local';
-import FloatingWidget from './_components/FloatingWidget/FloatingWidget';
-import FooterWeb from './_components/Web/Footer/FooterWeb';
-import HeaderWeb from './_components/Web/Header/HeaderWeb';
-import ServiceComponent from './_components/Web/Home/_Components/ServiceComponent';
-import { GlobalModal } from './contexts/GlobalModal';
-import { ModalProvider } from './contexts/ModalContext';
+import ScrollToTop from '~/components/ScrollToTop';
+import { ModalProvider } from '~/contexts/ModalContext';
+import { authOptions } from './api/auth/[...nextauth]/options';
 
 const font = localFont({
   src: './fonts/my-font-mergeblack.ttf',
@@ -84,18 +79,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>
-              <ModalProvider>
-                <Box p={0} m={0}>
-                  <HeaderWeb />
-                  {children}
-                  <Box pl={{ base: rem(20), lg: rem(130) }} pr={{ base: rem(20), lg: rem(130) }}>
-                    <ServiceComponent />
-                  </Box>
-                  <FloatingWidget />
-                  <FooterWeb />
-                </Box>
-                <GlobalModal />
-              </ModalProvider>
+              <ModalProvider>{children}</ModalProvider>
             </ModalsProvider>
             <ScrollToTop />
           </MantineProvider>

@@ -1,9 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { seedCategory } from '~/app/lib/utils/data-test/seed';
-import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
-import { withRedisCache } from '~/app/lib/utils/func-handler/withRedisCache';
-import { LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
+import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { seedCategory } from '~/lib/data-test/seed';
+import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
+import { LocalProductStatus } from '~/lib/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 const findExistingCategory = async (ctx: any, tag: string) => {
   return await ctx.db.category.findFirst({ where: { tag } });

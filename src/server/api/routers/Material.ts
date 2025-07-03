@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
-import { withRedisCache } from '~/app/lib/utils/func-handler/withRedisCache';
+import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 

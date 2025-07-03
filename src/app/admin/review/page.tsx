@@ -1,17 +1,13 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
+import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 import { CreateReviewButton } from './components/Button';
 import TableReview from './components/Table/TableReview';
 export const metadata: Metadata = {
-  title: {
-    default: 'Quản lý đánh giá ',
-    absolute: 'Quản lý đánh giá',
-    template: '%s | Quản lý đánh giá'
-  }
+  title: 'Quản lý đánh giá'
 };
 export default async function ReviewManagementPage({
   searchParams

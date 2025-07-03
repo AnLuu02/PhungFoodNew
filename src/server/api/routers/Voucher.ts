@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
+import { withRedisCache } from '~/lib/cache/withRedisCache';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -184,12 +185,17 @@ export const voucherRouter = createTRPCRouter({
       return voucher;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const voucher = await ctx.db.voucher.findMany({
-      include: {
-        products: true
-      }
-    });
-    return voucher;
+    return await withRedisCache(
+      'voucher:getAll',
+      async () => {
+        return await ctx.db.voucher.findMany({
+          include: {
+            products: true
+          }
+        });
+      },
+      60 * 60 * 24
+    );
   }),
 
   // update: publicProcedure

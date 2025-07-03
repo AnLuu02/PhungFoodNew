@@ -3,10 +3,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, GridCol, MultiSelect, Paper, Stack, Switch, Text, Textarea, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import LoadingSpiner from '~/app/_components/Loading/LoadingSpiner';
-import { Notification } from '~/app/Entity/Notification';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { notificationSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { Notification } from '~/Entity/Notification';
+import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { notificationSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function UpdateNotification({ notificationId, setOpened }: { notificationId: string; setOpened: any }) {

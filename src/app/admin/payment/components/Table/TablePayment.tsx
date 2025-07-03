@@ -3,9 +3,9 @@ import { Button, Checkbox, Group, Menu, Table, Text } from '@mantine/core';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
-import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import CustomPagination from '~/app/_components/Pagination';
-import { LocalPaymentType } from '~/app/lib/utils/zod/EnumType';
+import PageSizeSelector from '~/components/Admin/Perpage';
+import CustomPagination from '~/components/Pagination';
+import { LocalPaymentType } from '~/lib/zod/EnumType';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 
 export default function TablePayment({ s, data, user }: { s: string; data: any; user?: any }) {

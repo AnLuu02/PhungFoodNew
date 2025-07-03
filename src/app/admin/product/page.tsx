@@ -1,17 +1,13 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
+import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 import { CreateProductButton } from './components/Button';
 import TableProduct from './components/Table/TableProduct';
 export const metadata: Metadata = {
-  title: {
-    default: 'Quản lý sản phẩm ',
-    absolute: 'Quản lý sản phẩm',
-    template: '%s | Quản lý sản phẩm'
-  }
+  title: 'Quản lý sản phẩm '
 };
 export default async function ProductManagementPage({
   searchParams

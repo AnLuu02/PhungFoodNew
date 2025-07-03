@@ -1,12 +1,12 @@
-import { Box, Center, Flex, Grid, GridCol, Group, Highlight, Paper, Stack, Text } from '@mantine/core';
+import { Box, Center, Flex, Grid, GridCol, Group, Highlight, Image, Paper, Stack, Text } from '@mantine/core';
 import { IconClockHour10 } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
-import Empty from '~/app/_components/Empty';
-import CustomPagination from '~/app/_components/Pagination';
-import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
-import { TOP_POSITION_STICKY } from '~/app/lib/utils/constants/constant';
+import Empty from '~/components/Empty';
+import CustomPagination from '~/components/Pagination';
+import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import { TOP_POSITION_STICKY } from '~/constants';
+import { formatDate } from '~/lib/func-handler/formatDate';
 import { api } from '~/trpc/server';
 export const metadata: Metadata = {
   title: 'Tin tức',
@@ -54,13 +54,14 @@ const News = async ({
                   <Image
                     loading='lazy'
                     src={item.image || '/images/jpg/empty-300x240.jpg'}
-                    fill
+                    w={'100%'}
+                    h={'100%'}
                     alt={item.title}
-                    objectFit='cover'
+                    className='object-cover'
                   />
                 </Paper>
                 <Stack gap={5} flex={1}>
-                  <Link href={item.link} target='_blank' prefetch={false}>
+                  <Link href={item.link} target='_blank'>
                     <Highlight highlight={s} size='xl' fw={700} className='text-black hover:text-[#008b4b]'>
                       {item.title}
                     </Highlight>
@@ -68,14 +69,16 @@ const News = async ({
                   <Group gap={5} m={0} p={0}>
                     <IconClockHour10 size={16} color='gray' />
                     <Text size='sm' c={'dimmed'}>
-                      {new Date(item.pubDate).toLocaleDateString()}
+                      {formatDate(item.pubDate)}
                     </Text>
                   </Group>
                   <Text size='sm' lineClamp={1}>
                     {item.description}
                   </Text>
-                  <Link href={item.link} className='text-lg hover:text-[#008b4b]' target='_blank' prefetch={false}>
-                    Đọc tiếp
+                  <Link href={item.link} target='_blank'>
+                    <Text fw={700} size='md' className='hover:text-[#008b4b]'>
+                      Đọc tiếp
+                    </Text>
                   </Link>
                 </Stack>
               </Flex>
@@ -111,14 +114,15 @@ const News = async ({
             <Stack gap={'sm'} p={'xs'}>
               {news && news?.length > 0 ? (
                 news?.slice(0, 4).map((item: any) => (
-                  <Link key={item.id} className='h-full w-full' href={item.link} target='_blank' prefetch={false}>
+                  <Link key={item.id} className='h-full w-full' href={item.link} target='_blank'>
                     <Flex gap={'sm'} align={'flex-start'} justify={'flex-start'}>
                       <Paper radius={0} className='overflow-hidden' w={100} h={64}>
                         <Image
                           loading='lazy'
                           src={item.image || '/images/jpg/empty-300x240.jpg'}
-                          fill
-                          objectFit='cover'
+                          w={'100%'}
+                          h={'100%'}
+                          className='object-cover'
                           alt={item.title}
                         />
                       </Paper>

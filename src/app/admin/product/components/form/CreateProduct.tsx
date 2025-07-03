@@ -21,12 +21,12 @@ import { ProductStatus } from '@prisma/client';
 import { IconFile, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Product } from '~/app/Entity/ProductEntity';
-import { createTag } from '~/app/lib/utils/func-handler/generateTag';
-import { fileToBase64 } from '~/app/lib/utils/func-handler/handle-file-upload';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
-import { productSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { Product } from '~/Entity/ProductEntity';
+import { createTag } from '~/lib/func-handler/generateTag';
+import { fileToBase64 } from '~/lib/func-handler/handle-file-upload';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { LocalProductStatus } from '~/lib/zod/EnumType';
+import { productSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export const regions = [

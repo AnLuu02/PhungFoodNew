@@ -1,8 +1,8 @@
 import { Badge, Box, Button, Group, NumberInput, Stack, Table, Text } from '@mantine/core';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
-import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
-import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { getImageProduct } from '~/lib/func-handler/getImageProduct';
+import { LocalImageType } from '~/lib/zod/EnumType';
 const CartTable = ({ cart, setCart, updateQuantity }: any) => {
   return (
     <Table className='mb-6'>
@@ -27,7 +27,7 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
                       getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                     }
                     fill
-                    objectFit='cover'
+                    style={{ objectFit: 'cover' }}
                     alt={item.name}
                   />
                 </Box>

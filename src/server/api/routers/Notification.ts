@@ -114,6 +114,31 @@ export const notificationRouter = createTRPCRouter({
         record: notification
       };
     }),
+  deleteFilter: publicProcedure
+    .input(
+      z.object({
+        where: z.record(z.any())
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const deleted = await ctx.db.notification.deleteMany({
+          where: input.where as Prisma.NotificationWhereInput
+        });
+
+        return {
+          success: true,
+          message: `Đã xóa ${deleted.count} thông báo.`,
+          record: deleted
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message: 'Xóa thông báo thất bại.',
+          error: error instanceof Error ? error.message : 'Lỗi không xác định'
+        };
+      }
+    }),
 
   getFilter: publicProcedure
     .input(

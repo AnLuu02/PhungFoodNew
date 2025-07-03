@@ -1,18 +1,12 @@
 'use client';
-import { Button, Checkbox, Group, Menu, Table, Text } from '@mantine/core';
+import { Group, Table, Text } from '@mantine/core';
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { useState } from 'react';
-import LoadingComponent from '~/app/_components/Loading/Loading';
-import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
-import { api } from '~/trpc/react';
+import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
 
-export default function TableRevenue({ s }: { s: string }) {
-  const { data: revenues, isLoading } =
-    s === 'user' ? api.Revenue.getRevenueByUser.useQuery() : api.Revenue.getRevenueByDate.useQuery();
+export default function TableRevenue({ revenues, s }: { revenues: any; s: string }) {
   const currentItems = revenues || [];
-
   const columns: ColumnDef<any>[] = [
     {
       header: s === 'user' ? 'Người dùng' : s === 'date' ? 'Ngày' : s === 'month' ? 'Tháng' : 'Năm',
@@ -41,19 +35,13 @@ export default function TableRevenue({ s }: { s: string }) {
     }
   ];
 
-  const [columnVisibility, setColumnVisibility] = useState({});
   const table = useReactTable({
     data: currentItems,
     columns,
-    state: {
-      columnVisibility
-    },
-    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel()
   });
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+
+  return (
     <>
       <Group pb={'lg'}>
         <Group justify='space-between' mt={'md'} w={'100%'}>
@@ -62,30 +50,6 @@ export default function TableRevenue({ s }: { s: string }) {
             <SearchQueryParams />
           </Group>
         </Group>
-        <Menu shadow='md' width={220}>
-          <Menu.Target>
-            <Button variant='outline'>Tùy chỉnh bảng</Button>
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            <Menu.Item onClick={table.getToggleAllColumnsVisibilityHandler()}>
-              <Checkbox
-                label='Tất cả'
-                checked={table.getIsAllColumnsVisible()}
-                onChange={table.getToggleAllColumnsVisibilityHandler()}
-              />
-            </Menu.Item>
-            {table.getAllLeafColumns().map(column => (
-              <Menu.Item key={column.id} onClick={column.getToggleVisibilityHandler()}>
-                <Checkbox
-                  label={column.id}
-                  checked={column.getIsVisible()}
-                  onChange={column.getToggleVisibilityHandler()}
-                />
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
       </Group>
       <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>

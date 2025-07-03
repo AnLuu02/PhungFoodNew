@@ -2,19 +2,17 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Category } from '~/app/Entity/CategoryEntity';
-import { createTag } from '~/app/lib/utils/func-handler/generateTag';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { categorySchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { Category } from '~/Entity/CategoryEntity';
+import { createTag } from '~/lib/func-handler/generateTag';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { categorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
 export default function CreateCategory({ setOpened }: { setOpened: any }) {
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    watch,
-    setValue
+    formState: { errors, isSubmitting }
   } = useForm<Category>({
     resolver: zodResolver(categorySchema),
     defaultValues: {

@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import qs from 'qs';
-import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
 
 export async function GET(req: NextRequest) {

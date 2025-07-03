@@ -3,10 +3,10 @@ import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
-import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import CustomPagination from '~/app/_components/Pagination';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
-import { LocalVoucherType } from '~/app/lib/utils/zod/EnumType';
+import PageSizeSelector from '~/components/Admin/Perpage';
+import CustomPagination from '~/components/Pagination';
+import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { DeleteVoucherButton, UpdateVoucherButton } from '../Button';
 
 export default function TableVoucher({ s, data, user }: { s: string; data: any; user?: any }) {

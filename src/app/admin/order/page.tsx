@@ -1,18 +1,13 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import SearchQueryParams from '~/app/_components/Search/SearchQueryParams';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
-import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
+import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
-import { CreateOrderButton, SendMessageAllUserOrderButton } from './components/Button';
+import { CreateOrderButton, SendMessageAllUserAdvanced } from './components/Button';
 import TableOrder from './components/Table/TableOrder';
 export const metadata: Metadata = {
-  title: {
-    default: 'Quản lý hóa đơn ',
-    absolute: 'Quản lý hóa đơn',
-    template: '%s | Quản lý hóa đơn'
-  }
+  title: 'Quản lý hóa đơn '
 };
 export default async function OrderManagementPage({
   searchParams
@@ -29,7 +24,6 @@ export default async function OrderManagementPage({
   const totalData = await api.Order.getAll();
   const user = await getServerSession(authOptions);
   const data = await api.Order.find({ skip: +currentPage, take: +limit, s });
-  const orderProcessing = await api.Order.getFilter({ s: LocalOrderStatus.PENDING });
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
       <Title mb='xs' className='font-quicksand'>
@@ -40,7 +34,7 @@ export default async function OrderManagementPage({
         <Group>
           <SearchQueryParams />
           <CreateOrderButton />
-          <SendMessageAllUserOrderButton orderProcessing={orderProcessing} />
+          <SendMessageAllUserAdvanced />
         </Group>
       </Group>
 

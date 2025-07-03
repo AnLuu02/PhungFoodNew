@@ -2,12 +2,12 @@
 import { Box, Card, Center, Divider, Group, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useMemo } from 'react';
-import Empty from '~/app/_components/Empty';
-import { CartItemFastMenu } from '~/app/_components/Web/Home/_Components/CartItemFastMenu';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
-import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
-import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
-import { ButtonCheckout } from '../../thanh-toan/_components/ButtonCheckout';
+import Empty from '~/components/Empty';
+import CartItemFastMenu from '~/components/Web/Home/components/CartItemFastMenu';
+import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { getImageProduct } from '~/lib/func-handler/getImageProduct';
+import { LocalImageType } from '~/lib/zod/EnumType';
+import { ButtonCheckout } from '../../thanh-toan/components/ButtonCheckout';
 
 const QuickCart = () => {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });

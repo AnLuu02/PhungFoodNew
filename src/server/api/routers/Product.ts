@@ -1,12 +1,14 @@
 import { OrderStatus, ProductStatus } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
-import { UserRole } from '~/app/lib/utils/constants/roles';
-import { CreateTagVi } from '~/app/lib/utils/func-handler/CreateTag-vi';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/app/lib/utils/func-handler/handle-file-upload';
-import { LocalEntityType, LocalImageType, LocalOrderStatus, LocalProductStatus } from '~/app/lib/utils/zod/EnumType';
+import { UserRole } from '~/constants';
+import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-upload';
+import { LocalEntityType, LocalImageType, LocalOrderStatus, LocalProductStatus } from '~/lib/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createCaller } from '../root';
 
 export async function updateSales(ctx: any, status: OrderStatus, productId: string, soldQuantity: number) {
   await ctx.db.product.update({
@@ -648,54 +650,57 @@ export const productRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { s, hasCategory, hasCategoryChild, hasReview, hasUser, userRole }: any = input;
+      return await withRedisCache(
+        `getOne-product-${s}`,
+        async () => {
+          return await ctx.db.product.findFirst({
+            where: {
+              ...(userRole && userRole != UserRole.CUSTOMER
+                ? {}
+                : {
+                    status: LocalProductStatus.ACTIVE
+                  }),
 
-      const product = await ctx.db.product.findFirst({
-        where: {
-          ...(userRole && userRole != UserRole.CUSTOMER
-            ? {}
-            : {
-                status: LocalProductStatus.ACTIVE
-              }),
-
-          OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
-        },
-        include: {
-          images: true,
-          materials: true,
-          subCategory: {
+              OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
+            },
             include: {
-              image: true,
-              ...(hasCategoryChild
-                ? {
-                    category: hasCategory ? true : false
-                  }
-                : false)
-            }
-          },
-          review: {
-            ...(hasReview
-              ? {
-                  include: {
-                    user: {
-                      ...(hasUser
-                        ? {
-                            select: {
-                              id: true,
-                              name: true,
-                              image: true
-                            }
-                          }
-                        : false)
-                    }
-                  }
+              images: true,
+              materials: true,
+              subCategory: {
+                include: {
+                  image: true,
+                  ...(hasCategoryChild
+                    ? {
+                        category: hasCategory ? true : false
+                      }
+                    : false)
                 }
-              : false)
-          },
-          favouriteFood: true
-        }
-      });
-
-      return product;
+              },
+              review: {
+                ...(hasReview
+                  ? {
+                      include: {
+                        user: {
+                          ...(hasUser
+                            ? {
+                                select: {
+                                  id: true,
+                                  name: true,
+                                  image: true
+                                }
+                              }
+                            : false)
+                        }
+                      }
+                    }
+                  : false)
+              },
+              favouriteFood: true
+            }
+          });
+        },
+        60 * 60
+      );
     }),
   getAll: publicProcedure
     .input(
@@ -743,5 +748,37 @@ export const productRouter = createTRPCRouter({
       }
     });
     return totalProductSales._sum.soldQuantity;
-  })
+  }),
+  getProductBestSalerByQuarter: publicProcedure
+    .input(
+      z.object({
+        query: z.enum(['all', 'week', 'month', 'year']).default('week')
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { query }: any = input;
+      const caller = createCaller(ctx);
+
+      const orders: any = await caller.Order.getAll();
+
+      let products;
+      switch (query) {
+        case 'all':
+          products = orders?.map((order: any) => {});
+          break;
+        case 'week':
+          products = orders.filter((order: any) => order.createdAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+          break;
+        case 'month':
+          products = orders.filter((order: any) => order.createdAt > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
+          break;
+        case 'year':
+          products = orders.filter((order: any) => order.createdAt > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000));
+          break;
+        default:
+          products = orders;
+      }
+
+      return products;
+    })
 });

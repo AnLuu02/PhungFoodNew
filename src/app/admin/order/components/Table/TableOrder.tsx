@@ -3,11 +3,11 @@ import { Badge, Button, Checkbox, Flex, Group, Highlight, Menu, Table, Text } fr
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
-import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import CustomPagination from '~/app/_components/Pagination';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
-import { getStatusColor, getStatusIcon, getStatusText } from '~/app/lib/utils/func-handler/get-status-order';
-import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
+import PageSizeSelector from '~/components/Admin/Perpage';
+import CustomPagination from '~/components/Pagination';
+import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { getStatusColor, getStatusIcon, getStatusText } from '~/lib/func-handler/get-status-order';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import {
   CancleOrderButton,
   DeleteOrderButton,
@@ -67,12 +67,6 @@ export default function TableOrder({ s, data, user }: { data: any; s: string; us
               {getStatusIcon(info.row.original.status)}
             </Flex>
           </Badge>
-          {info.row.original.status === LocalOrderStatus.DELIVERED && <SuccessOrderButton id={info.row.original.id} />}
-          {info.row.original.status === LocalOrderStatus.PENDING && <DeliveryOrderButton id={info.row.original.id} />}
-          {info.row.original.status === LocalOrderStatus.PROCESSING && (
-            <SendMessageOrderButton id={info.row.original.id} />
-          )}
-          {info.row.original.status !== LocalOrderStatus.CANCELLED && <CancleOrderButton id={info.row.original.id} />}
         </Group>
       )
     },
@@ -82,11 +76,27 @@ export default function TableOrder({ s, data, user }: { data: any; s: string; us
         <Group className='text-center'>
           {user?.user && (
             <>
-              <UpdateOrderButton id={info.row.original.id} />
-              <SendOrderButton order={info.row.original} />
-              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
-                <DeleteOrderButton id={info.row.original.id} />
-              )}
+              <Group>
+                {info.row.original.status === LocalOrderStatus.DELIVERED && (
+                  <SuccessOrderButton id={info.row.original.id} />
+                )}
+                {info.row.original.status === LocalOrderStatus.PENDING && (
+                  <DeliveryOrderButton id={info.row.original.id} />
+                )}
+                {info.row.original.status !== LocalOrderStatus.CANCELLED && (
+                  <CancleOrderButton id={info.row.original.id} />
+                )}
+                <UpdateOrderButton id={info.row.original.id} />
+
+                {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN ||
+                  user.user.role?.name === 'ADMIN') && <DeleteOrderButton id={info.row.original.id} />}
+              </Group>
+              <Group>
+                <SendOrderButton order={info.row.original} />
+                {info.row.original.status !== LocalOrderStatus.COMPLETED && (
+                  <SendMessageOrderButton userId={info.row.original.user?.id} email={info.row.original.user?.email} />
+                )}
+              </Group>
             </>
           )}
         </Group>
@@ -104,6 +114,7 @@ export default function TableOrder({ s, data, user }: { data: any; s: string; us
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel()
   });
+
   return (
     <>
       <Group pb={'lg'}>

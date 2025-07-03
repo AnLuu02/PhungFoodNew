@@ -21,15 +21,14 @@ import {
 import { IconChevronLeft, IconChevronRight, IconFile, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Banner } from '~/app/Entity/RestaurantEntity';
-import { fileToBase64, vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
-import { bannerSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { Banner } from '~/Entity/RestaurantEntity';
+import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { LocalImageType } from '~/lib/zod/EnumType';
+import { bannerSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 
-export default function BannerManagement() {
-  const { data, isLoading } = api.Restaurant.getOneBanner.useQuery({});
+export default function BannerManagement({ data }: any) {
   const {
     control,
     handleSubmit,
@@ -65,7 +64,7 @@ export default function BannerManagement() {
       const banners: string[] = [];
       const gallery: string[] = [];
 
-      data.images.forEach(image => {
+      data.images.forEach((image: any) => {
         if (image.type === LocalImageType.BANNER) banners.push(image.url);
         else if (image.type === LocalImageType.GALLERY) gallery.push(image.url);
       });

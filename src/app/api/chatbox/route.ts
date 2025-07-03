@@ -1,8 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
-import { formatPriceLocaleVi } from '~/app/lib/utils/func-handler/formatPrice';
-import { getImageProduct } from '~/app/lib/utils/func-handler/getImageProduct';
-import { LocalImageType } from '~/app/lib/utils/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { getImageProduct } from '~/lib/func-handler/getImageProduct';
+import { LocalImageType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });

@@ -3,8 +3,8 @@ import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useState } from 'react';
-import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import CustomPagination from '~/app/_components/Pagination';
+import PageSizeSelector from '~/components/Admin/Perpage';
+import CustomPagination from '~/components/Pagination';
 import { DeleteRoleButton, UpdateRoleButton } from '../Button';
 
 export default function TableRole({ s, data, user }: { s: string; data: any; user?: any }) {

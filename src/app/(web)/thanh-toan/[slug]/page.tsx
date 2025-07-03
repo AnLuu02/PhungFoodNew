@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { formatTransDate } from '~/app/lib/utils/func-handler/formatDate';
-import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
+import { formatTransDate } from '~/lib/func-handler/formatDate';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
-import CheckoutClient from '../_components/Client/CheckoutClient';
+import CheckoutClient from '../components/CheckoutClient';
 export const metadata: Metadata = {
   title: 'Thanh toán',
   description: 'Thanh toán'

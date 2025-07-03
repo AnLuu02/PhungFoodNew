@@ -2,7 +2,7 @@
 
 import { ActionIcon, Button, FileButton } from '@mantine/core';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
-import { handleDelete } from '~/app/lib/utils/button-handle/ButtonDeleteConfirm';
+import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 
 export function CreateImageButton() {

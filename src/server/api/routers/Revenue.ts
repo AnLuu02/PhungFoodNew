@@ -1,6 +1,6 @@
 import { OrderStatus } from '@prisma/client';
 import { z } from 'zod';
-import { LocalOrderStatus } from '~/app/lib/utils/zod/EnumType';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 

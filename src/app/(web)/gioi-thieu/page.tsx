@@ -21,24 +21,12 @@ import {
 } from '@mantine/core';
 import { IconChefHat, IconMail, IconMapPin, IconPhone, IconStar } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import BButton from '~/app/_components/Button';
+import BButton from '~/components/Button';
+import ProductCardCarouselHorizontal from '~/components/Web/Home/components/ProductCardCarouselHorizontal';
+import ProductCardCarouselVertical from '~/components/Web/Home/components/ProductCardCarouselVertical';
 import { api } from '~/trpc/server';
-
-const ProductCardCarouselHorizontal = dynamic(
-  () => import('~/app/_components/Web/Home/_Components/ProductCardCarouselHorizontal'),
-  {
-    ssr: false
-  }
-);
-const ProductCardCarouselVertical = dynamic(
-  () => import('~/app/_components/Web/Home/_Components/ProductCardCarouselVertical'),
-  {
-    ssr: false
-  }
-);
 
 export const metadata: Metadata = {
   title: 'Về chúng tôi',
@@ -70,7 +58,7 @@ export default async function AboutPage() {
             Trải nghiệm hương vị đích thực của miền Tây Việt Nam và hơn thế nữa!
           </Text>
 
-          <Link href={'/thuc-don'} prefetch={false}>
+          <Link href={'/thuc-don'}>
             <BButton size='lg' w={'max-content'} title={'Xem thực đơn'} radius='md' />
           </Link>
         </Flex>
@@ -118,7 +106,7 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Restaurant interior'
             fill
-            objectFit='cover'
+            style={{ objectFit: 'cover' }}
           />
         </Box>
       </SimpleGrid>
@@ -226,7 +214,7 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Chef portrait'
             fill
-            objectFit='cover'
+            style={{ objectFit: 'cover' }}
           />
         </Box>
         <div>
@@ -307,7 +295,7 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Map'
             fill
-            objectFit='cover'
+            style={{ objectFit: 'cover' }}
           />
         </Box>
       </SimpleGrid>

@@ -1,3 +1,0 @@
-export const HEIGHT_HEADER = 110;
-export const HEIGHT_HEADER_AND_BREADCRUMB = HEIGHT_HEADER + 100;
-export const TOP_POSITION_STICKY = 70;

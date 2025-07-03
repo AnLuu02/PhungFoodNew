@@ -4,7 +4,7 @@ import { Button, Grid, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 
 const permissionSchema = z.object({

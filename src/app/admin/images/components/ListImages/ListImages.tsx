@@ -2,12 +2,12 @@
 import { Badge, Grid, Group, Modal, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import PageSizeSelector from '~/app/_components/Admin/Perpage';
-import LoadingComponent from '~/app/_components/Loading/Loading';
-import CustomPagination from '~/app/_components/Pagination';
-import { vercelBlobToFile } from '~/app/lib/utils/func-handler/handle-file-upload';
+import PageSizeSelector from '~/components/Admin/Perpage';
+import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import CustomPagination from '~/components/Pagination';
+import { vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
 import { api } from '~/trpc/react';
-import { PhotoCard } from '../PhotoCard';
+import PhotoCard from '../PhotoCard';
 export const formatBytes = (bytes: number) => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
@@ -54,9 +54,9 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
     loadImages();
   }, [currentItems]);
 
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  if (isLoading) return <LoadingSpiner />;
+
+  return (
     <>
       {imageUrls.length > 0 ? (
         <Grid>
@@ -82,7 +82,7 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
           loading='lazy'
           src={(showfullImage.file && URL.createObjectURL(showfullImage.file)) || '/images/jpg/empty-300x240.jpg'}
           alt={showfullImage.name || ''}
-          objectFit='cover'
+          style={{ objectFit: 'cover' }}
           height={400}
           width={400}
         />

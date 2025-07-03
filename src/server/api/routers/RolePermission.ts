@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { seedPermissions, seedRoles } from '~/app/lib/utils/data-test/seed';
+import { seedPermissions, seedRoles } from '~/lib/data-test/seed';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const rolePermissionRouter = createTRPCRouter({

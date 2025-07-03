@@ -2,34 +2,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Material } from '~/app/Entity/MaterialEntity';
-import { createTag } from '~/app/lib/utils/func-handler/generateTag';
-import { NotifyError, NotifySuccess } from '~/app/lib/utils/func-handler/toast';
-import { materialSchema } from '~/app/lib/utils/zod/zodShcemaForm';
+import { categoriesMaterial } from '~/constants';
+import { Material } from '~/Entity/MaterialEntity';
+import { createTag } from '~/lib/func-handler/generateTag';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { materialSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
-
-export const categories = [
-  {
-    value: 'thit-tuoi',
-    label: 'Thịt tươi'
-  },
-  {
-    value: 'hai-san',
-    label: 'Hải sản'
-  },
-  {
-    value: 'rau-cu',
-    label: 'Rau củ'
-  },
-  {
-    value: 'cac-loai-nam',
-    label: 'Các loại nấm'
-  },
-  {
-    value: 'thuc-pham-chay',
-    label: 'Thực phẩm chay'
-  }
-];
 
 export default function CreateMaterial({ setOpened }: { setOpened: any }) {
   const {
@@ -103,7 +81,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: any }) {
                 label='Loại nguyên liệu'
                 placeholder='Chọn loại nguyên liệu'
                 searchable
-                data={categories?.map(category => ({
+                data={categoriesMaterial?.map(category => ({
                   value: category.value,
                   label: category.label
                 }))}

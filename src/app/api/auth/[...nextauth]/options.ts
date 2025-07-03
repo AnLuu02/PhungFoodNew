@@ -91,6 +91,6 @@ export const authOptions: NextAuthOptions = {
     }
   },
   pages: {
-    signIn: '/auth/dang-nhap'
+    signIn: '/dang-nhap'
   }
 };
