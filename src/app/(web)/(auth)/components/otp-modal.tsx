@@ -15,7 +15,7 @@ interface OtpModalProps {
 
 export default function OtpModal({ opened, onClose, email }: OtpModalProps) {
   const [otp, setOtp] = useState('');
-  const [timeLeft, setTimeLeft] = useState(60); // 5 phút
+  const [timeLeft, setTimeLeft] = useState(60);
   const [loading, setLoading] = useState(false);
   const [loadingOtp, setLoadingOtp] = useState(false);
 

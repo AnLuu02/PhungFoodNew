@@ -14,7 +14,6 @@ export default async function Dashboard() {
   const [category, payment, users, orders, materials, products, vouchers, reviews, subCategories, images, roles] =
     await api.Layout.getDataAdminDashboard({});
 
-  // Calculate average rating from reviews
   const averageRating =
     reviews?.length > 0 ? reviews.reduce((acc: number, review: any) => acc + review.rating, 0) / reviews.length : 0;
 

@@ -4,9 +4,10 @@ import { TOP_POSITION_STICKY } from '~/constants';
 import { api } from '~/trpc/server';
 import QuickCart from './components/quick-cart';
 import QuickMenu from './components/quick-menu';
+
 export const metadata: Metadata = {
-  title: 'Gọi món nhanh',
-  description: 'Gọi món nhanh'
+  title: 'Gọi món nhanh - Phụng Food',
+  description: 'Gọi món nhanh các món ăn miền Tây tại Phụng Food. Đặt hàng tiện lợi và nhanh chóng.'
 };
 
 const FastMenu = async ({

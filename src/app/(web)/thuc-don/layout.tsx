@@ -3,10 +3,9 @@ import { Metadata } from 'next';
 import SidebarMenu from './components/SidebarMenu';
 
 export const metadata: Metadata = {
-  title: 'Thực đơn',
-  description: 'Thực đơn'
+  title: 'Thực đơn món ăn miền Tây | Phụng Food',
+  description: 'Thực đơn đa dạng với các món ngon đặc trưng miền Tây, được chế biến tại Phụng Food.'
 };
-
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box className='relative' w={'100%'}>

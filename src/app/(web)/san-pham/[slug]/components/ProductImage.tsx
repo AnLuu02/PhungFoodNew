@@ -29,7 +29,6 @@ export default function ProductImage({
   const [showFullImage, setShowFullImage] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
 
-  // Prepare gallery data
   const allImages = [{ url: thumbnail }, ...gallery];
   const displayImages = allImages.slice(0, notDesktop ? 3 : 4);
   const remainingCount = allImages.length > (notDesktop ? 3 : 4) ? allImages.length - (notDesktop ? 3 : 4) : 0;

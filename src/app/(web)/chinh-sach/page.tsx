@@ -1,7 +1,12 @@
-'use client';
-
-import { Alert, Badge, Box, Card, Container, Divider, Group, List, Stack, Text, Title } from '@mantine/core';
+import { Alert, Badge, Box, Card, Container, Divider, Group, List, ListItem, Stack, Text, Title } from '@mantine/core';
 import { IconAlertTriangle, IconClock, IconInfoCircle, IconShield } from '@tabler/icons-react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Chính sách an toàn thực phẩm - Phụng Food',
+  description:
+    'Chính sách an toàn thực phẩm của Phụng Food, bao gồm tiêu chuẩn an toàn, quản lý dị ứng, chất lượng món ăn và hướng dẫn khách hàng.'
+};
 
 export default function RestaurantPolicyPage() {
   return (
@@ -48,12 +53,12 @@ export default function RestaurantPolicyPage() {
               </Text>
 
               <List spacing='sm' className='text-gray-700'>
-                <List.Item>Chế biến món ăn trong môi trường sạch sẽ, khử khuẩn</List.Item>
-                <List.Item>Nhân viên được đào tạo thường xuyên và kiểm tra sức khỏe định kỳ</List.Item>
-                <List.Item>Kiểm soát nhiệt độ trong quá trình bảo quản và chế biến</List.Item>
-                <List.Item>Nguyên liệu tươi mới được nhập hàng ngày từ nhà cung cấp uy tín</List.Item>
-                <List.Item>Vệ sinh thiết bị và bề mặt sau mỗi lần sử dụng</List.Item>
-                <List.Item>Tuân thủ quy trình vệ sinh tay và trang bị bảo hộ cá nhân nghiêm ngặt</List.Item>
+                <ListItem>Chế biến món ăn trong môi trường sạch sẽ, khử khuẩn</ListItem>
+                <ListItem>Nhân viên được đào tạo thường xuyên và kiểm tra sức khỏe định kỳ</ListItem>
+                <ListItem>Kiểm soát nhiệt độ trong quá trình bảo quản và chế biến</ListItem>
+                <ListItem>Nguyên liệu tươi mới được nhập hàng ngày từ nhà cung cấp uy tín</ListItem>
+                <ListItem>Vệ sinh thiết bị và bề mặt sau mỗi lần sử dụng</ListItem>
+                <ListItem>Tuân thủ quy trình vệ sinh tay và trang bị bảo hộ cá nhân nghiêm ngặt</ListItem>
               </List>
             </Stack>
           </Card>
@@ -79,13 +84,13 @@ export default function RestaurantPolicyPage() {
                     Các loại dị ứng phổ biến:
                   </Text>
                   <List spacing='xs' className='text-gray-700'>
-                    <List.Item>Gluten (Lúa mì, Lúa mạch, Lúa mạch đen)</List.Item>
-                    <List.Item>Sản phẩm từ sữa</List.Item>
-                    <List.Item>Trứng</List.Item>
-                    <List.Item>Hạt (hạt cây, đậu phộng)</List.Item>
-                    <List.Item>Hải sản & Cá</List.Item>
-                    <List.Item>Đậu nành</List.Item>
-                    <List.Item>Hạt mè</List.Item>
+                    <ListItem>Gluten (Lúa mì, Lúa mạch, Lúa mạch đen)</ListItem>
+                    <ListItem>Sản phẩm từ sữa</ListItem>
+                    <ListItem>Trứng</ListItem>
+                    <ListItem>Hạt (hạt cây, đậu phộng)</ListItem>
+                    <ListItem>Hải sản & Cá</ListItem>
+                    <ListItem>Đậu nành</ListItem>
+                    <ListItem>Hạt mè</ListItem>
                   </List>
                 </div>
 
@@ -94,11 +99,11 @@ export default function RestaurantPolicyPage() {
                     Cam kết của chúng tôi:
                   </Text>
                   <List spacing='xs' className='text-gray-700'>
-                    <List.Item>Khu vực chế biến riêng cho món không chứa dị ứng</List.Item>
-                    <List.Item>Dụng cụ riêng biệt khi có thể</List.Item>
-                    <List.Item>Ghi nhãn rõ ràng thông tin dị ứng trên thực đơn</List.Item>
-                    <List.Item>Đào tạo nhân viên về nhận biết và xử lý dị ứng</List.Item>
-                    <List.Item>Cung cấp danh sách nguyên liệu chi tiết theo yêu cầu</List.Item>
+                    <ListItem>Khu vực chế biến riêng cho món không chứa dị ứng</ListItem>
+                    <ListItem>Dụng cụ riêng biệt khi có thể</ListItem>
+                    <ListItem>Ghi nhãn rõ ràng thông tin dị ứng trên thực đơn</ListItem>
+                    <ListItem>Đào tạo nhân viên về nhận biết và xử lý dị ứng</ListItem>
+                    <ListItem>Cung cấp danh sách nguyên liệu chi tiết theo yêu cầu</ListItem>
                   </List>
                 </div>
               </div>
@@ -132,11 +137,11 @@ export default function RestaurantPolicyPage() {
                     Nguồn nguyên liệu:
                   </Text>
                   <List spacing='xs' className='text-gray-700'>
-                    <List.Item>Ưu tiên nhà cung cấp địa phương</List.Item>
-                    <List.Item>Có lựa chọn rau củ hữu cơ</List.Item>
-                    <List.Item>Hải sản tươi được giao hàng ngày</List.Item>
-                    <List.Item>Thịt cao cấp từ nhà cung cấp uy tín</List.Item>
-                    <List.Item>Thực đơn thay đổi theo mùa để đảm bảo tươi mới</List.Item>
+                    <ListItem>Ưu tiên nhà cung cấp địa phương</ListItem>
+                    <ListItem>Có lựa chọn rau củ hữu cơ</ListItem>
+                    <ListItem>Hải sản tươi được giao hàng ngày</ListItem>
+                    <ListItem>Thịt cao cấp từ nhà cung cấp uy tín</ListItem>
+                    <ListItem>Thực đơn thay đổi theo mùa để đảm bảo tươi mới</ListItem>
                   </List>
                 </div>
 
@@ -145,11 +150,11 @@ export default function RestaurantPolicyPage() {
                     Quy trình chế biến:
                   </Text>
                   <List spacing='xs' className='text-gray-700'>
-                    <List.Item>Chế biến món theo yêu cầu nếu có thể</List.Item>
-                    <List.Item>Tuân thủ nhiệt độ bảo quản thực phẩm</List.Item>
-                    <List.Item>Xoay vòng nguyên liệu theo nguyên tắc "nhập trước - dùng trước"</List.Item>
-                    <List.Item>Kiểm tra chất lượng thường xuyên</List.Item>
-                    <List.Item>Không giữ thức ăn quá thời gian an toàn</List.Item>
+                    <ListItem>Chế biến món theo yêu cầu nếu có thể</ListItem>
+                    <ListItem>Tuân thủ nhiệt độ bảo quản thực phẩm</ListItem>
+                    <ListItem>Xoay vòng nguyên liệu theo nguyên tắc "nhập trước - dùng trước"</ListItem>
+                    <ListItem>Kiểm tra chất lượng thường xuyên</ListItem>
+                    <ListItem>Không giữ thức ăn quá thời gian an toàn</ListItem>
                   </List>
                 </div>
               </div>
@@ -168,10 +173,10 @@ export default function RestaurantPolicyPage() {
                   Trước khi gọi món:
                 </Text>
                 <List spacing='xs' className='text-gray-700'>
-                  <List.Item>Thông báo dị ứng hoặc yêu cầu ăn kiêng</List.Item>
-                  <List.Item>Hỏi kỹ về nguyên liệu nếu cần</List.Item>
-                  <List.Item>Tham khảo bảng thông tin dị ứng</List.Item>
-                  <List.Item>Yêu cầu cách chế biến (mức độ chín, cay,...)</List.Item>
+                  <ListItem>Thông báo dị ứng hoặc yêu cầu ăn kiêng</ListItem>
+                  <ListItem>Hỏi kỹ về nguyên liệu nếu cần</ListItem>
+                  <ListItem>Tham khảo bảng thông tin dị ứng</ListItem>
+                  <ListItem>Yêu cầu cách chế biến (mức độ chín, cay,...)</ListItem>
                 </List>
               </div>
 
@@ -180,10 +185,10 @@ export default function RestaurantPolicyPage() {
                   An toàn thực phẩm cho khách hàng:
                 </Text>
                 <List spacing='xs' className='text-gray-700'>
-                  <List.Item>Dùng món ngay sau khi phục vụ</List.Item>
-                  <List.Item>Báo ngay với nhân viên nếu phát hiện vấn đề</List.Item>
-                  <List.Item>Giữ vệ sinh khi dùng món dùng chung</List.Item>
-                  <List.Item>Làm theo hướng dẫn bảo quản nếu có</List.Item>
+                  <ListItem>Dùng món ngay sau khi phục vụ</ListItem>
+                  <ListItem>Báo ngay với nhân viên nếu phát hiện vấn đề</ListItem>
+                  <ListItem>Giữ vệ sinh khi dùng món dùng chung</ListItem>
+                  <ListItem>Làm theo hướng dẫn bảo quản nếu có</ListItem>
                 </List>
               </div>
 
@@ -192,10 +197,10 @@ export default function RestaurantPolicyPage() {
                   Món mang đi & giao hàng:
                 </Text>
                 <List spacing='xs' className='text-gray-700'>
-                  <List.Item>Dùng món trong vòng 2 tiếng sau khi nhận</List.Item>
-                  <List.Item>Bảo quản lạnh nếu chưa dùng ngay</List.Item>
-                  <List.Item>Hâm nóng đủ nhiệt trước khi dùng lại</List.Item>
-                  <List.Item>Kiểm tra nhiệt độ món khi nhận hàng</List.Item>
+                  <ListItem>Dùng món trong vòng 2 tiếng sau khi nhận</ListItem>
+                  <ListItem>Bảo quản lạnh nếu chưa dùng ngay</ListItem>
+                  <ListItem>Hâm nóng đủ nhiệt trước khi dùng lại</ListItem>
+                  <ListItem>Kiểm tra nhiệt độ món khi nhận hàng</ListItem>
                 </List>
               </div>
             </Stack>

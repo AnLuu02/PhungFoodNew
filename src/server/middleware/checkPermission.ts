@@ -1,4 +1,3 @@
-// src/server/middleware/checkPermission.ts
 import { TRPCError } from '@trpc/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';

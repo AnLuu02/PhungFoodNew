@@ -25,7 +25,6 @@ interface PopularItemsProps {
   products?: any[];
 }
 
-// Mock data - replace with real data
 const mockItems: PopularItem[] = [
   {
     name: 'Pizza Margherita',
