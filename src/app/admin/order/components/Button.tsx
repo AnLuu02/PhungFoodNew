@@ -234,12 +234,10 @@ export function SendMessageAllUserAdvanced() {
 
   const createNotifyMutation = api.Notification.create.useMutation();
 
-  // 🔁 Fetch tất cả user khi mode là ALL hoặc SELECTED
   const { data: allUsers = [], isLoading: loadingUsers } = api.User.getAll.useQuery(undefined, {
     enabled: mode === 'ALL' || mode === 'SELECTED'
   });
 
-  // 🔁 Fetch đơn hàng theo trạng thái (BY_STATUS)
   const { data: filteredOrders = [], isLoading: loadingOrders } = api.Order.getFilter.useQuery(
     { s: selectedStatuses.join(',') },
     {

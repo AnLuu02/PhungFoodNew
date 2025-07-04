@@ -39,7 +39,6 @@ export default function TableNotification({ data, s, user }: { s: string; data: 
           return <Text color='gray'>Đang cập nhật.</Text>;
         }
 
-        // Ghép tên user thành chuỗi
         const names = users.map((user: any) => user.name).join(', ');
 
         return names.length > 30 ? (

@@ -8,10 +8,12 @@ import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { formatDate } from '~/lib/func-handler/formatDate';
 import { api } from '~/trpc/server';
+
 export const metadata: Metadata = {
-  title: 'Tin tức',
-  description: 'Tin tức'
+  title: 'Tin tức - Món ngon miền Tây | Phụng Food',
+  description: 'Chia sẻ kiến thức ẩm thực, mẹo nấu ăn và câu chuyện món ngon miền Tây tại blog Phụng Food.'
 };
+
 const News = async ({
   searchParams
 }: {

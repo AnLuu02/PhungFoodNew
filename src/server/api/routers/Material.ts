@@ -202,7 +202,7 @@ export const materialRouter = createTRPCRouter({
 
         return material;
       },
-      60 * 60 * 24 // Cache for 24 hours
+      60 * 60 * 24
     );
   }),
 

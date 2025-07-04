@@ -7,10 +7,10 @@ import ProductCardCarouselVertical from '~/components/Web/Home/components/Produc
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
-  title: 'Yêu thích',
-  description: 'Yêu thích'
+  title: 'Sản phẩm yêu thích - Phụng Food',
+  description:
+    'Xem các sản phẩm yêu thích của bạn tại Phụng Food. Lưu và quản lý món ăn bạn yêu thích để đặt hàng dễ dàng hơn.'
 };
-
 export default async function FavouritePage() {
   const user = await getServerSession(authOptions);
   const favourite_food = user?.user?.email ? await api.FavouriteFood.getFilter({ s: user?.user?.email || '' }) : [];

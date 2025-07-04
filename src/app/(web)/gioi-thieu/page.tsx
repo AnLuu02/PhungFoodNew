@@ -29,8 +29,9 @@ import ProductCardCarouselVertical from '~/components/Web/Home/components/Produc
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
-  title: 'Về chúng tôi',
-  description: 'Về chúng tôi'
+  title: 'Giới thiệu - Phụng Food',
+  description:
+    'Phụng Food ra đời nhằm mang đặc sản miền Tây đến với mọi người. Cùng tìm hiểu hành trình và giá trị của chúng tôi.'
 };
 
 export default async function AboutPage() {

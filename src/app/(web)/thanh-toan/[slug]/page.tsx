@@ -4,9 +4,10 @@ import { formatTransDate } from '~/lib/func-handler/formatDate';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
 import CheckoutClient from '../components/CheckoutClient';
+
 export const metadata: Metadata = {
-  title: 'Thanh toán',
-  description: 'Thanh toán'
+  title: 'Thanh toán - Phụng Food',
+  description: 'Thanh toán đơn hàng của bạn tại Phụng Food. Hoàn tất giao dịch và nhận món ăn ngon miền Tây.'
 };
 async function CheckoutPage({ params }: { params: { slug: string } }) {
   const orderId = params?.slug;

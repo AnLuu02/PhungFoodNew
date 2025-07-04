@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import { api } from '~/trpc/server';
 import FoodPromotionPageClient from './pageClient';
-export const metadata: Metadata = {
-  title: 'Khuyến mãi',
-  description: 'Khuyến mãi'
-};
 
+export const metadata: Metadata = {
+  title: 'Khuyến mãi hấp dẫn - Phụng Food',
+  description: 'Cập nhật ưu đãi và giảm giá các món ăn miền Tây tại Phụng Food. Đặt hàng ngay để nhận ưu đãi.'
+};
 export default async function FoodPromotionPage() {
   const [voucherData, productData] = await Promise.allSettled([
     api.Voucher.getAll(),

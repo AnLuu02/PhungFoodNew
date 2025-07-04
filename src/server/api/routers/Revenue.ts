@@ -61,11 +61,6 @@ export const revenueRouter = createTRPCRouter({
     )
 
     .query(async ({ ctx, input }) => {
-      // const revenues = await ctx.db.revenue.findMany({
-      //   where: { userId: input.userId, year: input.year || 2025 },
-      //   select: { month: true, totalSpent: true },
-      //   orderBy: { month: 'asc' }
-      // });
       const revenues = await ctx.db.revenue.groupBy({
         by: ['month'],
         where: { userId: input.userId, year: input.year || 2025 },

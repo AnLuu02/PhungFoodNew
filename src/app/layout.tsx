@@ -33,8 +33,34 @@ export const metadata: Metadata = {
     default: 'Trang chủ | Phụng Food Restaurant',
     template: '%s | Phụng Food Restaurant'
   },
-  description: 'Phụng Food Restaurant',
-  icons: [{ rel: 'icon', url: '/logo/logo_phungfood_1.png' }]
+  description: 'Phụng Food Restaurant chuyên món ăn miền Tây – giao hàng tận nơi tại Cà Mau.',
+  keywords: ['Phụng Food', 'đặc sản miền Tây', 'nhà hàng Cà Mau', 'ẩm thực Long An', 'đặt món online'],
+  icons: [{ rel: 'icon', url: '/logo/logo_phungfood_1.png' }],
+  openGraph: {
+    title: 'Phụng Food Restaurant',
+    description: 'Đặc sản miền Tây – Nhà hàng tại Cà Mau, giao hàng nhanh.',
+    url: 'https://phung-food-new.vercel.app',
+    siteName: 'Phụng Food',
+    locale: 'vi_VN',
+    type: 'website',
+    images: [
+      {
+        url: '/images/logo/logo_phungfood_1.png',
+        width: 1200,
+        height: 630,
+        alt: 'Phụng Food Restaurant'
+      }
+    ]
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true
+    }
+  },
+  metadataBase: new URL('https://phung-food-new.vercel.app')
 };
 
 const theme = createTheme({

@@ -31,7 +31,6 @@ interface RecentOrdersProps {
   orders?: any[];
 }
 
-// Mock data - replace with real data
 const mockOrders: Order[] = [
   { id: '#ORD-5531', customer: 'Nguyễn Văn A', date: '2024-03-15', total: '450.000đ', status: 'Completed' },
   { id: '#ORD-5530', customer: 'Trần Thị B', date: '2024-03-15', total: '862.500đ', status: 'Processing' },

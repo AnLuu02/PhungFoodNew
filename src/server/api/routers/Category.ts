@@ -181,7 +181,7 @@ export const categoryRouter = createTRPCRouter({
 
         return category;
       },
-      60 * 60 // Cache for 1 hour
+      60 * 60
     );
   }),
   create: publicProcedure

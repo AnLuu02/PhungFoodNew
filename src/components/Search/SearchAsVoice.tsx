@@ -96,7 +96,6 @@ export default function VoiceSearchModal() {
       mediaRecorderRef.current.stop();
     }
 
-    // Dừng tất cả tracks của microphone
     if (mediaRecorderRef.current?.stream) {
       mediaRecorderRef.current.stream.getTracks().forEach((track: any) => track.stop());
     }

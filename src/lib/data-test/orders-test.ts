@@ -3,14 +3,14 @@ import { LocalOrderStatus } from '../zod/EnumType';
 export const sampleOrders = Array.from({ length: 20 }, (_, i) => ({
   id: `order_${i + 1}`,
   payment: { name: i % 2 === 0 ? 'VNPAY' : 'COD' },
-  total: (Math.random() * 500000 + 50000).toFixed(0), // Số tiền ngẫu nhiên từ 50,000 đến 550,000
-  createdAt: new Date(Date.now() - i * 86400000).toISOString(), // Mỗi đơn cách nhau 1 ngày
-  status: ['COMPLETED', 'PROCESSING', 'DELIVERED', 'PENDING', 'CANCELLED'][i % 5] // Luân phiên trạng thái
+  total: (Math.random() * 500000 + 50000).toFixed(0),
+  createdAt: new Date(Date.now() - i * 86400000).toISOString(),
+  status: ['COMPLETED', 'PROCESSING', 'DELIVERED', 'PENDING', 'CANCELLED'][i % 5]
 }));
 
 export const generateSampleOrdersInfoUser = (count = 50) => {
   const getRandomDate = () => {
-    const daysAgo = Math.floor(Math.random() * 90); // Tối đa 90 ngày trước
+    const daysAgo = Math.floor(Math.random() * 90);
     return new Date(Date.now() - daysAgo * 86400000).toISOString();
   };
 

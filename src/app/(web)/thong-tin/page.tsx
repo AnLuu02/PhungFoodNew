@@ -6,9 +6,10 @@ import { getValueLevelUser } from '~/lib/func-handler/level-user';
 import { LocalUserLevel } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
 import DashboardContent from './components/dashboard-content';
+
 export const metadata: Metadata = {
-  title: 'Thông tin khách hàng',
-  description: 'Thông tin khách hàng'
+  title: 'Thông tin khách hàng - Phụng Food',
+  description: 'Xem và cập nhật thông tin cá nhân, đơn hàng và voucher của bạn tại Phụng Food.'
 };
 export default async function CustomerProfile() {
   const user = await getServerSession(authOptions);
