@@ -14,7 +14,7 @@ const LayoutGrid3Col = () => {
         >
           <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
 
-          <Title order={3} c={'black'} className='font-quicksand' mb={'xs'} w={'70%'}>
+          <Title order={3} className='font-quicksand text-black' mb={'xs'} w={'70%'}>
             Hương vị tươi ngon Món ăn 100% từ thiên nhiên
           </Title>
 
@@ -31,7 +31,7 @@ const LayoutGrid3Col = () => {
         >
           <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
 
-          <Title order={3} c={'black'} className='font-quicksand' mb={'xs'} w={'70%'}>
+          <Title order={3} className='font-quicksand text-black' mb={'xs'} w={'70%'}>
             Bữa sáng lành mạnh Sữa tươi nguyên chất Tiệt trùng
           </Title>
 
@@ -48,7 +48,7 @@ const LayoutGrid3Col = () => {
         >
           <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
 
-          <Title order={3} c={'black'} className='font-quicksand' mb={'xs'} w={'70%'}>
+          <Title order={3} className='font-quicksand text-black' mb={'xs'} w={'70%'}>
             Ẩm thực sạch sẽ và an toàn Chất lượng hàng đầu
           </Title>
 

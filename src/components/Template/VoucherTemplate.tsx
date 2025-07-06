@@ -98,11 +98,9 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
               <DateVoucher item={voucher} />
               <Button
                 variant='transparent'
-                color='blue'
                 size='xs'
                 pos={'relative'}
-                bg={'#fff'}
-                className='z-[0]'
+                className='dark:bg-dark-card z-[0] bg-white text-blue-500'
                 onClick={() => {
                   setOpenDetail({ ...voucher });
                 }}

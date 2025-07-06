@@ -268,9 +268,10 @@ model Role {
 }
 
 model Permission {
-  id    String @id @default(cuid())
-  name  String @unique
-  roles Role[]
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+  roles       Role[]
 }
 
 model Revenue {

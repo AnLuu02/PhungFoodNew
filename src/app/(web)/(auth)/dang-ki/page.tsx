@@ -120,7 +120,7 @@ export default function Page() {
           <Card.Section p='md'>
             <Grid w={'100%'}>
               <GridCol span={12} className='flex justify-center'>
-                <Title className='font-quicksand' order={2} size={rem(28)} c={'black'}>
+                <Title className='font-quicksand text-black dark:text-dark-text' order={2} size={rem(28)}>
                   ĐĂNG KÍ
                 </Title>
               </GridCol>
@@ -230,7 +230,10 @@ export default function Page() {
 
               <GridCol span={12} className='flex justify-end'>
                 <Link href={'/dang-nhap'} className='text-white'>
-                  <Text size='sm' className='cursor-pointer text-black underline hover:text-red-500'>
+                  <Text
+                    size='sm'
+                    className='cursor-pointer text-black underline hover:text-red-500 dark:text-dark-text'
+                  >
                     Bạn đã có tài khoản?
                   </Text>
                 </Link>
@@ -239,7 +242,7 @@ export default function Page() {
                 <Button
                   fullWidth
                   size='md'
-                  className='bg-[#008b4b] text-white transition-all duration-200 ease-in-out hover:bg-[#f8c144] hover:text-black'
+                  className='bg-mainColor text-white transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black'
                   type='submit'
                   loading={isSubmitting}
                 >

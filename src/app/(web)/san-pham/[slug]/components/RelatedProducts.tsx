@@ -17,7 +17,7 @@ export default function RelatedProducts({ data }: any) {
       className='h-fit'
       mt={{ base: 50, sm: 0, md: 0, lg: 0 }}
     >
-      <Center className='rounded-t-md bg-green-600 p-2 text-white'>
+      <Center className='rounded-t-md bg-mainColor p-2 text-white'>
         <Text size='sm' fw={700}>
           Có thể bạn thích
         </Text>
@@ -41,7 +41,12 @@ export default function RelatedProducts({ data }: any) {
               <div>
                 <Link href={`/san-pham/${product?.tag}`}>
                   <Tooltip label={product?.name}>
-                    <Text lineClamp={1} size='md' fw={700} className='cursor-pointer text-black hover:text-[#008b4b]'>
+                    <Text
+                      lineClamp={1}
+                      size='md'
+                      fw={700}
+                      className='cursor-pointer text-black hover:text-mainColor dark:text-dark-text'
+                    >
                       {product?.name || 'Cá thu'}
                     </Text>
                   </Tooltip>

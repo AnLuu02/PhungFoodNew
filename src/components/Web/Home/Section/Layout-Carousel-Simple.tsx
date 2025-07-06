@@ -91,7 +91,13 @@ const LayoutCarouselSimple = () => {
 
   return (
     <>
-      <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'gray.1'} p={0}>
+      <Card
+        mih={500}
+        h={{ base: 'max-content', md: 500 }}
+        radius={'lg'}
+        className='dark:bg-dark-card bg-gray-100'
+        p={0}
+      >
         <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
           <Flex
             align={'center'}
@@ -100,7 +106,7 @@ const LayoutCarouselSimple = () => {
             direction={{ base: 'column', sm: 'row', md: 'row' }}
             gap={'md'}
           >
-            <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
+            <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-mainColor'>
               Video hướng dẫn
             </Title>
 
@@ -111,7 +117,7 @@ const LayoutCarouselSimple = () => {
                 size={'lg'}
                 onClick={scrollPrev}
                 disabled={!prevBtnEnabled}
-                color='#008b4b'
+                classNames={{ root: 'text-mainColor' }}
               >
                 <IconChevronLeft size={'xs'} />
               </ActionIcon>
@@ -121,7 +127,7 @@ const LayoutCarouselSimple = () => {
                 radius={'50%'}
                 onClick={scrollNext}
                 disabled={!nextBtnEnabled}
-                color='#008b4b'
+                classNames={{ root: 'text-mainColor' }}
                 size={'lg'}
               >
                 <IconChevronRight size={'xs'} />
@@ -186,7 +192,7 @@ const LayoutCarouselSimple = () => {
                       </Center>
                     </Box>
                   </CardSection>
-                  <Text size={'sx'} fw={700} className='text-center hover:text-[#008b4b]' py={'xs'}>
+                  <Text size={'sx'} fw={700} className='text-center hover:text-mainColor' py={'xs'}>
                     {recipe.title}
                   </Text>
                 </Card>

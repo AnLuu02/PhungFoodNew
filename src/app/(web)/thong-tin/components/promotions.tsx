@@ -39,7 +39,7 @@ export default function Promotions({ data }: any) {
           }
         }}
       >
-        <Tabs.List bg={'gray.1'} mb={'md'}>
+        <Tabs.List className='bg-gray-100' mb={'md'}>
           <Group gap={0}>
             <Tabs.Tab size={'md'} fw={700} value='all'>
               Tất cả
@@ -76,7 +76,7 @@ export default function Promotions({ data }: any) {
             gap={'md'}
             direction={{ base: 'column-reverse', md: 'row' }}
           >
-            <Pagination total={totalPages} value={page} onChange={setPage} />
+            <Pagination total={totalPages} value={page} onChange={setPage} classNames={{ control: 'bg-mainColor' }} />
             <Select
               value={String(perPage)}
               w={100}

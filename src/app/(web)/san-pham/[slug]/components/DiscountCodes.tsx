@@ -10,8 +10,8 @@ export default function DiscountCodes() {
   const [openDetail, setOpenDetail] = useState<any>({});
 
   return (
-    <Paper p='md' radius='md' bg='var(--mantine-color-green-0)'>
-      <Title order={2} className='font-quicksand' size='xl' fw={700} c='green.9' mb='md'>
+    <Paper p='md' radius='md' className='dark:bg-dark-card bg-green-50'>
+      <Title order={2} className='font-quicksand text-mainColor' size='xl' fw={700} mb='md'>
         MÃ GIẢM GIÁ
       </Title>
       <Spoiler

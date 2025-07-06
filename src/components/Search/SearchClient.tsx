@@ -128,7 +128,7 @@ export default function SearchComponentClient({ subCategories }: any) {
             {historySearch.length > 0 && (
               <Box p='md'>
                 <Flex justify='space-between' align='center' mb={8}>
-                  <Text size='sm' fw={700} c={'black'}>
+                  <Text size='sm' fw={700} className='text-black dark:text-dark-text'>
                     Lịch sử tìm kiếm
                   </Text>
                   <Button
@@ -181,7 +181,7 @@ export default function SearchComponentClient({ subCategories }: any) {
             )}
 
             <Box p='md' style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
-              <Text size='sm' fw={700} c={'black'} mb={8}>
+              <Text size='sm' fw={700} className='text-black dark:text-dark-text' mb={8}>
                 Tra cứu hàng đầu
               </Text>
               <Flex gap={8} wrap='wrap'>
@@ -193,8 +193,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                         variant='outline'
                         color='gray'
                         radius='xl'
-                        style={{ cursor: 'pointer' }}
-                        className='hover:bg-gray-200'
+                        className='cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700'
                       >
                         {term?.name}
                       </Badge>
@@ -212,12 +211,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       p='md'
                       gap='md'
                       align='center'
-                      style={{
-                        cursor: 'pointer',
-                        '&:hover': {
-                          backgroundColor: 'var(--mantine-color-gray-0)'
-                        }
-                      }}
+                      className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700'
                     >
                       <Image
                         loading='lazy'
@@ -228,7 +222,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                         style={{ borderRadius: rem(8), objectFit: 'cover' }}
                       />
                       <Box>
-                        <Text size='sm' fw={700} c={'black'} lineClamp={2}>
+                        <Text size='sm' fw={700} className='text-black dark:text-dark-text' lineClamp={2}>
                           {product.name}
                         </Text>
                         <Text size='sm' c='blue'>

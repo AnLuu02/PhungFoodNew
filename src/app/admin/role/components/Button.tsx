@@ -12,7 +12,7 @@ import CreateRole from './form/CreateRole';
 import UpdateRole from './form/UpdateCategory';
 const mapFields: Record<string, string> = {
   'Vai trò': 'name',
-  Quyền: 'permissionIds'
+  Quyền: 'permissionId'
 };
 
 export function CreateManyRoleButton() {
@@ -70,6 +70,7 @@ export function CreateManyRoleButton() {
         return NotifyError('Không thể đọc sheet từ file Excel');
       }
       const rows = XLSX.utils.sheet_to_json(sheet);
+
       setData(rows);
       setOpened(true);
     } catch (error) {
@@ -82,11 +83,21 @@ export function CreateManyRoleButton() {
     try {
       setLoading(true);
       const formatData_: any = formatDataExcel(mapFields, data);
+      let reduceData = formatData_.reduce((acc: any[], row: any) => {
+        const existingRole = acc.find(item => item['name'] === row['name']);
+
+        if (existingRole) {
+          existingRole['permissionIds'].push(row['permissionId']);
+        } else {
+          acc.push({
+            name: row['name'],
+            permissionIds: [row['permissionId']]
+          });
+        }
+        return acc;
+      }, []);
       await importMutation.mutateAsync({
-        data: formatData_?.map((item: any) => ({
-          ...item,
-          permissionIds: item.permissionIds.split(',')
-        }))
+        data: reduceData
       });
     } catch (error) {
       setLoading(false);
@@ -122,7 +133,7 @@ export function CreateManyRoleButton() {
             </Button>
           )}
         </FileButton>
-        <Button color={'red'} onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
+        <Button c={'red'} onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>

@@ -35,16 +35,15 @@ const LayoutPromotion = ({ data }: any) => {
       h={'max-content'}
       radius={'lg'}
       withBorder
-      className='border-2 border-dashed border-[#008b4b]'
+      className='dark:bg-dark-background border-2 border-dashed border-mainColor bg-gray-200'
       p={0}
-      bg={'gray.2'}
     >
       <Flex h={'100%'} direction={'column'}>
         <Flex
           align={'center'}
           justify={'space-between'}
           direction={{ base: 'column', sm: 'row', md: 'row' }}
-          className='bg-[#008b4b]'
+          className='bg-mainColor'
           h={{ base: 'max-content', md: 75 }}
           p={'lg'}
           gap={'md'}
@@ -53,11 +52,11 @@ const LayoutPromotion = ({ data }: any) => {
             <Group gap={0}>
               <Title
                 order={2}
-                className='cursor-pointer font-quicksand text-[#f8c144] transition-all duration-300 hover:text-white'
+                className='cursor-pointer font-quicksand text-subColor transition-all duration-300 hover:text-white'
               >
                 Khuyến mãi đặc biệt
               </Title>
-              <IconBolt size={33} color={'#f8c144'} className='animate-wiggle' />
+              <IconBolt size={33} className='animate-wiggle text-subColor' />
             </Group>
             <Text size='lg' p={0} className='text-white' fw={500}>
               Đừng bỏ lỡ cơ hội giảm giá đặc biệt!
@@ -67,7 +66,7 @@ const LayoutPromotion = ({ data }: any) => {
           <Flex align={'center'} gap={'lg'}>
             <Group gap={'xs'}>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
-                <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
+                <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.day < 10 ? `0${timeExpire.day}` : timeExpire.day}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>
@@ -75,7 +74,7 @@ const LayoutPromotion = ({ data }: any) => {
                 </Text>
               </Flex>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
-                <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
+                <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.hour < 10 ? `0${timeExpire.hour}` : timeExpire.hour}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>
@@ -83,7 +82,7 @@ const LayoutPromotion = ({ data }: any) => {
                 </Text>
               </Flex>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
-                <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
+                <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.minute < 10 ? `0${timeExpire.minute}` : timeExpire.minute}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>
@@ -91,7 +90,7 @@ const LayoutPromotion = ({ data }: any) => {
                 </Text>
               </Flex>
               <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
-                <Text size='sm' p={0} className='text-[#008b4b]' fw={700}>
+                <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.second < 10 ? `0${timeExpire.second}` : timeExpire.second}
                 </Text>
                 <Text size='sm' p={0} className='text-black'>

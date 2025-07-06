@@ -42,8 +42,8 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
 
   const content = (
     <>
-      <Paper shadow='md' className='h-[max-content] rounded-md border-green-600' mt={{ base: 'xs', md: 0 }} mb={20}>
-        <Box className='rounded-t-md bg-green-600 p-2 text-white'>
+      <Paper shadow='md' className='h-[max-content] rounded-md border-mainColor' mt={{ base: 'xs', md: 0 }} mb={20}>
+        <Box className='rounded-t-md bg-mainColor p-2 text-white'>
           <Text size='sm' fw={700}>
             DANH MỤC SẢN PHẨM
           </Text>
@@ -57,7 +57,7 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
               radius={0}
               py={'xs'}
               variant='subtle'
-              className='bg-[#f8c144] text-black transition-all duration-200 ease-in-out hover:bg-[#008b4b] hover:text-white'
+              className='bg-subColor text-black transition-all duration-200 ease-in-out hover:bg-mainColor hover:text-white'
             >
               Tất cả
             </Button>
@@ -65,12 +65,12 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
           {categories.map((category: any) => (
             <Accordion.Item key={category?.id} value={category?.name}>
               <Accordion.Control
-                c={
+                className={clsx(
                   params.get('danh-muc') === category.tag ||
-                  category.subCategory.some((item: any) => item.tag === params.get('loai-san-pham'))
-                    ? '#008b4b'
+                    category.subCategory.some((item: any) => item.tag === params.get('loai-san-pham'))
+                    ? 'text-mainColor'
                     : ''
-                }
+                )}
               >
                 <Text
                   size='sm'
@@ -98,8 +98,8 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
                         key={item?.id}
                         variant='subtle'
                         className={clsx(
-                          'bg-[#008b4b] transition-all duration-200 ease-in-out hover:bg-[#f8c144] hover:text-black',
-                          item.tag === params.get('loai-san-pham') ? 'bg-[#f8c144] text-black' : 'text-white'
+                          'bg-mainColor transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black',
+                          item.tag === params.get('loai-san-pham') ? 'bg-subColor text-black' : 'text-white'
                         )}
                       >
                         {item?.name} ({item?.product?.length || 0})
@@ -113,9 +113,9 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
         </Accordion>
       </Paper>
 
-      <Paper shadow='md' className='border-1 rounded-md border-green-600' h={'max-content'} pb={'md'}>
+      <Paper shadow='md' className='border-1 rounded-md border-mainColor' h={'max-content'} pb={'md'}>
         <ScrollArea className='flex-grow'>
-          <Box className='rounded-t-md bg-green-600 p-2 text-white'>
+          <Box className='rounded-t-md bg-mainColor p-2 text-white'>
             <Text size='sm' fw={700}>
               BỘ LỌC SẢN PHẨM
             </Text>
@@ -147,7 +147,6 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
                   {priceRanges.map(range => (
                     <Radio
                       icon={CheckIcon}
-                      color='green.9'
                       checked={params.get('price') === range.value.toString()}
                       key={range.value + range.label}
                       value={range.value.toString()}
@@ -159,7 +158,11 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
                       }}
                       name='range-price'
                       label={range.label}
-                      className='hover:text-green-700'
+                      classNames={{
+                        label: 'cursor-pointer font-medium hover:text-mainColor',
+                        radio:
+                          'cursor-pointer text-mainColor data-[checked=true]:border-mainColor data-[checked=true]:bg-mainColor'
+                      }}
                     />
                   ))}
                 </Stack>
@@ -219,12 +222,15 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
                           <>
                             <Checkbox
                               icon={CheckIcon}
-                              color='green.9'
                               name='type'
                               value={type?.tag}
                               key={type?.id}
                               label={type?.name}
-                              className='hover:text-green-700'
+                              classNames={{
+                                label: 'cursor-pointer font-medium hover:text-mainColor',
+                                input:
+                                  'border-gray-300 text-mainColor data-[checked=true]:border-mainColor data-[checked=true]:bg-mainColor'
+                              }}
                             />
                           </>
                         ))}
@@ -250,7 +256,7 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
             leftSection={<IconFilter size={16} />}
             onClick={() => setDrawerOpened(true)}
             variant='outline'
-            color='green.9'
+            className='text-mainColor'
           >
             Lọc sản phẩm
           </Button>
@@ -264,7 +270,7 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
           size='100%'
           title='Danh mục & Bộ lọc'
           classNames={{
-            header: 'bg-green-600 text-white',
+            header: 'bg-mainColor text-white',
             title: 'text-white'
           }}
         >
@@ -274,5 +280,5 @@ export default function ContentSidebarMenu({ categories, materials }: any) {
     );
   }
 
-  return <Box className='h-full w-72 border-r bg-white'>{content}</Box>;
+  return <Box className='dark:bg-dark-background h-full w-72 border-r bg-white'>{content}</Box>;
 }

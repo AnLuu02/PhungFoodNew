@@ -48,7 +48,7 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
 
   return (
     <>
-      <Card radius={'lg'} bg={'gray.1'} p={0} className='hidden md:block'>
+      <Card radius={'lg'} p={0} className='hidden bg-gray-100 md:block'>
         <CardSection pos={'relative'}>
           <Box w={'100%'} h={500} pos={'relative'}>
             <Image
@@ -57,7 +57,7 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
               fill
               style={{ objectFit: 'cover' }}
               alt='Khuyến mãi đặc biệt'
-              src='/images/png/banner_food.png'
+              src='/images/banner/banner_food.png'
             />
           </Box>
           <Flex
@@ -71,11 +71,11 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
             className='bg-[rgba(0,0,0,0.5)]'
           >
             <Stack w={{ sm: '80%', md: '80%', lg: '50%' }} gap={'xl'} align='center' justify='center'>
-              <Text c={'white'} fw={700} className='text-6xl sm:text-5xl'>
+              <Text fw={700} className='text-6xl text-white sm:text-5xl'>
                 Ưu đãi đặc biệt
               </Text>
-              <Text c={'white'} className='text-center text-4xl sm:text-3xl' fw={700}>
-                Giảm <i className='animate-wiggle text-[#008b4b]'>"50%"</i> đối với những khách hàng Bạch kim trở lên
+              <Text className='text-center text-4xl text-white sm:text-3xl' fw={700}>
+                Giảm <i className='animate-wiggle text-mainColor'>"50%"</i> đối với những khách hàng Bạch kim trở lên
               </Text>
               <BButton w={'max-content'} size='xl' title={'Khám phá ngay'} />
             </Stack>
@@ -104,7 +104,7 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
                 setActiveTab(value);
               }}
             >
-              <Tabs.List bg={'gray.1'} mb={'md'}>
+              <Tabs.List mb={'md'} className='bg-gray-100'>
                 <Group gap={0}>
                   <Tabs.Tab size={'md'} fw={700} value='all'>
                     Tất cả
@@ -139,7 +139,14 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
             </Tabs>
 
             <Center>
-              <Pagination mt='xl' size='md' total={totalPages} value={page} onChange={setPage} />
+              <Pagination
+                classNames={{ control: 'bg-mainColor' }}
+                mt='xl'
+                size='md'
+                total={totalPages}
+                value={page}
+                onChange={setPage}
+              />
             </Center>
             <ModalDetailVoucher
               opened={openDetail?.type}

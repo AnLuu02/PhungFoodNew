@@ -64,7 +64,12 @@ const News = async ({
                 </Paper>
                 <Stack gap={5} flex={1}>
                   <Link href={item.link} target='_blank'>
-                    <Highlight highlight={s} size='xl' fw={700} className='text-black hover:text-[#008b4b]'>
+                    <Highlight
+                      highlight={s}
+                      size='xl'
+                      fw={700}
+                      className='text-black hover:text-mainColor dark:text-dark-text'
+                    >
                       {item.title}
                     </Highlight>
                   </Link>
@@ -78,7 +83,7 @@ const News = async ({
                     {item.description}
                   </Text>
                   <Link href={item.link} target='_blank'>
-                    <Text fw={700} size='md' className='hover:text-[#008b4b]'>
+                    <Text fw={700} size='md' className='hover:text-mainColor'>
                       Đọc tiếp
                     </Text>
                   </Link>
@@ -107,8 +112,8 @@ const News = async ({
       >
         <Stack gap={'md'}>
           <SearchQueryParams />
-          <Paper radius={'md'} withBorder className='h-[max-content] border-green-600' mb={20}>
-            <Box className='rounded-t-md bg-green-600 p-2 text-white'>
+          <Paper radius={'md'} withBorder className='h-[max-content] border-mainColor' mb={20}>
+            <Box className='rounded-t-md bg-mainColor p-2 text-white'>
               <Text size='sm' fw={700}>
                 BÀI VIẾT MỚI
               </Text>
@@ -135,7 +140,7 @@ const News = async ({
                         size='sm'
                         fw={500}
                         lineClamp={2}
-                        className='text-black hover:text-[#008b4b]'
+                        className='text-black hover:text-mainColor dark:text-dark-text'
                       >
                         {item.title}
                       </Highlight>

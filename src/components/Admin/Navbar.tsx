@@ -89,13 +89,13 @@ export default function Navbar() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
-  const notDesktop = useMediaQuery(`(max-width: 1023px)`);
+  const isDesktop = useMediaQuery(`(min-width:1024px)`);
 
   const { data: user } = useSession();
 
   return (
     <>
-      {notDesktop && (
+      {!isDesktop && (
         <Group px={'md'} mt={'md'} align='flex-end'>
           <Menu width={200} position='bottom-end' transitionProps={{ transition: 'fade-down' }} offset={0} withinPortal>
             <Menu.Target>

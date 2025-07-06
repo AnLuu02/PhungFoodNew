@@ -46,6 +46,7 @@ import ProductImage from './ProductImage';
 import RatingStatistics from './RatingStatistics';
 import RelatedProducts from './RelatedProducts';
 
+import clsx from 'clsx';
 import classes from './TabsStyles.module.css';
 
 export default function ProductDetailClient(data: any) {
@@ -59,10 +60,8 @@ export default function ProductDetailClient(data: any) {
 
   const relatedProducts = dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [];
   const hintProducts = dataHintProducts?.filter((item: any) => item.id !== product?.id) || [];
-
   const discount = product?.discount || 0;
   const inStock = useMemo(() => product?.availableQuantity - product?.soldQuantity > 0, [product]);
-
   const ratingCounts = useMemo(() => {
     let ratingCountsDefault = [0, 0, 0, 0, 0];
     return (
@@ -110,11 +109,11 @@ export default function ProductDetailClient(data: any) {
         <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='h-fit'>
           <Stack gap='md'>
             <Flex align='center' gap={'xs'}>
-              <Badge bg={inStock ? 'green.9' : 'red'} radius={'sm'} size='md'>
+              <Badge className={clsx(inStock ? 'bg-mainColor' : 'bg-red-500')} radius={'sm'} size='md'>
                 {inStock ? 'Còn hàng' : 'Hết hàng'}
               </Badge>
-              <Rating value={product?.rating?.toFixed(1)} readOnly size='md' color={'yellow.8'} />
-              <Text size='xs' c='green.9'>
+              <Rating value={product?.rating?.toFixed(1)} readOnly size='md' color={'#FFC522'} />
+              <Text size='xs' className='text-mainColor'>
                 Có {product?.totalRating || 0} đánh giá
               </Text>
             </Flex>
@@ -130,21 +129,22 @@ export default function ProductDetailClient(data: any) {
               direction={{ base: 'column', md: 'row' }}
             >
               <Text c='dimmed' size='sm'>
-                Danh mục: <b className='font-bold text-[#008b4b]'>{product?.subCategory?.name || 'Đang cập nhật'}</b>
+                Danh mục: <b className='font-bold text-mainColor'>{product?.subCategory?.name || 'Đang cập nhật'}</b>
               </Text>
 
               <Text c='dimmed' size='sm' className='hidden lg:block'>
                 |
               </Text>
               <Text c='dimmed' size='sm'>
-                Mã sản phẩm: <b className='font-bold text-[#008b4b]'>{product?.id || 'asd15as5d465as65d465a16198'}</b>
+                Mã sản phẩm: <b className='font-bold text-mainColor'>{product?.id || 'asd15as5d465as65d465a16198'}</b>
               </Text>
             </Flex>
 
             <Divider />
             <Group align='center'>
               <Title order={2} className='font-quicksand' fw={700} c='red'>
-                <b className='text-black'>Giá:</b> {formatPriceLocaleVi((product?.price || 0) - discount || 0)}
+                <b className='text-black dark:text-dark-text'>Giá:</b>{' '}
+                {formatPriceLocaleVi((product?.price || 0) - discount || 0)}
               </Title>
               {discount > 0 && (
                 <Text size='sm' td='line-through' c='dimmed'>
@@ -166,10 +166,9 @@ export default function ProductDetailClient(data: any) {
             </Group>
 
             <Card
-              bg={'gray.1'}
               radius={'md'}
               withBorder
-              className='border-0 border-l-2 border-[#008b4b]'
+              className='border-0 border-l-2 border-mainColor bg-gray-100 dark:bg-dark-card'
               p={'xs'}
               my={'xs'}
             >
@@ -177,8 +176,8 @@ export default function ProductDetailClient(data: any) {
                 maxHeight={60}
                 showLabel='Xem thêm'
                 hideLabel='Ẩn'
-                styles={{
-                  control: { color: '#008b4b', fontWeight: 700, fontSize: '14px' }
+                classNames={{
+                  control: 'text-sm font-bold text-mainColor'
                 }}
               >
                 <Text size='sm'>{product?.description || 'Đang cập nhật'}</Text>
@@ -251,11 +250,11 @@ export default function ProductDetailClient(data: any) {
               <Text c={'dimmed'} size='sm'>
                 Chia sẻ:
               </Text>
-              <IconBrandFacebook size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-              <IconBrandPinterest size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-              <IconBrandTwitter size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-              <IconBrandYoutube size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-              <IconMail size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
+              <IconBrandFacebook size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+              <IconBrandPinterest size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+              <IconBrandTwitter size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+              <IconBrandYoutube size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+              <IconMail size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
             </Group>
             <Group mt={{ base: 20, sm: 'xs', md: 'xs', lg: 'xl' }} grow>
               <Stack align='center' gap={5}>
@@ -356,8 +355,8 @@ export default function ProductDetailClient(data: any) {
                   maxHeight={300}
                   showLabel='Xem thêm'
                   hideLabel='Ẩn'
-                  styles={{
-                    control: { color: '#008b4b', fontWeight: 700, fontSize: '14px' }
+                  classNames={{
+                    control: 'text-sm font-bold text-mainColor'
                   }}
                 >
                   <Stack>

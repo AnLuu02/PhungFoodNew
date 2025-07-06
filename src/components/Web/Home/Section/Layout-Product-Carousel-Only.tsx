@@ -37,7 +37,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
   }, [embla, onSelect]);
 
   return (
-    <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'gray.1'} p={0}>
+    <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} className='bg-gray-100 dark:bg-dark-card' p={0}>
       <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
         <Flex
           align={'center'}
@@ -46,7 +46,10 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
           direction={{ base: 'column', sm: 'row', md: 'row' }}
           gap={'md'}
         >
-          <Title order={2} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
+          <Title
+            order={2}
+            className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-dark-text'
+          >
             {title || 'Sản phẩm mới'}
           </Title>
 
@@ -56,7 +59,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
               radius={'50%'}
               size={'lg'}
               onClick={scrollPrev}
-              color='#008b4b'
+              className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
               disabled={!prevBtnEnabled}
             >
               <IconChevronLeft size={'xs'} />
@@ -64,7 +67,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
             <Space w={'xs'} />
             <ActionIcon
               variant='subtle'
-              color='#008b4b'
+              className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
               radius={'50%'}
               size={'lg'}
               onClick={scrollNext}

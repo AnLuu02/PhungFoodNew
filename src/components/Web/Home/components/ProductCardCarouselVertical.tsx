@@ -94,14 +94,14 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
                 w={'max-content'}
                 p={5}
                 variant='default'
-                className={clsx('text-[#008b4b] hover:text-[#f8c144]')}
+                className={clsx('text-mainColor hover:text-subColor')}
               >
                 <IconEye />
               </Button>
             </Tooltip>
 
             <Button
-              className={clsx('text-[#008b4b] hover:text-[#f8c144]')}
+              className={clsx('text-mainColor hover:text-subColor')}
               size='xs'
               w={'max-content'}
               p={5}
@@ -151,7 +151,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
                 size='md'
                 fw={700}
                 px={10}
-                className='cursor-pointer text-center hover:text-[#008b4b]'
+                className='cursor-pointer text-center hover:text-mainColor'
               >
                 {product?.name || 'Cá thu'}
               </Text>
@@ -163,12 +163,12 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
                 {product?.discount ? `${formatPriceLocaleVi(product?.price)}` : `180.000đ`}
               </Text>
             )}
-            <Text size='md' fw={700} className='text-[#008b4b]'>
+            <Text size='md' fw={700} className='text-mainColor'>
               {product?.price ? `${formatPriceLocaleVi(product?.price - product?.discount)} ` : `180.000đ`}
             </Text>
           </Group>
           <Flex align={'center'} gap={10} justify={'space-between'}>
-            <Rating fractions={4} readOnly value={product?.rating || 0} onChange={() => {}} color={'#F8C144'} />
+            <Rating fractions={4} readOnly value={product?.rating || 0} onChange={() => {}} color={'#FFC522'} />
             <Text
               onClick={() => {
                 if (!user?.user?.email) {
@@ -180,11 +180,11 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
                 }
               }}
               size='xs'
-              className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-[#f8c144] hover:underline'
+              className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline'
             >
               {pathname === '/' ? (
                 <Link
-                  className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-[#f8c144] hover:underline'
+                  className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline'
                   href={`/san-pham/${product?.tag}/danh-gia`}
                 >
                   Có {product?.totalRating || 0} đánh giá
@@ -206,7 +206,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
         </Flex>
 
         <Badge color='red' pr={20} pos={'absolute'} top={-15} right={-10}>
-          <Text size='xs' c={'white'}>
+          <Text size='xs' className='text-white'>
             Đã bán: {product?.soldQuantity}
           </Text>
         </Badge>

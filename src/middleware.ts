@@ -26,15 +26,6 @@ export async function middleware(request: NextRequest) {
   if (token && token?.role === UserRole.CUSTOMER && request.nextUrl.pathname.startsWith('/admin')) {
     return NextResponse.redirect(new URL('/unauthorized', request.url));
   }
-  // if (
-  //   token &&
-  //   token?.role === UserRole.ADMIN &&
-  //   token?.role !== UserRole.STAFF &&
-  //   token?.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN &&
-  //   request.nextUrl.pathname.startsWith('/admin')
-  // ) {
-  //   return NextResponse.redirect(new URL('/unauthorized', request.url));
-  // }
 
   return NextResponse.next();
 }

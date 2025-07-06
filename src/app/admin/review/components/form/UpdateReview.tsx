@@ -116,7 +116,7 @@ export default function UpdateReview({ reviewId, setOpened }: { reviewId: string
             render={({ field, fieldState }) => (
               <Flex align={'center'} justify={'space-between'}>
                 <NumberInput label='Đánh giá' {...field} min={0} max={5} error={errors.rating?.message} />
-                <Rating size={'lg'} {...field} fractions={4} color={'yellow.8'} />
+                <Rating size={'lg'} {...field} fractions={4} color={'#FFC522'} />
               </Flex>
             )}
           />

@@ -25,7 +25,12 @@ export default function CustomPagination({ totalPages }: { totalPages: number })
   };
   return (
     <Group justify='center' mt='xl'>
-      <Pagination.Root color='green.9' total={totalPages} value={currentPage} onChange={onChange}>
+      <Pagination.Root
+        classNames={{ control: 'bg-mainColor' }}
+        total={totalPages}
+        value={currentPage}
+        onChange={onChange}
+      >
         <Group gap={5} justify='center'>
           <Pagination.First />
           <Pagination.Previous />

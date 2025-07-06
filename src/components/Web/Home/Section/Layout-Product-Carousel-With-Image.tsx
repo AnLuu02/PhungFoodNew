@@ -47,7 +47,13 @@ const LayoutProductCarouselWithImage = ({
     }
   }, [active]);
   return (
-    <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'gray.1'} p={0}>
+    <Card
+      mih={500}
+      h={{ base: 'max-content', md: 500 }}
+      radius={'lg'}
+      className='dark:bg-dark-background bg-gray-100'
+      p={0}
+    >
       <Flex h={'100%'} direction={{ base: 'column', md: reverseGrid ? 'row-reverse' : 'row' }}>
         <BackgroundImage
           src={imageUrl || '/images/jpg/best-saller.jpg'}
@@ -59,17 +65,17 @@ const LayoutProductCarouselWithImage = ({
           <Overlay color='#000' opacity={0.5} zIndex={1} radius='md' />
           <Stack pos={'absolute'} className='inset-0 z-10' p={'lg'}>
             <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
-            <Title order={2} className='font-quicksand' c={'white'}>
+            <Title order={2} className='font-quicksand text-white'>
               {title || 'Bán chạy nhất hàng ngày'}
             </Title>
-            <Text td='underline' fs='italic' size='md' c={'white'} fw={700}>
+            <Text td='underline' fs='italic' size='md' className='text-white' fw={700}>
               {content || 'Ưu đãi độc quyền - Giảm giá 20%'}
             </Text>
-            <Title order={3} c={'white'} className='font-quicksand'>
+            <Title order={3} className='font-quicksand text-white'>
               Mua sắm thoải mái chỉ từ 10.000 VNĐ
             </Title>
 
-            <Text size='md' c={'white'} fw={700}>
+            <Text size='md' className='text-white' fw={700}>
               Chỉ trong tuần này. Đừng bỏ lỡ...
             </Text>
             <BButton title={'Mua ngay'} radius='xl' size='sm' w={'max-content'} />

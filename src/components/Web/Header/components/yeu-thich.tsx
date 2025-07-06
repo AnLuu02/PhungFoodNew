@@ -1,5 +1,5 @@
 'use client';
-import { Button, Indicator, rem } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { IconHeart } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -15,11 +15,14 @@ const LikeButton = () => {
       <Button
         variant='outline'
         radius={'xl'}
-        className='border-[#008b4b] text-[#008b4b] hover:bg-[#008b4b] hover:text-white'
+        className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
         leftSection={
-          <Indicator label={data?.length || 0} size={rem(15)} color={'green.9'} zIndex={100}>
-            <IconHeart size={20} />
-          </Indicator>
+          <div className='relative inline-block'>
+            <IconHeart size={20} className='text-mainColor' />
+            <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
+              {data?.length || 0}
+            </span>
+          </div>
         }
       >
         Yêu thích

@@ -147,7 +147,7 @@ export default function OrderList({ data }: { data: any[] }) {
           }
         }}
       >
-        <Tabs.List bg={'gray.1'} mb={'md'} p={'xs'}>
+        <Tabs.List className='bg-gray-100' mb={'md'} p={'xs'}>
           <Flex w={'100%'} direction={{ base: 'column', sm: 'column', md: 'column', lg: 'row' }}>
             <Group gap={0}>
               <Tabs.Tab size={'md'} fw={500} value='all'>
@@ -278,7 +278,7 @@ export default function OrderList({ data }: { data: any[] }) {
         </Tabs.Panel>
       </Tabs>
       <Flex mt='xl' justify='flex-end' align={'center'} gap={'md'} direction={{ base: 'column-reverse', md: 'row' }}>
-        <Pagination total={totalPages} value={page} onChange={setPage} />
+        <Pagination classNames={{ control: 'bg-mainColor' }} total={totalPages} value={page} onChange={setPage} />
         <Select
           value={String(perPage)}
           w={100}

@@ -12,7 +12,6 @@ import {
   Group,
   Image,
   Paper,
-  rem,
   Stack,
   Switch,
   Text,
@@ -177,20 +176,10 @@ export default function BannerManagement({ data }: any) {
                   previousControlIcon={<IconChevronLeft size={24} />}
                   controlSize={40}
                   color='black'
-                  styles={{
-                    control: {
-                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                      border: 'none'
-                    },
-                    indicators: {
-                      bottom: 16
-                    },
-                    indicator: {
-                      width: rem(20),
-                      height: rem(8),
-                      backgroundColor: '#008b4b',
-                      margin: '0 6px'
-                    }
+                  classNames={{
+                    control: 'border-none bg-white/80',
+                    indicators: 'bottom-4',
+                    indicator: 'bg-mainColor mx-[6px] h-[8px] w-[20px] rounded-full'
                   }}
                 >
                   {previewUrls.map((src: any, index: number) => (

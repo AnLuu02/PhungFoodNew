@@ -28,6 +28,7 @@ import {
   IconMail,
   IconX
 } from '@tabler/icons-react';
+import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -117,7 +118,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                             <Box w={'100%'} h={74} className='overflow-hidden rounded-sm' pos={'relative'}>
                               <Image
                                 loading='lazy'
-                                className='border-2 border-[#008b4b] object-cover'
+                                className='border-2 border-mainColor object-cover'
                                 fill
                                 style={{ objectFit: 'cover' }}
                                 alt='Product Image'
@@ -139,10 +140,10 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
               <GridCol span={7}>
                 <Stack gap='md'>
                   <Flex align='center' gap={'xs'}>
-                    <Badge bg={inStock ? 'green.9' : 'red'} radius={'sm'}>
+                    <Badge className={clsx(inStock ? 'bg-mainColor' : 'bg-red-500')} radius={'sm'}>
                       {inStock ? 'Còn hàng' : 'Hết hàng'}
                     </Badge>
-                    <Rating value={product?.rating?.toFixed(1)} readOnly size='sm' color={'yellow.8'} />
+                    <Rating value={product?.rating?.toFixed(1)} readOnly size='sm' color={'#FFC522'} />
                     <Text size='xs' c='dimmed'>
                       Có {product?.totalRating} đánh giá
                     </Text>
@@ -150,7 +151,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                   <Link href={`/san-pham/${product?.tag}`} onClick={close}>
                     <Text
                       fw={700}
-                      className='cursor-pointer text-3xl text-black transition-all duration-200 ease-in-out hover:text-[#008b4b]'
+                      className='cursor-pointer text-3xl text-black transition-all duration-200 ease-in-out hover:text-mainColor'
                     >
                       {product?.name || 'Súp bông tuyết'}
                     </Text>
@@ -160,7 +161,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                     <Text c='black' fw={700} size='sm'>
                       Mã sản phẩm:
                     </Text>
-                    <Text c='green.9' fw={700} size='sm'>
+                    <Text className='text-mainColor' fw={700} size='sm'>
                       {product?.id || 'asd15as5d465as65d465a16198'}
                     </Text>
                   </Group>
@@ -172,7 +173,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                           {formatPriceLocaleVi(product?.price) || '0đ'}
                         </Text>
                       )}
-                      <Text fw={700} className='text-3xl text-[#f8c144]'>
+                      <Text fw={700} className='text-3xl text-subColor'>
                         {formatPriceLocaleVi(product?.price - product?.discount) || '0đ'}
                       </Text>
                     </Group>
@@ -184,10 +185,9 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                   </Group>
 
                   <Card
-                    bg={'gray.1'}
                     radius={'md'}
                     withBorder
-                    className='border-0 border-l-2 border-[#008b4b]'
+                    className='border-0 border-l-2 border-mainColor bg-gray-100'
                     p={'xs'}
                     my={'xs'}
                   >
@@ -256,11 +256,11 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                     <Text c={'dimmed'} size='sm'>
                       Chia sẻ:
                     </Text>
-                    <IconBrandFacebook size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-                    <IconBrandPinterest size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-                    <IconBrandTwitter size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-                    <IconBrandYoutube size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
-                    <IconMail size={16} className='cursor-pointer hover:scale-150 hover:text-[#008b4b]' />
+                    <IconBrandFacebook size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+                    <IconBrandPinterest size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+                    <IconBrandTwitter size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+                    <IconBrandYoutube size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
+                    <IconMail size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
                   </Group>
                 </Stack>
               </GridCol>

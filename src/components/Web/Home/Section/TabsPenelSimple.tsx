@@ -40,7 +40,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollPrev}
-            color='#008b4b'
+            className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
             disabled={!prevBtnEnabled}
           >
             <IconChevronLeft size={'xs'} />
@@ -50,7 +50,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollNext}
-            color='#008b4b'
+            className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
             disabled={!nextBtnEnabled}
           >
             <IconChevronRight size={'xs'} />
@@ -88,14 +88,13 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
             <CarouselSlide key={item.id}>
               <Card
                 radius={'md'}
-                bg={'gray.1'}
                 padding='lg'
                 component='a'
                 shadow='sm'
                 withBorder
                 h={200}
                 href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
-                className='hover:border-10 cursor-pointer hover:border-[#008b4b] hover:shadow-lg'
+                className='hover:border-10 dark:bg-dark-card cursor-pointer bg-gray-100 hover:border-mainColor hover:shadow-lg dark:hover:border-mainColor/50 dark:hover:shadow-lg'
               >
                 <CardSection>
                   <div style={{ position: 'relative', width: '100%', height: '120px' }}>
@@ -110,7 +109,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                 </CardSection>
                 <Stack gap={rem(1)} mt={'xs'} align='center'>
                   <Tooltip label={item?.name || 'Cà chua'} withArrow>
-                    <Text size={'md'} fw={700} lineClamp={1} className='hover:text-[#008b4b]'>
+                    <Text size={'md'} fw={700} lineClamp={1} className='hover:text-mainColor'>
                       {item?.name || 'Cà chua'}
                     </Text>
                   </Tooltip>

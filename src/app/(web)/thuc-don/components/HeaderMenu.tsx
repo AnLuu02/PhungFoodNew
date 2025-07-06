@@ -30,10 +30,8 @@ export default function HeaderMenu({ products }: { products: any[] }) {
                     Danh mục
                   </Text>
                   <Group gap={'xs'}>
-                    <Title className='font-quicksand' c={'green.9'}>
-                      {getTagFromQuery(params)}
-                    </Title>
-                    <Title order={2} className='font-quicksand' c={'green.9'}>
+                    <Title className='font-quicksand text-mainColor'>{getTagFromQuery(params)}</Title>
+                    <Title order={2} className='font-quicksand text-mainColor'>
                       ({products?.length})
                     </Title>
                   </Group>

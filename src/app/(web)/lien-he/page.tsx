@@ -19,23 +19,23 @@ const Contact = async () => {
                 NƠI GIẢI ĐÁP TOÀN BỘ MỌI THẮC MẮC CỦA BẠN?
               </Text>
               <Text size='sm'>Phụng Food- Siêu thị trực tuyến mua sắm nông sản, chất lượng, tươi xanh.</Text>
-              <Text size='sm' fw={900} c={'green.9'} mb={20}>
+              <Text size='sm' fw={900} className='text-mainColor' mb={20}>
                 Giá siêu tốt - Giao siêu tốc.
               </Text>
               <Flex mb={10} align={'center'}>
-                <ThemeIcon radius='xl' size='sm' bg={'green.9'} mr={12}>
+                <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>
                   <IconBrand4chan style={{ width: '70%', height: '70%' }} />
                 </ThemeIcon>
                 <Text size='sm'>{restaurant?.name} Việt Nam</Text>
               </Flex>
               <Flex mb={10} align={'center'}>
-                <ThemeIcon radius='xl' size='sm' bg={'green.9'} mr={12}>
+                <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>
                   <IconPhone style={{ width: '70%', height: '70%' }} />
                 </ThemeIcon>
                 <Text size='sm'>{restaurant?.phone}</Text>
               </Flex>
               <Flex mb={20} align={'flex-start'}>
-                <ThemeIcon radius='xl' size='sm' bg={'green.9'} mr={12}>
+                <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>
                   <IconLocation style={{ width: '70%', height: '70%' }} />
                 </ThemeIcon>
                 <Text size='sm'>
@@ -68,7 +68,7 @@ const Contact = async () => {
                   <Button
                     size='sm'
                     radius={'xl'}
-                    className='border-[#008b4b] bg-[#008b4b] text-white transition-all duration-200 ease-in-out hover:border-[#f8c144] hover:bg-[#f8c144] hover:text-black'
+                    className='border-mainColor bg-mainColor text-white transition-all duration-200 ease-in-out hover:border-subColor hover:bg-subColor hover:text-black'
                   >
                     Gửi thông tin
                   </Button>
@@ -77,7 +77,7 @@ const Contact = async () => {
             </Flex>
           </GridCol>
           <GridCol span={{ base: 12, md: 6 }}>
-            <Flex direction='column' w={'100%'} h={'500px'} bg={'gray.1'} align={'center'} justify={'center'}>
+            <Flex direction='column' w={'100%'} h={'500px'} className='bg-gray-100' align={'center'} justify={'center'}>
               <iframe
                 src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.0667450974274!2d106.60273367451757!3d10.806200058644913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752b92b2423a45%3A0x1a966c9c45ff7eee!2sB&#39;s%20Mart!5e0!3m2!1svi!2s!4v1735319059137!5m2!1svi!2s'
                 width='100%'
