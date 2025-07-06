@@ -15,15 +15,14 @@ export default function FilterMenu() {
       <Popover.Target>
         <Button
           variant='outline'
-          c='green.9'
-          className='border-1 border-[#008b4b]'
+          className='border-1 border-mainColor text-mainColor'
           leftSection={<IconSort09 size={16} />}
           w={'max-content'}
         >
           Lọc theo
         </Button>
       </Popover.Target>
-      <Popover.Dropdown bg='var(--mantine-color-body)'>
+      <Popover.Dropdown>
         <Grid>
           <GridCol span={12}>
             <Text size='lg' className='font-bold'>
@@ -76,7 +75,7 @@ export default function FilterMenu() {
                 router.push(`${pathname}?${s.toString()}`);
               }}
               color='red'
-              className='bg-[#008b4b] text-white transition-all duration-200 ease-in-out hover:bg-[#f8c144] hover:text-black'
+              className='bg-mainColor text-white transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black'
             >
               Hủy lọc
             </Button>

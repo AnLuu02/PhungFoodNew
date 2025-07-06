@@ -46,7 +46,7 @@ const CategoryCarouselHorizontal = ({ data }: { data: IDataCategory }) => {
         <Title
           order={2}
           w={{ base: '100%', sm: 'max-content', md: '33.33333%' }}
-          className='cursor-pointer text-center font-quicksand font-bold hover:text-[#008b4b] sm:text-left'
+          className='hover:text-mainColor cursor-pointer text-center font-quicksand font-bold sm:text-left'
         >
           Danh mục nổi bật
         </Title>

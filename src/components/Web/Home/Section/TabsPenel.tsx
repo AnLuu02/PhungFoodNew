@@ -41,7 +41,7 @@ const TabsPanelCarousel = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollPrev}
-            color='#008b4b'
+            className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
             disabled={!prevBtnEnabled}
           >
             <IconChevronLeft size={'xs'} />
@@ -51,7 +51,7 @@ const TabsPanelCarousel = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollNext}
-            color='#008b4b'
+            className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
             disabled={!nextBtnEnabled}
           >
             <IconChevronRight size={'xs'} />

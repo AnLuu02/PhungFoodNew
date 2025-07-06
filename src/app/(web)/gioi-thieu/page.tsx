@@ -52,10 +52,10 @@ export default async function AboutPage() {
         pos={'relative'}
       >
         <Flex direction={'column'} pos={'relative'} align={'center'} justify={'center'} className='z-10' gap={'md'}>
-          <Title order={1} size='h1' c={'white'}>
+          <Title order={1} size='h1' className='font-quicksand text-white' mb='md'>
             Chào mừng đến với Hương Vị Sài Gòn Mama Reastaurant
           </Title>
-          <Text size='xl' my='xl' c={'white'}>
+          <Text size='xl' my='xl' className='text-white' mb='md'>
             Trải nghiệm hương vị đích thực của miền Tây Việt Nam và hơn thế nữa!
           </Text>
 

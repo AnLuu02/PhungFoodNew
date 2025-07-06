@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, TextInput } from '@mantine/core';
+import { Button, Grid, Textarea, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -9,7 +9,8 @@ import { api } from '~/trpc/react';
 
 const permissionSchema = z.object({
   name: z.string().min(1, 'Tên quyền là bắt buộc'),
-  permissionId: z.string()
+  permissionId: z.string(),
+  description: z.string().optional()
 });
 
 type PermissionFormData = z.infer<typeof permissionSchema>;
@@ -19,10 +20,10 @@ export default function UpdatePermission({ setOpened, permissionId }: { setOpene
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue
+    reset
   } = useForm<PermissionFormData>({
     resolver: zodResolver(permissionSchema),
-    defaultValues: { permissionId, name: '' }
+    defaultValues: { permissionId, name: '', description: '' }
   });
 
   const utils = api.useUtils();
@@ -35,9 +36,13 @@ export default function UpdatePermission({ setOpened, permissionId }: { setOpene
 
   useEffect(() => {
     if (permissionData) {
-      setValue('name', permissionData.name || '');
+      reset({
+        name: permissionData.name || '',
+        description: permissionData.description || '',
+        permissionId: permissionData.id || ''
+      });
     }
-  }, [permissionData, setValue]);
+  }, [permissionData, reset]);
 
   const onSubmit: SubmitHandler<PermissionFormData> = async data => {
     try {
@@ -52,7 +57,6 @@ export default function UpdatePermission({ setOpened, permissionId }: { setOpene
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
@@ -68,6 +72,15 @@ export default function UpdatePermission({ setOpened, permissionId }: { setOpene
                 placeholder='Nhập tên quyền'
                 error={errors.name?.message}
               />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <Controller
+            control={control}
+            name='description'
+            render={({ field }) => (
+              <Textarea {...field} label='Mô tả' size='sm' placeholder='Nhập mô tả' error={errors.name?.message} />
             )}
           />
         </Grid.Col>

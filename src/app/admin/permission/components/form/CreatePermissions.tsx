@@ -1,13 +1,14 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, TextInput } from '@mantine/core';
+import { Button, Grid, Textarea, TextInput } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 
 const permissionSchema = z.object({
-  name: z.string().min(1, 'Tên quyền là bắt buộc')
+  name: z.string().min(1, 'Tên quyền là bắt buộc'),
+  description: z.string().optional()
 });
 
 type PermissionForm = z.infer<typeof permissionSchema>;
@@ -20,7 +21,8 @@ export default function CreatePermission({ setOpened }: { setOpened: any }) {
   } = useForm<PermissionForm>({
     resolver: zodResolver(permissionSchema),
     defaultValues: {
-      name: ''
+      name: '',
+      description: ''
     }
   });
 
@@ -59,6 +61,15 @@ export default function CreatePermission({ setOpened }: { setOpened: any }) {
                 placeholder='Nhập tên vai trò'
                 error={errors.name?.message}
               />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <Controller
+            control={control}
+            name='description'
+            render={({ field }) => (
+              <Textarea {...field} label='Mô tả' size='sm' placeholder='Nhập mô tả' error={errors.name?.message} />
             )}
           />
         </Grid.Col>

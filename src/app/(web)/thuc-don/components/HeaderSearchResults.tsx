@@ -18,7 +18,7 @@ export default function HeaderSearchResults({ products }: any) {
   }, [params]);
 
   return (
-    <Paper bg={'gray.1'} mb='lg' p={'md'} radius={'lg'}>
+    <Paper className='bg-gray-100 dark:bg-dark-card' mb='lg' p={'md'} radius={'lg'}>
       <Group mb='xs'>
         <Flex align='center' justify='center' w={24} h={24} style={{ borderRadius: '50%' }} bg='blue'>
           <Text c='white' size='sm'>

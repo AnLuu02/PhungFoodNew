@@ -1,17 +1,5 @@
 'use client';
-import {
-  Box,
-  Button,
-  Divider,
-  Flex,
-  Group,
-  Indicator,
-  Menu,
-  rem,
-  ScrollAreaAutosize,
-  Stack,
-  Text
-} from '@mantine/core';
+import { Box, Button, Divider, Flex, Group, Menu, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Image from 'next/image';
@@ -23,7 +11,7 @@ import { LocalImageType } from '~/lib/zod/EnumType';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
 
 const CartButton = () => {
-  const notDesktop = useMediaQuery(`(max-width: 1023px)`);
+  const isDesktop = useMediaQuery(`(min-width: 1024px)`);
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
   const updateQuantity = (id: number, quantity: number) => {
@@ -41,19 +29,22 @@ const CartButton = () => {
       shadow='md'
       width={350}
       trigger='hover'
-      disabled={notDesktop}
+      disabled={!isDesktop}
       transitionProps={{ transition: 'fade-down', duration: 300, exitDelay: 300, enterDelay: 300 }}
     >
       <Menu.Target>
         <Link href='/gio-hang' className='text-white'>
           <Button
             variant='outline'
-            className='border-[#008b4b] text-[#008b4b] hover:bg-[#008b4b] hover:text-white'
+            className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
             radius={'xl'}
             leftSection={
-              <Indicator label={cart.length || 0} size={rem(15)} color={'green.9'} zIndex={100}>
-                <IconShoppingBag size={20} />
-              </Indicator>
+              <div className='relative inline-block'>
+                <IconShoppingBag size={20} className='text-mainColor' />
+                <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
+                  {cart.length || 0}
+                </span>
+              </div>
             }
           >
             Giỏ hàng

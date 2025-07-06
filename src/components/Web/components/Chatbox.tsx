@@ -1,12 +1,15 @@
 'use client';
 
 import {
+  ActionIcon,
   Avatar,
   Box,
   Button,
   Center,
   Flex,
   Group,
+  Loader,
+  Menu,
   Paper,
   rem,
   ScrollArea,
@@ -15,11 +18,23 @@ import {
   TextInput,
   UnstyledButton
 } from '@mantine/core';
-import { IconMicrophone, IconSend, IconSquareFilled } from '@tabler/icons-react';
-import parse from 'html-react-parser';
+import { useLocalStorage } from '@mantine/hooks';
+import {
+  IconDotsVertical,
+  IconMicrophone,
+  IconRobot,
+  IconSend,
+  IconSquareFilled,
+  IconTrash,
+  IconUser
+} from '@tabler/icons-react';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { NotifyError } from '~/lib/func-handler/toast';
-
+interface Message {
+  sender: 'Bot' | 'User';
+  text: string;
+  timestamp: string;
+}
 const initialState: any = {
   searchState: 'initial',
   transcript: ''
@@ -38,12 +53,39 @@ function reducer(state: any, action: any) {
   }
 }
 
+const TypingIndicator = () => (
+  <Group gap={4} w='max-content'>
+    {[0, 1, 2].map(i => (
+      <Box
+        key={i}
+        w={rem(8)}
+        h={rem(8)}
+        bg='gray.5'
+        style={{
+          borderRadius: '50%',
+          animation: 'bounce 1.4s infinite ease-in-out',
+          animationDelay: `${i * 0.16}s`
+        }}
+      />
+    ))}
+  </Group>
+);
+
 export default function Chatbox() {
+  const [messages, setMessages, resetMessages] = useLocalStorage<Message[]>({
+    key: 'chatbox-messages',
+    defaultValue: [
+      {
+        sender: 'Bot',
+        text: 'Tôi là chatbox của PhungFood. Tôi có thể giúp gì cho bạn?',
+        timestamp: new Date().toISOString()
+      }
+    ]
+  });
+
   const messageRef = useRef('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const [messages, setMessages] = useState<{ sender: string; text: string }[]>([
-    { sender: 'Bot', text: 'Tôi là chatbox của PhungFood. Tôi có thể giúp gì cho bạn?' }
-  ]);
+
   const [loading, setLoading] = useState(false);
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -124,7 +166,7 @@ export default function Chatbox() {
   const sendMessage = async () => {
     stopRecording();
     if (!messageRef.current.trim()) return;
-    setMessages([...messages, { sender: 'Người dùng', text: messageRef.current }]);
+    setMessages([...messages, { sender: 'User', text: messageRef.current, timestamp: new Date().toISOString() }]);
     setLoading(true);
     scrollToBottom();
     if (inputRef.current) {
@@ -140,96 +182,111 @@ export default function Chatbox() {
       messageRef.current = '';
 
       const data = await res.json();
-      setMessages(prev => [...prev, { sender: 'Bot', text: data.reply }]);
+      setMessages(prev => [...prev, { sender: 'Bot', text: data.reply, timestamp: new Date().toISOString() }]);
     } catch (error) {
       console.error('Lỗi gửi tin nhắn:', error);
-      setMessages(prev => [...prev, { sender: 'Bot', text: 'Lỗi hệ thống, thử lại sau.' }]);
+      setMessages(prev => [
+        ...prev,
+        { sender: 'Bot', text: 'Lỗi hệ thống, thử lại sau.', timestamp: new Date().toISOString() }
+      ]);
     }
     setLoading(false);
   };
 
   return (
     <Box
-      w={{ base: 335, sm: 450, md: 450, lg: 450 }}
+      w={{ base: 335, sm: 450, md: 450, lg: 400 }}
       h={{ base: 400, sm: 500, md: 500, lg: 500 }}
-      className='flex flex-col overflow-hidden'
-      bg='gray.1'
+      className='dark:bg-dark-card flex flex-col overflow-hidden bg-gray-100'
     >
-      <UnstyledButton p={'xs'} bg={'green.9'}>
-        <Group>
-          <Avatar src={`/images/jpg/bot.jpg`} radius='xl' />
+      <UnstyledButton
+        p={'xs'}
+        style={{
+          background: 'linear-gradient(135deg, #228be6 0%, #7048e8 100%)'
+        }}
+      >
+        <Flex align={'center'} gap={'xs'} justify={'space-between'}>
+          <Group>
+            <Avatar src={`/images/jpg/bot.jpg`} radius='xl' />
 
-          <div style={{ flex: 1 }}>
-            <Text size='md' fw={700} c={'white'}>
-              Chat support
-            </Text>
+            <div style={{ flex: 1 }}>
+              <Text size='md' fw={700} className='text-white'>
+                Chat support
+              </Text>
 
-            <Text c={'white'} size='xs'>
-              phungfood@contact.com
-            </Text>
-          </div>
-        </Group>
+              <Text className='text-white' size='xs'>
+                phungfood@contact.com
+              </Text>
+            </div>
+          </Group>
+          <Menu width={200} shadow='md' zIndex={1000000} position='bottom-end'>
+            <Menu.Target>
+              <ActionIcon variant='transparent' size={30} color='white'>
+                <IconDotsVertical color='white' size={20} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item leftSection={<IconTrash size={14} color='red' />} onClick={() => resetMessages()}>
+                Xóa đoạn chat
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Flex>
       </UnstyledButton>
       <ScrollArea className='mb-4 flex-grow' scrollbarSize={7} viewportRef={scrollAreaRef}>
         <Box p='md' w={'100%'}>
           <Stack gap='md'>
-            {messages.map((message, index) =>
-              message.sender === 'Bot' ? (
-                <Box maw={'86%'}>
+            {messages.map((message, index) => (
+              <Flex
+                key={index}
+                direction={message.sender === 'User' ? 'row-reverse' : 'row'}
+                align='flex-start'
+                gap='sm'
+              >
+                <Avatar size='sm' radius='xl' color={message.sender === 'Bot' ? 'blue' : 'violet'} variant='filled'>
+                  {message.sender === 'Bot' ? <IconRobot size='1rem' /> : <IconUser size='1rem' />}
+                </Avatar>
+
+                <Box maw='80%'>
                   <Paper
-                    bg='white'
-                    p='xs'
+                    p='sm'
+                    radius='lg'
                     style={{
-                      borderRadius: '16px 16px 16px 4px'
+                      background:
+                        message.sender === 'Bot' ? 'white' : 'linear-gradient(135deg, #4dabf7 0%, #9775fa 100%)',
+                      color: message.sender === 'Bot' ? '#000' : '#fff',
+                      borderRadius: message.sender === 'Bot' ? '1rem 1rem 1rem 0.25rem' : '1rem 1rem 0.25rem 1rem'
                     }}
                   >
-                    <Text size='sm'>{parse(message.text)}</Text>
+                    <Text size='sm' c={message.sender === 'Bot' ? 'dark' : 'white'} style={{ wordBreak: 'break-word' }}>
+                      {message.text}
+                    </Text>
                   </Paper>
-                  <Text size='xs' c='dimmed' ml={8} mt={4}>
-                    Chat support
+                  <Text size='xs' c='dimmed' ta={message.sender === 'User' ? 'right' : 'left'} mt={4} px='sm'>
+                    {new Date(message.timestamp).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
                   </Text>
                 </Box>
-              ) : (
-                <Box ml='auto' w={'max-content'} maw={'86%'}>
-                  <Paper
-                    bg='grape.7'
-                    c='white'
-                    p='xs'
-                    style={{
-                      borderRadius: '16px 16px 4px 16px'
-                    }}
-                  >
-                    <Text size='sm'>{parse(message.text)}</Text>
-                  </Paper>
-                  <Text size='xs' c='dimmed' mr={8} mt={4} ta='right'>
-                    Người dùng
-                  </Text>
-                </Box>
-              )
-            )}
+              </Flex>
+            ))}
 
             {loading && (
-              <Box>
-                <Group gap={4} justify='center' h={rem(24)} w={'max-content'} pl={'xs'}>
-                  {[0, 1, 2].map((i: number) => (
-                    <Box
-                      key={i}
-                      className='typing-dot'
-                      w={rem(6)}
-                      h={rem(6)}
-                      style={{
-                        backgroundColor: '#868e96',
-                        borderRadius: '50%',
-                        animation: 'bounce 1s infinite',
-                        animationDelay: `${i * 0.15}s`
-                      }}
-                    />
-                  ))}
-                </Group>
-                <Text size='xs' c='dimmed' ml={8} mt={4}>
-                  Chat support đang nhập...
-                </Text>
-              </Box>
+              <Flex align='flex-start' gap='sm'>
+                <Avatar size='sm' radius='xl' color='blue' variant='filled'>
+                  <IconRobot size='1rem' />
+                </Avatar>
+                <Box>
+                  <Paper p='sm' radius='lg' bg='gray.1' style={{ borderRadius: '1rem 1rem 1rem 0.25rem' }}>
+                    <TypingIndicator />
+                  </Paper>
+                  <Text size='xs' c='dimmed' mt={4} px='sm'>
+                    AI Assistant is typing...
+                  </Text>
+                </Box>
+              </Flex>
             )}
           </Stack>
         </Box>
@@ -267,6 +324,19 @@ export default function Chatbox() {
             className='flex-grow'
             placeholder='Type your message...'
             disabled={loading}
+            rightSection={
+              <ActionIcon
+                onClick={sendMessage}
+                disabled={loading || !inputRef.current}
+                variant='gradient'
+                gradient={{ from: 'blue', to: 'violet', deg: 45 }}
+                size='sm'
+                radius='xl'
+                style={{ marginRight: rem(4) }}
+              >
+                {loading ? <Loader size='xs' color='white' /> : <IconSend size='1rem' />}
+              </ActionIcon>
+            }
             onChange={e => {
               messageRef.current = e.target.value;
             }}
@@ -276,9 +346,6 @@ export default function Chatbox() {
               }
             }}
           />
-          <Button onClick={sendMessage} variant='transparent' disabled={loading} p={0}>
-            <IconSend size={20} />
-          </Button>
         </Flex>
       </Stack>
     </Box>

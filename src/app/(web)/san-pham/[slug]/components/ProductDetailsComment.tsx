@@ -22,7 +22,7 @@ export default function ProductDetails({ product }: { product: any }) {
             {formatPriceLocaleVi(product.price)}
           </Badge>
           <Group gap='xs'>
-            <Rating value={product.rating} readOnly />
+            <Rating value={product.rating} readOnly color={'#FFC522'} />
             <Text size='sm' c='dimmed'>
               ({product.totalRating} đánh giá)
             </Text>
@@ -32,8 +32,8 @@ export default function ProductDetails({ product }: { product: any }) {
           maxHeight={60}
           showLabel='Xem thêm'
           hideLabel='Ẩn'
-          styles={{
-            control: { color: '#008b4b', fontWeight: 700, fontSize: '14px' }
+          classNames={{
+            control: 'text-sm font-bold text-mainColor'
           }}
         >
           <Text size='sm' mb='md'>

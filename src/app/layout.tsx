@@ -4,7 +4,7 @@ import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '~/styles/globals.css';
 
-import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
+import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { type Metadata } from 'next';
@@ -63,34 +63,6 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://phung-food-new.vercel.app')
 };
 
-const theme = createTheme({
-  colors: {
-    green: [
-      '#f6ffed',
-      '#d9f7be',
-      '#b7eb8f',
-      '#95de64',
-      '#73d13d',
-      '#52c41a',
-      '#389e0d',
-      '#237804',
-      '#135200',
-      '#008b4b'
-    ],
-    yellow: [
-      '#fffbe6',
-      '#fff1b8',
-      '#ffe58f',
-      '#ffd666',
-      '#ffc53d',
-      '#faad14',
-      '#d48806',
-      '#ad6800',
-      '#f8c144',
-      '#FFC522'
-    ]
-  }
-});
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerSession(authOptions);
 
@@ -101,7 +73,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body className={`${quickSandFont.className} ${font.variable}`}>
         <TRPCReactProvider session={session as Session}>
-          <MantineProvider theme={theme} defaultColorScheme='light'>
+          <MantineProvider defaultColorScheme='light'>
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>

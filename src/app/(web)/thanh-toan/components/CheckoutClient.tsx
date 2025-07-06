@@ -260,7 +260,7 @@ export default function CheckoutClient({ order, orderId }: any) {
                   <Text size='md' fw={700}>
                     Tổng cộng
                   </Text>
-                  <Text size='xl' fw={700} c={'red'}>
+                  <Text size='xl' fw={700} className='text-red-500'>
                     {formatPriceLocaleVi(total)}
                   </Text>
                 </Group>

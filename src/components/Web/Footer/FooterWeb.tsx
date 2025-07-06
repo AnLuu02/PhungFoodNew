@@ -7,7 +7,7 @@ export default async function FooterWeb() {
   const restaurant = await api.Restaurant.getOne();
   return (
     <>
-      <Grid className='w-full overflow-hidden px-4 py-8' bg={'gray.1'}>
+      <Grid className='w-full overflow-hidden bg-gray-100 px-4 py-8 dark:bg-dark-background'>
         <GridCol span={{ base: 12, sm: 6, md: 5 }}>
           <Center>
             <Box className='space-y-4'>
@@ -24,12 +24,26 @@ export default async function FooterWeb() {
               </Text>
               <Text size='sm'>Địa chỉ: {restaurant?.address || 'Đầu lộ Tân Thành, Cà Mau'}</Text>
               <Text size='sm'>
-                Điện thoại: <b>{restaurant?.phone || ' 0911862581(Phụng) - 0913290959 (Hòa)'}</b>
+                Điện thoại:{' '}
+                <a
+                  href={`tel:${restaurant?.phone || '0911862581'}`}
+                  aria-label='Gọi điện thoại'
+                  className='rounded-sm hover:underline hover:opacity-80'
+                >
+                  <b>{restaurant?.phone || ' 0911862581(Phụng) - 0913290959 (Hòa)'}</b>
+                </a>
               </Text>
               <Text size='sm'>Mã số thuế: 0303883266</Text>
               <Text size='sm'>Ngày cấp: 15/07/2008 – Nơi cấp: Cục Thuế Hồ Chí Minh</Text>
               <Text size='sm'>
-                Hộp thư góp ý: <b>{restaurant?.email || `jbvnfeedback@jollibee.com.vn`}</b>
+                Hộp thư góp ý:{' '}
+                <a
+                  href={`mailto:${restaurant?.email || 'anluu099@gmail.com'}`}
+                  aria-label='Gửi email'
+                  className='rounded-sm hover:underline hover:opacity-80'
+                >
+                  <b>{restaurant?.email || `jbvnfeedback@jollibee.com.vn`}</b>
+                </a>
               </Text>
             </Box>
           </Center>
@@ -42,7 +56,7 @@ export default async function FooterWeb() {
                 <IconPhoneIncoming size={30} color='red' />
                 <Box className='ml-2 text-4xl font-bold text-red-600'>1900-1533</Box>
               </Flex>
-              <Box className='inline-block rounded-lg bg-yellow-400 px-4 py-2 font-bold text-[#008b4b]'>
+              <Box className='inline-block rounded-lg bg-yellow-400 px-4 py-2 font-bold text-white'>
                 GIAO HÀNG TẬN NƠI
               </Box>
             </Box>
@@ -87,7 +101,7 @@ export default async function FooterWeb() {
             <Text className='text-xl font-bold'>HÃY KẾT NỐI VỚI CHÚNG TÔI</Text>
             <Flex align={'center'} gap={'md'}>
               <a
-                href={`https://zalo.me/${restaurant?.phone || 'phungfood'}`}
+                href={`https://zalo.me/${restaurant?.phone || '0918064618'}`}
                 target='_blank'
                 aria-label='Liên hệ Zalo'
                 className='rounded-sm hover:underline hover:opacity-80'
@@ -163,10 +177,10 @@ export default async function FooterWeb() {
           </Box>
         </GridCol>
       </Grid>
-      <Box className='w-full overflow-hidden bg-[#008b4b] pb-4 pt-4 text-center text-sm text-white'>
+      <Box className='w-full overflow-hidden bg-mainColor pb-4 pt-4 text-center text-sm text-white'>
         <Text size='md' fw={500}>
-          © Bản quyền thuộc về <b className='text-[#F8C144]'>Mr. Bean</b> | Cung cấp bởi{' '}
-          <b className='text-[#F8C144]'>Sapo</b> | <b className='text-[#F8C144]'>An Luu</b> Custom
+          © Bản quyền thuộc về <b className='text-subColor'>Mr. Bean</b> | Cung cấp bởi{' '}
+          <b className='text-subColor'>Sapo</b> | <b className='text-subColor'>An Luu</b> Custom
         </Text>
       </Box>
     </>

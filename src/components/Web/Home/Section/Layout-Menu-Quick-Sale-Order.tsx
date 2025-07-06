@@ -1,4 +1,4 @@
-import { Button, Divider, Flex, Grid, GridCol, Title } from '@mantine/core';
+import { Box, Button, Divider, Flex, Grid, GridCol, Title } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import ProductCardCarouselHorizontal from '../components/ProductCardCarouselHorizontal';
@@ -21,8 +21,20 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
+                <Title
+                  pos={'relative'}
+                  order={1}
+                  className='cursor-pointer font-quicksand font-bold hover:text-mainColor'
+                >
                   Ăn vặt
+                  <Box
+                    w={'100%'}
+                    h={4}
+                    pos={'absolute'}
+                    bottom={-5}
+                    left={0}
+                    className='rounded-full bg-mainColor'
+                  ></Box>
                 </Title>
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
                   <Button
@@ -30,22 +42,13 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                     radius={'xl'}
                     size='md'
                     variant='transparent'
-                    className='text-[#008b4b] transition-all duration-200 ease-in-out hover:text-[#f8c144]'
+                    className='text-mainColor transition-all duration-200 ease-in-out hover:text-subColor'
                   >
                     Xem thêm
                   </Button>
                 </Link>
               </Flex>
               <Divider />
-              <Divider
-                w={'20%'}
-                size={'xl'}
-                color={'green.9'}
-                pos={'absolute'}
-                bottom={7}
-                left={10}
-                className='rounded-full'
-              />
             </GridCol>
             {anVatFilter.map((item: any, index: number) => {
               return (
@@ -62,8 +65,20 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
+                <Title
+                  order={1}
+                  className='cursor-pointer font-quicksand font-bold hover:text-mainColor'
+                  pos={'relative'}
+                >
                   Thức uống
+                  <Box
+                    w={'100%'}
+                    h={4}
+                    pos={'absolute'}
+                    bottom={-4}
+                    left={0}
+                    className='rounded-full bg-mainColor'
+                  ></Box>
                 </Title>
                 <Link href='/thuc-don?danh-muc=thuc-uong'>
                   <Button
@@ -71,22 +86,13 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                     radius={'xl'}
                     size='md'
                     variant='transparent'
-                    className='text-[#008b4b] transition-all duration-200 ease-in-out hover:text-[#f8c144]'
+                    className='text-mainColor transition-all duration-200 ease-in-out hover:text-subColor'
                   >
                     Xem thêm
                   </Button>
                 </Link>
               </Flex>
               <Divider />
-              <Divider
-                w={'20%'}
-                size={'xl'}
-                color={'green.9'}
-                pos={'absolute'}
-                bottom={7}
-                left={10}
-                className='rounded-full'
-              />
             </GridCol>
             {thucUongFilter.map((item: any, index: number) => {
               return (
@@ -100,12 +106,24 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
       )}
 
       {monChinhFilter?.length > 0 && (
-        <GridCol span={{ base: 12, xs: 6, xl: 4 }} className='hidden lg:block'>
+        <GridCol span={{ base: 12, xs: 6, xl: 4 }} className='hidden xl:block'>
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>
-                <Title order={1} className='cursor-pointer font-quicksand font-bold hover:text-[#008b4b]'>
+                <Title
+                  order={1}
+                  className='cursor-pointer font-quicksand font-bold hover:text-mainColor'
+                  pos={'relative'}
+                >
                   Tráng miệng
+                  <Box
+                    w={'100%'}
+                    h={4}
+                    pos={'absolute'}
+                    bottom={-5}
+                    left={0}
+                    className='rounded-full bg-mainColor'
+                  ></Box>
                 </Title>
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
                   <Button
@@ -113,22 +131,13 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                     radius={'xl'}
                     size='md'
                     variant='transparent'
-                    className='text-[#008b4b] transition-all duration-200 ease-in-out hover:text-[#f8c144]'
+                    className='text-mainColor transition-all duration-200 ease-in-out hover:text-subColor'
                   >
                     Xem thêm
                   </Button>
                 </Link>
               </Flex>
               <Divider />
-              <Divider
-                w={'20%'}
-                size={'xl'}
-                color={'green.9'}
-                pos={'absolute'}
-                bottom={7}
-                left={10}
-                className='rounded-full'
-              />
             </GridCol>
             {monChinhFilter.map((item: any, index: number) => {
               return (

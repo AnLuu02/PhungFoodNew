@@ -7,6 +7,24 @@ export default {
   corePlugins: { preflight: false },
   theme: {
     extend: {
+      colors: {
+        subColor: '#f8c144',
+        // subColor: '#FF7043',
+        // mainColor: '#008b4b'
+        mainColor: '#00BFA6',
+        dark: {
+          background: '#1e1e1e', // nền tổng thể
+          card: '#2a2a2a', // nền thẻ
+          surface: '#333333', // menu/dropdown
+          text: '#e0e0e0', // màu chữ chính
+          muted: '#9ca3af', // chữ phụ/subtext
+          border: '#444444', // border nhẹ
+          accent: '#00BFA6' // màu nhấn chung (icon, link...)
+        }
+      },
+      backgroundImage: {
+        // mainColor: 'linear-gradient(135deg, #228be6 0%, #7048e8 100%)'
+      },
       fontFamily: {
         sans: ['var(--font-merge-black)', ...fontFamily.sans],
         mergeblack: ['var(--font-merge-black)'],

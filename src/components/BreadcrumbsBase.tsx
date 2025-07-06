@@ -15,7 +15,7 @@ const BreadcrumbsBase = () => {
     <Breadcrumbs separator='>' classNames={{ separator: 'mx-2 text-gray-500' }}>
       <Link
         href='/'
-        className={`hover:text-[#f8c144] hover:underline ${pathname !== '/' ? 'text-[#f8c144] hover:text-[#f8c144] hover:underline' : 'text-gray-500'}`}
+        className={`hover:text-subColor hover:underline ${pathname !== '/' ? 'text-subColor hover:text-subColor hover:underline' : 'text-gray-500'}`}
       >
         <Text size='sm' fw={700}>
           Trang chủ
@@ -28,7 +28,7 @@ const BreadcrumbsBase = () => {
           <Link
             key={href}
             href={href}
-            className={` ${!isActive ? 'text-[#f8c144] hover:text-[#f8c144] hover:underline' : 'text-gray-500'} `}
+            className={` ${!isActive ? 'text-subColor hover:text-subColor hover:underline' : 'text-gray-500'} `}
             style={{ pointerEvents: isActive ? 'none' : 'auto', textDecoration: 'none' }}
           >
             <Text size='sm' fw={700}>

@@ -11,7 +11,8 @@ import { api } from '~/trpc/react';
 import CreatePermission from './form/CreatePermissions';
 import UpdatePermission from './form/UpdatePermissions';
 const mapFields: Record<string, string> = {
-  Quyền: 'name'
+  Quyền: 'name',
+  'Mô tả': 'description'
 };
 
 export function CreateManyPermissionButton() {
@@ -95,7 +96,8 @@ export function CreateManyPermissionButton() {
     const XLSX = await import('xlsx');
     const exportData = fetchPermission.data.map((item: any) => ({
       ID: item.id,
-      Quyền: item.name
+      Quyền: item.name,
+      'Mô tả': item.description || ''
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -115,7 +117,12 @@ export function CreateManyPermissionButton() {
             </Button>
           )}
         </FileButton>
-        <Button color={'red'} onClick={handleExport} disabled={fetchPermission?.data?.length === 0}>
+        <Button
+          c={'red'}
+          onClick={handleExport}
+          loading={fetchPermission?.isLoading}
+          disabled={fetchPermission?.data?.length === 0}
+        >
           Export Excel
         </Button>
       </Group>
@@ -136,6 +143,7 @@ export function CreateManyPermissionButton() {
                 <Table.Tr>
                   <Table.Th style={{ minWidth: 100 }}>STT</Table.Th>
                   <Table.Th style={{ minWidth: 100 }}>Quyền</Table.Th>
+                  <Table.Th style={{ minWidth: 100 }}>Mô tả</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -143,6 +151,7 @@ export function CreateManyPermissionButton() {
                   <Table.Tr key={index}>
                     <Table.Td>{index + 1}</Table.Td>
                     <Table.Td>{row['Quyền']}</Table.Td>
+                    <Table.Td>{row['Mô tả']}</Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>

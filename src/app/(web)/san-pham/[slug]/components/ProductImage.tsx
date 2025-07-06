@@ -24,14 +24,14 @@ export default function ProductImage({
   gallery: { url: string }[];
   discount?: number;
 }) {
-  const notDesktop = useMediaQuery(`(max-width:1023px)`);
+  const isDesktop = useMediaQuery(`(min-width:1024px)`);
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showFullImage, setShowFullImage] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
 
   const allImages = [{ url: thumbnail }, ...gallery];
-  const displayImages = allImages.slice(0, notDesktop ? 3 : 4);
-  const remainingCount = allImages.length > (notDesktop ? 3 : 4) ? allImages.length - (notDesktop ? 3 : 4) : 0;
+  const displayImages = allImages.slice(0, !isDesktop ? 3 : 4);
+  const remainingCount = allImages.length > (!isDesktop ? 3 : 4) ? allImages.length - (!isDesktop ? 3 : 4) : 0;
 
   const handleThumbnailClick = (image: string, index: number) => {
     setCurrentImage(image);
@@ -68,10 +68,10 @@ export default function ProductImage({
               onClick={() => handleThumbnailClick(item.url, index)}
               className={clsx(
                 'cursor-pointer overflow-hidden',
-                item.url === currentImage && 'border-2 border-[#008b4b]'
+                item.url === currentImage && 'border-2 border-mainColor'
               )}
             >
-              {index === (notDesktop ? 2 : 3) && remainingCount > 0 ? (
+              {index === (!isDesktop ? 2 : 3) && remainingCount > 0 ? (
                 <Box pos='relative'>
                   <Image
                     loading='lazy'
@@ -201,12 +201,10 @@ export default function ProductImage({
             <UnstyledButton
               key={index}
               onClick={() => setActiveSlide(index)}
-              style={{
-                opacity: activeSlide === index ? 1 : 0.6,
-                border: activeSlide === index ? '2px solid #008b4b' : 'none',
-                borderRadius: '4px',
-                overflow: 'hidden'
-              }}
+              className={clsx(
+                'overflow-hidden rounded-[4px] transition duration-200',
+                activeSlide === index ? 'border-2 border-mainColor opacity-100' : 'border-none opacity-60'
+              )}
             >
               <Image
                 loading='lazy'

@@ -35,7 +35,7 @@ export default function RestaurantPolicyPage() {
           {/* An toàn thực phẩm & Vệ sinh */}
           <Card shadow='sm' padding='xl' radius='md' className='border border-gray-200'>
             <Group align='flex-start' className='mb-4'>
-              <IconShield size={24} className='mt-1 text-green-600' />
+              <IconShield size={24} className='mt-1 text-mainColor' />
               <div>
                 <Title order={2} className='mb-2 text-2xl font-semibold text-gray-800'>
                   Tiêu chuẩn An toàn & Vệ sinh

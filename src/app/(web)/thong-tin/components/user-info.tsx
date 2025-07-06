@@ -59,7 +59,7 @@ export default function UserInfo({ data }: any) {
               <Text size='xl' fw={700}>
                 {data?.name}
               </Text>
-              <Badge color='gray' variant='transparent' bg={'gray.2'}>
+              <Badge color='gray' variant='transparent' className='bg-gray-200'>
                 <Flex align={'center'} gap={5}>
                   <Text fw={700} size='xs'>
                     Cấp V.I.P:

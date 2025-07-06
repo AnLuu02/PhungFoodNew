@@ -2,10 +2,10 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  Box,
   Button,
   Card,
   Center,
-  Divider,
   Flex,
   Grid,
   GridCol,
@@ -50,17 +50,17 @@ export default function Page() {
   const onSubmit: SubmitHandler<{ email: string; password: string }> = async formData => {
     setError('');
     try {
-      if (formData) {
-        const result = await signIn('credentials', {
-          redirect: false,
-          email: formData.email,
-          password: formData.password
-        });
-        if (result?.error) {
-          setError(result.error);
-        } else {
-          window.location.href = callbackUrl;
-        }
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+        callbackUrl
+      });
+
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.ok && result.url) {
+        window.location.href = result.url;
       }
     } catch (error) {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
@@ -122,14 +122,14 @@ export default function Page() {
                   )}
                 />
                 {error && (
-                  <Text size='xs' c={'red'} mt={5}>
+                  <Text size='xs' className='text-red-500' mt={5}>
                     {error}
                   </Text>
                 )}
               </GridCol>
 
               <GridCol span={12} className='flex justify-end'>
-                <Link href={'/forgot-password'} className='text-sm text-black hover:text-red-500'>
+                <Link href={'/forgot-password'} className='text-sm text-black hover:text-red-500 dark:text-dark-text'>
                   Bạn quên mật khẩu?
                 </Link>
               </GridCol>
@@ -140,7 +140,7 @@ export default function Page() {
                 <Button
                   fullWidth
                   size='md'
-                  className='bg-[#008b4b] text-white transition-all duration-200 ease-in-out hover:bg-[#f8c144] hover:text-black'
+                  className='bg-mainColor text-white transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black'
                   type='submit'
                   loading={isSubmitting}
                 >
@@ -151,7 +151,10 @@ export default function Page() {
                 <Flex align={'center'}>
                   <Text size='sm'>Bạn chưa có tài khoản?</Text>
                   <Link href={'/dang-ki'} className='text-white'>
-                    <Text className='cursor-pointer text-black underline hover:text-red-500' size='sm'>
+                    <Text
+                      className='cursor-pointer text-black underline hover:text-red-500 dark:text-dark-text'
+                      size='sm'
+                    >
                       Đăng ký ngay
                     </Text>
                   </Link>
@@ -159,11 +162,11 @@ export default function Page() {
               </GridCol>
               <GridCol span={12} className='flex justify-center' mt={10}>
                 <Flex align={'center'} gap={10}>
-                  <Divider orientation='horizontal' w={100} color={'black'} opacity={0.2} />
-                  <Text size='xs' c={'black'} opacity={0.5}>
+                  <Box w={100} h={1} className='bg-black opacity-20 dark:bg-dark-text'></Box>
+                  <Text size='xs' className='text-black dark:text-dark-text' opacity={0.5}>
                     / HOẶC /
                   </Text>
-                  <Divider orientation='horizontal' w={100} color={'black'} opacity={0.2} />
+                  <Box w={100} h={1} className='bg-black opacity-20 dark:bg-dark-text'></Box>
                 </Flex>
               </GridCol>
 

@@ -31,7 +31,7 @@ export default function ShoppingCartMobile({ cart, setCart }: any) {
               <Group>
                 <Button
                   h={'max-content'}
-                  c={'red'}
+                  className='text-red-500'
                   variant='transparent'
                   w={'max-content'}
                   size='xs'
@@ -68,17 +68,16 @@ export default function ShoppingCartMobile({ cart, setCart }: any) {
             <Divider />
 
             <Text size='md' fw={700}>
-              Giá:<b className='text-red-500'> {formatPriceLocaleVi(item.price)}</b>
+              Giá:<b className='text-mainColor'> {formatPriceLocaleVi(item.price)}</b>
             </Text>
             <Divider />
             <Text size='md' fw={700}>
-              Được giảm: <b className='text-red-500'>{formatPriceLocaleVi(item.discount * item.quantity)}</b>
+              Giảm: <b className='text-subColor'>-{formatPriceLocaleVi(item.discount * item.quantity)}</b>
             </Text>
             <Divider />
 
             <Text size='md' fw={700}>
-              Thành tiền:{' '}
-              <b className='text-red-500'>{formatPriceLocaleVi((item.price - item.discount) * item.quantity)}</b>
+              Tổng: <b className='text-red-500'>{formatPriceLocaleVi((item.price - item.discount) * item.quantity)}</b>
             </Text>
           </Stack>
         </GridCol>

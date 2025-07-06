@@ -118,7 +118,7 @@ export function CreateManyCategoryButton() {
             </Button>
           )}
         </FileButton>
-        <Button color={'red'} onClick={handleExport} disabled={fetchCategories?.data?.length === 0}>
+        <Button c={'red'} onClick={handleExport} disabled={fetchCategories?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>

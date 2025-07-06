@@ -107,7 +107,7 @@ export default function MyOrderPageClient({ data }: any) {
           </Title>
           <Grid gutter='md'>
             <Grid.Col span={{ base: 6, sm: 4, md: 6, lg: 6 }}>
-              <Card withBorder bg='gray.2' shadow='sm' h='100%' className='cursor-pointer transition-all duration-300'>
+              <Card withBorder shadow='sm' h='100%' className='cursor-pointer bg-gray-200 transition-all duration-300'>
                 <Stack gap={0}>
                   <Text size='xl' className='font-bold'>
                     {totalOrders}
@@ -283,7 +283,7 @@ export default function MyOrderPageClient({ data }: any) {
               </Table>
             </Box>
             <Flex justify='flex-end' align='center' gap='md' direction={{ base: 'column-reverse', md: 'row' }}>
-              <Pagination total={totalPages} value={page} onChange={setPage} />
+              <Pagination classNames={{ control: 'bg-mainColor' }} total={totalPages} value={page} onChange={setPage} />
               <Select
                 value={String(perPage)}
                 w={100}

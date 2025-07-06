@@ -35,14 +35,17 @@ export default function MegaMenu({ categories }: any) {
       value={hoveredTab}
       onChange={setHoveredTab}
       classNames={{
-        tab: 'w-full justify-start rounded-md p-3 data-[active=true]:bg-blue-50 data-[active=true]:text-blue-600'
+        tab: 'w-full justify-start rounded-md p-3 data-[active=true]:bg-blue-50 data-[active=true]:text-blue-600 dark:data-[active=true]:bg-dark-card dark:data-[active=true]:text-white'
       }}
     >
-      <Box h={'70vh'} className='flex bg-gray-100'>
-        <Box className='w-80 bg-white p-4 shadow-sm'>
+      <Box h={'70vh'} className='flex bg-gray-100 dark:bg-dark-background'>
+        <Box className='w-80 bg-white p-4 shadow-sm dark:bg-dark-background'>
           <Box className='mb-5'>
-            <Title order={1} className='flex items-center gap-2 font-quicksand text-xl font-bold text-blue-600'>
-              <Box className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600'>
+            <Title
+              order={1}
+              className='flex items-center gap-2 font-quicksand text-xl font-bold text-blue-600 dark:text-dark-text'
+            >
+              <Box className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:text-dark-text'>
                 <Box className='text-2xl'>🍕</Box>
               </Box>
               Danh mục nổi bât
@@ -68,7 +71,7 @@ export default function MegaMenu({ categories }: any) {
                     }
                   >
                     <Link key={item.title} href={`/thuc-don?danh-muc=${item.tag}`}>
-                      <Text size='md' className='text-gray-700' fw={600}>
+                      <Text size='md' className='text-gray-700 dark:text-dark-text' fw={600}>
                         {item.name}
                       </Text>
                     </Link>
@@ -89,7 +92,7 @@ export default function MegaMenu({ categories }: any) {
                         <Link
                           key={category.id}
                           href={`/thuc-don?danh-muc=${item.tag}&loai-san-pham=${category.tag}`}
-                          className='flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:shadow-md'
+                          className='flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:shadow-md dark:bg-dark-card'
                         >
                           <Image
                             loading='lazy'
@@ -100,7 +103,7 @@ export default function MegaMenu({ categories }: any) {
                             style={{ objectFit: 'cover' }}
                             className='h-16 w-16'
                           />
-                          <Text size='sm' className='font-medium text-gray-800'>
+                          <Text size='sm' className='font-medium text-gray-800 dark:text-dark-text'>
                             {category.name}
                           </Text>
                         </Link>
@@ -148,7 +151,7 @@ export default function MegaMenu({ categories }: any) {
                                     style={{ objectFit: 'cover' }}
                                   />
                                 </Paper>
-                                <h3 className='line-clamp-2 text-sm font-medium text-gray-800'>
+                                <h3 className='line-clamp-2 text-sm font-medium text-gray-800 dark:text-dark-text'>
                                   {product.description}
                                 </h3>
                               </Stack>

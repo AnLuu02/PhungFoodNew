@@ -38,7 +38,7 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
                   <Group>
                     <Button
                       h={'max-content'}
-                      c={'red'}
+                      className='text-red-500'
                       variant='transparent'
                       w={'max-content'}
                       size='xs'

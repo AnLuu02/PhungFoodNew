@@ -23,15 +23,14 @@ export default function FilterPriceMenu() {
       <Popover.Target>
         <Button
           variant='subtle'
-          c='green.9'
-          className='border-1 border-[#008b4b]'
+          className='border-1 border-mainColor text-mainColor'
           leftSection={<IconMoneybag size={16} />}
           w={'max-content'}
         >
           Giá
         </Button>
       </Popover.Target>
-      <Popover.Dropdown bg='var(--mantine-color-body)'>
+      <Popover.Dropdown>
         <Grid>
           <GridCol span={12}>
             <Text size='lg' className='font-bold'>
@@ -40,11 +39,11 @@ export default function FilterPriceMenu() {
           </GridCol>
           <GridCol span={12} pt={0} mt={0}>
             <Flex align={'center'}>
-              <Text size='lg' c={'red.7'} className='font-bold'>
+              <Text size='lg' className='font-bold text-red-700'>
                 {formatPriceLocaleVi(valuePrice[0] || 0)}
               </Text>
-              <Divider orientation='horizontal' w={10} size={3} color={'red'} ml={10} mr={10} />
-              <Text size='lg' c={'red.7'} className='font-bold'>
+              <Divider orientation='horizontal' w={10} size={3} c={'red'} ml={10} mr={10} />
+              <Text size='lg' className='font-bold text-red-700'>
                 {formatPriceLocaleVi(valuePrice[1] || 0)}
               </Text>
             </Flex>
@@ -55,13 +54,19 @@ export default function FilterPriceMenu() {
 
           <GridCol span={12}>
             <RangeSlider
-              color='green.9'
               min={0}
               max={500000}
               step={20000}
               defaultValue={[20000, 200000]}
               value={valuePrice as [number, number]}
               onChange={setValuePrice}
+              classNames={{
+                root: 'mt-2',
+                thumb: 'bg-mainColor',
+                track: 'bg-mainColor',
+                bar: 'bg-mainColor',
+                label: 'bg-subColor font-bold text-black'
+              }}
             />
           </GridCol>
           <GridCol span={12}>
@@ -111,7 +116,7 @@ export default function FilterPriceMenu() {
               size='sm'
               onClick={handleApply}
               fullWidth
-              className='bg-[#008b4b] text-white transition-all duration-200 ease-in-out hover:bg-[#f8c144] hover:text-black'
+              className='bg-mainColor text-white transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black'
             >
               Áp dụng
             </Button>

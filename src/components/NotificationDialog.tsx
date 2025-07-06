@@ -166,7 +166,7 @@ export default function NotificationDialog({ data, user }: any) {
         >
           <Menu.Target>
             <Box variant='subtle' pos='relative' className='cursor-pointer'>
-              <IconBell size={30} className='animate-wiggle text-black hover:text-[#f8c144]' />
+              <IconBell size={30} className='animate-wiggle text-black hover:text-subColor' />
               <Badge
                 size='md'
                 circle

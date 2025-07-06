@@ -62,7 +62,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
         <Controller
           control={control}
           name='rating'
-          render={({ field }) => <Rating size='lg' color='yellow.8' {...field} />}
+          render={({ field }) => <Rating size='lg' color={'#FFC522'} {...field} />}
         />
       </Flex>
       <Controller

@@ -26,7 +26,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   }, [data]);
 
   return (
-    <Card radius={'md'} withBorder bg={'white'} p={0} pos={'relative'}>
+    <Card radius={'md'} withBorder className='dark:bg-dark-card bg-white' p={0} pos={'relative'}>
       <Flex h={162} gap={'xs'}>
         <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center' pos={'relative'}>
           <Image
@@ -61,7 +61,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                   p={5}
                   w={'max-content'}
                   variant='default'
-                  className={clsx('text-[#008b4b] hover:text-[#f8c144]')}
+                  className={clsx('text-mainColor hover:text-subColor')}
                 >
                   <IconEye />
                 </Button>
@@ -70,7 +70,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                 <Button
                   size='xs'
                   p={5}
-                  className={clsx('text-[#008b4b] hover:text-[#f8c144]')}
+                  className={clsx('text-mainColor hover:text-subColor')}
                   w={'max-content'}
                   variant='default'
                 >
@@ -84,18 +84,22 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
         <Flex direction={'column'} align={'flex-start'} w={'64%'} gap={'xs'} justify={'center'} pr={'md'}>
           <Link href={`/san-pham/${data?.tag}`}>
             <Tooltip label={data?.name}>
-              <Text lineClamp={1} size='md' fw={700} className='cursor-pointer text-center hover:text-[#008b4b]'>
+              <Text lineClamp={1} size='md' fw={700} className='cursor-pointer text-center hover:text-mainColor'>
                 {data?.name || 'Cá thu'}
               </Text>
             </Tooltip>
           </Link>
           <Flex direction={'column'} w={'100%'}>
-            <Progress size={'sm'} color={'#008b4b'} value={((data?.soldQuantity || 0) / totalQuantityProduct) * 100} />
+            <Progress
+              size={'sm'}
+              classNames={{ section: 'bg-mainColor' }}
+              value={((data?.soldQuantity || 0) / totalQuantityProduct) * 100}
+            />
             <Flex align={'center'} justify={'space-between'}>
               <Text size='xs' c={'dimmed'}>
                 Đã bán: {data?.soldQuantity || 0}/{totalQuantityProduct}
               </Text>
-              <Text size='xs' className='text-[#008b4b]'>
+              <Text size='xs' className='text-mainColor'>
                 {(((data?.soldQuantity || 0) / totalQuantityProduct) * 100)?.toFixed(2)}%
               </Text>
             </Flex>
@@ -106,7 +110,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                 {formatPriceLocaleVi(data?.price || 0)}
               </Text>
             )}
-            <Text size='md' fw={700} className='text-[#008b4b]'>
+            <Text size='md' fw={700} className='text-mainColor'>
               {formatPriceLocaleVi((data?.price || 0) - (data?.discount || 0))}
             </Text>
           </Group>
@@ -127,7 +131,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                 }
               }}
               size='xs'
-              className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-[#f8c144] hover:underline'
+              className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline'
             >
               Có {data?.totalRating || 0} đánh giá
             </Text>

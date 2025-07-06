@@ -6,7 +6,7 @@ import classes from './TabsStyles.module.css';
 
 const LayoutHotProduct = ({ data }: any) => {
   return (
-    <Card h={{ base: 'max-content', md: 900 }} radius={'lg'} bg={'gray.1'} p={0}>
+    <Card h={{ base: 'max-content', md: 900 }} radius={'lg'} className='bg-gray-100' p={0}>
       <Flex h={'100%'} direction={{ base: 'column', md: 'row' }}>
         <Tabs
           defaultValue='an-vat-trang-mieng'
@@ -59,24 +59,23 @@ const LayoutHotProduct = ({ data }: any) => {
         >
           <Box pos='absolute' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.3} />
           <Box p={'lg'} pos='absolute' left={0} top={0} className='z-10' h='100%' w='100%'>
-            <Title order={2} className='font-quicksand' c={'white'} mb={'xs'}>
+            <Title order={2} className='font-quicksand text-white' mb={'xs'}>
               Sản phẩm nổi bật trong cửa hàng
             </Title>
-            <Text td='underline' fs='italic' size='md' c={'white'} fw={700} mb={'xs'}>
+            <Text td='underline' fs='italic' size='md' className='text-white' fw={700} mb={'xs'}>
               Ưu đãi độc quyền - Giảm giá 20%
             </Text>
-            <Title order={3} c={'white'} className='font-quicksand' mb={'xs'}>
+            <Title order={3} className='font-quicksand text-white' mb={'xs'}>
               Mua sắm thoải mái chỉ từ 20.000 VNĐ
             </Title>
 
-            <Text size='md' c={'white'} fw={700} mb={'xs'}>
+            <Text size='md' className='text-white' fw={700} mb={'xs'}>
               Chỉ trong tuần này. Đừng bỏ lỡ...
             </Text>
             <Button
               radius={'xl'}
-              c={'black'}
               mb={'xs'}
-              className='bg-white transition-all duration-200 ease-in-out hover:bg-[#f8c144]'
+              className='bg-white text-black transition-all duration-200 ease-in-out hover:bg-subColor'
             >
               Mua ngay
             </Button>

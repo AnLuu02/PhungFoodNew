@@ -25,7 +25,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
   const products = data[tab]?.products || [];
 
   return (
-    <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} bg={'gray.1'} p={0}>
+    <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} className='bg-gray-100' p={0}>
       <Tabs
         defaultValue='rau-cu'
         value={tab}
@@ -45,7 +45,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
               direction={{ base: 'column', sm: 'row', md: 'row' }}
               gap={'md'}
             >
-              <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-[#008b4b]'>
+              <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor'>
                 {title || 'Thịt nhập khẩu'}
               </Title>
 

@@ -101,7 +101,7 @@ export default function PaymentResult() {
       <Flex direction='column' justify='center' align='center' gap={10}>
         {isSuccess ? (
           <>
-            <Title order={3} className='font-quicksand text-[#008b4b]'>
+            <Title order={3} className='text-mainColor font-quicksand'>
               {message || 'Đặt hàng thành công.'}
             </Title>
             <IconCircleCheck size={50} color='green' />

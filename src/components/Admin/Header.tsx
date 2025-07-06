@@ -27,7 +27,7 @@ export default function Header() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
-  const notDesktop = useMediaQuery(`(max-width: 1023px)`);
+  const isDesktop = useMediaQuery(`(min-width:1024px)`);
 
   const { data: session } = useSession();
 
@@ -48,7 +48,7 @@ export default function Header() {
         <Link href={'/'}>
           <Image src='/logo/logo_phungfood_1.png' alt='logo' width={150} height={50} style={{ objectFit: 'cover' }} />
         </Link>
-        {!notDesktop && (
+        {isDesktop && (
           <Badge bg={'red'} radius={'sm'}>
             {session?.user?.role || 'Super Admin'}
           </Badge>
@@ -65,7 +65,7 @@ export default function Header() {
             onLabel={<IconSun style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
             offLabel={<IconMoon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
           />
-          {!notDesktop && (
+          {isDesktop && (
             <Menu
               width={260}
               position='bottom-end'

@@ -78,7 +78,7 @@ export function SendOrderButton({ order }: any) {
     <>
       <Button
         leftSection={<IconPrinter size={16} />}
-        color='green.9'
+        className='text-mainColor'
         variant='outline'
         loading={loading}
         onClick={() => {
@@ -116,7 +116,7 @@ export function PrintOrderButton({ order }: any) {
     <>
       <Button
         leftSection={<IconPrinter size={16} />}
-        color='green.9'
+        className='text-mainColor'
         variant='outline'
         loading={loading}
         onClick={() => {

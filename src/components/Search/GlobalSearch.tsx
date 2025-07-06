@@ -225,8 +225,8 @@ export const GlobalSearch = ({ width }: any) => {
                               maxHeight={60}
                               showLabel='Xem thêm'
                               hideLabel='Ẩn'
-                              styles={{
-                                control: { color: '#008b4b', fontWeight: 700, fontSize: '14px' }
+                              classNames={{
+                                control: 'text-sm font-bold text-mainColor'
                               }}
                             >
                               <Text size='xs' c='dimmed'>

@@ -77,7 +77,7 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                 </TableTd>
                 <TableTd className='text-gray-800'>{order.user?.name}</TableTd>
                 <TableTd className='text-gray-600'>{formatDate(order.createdAt)}</TableTd>
-                <TableTd className='font-medium text-green-600'>{formatPriceLocaleVi(order.total)}</TableTd>
+                <TableTd className='font-medium text-mainColor'>{formatPriceLocaleVi(order.total)}</TableTd>
                 <TableTd>
                   <Badge color={getStatusColor(order.status)} variant='light' className='font-medium'>
                     {order.status}
@@ -88,7 +88,7 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                     <ActionIcon size='sm' variant='subtle' className='text-blue-600 hover:bg-blue-50'>
                       <IconEye size='1rem' stroke={1.5} />
                     </ActionIcon>
-                    <ActionIcon size='sm' variant='subtle' className='text-green-600 hover:bg-green-50'>
+                    <ActionIcon size='sm' variant='subtle' className='text-mainColor hover:bg-green-50'>
                       <IconPencil size='1rem' stroke={1.5} />
                     </ActionIcon>
                   </Group>

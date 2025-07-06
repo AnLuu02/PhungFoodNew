@@ -1,30 +1,12 @@
 'use client';
 
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Center,
-  Divider,
-  Flex,
-  Group,
-  Menu,
-  rem,
-  Switch,
-  Text,
-  UnstyledButton,
-  useComputedColorScheme,
-  useMantineColorScheme
-} from '@mantine/core';
+import { ActionIcon, Box, Button, Center, Divider, Flex, Group, Menu, rem, Text, UnstyledButton } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import {
   IconChevronDown,
   IconClock,
-  IconLighter,
   IconLogout,
-  IconMoon,
   IconShoppingBag,
-  IconSun,
   IconUser,
   IconUserCircle,
   IconWorld
@@ -33,6 +15,7 @@ import clsx from 'clsx';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import ControlModeTheme from '../../ControlModeTheme';
 
 export const Header1 = ({ restaurant }: any) => {
   const restaurantData = restaurant ?? {};
@@ -41,27 +24,26 @@ export const Header1 = ({ restaurant }: any) => {
     key: 'vouchers',
     defaultValue: []
   });
-  const { colorScheme, setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
+
   const { data: user } = useSession();
   const [langue, setLangue] = useLocalStorage<any>({ key: 'langue', defaultValue: 'vn' });
   return (
     <Flex
       direction={{ base: 'column', sm: 'row', md: 'row' }}
       h={{ base: 'max-content', md: 40 }}
-      bg={'green.9'}
       pos={'relative'}
       pl={{ base: rem(20), lg: rem(130) }}
-      pr={{ base: rem(20), sm: rem(60), md: rem(60), lg: rem(130) }}
+      pr={{ base: rem(20), sm: rem(60), lg: rem(130) }}
       align={'center'}
       justify={{ base: 'flex-start', sm: 'space-between', md: 'space-between' }}
-      className='z-[100] text-white'
+      className='z-[100] bg-mainColor text-white'
     >
       <Center py={{ base: 'md' }}>
         <Text size='sm' lineClamp={2}>
-          <b>Phụng Food!</b> xin chào quý khách !!!
+          <b>Phụng Food!</b> xin chào quý khách!
         </Text>
       </Center>
+
       <Group align={'center'} justify='center' gap={0}>
         <Group gap='md' align={'center'} justify='center'>
           {restaurantData?.openedHours && restaurantData?.closedHours ? (
@@ -69,7 +51,7 @@ export const Header1 = ({ restaurant }: any) => {
               size='xs'
               radius='xl'
               variant='subtle'
-              c={'white'}
+              className='text-white'
               leftSection={<IconClock size={16} />}
               color={!restaurantData?.isClose ? 'blue' : 'red'}
             >
@@ -83,11 +65,11 @@ export const Header1 = ({ restaurant }: any) => {
 
           <Menu position='bottom-end' shadow='md'>
             <Menu.Target>
-              <ActionIcon variant='subtle' color='gray.0' radius='xl'>
+              <ActionIcon variant='subtle' color='gray.0' radius='xl' className='hidden lg:block'>
                 <IconWorld size={18} />
               </ActionIcon>
             </Menu.Target>
-            <Menu.Dropdown>
+            <Menu.Dropdown className='hidden lg:block'>
               <Menu.Item
                 onClick={() => setLangue('vn')}
                 leftSection={
@@ -132,14 +114,14 @@ export const Header1 = ({ restaurant }: any) => {
             >
               <Menu.Target>
                 <UnstyledButton
-                  className={`flex items-center rounded-full bg-[#f8c144] p-1 transition-colors duration-200 hover:opacity-95`}
+                  className={`flex items-center rounded-full bg-subColor p-1 transition-colors duration-200 hover:opacity-95`}
                 >
                   <Group gap={7}>
                     <Box pos={'relative'} w={30} h={30} className='overflow-hidden rounded-full'>
                       <Image src={user?.user?.image || ''} alt='User avatar' fill style={{ objectFit: 'cover' }} />
                     </Box>
                     <div className='hidden text-left sm:block'>
-                      <Text fw={700} size='sm' lh={1} c={'black'}>
+                      <Text fw={700} size='sm' lh={1} className='text-black'>
                         {user?.user?.name}
                       </Text>
                       <Text size='xs' fw={700} c={'dimmed'}>
@@ -154,28 +136,7 @@ export const Header1 = ({ restaurant }: any) => {
                   </Group>
                 </UnstyledButton>
               </Menu.Target>
-              <Menu.Dropdown className='bg-[#f8c144]'>
-                <Group fw={500} pl={'xs'}>
-                  <IconLighter
-                    color='black'
-                    fontWeight={'bold'}
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                  <Switch
-                    size='md'
-                    label={
-                      <Text size='sm' c={'black'}>
-                        Chế độ nền
-                      </Text>
-                    }
-                    labelPosition='left'
-                    onChange={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-                    onLabel={<IconSun style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
-                    offLabel={<IconMoon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
-                  />
-                </Group>
-
+              <Menu.Dropdown className='bg-subColor'>
                 <Divider />
                 <Link href={`/thong-tin`}>
                   <Menu.Item
@@ -189,7 +150,7 @@ export const Header1 = ({ restaurant }: any) => {
                       />
                     }
                   >
-                    <Text size='sm' c={'black'} p={0}>
+                    <Text size='sm' className='text-black' p={0}>
                       Thông tin cá nhân
                     </Text>
                   </Menu.Item>
@@ -208,7 +169,7 @@ export const Header1 = ({ restaurant }: any) => {
                       />
                     }
                   >
-                    <Text size='sm' c={'black'} p={0}>
+                    <Text size='sm' className='text-black' p={0}>
                       Đơn hàng của tôi
                     </Text>
                   </Menu.Item>
@@ -249,6 +210,15 @@ export const Header1 = ({ restaurant }: any) => {
               </Link>
             </Group>
           )}
+
+          <Box
+            pos={{ base: 'fixed', sm: 'unset', md: 'unset', lg: 'fixed' }}
+            left={{ base: 5, sm: 0, md: 0, lg: 5 }}
+            top={{ base: 8, sm: 15, md: 0, lg: 8 }}
+            className='md:hidden lg:block'
+          >
+            <ControlModeTheme />
+          </Box>
         </Group>
       </Group>
     </Flex>

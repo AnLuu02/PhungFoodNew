@@ -112,7 +112,7 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
                   clampBehavior='strict'
                   error={errors.rating?.message}
                 />
-                <Rating size={'lg'} {...field} fractions={2} color={'yellow.8'} />
+                <Rating size={'lg'} {...field} fractions={2} color={'#FFC522'} />
               </Flex>
             )}
           />

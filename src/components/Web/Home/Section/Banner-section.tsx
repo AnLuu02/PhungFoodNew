@@ -1,7 +1,7 @@
 'use client';
 
 import { Carousel } from '@mantine/carousel';
-import { Box, Flex, Paper, rem, SimpleGrid, Text } from '@mantine/core';
+import { Box, Flex, Paper, SimpleGrid, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
@@ -41,20 +41,10 @@ export default function BannerSection({ banner }: any) {
             previousControlIcon={<IconChevronLeft size={24} />}
             controlSize={40}
             color='black'
-            styles={{
-              control: {
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                border: 'none'
-              },
-              indicators: {
-                bottom: 16
-              },
-              indicator: {
-                width: rem(20),
-                height: rem(8),
-                backgroundColor: '#008b4b',
-                margin: '0 6px'
-              }
+            classNames={{
+              control: 'border-none bg-white/80 text-sm font-bold text-mainColor',
+              indicators: 'bottom-4',
+              indicator: 'mx-[6px] h-[8px] w-[20px] rounded-full bg-mainColor transition'
             }}
           >
             {slides}
@@ -105,8 +95,7 @@ export default function BannerSection({ banner }: any) {
             <Link href={service.href || ''} key={index}>
               <Paper
                 key={index}
-                bg={'gray.1'}
-                className='flex cursor-pointer items-center justify-center transition-shadow hover:shadow-md'
+                className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-dark-text'
                 radius={'md'}
                 p={'sm'}
                 h={'100%'}
@@ -114,7 +103,7 @@ export default function BannerSection({ banner }: any) {
               >
                 <Flex align={'center'} gap={'xs'}>
                   <Text size='2rem'>{service.icon}</Text>
-                  <Text fw={700} c='gray.8' size='md'>
+                  <Text fw={700} className='text-gray-800 dark:text-gray-500' size='md'>
                     {service.title}
                   </Text>
                 </Flex>

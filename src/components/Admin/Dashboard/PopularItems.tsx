@@ -103,7 +103,7 @@ export default function PopularItems({ products }: PopularItemsProps) {
                     {item.category}
                   </Text>
                 </TableTd>
-                <TableTd className='font-medium text-green-600'>{item.price}</TableTd>
+                <TableTd className='font-medium text-mainColor'>{item.price}</TableTd>
                 <TableTd>
                   <Text className='font-bold text-blue-600'>{item.orders}</Text>
                 </TableTd>

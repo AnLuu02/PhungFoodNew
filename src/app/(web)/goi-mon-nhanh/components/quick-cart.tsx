@@ -24,7 +24,7 @@ const QuickCart = () => {
   }, [cart]);
 
   return (
-    <Card radius={'md'} bg={'gray.2'}>
+    <Card radius={'md'} className='dark:bg-dark-card bg-gray-200'>
       <Card.Section>
         <Stack>
           <ScrollAreaAutosize mah={'40vh'}>

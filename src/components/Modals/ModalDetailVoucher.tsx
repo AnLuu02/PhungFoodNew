@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Group, Modal, Paper, Progress, ScrollArea, Text, Tooltip } from '@mantine/core';
+import { Box, Button, Center, Flex, Group, Modal, Paper, Progress, ScrollArea, Text, Tooltip } from '@mantine/core';
 
 import clsx from 'clsx';
 import Image from 'next/image';
@@ -87,7 +87,7 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
                         lineClamp={1}
                         size='sm'
                         fw={700}
-                        className='cursor-pointer text-center text-black hover:text-[#008b4b]'
+                        className='cursor-pointer text-center text-black hover:text-mainColor dark:text-dark-text'
                       >
                         {data?.name || 'Cá thu'}
                       </Text>
@@ -123,7 +123,7 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
 
           {!allowedVoucher(data?.minOrderPrice || 0, products) && products?.length > 0 && (
             <Box className='w-full border-t border-gray-100 bg-gray-100 px-1 py-2'>
-              <Text size='xs' c={'red'}>
+              <Text size='xs' className='text-red-500'>
                 Đơn của bạn còn thiếu <b> {formatPriceLocaleVi(data?.minOrderPrice - calculateMoney(products))}đ</b> để
                 sử dụng voucher.
               </Text>
@@ -171,11 +171,11 @@ export default function ModalDetailVoucher({ opened, onClose, data, products }: 
           </Box>
         </ScrollArea>
 
-        <Box className='fixed bottom-3 border-t border-white bg-white hover:opacity-75' w={'100%'} px={'md'}>
-          <Button fullWidth color='orange' bg={'#ee4d2d'} onClick={onClose}>
+        <Center className='fixed bottom-3 border-t hover:opacity-75' w={'100%'}>
+          <Button fullWidth className='text-orange bg-[#ee4d2d]' onClick={onClose} w={'80%'}>
             Đồng Ý
           </Button>
-        </Box>
+        </Center>
       </Box>
     </Modal>
   );

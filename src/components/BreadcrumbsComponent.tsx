@@ -19,7 +19,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
       align={'center'}
       justify={'space-between'}
       py={'md'}
-      bg={'gray.1'}
+      className='bg-gray-100 text-black dark:bg-dark-card dark:text-dark-text'
     >
       <BreadcrumbsBase />
     </Flex>
@@ -45,10 +45,10 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
             containScroll='trimSnaps'
             withControls
             nextControlProps={{
-              style: { backgroundColor: '#008b4b', color: 'white', transform: 'translate(20px,-40px)' }
+              color: 'mainColor'
             }}
             previousControlProps={{
-              style: { backgroundColor: '#008b4b', color: 'white', transform: 'translate(-20px,-40px)' }
+              className: 'bg-mainColor flex items-center justify-center w-[40px] h-[40px]  rounded-full text-white '
             }}
             previousControlIcon={<IconChevronLeft size={30} />}
             nextControlIcon={<IconChevronRight size={30} />}
@@ -56,7 +56,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
             {subCategoriesData?.length <= 0
               ? [1, 2, 3, 4, 5, 6].map(item => (
                   <Carousel.Slide key={item}>
-                    <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-[#008b4b]'>
+                    <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>
                       <Card.Section>
                         <Skeleton circle height={130} width={130} />
                       </Card.Section>
@@ -67,7 +67,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
               : subCategoriesData.map((category: any) => (
                   <Carousel.Slide key={category.id}>
                     <Card
-                      className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-[#008b4b]'
+                      className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'
                       component='a'
                       href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
                       target='_blank'

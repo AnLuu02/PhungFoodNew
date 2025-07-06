@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { seedPermissions, seedRoles } from '~/lib/data-test/seed';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const rolePermissionRouter = createTRPCRouter({
@@ -58,14 +57,14 @@ export const rolePermissionRouter = createTRPCRouter({
     let roles = await ctx.db.role.findMany({
       include: { permissions: true }
     });
-    if (!roles?.length) {
-      await ctx.db.role.createMany({
-        data: seedRoles
-      });
-      roles = await ctx.db.role.findMany({
-        include: { permissions: true }
-      });
-    }
+    // if (!roles?.length) {
+    //   await ctx.db.role.createMany({
+    //     data: seedRoles
+    //   });
+    //   roles = await ctx.db.role.findMany({
+    //     include: { permissions: true }
+    //   });
+    // }
     return roles;
   }),
   getOne: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
@@ -235,17 +234,20 @@ export const rolePermissionRouter = createTRPCRouter({
     return await ctx.db.permission.findMany();
   }),
 
-  createPermission: publicProcedure.input(z.object({ name: z.string() })).mutation(async ({ ctx, input }) => {
-    return await ctx.db.permission.create({
-      data: { name: input.name }
-    });
-  }),
+  createPermission: publicProcedure
+    .input(z.object({ name: z.string(), description: z.string().optional() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.permission.create({
+        data: { name: input.name, description: input.description }
+      });
+    }),
   createManyPermission: publicProcedure
     .input(
       z.object({
         data: z.array(
           z.object({
-            name: z.string().min(1, 'Name is required')
+            name: z.string().min(1, 'Name is required'),
+            description: z.string().optional()
           })
         )
       })
@@ -279,14 +281,16 @@ export const rolePermissionRouter = createTRPCRouter({
     .input(
       z.object({
         permissionId: z.string(),
-        name: z.string()
+        name: z.string(),
+        description: z.string().optional()
       })
     )
     .mutation(async ({ ctx, input }) => {
       const role = await ctx.db.permission.update({
         where: { id: input.permissionId },
         data: {
-          name: input.name
+          name: input.name,
+          description: input.description
         }
       });
       if (!role) {
@@ -306,14 +310,14 @@ export const rolePermissionRouter = createTRPCRouter({
     let permissions = await ctx.db.permission.findMany({
       include: { roles: true }
     });
-    if (!permissions?.length) {
-      await ctx.db.permission.createMany({
-        data: seedPermissions
-      });
-      permissions = await ctx.db.permission.findMany({
-        include: { roles: true }
-      });
-    }
+    // if (!permissions?.length) {
+    //   await ctx.db.permission.createMany({
+    //     data: seedPermissions
+    //   });
+    //   permissions = await ctx.db.permission.findMany({
+    //     include: { roles: true }
+    //   });
+    // }
     return permissions;
   })
 });

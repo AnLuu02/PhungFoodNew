@@ -27,7 +27,7 @@ import { LocalImageType } from '~/lib/zod/EnumType';
 import InvoiceToPrint from '../InvoceToPrint';
 
 function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {
-  const notDesktop = useMediaQuery(`(max-width: 1023px)`);
+  const isDesktop = useMediaQuery(`(min-width:1024px)`);
   return (
     <>
       <Modal
@@ -36,7 +36,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
         opened={opened && type === 'orders'}
         radius={'md'}
         onClose={close}
-        size={notDesktop ? '100%' : '70%'}
+        size={!isDesktop ? '100%' : '70%'}
         h={'max-content'}
         transitionProps={{ transition: 'fade-down', duration: 200 }}
         padding='md'
@@ -121,8 +121,8 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                         maxHeight={66}
                         showLabel='Xem thêm'
                         hideLabel='Ẩn'
-                        styles={{
-                          control: { color: '#008b4b', fontWeight: 700, fontSize: '14px' }
+                        classNames={{
+                          control: 'text-sm font-bold text-mainColor'
                         }}
                       >
                         <Text size='sm'>

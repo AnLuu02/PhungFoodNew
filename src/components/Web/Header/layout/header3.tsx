@@ -1,22 +1,20 @@
 'use client';
 import { Box, Burger, Button, Flex, Group, Menu, rem, ScrollAreaAutosize, Text } from '@mantine/core';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { IconCategory, IconChevronCompactDown } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
-import { breakpoints } from '~/constants';
+import ControlModeTheme from '../../ControlModeTheme';
 import NavigationHeader from '../components/NavigationHeader';
+import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
 
 const Header3 = ({ categories, subCategories }: any) => {
   const [imgMounted, setImgMounted] = useState(false);
   const subCategoriesData: any = subCategories || [];
   const categoriesData: any = categories || [];
-
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
-  const notDesktop = useMediaQuery(`(min-width: ${breakpoints.sm}px) and ( max-width: 1023px) `);
   const [opened, { open, close, toggle }] = useDisclosure();
 
   return (
@@ -26,31 +24,36 @@ const Header3 = ({ categories, subCategories }: any) => {
       align={'center'}
       justify={'space-between'}
       py={'md'}
-      className='sticky top-0 z-[100] bg-white'
+      className='sticky top-0 z-[100] bg-white text-black dark:bg-dark-background dark:text-dark-text'
       direction={{ base: 'row', md: 'row' }}
     >
-      {(isMobile || notDesktop) && <Burger opened={opened} onClick={toggle} aria-label='Toggle navigation' />}
+      <Burger opened={opened} onClick={toggle} aria-label='Toggle navigation' className='lg:hidden' />
       <Group>
-        {notDesktop && (
+        <Box className='hidden md:block lg:hidden'>
           <Link href={'/goi-mon-nhanh'}>
             <Button
               size='sm'
               radius={'xl'}
               variant='subtle'
               px={'md'}
-              className={clsx('animate-wiggle bg-red-600 text-white hover:bg-[#008b4b] hover:text-white')}
+              className={clsx(
+                'animate-wiggle bg-red-600 text-white hover:bg-mainColor hover:text-white dark:bg-red-500'
+              )}
             >
               <Text fw={700} size='sm'>
                 Mua hàng nhanh
               </Text>
             </Button>
           </Link>
-        )}
+        </Box>
+        <Box className='hidden md:block lg:hidden'>
+          <ControlModeTheme />
+        </Box>
         <Menu
           shadow='md'
           classNames={{
-            dropdown: 'border-[#008b4b] bg-white',
-            item: 'hover:bg-[#008b4b] hover:text-white'
+            dropdown: 'border-mainColor bg-white',
+            item: 'hover:bg-mainColor hover:text-white'
           }}
           onOpen={() => setImgMounted(true)}
           width={200}
@@ -59,21 +62,19 @@ const Header3 = ({ categories, subCategories }: any) => {
         >
           <Menu.Target>
             <Button
-              className='hover:opacity-90'
+              className='bg-subColor text-black hover:bg-mainColor hover:text-white'
               radius={'sm'}
               size='sm'
               px={0}
               w={200}
-              c={'black'}
               leftSection={<IconCategory size={20} />}
               rightSection={<IconChevronCompactDown size={20} />}
-              bg={'yellow.8'}
             >
               Danh mục
             </Button>
           </Menu.Target>
 
-          <Menu.Dropdown>
+          <Menu.Dropdown className='bg-white p-0 shadow-md dark:bg-dark-card'>
             {imgMounted ? (
               <ScrollAreaAutosize mah={rem(400)} scrollbarSize={5}>
                 {subCategoriesData?.length > 0 ? (
@@ -93,7 +94,7 @@ const Header3 = ({ categories, subCategories }: any) => {
                             />
                           }
                         >
-                          <Text size='sm' fw={700}>
+                          <Text size='sm' fw={700} className='dark:text-dark-text'>
                             {item?.name}
                           </Text>
                         </Menu.Item>
@@ -111,7 +112,8 @@ const Header3 = ({ categories, subCategories }: any) => {
         </Menu>
       </Group>
 
-      <NavigationHeader categories={categoriesData} opened={opened} close={close} />
+      <NavigationHeader categories={categoriesData} />
+      <NavigationHeaderMobile opened={opened} close={close} />
     </Flex>
   );
 };
