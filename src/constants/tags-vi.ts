@@ -6,7 +6,7 @@ const tags: Record<string, string> = {
   'goi-mon': 'Gọi món',
   'khuyen-mai': 'Khuyến mãi',
   'lien-he': 'Liên hệ',
-  'goi-mon-nhanh': 'Mua hàng nhanh',
+  'goi-mon-nhanh': 'Mua nhanh',
   'thanh-toan': 'Thanh toán',
   'tin-tuc': 'Tin tức',
   'dang-nhap': 'Đăng nhập',

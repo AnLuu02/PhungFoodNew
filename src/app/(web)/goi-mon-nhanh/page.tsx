@@ -29,16 +29,15 @@ const FastMenu = async ({
   const products = foderItems?.products || [];
 
   return (
-    <Grid>
-      <GridCol span={{ base: 12, sm: 6, md: 7, lg: 9 }} className='h-fit' p={0} pt={'xs'}>
+    <Grid gutter={'md'}>
+      <GridCol span={{ base: 12, sm: 7, md: 7, lg: 9 }} className='h-fit' pt={'xs'}>
         <QuickMenu categories={categories} products={products} searchParams={searchParams} />
       </GridCol>
       <GridCol
-        span={{ base: 12, sm: 6, md: 5, lg: 3 }}
+        span={{ base: 12, sm: 5, md: 5, lg: 3 }}
         className='h-fit'
         pos={'sticky'}
         top={TOP_POSITION_STICKY}
-        p={0}
         pt={'xs'}
       >
         <QuickCart />

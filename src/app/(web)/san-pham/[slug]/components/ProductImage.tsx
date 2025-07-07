@@ -60,8 +60,8 @@ export default function ProductImage({
         >
           {displayImages.map((item, index) => (
             <Paper
-              w={113}
-              h={113}
+              w={110}
+              h={110}
               withBorder
               key={index}
               radius='md'
@@ -76,8 +76,8 @@ export default function ProductImage({
                   <Image
                     loading='lazy'
                     src={item.url || '/images/jpg/empty-300x240.jpg'}
-                    width={113}
-                    height={113}
+                    width={110}
+                    height={110}
                     style={{ objectFit: 'cover' }}
                     alt='Thumbnail'
                   />
@@ -89,9 +89,9 @@ export default function ProductImage({
                 <Image
                   loading='lazy'
                   src={item.url || '/images/jpg/empty-300x240.jpg'}
-                  width={113}
+                  width={110}
                   style={{ objectFit: 'cover' }}
-                  height={113}
+                  height={110}
                   alt='Thumbnail'
                 />
               )}
@@ -101,7 +101,7 @@ export default function ProductImage({
 
         <Paper radius='md' className='relative mb-4' w='100%'>
           <Flex direction='column' align='center' justify='center' w='100%'>
-            <Box pos={'relative'} w={'100%'} mih={480} className='overflow-hidden'>
+            <Box pos={'relative'} w={'100%'} mih={{ base: 300, md: 470 }} className='overflow-hidden'>
               <Image
                 loading='lazy'
                 src={currentImage || thumbnail}
@@ -182,13 +182,13 @@ export default function ProductImage({
         >
           {allImages.map((item, index) => (
             <Carousel.Slide key={index}>
-              <Flex align='center' justify='center' h={400}>
+              <Flex align='center' justify='center' h={{ base: 300, md: 400 }} w={{ base: 300, md: 600 }}>
                 <Image
                   loading='lazy'
                   src={item.url || '/images/jpg/empty-300x240.jpg'}
-                  style={{ objectFit: 'cover' }}
-                  height={400}
-                  width={600}
+                  style={{ objectFit: 'contain' }}
+                  className='object-contain'
+                  fill
                   alt='Product Image'
                 />
               </Flex>

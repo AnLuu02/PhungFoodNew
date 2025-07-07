@@ -10,11 +10,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <>
       <Box p={0} m={0}>
         <HeaderWeb />
-        <Box
-          pl={{ base: rem(10), sm: rem(30), md: rem(30), lg: rem(130) }}
-          pr={{ base: rem(10), sm: rem(30), md: rem(30), lg: rem(130) }}
-          mt={'md'}
-        >
+        <Box px={{ base: rem(10), sm: rem(30), md: rem(30), lg: rem(130) }} mt={'md'}>
           {children}
         </Box>
         <Box pl={{ base: rem(20), lg: rem(130) }} pr={{ base: rem(20), lg: rem(130) }}>

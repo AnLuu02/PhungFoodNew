@@ -14,19 +14,20 @@ export default function DynamicCartButton({ heightShow }: { heightShow?: number 
   return (
     scroll >= (heightShow || HEIGHT_HEADER) && (
       <Box className={clsx('animate-fadeTop')}>
-        <div className='hidden xl:block'>
+        <Box className='lg:hidden xl:block'>
           <CartButton />
-        </div>
-        <Link href='/gio-hang' className='text-white'>
+        </Box>
+        <Link href='/gio-hang' className='hidden text-white lg:block xl:hidden'>
           <Button
             variant='outline'
-            className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white xl:hidden'
+            className='border-mainColor text-mainColor'
             radius={'xl'}
-            h={40}
+            p={0}
+            h={70}
             leftSection={
               <div className='relative mr-10 inline-block'>
-                <IconShoppingBag size={20} className='text-mainColor' />
-                <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
+                <IconShoppingBag size={40} />
+                <span className='absolute -right-2 -top-2 z-[100] flex h-[25px] w-[25px] items-center justify-center rounded-full bg-mainColor text-[14px] font-bold text-white'>
                   {cart.length || 0}
                 </span>
               </div>

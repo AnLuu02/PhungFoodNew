@@ -105,7 +105,6 @@ export default function ProductDetailClient(data: any) {
             discount={discount}
           />
         </Grid.Col>
-
         <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='h-fit'>
           <Stack gap='md'>
             <Flex align='center' gap={'xs'}>

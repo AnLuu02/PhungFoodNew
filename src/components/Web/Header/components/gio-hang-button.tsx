@@ -40,7 +40,7 @@ const CartButton = () => {
             radius={'xl'}
             leftSection={
               <div className='relative inline-block'>
-                <IconShoppingBag size={20} className='text-mainColor' />
+                <IconShoppingBag size={20} />
                 <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
                   {cart.length || 0}
                 </span>

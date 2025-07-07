@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
-import DynamicCartButton from './DynamicCartButton';
 
 const navigationItem = [
   { label: 'Trang chủ', href: '/' },
@@ -15,7 +14,7 @@ const navigationItem = [
   { label: 'Về PhungFood', href: '/gioi-thieu' },
   { label: 'Liên Hệ', href: '/lien-he' },
   { label: 'Tin tức', href: '/tin-tuc' },
-  { label: 'Mua hàng nhanh', href: '/goi-mon-nhanh' }
+  { label: 'Mua nhanh', href: '/goi-mon-nhanh' }
 ];
 function NavigationHeader({ categories }: { categories?: any }) {
   const [imgMounted, setImgMounted] = useState(false);
@@ -102,11 +101,6 @@ function NavigationHeader({ categories }: { categories?: any }) {
             </Button>
           </Link>
         )
-      )}
-      {isDesktop && (
-        <Box className='sm:fixed sm:right-[-50px] sm:top-[20%] xl:relative xl:right-0 xl:top-0'>
-          <DynamicCartButton />
-        </Box>
       )}
     </Flex>
   );

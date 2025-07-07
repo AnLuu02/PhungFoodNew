@@ -18,7 +18,7 @@ const LikeButton = () => {
         className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
         leftSection={
           <div className='relative inline-block'>
-            <IconHeart size={20} className='text-mainColor' />
+            <IconHeart size={20} />
             <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
               {data?.length || 0}
             </span>
