@@ -1,4 +1,4 @@
-import { SubCategory } from './SubCategoryEntity';
+import { SubCategory } from './subCategory';
 
 export type Category = {
   id: string;

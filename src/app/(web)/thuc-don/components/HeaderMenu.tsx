@@ -7,8 +7,8 @@ import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { breakpoints } from '~/constants';
 import tags from '~/constants/tags-vi';
 import { getTagFromQuery } from '~/lib/func-handler/generateTag';
-import FilterPriceMenu from './FilterPrice';
-import FilterMenu from './FilterSort';
+import PriceRangeFilter from './Filter/price-range-filter';
+import SortFilter from './Filter/sort-filter';
 import HeaderSearchResults from './HeaderSearchResults';
 
 export default function HeaderMenu({ products }: { products: any[] }) {
@@ -40,8 +40,8 @@ export default function HeaderMenu({ products }: { products: any[] }) {
             </GridCol>
             {!isMobile && (
               <GridCol span={{ base: 12, md: 7 }} className='flex flex-wrap justify-end gap-2'>
-                <FilterPriceMenu />
-                <FilterMenu />
+                <PriceRangeFilter />
+                <SortFilter />
                 <Box w={{ base: '100%', md: '40%' }}>
                   <SearchQueryParams />
                 </Box>

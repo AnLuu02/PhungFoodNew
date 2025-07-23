@@ -3,7 +3,7 @@ import { IconSort09 } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { dataSort } from '~/constants';
 
-export default function FilterMenu() {
+export default function SortFilter() {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();

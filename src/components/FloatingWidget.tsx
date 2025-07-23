@@ -18,9 +18,9 @@ export default async function FloatingWidget() {
               h={50}
             >
               <IconMessageCircle size={24} className='animate-wiggle' />
-              <span className='absolute z-[-1] h-full w-full animate-pulse rounded-full bg-green-300 opacity-0'></span>
-              <span className='absolute z-[-1] h-[80%] w-[80%] animate-pulse rounded-full bg-green-500 opacity-25'></span>
-              <span className='absolute z-[-1] h-[60%] w-[60%] animate-pulse rounded-full bg-green-700 opacity-50'></span>
+              <span className='absolute z-[-1] h-full w-full animate-ping rounded-full bg-mainColor opacity-10'></span>
+              <span className='absolute z-[-1] h-[80%] w-[80%] animate-ping rounded-full bg-mainColor opacity-20'></span>
+              <span className='absolute z-[-1] h-[60%] w-[60%] animate-ping rounded-full bg-mainColor opacity-30'></span>
             </Center>
           </MenuTarget>
 
@@ -51,9 +51,9 @@ export default async function FloatingWidget() {
                   loading='lazy'
                   className='animate-wiggle'
                 />
-                <span className='absolute z-[-1] h-full w-full animate-pulse rounded-full bg-green-300 opacity-0'></span>
-                <span className='absolute z-[-1] h-[80%] w-[80%] animate-pulse rounded-full bg-green-500 opacity-25'></span>
-                <span className='absolute z-[-1] h-[60%] w-[60%] animate-pulse rounded-full bg-green-700 opacity-50'></span>
+                <span className='absolute z-[-1] h-full w-full animate-ping rounded-full bg-mainColor opacity-10'></span>
+                <span className='absolute z-[-1] h-[80%] w-[80%] animate-ping rounded-full bg-mainColor opacity-20'></span>
+                <span className='absolute z-[-1] h-[60%] w-[60%] animate-ping rounded-full bg-mainColor opacity-30'></span>
               </Center>
 
               <Button

@@ -1,6 +1,6 @@
 import { Gender, UserLevel } from '@prisma/client';
-import { Address } from './AddressEntity';
-import { Image } from './ImageEntity';
+import { Address } from './address';
+import { Image } from './image';
 
 export type User = {
   id: string;

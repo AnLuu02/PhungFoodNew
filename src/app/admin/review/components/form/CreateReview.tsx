@@ -2,10 +2,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Review } from '~/Entity/ReviewEntity';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Review } from '~/types/review';
 
 export default function CreateReview({ setOpened }: { setOpened: any }) {
   const {

@@ -2,11 +2,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Category } from '~/Entity/CategoryEntity';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { categorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Category } from '~/types/category';
 
 export default function CreateCategory({ setOpened }: { setOpened: any }) {
   const {

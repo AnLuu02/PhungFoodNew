@@ -147,7 +147,7 @@ export default function OrderList({ data }: { data: any[] }) {
           }
         }}
       >
-        <Tabs.List className='bg-gray-100' mb={'md'} p={'xs'}>
+        <Tabs.List className='bg-gray-100 dark:bg-dark-card' mb={'md'} p={'xs'}>
           <Flex w={'100%'} direction={{ base: 'column', sm: 'column', md: 'column', lg: 'row' }}>
             <Group gap={0}>
               <Tabs.Tab size={'md'} fw={500} value='all'>
@@ -199,7 +199,11 @@ export default function OrderList({ data }: { data: any[] }) {
                 {displayedOrders?.length > 0 ? (
                   displayedOrders.map((order: any) => (
                     <Table.Tr key={order.id}>
-                      <Table.Td>{order.id}</Table.Td>
+                      <Table.Td w={100} style={{ maxWidth: 100, overflow: 'hidden' }}>
+                        <Tooltip label={order.id} withArrow>
+                          <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
+                        </Tooltip>
+                      </Table.Td>
                       <Table.Td>{formatDate(order.date)}</Table.Td>
                       <Table.Td>{formatPriceLocaleVi(order.total)}</Table.Td>
                       <Table.Td style={{ textTransform: 'capitalize' }}>

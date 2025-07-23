@@ -59,6 +59,7 @@ model Order {
   transactionId String?     @default("")
   transDate     DateTime?
   paymentId     String?
+  note          String?     @default("")
   payment       Payment?    @relation(fields: [paymentId], references: [id])
   orderItems    OrderItem[]
   vouchers      Voucher[]
@@ -89,6 +90,7 @@ model OrderItem {
   productId String
   quantity  Int     @default(1)
   price     Int     @default(0)
+  note      String? @default("")
   orderId   String
   product   Product @relation(fields: [productId], references: [id])
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)

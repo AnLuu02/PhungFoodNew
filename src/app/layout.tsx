@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   description: 'Phụng Food Restaurant chuyên món ăn miền Tây – giao hàng tận nơi tại Cà Mau.',
   keywords: ['Phụng Food', 'đặc sản miền Tây', 'nhà hàng Cà Mau', 'ẩm thực Long An', 'đặt món online'],
-  icons: [{ rel: 'icon', url: '/logo/logo_phungfood_1.png' }],
+  icons: [{ rel: 'icon', url: '/favicon.ico' }],
   openGraph: {
     title: 'Phụng Food Restaurant',
     description: 'Đặc sản miền Tây – Nhà hàng tại Cà Mau, giao hàng nhanh.',
@@ -70,6 +70,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang='en'>
       <head>
         <ColorSchemeScript defaultColorScheme='light' />
+        <link rel='icon' href='/favicon.ico' />
       </head>
       <body className={`${quickSandFont.className} ${font.variable}`}>
         <TRPCReactProvider session={session as Session}>

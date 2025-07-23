@@ -2,12 +2,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Payment } from '~/Entity/PaymentEntity';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalPaymentType } from '~/lib/zod/EnumType';
 import { paymentSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Payment } from '~/types/payment';
 
 export default function CreatePayment({ setOpened }: { setOpened: any }) {
   const {

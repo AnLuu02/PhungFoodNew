@@ -1,6 +1,6 @@
 import { OrderStatus } from '@prisma/client';
-import { Delivery } from './DeliveryEntity';
-import { OrderItem } from './OrderItemEntity';
+import { Delivery } from './delivery';
+import { OrderItem } from './orderItem';
 
 export type Order = {
   id: string;
@@ -10,6 +10,8 @@ export type Order = {
   status: OrderStatus;
 
   userId: string;
+
+  note?: string;
 
   paymentId: string;
 

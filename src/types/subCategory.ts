@@ -1,4 +1,4 @@
-import { Image } from './ImageEntity';
+import { Image } from './image';
 
 export type SubCategory = {
   id: string;

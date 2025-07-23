@@ -8,12 +8,12 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import { User } from '~/Entity/UserEntity';
 import fetcher from '~/lib/func-handler/fetcher';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
 import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { User } from '~/types/user';
 const DateTimePicker = dynamic(() => import('@mantine/dates').then(m => m.DateTimePicker), { ssr: false });
 const AddressSection = dynamic(() => import('../components/AdressSection'), { ssr: false });
 

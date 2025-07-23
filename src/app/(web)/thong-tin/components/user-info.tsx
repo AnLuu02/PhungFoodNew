@@ -21,7 +21,7 @@ import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { formatDate } from '~/lib/func-handler/formatDate';
 import { getStatusColor, getTotalOrderStatus } from '~/lib/func-handler/get-status-order';
 import { getColorLevelUser, getLevelUser } from '~/lib/func-handler/level-user';
-import { LocalGender, LocalOrderStatus } from '~/lib/zod/EnumType';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
 
 export default function UserInfo({ data }: any) {
   const { statusObj } = useMemo(() => {
@@ -59,7 +59,7 @@ export default function UserInfo({ data }: any) {
               <Text size='xl' fw={700}>
                 {data?.name}
               </Text>
-              <Badge color='gray' variant='transparent' className='bg-gray-200'>
+              <Badge color='gray' variant='transparent' className='bg-gray-200 dark:bg-dark-card'>
                 <Flex align={'center'} gap={5}>
                   <Text fw={700} size='xs'>
                     Cấp V.I.P:
@@ -86,10 +86,10 @@ export default function UserInfo({ data }: any) {
 
             <Grid.Col span={6}>
               <Text fw={700} size='sm'>
-                Gender
+                Giới tính
               </Text>
               <Text size='sm' c='dimmed'>
-                {data?.gender || LocalGender.OTHER}
+                {data?.gender || 'Đang cập nhật'}
               </Text>
             </Grid.Col>
 

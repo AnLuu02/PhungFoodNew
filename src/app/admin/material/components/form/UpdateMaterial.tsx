@@ -4,11 +4,11 @@ import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { categoriesMaterial } from '~/constants';
-import { Material } from '~/Entity/MaterialEntity';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { materialSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Material } from '~/types/material';
 
 export default function UpdateMaterial({ materialId, setOpened }: { materialId: string; setOpened: any }) {
   const queryResult = materialId ? api.Material.getOne.useQuery({ s: materialId || '' }) : { data: null };

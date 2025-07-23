@@ -20,12 +20,12 @@ import {
 import { IconChevronLeft, IconChevronRight, IconFile, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Banner } from '~/Entity/RestaurantEntity';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { bannerSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Banner } from '~/types/restaurant';
 
 export default function BannerManagement({ data }: any) {
   const {
@@ -179,7 +179,7 @@ export default function BannerManagement({ data }: any) {
                   classNames={{
                     control: 'border-none bg-white/80',
                     indicators: 'bottom-4',
-                    indicator: 'bg-mainColor mx-[6px] h-[8px] w-[20px] rounded-full'
+                    indicator: 'mx-[6px] h-[8px] w-[20px] rounded-full bg-mainColor'
                   }}
                 >
                   {previewUrls.map((src: any, index: number) => (

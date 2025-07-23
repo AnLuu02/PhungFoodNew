@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Flex, Rating, Text, Textarea } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Review } from '~/Entity/ReviewEntity';
 import BButton from '~/components/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Review } from '~/types/review';
 
 export const CommentsForm = ({ product }: { product: any }) => {
   const { data: user } = useSession();

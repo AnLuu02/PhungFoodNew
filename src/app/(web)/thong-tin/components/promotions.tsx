@@ -39,7 +39,7 @@ export default function Promotions({ data }: any) {
           }
         }}
       >
-        <Tabs.List className='bg-gray-100' mb={'md'}>
+        <Tabs.List className='bg-gray-100 dark:bg-dark-card' mb={'md'}>
           <Group gap={0}>
             <Tabs.Tab size={'md'} fw={700} value='all'>
               Tất cả

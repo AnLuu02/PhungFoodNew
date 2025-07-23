@@ -94,7 +94,7 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
     });
     y -= 20;
 
-    const website = 'https://www.phungfood.vn';
+    const website = process.env.NEXT_PUBLIC_BASE_URL_DEPLOY || 'phung-food-new.vercel.app';
     page.drawText(website, {
       x: centerX - customFont.widthOfTextAtSize(website, 10) / 2,
       y: y,

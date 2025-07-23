@@ -26,7 +26,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   }, [data]);
 
   return (
-    <Card radius={'md'} withBorder className='dark:bg-dark-card bg-white' p={0} pos={'relative'}>
+    <Card radius={'md'} withBorder className='bg-white dark:bg-dark-card' p={0} pos={'relative'}>
       <Flex h={162} gap={'xs'}>
         <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center' pos={'relative'}>
           <Image

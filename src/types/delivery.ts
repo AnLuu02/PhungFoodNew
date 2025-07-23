@@ -1,4 +1,4 @@
-import { Address } from './AddressEntity';
+import { Address } from './address';
 
 export type Delivery = {
   id: string;

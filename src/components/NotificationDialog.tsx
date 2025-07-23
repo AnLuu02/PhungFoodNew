@@ -238,14 +238,9 @@ export default function NotificationDialog({ data, user }: any) {
                           <UnstyledButton
                             w='100%'
                             onClick={() => markAsRead(notification.id)}
-                            style={theme => ({
-                              position: 'relative',
-                              padding: theme.spacing.md,
-                              backgroundColor: !notification.read ? theme.colors.gray[0] : undefined,
-                              '&:hover': {
-                                backgroundColor: theme.colors.gray[1]
-                              }
-                            })}
+                            pos={'relative'}
+                            p={'md'}
+                            className='hover:bg-[rgba(0,0,0,0.2)] dark:bg-dark-card dark:text-dark-text dark:hover:bg-[rgba(255,255,255,0.2)]'
                           >
                             <Group align='flex-start' gap='md'>
                               <Checkbox

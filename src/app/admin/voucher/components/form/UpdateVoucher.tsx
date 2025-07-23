@@ -6,13 +6,13 @@ import { UserLevel } from '@prisma/client';
 import { IconCalendar } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Voucher } from '~/Entity/VoucherEntity';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { getLevelUser } from '~/lib/func-handler/level-user';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { voucherSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Voucher } from '~/types/voucher';
 
 export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: string; setOpened: any }) {
   const queryResult = voucherId ? api.Voucher.getOne.useQuery({ s: voucherId || '' }) : { data: null };

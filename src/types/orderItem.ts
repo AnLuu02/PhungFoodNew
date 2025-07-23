@@ -7,5 +7,7 @@ export type OrderItem = {
 
   price: number;
 
+  note?: string;
+
   orderId: string;
 };

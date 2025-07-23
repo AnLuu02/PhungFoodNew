@@ -19,7 +19,6 @@ import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import { User } from '~/Entity/UserEntity';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import fetcher from '~/lib/func-handler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
@@ -27,6 +26,7 @@ import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalGender } from '~/lib/zod/EnumType';
 import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { User } from '~/types/user';
 
 export default function UpdateUser({ email, setOpened }: { email: string; setOpened: any }) {
   const queryResult = email ? api.User.getOne.useQuery({ s: email || '' }) : { data: null };

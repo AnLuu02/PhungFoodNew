@@ -5,13 +5,13 @@ import { DateTimePicker } from '@mantine/dates';
 import { UserLevel } from '@prisma/client';
 import { IconCalendar } from '@tabler/icons-react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Voucher } from '~/Entity/VoucherEntity';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { getLevelUser } from '~/lib/func-handler/level-user';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { voucherSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Voucher } from '~/types/voucher';
 
 export default function CreateVoucher({ setOpened }: { setOpened: any }) {
   const { data, isLoading } = api.Product.getAll.useQuery({

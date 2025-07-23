@@ -5,12 +5,12 @@ import { IconFile } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { SubCategory } from '~/Entity/SubCategoryEntity';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { subCategorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { SubCategory } from '~/types/subCategory';
 
 export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCategoryId: string; setOpened: any }) {
   const queryResult: any = subCategoryId ? api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }) : { data: null };

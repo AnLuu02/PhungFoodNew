@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
 
-export default function FilterPriceMenu() {
+export default function PriceRangeFilter() {
   const [valuePrice, setValuePrice] = useState<number[]>([20000, 200000]);
   const params = useSearchParams();
   const router = useRouter();

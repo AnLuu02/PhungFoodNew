@@ -1,4 +1,4 @@
-import { Image } from './ImageEntity';
+import { Image } from './image';
 
 export type Restaurant = {
   id?: string;

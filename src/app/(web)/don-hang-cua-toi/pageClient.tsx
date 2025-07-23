@@ -107,7 +107,12 @@ export default function MyOrderPageClient({ data }: any) {
           </Title>
           <Grid gutter='md'>
             <Grid.Col span={{ base: 6, sm: 4, md: 6, lg: 6 }}>
-              <Card withBorder shadow='sm' h='100%' className='cursor-pointer bg-gray-200 transition-all duration-300'>
+              <Card
+                withBorder
+                shadow='sm'
+                h='100%'
+                className='cursor-pointer bg-gray-200 transition-all duration-300 dark:bg-dark-card'
+              >
                 <Stack gap={0}>
                   <Text size='xl' className='font-bold'>
                     {totalOrders}
@@ -212,10 +217,10 @@ export default function MyOrderPageClient({ data }: any) {
                   ) : (
                     displayedOrders.map((order: any) => (
                       <Table.Tr key={order.id}>
-                        <Table.Td>
-                          <Highlight size='sm' highlight={valueSearch || ''}>
-                            {`ORDER-${order.id}`}
-                          </Highlight>
+                        <Table.Td w={100} style={{ maxWidth: 100, overflow: 'hidden' }}>
+                          <Tooltip label={order.id} withArrow>
+                            <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
+                          </Tooltip>
                         </Table.Td>
                         <Table.Td>
                           <Highlight size='sm' highlight={valueSearch || ''}>

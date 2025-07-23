@@ -152,6 +152,7 @@ export const orderRouter = createTRPCRouter({
         total: z.any().default(0),
         status: z.nativeEnum(OrderStatus),
         userId: z.string(),
+        note: z.string().optional(),
         paymentId: z.string().optional(),
         delivery: deliverySchema.optional(),
         transactionId: z.string().optional(),
@@ -159,6 +160,7 @@ export const orderRouter = createTRPCRouter({
           z.object({
             productId: z.string(),
             quantity: z.number().default(1),
+            note: z.string().optional(),
             price: z.number().default(0)
           })
         ),
@@ -171,6 +173,7 @@ export const orderRouter = createTRPCRouter({
           total: Number(input.total) || 0,
           status: input.status,
           userId: input.userId,
+          note: input.note,
           paymentId: input.paymentId,
           delivery: input.delivery
             ? {

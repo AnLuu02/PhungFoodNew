@@ -1,6 +1,6 @@
 import { Box, Center, Flex, Group, rem } from '@mantine/core';
-import Image from 'next/image';
 import Link from 'next/link';
+import Logo from '~/components/Logo';
 import SearchComponentClient from '~/components/Search/SearchClient';
 import CartButton from '../components/gio-hang-button';
 import PromotionButton from '../components/khuyen-mai';
@@ -24,7 +24,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
       >
         <Link href={'/'}>
           <Center>
-            <Image src='/logo/logo_phungfood_1.png' alt='logo' width={250} height={80} style={{ objectFit: 'cover' }} />
+            <Logo width={190} />
           </Center>
         </Link>
         <Box w={{ base: '100%', md: 400, lg: 550 }}>

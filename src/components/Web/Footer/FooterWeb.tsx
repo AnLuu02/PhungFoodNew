@@ -2,6 +2,7 @@ import { Box, Center, Flex, Grid, GridCol, Text } from '@mantine/core';
 import { IconPhoneIncoming } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Logo from '~/components/Logo';
 import { api } from '~/trpc/server';
 export default async function FooterWeb() {
   const restaurant = await api.Restaurant.getOne();
@@ -11,14 +12,7 @@ export default async function FooterWeb() {
         <GridCol span={{ base: 12, sm: 6, md: 5 }}>
           <Center>
             <Box className='space-y-4'>
-              <Image
-                loading='lazy'
-                src='/logo/logo_phungfood_1.png'
-                alt='Jollibee Logo'
-                width={330}
-                height={120}
-                style={{ objectFit: 'cover' }}
-              />
+              <Logo width={250} />
               <Text className='text-xl font-bold' tt={'uppercase'}>
                 {restaurant?.name || 'NHÀ HÀNG PHUNGFOOD'}
               </Text>

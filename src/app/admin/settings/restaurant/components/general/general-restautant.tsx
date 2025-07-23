@@ -33,11 +33,11 @@ import {
 } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Restaurant } from '~/Entity/RestaurantEntity';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { restaurantSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Restaurant } from '~/types/restaurant';
 
 const SOCIAL_OPTIONS = [
   { value: 'facebook', label: 'Facebook' },

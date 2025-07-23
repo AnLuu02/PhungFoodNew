@@ -44,7 +44,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
             containScroll='trimSnaps'
             withControls
             nextControlProps={{
-              color: 'mainColor'
+              className: 'bg-mainColor flex items-center justify-center w-[40px] h-[40px]  rounded-full text-white '
             }}
             previousControlProps={{
               className: 'bg-mainColor flex items-center justify-center w-[40px] h-[40px]  rounded-full text-white '

@@ -1,7 +1,7 @@
 import { Box, Table, Text } from '@mantine/core';
-import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
+import Logo from '../Logo';
 
 type invoicePrintProps = {
   data: any;
@@ -41,14 +41,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
   return (
     <Box ref={printRef} p={'xl'}>
       <Box display={'flex'} style={{ flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <Image
-          loading='lazy'
-          src='/logo/logo_phungfood_1.png'
-          alt='logo'
-          width={250}
-          height={50}
-          style={{ objectFit: 'cover' }}
-        />
+        <Logo width={190} />
         <Text c={'dark'} fz={18}>
           Đầu lộ Tân Thành, khóm 9, phường 6, Cà Mau
         </Text>
@@ -56,7 +49,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
           webp/hotline: 0937842680
         </Text>
         <Text c={'dark'} fz={18}>
-          https://www.phungfood.vn
+          https://phung-food-new.vercel.app
         </Text>
         <Text c={'dark'} fw={'bold'} fz={28}>
           Hoá đơn bán hàng

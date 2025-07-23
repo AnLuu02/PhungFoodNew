@@ -1,12 +1,21 @@
 'use client';
+
 import { Switch, useComputedColorScheme, useMantineColorScheme } from '@mantine/core';
 import { IconMoonStars, IconSun } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 
 export default function ControlModeTheme() {
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', {
     getInitialValueInEffect: true
   });
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   const isDark = computedColorScheme === 'dark';
 

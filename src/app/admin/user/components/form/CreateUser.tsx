@@ -18,13 +18,13 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import { User } from '~/Entity/UserEntity';
 import fetcher from '~/lib/func-handler/fetcher';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
 import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { User } from '~/types/user';
 
 export default function CreateUser({ setOpened }: { setOpened: any }) {
   const {

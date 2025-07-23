@@ -3,12 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Payment } from '~/Entity/PaymentEntity';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalPaymentType } from '~/lib/zod/EnumType';
 import { paymentSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
+import { Payment } from '~/types/payment';
 
 export default function UpdatePayment({ paymentId, setOpened }: { paymentId: string; setOpened: any }) {
   const queryResult = paymentId ? api.Payment.getOne.useQuery({ s: paymentId || '' }) : { data: null };
