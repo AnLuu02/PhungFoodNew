@@ -2,7 +2,7 @@
 
 import { ActionIcon, Button, FileButton } from '@mantine/core';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 
 export function CreateImageButton() {
@@ -18,8 +18,8 @@ export function CreateImageButton() {
 }
 
 export function DeleteImageButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.Image.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.Image.delete.useMutation();
 
   return (
     <>
@@ -27,8 +27,13 @@ export function DeleteImageButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Ảnh', () => {
-            untils.Image.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'ảnh',
+            callback: () => {
+              utils.Image.invalidate();
+            }
           });
         }}
       >

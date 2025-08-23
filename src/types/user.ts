@@ -23,7 +23,7 @@ export type User = {
 
   gender: Gender;
 
-  pointLevel: number;
+  pointUser: number;
 
   level: UserLevel;
 

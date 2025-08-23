@@ -2,7 +2,7 @@ import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } f
 import Image from 'next/image';
 import Link from 'next/link';
 import { TOP_POSITION_STICKY } from '~/constants';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 export default function RelatedProducts({ data }: any) {
@@ -38,7 +38,7 @@ export default function RelatedProducts({ data }: any) {
                   className='rounded-md'
                 />
               </Box>
-              <div>
+              <Box>
                 <Link href={`/san-pham/${product?.tag}`}>
                   <Tooltip label={product?.name}>
                     <Text
@@ -61,7 +61,7 @@ export default function RelatedProducts({ data }: any) {
                     </Text>
                   )}
                 </Group>
-              </div>
+              </Box>
             </Group>
           ))}
         </Stack>

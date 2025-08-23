@@ -24,8 +24,8 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import BButton from '~/components/Button';
-import ProductCardCarouselHorizontal from '~/components/Web/Home/components/ProductCardCarouselHorizontal';
-import ProductCardCarouselVertical from '~/components/Web/Home/components/ProductCardCarouselVertical';
+import ProductCardCarouselHorizontal from '~/components/Web/Card/ProductCardCarouselHorizontal';
+import ProductCardCarouselVertical from '~/components/Web/Card/ProductCardCarouselVertical';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default async function AboutPage() {
     <Box pos={'relative'}>
       <BackgroundImage
         src='/images/banner/banner_about.jpg'
-        style={{ textAlign: 'center', padding: '4rem 0' }}
+        className='px-0 py-[4rem] text-center'
         radius={'md'}
         pos={'relative'}
       >
@@ -67,8 +67,8 @@ export default async function AboutPage() {
       </BackgroundImage>
 
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' mt={50}>
-        <div>
-          <Title order={2} size='h2' style={{ color: '#2e7d32' }}>
+        <Box>
+          <Title order={2} size='h2' className='text-mainColor'>
             Câu chuyện của chúng tôi
           </Title>
           <Text mt='md'>
@@ -100,21 +100,21 @@ export default async function AboutPage() {
             </ThemeIcon>
             <Text>Gia đình sở hữu và điều hành bằng tình yêu</Text>
           </Group>
-        </div>
+        </Box>
         <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
           <Image
             loading='lazy'
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Restaurant interior'
             fill
-            style={{ objectFit: 'cover' }}
+            className='object-cover'
           />
         </Box>
       </SimpleGrid>
 
       {dataProduct?.length > 0 && (
         <>
-          <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
+          <Title order={2} size='h2' className='mt-[3rem] text-mainColor'>
             Món ăn đặc trưng của chúng tôi
           </Title>
           <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing='md' mt='xl'>
@@ -125,7 +125,7 @@ export default async function AboutPage() {
         </>
       )}
 
-      <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
+      <Title order={2} size='h2' className='mt-[3rem] text-mainColor'>
         Thực đơn của chúng tôi
       </Title>
       <Text mt='md' mb='xl'>
@@ -215,11 +215,11 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Chef portrait'
             fill
-            style={{ objectFit: 'cover' }}
+            className='object-cover'
           />
         </Box>
-        <div>
-          <Title order={2} size='h2' style={{ color: '#2e7d32' }}>
+        <Box>
+          <Title order={2} size='h2' className='text-mainColor'>
             Gặp gỡ đầu bếp của chúng tôi
           </Title>
           <Text mt='md'>
@@ -236,10 +236,10 @@ export default async function AboutPage() {
             "Nấu ăn không chỉ là về nguyên liệu mà còn là một nghệ thuật sáng tạo giúp gắn kết gia đình và cộng đồng.
             Thông qua món ăn, chúng ta chia sẻ văn hóa, ký ức và tình yêu của mình." - Đầu bếp Mai
           </Text>
-        </div>
+        </Box>
       </SimpleGrid>
 
-      <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
+      <Title order={2} size='h2' className='mt-[3rem] text-mainColor'>
         Khách hàng của chúng tôi nói gì?
       </Title>
       <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing='md' mt='xl'>
@@ -263,11 +263,11 @@ export default async function AboutPage() {
         ))}
       </SimpleGrid>
 
-      <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
+      <Title order={2} size='h2' className='mt-[3rem] text-mainColor'>
         Ghé thăm chúng tôi
       </Title>
       <SimpleGrid cols={{ base: 1, sm: 2, md: 2 }} spacing='xl' mt='xl'>
-        <div>
+        <Box>
           <Text fw={500}>Địa chỉ :</Text>
           <Text>123 Sài Gòn, Quận Ẩm Thực, Thành Phố Của Chúng Tôi</Text>
           <Text fw={500} mt='md'>
@@ -288,7 +288,7 @@ export default async function AboutPage() {
             </ThemeIcon>
             <Text>info@saigonflavors.com</Text>
           </Group>
-        </div>
+        </Box>
 
         <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
           <Image
@@ -296,12 +296,12 @@ export default async function AboutPage() {
             src='https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-6.png'
             alt='Map'
             fill
-            style={{ objectFit: 'cover' }}
+            className='object-cover'
           />
         </Box>
       </SimpleGrid>
 
-      <Title order={2} size='h2' style={{ color: '#2e7d32', marginTop: '3rem' }}>
+      <Title order={2} size='h2' className='mt-[3rem] text-mainColor'>
         Sự kiện đặc biệt & Dịch vụ ăn uống
       </Title>
       <Text mt='md'>
@@ -330,10 +330,10 @@ export default async function AboutPage() {
       </SimpleGrid>
 
       <Group justify='center' mt={50} mb={50}>
-        <Button size='lg' style={{ backgroundColor: '#f9a825', color: '#000' }}>
+        <Button size='lg' className='bg-subColor text-[#000]'>
           Đặt chỗ
         </Button>
-        <Button size='lg' variant='outline' style={{ borderColor: '#2e7d32', color: '#2e7d32' }}>
+        <Button size='lg' variant='outline' className='border-mainColor text-mainColor'>
           Xem thực đơn đầy đủ
         </Button>
       </Group>

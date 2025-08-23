@@ -5,7 +5,11 @@ import { OrderItem } from './orderItem';
 export type Order = {
   id: string;
 
-  total: number;
+  originalTotal: number;
+
+  discountAmount: number;
+
+  finalTotal: number;
 
   status: OrderStatus;
 

@@ -12,10 +12,7 @@ const ShoppingCartMobile = dynamic(() => import('./components/CartMobile'), { ss
 
 export default function ShoppingCart() {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
-  const updateQuantity = (id: number, quantity: number) => {
-    setCart(items => items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item)));
-  };
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 
   if (cart && cart?.length <= 0)
     return (
@@ -32,8 +29,16 @@ export default function ShoppingCart() {
         {isMobile ? (
           <ShoppingCartMobile cart={cart} setCart={setCart} />
         ) : (
-          <Paper shadow='xs' radius='md' className='p-0 md:p-6'>
-            <CartTable cart={cart} setCart={setCart} updateQuantity={updateQuantity} />
+          <Paper shadow='xs' radius='md' className='p-0 sm:p-6'>
+            <CartTable
+              cart={cart}
+              setCart={setCart}
+              updateQuantity={(id: number, quantity: number) => {
+                setCart(items =>
+                  items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
+                );
+              }}
+            />
             <Divider mb={10} />
           </Paper>
         )}

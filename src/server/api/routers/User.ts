@@ -98,7 +98,7 @@ export const userRouter = createTRPCRouter({
         password: z.string().min(6, { message: 'Password should include at least 6 characters' }),
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
         address: addressSchema.optional(),
-        pointLevel: z.number().default(0),
+        pointUser: z.number().default(0),
         level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
         roleId: z.string().optional()
       })
@@ -115,9 +115,15 @@ export const userRouter = createTRPCRouter({
         }),
         ctx.db.role.findMany({})
       ]);
-      let defaultRole = roles.find(role => role.name === UserRole.CUSTOMER)?.id;
-      if (input?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN) {
-        defaultRole = UserRole.SUPER_ADMIN;
+      let defaultRole;
+      if (roles.length > 0) {
+        if (input.roleId) {
+          defaultRole = { id: input.roleId };
+        } else if (input?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN) {
+          defaultRole = roles.find(role => role.name === UserRole.SUPER_ADMIN);
+        } else {
+          defaultRole = roles.find(role => role.name === UserRole.CUSTOMER);
+        }
       }
       if (existed) {
         return {
@@ -152,7 +158,7 @@ export const userRouter = createTRPCRouter({
                 create: input.address
               }
             : undefined,
-          pointLevel: input.pointLevel,
+          pointUser: input.pointUser,
           level: input.level,
           image: imgURL
             ? {
@@ -165,10 +171,10 @@ export const userRouter = createTRPCRouter({
               }
             : undefined,
           role:
-            input.roleId || input.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || roles.length > 0
+            roles.length > 0
               ? {
                   connect: {
-                    id: input.roleId || defaultRole
+                    id: defaultRole?.id
                   }
                 }
               : {
@@ -202,7 +208,7 @@ export const userRouter = createTRPCRouter({
         password: z.string().min(6, { message: 'Password should include at least 6 characters' }),
         phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
         address: addressSchema,
-        pointLevel: z.number().default(0),
+        pointUser: z.number().default(0),
         level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
         roleId: z.string().optional()
       })
@@ -230,7 +236,6 @@ export const userRouter = createTRPCRouter({
           imgURL = oldImage?.url;
         }
       }
-
       if (!existed || existed.id === input.id) {
         const user = await ctx.db.user.update({
           where: { id: input.id },
@@ -241,11 +246,16 @@ export const userRouter = createTRPCRouter({
             phone: input.phone,
             gender: input.gender,
             address: {
-              update: {
-                ...input.address
+              upsert: {
+                create: {
+                  ...input.address
+                },
+                update: {
+                  ...input.address
+                }
               }
             },
-            pointLevel: input.pointLevel,
+            pointUser: input.pointUser,
             level: input.level,
             role: {
               connect: {

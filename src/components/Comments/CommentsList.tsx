@@ -2,11 +2,11 @@
 
 import { Avatar, Box, Button, Center, Flex, Group, Paper, Rating, Space, Spoiler, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 
 export const CommentsList = ({ data }: { data: any[] }) => {
-  const mutationDel = api.Review.delete.useMutation();
+  const mutationDelete = api.Review.delete.useMutation();
   const utils = api.useUtils();
   const { data: user } = useSession();
   return data?.length > 0 ? (
@@ -47,9 +47,14 @@ export const CommentsList = ({ data }: { data: any[] }) => {
             className='absolute right-2 top-2 text-red-500'
             onClick={() => {
               if (comment.id && comment.userId === user?.user?.id) {
-                handleDelete({ id: comment.id }, mutationDel, 'Bình luận', () => {
-                  utils.Review.invalidate();
-                  utils.Product.invalidate();
+                confirmDelete({
+                  id: { id: comment.id },
+                  mutationDelete,
+                  entityName: 'đánh giá',
+                  callback: () => {
+                    utils.Review.invalidate();
+                    utils.Product.invalidate();
+                  }
                 });
               }
             }}

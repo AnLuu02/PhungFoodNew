@@ -20,7 +20,7 @@ import {
 import { ProductStatus } from '@prisma/client';
 import { IconFile, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -76,6 +76,12 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
       materials: []
     }
   });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'descriptionDetail'
+  });
+
   const utils = api.useUtils();
   const mutation = api.Product.create.useMutation({
     onSuccess: () => {
@@ -111,7 +117,11 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
 
         let result = await mutation.mutateAsync({
           ...formDataWithImages,
-          tag: createTag(formData.name)
+          tag: createTag(formData.name),
+          descriptionDetail: (formData.descriptionDetail ?? []).map((item: any) => ({
+            label: item.label,
+            value: item.value
+          }))
         });
         if (result.success) {
           NotifySuccess(result.message);
@@ -281,22 +291,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             )}
           />
         </Grid.Col>
-        {/* <Grid.Col span={6} hidden>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                label='Tag'
-                placeholder='Sẽ tạo tự động'
-                error={errors.name?.message}
-                readOnly
-              />
-            )}
-          />
-        </Grid.Col> */}
+
         <Grid.Col span={6}>
           <Controller
             name='subCategoryId'
@@ -433,6 +428,53 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             render={({ field }) => <Textarea label='Mô tả' placeholder='Nhập mô tả' {...field} />}
           />
         </Grid.Col>
+
+        <Grid.Col span={12}>
+          <Text fw={600} size='lg'>
+            Thông tin chi tiết
+          </Text>
+
+          {fields.map((field, index) => (
+            <Flex key={field.id} gap='md' align='center' mt='xs'>
+              <Controller
+                control={control}
+                name={`descriptionDetail.${index}.label`}
+                render={({ field }) => (
+                  <TextInput
+                    {...field}
+                    placeholder='Ví dụ: Xuất xứ'
+                    label={`Label ${index + 1}`}
+                    withAsterisk
+                    style={{ flex: 1 }}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name={`descriptionDetail.${index}.value`}
+                render={({ field }) => (
+                  <TextInput
+                    {...field}
+                    placeholder='Ví dụ: Lạc Dương, Lâm Đồng'
+                    label={`Value ${index + 1}`}
+                    withAsterisk
+                    style={{ flex: 2 }}
+                  />
+                )}
+              />
+
+              <ActionIcon color='red' variant='light' onClick={() => remove(index)} mt={22}>
+                <IconTrash />
+              </ActionIcon>
+            </Flex>
+          ))}
+
+          <Button variant='light' color='green' mt='md' onClick={() => append({ label: '', value: '' })}>
+            + Thêm thông tin
+          </Button>
+        </Grid.Col>
+
         <Grid.Col span={12} hidden>
           <Controller
             name='thumbnail'

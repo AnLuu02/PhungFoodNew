@@ -223,10 +223,7 @@ export default function BannerManagement({ data }: any) {
               )}
             </Box>
 
-            {/* Right side - Static banners */}
             <Flex direction='column' align='center' justify='space-between' w={{ base: '100%', lg: '33.333333%' }}>
-              {/* Top banner */}
-
               <Paper
                 w={'100%'}
                 h={190}
@@ -271,8 +268,6 @@ export default function BannerManagement({ data }: any) {
                   </label>
                 )}
               </Paper>
-
-              {/* Bottom banner */}
 
               <Paper
                 w={'100%'}

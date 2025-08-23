@@ -17,6 +17,11 @@ export enum LocalVoucherType {
   FIXED = 'FIXED'
 }
 
+export enum LocalVoucherStatus {
+  ENABLED = 'ENABLED',
+  DISABLED = 'DISABLED'
+}
+
 export enum LocalPaymentType {
   CREDIT_CARD = 'CREDIT_CARD',
   E_WALLET = 'E_WALLET'

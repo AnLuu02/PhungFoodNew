@@ -22,7 +22,7 @@ function NavigationHeader({ categories }: { categories?: any }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   return (
-    <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }} className='hidden lg:flex'>
+    <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }} className='hidden md:flex'>
       {navigationItem.map((item, index) =>
         item.href === '/thuc-don' ? (
           <Menu

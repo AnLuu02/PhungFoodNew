@@ -4,7 +4,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { useMemo } from 'react';
 import Empty from '~/components/Empty';
 import CartItemFastMenu from '~/components/Web/Home/components/CartItemFastMenu';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { ButtonCheckout } from '../../thanh-toan/components/ButtonCheckout';
@@ -19,12 +19,12 @@ const QuickCart = () => {
     setCart(cart.filter(item => item.id !== id));
   };
 
-  const total = useMemo(() => {
-    return cart.reduce((acc, item) => acc + (item.price * item.quantity || 0), 0);
+  const finalTotal = useMemo(() => {
+    return cart.reduce((sum, item) => sum + (item.price * item.quantity || 0), 0);
   }, [cart]);
 
   return (
-    <Card radius={'md'} className='dark:bg-dark-card bg-gray-200'>
+    <Card radius={'md'} className='bg-gray-200 dark:bg-dark-card'>
       <Card.Section>
         <Stack>
           <ScrollAreaAutosize mah={'40vh'}>
@@ -59,13 +59,15 @@ const QuickCart = () => {
           <Group justify='space-between' className='px-4'>
             <Text fw={500}>Tổng tiền:</Text>
             <Text fw={700} size='lg' c='red'>
-              {formatPriceLocaleVi(total)}
+              {formatPriceLocaleVi(finalTotal)}
             </Text>
           </Group>
 
           <Stack gap='md' className='px-4' mb={10}>
             <ButtonCheckout
-              total={total}
+              finalTotal={finalTotal}
+              originalTotal={finalTotal}
+              discountAmount={0}
               data={cart}
               stylesButtonCheckout={{ title: 'Thanh toán', fullWidth: true, size: 'md', radius: 'sm' }}
             />

@@ -1,26 +1,34 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Checkbox, Grid, MultiSelect, NumberInput, Select, Textarea, TextInput } from '@mantine/core';
+import {
+  Button,
+  Center,
+  Checkbox,
+  Divider,
+  Grid,
+  NumberInput,
+  Select,
+  Switch,
+  Text,
+  Textarea,
+  TextInput
+} from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
-import { UserLevel } from '@prisma/client';
-import { IconCalendar } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { createTag } from '~/lib/func-handler/generateTag';
-import { getLevelUser } from '~/lib/func-handler/level-user';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { LocalVoucherStatus, LocalVoucherType } from '~/lib/zod/EnumType';
 import { voucherSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Voucher } from '~/types/voucher';
 
 export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: string; setOpened: any }) {
-  const queryResult = voucherId ? api.Voucher.getOne.useQuery({ s: voucherId || '' }) : { data: null };
-  const { data: products, isLoading } = api.Product.getAll.useQuery({
-    hasCategoryChild: false,
-    userRole: 'ADMIN'
-  });
-  const { data } = queryResult;
+  const [applyForLevel, setApplyForLevel] = useState(false);
+
+  const { data: queryResult } = voucherId
+    ? api.Voucher.getOne.useQuery({ voucherId: voucherId || '' })
+    : { data: null };
 
   const {
     control,
@@ -37,42 +45,49 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
       name: '',
       description: '',
       type: LocalVoucherType.FIXED,
+      status: LocalVoucherStatus.ENABLED,
       discountValue: 0,
       minOrderPrice: 0,
       maxDiscount: 0,
       applyAll: true,
+      code: '',
       quantity: 0,
+      quantityForUser: 1,
       usedQuantity: 0,
       availableQuantity: 0,
       startDate: new Date(),
       endDate: new Date(),
-      vipLevel: '0',
-      products: []
+      pointUser: -1
     }
   });
 
   useEffect(() => {
-    if (data?.id) {
+    if (queryResult?.id) {
       reset({
-        id: data.id,
-        tag: data.tag,
-        name: data.name,
-        description: data.description || '',
-        type: data.type,
-        discountValue: data.discountValue,
-        minOrderPrice: data.minOrderPrice,
-        maxDiscount: data.maxDiscount,
-        applyAll: data.applyAll,
-        quantity: data.quantity,
-        usedQuantity: data.usedQuantity,
-        availableQuantity: data.availableQuantity,
-        startDate: data?.startDate,
-        endDate: data.endDate,
-        vipLevel: data?.vipLevel?.toString() || '0',
-        products: data?.products?.map(product => product.id) || []
+        id: queryResult.id,
+        tag: queryResult.tag,
+        name: queryResult.name,
+        description: queryResult.description || '',
+        type: queryResult.type,
+        status: queryResult.status,
+        discountValue: queryResult.discountValue,
+        minOrderPrice: queryResult.minOrderPrice,
+        maxDiscount: queryResult.maxDiscount,
+        applyAll: queryResult.applyAll,
+        quantity: queryResult.quantity,
+        code: queryResult.code,
+        quantityForUser: queryResult.quantityForUser,
+        usedQuantity: queryResult.usedQuantity,
+        availableQuantity: queryResult.availableQuantity,
+        startDate: queryResult?.startDate,
+        endDate: queryResult.endDate,
+        pointUser: queryResult?.pointUser || -1
       });
     }
-  }, [data, reset]);
+    if (queryResult?.applyAll === false) {
+      setApplyForLevel(true);
+    }
+  }, [queryResult, reset]);
 
   const utils = api.useUtils();
   const updateMutation = api.Voucher.update.useMutation({
@@ -83,24 +98,10 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
 
   const onSubmit: SubmitHandler<Voucher> = async formData => {
     if (voucherId) {
-      const currentProductIds = data?.products.map(p => p.id) || [];
-      const newProductIds = formData.products;
-      const productsToConnect = newProductIds.filter(id => !currentProductIds.includes(id)).map(id => ({ id }));
-      const productsToDisconnect = currentProductIds.filter(id => !newProductIds.includes(id)).map(id => ({ id }));
-      if (!formData.applyAll && !formData.products?.length) {
-        NotifyError('Hãy chọn sản phẩm áp dụng khuyến mãi.');
-        return;
-      }
       let result = await updateMutation.mutateAsync({
         where: { id: voucherId },
         data: {
-          ...formData,
-          tag: createTag(formData.name),
-          vipLevel: Number(formData.vipLevel) || 0,
-          products: {
-            connect: productsToConnect,
-            disconnect: productsToDisconnect
-          }
+          ...formData
         }
       });
       if (result.success) {
@@ -115,7 +116,6 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
-        {/* Tên voucher */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -132,7 +132,27 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
           />
         </Grid.Col>
 
-        {/* Mô tả */}
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='code'
+            render={({ field }) => (
+              <TextInput
+                {...field}
+                required
+                onKeyDown={e => {
+                  if (e.key === ' ') {
+                    e.preventDefault();
+                  }
+                }}
+                label='Mã giảm giá'
+                placeholder='Nhập mã giảm giá'
+                error={errors.code?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+
         <Grid.Col span={12}>
           <Controller
             control={control}
@@ -143,7 +163,6 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
           />
         </Grid.Col>
 
-        {/* Hình thức khuyến mãi */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -165,7 +184,6 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
           />
         </Grid.Col>
 
-        {/* Giá trị giảm giá */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -179,6 +197,12 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
                 clampBehavior='strict'
                 placeholder='Nhập số tiền hoặc %'
                 max={watch('type') === LocalVoucherType.FIXED ? 100000000 : 100}
+                onChange={value => {
+                  if (watch('type') === LocalVoucherType.FIXED) {
+                    setValue('maxDiscount', +value);
+                  }
+                  field.onChange(value);
+                }}
                 error={errors.discountValue?.message}
               />
             )}
@@ -212,68 +236,13 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
                 thousandSeparator=','
                 label='Giảm giá tối đa'
                 placeholder='Nhập giá trị'
-                value={watch('type') === LocalVoucherType.FIXED ? watch('discountValue') : field.value}
+                value={field.value}
                 error={errors.maxDiscount?.message}
               />
             )}
           />
         </Grid.Col>
 
-        {/* Số lượng voucher */}
-        <Grid.Col span={4}>
-          <Controller
-            control={control}
-            name='quantity'
-            render={({ field }) => (
-              <NumberInput
-                {...field}
-                thousandSeparator=','
-                label='Số lượng voucher'
-                placeholder='Nhập số lượng'
-                error={errors.quantity?.message}
-              />
-            )}
-          />
-        </Grid.Col>
-
-        {/* Đã bán */}
-        <Grid.Col span={4}>
-          <Controller
-            control={control}
-            name='usedQuantity'
-            render={({ field }) => (
-              <NumberInput
-                {...field}
-                thousandSeparator=','
-                label='Số lượng đã bán'
-                placeholder='Nhập số lượng'
-                error={errors.usedQuantity?.message}
-                readOnly
-                disabled
-              />
-            )}
-          />
-        </Grid.Col>
-
-        {/* Còn lại */}
-        <Grid.Col span={4}>
-          <Controller
-            control={control}
-            name='availableQuantity'
-            render={({ field }) => (
-              <NumberInput
-                {...field}
-                thousandSeparator=','
-                label='Số lượng còn lại'
-                placeholder='Nhập số lượng'
-                readOnly
-                error={errors.availableQuantity?.message}
-              />
-            )}
-          />
-        </Grid.Col>
-
-        {/* Ngày bắt đầu */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -292,7 +261,6 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
           />
         </Grid.Col>
 
-        {/* Ngày kết thúc */}
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -310,30 +278,46 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
             )}
           />
         </Grid.Col>
-
-        {/* Cấp độ VIP */}
         <Grid.Col span={6}>
           <Controller
             control={control}
-            name='vipLevel'
+            name='quantity'
             render={({ field }) => (
-              <Select
+              <NumberInput
                 {...field}
-                label='Cấp độ VIP yêu cầu'
-                searchable
-                data={Object.values(UserLevel).map((level, index) => ({
-                  value: index.toString(),
-                  label: getLevelUser(level)
-                }))}
-                value={field.value?.toString()}
-                placeholder='Nhập cấp độ'
-                error={errors.vipLevel?.message}
+                thousandSeparator=','
+                label='Số lượng voucher'
+                placeholder='Nhập số lượng'
+                error={errors.quantity?.message}
               />
             )}
           />
         </Grid.Col>
-        {/* Áp dụng cho tất cả */}
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='quantityForUser'
+            render={({ field }) => (
+              <NumberInput
+                {...field}
+                thousandSeparator=','
+                label='Số lượng cho người dùng'
+                placeholder='Nhập số lượng'
+                error={errors.quantityForUser?.message}
+              />
+            )}
+          />
+        </Grid.Col>
         <Grid.Col span={12}>
+          <Center className='my-3 flex items-center gap-5'>
+            <Divider orientation='horizontal' color='dimmed' variant='dotted' w={'30%'} />
+            <Text size='sm' c={'dimmed'}>
+              Options
+            </Text>
+            <Divider orientation='horizontal' color='dimmed' variant='dotted' w={'30%'} />
+          </Center>
+        </Grid.Col>
+        <Grid.Col span={4}>
           <Controller
             control={control}
             name='applyAll'
@@ -347,31 +331,62 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
             )}
           />
         </Grid.Col>
-
-        {/* Product áp dụng*/}
+        <Grid.Col span={4}>
+          <Controller
+            control={control}
+            name='status'
+            render={({ field }) => (
+              <Switch
+                label='Trạng thái (Ẩn / Hiện)'
+                error={errors.status?.message}
+                checked={(field.value as LocalVoucherStatus) === LocalVoucherStatus.ENABLED}
+                onChange={event => {
+                  const checked = event.target.checked;
+                  field.onChange(checked ? LocalVoucherStatus.ENABLED : LocalVoucherStatus.DISABLED);
+                }}
+                thumbIcon={
+                  (field.value as LocalVoucherStatus) === LocalVoucherStatus.ENABLED ? (
+                    <IconCheck size={12} color='var(--mantine-color-teal-6)' stroke={3} />
+                  ) : (
+                    <IconX size={12} color='var(--mantine-color-red-6)' stroke={3} />
+                  )
+                }
+              />
+            )}
+          />
+        </Grid.Col>
         {!watch('applyAll') && (
-          <Grid.Col span={12}>
-            <Controller
-              name='products'
-              control={control}
-              render={({ field }) => (
-                <MultiSelect
-                  {...field}
-                  label='Sản phẩm áp dụng'
-                  placeholder='Chọn sản phẩm áp dụng'
-                  searchable
-                  data={products?.map(product => ({
-                    value: product.id,
-                    label: product.name
-                  }))}
-                  error={errors.products?.message}
+          <>
+            <Grid.Col span={12}>
+              <Checkbox
+                label='Áp dụng cho điểm người dùng'
+                checked={applyForLevel}
+                onChange={e => setApplyForLevel(e.target.checked)}
+              />
+            </Grid.Col>
+            {applyForLevel && (
+              <Grid.Col span={6}>
+                <Controller
+                  control={control}
+                  name='pointUser'
+                  render={({ field }) => (
+                    <NumberInput
+                      {...field}
+                      thousandSeparator=','
+                      label='Giá trị điểm tối thiểu'
+                      placeholder='Nhập giá trị'
+                      clampBehavior='strict'
+                      error={errors.pointUser?.message}
+                    />
+                  )}
                 />
-              )}
-            />
-          </Grid.Col>
+              </Grid.Col>
+            )}
+          </>
         )}
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+
+      <Button type='submit' className='mt-8 w-full' loading={isSubmitting} fullWidth>
         Cập nhật
       </Button>
     </form>

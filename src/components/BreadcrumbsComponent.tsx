@@ -3,6 +3,7 @@ import { Carousel } from '@mantine/carousel';
 import { BackgroundImage, Box, Card, Flex, rem, Skeleton, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { getTagFromQuery } from '~/lib/func-handler/generateTag';
 import BreadcrumbsBase from './BreadcrumbsBase';
@@ -43,14 +44,26 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
             controlsOffset='xs'
             containScroll='trimSnaps'
             withControls
-            nextControlProps={{
-              className: 'bg-mainColor flex items-center justify-center w-[40px] h-[40px]  rounded-full text-white '
-            }}
-            previousControlProps={{
-              className: 'bg-mainColor flex items-center justify-center w-[40px] h-[40px]  rounded-full text-white '
-            }}
             previousControlIcon={<IconChevronLeft size={30} />}
+            previousControlProps={{
+              style: {
+                color: 'white',
+                borderRadius: rem(10),
+                width: rem(40),
+                height: rem(40),
+                backgroundColor: '#00BFA6'
+              }
+            }}
             nextControlIcon={<IconChevronRight size={30} />}
+            nextControlProps={{
+              style: {
+                color: 'white',
+                borderRadius: rem(10),
+                width: rem(40),
+                height: rem(40),
+                backgroundColor: '#00BFA6'
+              }
+            }}
           >
             {subCategoriesData?.length <= 0
               ? [1, 2, 3, 4, 5, 6].map(item => (
@@ -63,32 +76,29 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
                     </Card>
                   </Carousel.Slide>
                 ))
-              : subCategoriesData.map((category: any) => (
-                  <Carousel.Slide key={category.id}>
-                    <Card
-                      className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'
-                      component='a'
-                      href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-                      target='_blank'
-                    >
-                      <Card.Section>
-                        <Image
-                          loading='lazy'
-                          style={{ objectFit: 'cover' }}
-                          src={
-                            category?.image?.url ||
-                            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'
-                          }
-                          height={130}
-                          width={130}
-                          alt={category.name}
-                          className='rounded-full'
-                        />
-                      </Card.Section>
-                      <Text size='md' fw={700} mt={20} className='text-center'>
-                        {category.name}
-                      </Text>
-                    </Card>
+              : subCategoriesData.map((item: any) => (
+                  <Carousel.Slide key={item.id}>
+                    <Link href={`/thuc-don?danh-muc=${item.category?.tag}&loai-san-pham=${item.tag}`}>
+                      <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>
+                        <Card.Section>
+                          <Image
+                            loading='lazy'
+                            style={{ objectFit: 'cover' }}
+                            src={
+                              item?.image?.url ||
+                              'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'
+                            }
+                            height={130}
+                            width={130}
+                            alt={item.name}
+                            className='rounded-full'
+                          />
+                        </Card.Section>
+                        <Text size='md' fw={700} mt={20} className='text-center'>
+                          {item.name}
+                        </Text>
+                      </Card>
+                    </Link>
                   </Carousel.Slide>
                 ))}
           </Carousel>

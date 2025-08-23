@@ -1,11 +1,12 @@
 'use client';
 
-import { Button, Group, Modal, Stack, Text } from '@mantine/core';
+import { Box, Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
+import { useState } from 'react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 
@@ -18,6 +19,7 @@ interface SuccessModalProps {
 
 export default function ModalSuccessAddToCart({ type, opened, onClose, product }: SuccessModalProps) {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
+  const [note, setNote] = useState('');
   return (
     <Modal
       opened={opened && type === 'success'}
@@ -28,8 +30,8 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
       withCloseButton={false}
       centered
     >
-      <div className='relative'>
-        <div className='flex items-center gap-2 bg-emerald-600 p-2 text-white'>
+      <Box className='relative'>
+        <Box className='flex items-center gap-2 bg-mainColor p-2 text-white'>
           <IconCheck size={24} />
           <Text size='md' fw={700}>
             Mua hàng thành công
@@ -40,11 +42,11 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
             size={20}
             className='absolute right-4 top-3 cursor-pointer text-white hover:opacity-50'
           />
-        </div>
+        </Box>
 
         <Stack p='md' gap='md'>
           <Group>
-            <div className='relative h-16 w-16'>
+            <Box className='relative h-16 w-16'>
               <Image
                 loading='lazy'
                 src={
@@ -56,32 +58,58 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
                 style={{ objectFit: 'cover' }}
                 className='rounded object-cover'
               />
-            </div>
-            <div>
-              <Text>{product?.name || 'Hành tây'}</Text>
-              <Text c='green' fw={600}>
+            </Box>
+            <Box>
+              <Text fw={700}>{product?.name || 'Hành tây'}</Text>
+              <Text className='text-mainColor' fw={600}>
                 {formatPriceLocaleVi(product?.price || 0)}
               </Text>
-            </div>
+            </Box>
           </Group>
 
           <Text size='sm' c='dimmed'>
             Giỏ hàng của bạn hiện có {cart?.length || 0} sản phẩm
           </Text>
+          <Group w={'100%'}>
+            <Textarea
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              placeholder='Ghi chú'
+              autosize
+              minRows={2}
+              w={'100%'}
+            />
+          </Group>
 
           <Group grow>
-            <Button variant='filled' color='dark' onClick={onClose} radius='sm' size='xs'>
+            <Button
+              variant='filled'
+              color='dark'
+              onClick={() => {
+                if (note !== '') {
+                  const existingItem = cart.find((item: any) => item.id === product?.id);
+                  if (existingItem) {
+                    setCart(cart.map((item: any) => (item.id === product?.id ? { ...item, note } : item)));
+                  }
+                }
+                onClose();
+              }}
+              radius='sm'
+              size='xs'
+            >
               Tiếp tục mua hàng
             </Button>
             <ButtonCheckout
               stylesButtonCheckout={{ fullWidth: true, title: 'Thanh toán ngay', radius: 'sm' }}
-              data={cart}
-              total={product?.price || 0}
+              data={[...cart, { ...product, note }]}
+              finalTotal={product?.price || 0}
+              originalTotal={product?.price || 0}
+              discountAmount={0}
               onClick={onClose}
             />
           </Group>
         </Stack>
-      </div>
+      </Box>
     </Modal>
   );
 }

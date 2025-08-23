@@ -3,7 +3,7 @@
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreatePayment from './form/CreatePayment';
 import UpdatePayment from './form/UpdatePayment';
@@ -47,8 +47,8 @@ export function UpdatePaymentButton({ id }: { id: string }) {
 }
 
 export function DeletePaymentButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.Payment.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.Payment.delete.useMutation();
 
   return (
     <>
@@ -56,8 +56,13 @@ export function DeletePaymentButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Phương thức thanh toán', () => {
-            untils.Payment.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'hình thức thanh toán',
+            callback: () => {
+              utils.Payment.invalidate();
+            }
           });
         }}
       >

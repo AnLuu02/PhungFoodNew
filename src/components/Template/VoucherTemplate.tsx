@@ -1,13 +1,13 @@
 import { Box, Button, Card, Checkbox, Divider, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
 import clsx from 'clsx';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import DateVoucher from '../Modals/DateVoucher';
 const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
   return (
-    <Card w={'98%'} p={0} shadow='md' pos={'relative'} radius={'sm'}>
+    <Card w={'98%'} p={0} shadow='xl' pos={'relative'} radius={'md'}>
       <Flex h={{ base: 'max-content', lg: 120 }}>
         <Flex
           w={{ base: 0, lg: 120 }}
@@ -29,17 +29,17 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
                 : '/images/png/voucher_bg_red.png'
             }
             alt=''
-            className='hidden lg:block'
+            className='hidden md:block'
           />
-          <Flex direction='column' align='center' justify='center' pos={'absolute'} className='z-[10] hidden md:flex'>
+          <Flex direction='column' align='center' justify='center' pos={'absolute'} className='z-[10] hidden sm:flex'>
             <Text size='xs' className='text-center' c='#fff' fw={700}>
-              Mama Voucher
+              {voucher?.code || 'Mama Voucher'}
             </Text>
           </Flex>
           {hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'active' ? (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md lg:block`,
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`,
                 `bg-[#EDA500]`
               )}
             >
@@ -48,7 +48,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           ) : hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'upcoming' ? (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md lg:block`,
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`,
                 `bg-[#00BB00]`
               )}
             >
@@ -57,7 +57,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           ) : (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md lg:block`
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`
               )}
             >
               Sắp hết hạn
@@ -71,7 +71,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
               <Text size='sm' fw={500} lineClamp={1}>
                 {voucher?.name}
               </Text>
-              {!allowedVoucher(voucher?.minOrderPrice || 0, products) && (
+              {products && products.length > 0 && !allowedVoucher(voucher?.minOrderPrice || 0, products) && (
                 <Text size='xs' c='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
                   Không đủ điều kiện
                 </Text>
@@ -87,7 +87,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
               </Text>
             </Tooltip>
             <Progress
-              value={Math.floor((voucher?.quantity / 10) * 100)}
+              value={Math.floor((voucher?.usedQuantity / voucher?.quantity) * 100)}
               color='red'
               bg={'#DCDCDC'}
               radius='xs'
@@ -100,9 +100,9 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
                 variant='transparent'
                 size='xs'
                 pos={'relative'}
-                className='dark:bg-dark-card z-[0] bg-white text-blue-500'
+                className='z-[0] bg-white text-blue-500 dark:bg-dark-card'
                 onClick={() => {
-                  setOpenDetail({ ...voucher });
+                  setOpenDetail({ opened: true, voucherDetail: { ...voucher } });
                 }}
               >
                 Điều kiện
@@ -111,13 +111,14 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           </Flex>
           <Checkbox
             value={voucher?.id.toString()}
-            disabled={!allowedVoucher(voucher?.minOrderPrice || 0, products)}
+            disabled={products && products.length > 0 && !allowedVoucher(voucher?.minOrderPrice || 0, products)}
             id={`voucher-${voucher?.id.toString()}`}
           />
         </Flex>
       </Flex>
       <Box className='absolute right-[-6px] top-[6px] z-[1] rounded-l-[10px] bg-red-500/30 px-[8px] py-[2px] text-[12px] font-semibold text-red-500'>
-        x {voucher?.quantity}
+        x{' '}
+        {voucher.voucherForUser?.length ? voucher.voucherForUser?.[0]?.quantityForUser : (voucher.quantityForUser ?? 0)}
       </Box>
     </Card>
   );

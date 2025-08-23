@@ -15,15 +15,16 @@ import {
   Tooltip
 } from '@mantine/core';
 import { IconEye, IconPencil } from '@tabler/icons-react';
-import { formatDate } from '~/lib/func-handler/formatDate';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatDate, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getStatusColor } from '~/lib/func-handler/get-status-order';
 
 interface Order {
   id: string;
   customer: string;
   date: string;
-  total: string;
+  finalTotal: string;
+  originalTotal?: string;
+  discountAmount?: string;
   status: string;
 }
 
@@ -32,11 +33,11 @@ interface RecentOrdersProps {
 }
 
 const mockOrders: Order[] = [
-  { id: '#ORD-5531', customer: 'Nguyễn Văn A', date: '2024-03-15', total: '450.000đ', status: 'Completed' },
-  { id: '#ORD-5530', customer: 'Trần Thị B', date: '2024-03-15', total: '862.500đ', status: 'Processing' },
-  { id: '#ORD-5529', customer: 'Lê Văn C', date: '2024-03-14', total: '328.000đ', status: 'Completed' },
-  { id: '#ORD-5528', customer: 'Phạm Thị D', date: '2024-03-14', total: '1.240.000đ', status: 'Delivered' },
-  { id: '#ORD-5527', customer: 'Hoàng Văn E', date: '2024-03-13', total: '657.500đ', status: 'Cancelled' }
+  { id: '#ORD-5531', customer: 'Nguyễn Văn A', date: '2024-03-15', finalTotal: '450.000đ', status: 'Completed' },
+  { id: '#ORD-5530', customer: 'Trần Thị B', date: '2024-03-15', finalTotal: '862.500đ', status: 'Processing' },
+  { id: '#ORD-5529', customer: 'Lê Văn C', date: '2024-03-14', finalTotal: '328.000đ', status: 'Completed' },
+  { id: '#ORD-5528', customer: 'Phạm Thị D', date: '2024-03-14', finalTotal: '1.240.000đ', status: 'Delivered' },
+  { id: '#ORD-5527', customer: 'Hoàng Văn E', date: '2024-03-13', finalTotal: '657.500đ', status: 'Cancelled' }
 ];
 
 export default function RecentOrders({ orders }: RecentOrdersProps) {
@@ -69,7 +70,7 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
           </TableThead>
           <TableTbody>
             {displayOrders.map(order => (
-              <TableTr key={order.id} className='transition-colors hover:bg-gray-50'>
+              <TableTr key={order.id} className='transition-colors hover:bg-mainColor/10'>
                 <TableTd w={100} style={{ maxWidth: 100, overflow: 'hidden' }}>
                   <Tooltip label={order.id} withArrow>
                     <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>

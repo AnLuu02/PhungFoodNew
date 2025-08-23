@@ -39,6 +39,12 @@ export const productSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'Tên sản phẩm không được để trống'),
   description: z.string().optional(),
+  descriptionDetail: z.array(
+    z.object({
+      label: z.string().min(1, 'Label không được bỏ trống'),
+      value: z.string().min(1, 'Value không được bỏ trống')
+    })
+  ),
   region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
   tag: z.string().optional(),
   tags: z.array(z.string()),
@@ -57,32 +63,59 @@ export const productSchema = z.object({
 
 export const addressSchema = z.object({
   id: z.string().optional(),
+
   type: z.nativeEnum(AddressType).default(LocalAddressType.USER),
-  provinceId: z.string().min(1, 'Tinh/thanh phố là bắt buộc'),
-  districtId: z.string().min(1, 'Quan/huyen là bắt buộc'),
-  wardId: z.string().min(1, 'Phuong/xa la bắt buộc'),
+
+  provinceId: z.string({ required_error: 'Tỉnh/thành phố là bắt buộc' }).min(1, 'Tỉnh/thành phố là bắt buộc'),
+  districtId: z.string({ required_error: 'Quận/huyện là bắt buộc' }).min(1, 'Quận/huyện là bắt buộc'),
+  wardId: z.string({ required_error: 'Phường/xã là bắt buộc' }).min(1, 'Phường/xã là bắt buộc'),
+
   province: z.string().optional(),
   district: z.string().optional(),
   ward: z.string().optional(),
-  detail: z.string().min(1, 'Chi tiết địa chỉ không được để trống'),
-  postalCode: z.string().nullable().optional(),
+
+  detail: z
+    .string({ required_error: 'Chi tiết địa chỉ không được để trống' })
+    .min(1, 'Chi tiết địa chỉ không được để trống'),
+
+  postalCode: z.string().optional().or(z.literal('')),
+
   fullAddress: z.string().optional(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional()
+
+  createdAt: z
+    .union([z.string(), z.date()])
+    .transform(val => (val ? new Date(val) : undefined))
+    .optional(),
+  updatedAt: z
+    .union([z.string(), z.date()])
+    .transform(val => (val ? new Date(val) : undefined))
+    .optional()
 });
 
 export const deliverySchema = z.object({
   id: z.string().optional(),
-  name: z.string().optional(),
-  email: z.string().email({ message: 'Email không hợp lệ' }).optional(),
-  phone: z.string().min(10, 'Số điện thoại không hợp lệ').max(10, 'Số điện thoại không hợp lệ').optional(),
-  address: addressSchema,
-  note: z.string().optional(),
-  orderId: z.string().optional(),
-  createdAt: z.date().optional(),
-  updatedAt: z.date().optional()
-});
 
+  name: z.string({ required_error: 'Tên người nhận là bắt buộc' }).min(1, 'Tên người nhận là bắt buộc'),
+
+  email: z.string({ required_error: 'Email là bắt buộc' }).email({ message: 'Email không hợp lệ' }),
+
+  phone: z
+    .string()
+    .regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số')
+    .optional()
+    .or(z.literal('')),
+
+  address: addressSchema,
+
+  note: z.string().optional(),
+
+  orderId: z.string({ required_error: 'Order ID là bắt buộc' }).min(1, 'Order ID là bắt buộc'),
+
+  updatedAt: z
+    .union([z.string(), z.date()])
+    .transform(val => (val ? new Date(val) : undefined))
+    .optional()
+});
 export const reviewSchema = z.object({
   id: z.string().optional(),
   userId: z.string().optional(),
@@ -100,7 +133,9 @@ export const orderItemSchema = z.object({
 
 export const orderSchema = z.object({
   id: z.string().optional(),
-  total: z.any(),
+  originalTotal: z.number().default(0),
+  discountAmount: z.number().default(0),
+  finalTotal: z.number().default(0),
   status: z.nativeEnum(OrderStatus),
   userId: z.string().min(1, 'Ai là người mua hàng?'),
   paymentId: z.string().min(1, 'Chọn phương thức thanh toán'),
@@ -115,17 +150,19 @@ export const voucherSchema = z
     name: z.string().min(1, 'Tên voucher không được để trống'),
     description: z.string().optional(),
     type: z.enum(['PERCENTAGE', 'FIXED']),
+    code: z.string().min(1, 'Mã khuyên mái là bắt buộc'),
+    status: z.enum(['ENABLED', 'DISABLED']),
     discountValue: z.number().min(1, 'Giá trị giảm không hợp lệ'),
     maxDiscount: z.number().min(0, 'Giá trị tối đa không hợp lệ'),
     minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
     quantity: z.number().min(1, 'Số lượng không hợp lệ'),
+    quantityForUser: z.number().default(1),
     applyAll: z.boolean().default(true),
     usedQuantity: z.number().min(0).default(0),
     availableQuantity: z.number().min(0).default(0),
     startDate: z.date({ required_error: 'Hãy chọn ngày bắt đầu khuyến mãi' }),
     endDate: z.date({ required_error: 'Hãy chọn ngày kết thúc khuyến mãi' }),
-    vipLevel: z.string().optional(),
-    products: z.array(z.string()).optional()
+    pointUser: z.number().default(-1).optional()
   })
   .refine(data => data.endDate > data.startDate, {
     message: 'Ngày kết thúc phải sau ngày bắt đầu',
@@ -185,7 +222,7 @@ export const userSchema = z.object({
       message: 'Mật khẩu phải đủ mạnh (hoa, thường, số, đặc biệt)'
     }),
   address: addressSchema.optional(),
-  pointLevel: z.number().default(0),
+  pointUser: z.number().default(0),
   level: z.nativeEnum(LocalUserLevel).default(LocalUserLevel.BRONZE)
 });
 

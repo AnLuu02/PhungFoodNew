@@ -3,7 +3,7 @@
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateReview from './form/CreateReview';
 import UpdateReview from './form/UpdateReview';
@@ -47,8 +47,8 @@ export function UpdateReviewButton({ id }: { id: string }) {
 }
 
 export function DeleteReviewButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.Review.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.Review.delete.useMutation();
 
   return (
     <>
@@ -56,8 +56,13 @@ export function DeleteReviewButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Sản phẩm', () => {
-            untils.Review.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'đánh giá',
+            callback: () => {
+              utils.Review.invalidate();
+            }
           });
         }}
       >

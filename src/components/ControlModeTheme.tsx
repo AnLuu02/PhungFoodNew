@@ -1,6 +1,6 @@
 'use client';
 
-import { Switch, useComputedColorScheme, useMantineColorScheme } from '@mantine/core';
+import { Skeleton, Switch, useComputedColorScheme, useMantineColorScheme } from '@mantine/core';
 import { IconMoonStars, IconSun } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
@@ -15,7 +15,7 @@ export default function ControlModeTheme() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) return <Skeleton height={24} w={50} radius={'xl'} />;
 
   const isDark = computedColorScheme === 'dark';
 

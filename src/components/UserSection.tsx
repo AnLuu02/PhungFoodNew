@@ -11,7 +11,7 @@ import Link from 'next/link';
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [, , resetSelectedVouchers] = useLocalStorage<any[]>({
-    key: 'vouchers',
+    key: 'applied-vouchers',
     defaultValue: []
   });
   const { data: user } = useSession();
@@ -44,14 +44,14 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
               <Box pos={'relative'} w={30} h={30} className='overflow-hidden rounded-full'>
                 <Image src={user?.user?.image || ''} alt='User avatar' fill style={{ objectFit: 'cover' }} />
               </Box>
-              <div className={clsx('text-left', responsive && 'hidden sm:block')}>
+              <Box className={clsx('text-left', responsive && 'hidden sm:block')}>
                 <Text fw={700} size='sm' lh={1} className='text-black'>
                   {user?.user?.name}
                 </Text>
                 <Text size='xs' fw={700} c={'dimmed'}>
                   {user?.user?.email}
                 </Text>
-              </div>
+              </Box>
             </Group>
             <IconChevronDown
               style={{ width: rem(12), height: rem(12) }}

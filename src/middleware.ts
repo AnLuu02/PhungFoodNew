@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import { UserRole } from './constants';
-import { formatDate } from './lib/func-handler/formatDate';
+import { formatDate } from './lib/func-handler/Format';
 
 const protectedRoutes = ['/admin', '/thong-tin', '/thanh-toan', '/yeu-thich', '/don-hang-cua-toi'];
 const authPages = ['/dang-nhap', '/dang-ki'];

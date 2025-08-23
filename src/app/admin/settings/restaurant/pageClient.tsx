@@ -1,6 +1,6 @@
 'use client';
 
-import { Group, Tabs, Title } from '@mantine/core';
+import { Flex, Tabs, Title } from '@mantine/core';
 import { IconBuildingStore, IconPalette } from '@tabler/icons-react';
 import { useState } from 'react';
 import BannerManagement from './components/banners/banner-management';
@@ -10,19 +10,31 @@ export default function SettingPageClient({ data }: { data: { restaurant: any; b
   const [activeTab, setActiveTab] = useState<string | null>('general');
   return (
     <>
-      <Group justify='space-between' mb='lg'>
-        <Title order={2}>Cài đặt</Title>
-      </Group>
-
-      <Tabs value={activeTab} onChange={setActiveTab}>
-        <Tabs.List mb='xl'>
-          <Tabs.Tab value='general' leftSection={<IconBuildingStore size={16} />}>
-            Tổng quan
-          </Tabs.Tab>
-          <Tabs.Tab value='layout' leftSection={<IconPalette size={16} />}>
-            Cài đặt banner
-          </Tabs.Tab>
-        </Tabs.List>
+      <Tabs
+        value={activeTab}
+        onChange={setActiveTab}
+        variant='pills'
+        styles={{
+          tab: {
+            border: '1px solid',
+            marginRight: 6
+          }
+        }}
+        classNames={{
+          tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
+        }}
+      >
+        <Flex justify='space-between' mb='lg' align={'center'}>
+          <Title order={2}>Cài đặt</Title>
+          <Tabs.List>
+            <Tabs.Tab value='general' leftSection={<IconBuildingStore size={16} />}>
+              Tổng quan
+            </Tabs.Tab>
+            <Tabs.Tab value='layout' leftSection={<IconPalette size={16} />}>
+              Cài đặt banner
+            </Tabs.Tab>
+          </Tabs.List>
+        </Flex>
 
         <Tabs.Panel value='general'>
           <GeneralSettingsManagement data={data.restaurant} />

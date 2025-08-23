@@ -1,4 +1,4 @@
-import { VoucherType } from '@prisma/client';
+import { VoucherStatus, VoucherType } from '@prisma/client';
 
 export type Voucher = {
   id: string;
@@ -11,6 +11,10 @@ export type Voucher = {
 
   type: VoucherType;
 
+  status: VoucherStatus;
+
+  code: string;
+
   discountValue: number;
 
   maxDiscount: number;
@@ -21,6 +25,8 @@ export type Voucher = {
 
   quantity: number;
 
+  quantityForUser: number;
+
   usedQuantity: number;
 
   availableQuantity: number;
@@ -29,9 +35,7 @@ export type Voucher = {
 
   endDate: Date;
 
-  vipLevel?: string;
+  pointUser?: number;
 
   orderId?: string;
-
-  products: string[];
 };

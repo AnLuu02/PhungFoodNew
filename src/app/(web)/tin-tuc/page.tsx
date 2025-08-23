@@ -6,7 +6,7 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { TOP_POSITION_STICKY } from '~/constants';
-import { formatDate } from '~/lib/func-handler/formatDate';
+import { formatDate } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ const News = async ({
   };
 }) => {
   const { page, limit, s } = searchParams;
-  const data = await api.news.fetchNews({
+  const data: any = await api.News.fetchNews({
     skip: (Number(page || 1) - 1) * Number(limit || 5),
     take: Number(limit || 5),
     s: s
@@ -112,7 +112,7 @@ const News = async ({
       >
         <Stack gap={'md'}>
           <SearchQueryParams />
-          <Paper radius={'md'} withBorder className='h-[max-content] border-mainColor' mb={20}>
+          <Paper withBorder className='h-[max-content] rounded-md border-mainColor' mb={20}>
             <Box className='rounded-t-md bg-mainColor p-2 text-white'>
               <Text size='sm' fw={700}>
                 BÀI VIẾT MỚI

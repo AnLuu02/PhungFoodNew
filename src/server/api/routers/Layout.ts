@@ -102,9 +102,6 @@ export const layoutRouter = createTRPCRouter({
       caller.SubCategory.getAll(),
       caller.Image.getAll(),
       caller.RolePermission.getAllRole()
-      // caller.Revenue.getRevenueByDuringDate({
-      //   period: input?.period || '7 ngày'
-      // })
     ]);
 
     return results.map((item: any) => item.status === 'fulfilled' && item.value);

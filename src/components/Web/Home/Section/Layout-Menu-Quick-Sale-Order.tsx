@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Flex, Grid, GridCol, Title } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
-import ProductCardCarouselHorizontal from '../components/ProductCardCarouselHorizontal';
+import ProductCardCarouselHorizontal from '../../Card/ProductCardCarouselHorizontal';
 
 const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh: any } }) => {
   const getRandomItems = (arr: any[], count: number) => arr.sort(() => 0.5 - Math.random()).slice(0, count);
@@ -106,7 +106,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
       )}
 
       {monChinhFilter?.length > 0 && (
-        <GridCol span={{ base: 12, xs: 6, xl: 4 }} className='hidden xl:block'>
+        <GridCol span={{ base: 12, xs: 6, xl: 4 }} className='hidden lg:block'>
           <Grid>
             <GridCol span={12} pos={'relative'}>
               <Flex align={'center'} justify={'space-between'}>

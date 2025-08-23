@@ -51,15 +51,13 @@ export default function BannerSection({ banner }: any) {
           </Carousel>
         </Box>
 
-        {/* Right side - Static banners */}
         <Flex
           direction={{ base: 'column', sm: 'row', md: 'row', lg: 'column' }}
           align='center'
           justify='space-between'
           w={{ base: '100%', lg: '33.333333%' }}
-          className='hidden xl:flex'
+          className='hidden lg:flex'
         >
-          {/* Top banner */}
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
             <Image
               style={{ objectFit: 'cover' }}
@@ -69,7 +67,6 @@ export default function BannerSection({ banner }: any) {
             />
           </Paper>
 
-          {/* Bottom banner */}
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
             <Image
               style={{ objectFit: 'cover' }}
@@ -81,7 +78,6 @@ export default function BannerSection({ banner }: any) {
         </Flex>
       </Flex>
 
-      {/* Service icons section */}
       <Box mt='md'>
         <SimpleGrid cols={{ base: 2, sm: 3, md: 6 }} spacing='md'>
           {[

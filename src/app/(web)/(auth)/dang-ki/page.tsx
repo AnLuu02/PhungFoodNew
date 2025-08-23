@@ -7,8 +7,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import useSWR from 'swr';
-import fetcher from '~/lib/func-handler/fetcher';
+import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
 import { userSchema } from '~/lib/zod/zodShcemaForm';
@@ -48,34 +47,28 @@ export default function Page() {
         fullAddress: '',
         postalCode: ''
       },
-      pointLevel: 0,
+      pointUser: 0,
       level: LocalUserLevel.BRONZE
     }
   });
 
-  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  const { data: provinces, provinceMap, error: provincesError, isLoading: loadingProvinces } = useProvinces();
+
   const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
 
-  const { data: districts } = useSWR<any>(
-    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
-    fetcher
-  );
-
-  const { data: wards } = useSWR<any>(
-    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
-    fetcher
-  );
+  const { data: districts, districtMap, isLoading: loadingDistricts } = useDistricts(debouncedProvinceId);
+  const { data: wards, wardMap, isLoading: loadingWards } = useWards(debouncedDistrictId);
 
   const mutation = api.User.create.useMutation();
 
   const onSubmit: SubmitHandler<User> = async formData => {
     try {
       if (formData) {
-        const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
-        const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
-        const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
-        const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+        const province = formData?.address?.provinceId && provinceMap?.[formData?.address?.provinceId];
+        const district = formData?.address?.districtId && districtMap?.[formData?.address?.districtId];
+        const ward = formData?.address?.wardId && wardMap?.[formData?.address?.wardId];
+        const fullAddress = `${formData.address?.detail || ''}, ${ward || ''}, ${district || ''}, ${province || ''}`;
 
         const result = await mutation.mutateAsync({
           ...formData,
@@ -89,9 +82,9 @@ export default function Page() {
             districtId: formData.address?.districtId || '',
             wardId: formData.address?.wardId || '',
             detail: formData.address?.detail || '',
-            province: province?.province_name || '',
-            district: district?.district_name || '',
-            ward: ward?.ward_name || '',
+            province: province || '',
+            district: district || '',
+            ward: ward || '',
             fullAddress: fullAddress
           }
         });

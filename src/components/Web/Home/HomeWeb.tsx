@@ -189,7 +189,7 @@ const HomeWeb = ({
 
         <>
           <LayoutCarouselSimple />
-          <Space h='xl' className='hidden md:block' />
+          <Space h='xl' className='hidden sm:block' />
         </>
 
         {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (

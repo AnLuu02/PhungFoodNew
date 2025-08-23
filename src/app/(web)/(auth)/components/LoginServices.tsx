@@ -9,7 +9,7 @@ import { useState } from 'react';
 const providers = [
   { name: 'google', icon: '/images/png/google.png' },
   { name: 'facebook', icon: '/images/png/facebook.png' },
-  { name: 'zalo', icon: '/images/png/zalo.png' } // giả lập
+  { name: 'zalo', icon: '/images/png/zalo.png' }
 ];
 
 const LoginServices = () => {
@@ -40,7 +40,7 @@ const LoginServices = () => {
           onClick={() => handleLoginServices(name)}
           className='hover: flex cursor-pointer items-center justify-center rounded-full bg-white opacity-100 transition-all duration-200 ease-in-out hover:scale-110 hover:bg-white hover:opacity-80'
         >
-          <Image loading='lazy' src={icon} alt={name} width={30} height={30} style={{ objectFit: 'cover' }} />
+          <Image loading='lazy' src={icon} alt={name} width={30} height={30} className='object-cover' />
         </Button>
       ))}
     </Flex>

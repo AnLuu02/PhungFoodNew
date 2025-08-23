@@ -3,7 +3,7 @@
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateNotification from './form/CreateNotification';
 import UpdateNotification from './form/UpdateNotification';
@@ -48,16 +48,21 @@ export function UpdateNotificationButton({ id }: { id: string }) {
 }
 
 export function DeleteNotificationButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.Notification.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.Notification.delete.useMutation();
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Danh mục', () => {
-            untils.Notification.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'thông báo',
+            callback: () => {
+              utils.Notification.invalidate();
+            }
           });
         }}
       >

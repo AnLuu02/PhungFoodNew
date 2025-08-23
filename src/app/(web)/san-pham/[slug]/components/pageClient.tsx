@@ -33,11 +33,11 @@ import {
   IconTruck
 } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
+import ButtonAddToCart from '~/components/ButtonAddToCart';
 import Comments from '~/components/Comments/Comments';
-import ButtonAddToCart from '~/components/Web/components/ButtonAddToCart';
 import LayoutProductCarouselOnly from '~/components/Web/Home/Section/Layout-Product-Carousel-Only';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
@@ -47,10 +47,10 @@ import RatingStatistics from './RatingStatistics';
 import RelatedProducts from './RelatedProducts';
 
 import clsx from 'clsx';
-import classes from './TabsStyles.module.css';
 
 export default function ProductDetailClient(data: any) {
   const [activeTab, setActiveTab] = useState('description');
+  const [note, setNote] = useState('');
   const [quantity, setQuantity] = useState(1);
   const { product, dataRelatedProducts, dataHintProducts }: any = data?.data || {
     product: {},
@@ -72,7 +72,7 @@ export default function ProductDetailClient(data: any) {
     );
   }, [product?.review]);
 
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const gallery = useMemo(() => {
     return product?.images?.filter((item: any) => item.type !== LocalImageType.THUMBNAIL && item.url) || [];
   }, [product]);
@@ -131,7 +131,7 @@ export default function ProductDetailClient(data: any) {
                 Danh mục: <b className='font-bold text-mainColor'>{product?.subCategory?.name || 'Đang cập nhật'}</b>
               </Text>
 
-              <Text c='dimmed' size='sm' className='hidden lg:block'>
+              <Text c='dimmed' size='sm' className='hidden md:block'>
                 |
               </Text>
               <Text c='dimmed' size='sm'>
@@ -187,7 +187,12 @@ export default function ProductDetailClient(data: any) {
               <Text size='sm' fw={700}>
                 Ghi chú:
               </Text>
-              <Textarea placeholder='Thêm ghi chú sản phẩm' leftSection={<IconPencil size={16} />} />
+              <Textarea
+                placeholder='Thêm ghi chú sản phẩm'
+                value={note}
+                onChange={e => setNote(e.target.value)}
+                leftSection={<IconPencil size={16} />}
+              />
             </Stack>
             <Flex align='flex-end' gap={'md'} wrap={{ base: 'wrap', md: 'nowrap' }}>
               <Group gap='xs'>
@@ -203,7 +208,7 @@ export default function ProductDetailClient(data: any) {
                   min={0}
                   max={Number(product?.availableQuantity) || 100}
                   clampBehavior='strict'
-                  style={{ width: '80px' }}
+                  className='w-[80px]'
                 />
               </Group>
               <Group gap='xs'>
@@ -219,8 +224,7 @@ export default function ProductDetailClient(data: any) {
                 />
               </Group>
               <ButtonAddToCart
-                product={product}
-                quantity={quantity}
+                product={{ ...product, note, quantity }}
                 style={{
                   title: 'Mua hàng',
                   size: 'md',
@@ -296,8 +300,10 @@ export default function ProductDetailClient(data: any) {
           }}
         >
           <Tabs
+            classNames={{
+              tab: `mr-[10px] border-0 transition-all duration-200 hover:bg-mainColor hover:text-white data-[active=true]:bg-mainColor data-[active=true]:text-white`
+            }}
             defaultValue='description'
-            classNames={classes}
             value={activeTab}
             onChange={value => setActiveTab(value ?? 'description')}
           >

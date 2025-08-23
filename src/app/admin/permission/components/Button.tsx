@@ -1,11 +1,10 @@
 'use client';
 
-import { ActionIcon, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
+import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
-import clsx from 'clsx';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDataExcel } from '~/lib/func-handler/formatDate';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { formatDataExcel } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import CreatePermission from './form/CreatePermissions';
@@ -118,7 +117,7 @@ export function CreateManyPermissionButton() {
           )}
         </FileButton>
         <Button
-          c={'red'}
+          bg={'red'}
           onClick={handleExport}
           loading={fetchPermission?.isLoading}
           disabled={fetchPermission?.data?.length === 0}
@@ -137,26 +136,32 @@ export function CreateManyPermissionButton() {
         title={<Title order={3}>Xem trước dữ liệu</Title>}
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
-          <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+          <Box className={`tableAdmin w-full overflow-x-auto`}>
             <Table striped highlightOnHover withTableBorder withColumnBorders>
               <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
                 <Table.Tr>
-                  <Table.Th style={{ minWidth: 100 }}>STT</Table.Th>
-                  <Table.Th style={{ minWidth: 100 }}>Quyền</Table.Th>
-                  <Table.Th style={{ minWidth: 100 }}>Mô tả</Table.Th>
+                  <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+                    STT
+                  </Table.Th>
+                  <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+                    Quyền
+                  </Table.Th>
+                  <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+                    Mô tả
+                  </Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
                 {data.map((row, index) => (
                   <Table.Tr key={index}>
-                    <Table.Td>{index + 1}</Table.Td>
-                    <Table.Td>{row['Quyền']}</Table.Td>
-                    <Table.Td>{row['Mô tả']}</Table.Td>
+                    <Table.Td className='text-sm'>{index + 1}</Table.Td>
+                    <Table.Td className='text-sm'>{row['Quyền']}</Table.Td>
+                    <Table.Td className='text-sm'>{row['Mô tả']}</Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>
             </Table>
-          </div>
+          </Box>
         </ScrollAreaAutosize>
         <Group mt='md' align='flex-end' justify='flex-end' w={'100%'}>
           <Button
@@ -215,16 +220,21 @@ export function UpdatePermissionButton({ id }: { id: string }) {
 }
 
 export function DeletePermissionButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.RolePermission.deletePermission.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.RolePermission.deletePermission.useMutation();
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'quyền', () => {
-            untils.RolePermission.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'quyền',
+            callback: () => {
+              utils.RolePermission.invalidate();
+            }
           });
         }}
       >

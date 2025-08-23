@@ -60,7 +60,7 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
     <>
       {imageUrls.length > 0 ? (
         <Grid>
-          {imageUrls.map((image, index) => (
+          {imageUrls.map(image => (
             <Grid.Col key={image.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
               <PhotoCard
                 id={image.id}

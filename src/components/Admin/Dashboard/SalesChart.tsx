@@ -1,7 +1,7 @@
 'use client';
 
 import { LineChart } from '@mantine/charts';
-import { Card, Group, SegmentedControl, Title } from '@mantine/core';
+import { Box, Card, Group, SegmentedControl, Title } from '@mantine/core';
 import { useState } from 'react';
 
 const generateMockData = (period: string) => {
@@ -31,7 +31,7 @@ export default function SalesChart() {
         />
       </Group>
 
-      <div className='h-80'>
+      <Box className='h-80'>
         <LineChart
           h={300}
           data={data}
@@ -43,7 +43,7 @@ export default function SalesChart() {
           withTooltip
           className='w-full'
         />
-      </div>
+      </Box>
     </Card>
   );
 }

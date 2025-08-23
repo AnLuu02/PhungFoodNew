@@ -1,5 +1,5 @@
-import { Card, Group, Text } from '@mantine/core';
-import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons-react';
+import { Box, Card, Group, Text } from '@mantine/core';
+import { IconTrendingDown, IconTrendingUp } from '@tabler/icons-react';
 import Link from 'next/link';
 import React from 'react';
 
@@ -16,15 +16,15 @@ function CardWithIcon({
   value: string;
   diff?: number;
 }) {
-  const DiffIcon = diff && diff > 0 ? IconArrowUpRight : IconArrowDownRight;
-  const color = diff && diff > 0 ? 'teal.6' : 'red.6';
+  const DiffIcon = diff && diff > 0 ? IconTrendingUp : IconTrendingDown;
+  const color = diff && diff > 0 ? 'teal' : 'red';
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder className='cursor-pointer hover:border-red-400'>
       <Link href={`/admin/${href}`}>
         <Group>
           <Icon size={32} stroke={1.5} />
-          <div>
+          <Box>
             <Text size='xs' c='dimmed' tt='uppercase' fw={700}>
               {title}
             </Text>
@@ -32,7 +32,7 @@ function CardWithIcon({
             <Text fw={700} size='xl'>
               {value}
             </Text>
-          </div>
+          </Box>
         </Group>
         {diff && (
           <Group mt='md' gap='xs'>

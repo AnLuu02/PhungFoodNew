@@ -2,7 +2,6 @@
 import { Box, Flex, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import { useMemo, useState } from 'react';
 import TabsPanelCarouselSimple from './TabsPenelSimple';
-import classes from './TabsStyles.module.css';
 export type IDataCategory = {
   anVat: any;
   monChinh: any;
@@ -32,7 +31,9 @@ const CategoryCarouselHorizontal = ({ data }: { data: IDataCategory }) => {
       className='relative'
       defaultValue='an-vat-trang-mieng'
       variant='pills'
-      classNames={classes}
+      classNames={{
+        tab: `hover:bg-transparent hover:text-subColor data-[active=true]:bg-transparent data-[active=true]:text-subColor`
+      }}
       value={active}
       onChange={(value: any) => setActive(value)}
     >
@@ -46,7 +47,7 @@ const CategoryCarouselHorizontal = ({ data }: { data: IDataCategory }) => {
         <Title
           order={2}
           w={{ base: '100%', sm: 'max-content', md: '33.33333%' }}
-          className='hover:text-mainColor cursor-pointer text-center font-quicksand font-bold sm:text-left'
+          className='cursor-pointer text-center font-quicksand font-bold hover:text-mainColor sm:text-left'
         >
           Danh mục nổi bật
         </Title>

@@ -10,16 +10,16 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { breakpoints } from '~/constants';
 import { useModal } from '~/contexts/ModalContext';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
-import ButtonAddToCart from '../../components/ButtonAddToCart';
-const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; quickOrder?: boolean }) => {
+import ButtonAddToCart from '../../ButtonAddToCart';
+const ProductCardCarouselVertical = ({ product }: { product?: any }) => {
   const { data: user } = useSession();
   const router = useRouter();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const pathname = usePathname();
   const { openModal } = useModal();
   const [like, setLike] = useState<boolean>(false);
@@ -62,6 +62,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
       <Card.Section pos={'relative'} className='group/item cursor-pointer' h={'50%'}>
         <Image
           loading='lazy'
+          id={`productImage-${product?.id}`}
           src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           fill
           style={{ objectFit: 'cover' }}
@@ -74,30 +75,37 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
           h='100%'
           w='100%'
           className={clsx(
-            'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover/item:visible xl:invisible'
+            'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover/item:visible lg:invisible'
           )}
         >
           <Button.Group className='group-hover/item:animate-fadeBottom'>
             <Tooltip label='Xem nhanh'>
-              <Button
-                onClick={() => {
-                  if (isMobile) {
-                    router.push(`/san-pham/${product?.tag}`);
-                    setLoadingDetail(true);
-                  } else {
+              {isMobile ? (
+                <Button
+                  size='xs'
+                  p={5}
+                  w={'max-content'}
+                  variant='default'
+                  className={clsx('border-t-r-0 text-mainColor hover:text-subColor')}
+                >
+                  <Link href={`/san-pham/${product?.tag}`}>
+                    <IconEye />
+                  </Link>
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
                     openModal('details', null, product);
-                  }
-                }}
-                size='xs'
-                loading={loadingDetail}
-                disabled={loadingDetail}
-                w={'max-content'}
-                p={5}
-                variant='default'
-                className={clsx('text-mainColor hover:text-subColor')}
-              >
-                <IconEye />
-              </Button>
+                  }}
+                  size='xs'
+                  p={5}
+                  w={'max-content'}
+                  variant='default'
+                  className={clsx('text-mainColor hover:text-subColor')}
+                >
+                  <IconEye />
+                </Button>
+              )}
             </Tooltip>
 
             <Button
@@ -196,8 +204,7 @@ const ProductCardCarouselVertical = ({ product, quickOrder }: { product?: any; q
           </Flex>
           <Box>
             <ButtonAddToCart
-              product={product}
-              quantity={1}
+              product={{ ...product, quantity: 1 }}
               style={{}}
               handleAfterAdd={() => openModal('success', null, product)}
               notify={() => {}}

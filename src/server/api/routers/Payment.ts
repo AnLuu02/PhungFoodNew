@@ -100,23 +100,6 @@ export const paymentRouter = createTRPCRouter({
       return payment;
     }),
 
-  getFilter: publicProcedure
-    .input(
-      z.object({
-        s: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const payment = await ctx.db.payment.findMany({
-        where: {
-          OR: [{ id: { contains: input.s, mode: 'insensitive' } }]
-        }
-      });
-      if (!payment) {
-        throw new Error(`Payment not found.`);
-      }
-      return payment;
-    }),
   getOne: publicProcedure
     .input(
       z.object({

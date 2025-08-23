@@ -12,7 +12,7 @@ import SortFilter from './Filter/sort-filter';
 
 export default function ContentSidebarMenu({ categories, materials }: any) {
   const [drawerOpened, setDrawerOpened] = useState(false);
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 
   const content = (
     <>

@@ -44,10 +44,10 @@ const BButton = ({
       className={clsx(
         'transition-all duration-200 ease-in-out',
         variant === 'outline'
-          ? 'hover:bg-mainColor text-mainColor border-mainColor hover:border-mainColor hover:text-white'
+          ? 'border-mainColor text-mainColor hover:border-mainColor hover:bg-mainColor hover:text-white'
           : disabled || loading
             ? ''
-            : 'bg-mainColor hover:bg-subColor text-white hover:text-black',
+            : 'bg-mainColor text-white hover:bg-subColor hover:text-black',
         active && 'bg-mainColor text-white'
       )}
     >

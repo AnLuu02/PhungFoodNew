@@ -22,7 +22,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
@@ -81,7 +81,7 @@ export default function SearchComponentClient({ subCategories }: any) {
         wrap={'nowrap'}
         align={'center'}
         gap={5}
-        className='z-[100] mx-auto hidden w-full max-w-6xl px-4 md:flex'
+        className='z-[100] mx-auto hidden w-full max-w-6xl px-4 sm:flex'
         pos={'absolute'}
         bottom={-22}
         left={0}
@@ -93,7 +93,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                 <Tooltip
                   key={item.id}
                   label={item.name}
-                  className={clsx('hidden', index < 5 ? 'md:block' : index < 6 ? 'lg:block' : 'xl:block')}
+                  className={clsx('hidden', index < 5 ? 'sm:block' : index < 6 ? 'md:block' : 'lg:block')}
                 >
                   <Link href={`/thuc-don?s=${encodeURIComponent(item?.name)}`}>
                     <Badge
@@ -193,7 +193,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                         variant='outline'
                         color='gray'
                         radius='xl'
-                        className='cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700'
+                        className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
                       >
                         {term?.name}
                       </Badge>
@@ -211,7 +211,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       p='md'
                       gap='md'
                       align='center'
-                      className='cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700'
+                      className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
                     >
                       <Image
                         loading='lazy'

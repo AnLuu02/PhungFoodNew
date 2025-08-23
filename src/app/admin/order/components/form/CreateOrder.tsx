@@ -38,7 +38,9 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
     resolver: zodResolver(orderSchema),
     defaultValues: {
       id: '',
-      total: 0,
+      finalTotal: 0,
+      originalTotal: 0,
+      discountAmount: 0,
       status: LocalOrderStatus.PROCESSING,
       userId: '',
       paymentId: '',
@@ -124,7 +126,7 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
                 ward: ward?.ward_name || '',
                 fullAddress
               }
-            }
+            } as any
           });
           if (result.success) {
             NotifySuccess(result.message);
@@ -316,7 +318,7 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
             <Grid.Col span={6}>
               <Controller
                 control={control}
-                name='total'
+                name='finalTotal'
                 render={({ field: { onChange, onBlur, value, name } }) => (
                   <NumberInput
                     thousandSeparator=','
@@ -325,7 +327,7 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
                     readOnly
                     label='Tổng tiền (chỉ đọc)'
                     placeholder='Sẽ được tính ngay sau khi gọi món.'
-                    error={errors.total?.message}
+                    error={errors.finalTotal?.message}
                     value={value}
                     onChange={onChange}
                     onBlur={onBlur}

@@ -4,8 +4,9 @@ import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useMemo } from 'react';
 import BButton from '~/components/Button';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
@@ -22,7 +23,9 @@ const CartButton = () => {
     setCart(cart.filter(item => item.id !== id));
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const originalTotal = useMemo(() => {
+    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  }, [cart]);
 
   return (
     <Menu
@@ -36,15 +39,15 @@ const CartButton = () => {
         <Link href='/gio-hang' className='text-white'>
           <Button
             variant='outline'
-            className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
+            className='cart-btn border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
             radius={'xl'}
             leftSection={
-              <div className='relative inline-block'>
+              <Box className='relative inline-block'>
                 <IconShoppingBag size={20} />
                 <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
                   {cart.length || 0}
                 </span>
-              </div>
+              </Box>
             }
           >
             Giỏ hàng
@@ -76,7 +79,7 @@ const CartButton = () => {
             <Group justify='space-between' className='px-4'>
               <Text fw={700}>Tạm tính:</Text>
               <Text fw={700} size='lg' c='red'>
-                {formatPriceLocaleVi(total)}
+                {formatPriceLocaleVi(originalTotal)}
               </Text>
             </Group>
 

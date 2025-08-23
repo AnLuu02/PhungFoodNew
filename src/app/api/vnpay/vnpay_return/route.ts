@@ -38,7 +38,8 @@ export async function GET(req: NextRequest) {
             `${transDate.substring(0, 4)}-${transDate.substring(4, 6)}-${transDate.substring(6, 8)}T${transDate.substring(8, 10)}:${transDate.substring(10, 12)}:${transDate.substring(12, 14)}Z`
           )
         : null
-    }
+    },
+    orderId: transactionId || ''
   });
   const redirectUrl =
     responseCode === '00'

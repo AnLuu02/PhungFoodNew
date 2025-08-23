@@ -1,8 +1,6 @@
 'use client';
-import { Badge, Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/core';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import clsx from 'clsx';
-import { useState } from 'react';
+
+import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { UserRole } from '~/constants';
@@ -10,151 +8,104 @@ import { DeleteUserButton, UpdateUserButton } from '../Button';
 
 export default function TableUser({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.users || [];
-  const columns: ColumnDef<any>[] = [
-    {
-      header: 'Tên',
-      accessorKey: 'name',
-      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
-    },
-    {
-      header: 'Email',
-      accessorKey: 'email',
-      cell: info => <Highlight highlight={s}>{info.row.original.email}</Highlight>
-    },
-    {
-      header: 'Vai trò',
-      accessorKey: 'role',
-      cell: info => (
-        <Badge
-          p={'sm'}
-          radius={'md'}
-          color={
-            info.cell.row.original.role?.name !== 'ADMIN' || info.cell.row.original.role?.name !== 'Super Admin'
-              ? 'green'
-              : 'red'
-          }
-        >
-          {info.cell.row.original.role?.name || 'Super Admin'}
-        </Badge>
-      )
-    },
-    {
-      header: 'Điện thoại',
-      accessorKey: 'phone',
-      cell: info => <Highlight highlight={s}>{info.row.original.phone}</Highlight>
-    },
-    {
-      header: 'Địa chỉ',
-      accessorKey: 'address.fullAddress',
-      cell: info => <Highlight highlight={s}>{info.row.original?.address?.fullAddress}</Highlight>
-    },
-    {
-      header: 'Ngày tạo',
-      accessorKey: 'createdAt',
-      cell: info => new Date(info.getValue() as string).toLocaleDateString()
-    },
-    {
-      header: 'Điểm',
-      accessorKey: 'pointLevel'
-    },
-    {
-      header: 'Cấp điểm',
-      accessorKey: 'level'
-    },
-    {
-      header: 'Thao tác',
-      cell: info => (
-        <Group className='text-center'>
-          {user?.user &&
-            (user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role === 'ADMIN' ? (
-              <>
-                <UpdateUserButton email={info.row.original.email} />
-                {info.row.original.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && (
-                  <DeleteUserButton id={info.row.original.id} />
-                )}
-              </>
-            ) : user.user.role === UserRole.STAFF && user.user.email === info.row.original.email ? (
-              <UpdateUserButton email={info.row.original.email} />
-            ) : null)}
-        </Group>
-      )
-    }
-  ];
 
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const table = useReactTable({
-    data: currentItems,
-    columns,
-    state: {
-      columnVisibility
-    },
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel()
-  });
   return (
     <>
-      <Group pb={'lg'}>
-        <Menu shadow='md' width={220}>
-          <Menu.Target>
-            <Button variant='outline'>Tùy chỉnh bảng</Button>
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            <Menu.Item onClick={table.getToggleAllColumnsVisibilityHandler()}>
-              <Checkbox
-                label='Tất cả'
-                checked={table.getIsAllColumnsVisible()}
-                onChange={table.getToggleAllColumnsVisibilityHandler()}
-              />
-            </Menu.Item>
-            {table.getAllLeafColumns().map(column => (
-              <Menu.Item key={column.id} onClick={column.getToggleVisibilityHandler()}>
-                <Checkbox
-                  label={column.id}
-                  checked={column.getIsVisible()}
-                  onChange={column.getToggleVisibilityHandler()}
-                />
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
-      </Group>
-      <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+      <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-            {table.getHeaderGroups().map((headerGroup, index) => (
-              <Table.Tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <Table.Th key={header.id} colSpan={header.colSpan} style={{ minWidth: 100 }}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </Table.Th>
-                ))}
-              </Table.Tr>
-            ))}
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Tên</Table.Th>
+              <Table.Th>Email</Table.Th>
+              <Table.Th>Vai trò</Table.Th>
+              <Table.Th>Điện thoại</Table.Th>
+              <Table.Th>Địa chỉ</Table.Th>
+              <Table.Th>Ngày tạo</Table.Th>
+              <Table.Th>Điểm</Table.Th>
+              <Table.Th>Cấp điểm</Table.Th>
+              <Table.Th>Thao tác</Table.Th>
+            </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              table.getRowModel().rows.map((row, index) => (
-                <Table.Tr key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <Table.Td key={cell.id}>
-                      <Text size='sm'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Text>
-                    </Table.Td>
-                  ))}
+              currentItems.map((item: any) => (
+                <Table.Tr key={item.id}>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      <Highlight size='sm' highlight={s}>
+                        {item.name}
+                      </Highlight>
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      <Highlight size='sm' highlight={s}>
+                        {item.email}
+                      </Highlight>
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Badge
+                      p='sm'
+                      radius='md'
+                      color={item.role?.name !== 'ADMIN' && item.role?.name !== 'Super Admin' ? 'green' : 'red'}
+                    >
+                      {item.role?.name || 'Super Admin'}
+                    </Badge>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      <Highlight size='sm' highlight={s}>
+                        {item.phone}
+                      </Highlight>
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      <Highlight size='sm' highlight={s}>
+                        {item.address?.fullAddress}
+                      </Highlight>
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>{new Date(item.createdAt).toLocaleDateString()}</Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>{item.pointUser}</Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>{item.level}</Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Group>
+                      {user?.user &&
+                        (user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role === 'ADMIN' ? (
+                          <>
+                            <UpdateUserButton email={item.email} />
+                            {item.email !== process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && (
+                              <DeleteUserButton id={item.id} />
+                            )}
+                          </>
+                        ) : user.user.role === UserRole.STAFF && user.user.email === item.email ? (
+                          <UpdateUserButton email={item.email} />
+                        ) : null)}
+                    </Group>
+                  </Table.Td>
                 </Table.Tr>
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
+                <Table.Td colSpan={9} className='bg-gray-100 text-center'>
                   <Text size='md' c='dimmed'>
-                    Không có bản ghi phù hợp./
+                    Không có bản ghi phù hợp.
                   </Text>
                 </Table.Td>
               </Table.Tr>
             )}
           </Table.Tbody>
         </Table>
-      </div>
+      </Box>
+
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />

@@ -18,25 +18,25 @@ const Contact = async () => {
               <Text size='md' fw={900} mb={10}>
                 NƠI GIẢI ĐÁP TOÀN BỘ MỌI THẮC MẮC CỦA BẠN?
               </Text>
-              <Text size='sm'>Phụng Food- Siêu thị trực tuyến mua sắm nông sản, chất lượng, tươi xanh.</Text>
+              <Text size='sm'>{restaurant?.name} - Nhà hàng trực tuyến dành cho bạn.</Text>
               <Text size='sm' fw={900} className='text-mainColor' mb={20}>
                 Giá siêu tốt - Giao siêu tốc.
               </Text>
               <Flex mb={10} align={'center'}>
                 <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>
-                  <IconBrand4chan style={{ width: '70%', height: '70%' }} />
+                  <IconBrand4chan className='h-[70%] w-[70%]' />
                 </ThemeIcon>
                 <Text size='sm'>{restaurant?.name} Việt Nam</Text>
               </Flex>
               <Flex mb={10} align={'center'}>
                 <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>
-                  <IconPhone style={{ width: '70%', height: '70%' }} />
+                  <IconPhone className='h-[70%] w-[70%]' />
                 </ThemeIcon>
                 <Text size='sm'>{restaurant?.phone}</Text>
               </Flex>
               <Flex mb={20} align={'flex-start'}>
                 <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>
-                  <IconLocation style={{ width: '70%', height: '70%' }} />
+                  <IconLocation className='h-[70%] w-[70%]' />
                 </ThemeIcon>
                 <Text size='sm'>
                   {restaurant?.address || `Đầu lộ Tân Thành, Khóm 9, phường 6, thành phố Cà Mau, tỉnh Cà Mau`}

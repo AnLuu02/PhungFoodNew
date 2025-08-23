@@ -1,12 +1,18 @@
+import { LocalUserLevel } from '~/lib/zod/EnumType';
+
+export const EMPTY_STRING = '';
+export const VND_SYMBOL = '₫';
+export const USD_SYMBOL = '$';
+
 export const HEIGHT_HEADER = 110;
 export const HEIGHT_HEADER_AND_BREADCRUMB = HEIGHT_HEADER + 100;
 export const TOP_POSITION_STICKY = 70;
 export const breakpoints = {
-  xs: 576,
-  sm: 768,
-  md: 992,
-  lg: 1200,
-  xl: 1408
+  xs: 576, // 30em
+  sm: 768, // 48em
+  md: 992, // 64em
+  lg: 1200, // 74em
+  xl: 1408 // 90em
 };
 export const UserRole = {
   ADMIN: 'ADMIN',
@@ -88,3 +94,78 @@ export const priceRanges = [
     label: 'Từ 300.000đ - 500.000đ'
   }
 ];
+
+export const infoUserLevel = [
+  {
+    value: 0,
+    key: LocalUserLevel.BRONZE,
+    minPoint: 0,
+    maxPoint: 499,
+    viName: 'ĐỒNG',
+    enName: 'BRONZE',
+    color: '#3F2627',
+    thumbnail: 'rank_dong.png',
+    nextLevel: LocalUserLevel.SILVER
+  },
+  {
+    value: 1,
+    key: LocalUserLevel.SILVER,
+    minPoint: 500,
+    maxPoint: 999,
+    viName: 'BẠC',
+    enName: 'SILVER',
+    color: '#64707A',
+    thumbnail: 'rank_bac.png',
+    nextLevel: LocalUserLevel.GOLD
+  },
+  {
+    value: 2,
+    key: LocalUserLevel.GOLD,
+    minPoint: 1000,
+    maxPoint: 1999,
+    viName: 'VÀNG',
+    enName: 'GOLD',
+    color: '#523917',
+    thumbnail: 'rank_vang.png',
+    nextLevel: LocalUserLevel.PLATINUM
+  },
+  {
+    value: 3,
+    key: LocalUserLevel.PLATINUM,
+    minPoint: 2000,
+    maxPoint: 4999,
+    viName: 'BẠCH KIM',
+    enName: 'PLATINUM',
+    color: '#4183A7',
+    thumbnail: 'rank_bk.png',
+    nextLevel: LocalUserLevel.DIAMOND
+  },
+  {
+    value: 4,
+    key: LocalUserLevel.DIAMOND,
+    minPoint: 5000,
+    maxPoint: 9999,
+    viName: 'KIM CƯƠNG',
+    enName: 'DIAMOND',
+    color: '#5F77C3',
+    thumbnail: 'rank_kc.png',
+    nextLevel: LocalUserLevel.DIAMOND
+  }
+];
+
+export const getInfoLevelUser = (key: LocalUserLevel) => {
+  switch (key) {
+    case LocalUserLevel.BRONZE:
+      return infoUserLevel[0] as any;
+    case LocalUserLevel.SILVER:
+      return infoUserLevel[1] as any;
+    case LocalUserLevel.GOLD:
+      return infoUserLevel[2] as any;
+    case LocalUserLevel.PLATINUM:
+      return infoUserLevel[3] as any;
+    case LocalUserLevel.DIAMOND:
+      return infoUserLevel[4] as any;
+    default:
+      return infoUserLevel[0] as any;
+  }
+};

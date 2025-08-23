@@ -1,4 +1,6 @@
 import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import FoodPromotionPageClient from './pageClient';
 
@@ -7,8 +9,9 @@ export const metadata: Metadata = {
   description: 'Cập nhật ưu đãi và giảm giá các món ăn miền Tây tại Phụng Food. Đặt hàng ngay để nhận ưu đãi.'
 };
 export default async function FoodPromotionPage() {
+  const user = await getServerSession(authOptions);
   const [voucherData, productData] = await Promise.allSettled([
-    api.Voucher.getAll(),
+    api.Voucher.getVoucherForUser({ userId: user?.user.id }),
     api.Product.find({
       skip: 0,
       take: 10,

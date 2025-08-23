@@ -26,7 +26,10 @@ export default function CustomPagination({ totalPages }: { totalPages: number })
   return (
     <Group justify='center' mt='xl'>
       <Pagination.Root
-        classNames={{ control: 'bg-mainColor' }}
+        classNames={{
+          control:
+            'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
+        }}
         total={totalPages}
         value={currentPage}
         onChange={onChange}

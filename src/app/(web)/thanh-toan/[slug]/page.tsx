@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { formatTransDate } from '~/lib/func-handler/formatDate';
+import { formatTransDate } from '~/lib/func-handler/Format';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
 import CheckoutClient from '../components/CheckoutClient';
@@ -11,18 +11,23 @@ export const metadata: Metadata = {
 };
 async function CheckoutPage({ params }: { params: { slug: string } }) {
   const orderId = params?.slug;
-
   const order = await api.Order.getOne({ s: orderId });
   if (!order?.id) {
-    redirect(`/vnpay-payment-result?error=Không tìm thấy đơn hàng hoặc ngày giao dịch&message=Đơn hàng không tồn tại.`);
+    redirect(
+      `/vnpay-payment-result?error=${encodeURIComponent('Không tìm thấy đơn hàng hoặc ngày giao dịch')}&message=${encodeURIComponent('Đơn hàng không tồn tại.')}`
+    );
   }
 
   if (order.status !== LocalOrderStatus.PROCESSING && order.status !== LocalOrderStatus.CANCELLED) {
+    const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
     redirect(
-      `/vnpay-payment-result?orderId=${orderId}&transDate=${formatTransDate(order.transDate || new Date())}&statusOrder=${order.status}&message=Đơn hàng đã được thanh toán`
+      `/vnpay-payment-result?orderId=${encodeURIComponent(orderId.trim())}` +
+        `&transDate=${encodeURIComponent(transDate.trim())}` +
+        `&statusOrder=${encodeURIComponent(order.status.trim())}` +
+        `&message=${encodeURIComponent('Đơn hàng đã được thanh toán')}`
     );
   }
-  return <CheckoutClient order={order} orderId={orderId} />;
+  return <CheckoutClient order={order} />;
 }
 
 export default CheckoutPage;

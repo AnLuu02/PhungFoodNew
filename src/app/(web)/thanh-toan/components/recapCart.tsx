@@ -1,40 +1,34 @@
-import { Button, Card, Divider, Flex, Group, Pill, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
+import { Button, Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconArrowLeft, IconGift } from '@tabler/icons-react';
-import { useMemo, useState } from 'react';
+import { IconArrowLeft } from '@tabler/icons-react';
+import { useMemo } from 'react';
 import BButton from '~/components/Button';
-import ModalShowVoucher from '~/components/Modals/ModalShowVoucher';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalPaymentType, LocalVoucherType } from '~/lib/zod/EnumType';
-import { api } from '~/trpc/react';
+import ApplyVoucher from './ApplyVoucher';
 import { ButtonCheckout } from './ButtonCheckout';
 import CartItemPayment from './CartItemPayment';
 
 const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [seletedVouchers, setSelectedVouchers, resetSelectedVouchers] = useLocalStorage<any[]>({
-    key: 'vouchers',
+  const [appliedVouchers] = useLocalStorage<any[]>({
+    key: 'applied-vouchers',
     defaultValue: []
   });
 
-  const { data } = api.Voucher.getAll.useQuery(undefined, {
-    enabled: false
-  });
-  const utils = api.useUtils();
-
-  const [showVoucher, setShowVoucher] = useState(false);
-  const { subtotal, discount, tax, promotionTotal, total } = useMemo(() => {
-    const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const { originalTotal, discount, tax, discountAmountByVoucher, finalTotal } = useMemo(() => {
+    const originalTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const discount = cart.reduce((sum, item) => (item.discount ? sum + item.discount * item.quantity : sum), 0);
-    const tax = (subtotal - discount) * 0.1;
-    const promotionTotal = (seletedVouchers ?? []).reduce((sum, item) => {
+    const tax = originalTotal * 0.1;
+    const discountAmountByVoucher = (appliedVouchers ?? []).reduce((sum, item) => {
       if (!item?.discountValue) return sum;
-      const value = item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * subtotal) / 100;
+      const value =
+        item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
       return sum + value;
     }, 0);
-    const total = subtotal + tax - discount - promotionTotal;
-    return { subtotal, discount, tax, promotionTotal, total };
-  }, [cart, seletedVouchers]);
+    const finalTotal = originalTotal + tax - discount - discountAmountByVoucher;
+    return { originalTotal, discount, tax, discountAmountByVoucher, finalTotal };
+  }, [cart, appliedVouchers]);
 
   return (
     <Card shadow='sm' radius='md' withBorder>
@@ -53,58 +47,14 @@ const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
           </Stack>
         </ScrollAreaAutosize>
 
-        {type === 'cart' && (
-          <>
-            <Divider />
-            <Group gap={0} m={0}>
-              {seletedVouchers?.length > 0 && (
-                <Pill.Group py={'xs'}>
-                  {seletedVouchers.map((item: any, index: number) => (
-                    <Pill
-                      withRemoveButton
-                      key={index}
-                      c='white'
-                      bg={'red'}
-                      onClick={() => {
-                        setSelectedVouchers(prev => prev.filter((_, i) => i !== index));
-                      }}
-                    >
-                      {item.name}
-                    </Pill>
-                  ))}
-                </Pill.Group>
-              )}
-              <Button
-                onClick={() => {
-                  utils.Voucher.getAll.refetch();
-                  setShowVoucher(true);
-                }}
-                px={0}
-                m={0}
-                fullWidth
-                leftSection={<IconGift size={16} />}
-                variant='subtle'
-                color='red'
-              >
-                Xem thêm mã giảm giá
-              </Button>
-              <ModalShowVoucher
-                opened={showVoucher}
-                products={cart}
-                data={data}
-                onClose={() => setShowVoucher(false)}
-              />
-            </Group>
-            <Divider py={0} />
-          </>
-        )}
+        {type === 'cart' && <ApplyVoucher totalOrderPrice={originalTotal} />}
         <Stack gap='xs'>
           <Group justify='space-between'>
             <Text size='md' fw={700}>
               Tạm tính
             </Text>
             <Text size='md' fw={700}>
-              {subtotal.toLocaleString()}₫
+              {formatPriceLocaleVi(originalTotal)}
             </Text>
           </Group>
           <Group justify='space-between'>
@@ -121,7 +71,7 @@ const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
               Khuyến mãi:
             </Text>
             <Text size='md' fw={700}>
-              -{formatPriceLocaleVi(promotionTotal)}
+              -{formatPriceLocaleVi(discountAmountByVoucher)}
             </Text>
           </Group>
           <Group justify='space-between' className='mb-2'>
@@ -139,7 +89,7 @@ const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
               Tổng cộng
             </Text>
             <Text size='xl' fw={700} className='text-red-500'>
-              {formatPriceLocaleVi(total)}
+              {formatPriceLocaleVi(finalTotal)}
             </Text>
           </Group>
         </Stack>
@@ -147,7 +97,9 @@ const RecapCart = ({ order, loading, paymentMethod, type = 'cart' }: any) => {
         {type === 'cart' ? (
           <Flex gap={0} justify='space-between' wrap={'nowrap'}>
             <ButtonCheckout
-              total={total}
+              finalTotal={finalTotal}
+              originalTotal={originalTotal}
+              discountAmount={discountAmountByVoucher}
               data={cart}
               stylesButtonCheckout={{ title: 'Thanh toán', fullWidth: true, size: 'md', radius: 'sm' }}
             />

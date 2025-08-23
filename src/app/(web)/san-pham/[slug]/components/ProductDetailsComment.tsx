@@ -1,6 +1,6 @@
 import { Badge, Group, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 
@@ -14,7 +14,7 @@ export default function ProductDetails({ product }: { product: any }) {
           width={300}
           height={300}
           alt='Hình ảnh sản phẩm'
-          style={{ objectFit: 'cover' }}
+          className='object-cover'
         />
         <Title order={2}>{product.name}</Title>
         <Group>

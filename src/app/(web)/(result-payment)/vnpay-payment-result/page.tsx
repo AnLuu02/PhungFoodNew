@@ -1,20 +1,16 @@
 'use client';
-import { Badge, Button, Card, Flex, Group, Paper, Text, Title } from '@mantine/core';
+import { Box } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconArrowLeft, IconCircleCheck, IconCircleX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import LoadingComponent from '~/components/Loading/Loading';
-import { formatCustomTimestamp } from '~/lib/func-handler/formatDate';
-import { getStatusColor, getStatusIcon, getStatusText } from '~/lib/func-handler/get-status-order';
+import { getVietnameseStatusMessage, mapOrderStatusToUIStatus } from '~/lib/func-handler/Payment';
+import OrderStatusPage from './OrderStatusPage';
 
 export default function PaymentResult() {
   const searchParams = useSearchParams();
   const { data: user, status } = useSession();
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [, , resetVoucher] = useLocalStorage<any[]>({ key: 'vouchers', defaultValue: [] });
   const [queryParams, setQueryParams] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -22,8 +18,6 @@ export default function PaymentResult() {
 
   useEffect(() => {
     resetCart();
-    resetVoucher();
-
     if (searchParams && !hasFetched.current) {
       const params: Record<string, any> = {
         transactionStatus: searchParams.get('vnp_TransactionStatus'),
@@ -36,7 +30,7 @@ export default function PaymentResult() {
         message: searchParams.get('message'),
         statusOrder: searchParams.get('statusOrder')
       };
-
+      setQueryParams(params);
       const hasOtherFields = Object.keys(params).some(
         key => key !== 'orderId' && key !== 'payDate' && key !== 'statusOrder' && key !== 'message' && params[key]
       );
@@ -67,88 +61,51 @@ export default function PaymentResult() {
         setIsLoading(false);
       }
     }
-  }, [searchParams, resetCart, resetVoucher]);
+  }, [searchParams, resetCart]);
 
   if (isLoading || status === 'loading') {
-    return <LoadingComponent />;
+    return (
+      <Box className='flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
+        <Box className='h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600'></Box>
+      </Box>
+    );
   }
 
-  const { transactionStatus, orderId, amount, bankCode, payDate, responseCode, error, message, statusOrder } =
-    queryParams;
-  const isSuccess = responseCode === '00' && transactionStatus === '00';
+  if (queryParams) {
+    const uiStatus = mapOrderStatusToUIStatus(
+      queryParams.statusOrder,
+      queryParams.responseCode,
+      queryParams.transactionStatus
+    );
+    const { title, message } = getVietnameseStatusMessage(uiStatus, queryParams.responseCode);
 
-  const TransactionInfo = () => (
-    <Card shadow='sm' padding='lg' radius='md' withBorder className='flex h-full flex-col'>
-      <Text>
-        Mã đơn hàng: <b>{orderId || 'N/A'}</b>
-      </Text>
-      <Text>
-        Số tiền: <b>{amount ? amount.toLocaleString() + ' VND' : 'N/A'}</b>
-      </Text>
-      <Text>
-        Ngân hàng: <b>{bankCode || 'N/A'}</b>
-      </Text>
-      {payDate && (
-        <Text>
-          Thời gian: <b>{formatCustomTimestamp(payDate)}</b>
-        </Text>
-      )}
-    </Card>
-  );
+    return (
+      <OrderStatusPage
+        status={uiStatus}
+        customerName={user?.user?.name || 'Khách hàng'}
+        orderId={queryParams.orderId}
+        amount={queryParams.amount}
+        customTitle={title}
+        customMessage={message}
+        onRetryPayment={() => {
+          window.location.href = `/thanh-toan/${queryParams.orderId}`;
+        }}
+        onBackToHome={() => {
+          window.location.href = '/';
+        }}
+      />
+    );
+  }
 
   return (
-    <Paper shadow='md' p='lg' radius='md' w='100%'>
-      <Flex direction='column' justify='center' align='center' gap={10}>
-        {isSuccess ? (
-          <>
-            <Title order={3} className='text-mainColor font-quicksand'>
-              {message || 'Đặt hàng thành công.'}
-            </Title>
-            <IconCircleCheck size={50} color='green' />
-            <Title order={3} className='font-quicksand'>
-              Chào, {user?.user?.name || 'Khách'}
-            </Title>
-            <Badge size='md' p={'xs'} color={getStatusColor(statusOrder)}>
-              <Flex>
-                <Text size='10px' fw={700}>
-                  {getStatusText(statusOrder)}
-                </Text>
-                {getStatusIcon(statusOrder)}
-              </Flex>
-            </Badge>
-            <Text>Bạn vừa đặt hàng thành công, hàng sẽ được gửi đến bạn thời gian sớm nhất.</Text>
-            <Text>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</Text>
-          </>
-        ) : (
-          <>
-            <Title order={3} className='font-quicksand text-[#d32f2f]'>
-              {message || 'Thanh toán thất bại.'}
-            </Title>
-            <IconCircleX size={50} color='red' />
-            <Title order={3} className='font-quicksand'>
-              Xin chào, {user?.user?.name || 'Khách'}
-            </Title>
-            <Text>Đã có lỗi xảy ra trong quá trình thanh toán. Vui lòng thử lại sau.</Text>
-            <Text>Lý do: {error || 'Không rõ nguyên nhân'}</Text>
-          </>
-        )}
-
-        {error ? (
-          ' '
-        ) : (
-          <>
-            <Title order={4}>Thông tin giao dịch</Title>
-            <TransactionInfo />
-          </>
-        )}
-        <Group justify='center' mt='md'>
-          <Link href='/'>
-            <Button variant='outline' leftSection={<IconArrowLeft size={16} />}>
-              Quay về trang chủ
-            </Button>
-          </Link>
-        </Group>
-      </Flex>
-    </Paper>
+    <OrderStatusPage
+      status='error'
+      customerName={user?.user?.name || 'Khách hàng'}
+      customTitle='Không tìm thấy thông tin đơn hàng'
+      customMessage='Vui lòng kiểm tra lại đường dẫn hoặc liên hệ hỗ trợ khách hàng.'
+      onBackToHome={() => {
+        window.location.href = '/';
+      }}
+    />
   );
 }

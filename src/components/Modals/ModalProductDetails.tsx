@@ -32,11 +32,11 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
-import ButtonAddToCart from '../Web/components/ButtonAddToCart';
+import ButtonAddToCart from '../ButtonAddToCart';
 
 function ModalProductDetails({ type, product, opened, close }: { type: any; product: any; opened: any; close: any }) {
   const [quantity, setQuantity] = useState(1);
@@ -95,8 +95,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                     slideGap={23}
                     h={74}
                     mt={10}
-                    dragFree
-                    align='start'
+                    align='center'
                     containScroll='trimSnaps'
                     withControls={false}
                     slidesToScroll={1}
@@ -226,8 +225,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                       />
                     </Group>
                     <ButtonAddToCart
-                      product={product}
-                      quantity={quantity}
+                      product={{ ...product, quantity }}
                       style={{
                         title: 'Mua hàng',
                         size: 'md',

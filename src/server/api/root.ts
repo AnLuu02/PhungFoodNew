@@ -31,7 +31,7 @@ export const appRouter = createTRPCRouter({
   FavouriteFood: favouriteFoodRouter,
   Voucher: voucherRouter,
   Image: imageRouter,
-  news: newsRouter,
+  News: newsRouter,
   Material: materialRouter,
   RolePermission: rolePermissionRouter,
   Restaurant: restaurantRouter,

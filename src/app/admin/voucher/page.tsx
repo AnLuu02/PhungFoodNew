@@ -7,7 +7,7 @@ import { api } from '~/trpc/server';
 import { CreateVoucherButton } from './components/Button';
 import TableVoucher from './components/Table/TableVoucher';
 export const metadata: Metadata = {
-  title: 'Quản lý thanh toán '
+  title: 'Quản lý khuyến mãi '
 };
 export default async function VoucherManagementPage({
   searchParams

@@ -7,10 +7,12 @@ import VoucherTemplate from '~/components/Template/VoucherTemplate';
 import { mockPromotions } from '~/lib/data-test/data-voucher';
 
 export default function DiscountCodes() {
-  const [openDetail, setOpenDetail] = useState<any>({});
-
+  const [openDetail, setOpenDetail] = useState<{ opened: boolean; voucherDetail: any }>({
+    opened: false,
+    voucherDetail: {}
+  });
   return (
-    <Paper p='md' radius='md' className='dark:bg-dark-card bg-green-50'>
+    <Paper p='md' radius='md' className='bg-green-50 dark:bg-dark-card'>
       <Title order={2} className='font-quicksand text-mainColor' size='xl' fw={700} mb='md'>
         MÃ GIẢM GIÁ
       </Title>
@@ -36,7 +38,11 @@ export default function DiscountCodes() {
             ))}
         </Grid>
       </Spoiler>
-      <ModalDetailVoucher opened={openDetail?.type} onClose={() => setOpenDetail({})} data={openDetail} products={[]} />
+      <ModalDetailVoucher
+        openDetail={openDetail}
+        onClose={() => setOpenDetail({ opened: false, voucherDetail: {} })}
+        products={[]}
+      />
     </Paper>
   );
 }

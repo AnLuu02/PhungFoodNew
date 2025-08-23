@@ -1,6 +1,6 @@
 'use client';
 import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
-import { ActionIcon, Card, CardSection, Center, Flex, Group, rem, Stack, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Box, Card, CardSection, Center, Flex, Group, rem, Stack, Text, Tooltip } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
@@ -76,8 +76,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
           slideSize={{ base: '50%', xl: '11.11%', sm: '25%', md: '20%' }}
           slideGap='4px'
           h={200}
-          dragFree
-          align='start'
+          align='center'
           withControls={false}
           withIndicators
           slidesToScroll={1}
@@ -94,10 +93,10 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                 withBorder
                 h={200}
                 href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
-                className='hover:border-10 dark:bg-dark-card cursor-pointer bg-gray-100 hover:border-mainColor hover:shadow-lg dark:hover:border-mainColor/50 dark:hover:shadow-lg'
+                className='hover:border-10 cursor-pointer bg-gray-100 hover:border-mainColor hover:shadow-lg dark:bg-dark-card dark:hover:border-mainColor/50 dark:hover:shadow-lg'
               >
                 <CardSection>
-                  <div style={{ position: 'relative', width: '100%', height: '120px' }}>
+                  <Box style={{ position: 'relative', width: '100%', height: '120px' }}>
                     <Image
                       style={{ objectFit: 'cover' }}
                       loading='lazy'
@@ -105,7 +104,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                       fill
                       alt={item?.name || 'Cà chua'}
                     />
-                  </div>
+                  </Box>
                 </CardSection>
                 <Stack gap={rem(1)} mt={'xs'} align='center'>
                   <Tooltip label={item?.name || 'Cà chua'} withArrow>

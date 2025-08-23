@@ -1,6 +1,6 @@
 import { Badge, Box, Button, Divider, Grid, GridCol, Group, NumberInput, Paper, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 
@@ -20,7 +20,7 @@ export default function ShoppingCartMobile({ cart, setCart }: any) {
                 loading='lazy'
                 src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                 fill
-                style={{ objectFit: 'cover' }}
+                className='object-cover'
                 alt={item.name}
               />
             </Box>
@@ -63,7 +63,7 @@ export default function ShoppingCartMobile({ cart, setCart }: any) {
               }}
               min={0}
               max={Number(item?.availableQuantity) || 100}
-              style={{ width: '80px' }}
+              className='w-[80px]'
             />
             <Divider />
 

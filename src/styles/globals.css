@@ -48,36 +48,34 @@ a {
   opacity: 1;
   background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
 }
-/* Cho toàn bộ trình duyệt hiện thanh cuộn */
 ::-webkit-scrollbar {
-  width: 6px; /* độ rộng thanh scroll */
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* nền track (phần bên dưới thanh kéo) */
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 8px; /* bo góc thanh kéo */
-  background-color: rgba(0, 0, 0, 0.4); /* màu thanh kéo */
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Firefox */
 * {
   scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
-  scrollbar-width: thin; /* mảnh */
+  scrollbar-width: thin;
 }
 
 .tableAdmin::-webkit-scrollbar {
-  width: 6px; /* Độ rộng */
+  width: 6px;
   height: 6px;
 }
 
 .tableAdmin::-webkit-scrollbar-thumb {
   border-radius: 3px;
-  background-color: #a0aec0; /* Màu thanh cuộn */
+  background-color: #a0aec0;
 }
 
 .tableAdmin::-webkit-scrollbar-track {
-  background-color: #edf2f7; /* Màu nền track */
+  background-color: #edf2f7;
 }

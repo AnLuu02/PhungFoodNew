@@ -2,7 +2,7 @@
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 
@@ -27,8 +27,8 @@ const OrderItemForm = ({ index, removeOrderItem, control, watch, setValue, getVa
 
   useEffect(() => {
     setValue(
-      'total',
-      orderItems.reduce((total: number, item: any) => total + (item.price || 0) * (item.quantity || 0), 0).toString()
+      'originalTotal',
+      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0).toString()
     );
   }, [chooseProduct, chooseQuantity, orderItems]);
 

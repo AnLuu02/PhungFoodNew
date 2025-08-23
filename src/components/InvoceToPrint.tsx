@@ -14,14 +14,20 @@ export default function InvoiceToPrint({ id }: any) {
   });
 
   return (
-    <div>
+    <Box>
       <Box style={{ display: 'none' }}>
         <InvoicePrintTemplate printRef={printRef} data={order} />
       </Box>
 
-      <Button onClick={() => handlePrint()} size='xs' variant='outline' loading={isLoading}>
+      <Button
+        onClick={() => handlePrint()}
+        size='md'
+        variant='subtle'
+        loading={isLoading}
+        className={`!rounded-md !border-[#e5e5e5] !font-bold text-black duration-200 hover:bg-gray-100 hover:text-black/90 dark:!border-dark-dimmed`}
+      >
         In hóa đơn
       </Button>
-    </div>
+    </Box>
   );
 }

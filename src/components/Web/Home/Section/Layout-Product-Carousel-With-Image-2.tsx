@@ -7,8 +7,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import BButton from '~/components/Button';
 import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '../components/ProductCardCarouselVertical';
-import classes from './TabsStyles_Image2.module.css';
+import ProductCardCarouselVertical from '../../Card/ProductCardCarouselVertical';
 
 type ITypeProduct = {
   title?: string;
@@ -31,7 +30,9 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
         value={tab}
         onChange={value => setTab(value ?? 'rau-cu')}
         variant='pills'
-        classNames={classes}
+        classNames={{
+          tab: `mx-1 rounded-[30px] border border-mainColor px-4 py-[6px] text-mainColor transition-all duration-100 hover:bg-mainColor hover:text-subColor data-[active=true]:bg-mainColor data-[active=true]:text-subColor`
+        }}
         className='relative'
         h={'100%'}
         p={'lg'}
@@ -72,7 +73,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                 justify={'space-between'}
                 h={'100%'}
                 w={{ base: 0, sm: 0, md: '40%', lg: '25%' }}
-                className={clsx(imgaePositon && 'order-2', 'hidden lg:block', 'overflow-hidden')}
+                className={clsx(imgaePositon && 'order-2', 'hidden md:block', 'overflow-hidden')}
               >
                 <Box
                   mb={'xs'}
@@ -122,9 +123,8 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                         slideSize={{ base: '100%', sm: '33.33333%', md: '50%', lg: '25%' }}
                         slideGap={rem(20)}
                         h={320}
-                        dragFree
                         containScroll='trimSnaps'
-                        align='start'
+                        align='center'
                         withControls={false}
                         slidesToScroll={1}
                       >

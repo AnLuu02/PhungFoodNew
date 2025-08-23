@@ -3,7 +3,9 @@
 import {
   Avatar,
   Badge,
+  Box,
   Card,
+  Divider,
   Flex,
   Grid,
   Group,
@@ -18,12 +20,11 @@ import {
   rem
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconCreditCard, IconPackage, IconTruck } from '@tabler/icons-react';
-import { formatDate } from '~/lib/func-handler/formatDate';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
+import { formatDate, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getStatusColor, getStatusIcon, getStatusText } from '~/lib/func-handler/get-status-order';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { LocalImageType, LocalVoucherType } from '~/lib/zod/EnumType';
 import InvoiceToPrint from '../InvoceToPrint';
 
 function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {
@@ -41,8 +42,16 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
         transitionProps={{ transition: 'fade-down', duration: 200 }}
         padding='md'
         title={
-          <Group align='center'>
-            <Title order={2}>Thông tin đơn hàng</Title>
+          <Group gap='md'>
+            <ThemeIcon size={40} radius='md' variant='light' color='teal'>
+              <IconPackage style={{ width: rem(24), height: rem(24) }} />
+            </ThemeIcon>
+            <Box>
+              <Title order={2}>Thông tin đơn hàng</Title>
+              <Text size='sm' c={'dimmed'}>
+                #{order?.id}
+              </Text>
+            </Box>
             <InvoiceToPrint id={order?.id || ''} />
           </Group>
         }
@@ -58,35 +67,125 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
           <Grid gutter='md'>
             <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 5 }}>
               <ScrollAreaAutosize scrollbarSize={5} mah={540}>
-                <Stack>
+                <Stack mr={'xs'}>
                   <Card withBorder radius='md'>
                     <Group justify='space-between' mb='md'>
                       <Text fw={700} size='md'>
                         Chi tiết
                       </Text>
-                      <Badge
-                        size='xs'
-                        color={getStatusColor(order.status)}
-                        p={'xs'}
-                        className='align-items-center flex'
-                      >
-                        <Flex align={'center'}>
-                          <Text size='10px' fw={700}>
-                            {getStatusText(order.status)}
-                          </Text>
-                          {getStatusIcon(order.status)}
-                        </Flex>
-                      </Badge>
                     </Group>
-                    <Stack gap={5}>
-                      <Text size='sm'>
-                        <strong>Mã đơn:</strong> {order?.id}
+                    <Stack gap={'md'}>
+                      <Text size='sm' className='flex items-center justify-between'>
+                        Mã đơn: <b>{order?.id}</b>
                       </Text>
-                      <Text size='sm'>
-                        <strong>Ngày đặt:</strong> {formatDate(order?.createdAt)}
+                      <Text size='sm' className='flex items-center justify-between'>
+                        Ngày đặt: <b>{formatDate(order?.createdAt)}</b>
                       </Text>
-                      <Text size='sm'>
-                        <strong>Tổng:</strong> {formatPriceLocaleVi(order?.total)}
+
+                      <Flex align={'center'} justify={'space-between'}>
+                        <Text size='sm' className='flex items-center justify-between'>
+                          Trạng thái:
+                        </Text>
+                        <Badge
+                          size='xs'
+                          color={getStatusColor(order.status)}
+                          p={'xs'}
+                          className='align-items-center flex'
+                        >
+                          <Flex align={'center'}>
+                            <Text size='10px' fw={700}>
+                              {getStatusText(order.status)}
+                            </Text>
+                            {getStatusIcon(order.status)}
+                          </Flex>
+                        </Badge>
+                      </Flex>
+                    </Stack>
+                  </Card>
+
+                  <Card withBorder radius='md'>
+                    <Group gap='md'>
+                      <ThemeIcon size={40} radius='md' variant='light' color='blue'>
+                        <IconCreditCard style={{ width: rem(24), height: rem(24) }} />
+                      </ThemeIcon>
+                      <Box>
+                        <Text fw={700} size='md'>
+                          Phương thức thanh toán
+                        </Text>
+                        <Text size='sm' c='dimmed'>
+                          {order?.payment?.name || 'Chưa thanh toán'}
+                        </Text>
+                      </Box>
+                    </Group>
+                  </Card>
+
+                  <Card withBorder radius='md'>
+                    <Group justify='space-between' mb='md'>
+                      <Text fw={700} size='md'>
+                        Chi tiết thanh toán
+                      </Text>
+                    </Group>
+                    <Stack>
+                      <Box className='flex items-center justify-between'>
+                        <Text size='sm'>Tổng tiền hàng:</Text>
+                        <Text fw={700} size='md'>
+                          {formatPriceLocaleVi(order.originalTotal || 0)}
+                        </Text>
+                      </Box>
+                      {order?.vouchers?.length > 0 && (
+                        <Box className='space-y-2'>
+                          <Text size='xs' className='flex items-center gap-2 font-medium text-gray-700'>
+                            <IconTag className='h-4 w-4' />
+                            Voucher áp dụng
+                          </Text>
+                          {order.vouchers.map((voucher: any) => (
+                            <Box key={voucher.id} className='ml-6 space-y-1'>
+                              <Box className='flex items-center justify-between'>
+                                <Box className='flex items-center gap-2'>
+                                  <Badge
+                                    variant='outline'
+                                    radius={'md'}
+                                    className='border-red-200 bg-red-50 text-xs text-red-600'
+                                  >
+                                    {voucher.name}
+                                  </Badge>
+                                  <span className='text-sm text-gray-600'>
+                                    (
+                                    {voucher.type === LocalVoucherType.PERCENTAGE
+                                      ? `${voucher.discountValue}%`
+                                      : formatPriceLocaleVi(voucher.value)}
+                                    )
+                                  </span>
+                                </Box>
+                                <span className='font-medium text-red-600'>
+                                  -{formatPriceLocaleVi(voucher.discount)}
+                                </span>
+                              </Box>
+                            </Box>
+                          ))}
+                        </Box>
+                      )}
+
+                      <Box className='flex items-center justify-between'>
+                        <Text size='sm'> Phí vận chuyển:</Text>
+                        <Text fw={700} size='sm'>
+                          Miễn phí
+                        </Text>
+                      </Box>
+                      <Divider />
+
+                      {order?.discountAmount > 0 && (
+                        <Text size='md' fw={700} className='flex items-center justify-between text-red-600'>
+                          Tổng giảm giá: <b>-{formatPriceLocaleVi(order?.discountAmount)}</b>
+                        </Text>
+                      )}
+
+                      <Text
+                        size='sm'
+                        className='flex items-center justify-between rounded-lg bg-emerald-50 p-3 text-lg font-bold text-emerald-600'
+                      >
+                        Thành tiền:
+                        <b className='font-semibold'>{formatPriceLocaleVi(order?.finalTotal || 0)}</b>
                       </Text>
                     </Stack>
                   </Card>
@@ -102,19 +201,18 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                     </Group>
                     <Stack gap='xs'>
                       <Text size='sm'>
-                        <strong>Khách hàng:</strong> {order?.delivery?.name}
+                        <b>Khách hàng:</b> {order?.delivery?.name || order?.user?.name}
                       </Text>
                       <Text size='sm'>
-                        <strong>Email:</strong> {order?.delivery?.email}
+                        <b>Email:</b> {order?.delivery?.email || order?.user?.email}
                       </Text>
                       {order?.user?.address?.fullAddress && (
                         <Text size='sm'>
-                          <strong>Địa chỉ:</strong> {order?.user?.address?.fullAddress}
+                          <b>Địa chỉ:</b> {order?.user?.address?.fullAddress || order?.user?.address?.fullAddress}
                         </Text>
                       )}
                       <Text size='sm'>
-                        <strong>Địa chỉ nhận:</strong>{' '}
-                        {order?.delivery?.address?.fullAddress || '123 Main St, Anytown, AN 12345'}
+                        <b>Địa chỉ nhận:</b> {order?.delivery?.address?.fullAddress || 'Chờ cập nhật.'}
                       </Text>
 
                       <Spoiler
@@ -126,27 +224,10 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                         }}
                       >
                         <Text size='sm'>
-                          <strong>Ghi chú:</strong>{' '}
-                          {order?.delivery?.note ||
-                            'Please leave the package at the front door if no one answers. asd asd asdasdasdasd asdasd ádasd'}
+                          <b>Ghi chú:</b> {order?.delivery?.note || 'Không có./'}
                         </Text>
                       </Spoiler>
                     </Stack>
-                  </Card>
-                  <Card withBorder radius='md'>
-                    <Group gap='md'>
-                      <ThemeIcon size={40} radius='md' variant='light' color='blue'>
-                        <IconCreditCard style={{ width: rem(24), height: rem(24) }} />
-                      </ThemeIcon>
-                      <div>
-                        <Text fw={700} size='md'>
-                          Phương thức thanh toán
-                        </Text>
-                        <Text size='sm' c='dimmed'>
-                          {order?.payment?.name || 'Chưa thanh toán'}
-                        </Text>
-                      </div>
-                    </Group>
                   </Card>
                 </Stack>
               </ScrollAreaAutosize>
@@ -163,6 +244,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                       Các mặt hàng đã đặt
                     </Text>
                   </Group>
+                  <Divider />
                   <Table striped highlightOnHover>
                     <Table.Thead>
                       <Table.Tr>
@@ -176,7 +258,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                       {order?.orderItems.map((item: any) => (
                         <Table.Tr key={item.id}>
                           <Table.Td w={'40%'}>{item.product.name}</Table.Td>
-                          <Table.Td>
+                          <Table.Td className='text-sm'>
                             <Avatar
                               size={40}
                               src={
@@ -187,8 +269,8 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                             />
                           </Table.Td>
 
-                          <Table.Td>{item.quantity}</Table.Td>
-                          <Table.Td>{formatPriceLocaleVi(item.price)}</Table.Td>
+                          <Table.Td className='text-sm'>{item.quantity}</Table.Td>
+                          <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
                         </Table.Tr>
                       ))}
                     </Table.Tbody>

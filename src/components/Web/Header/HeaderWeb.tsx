@@ -3,9 +3,9 @@ import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import BreadcrumbsComponent from '~/components/BreadcrumbsComponent';
 import NotificationDialog from '~/components/NotificationDialog';
 import { api } from '~/trpc/server';
-import { Header1 } from './layout/header1';
-import Header2 from './layout/header2';
-import Header3 from './layout/header3';
+import { Header1 } from './section/header1';
+import Header2 from './section/header2';
+import Header3 from './section/header3';
 
 const HeaderWeb = async () => {
   const user = await getServerSession(authOptions);

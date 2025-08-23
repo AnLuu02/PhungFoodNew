@@ -24,7 +24,7 @@ import {
 import { useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { handleConfirm } from '~/lib/button-handle/ButtonHandleConfirm';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
@@ -157,8 +157,8 @@ export function UpdateOrderButton({ id }: { id: string }) {
 }
 
 export function DeleteOrderButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.Order.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.Order.delete.useMutation();
 
   return (
     <>
@@ -167,8 +167,13 @@ export function DeleteOrderButton({ id }: { id: string }) {
           variant='subtle'
           color='red'
           onClick={() => {
-            handleDelete({ id }, deleteMutation, 'hóa đơn', () => {
-              untils.Order.invalidate();
+            confirmDelete({
+              id: { id },
+              mutationDelete,
+              entityName: 'đơn hàng',
+              callback: () => {
+                utils.Order.invalidate();
+              }
             });
           }}
         >
@@ -180,7 +185,7 @@ export function DeleteOrderButton({ id }: { id: string }) {
 }
 
 export function SuccessOrderButton({ id }: { id: string }) {
-  const untils = api.useUtils();
+  const utils = api.useUtils();
   const mutation = api.Order.update.useMutation();
 
   return (
@@ -203,7 +208,7 @@ export function SuccessOrderButton({ id }: { id: string }) {
               'Hoàn thành đơn hàng',
               'Bạn chắc chắn muốn hoàn thành đơn hàng này?',
               () => {
-                untils.Order.invalidate();
+                utils.Order.invalidate();
               }
             );
           }}
@@ -483,7 +488,7 @@ export function SendMessageOrderButton({ userId, email }: any) {
 }
 
 export function DeliveryOrderButton({ id }: { id: string }) {
-  const untils = api.useUtils();
+  const utils = api.useUtils();
   const mutation = api.Order.update.useMutation();
 
   return (
@@ -506,7 +511,7 @@ export function DeliveryOrderButton({ id }: { id: string }) {
               'Giao hàng',
               'Bạn chắc chắn muốn giao đơn hàng này?',
               () => {
-                untils.Order.invalidate();
+                utils.Order.invalidate();
               }
             );
           }}
@@ -519,7 +524,7 @@ export function DeliveryOrderButton({ id }: { id: string }) {
 }
 
 export function CancleOrderButton({ id }: { id: string }) {
-  const untils = api.useUtils();
+  const utils = api.useUtils();
   const mutation = api.Order.update.useMutation();
 
   return (
@@ -543,7 +548,7 @@ export function CancleOrderButton({ id }: { id: string }) {
               'Hủy  đơn hàng',
               'Bạn chắc chắn muốn hủy đơn hàng này?',
               () => {
-                untils.Order.invalidate();
+                utils.Order.invalidate();
               }
             );
           }}

@@ -1,176 +1,87 @@
 'use client';
-import { Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/core';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import clsx from 'clsx';
-import { useState } from 'react';
+
+import { Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { DeleteVoucherButton, UpdateVoucherButton } from '../Button';
 
 export default function TableVoucher({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.vouchers || [];
-  const columns: ColumnDef<any>[] = [
-    {
-      header: 'Tên',
-      accessorKey: 'name'
-    },
 
-    {
-      header: 'Mô tả',
-      accessorKey: 'description',
-      cell: info => <Highlight highlight={s}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
-    },
-    {
-      header: 'Hình thức',
-      accessorKey: 'type',
-      cell: info => <Text>{info.row.original.type === LocalVoucherType.FIXED ? 'Tiền mặt' : '% đơn hàng'}</Text>
-    },
-    {
-      header: 'Giá trị giảm',
-      accessorKey: 'discountValue',
-      cell: info => (
-        <Text>
-          {info.row.original.type === LocalVoucherType.FIXED
-            ? formatPriceLocaleVi(String(info.getValue()))
-            : String(info.getValue()) + '%'}
-        </Text>
-      )
-    },
-    {
-      header: 'Giá trị giảm tối đa',
-      accessorKey: 'maxDiscount',
-      cell: info => <Text>{formatPriceLocaleVi(String(info.getValue()))} </Text>
-    },
-    {
-      header: 'Giá trị đơn tối thiểu',
-      accessorKey: 'minOrderPrice',
-      cell: info => <Text>{formatPriceLocaleVi(String(info.getValue()))} </Text>
-    },
-    {
-      header: 'Số lượng',
-      accessorKey: 'quantity'
-    },
-    {
-      header: 'Đã dùng',
-      accessorKey: 'usedQuantity'
-    },
-    {
-      header: 'Còn lại',
-      accessorKey: 'availableQuantity'
-    },
-    {
-      header: 'Cấp độ VIP',
-      accessorKey: 'vipLevel',
-      cell: info => <Text>{String(info.getValue() ?? 'Không yêu cầu')}</Text>
-    },
-    {
-      header: 'Mã đơn hàng',
-      accessorKey: 'orderId',
-      cell: info => <Text>{String(info.getValue() ?? 'Không có')}</Text>
-    },
-    {
-      header: 'Bắt đầu',
-      accessorKey: 'startDate',
-      cell: info => <Text>{new Date(info.getValue() as string).toLocaleDateString()}</Text>
-    },
-    {
-      header: 'Kết thúc',
-      accessorKey: 'endDate',
-      cell: info => <Text>{new Date(info.getValue() as string).toLocaleDateString()}</Text>
-    },
-    {
-      header: 'Thao tác',
-      cell: info => (
-        <Group className='text-center'>
-          {user?.user && (
-            <>
-              <UpdateVoucherButton id={info.row.original.id} />
-              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
-                <DeleteVoucherButton id={info.row.original.id} />
-              )}
-            </>
-          )}
-        </Group>
-      )
-    }
-  ];
-
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const table = useReactTable({
-    data: currentItems,
-    columns,
-    state: {
-      columnVisibility
-    },
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel()
-  });
   return (
     <>
-      <Group pb={'lg'}>
-        <Menu shadow='md' width={220}>
-          <Menu.Target>
-            <Button variant='outline'>Tùy chỉnh bảng</Button>
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            <Menu.Item onClick={table.getToggleAllColumnsVisibilityHandler()}>
-              <Checkbox
-                label='Tất cả'
-                checked={table.getIsAllColumnsVisible()}
-                onChange={table.getToggleAllColumnsVisibilityHandler()}
-              />
-            </Menu.Item>
-            {table.getAllLeafColumns().map(column => (
-              <Menu.Item key={column.id} onClick={column.getToggleVisibilityHandler()}>
-                <Checkbox
-                  label={column.id}
-                  checked={column.getIsVisible()}
-                  onChange={column.getToggleVisibilityHandler()}
-                />
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
-      </Group>
-      <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+      <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-            {table.getHeaderGroups().map((headerGroup, index) => (
-              <Table.Tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <Table.Th key={header.id} colSpan={header.colSpan} style={{ minWidth: 100 }}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </Table.Th>
-                ))}
-              </Table.Tr>
-            ))}
+            <Table.Tr>
+              <Table.Th className='text-sm'>Tên</Table.Th>
+              <Table.Th className='text-sm'>Mô tả</Table.Th>
+              <Table.Th className='text-sm'>Hình thức</Table.Th>
+              <Table.Th className='text-sm'>Giá trị giảm</Table.Th>
+              <Table.Th className='text-sm'>Giảm tối đa</Table.Th>
+              <Table.Th className='text-sm'>Đơn tối thiểu</Table.Th>
+              <Table.Th className='text-sm'>Số lượng</Table.Th>
+              <Table.Th className='text-sm'>Đã dùng</Table.Th>
+              <Table.Th className='text-sm'>Còn lại</Table.Th>
+              <Table.Th className='text-sm'>VIP</Table.Th>
+              <Table.Th className='text-sm'>Mã đơn</Table.Th>
+              <Table.Th className='text-sm'>Bắt đầu</Table.Th>
+              <Table.Th className='text-sm'>Kết thúc</Table.Th>
+              <Table.Th className='text-sm'>Thao tác</Table.Th>
+            </Table.Tr>
           </Table.Thead>
+
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              table.getRowModel().rows.map((row, index) => (
-                <Table.Tr key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <Table.Td key={cell.id}>
-                      <Text size='sm'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Text>
-                    </Table.Td>
-                  ))}
+              currentItems.map((item: any) => (
+                <Table.Tr key={item.id}>
+                  <Table.Td className='text-sm'>{item.name}</Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Highlight size='sm' highlight={s}>
+                      {item.description || 'Đang cập nhật.'}
+                    </Highlight>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    {item.type === LocalVoucherType.FIXED ? 'Tiền mặt' : '% đơn hàng'}
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    {item.type === LocalVoucherType.FIXED
+                      ? formatPriceLocaleVi(String(item.discountValue))
+                      : `${item.discountValue}%`}
+                  </Table.Td>
+                  <Table.Td className='text-sm'>{formatPriceLocaleVi(String(item.maxDiscount))}</Table.Td>
+                  <Table.Td className='text-sm'>{formatPriceLocaleVi(String(item.minOrderPrice))}</Table.Td>
+                  <Table.Td className='text-sm'>{item.quantity}</Table.Td>
+                  <Table.Td className='text-sm'>{item.usedQuantity}</Table.Td>
+                  <Table.Td className='text-sm'>{item.availableQuantity}</Table.Td>
+                  <Table.Td className='text-sm'>{item.pointUser ?? 'Không yêu cầu'}</Table.Td>
+                  <Table.Td className='text-sm'>{item.orderId ?? 'Không có'}</Table.Td>
+                  <Table.Td className='text-sm'>{new Date(item.startDate).toLocaleDateString()}</Table.Td>
+                  <Table.Td className='text-sm'>{new Date(item.endDate).toLocaleDateString()}</Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Group>
+                      <UpdateVoucherButton id={item.id} />
+                      {(user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN ||
+                        user?.user?.role?.name === 'ADMIN') && <DeleteVoucherButton id={item.id} />}
+                    </Group>
+                  </Table.Td>
                 </Table.Tr>
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
+                <Table.Td colSpan={14} className='bg-gray-100 text-center'>
                   <Text size='md' c='dimmed'>
-                    Không có bản ghi phù hợp./
+                    Không có bản ghi phù hợp.
                   </Text>
                 </Table.Td>
               </Table.Tr>
             )}
           </Table.Tbody>
         </Table>
-      </div>
+      </Box>
+
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />

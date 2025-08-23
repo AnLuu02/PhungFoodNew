@@ -1,5 +1,5 @@
 import { Box, Table, Text } from '@mantine/core';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import Logo from '../Logo';
 

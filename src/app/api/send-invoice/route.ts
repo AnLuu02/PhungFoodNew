@@ -24,10 +24,10 @@ export async function POST(req: NextRequest) {
       from: `"Fast Food" <${process.env.SMTP_EMAIL}>`,
       to: to,
       subject: 'Hóa đơn mua hàng',
-      text: `Cảm ơn bạn đã mua hàng tại Fast Food! Hóa đơn của bạn có tổng tiền ${invoiceData?.total || 0} VND.`,
+      text: `Cảm ơn bạn đã mua hàng tại Fast Food! Hóa đơn của bạn có tổng tiền ${invoiceData?.originalTotal || 0} VND.`,
       attachments: [
         {
-          filename: `invoice-${invoiceData?.id || 'empty'}.pdf`,
+          filename: `Hóa đơn mua hàng - ${invoiceData?.user.name || 'empty'}.pdf`,
           content: pdfBuffer,
           contentType: 'application/pdf'
         }

@@ -13,7 +13,7 @@ import {
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 
 export default function ProductImage({
   thumbnail,
@@ -78,7 +78,7 @@ export default function ProductImage({
                     src={item.url || '/images/jpg/empty-300x240.jpg'}
                     width={110}
                     height={110}
-                    style={{ objectFit: 'cover' }}
+                    className='object-cover'
                     alt='Thumbnail'
                   />
                   <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
@@ -90,7 +90,7 @@ export default function ProductImage({
                   loading='lazy'
                   src={item.url || '/images/jpg/empty-300x240.jpg'}
                   width={110}
-                  style={{ objectFit: 'cover' }}
+                  className='object-cover'
                   height={110}
                   alt='Thumbnail'
                 />
@@ -107,7 +107,6 @@ export default function ProductImage({
                 src={currentImage || thumbnail}
                 alt='Product'
                 className='cursor-pointer rounded-md object-cover'
-                style={{ objectFit: 'cover' }}
                 fill
                 onClick={() => setShowFullImage(true)}
               />
@@ -186,7 +185,6 @@ export default function ProductImage({
                 <Image
                   loading='lazy'
                   src={item.url || '/images/jpg/empty-300x240.jpg'}
-                  style={{ objectFit: 'contain' }}
                   className='object-contain'
                   fill
                   alt='Product Image'
@@ -212,7 +210,7 @@ export default function ProductImage({
                 width={60}
                 height={60}
                 alt=''
-                style={{ objectFit: 'cover' }}
+                className='object-cover'
               />
             </UnstyledButton>
           ))}

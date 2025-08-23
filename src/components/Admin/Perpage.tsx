@@ -18,7 +18,7 @@ const PageSizeSelector = () => {
 
   return (
     <Group align='center'>
-      <Title order={5}>Sản phẩm mỗi trang:</Title>
+      <Title order={5}>Hiển thị:</Title>
       <Select
         size={'xs'}
         defaultValue={limit}

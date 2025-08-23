@@ -2,7 +2,6 @@
 import { Box, Button, Card, Flex, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import BButton from '~/components/Button';
 import TabsPanelCarousel from './TabsPenel';
-import classes from './TabsStyles.module.css';
 
 const LayoutHotProduct = ({ data }: any) => {
   return (
@@ -11,7 +10,9 @@ const LayoutHotProduct = ({ data }: any) => {
         <Tabs
           defaultValue='an-vat-trang-mieng'
           variant='pills'
-          classNames={classes}
+          classNames={{
+            tab: `hover:bg-transparent hover:text-subColor data-[active=true]:bg-transparent data-[active=true]:text-subColor`
+          }}
           className='relative'
           h={'100%'}
           p={'lg'}

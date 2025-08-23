@@ -21,11 +21,11 @@ export async function updateSales(ctx: any, status: OrderStatus, productId: stri
   });
 }
 
-export async function updatePointLevel(ctx: any, userId: string, orderTotal: number) {
+export async function updatepointUser(ctx: any, userId: string, orderTotalPrice: number) {
   await ctx.db.user.update({
     where: { id: userId },
     data: {
-      pointLevel: { increment: orderTotal >= 10000 ? orderTotal / 10000 : 0 }
+      pointUser: { increment: orderTotalPrice >= 10000 ? orderTotalPrice / 10000 : 0 }
     }
   });
 }
@@ -259,6 +259,12 @@ export const productRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1, 'Tên không được để trống'),
         description: z.string().optional(),
+        descriptionDetail: z.array(
+          z.object({
+            label: z.string().min(1, 'Label không được bỏ trONGL'),
+            value: z.string().min(1, 'Value không được bỏ trONGL')
+          })
+        ),
         tag: z.string(),
         price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
         discount: z.number().min(0, 'Giảm giá không được âm').default(0),
@@ -316,6 +322,7 @@ export const productRouter = createTRPCRouter({
         data: {
           name: input.name,
           description: input.description,
+          descriptionDetail: input.descriptionDetail,
           tag: input.tag,
           price: input.price,
           discount: input.discount,

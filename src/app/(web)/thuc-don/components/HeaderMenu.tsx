@@ -15,7 +15,7 @@ export default function HeaderMenu({ products }: { products: any[] }) {
   const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 
   return (
     <>

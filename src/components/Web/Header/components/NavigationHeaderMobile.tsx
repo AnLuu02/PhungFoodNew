@@ -1,9 +1,8 @@
 'use client';
 import { ActionIcon, Box, Button, Center, Drawer, Flex, Text } from '@mantine/core';
-import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown, IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,12 +21,6 @@ const navigationItem = [
   { label: 'Mua nhanh', href: '/goi-mon-nhanh' }
 ];
 function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: () => void }) {
-  const { data: user } = useSession();
-  const [cart, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [, , resetSelectedVouchers] = useLocalStorage<any[]>({
-    key: 'vouchers',
-    defaultValue: []
-  });
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1025px)');
   if (isDesktop) {
@@ -97,7 +90,7 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
             <CartButton />
           </Flex>
 
-          <Box className='flex justify-center gap-4 lg:justify-start'>
+          <Box className='flex justify-center gap-4 md:justify-start'>
             <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80'>
               <Image
                 loading='lazy'

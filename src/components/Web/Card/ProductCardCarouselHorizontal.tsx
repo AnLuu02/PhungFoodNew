@@ -10,16 +10,16 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { breakpoints } from '~/constants';
 import { useModal } from '~/contexts/ModalContext';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
-import ButtonAddToCart from '../../components/ButtonAddToCart';
+import ButtonAddToCart from '../../ButtonAddToCart';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const { data: user } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModal();
   const totalQuantityProduct = useMemo(() => {
     return (data?.availableQuantity || 0) + (data?.soldQuantity || 0);
@@ -44,27 +44,37 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             h='100%'
             w='100%'
             className={clsx(
-              'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover/item:visible xl:invisible'
+              'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover/item:visible lg:invisible'
             )}
           >
             <Button.Group className='group-hover/item:animate-fadeTop'>
               <Tooltip label='Xem nhanh'>
-                <Button
-                  onClick={() => {
-                    if (isMobile) {
-                      router.push(`/san-pham/${data?.tag}`);
-                    } else {
+                {isMobile ? (
+                  <Button
+                    size='xs'
+                    p={5}
+                    w={'max-content'}
+                    variant='default'
+                    className={clsx('border-t-r-0 text-mainColor hover:text-subColor')}
+                  >
+                    <Link href={`/san-pham/${data?.tag}`}>
+                      <IconEye />
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
                       openModal('details', null, data);
-                    }
-                  }}
-                  size='xs'
-                  p={5}
-                  w={'max-content'}
-                  variant='default'
-                  className={clsx('text-mainColor hover:text-subColor')}
-                >
-                  <IconEye />
-                </Button>
+                    }}
+                    size='xs'
+                    p={5}
+                    w={'max-content'}
+                    variant='default'
+                    className={clsx('text-mainColor hover:text-subColor')}
+                  >
+                    <IconEye />
+                  </Button>
+                )}
               </Tooltip>
               <Tooltip label='Thêm vào yêu thích'>
                 <Button
@@ -116,8 +126,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
           </Group>
           <Flex w={'100%'} align={'center'} gap={10} justify={'space-between'}>
             <ButtonAddToCart
-              product={data}
-              quantity={1}
+              product={{ ...data, quantity: 1 }}
               style={{}}
               handleAfterAdd={() => openModal('success', null, data)}
               notify={() => {}}

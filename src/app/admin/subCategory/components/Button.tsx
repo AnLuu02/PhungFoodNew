@@ -3,7 +3,7 @@
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateSubCategory from './form/CreateSubCategory';
 import UpdateSubCategory from './form/UpdateSubCategory';
@@ -49,8 +49,8 @@ export function UpdateSubCategoryButton({ id }: { id: string }) {
 }
 
 export function DeleteSubCategoryButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.SubCategory.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.SubCategory.delete.useMutation();
 
   return (
     <>
@@ -58,8 +58,13 @@ export function DeleteSubCategoryButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Danh mục con', () => {
-            untils.SubCategory.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'danh mục con',
+            callback: () => {
+              utils.SubCategory.invalidate();
+            }
           });
         }}
       >

@@ -3,7 +3,7 @@
 import { ActionIcon, Button, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateVoucher from './form/CreateVoucher';
 import UpdateVoucher from './form/UpdateVoucher';
@@ -18,7 +18,7 @@ export function CreateVoucherButton() {
       <Modal
         closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
-        size={'xl'}
+        size={'80%'}
         opened={opened}
         onClose={() => setOpened(false)}
         title={<Title order={2}>Tạo voucher</Title>}
@@ -51,8 +51,8 @@ export function UpdateVoucherButton({ id }: { id: string }) {
 }
 
 export function DeleteVoucherButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.Voucher.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.Voucher.delete.useMutation();
 
   return (
     <>
@@ -60,8 +60,13 @@ export function DeleteVoucherButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'voucher', () => {
-            untils.Voucher.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'khuyến mãi',
+            callback: () => {
+              utils.Voucher.invalidate();
+            }
           });
         }}
       >

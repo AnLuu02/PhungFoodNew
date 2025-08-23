@@ -69,7 +69,12 @@ export const CommentsForm = ({ product }: { product: any }) => {
         control={control}
         name='comment'
         render={({ field }) => (
-          <Textarea placeholder='Your Comment' flex={1} {...field} error={errors.comment?.message} />
+          <Textarea
+            placeholder='Chúng tôi hoan nghênh mọi góp ý của bạn.'
+            flex={1}
+            {...field}
+            error={errors.comment?.message}
+          />
         )}
       />
       <BButton

@@ -1,6 +1,6 @@
 import { Badge, Box, Group, Text } from '@mantine/core';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 
@@ -22,14 +22,14 @@ export default function CartItemPayment({ item }: any) {
             {item.quantity}
           </Badge>
         </Box>
-        <div className='flex-1'>
+        <Box className='flex-1'>
           <Text size='sm' fw={700}>
             {item.name}
           </Text>
           <Text size='xs' c='dimmed'>
             Ghi chú: {item.note || 'Không có'}
           </Text>
-        </div>
+        </Box>
         <Text className='text-right' fw={700}>
           {formatPriceLocaleVi(item.price * item.quantity)}
         </Text>

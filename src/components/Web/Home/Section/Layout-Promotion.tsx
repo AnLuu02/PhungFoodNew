@@ -3,7 +3,7 @@
 import { Card, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import React, { useEffect } from 'react';
-import ProductCardCarouselHorizontal from '../components/ProductCardCarouselHorizontal';
+import ProductCardCarouselHorizontal from '../../Card/ProductCardCarouselHorizontal';
 
 const LayoutPromotion = ({ data }: any) => {
   const productDiscount = data ?? [];
@@ -35,7 +35,7 @@ const LayoutPromotion = ({ data }: any) => {
       h={'max-content'}
       radius={'lg'}
       withBorder
-      className='dark:bg-dark-background border-2 border-dashed border-mainColor bg-gray-200'
+      className='border-2 border-dashed border-mainColor bg-gray-200 dark:bg-dark-background'
       p={0}
     >
       <Flex h={'100%'} direction={'column'}>
@@ -65,7 +65,7 @@ const LayoutPromotion = ({ data }: any) => {
 
           <Flex align={'center'} gap={'lg'}>
             <Group gap={'xs'}>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
+              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
                 <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.day < 10 ? `0${timeExpire.day}` : timeExpire.day}
                 </Text>
@@ -73,7 +73,7 @@ const LayoutPromotion = ({ data }: any) => {
                   Ngày
                 </Text>
               </Flex>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
+              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
                 <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.hour < 10 ? `0${timeExpire.hour}` : timeExpire.hour}
                 </Text>
@@ -81,7 +81,7 @@ const LayoutPromotion = ({ data }: any) => {
                   Giờ
                 </Text>
               </Flex>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
+              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
                 <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.minute < 10 ? `0${timeExpire.minute}` : timeExpire.minute}
                 </Text>
@@ -89,7 +89,7 @@ const LayoutPromotion = ({ data }: any) => {
                   Phút
                 </Text>
               </Flex>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-lg' w={45} h={45}>
+              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
                 <Text size='sm' p={0} className='text-mainColor' fw={700}>
                   {timeExpire.second < 10 ? `0${timeExpire.second}` : timeExpire.second}
                 </Text>

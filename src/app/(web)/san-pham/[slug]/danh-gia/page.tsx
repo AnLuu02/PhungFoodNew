@@ -2,10 +2,10 @@
 
 import { Box, Divider, Grid, GridCol, ScrollAreaAutosize } from '@mantine/core';
 import { useMemo } from 'react';
-import CardSkeleton from '~/components/CardSkeleton';
 import { CommentsForm } from '~/components/Comments/CommentsForm';
 import { CommentsList } from '~/components/Comments/CommentsList';
-import ProductCardCarouselVertical from '~/components/Web/Home/components/ProductCardCarouselVertical';
+import CardSkeleton from '~/components/Web/Card/CardSkeleton';
+import ProductCardCarouselVertical from '~/components/Web/Card/ProductCardCarouselVertical';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { api } from '~/trpc/react';
 import RatingStatistics from '../components/RatingStatistics';

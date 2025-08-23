@@ -1,6 +1,6 @@
-import { ImageType } from '@prisma/client';
+import { LocalImageType } from '../zod/EnumType';
 
-export const getImageProduct = (data: any, key: ImageType) => {
+export const getImageProduct = (data: any, key: LocalImageType) => {
   const image = data?.find((p: any) => p.type === key);
   if (image && image?.url) {
     return image?.url;

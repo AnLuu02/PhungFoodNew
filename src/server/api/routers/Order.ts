@@ -1,11 +1,11 @@
 import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { redis } from '~/lib/cache/redis';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { deliverySchema } from '~/lib/zod/zodShcemaForm';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-import { updatePointLevel, updateSales } from './Product';
+import { updatepointUser, updateSales } from './Product';
 import { updateRevenue } from './Revenue';
 
 export const orderRouter = createTRPCRouter({
@@ -64,7 +64,17 @@ export const orderRouter = createTRPCRouter({
                     }
                   },
                   {
-                    total: {
+                    originalTotal: {
+                      equals: Number(s?.trim()) || 0
+                    }
+                  },
+                  {
+                    discountAmount: {
+                      equals: Number(s?.trim()) || 0
+                    }
+                  },
+                  {
+                    finalTotal: {
                       equals: Number(s?.trim()) || 0
                     }
                   }
@@ -105,7 +115,17 @@ export const orderRouter = createTRPCRouter({
                     }
                   },
                   {
-                    total: {
+                    originalTotal: {
+                      equals: Number(s?.trim()) || 0
+                    }
+                  },
+                  {
+                    discountAmount: {
+                      equals: Number(s?.trim()) || 0
+                    }
+                  },
+                  {
+                    finalTotal: {
                       equals: Number(s?.trim()) || 0
                     }
                   }
@@ -129,7 +149,8 @@ export const orderRouter = createTRPCRouter({
                   }
                 }
               }
-            }
+            },
+            vouchers: true
           }
         })
       ]);
@@ -149,7 +170,9 @@ export const orderRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        total: z.any().default(0),
+        originalTotal: z.number().default(0),
+        discountAmount: z.number().default(0),
+        finalTotal: z.number().default(0),
         status: z.nativeEnum(OrderStatus),
         userId: z.string(),
         note: z.string().optional(),
@@ -170,10 +193,11 @@ export const orderRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const order = await ctx.db.order.create({
         data: {
-          total: Number(input.total) || 0,
+          originalTotal: Number(input.originalTotal) || 0,
+          discountAmount: Number(input.discountAmount) || 0,
+          finalTotal: Number(input.finalTotal) || 0,
           status: input.status,
           userId: input.userId,
-          note: input.note,
           paymentId: input.paymentId,
           delivery: input.delivery
             ? {
@@ -204,7 +228,7 @@ export const orderRouter = createTRPCRouter({
         };
       }
       if (order && order.status === LocalOrderStatus.COMPLETED) {
-        updatePointLevel(ctx, input.userId, Number(input.total) || 0);
+        updatepointUser(ctx, input.userId, Number(input.finalTotal) || 0);
       }
       return {
         success: true,
@@ -216,10 +240,12 @@ export const orderRouter = createTRPCRouter({
     .input(
       z.object({
         where: z.record(z.string(), z.any()),
-        data: z.record(z.string(), z.any())
+        data: z.record(z.string(), z.any()),
+        orderId: z.string()
       })
     )
     .mutation(async ({ ctx, input }) => {
+      redis.del(`order:${input.orderId}`);
       const order: any = await ctx.db.order.update({
         where: input.where as Prisma.OrderWhereUniqueInput,
         data: input.data,
@@ -229,8 +255,8 @@ export const orderRouter = createTRPCRouter({
       });
 
       if (order && order.status === LocalOrderStatus.COMPLETED) {
-        updateRevenue(ctx, order.status, order.userId, order.total);
-        updatePointLevel(ctx, order.userId, order.total);
+        updateRevenue(ctx, order.status, order.userId, order.finalTotal);
+        updatepointUser(ctx, order.userId, order.finalTotal);
         await Promise.all(
           order?.orderItems?.map((orderItem: any) => {
             return updateSales(ctx, order.status, orderItem.productId, orderItem?.quantity);
@@ -319,53 +345,94 @@ export const orderRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      return await withRedisCache(
-        `order:${input.s}`,
-        async () => {
-          return await ctx.db.order.findFirst({
-            where: {
-              OR: [
-                {
-                  id: input.s?.trim()
-                },
-                {
-                  user: {
-                    email: {
-                      contains: input.s?.trim(),
-                      mode: 'insensitive'
-                    }
-                  }
-                }
-              ]
+      // return await withRedisCache(
+      //   `order:${input.s}`,
+      //   async () => {
+      //     return await ctx.db.order.findFirst({
+      //       where: {
+      //         OR: [
+      //           {
+      //             id: input.s?.trim()
+      //           },
+      //           {
+      //             user: {
+      //               email: {
+      //                 contains: input.s?.trim(),
+      //                 mode: 'insensitive'
+      //               }
+      //             }
+      //           }
+      //         ]
+      //       },
+      //       include: {
+      //         orderItems: {
+      //           include: {
+      //             product: {
+      //               include: {
+      //                 images: true
+      //               }
+      //             }
+      //           }
+      //         },
+      //         vouchers: true,
+      //         user: {
+      //           include: {
+      //             image: true,
+      //             address: true
+      //           }
+      //         },
+      //         payment: true,
+      //         delivery: {
+      //           include: {
+      //             address: true
+      //           }
+      //         }
+      //       }
+      //     });
+      //   },
+      //   60 * 60
+      // );
+      return await ctx.db.order.findFirst({
+        where: {
+          OR: [
+            {
+              id: input.s?.trim()
             },
-            include: {
-              orderItems: {
-                include: {
-                  product: {
-                    include: {
-                      images: true
-                    }
-                  }
-                }
-              },
-              vouchers: true,
+            {
               user: {
-                include: {
-                  image: true,
-                  address: true
-                }
-              },
-              payment: true,
-              delivery: {
-                include: {
-                  address: true
+                email: {
+                  contains: input.s?.trim(),
+                  mode: 'insensitive'
                 }
               }
             }
-          });
+          ]
         },
-        60 * 60
-      );
+        include: {
+          orderItems: {
+            include: {
+              product: {
+                include: {
+                  images: true
+                }
+              }
+            }
+          },
+          vouchers: true,
+          user: {
+            include: {
+              image: true,
+              address: true
+            }
+          },
+          payment: true,
+          delivery: {
+            include: {
+              address: true
+            }
+          }
+        }
+      });
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const order = await ctx.db.order.findMany({

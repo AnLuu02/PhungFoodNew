@@ -1,11 +1,10 @@
 'use client';
 
-import { ActionIcon, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
+import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
-import clsx from 'clsx';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDataExcel } from '~/lib/func-handler/formatDate';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { formatDataExcel } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import CreateRole from './form/CreateRole';
@@ -133,7 +132,7 @@ export function CreateManyRoleButton() {
             </Button>
           )}
         </FileButton>
-        <Button c={'red'} onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
+        <Button bg={'red'} onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>
@@ -148,26 +147,32 @@ export function CreateManyRoleButton() {
         title={<Title order={3}>Xem trước dữ liệu</Title>}
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
-          <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+          <Box className={`tableAdmin w-full overflow-x-auto`}>
             <Table striped highlightOnHover withTableBorder withColumnBorders>
               <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
                 <Table.Tr>
-                  <Table.Th style={{ minWidth: 100 }}>STT</Table.Th>
-                  <Table.Th style={{ minWidth: 100 }}>Vai trò</Table.Th>
-                  <Table.Th style={{ minWidth: 100 }}>Quyền</Table.Th>
+                  <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+                    STT
+                  </Table.Th>
+                  <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+                    Vai trò
+                  </Table.Th>
+                  <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+                    Quyền
+                  </Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
                 {data.map((row, index) => (
                   <Table.Tr key={index}>
-                    <Table.Td>{index + 1}</Table.Td>
-                    <Table.Td>{row['Vai trò']}</Table.Td>
-                    <Table.Td>{row['Quyền']}</Table.Td>
+                    <Table.Td className='text-sm'>{index + 1}</Table.Td>
+                    <Table.Td className='text-sm'>{row['Vai trò']}</Table.Td>
+                    <Table.Td className='text-sm'>{row['Quyền']}</Table.Td>
                   </Table.Tr>
                 ))}
               </Table.Tbody>
             </Table>
-          </div>
+          </Box>
         </ScrollAreaAutosize>
         <Group mt='md' align='flex-end'>
           <Button
@@ -226,16 +231,21 @@ export function UpdateRoleButton({ id }: { id: string }) {
 }
 
 export function DeleteRoleButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.RolePermission.deleteRole.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.RolePermission.deleteRole.useMutation();
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Vai trò', () => {
-            untils.RolePermission.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'vai trò',
+            callback: () => {
+              utils.RolePermission.invalidate();
+            }
           });
         }}
       >

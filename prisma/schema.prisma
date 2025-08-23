@@ -31,43 +31,61 @@ model SubCategory {
 }
 
 model Voucher {
-  id                String      @id @default(cuid())
+  id                String           @id @default(cuid())
   name              String
-  tag               String      @unique
+  tag               String           @unique
   description       String?
   type              VoucherType
+  status            VoucherStatus    @default(ENABLED)
   discountValue     Float
+  code              String           @default("GIAMGIANE")
   maxDiscount       Float
   minOrderPrice     Float
-  quantity          Int         @default(0)
-  usedQuantity      Int         @default(0)
-  availableQuantity Int         @default(0)
-  applyAll          Boolean     @default(false)
+  quantity          Int              @default(0)
+  quantityForUser   Int              @default(1)
+  usedQuantity      Int              @default(0)
+  availableQuantity Int              @default(0)
+  applyAll          Boolean          @default(false)
   startDate         DateTime
   endDate           DateTime
-  vipLevel          Int?
+  pointUser         Int?
+  voucherForUser    VoucherForUser[]
   orders            Order[]
-  products          Product[]
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime?   @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime?        @updatedAt
+  User              User[]
+}
+
+model VoucherForUser {
+  id              String    @id @default(cuid())
+  user            User?     @relation(fields: [userId], references: [id])
+  voucher         Voucher?  @relation(fields: [voucherId], references: [id])
+  quantityForUser Int       @default(1)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime? @updatedAt
+  userId          String?
+  voucherId       String?
+
+  @@unique([userId, voucherId])
 }
 
 model Order {
-  id            String      @id @default(cuid())
-  total         Int         @default(0)
-  status        OrderStatus
-  transactionId String?     @default("")
-  transDate     DateTime?
-  paymentId     String?
-  note          String?     @default("")
-  payment       Payment?    @relation(fields: [paymentId], references: [id])
-  orderItems    OrderItem[]
-  vouchers      Voucher[]
-  delivery      Delivery?
-  userId        String?
-  user          User?       @relation(fields: [userId], references: [id])
-  createdAt     DateTime?   @default(now())
-  updatedAt     DateTime?   @updatedAt
+  id             String      @id @default(cuid())
+  originalTotal  Int         @default(0)
+  finalTotal     Int         @default(0)
+  discountAmount Int         @default(0)
+  status         OrderStatus
+  transactionId  String?     @default("")
+  transDate      DateTime?
+  paymentId      String?
+  payment        Payment?    @relation(fields: [paymentId], references: [id])
+  orderItems     OrderItem[]
+  vouchers       Voucher[]
+  delivery       Delivery?
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id])
+  createdAt      DateTime?   @default(now())
+  updatedAt      DateTime?   @updatedAt
 
   @@index([userId], map: "Order_usersId_fkey_unique")
 }
@@ -115,7 +133,7 @@ model Product {
   id                String          @id @default(cuid())
   name              String
   description       String?
-  descriptionDetail String?         @default("")
+  descriptionDetail Json?
   price             Int             @default(0)
   discount          Int             @default(0)
   tag               String          @unique
@@ -132,17 +150,11 @@ model Product {
   materials         Material[]
   subCategory       SubCategory?    @relation(fields: [subCategoryId], references: [id])
   subCategoryId     String?
-  vouchers          Voucher[]
   images            Image[]
   createdAt         DateTime?       @default(now())
   updatedAt         DateTime?       @updatedAt
 
   @@index([subCategoryId], map: "Product_categoryId_fkey_unique")
-}
-
-enum ProductStatus {
-  ACTIVE
-  HIDDEN
 }
 
 model Material {
@@ -169,14 +181,14 @@ model Review {
 }
 
 model User {
-  id               String          @id @default(cuid())
+  id               String           @id @default(cuid())
   name             String
-  email            String          @unique
+  email            String           @unique
   password         String
-  phone            String?         @db.VarChar(10)
-  dateOfBirth      DateTime?       @default(now())
+  phone            String?          @db.VarChar(10)
+  dateOfBirth      DateTime?        @default(now())
   gender           Gender?
-  pointLevel       Int             @default(0)
+  pointUser        Int              @default(0)
   level            UserLevel
   resetToken       String?
   resetTokenExpiry DateTime?
@@ -186,11 +198,15 @@ model User {
   revenue          Revenue[]
   image            Image?
   roleId           String?
-  role             Role?           @relation(fields: [roleId], references: [id])
+  role             Role?            @relation(fields: [roleId], references: [id])
   address          Address?
   notifications    Notification[]
-  createdAt        DateTime?       @default(now())
-  updatedAt        DateTime?       @updatedAt
+  createdAt        DateTime?        @default(now())
+  updatedAt        DateTime?        @updatedAt
+  voucherForUser   VoucherForUser[]
+  Voucher          Voucher?         @relation(fields: [voucherId], references: [id])
+  voucherId        String?
+  voucherForUserId String?
 }
 
 model Notification {
@@ -221,11 +237,6 @@ model Address {
   user        User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   delivery    Delivery?   @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
   deliveryId  String?     @unique
-}
-
-enum AddressType {
-  USER
-  DELIVERY
 }
 
 model Restaurant {
@@ -373,4 +384,19 @@ enum UserLevel {
   GOLD
   PLATINUM
   DIAMOND
+}
+
+enum ProductStatus {
+  ACTIVE
+  HIDDEN
+}
+
+enum VoucherStatus {
+  ENABLED
+  DISABLED
+}
+
+enum AddressType {
+  USER
+  DELIVERY
 }

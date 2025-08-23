@@ -2,7 +2,7 @@
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateUser from './form/CreateUser';
 import UpdateUser from './form/UpdateUser';
@@ -48,8 +48,8 @@ export function UpdateUserButton({ email, isClient = false }: { email: string; i
 }
 
 export function DeleteUserButton({ id }: { id: string }) {
-  const untils = api.useUtils();
-  const deleteMutation = api.User.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.User.delete.useMutation();
 
   return (
     <>
@@ -57,8 +57,13 @@ export function DeleteUserButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          handleDelete({ id }, deleteMutation, 'Sản phẩm', () => {
-            untils.User.invalidate();
+          confirmDelete({
+            id: { id },
+            mutationDelete,
+            entityName: 'người dùng',
+            callback: () => {
+              utils.User.invalidate();
+            }
           });
         }}
       >

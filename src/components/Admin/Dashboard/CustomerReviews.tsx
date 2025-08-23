@@ -1,4 +1,4 @@
-import { Card, Center, RingProgress, Text, Title } from '@mantine/core';
+import { Box, Card, Center, RingProgress, Text, Title } from '@mantine/core';
 
 interface CustomerReviewsProps {
   rating: number;
@@ -25,14 +25,14 @@ export default function CustomerReviews({ rating, totalReviews }: CustomerReview
             }
           ]}
           label={
-            <div className='text-center'>
+            <Box className='text-center'>
               <Text size='xl' fw={700} className='text-gray-800'>
                 {displayRating.toFixed(1)}%
               </Text>
               <Text size='sm' c='dimmed'>
                 Hài lòng
               </Text>
-            </div>
+            </Box>
           }
         />
       </Center>

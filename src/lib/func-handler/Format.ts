@@ -1,3 +1,5 @@
+import { EMPTY_STRING, VND_SYMBOL } from '~/constants';
+
 export const formatDate = (date?: any) => {
   return new Date(date || new Date()).toLocaleDateString();
 };
@@ -29,9 +31,18 @@ export function formatTimeAgo(date: Date | string | number): string {
   return `${diffInYears} năm trước`;
 }
 
-export const formatTransDate = (date: Date) => {
-  const pad = (num: number) => num.toString().padStart(2, '0');
-  return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}`;
+export const formatTransDate = (iso: string): string => {
+  const date = new Date(iso);
+  const pad = (n: number) => n.toString().padStart(2, '0');
+
+  return (
+    date.getUTCFullYear().toString() +
+    pad(date.getUTCMonth() + 1) +
+    pad(date.getUTCDate()) +
+    pad(date.getUTCHours()) +
+    pad(date.getUTCMinutes()) +
+    pad(date.getUTCSeconds())
+  );
 };
 
 export const formatCustomTimestamp = (timestamp: string) => {
@@ -54,4 +65,13 @@ export const formatDataExcel = (mapFields: Record<string, string>, rows: any[]) 
     }
     return formattedRow;
   });
+};
+
+export const formatPriceLocaleVi = (value: number | string, suffix = VND_SYMBOL) => {
+  const valStr =
+    (typeof value === 'number' && Number.isFinite(value)) ||
+    (typeof value === 'string' && !Number.isNaN(parseFloat(value)))
+      ? value.toString()
+      : EMPTY_STRING;
+  return valStr ? valStr.replace(/\B(?<!\,\d*)(?=(\d{3})+(?!\d))/g, '.') + suffix : EMPTY_STRING;
 };

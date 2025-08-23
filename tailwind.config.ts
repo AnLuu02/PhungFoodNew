@@ -8,19 +8,28 @@ export default {
   theme: {
     extend: {
       colors: {
+        // subColor: '#f8c144',
+        // mainColor: '#00BFA6',
         subColor: '#f8c144',
-        // subColor: '#FF7043',
-        // mainColor: '#008b4b'
-        mainColor: '#00BFA6',
+        mainColor: '#008b4b',
         dark: {
-          background: '#1e1e1e', // nền tổng thể
-          card: '#2a2a2a', // nền thẻ
-          surface: '#333333', // menu/dropdown
-          text: '#e0e0e0', // màu chữ chính
-          muted: '#9ca3af', // chữ phụ/subtext
-          border: '#444444', // border nhẹ
-          accent: '#00BFA6' // màu nhấn chung (icon, link...)
+          background: '#1e1e1e',
+          // card: '#2a2a2a',
+          card: '#2E2E2E',
+          surface: '#333333',
+          text: '#e0e0e0',
+          dimmed: '#424242',
+          muted: '#9ca3af',
+          border: '#444444',
+          accent: '#00BFA6'
         }
+      },
+      borderRadius: {
+        xs: '0.125rem',
+        sm: '0.25rem',
+        md: '0.5rem',
+        lg: '1rem',
+        xl: '2rem'
       },
       backgroundImage: {
         // mainColor: 'linear-gradient(135deg, #228be6 0%, #7048e8 100%)'
@@ -66,6 +75,13 @@ export default {
         fadeBottom: 'fadeBottom 0.3s ease-in-out',
         pulse: 'pulse 1.5s ease-in-out infinite'
       }
+    },
+    screens: {
+      xs: '576px', // 30em
+      sm: '768px', // 48em
+      md: '992px', // 64em
+      lg: '1200px', // 74em
+      xl: '1440px' // 90em
     }
   },
   plugins: []

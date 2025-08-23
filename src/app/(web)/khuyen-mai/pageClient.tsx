@@ -5,6 +5,7 @@ import {
   CardSection,
   Center,
   Container,
+  Divider,
   Flex,
   Grid,
   GridCol,
@@ -13,9 +14,12 @@ import {
   Space,
   Stack,
   Tabs,
-  Text
+  Text,
+  ThemeIcon,
+  Title
 } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
+import { IconGift } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
@@ -32,8 +36,10 @@ const ITEMS_PER_PAGE = 4;
 export default function FoodPromotionPageClient({ voucherData, productData }: any) {
   const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState<string | null>('all');
-  const [openDetail, setOpenDetail] = useState<any>({});
-
+  const [openDetail, setOpenDetail] = useState<{ opened: boolean; voucherDetail: any }>({
+    opened: false,
+    voucherDetail: {}
+  });
   const filteredPromotions = useMemo(() => {
     if (activeTab === 'all') return voucherData || [];
     return voucherData?.filter((promo: any) => promo.type === activeTab) || [];
@@ -48,14 +54,13 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
 
   return (
     <>
-      <Card radius={'lg'} p={0} className='hidden bg-gray-100 md:block'>
+      <Card radius={'lg'} p={0} className='hidden bg-gray-100 sm:block'>
         <CardSection pos={'relative'}>
           <Box w={'100%'} h={500} pos={'relative'}>
             <Image
               loading='lazy'
-              className='cursor-pointer rounded-2xl transition-all duration-500 ease-in-out hover:scale-105'
+              className='cursor-pointer rounded-2xl object-cover transition-all duration-500 ease-in-out hover:scale-105'
               fill
-              style={{ objectFit: 'cover' }}
               alt='Khuyến mãi đặc biệt'
               src='/images/banner/banner_food.png'
             />
@@ -82,7 +87,7 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
           </Flex>
         </CardSection>
       </Card>
-      <Space h='xl' className='hidden md:block' />
+      <Space h='xl' className='hidden sm:block' />
 
       <Container pl={0} pr={0} size='xl'>
         <LayoutAds />
@@ -94,17 +99,42 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
             <Space h='xl' />
           </>
         )}
-        {voucherData && voucherData?.length > 0 && (
-          <Card withBorder shadow='sm' padding='lg' radius='md'>
-            <Tabs
-              variant='pills'
-              value={activeTab}
-              onChange={value => {
-                setPage(1);
-                setActiveTab(value);
-              }}
-            >
-              <Tabs.List mb={'md'} className='bg-gray-100'>
+        <Card withBorder shadow='sm' padding='lg' radius='md'>
+          <Tabs
+            variant='pills'
+            value={activeTab}
+            onChange={value => {
+              setPage(1);
+              setActiveTab(value);
+            }}
+            styles={{
+              tab: {
+                border: '1px solid',
+                marginRight: 6
+              }
+            }}
+            classNames={{
+              tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
+            }}
+          >
+            <Flex align={'center'} gap={'md'} direction={{ base: 'column', sm: 'row' }} justify={'space-between'}>
+              <Group align='center'>
+                <ThemeIcon
+                  size='xl'
+                  classNames={{
+                    root: 'bg-subColor text-white'
+                  }}
+                >
+                  <IconGift />
+                </ThemeIcon>
+                <Stack gap={1}>
+                  <Title order={3}>Danh sách voucher</Title>
+                  <Text size='xs' c={'dimmed'}>
+                    Có 0 voucher
+                  </Text>
+                </Stack>
+              </Group>
+              <Tabs.List>
                 <Group gap={0}>
                   <Tabs.Tab size={'md'} fw={700} value='all'>
                     Tất cả
@@ -117,45 +147,49 @@ export default function FoodPromotionPageClient({ voucherData, productData }: an
                   </Tabs.Tab>
                 </Group>
               </Tabs.List>
+            </Flex>
 
-              <Tabs.Panel value={activeTab || 'all'}>
-                <Grid mt='md'>
-                  {paginatedPromotions?.length > 0 ? (
-                    paginatedPromotions.map((promo: any) => (
-                      <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
-                        <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
-                      </GridCol>
-                    ))
-                  ) : (
-                    <Empty
-                      title='Không có khuyến mãi nào'
-                      content='Vui lòng quay lại sau. Xin cảm ơn!'
-                      size='xs'
-                      hasButton={false}
-                    />
-                  )}
-                </Grid>
-              </Tabs.Panel>
-            </Tabs>
+            <Divider my='sm' />
 
-            <Center>
-              <Pagination
-                classNames={{ control: 'bg-mainColor' }}
-                mt='xl'
-                size='md'
-                total={totalPages}
-                value={page}
-                onChange={setPage}
-              />
-            </Center>
-            <ModalDetailVoucher
-              opened={openDetail?.type}
-              onClose={() => setOpenDetail({})}
-              data={openDetail}
-              products={[]}
+            <Tabs.Panel value={activeTab || 'all'}>
+              <Grid mt='md'>
+                {paginatedPromotions?.length > 0 ? (
+                  paginatedPromotions.map((promo: any) => (
+                    <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
+                      <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
+                    </GridCol>
+                  ))
+                ) : (
+                  <Empty
+                    title='Không có khuyến mãi nào'
+                    content='Vui lòng quay lại sau. Xin cảm ơn!'
+                    size='xs'
+                    hasButton={false}
+                  />
+                )}
+              </Grid>
+            </Tabs.Panel>
+          </Tabs>
+
+          <Center>
+            <Pagination
+              classNames={{
+                control:
+                  'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
+              }}
+              mt='xl'
+              size='md'
+              total={totalPages}
+              value={page}
+              onChange={setPage}
             />
-          </Card>
-        )}
+          </Center>
+          <ModalDetailVoucher
+            openDetail={openDetail}
+            onClose={() => setOpenDetail({ opened: false, voucherDetail: {} })}
+            products={[]}
+          />
+        </Card>
       </Container>
     </>
   );

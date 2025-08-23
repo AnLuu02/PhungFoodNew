@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { api } from '~/trpc/react';
 
-const PaymentForm = ({ control }: any) => {
+const PaymentForm = ({ control, errors }: any) => {
   const { data: paymentData, isLoading } = api.Payment.getAll.useQuery();
   const payment = paymentData ?? [];
   const [paymentMethod, setPaymentMethod] = useState('cod');
@@ -59,50 +59,6 @@ const PaymentForm = ({ control }: any) => {
     }
   ];
   return (
-    // <Card shadow='sm' padding='lg' radius='md' withBorder>
-    //   <Title order={3} className='mb-4 font-quicksand'>
-    //     Hình thức thanh toán
-    //   </Title>
-    //   <ScrollAreaAutosize mah={480} px='0' scrollbarSize={5}>
-    //     <Paper withBorder p='md' radius='md'>
-    //       <Text size='md' fw={700}>
-    //         Vui lòng chọn hình thức thanh toán:
-    //       </Text>
-    //       {isLoading ? (
-    //         <Stack mt={5} gap={5}>
-    //           <Skeleton height={20} radius='sm' />
-    //           <Skeleton height={20} radius='sm' />
-    //           <Skeleton height={20} radius='sm' />
-    //         </Stack>
-    //       ) : (
-    //         <Controller
-    //           control={control}
-    //           name='paymentId'
-    //           render={({ field, fieldState }) => (
-    //             <Radio.Group
-    //               mt='sm'
-    //               value={field.value}
-    //               onChange={value => {
-    //                 field.onChange(value);
-    //               }}
-    //               name='paymentId'
-    //               className='mb-4'
-    //             >
-    //               <Group mt='sm'>
-    //                 {payment?.map(
-    //                   (item: any, index: number) =>
-    //                     item.type === LocalPaymentType.E_WALLET && (
-    //                       <Radio key={index} value={item.id} label={item.name} error={fieldState.error?.message} />
-    //                     )
-    //                 )}
-    //               </Group>
-    //             </Radio.Group>
-    //           )}
-    //         />
-    //       )}
-    //     </Paper>
-    //   </ScrollAreaAutosize>
-    // </Card>
     <Paper withBorder p='md' radius='md' mb='md'>
       <Box mb='md'>
         <Title order={5} mb='md' fw={700} className='font-quicksand'>
@@ -129,6 +85,7 @@ const PaymentForm = ({ control }: any) => {
                   }}
                   name='paymentId'
                   className='mb-4'
+                  error={errors.paymentId?.message}
                 >
                   <Paper withBorder p='md' radius='md'>
                     {payment?.map((item: any, index: number) => (
@@ -150,11 +107,11 @@ const PaymentForm = ({ control }: any) => {
                             </Text>
                           </Flex>
                         }
+                        error={errors.paymentId ? true : false}
                         color='blue'
                         size='sm'
                         key={index}
                         value={item.id}
-                        error={fieldState.error?.message}
                       />
                     ))}
                   </Paper>
@@ -162,7 +119,7 @@ const PaymentForm = ({ control }: any) => {
               )}
             />
           )}
-          {paymentOptions.map(option => (
+          {/* {paymentOptions.map(option => (
             <Paper
               key={option.id}
               withBorder
@@ -189,7 +146,7 @@ const PaymentForm = ({ control }: any) => {
                 </Text>
               </Flex>
             </Paper>
-          ))}
+          ))} */}
         </Stack>
       </Box>
 

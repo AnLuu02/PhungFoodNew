@@ -95,7 +95,7 @@ const LayoutCarouselSimple = () => {
         mih={500}
         h={{ base: 'max-content', md: 500 }}
         radius={'lg'}
-        className='dark:bg-dark-card bg-gray-100'
+        className='bg-gray-100 dark:bg-dark-card'
         p={0}
       >
         <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
@@ -139,8 +139,7 @@ const LayoutCarouselSimple = () => {
             slideSize={{ base: '100%', sm: '50%', md: '25%' }}
             slideGap={rem(20)}
             h={320}
-            dragFree
-            align='start'
+            align='center'
             containScroll='trimSnaps'
             withControls={false}
             slidesToScroll={1}

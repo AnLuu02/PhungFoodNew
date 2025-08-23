@@ -5,8 +5,8 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconClock, IconWorld } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
+import ControlModeTheme from '../../../ControlModeTheme';
 import UserSection from '../../../UserSection';
-import ControlModeTheme from '../../ControlModeTheme';
 
 export const Header1 = ({ restaurant }: any) => {
   const restaurantData = restaurant ?? {};
@@ -49,11 +49,11 @@ export const Header1 = ({ restaurant }: any) => {
 
           <Menu position='bottom-end' shadow='md'>
             <Menu.Target>
-              <ActionIcon variant='subtle' color='gray.0' radius='xl' className='hidden lg:block'>
+              <ActionIcon variant='subtle' color='gray.0' radius='xl' className='hidden md:block'>
                 <IconWorld size={18} />
               </ActionIcon>
             </Menu.Target>
-            <Menu.Dropdown className='hidden lg:block'>
+            <Menu.Dropdown className='hidden md:block'>
               <Menu.Item
                 onClick={() => setLanguage('vn')}
                 leftSection={
@@ -94,7 +94,7 @@ export const Header1 = ({ restaurant }: any) => {
             pos={{ base: 'fixed', sm: 'unset', md: 'unset', lg: 'fixed' }}
             left={{ base: 5, sm: 0, md: 0, lg: 5 }}
             top={{ base: 8, sm: 15, md: 0, lg: 8 }}
-            className='md:hidden lg:block'
+            className='sm:hidden md:block'
           >
             <ControlModeTheme />
           </Box>

@@ -8,11 +8,8 @@ import {
   rem,
   ScrollArea,
   Stack,
-  Switch,
   Text,
-  UnstyledButton,
-  useComputedColorScheme,
-  useMantineColorScheme
+  UnstyledButton
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import {
@@ -24,18 +21,16 @@ import {
   IconDatabaseDollar,
   IconImageInPicture,
   IconLayoutDashboard,
-  IconLighter,
   IconLogout,
   IconMenuOrder,
-  IconMoon,
   IconSettings,
-  IconSun,
   IconTicket,
   IconUser
 } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { breakpoints } from '~/constants';
+import ControlModeTheme from '../ControlModeTheme';
 import { GlobalSearch } from '../Search/GlobalSearch';
 
 const navItems = [
@@ -86,82 +81,61 @@ const navItems = [
 ];
 
 export default function Navbar() {
-  const { colorScheme, setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm - 1}px)`);
-  const isDesktop = useMediaQuery(`(min-width:1024px)`);
-
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { data: user } = useSession();
 
   return (
     <>
-      {!isDesktop && (
-        <Group px={'md'} mt={'md'} align='flex-end'>
-          <Menu width={200} position='bottom-end' transitionProps={{ transition: 'fade-down' }} offset={0} withinPortal>
-            <Menu.Target>
-              <UnstyledButton
-                className={`flex items-center rounded-full p-1 transition-colors duration-200 hover:opacity-95`}
-              >
-                <Group gap={7}>
-                  <Avatar src={user?.user?.image} alt='User avatar' radius='lg' size={30} />
-                  <div className='text-left'>
-                    <Text fw={700} size='sm' lh={1}>
-                      {user?.user?.name}
-                    </Text>
-                    <Text size='xs' fw={700} c={'dimmed'}>
-                      {user?.user?.email}
-                    </Text>
-                  </div>
-                  <IconChevronDown style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
-                </Group>
-              </UnstyledButton>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Group fw={500} pl={'xs'}>
-                <IconLighter fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-                <Switch
-                  size='md'
-                  label={<Text size='sm'>Chế độ nền</Text>}
-                  labelPosition='left'
-                  onChange={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-                  onLabel={<IconSun style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
-                  offLabel={<IconMoon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />}
-                />
+      <Group px={'md'} mt={'md'} align='flex-end' className='lg:hidden'>
+        <Menu width={200} position='bottom-end' transitionProps={{ transition: 'fade-down' }} offset={0} withinPortal>
+          <Menu.Target>
+            <UnstyledButton
+              className={`flex items-center rounded-full p-1 transition-colors duration-200 hover:opacity-95`}
+            >
+              <Group gap={7}>
+                <Avatar src={user?.user?.image} alt='User avatar' radius='lg' size={30} />
+                <Box className='text-left'>
+                  <Text fw={700} size='sm' lh={1}>
+                    {user?.user?.name}
+                  </Text>
+                  <Text size='xs' fw={700} c={'dimmed'}>
+                    {user?.user?.email}
+                  </Text>
+                </Box>
+                <IconChevronDown style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
               </Group>
-
-              <Divider />
-              <Link href={`/thong-tin`} className='text-white'>
-                <Menu.Item
-                  fw={500}
-                  leftSection={
-                    <IconUser fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-                  }
-                >
-                  Thông tin cá nhân
-                </Menu.Item>
-              </Link>
-              <Divider />
-
+            </UnstyledButton>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <ControlModeTheme />
+            <Divider />
+            <Link href={`/thong-tin`} className='text-white'>
               <Menu.Item
                 fw={500}
-                leftSection={
-                  <IconLogout fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-                }
-                color='white'
-                mt={'xs'}
-                className='bg-red-500 hover:bg-red-600'
-                onClick={() => {
-                  signOut({ callbackUrl: 'https://www.facebook.com/' });
-                }}
+                leftSection={<IconUser fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
               >
-                Đăng xuất
+                Thông tin cá nhân
               </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+            </Link>
+            <Divider />
 
-          {isMobile && <GlobalSearch width={400} />}
-        </Group>
-      )}
+            <Menu.Item
+              fw={500}
+              leftSection={<IconLogout fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+              color='white'
+              mt={'xs'}
+              className='bg-red-500 hover:bg-red-600'
+              onClick={() => {
+                signOut({ callbackUrl: 'https://www.facebook.com/' });
+              }}
+            >
+              Đăng xuất
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+
+        {isMobile && <GlobalSearch width={400} />}
+      </Group>
       <ScrollArea.Autosize scrollbarSize={6}>
         <Stack p={10} gap='xs'>
           {navItems.map(item => {
@@ -176,6 +150,9 @@ export default function Navbar() {
                   }
                   leftSection={<item.icon size={16} />}
                   childrenOffset={28}
+                  classNames={{
+                    root: 'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
+                  }}
                 >
                   {item.children.map(child => (
                     <Box key={child.label} py={'xs'} pl={'md'} w={'100%'}>

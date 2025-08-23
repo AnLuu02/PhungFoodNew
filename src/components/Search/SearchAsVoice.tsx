@@ -141,7 +141,6 @@ export default function VoiceSearchModal() {
         padding='lg'
       >
         <Stack>
-          {/* Hướng dẫn sử dụng */}
           <Box className='space-y-2 rounded-lg bg-amber-50 p-2'>
             <Group>
               <IconLighter size={24} className='text-amber-500' />

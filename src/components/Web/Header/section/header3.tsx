@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
-import ControlModeTheme from '../../ControlModeTheme';
+import ControlModeTheme from '../../../ControlModeTheme';
 import DynamicCartButton from '../components/DynamicCartButton';
 import NavigationHeader from '../components/NavigationHeader';
 import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
@@ -25,9 +25,9 @@ const Header3 = ({ categories, subCategories }: any) => {
       className='sticky top-0 z-[100] bg-white text-black dark:bg-dark-background dark:text-dark-text'
       direction={{ base: 'row', md: 'row' }}
     >
-      <Burger opened={opened} onClick={toggle} aria-label='Toggle navigation' className='lg:hidden' />
+      <Burger opened={opened} onClick={toggle} aria-label='Toggle navigation' className='md:hidden' />
       <Flex gap={{ base: 'md', lg: 0, xl: 'md' }} direction={{ base: 'row-reverse', xl: 'row' }} align={'center'}>
-        <Box className='hidden md:order-3 md:block lg:hidden'>
+        <Box className='hidden sm:order-3 sm:block md:hidden'>
           <Link href={'/goi-mon-nhanh'}>
             <Button size='sm' radius={'xl'} variant='subtle' px={'md'} className='bg-red-600 text-white'>
               <Text fw={700} size='sm'>
@@ -36,12 +36,12 @@ const Header3 = ({ categories, subCategories }: any) => {
             </Button>
           </Link>
         </Box>
-        <Box className='hidden md:order-2 md:block lg:hidden'>
+        <Box className='hidden sm:order-2 sm:block md:hidden'>
           <Button variant='outline' className='border-mainColor text-mainColor' radius={'xl'} leftSection='Chế độ'>
             <ControlModeTheme />
           </Button>
         </Box>
-        <Box className='md:order-1' p={0} m={0}>
+        <Box className='sm:order-1' p={0} m={0}>
           <Menu
             shadow='md'
             classNames={{
@@ -55,7 +55,7 @@ const Header3 = ({ categories, subCategories }: any) => {
           >
             <Menu.Target>
               <Button
-                className='bg-subColor text-black hover:bg-mainColor hover:text-white'
+                className='bg-subColor text-black duration-200 hover:bg-mainColor hover:text-white'
                 radius={'sm'}
                 size='sm'
                 px={0}
@@ -105,7 +105,7 @@ const Header3 = ({ categories, subCategories }: any) => {
             </Menu.Dropdown>
           </Menu>
         </Box>
-        <Box className='md:order-4 lg:fixed lg:right-[-40px] lg:top-[45%] xl:static'>
+        <Box className='sm:order-4 md:fixed md:right-[-40px] md:top-[45%] lg:static'>
           <DynamicCartButton />
         </Box>
       </Flex>

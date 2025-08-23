@@ -2,16 +2,15 @@
 
 import { useLocalStorage } from '@mantine/hooks';
 import BButton, { IBButton } from '~/components/Button';
+import { flyToCart, getVisibleToEl } from '~/lib/button-handle/FlyToCart';
 
 export default function ButtonAddToCart({
   product,
-  quantity,
   style,
   handleAfterAdd,
   notify
 }: {
   product: any;
-  quantity: number;
   style: IBButton;
   handleAfterAdd: () => void;
   notify: (title?: string, message?: string) => void;
@@ -22,15 +21,19 @@ export default function ButtonAddToCart({
     <BButton
       {...style}
       onClick={() => {
+        const to = getVisibleToEl('.cart-btn');
+        const from = document.getElementById(`productImage-${product?.id}`);
+        if (from && to) flyToCart({ fromEl: from, toEl: to, imageUrl: from?.getAttribute('src') || '' });
+
         const existingItem = cart.find((item: any) => item.id === product?.id);
         if (existingItem) {
           setCart(
             cart.map((item: any) =>
-              item.id === product?.id ? { ...item, quantity: quantity + existingItem.quantity } : item
+              item.id === product?.id ? { ...item, quantity: product.quantity + existingItem.quantity } : item
             )
           );
         } else {
-          setCart([...cart, { ...product, quantity: quantity }]);
+          setCart([...cart, { ...product, quantity: product.quantity }]);
         }
         notify('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.');
         handleAfterAdd();

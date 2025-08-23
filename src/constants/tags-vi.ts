@@ -9,6 +9,7 @@ const tags: Record<string, string> = {
   'goi-mon-nhanh': 'Mua nhanh',
   'thanh-toan': 'Thanh toán',
   'tin-tuc': 'Tin tức',
+  'chinh-sach': 'Chính sách',
   'dang-nhap': 'Đăng nhập',
   'dang-ki': 'Đăng kí',
   'san-pham': 'Sản phẩm',
@@ -106,7 +107,11 @@ const tags: Record<string, string> = {
   'banh-da-lon': 'Bánh da lợn',
   'banh-khoai-mo-chien': 'Bánh khoai mỡ chiên',
   'banh-trang-tac': 'Bánh tráng tắc',
-  'chao-ga-xe-phay': 'Cháo gà xé phay'
+  'chao-ga-xe-phay': 'Cháo gà xé phay',
+  'nem-nuong': 'Nem nướng',
+  'snack-bim-bim': 'Snack (Bim bim)',
+  'keo-ngot': 'Kẹo ngọt',
+  'rau-cau': 'Rau câu'
 };
 
 export default tags;

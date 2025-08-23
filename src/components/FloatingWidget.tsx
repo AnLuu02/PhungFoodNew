@@ -3,7 +3,7 @@ import { IconChevronCompactLeft, IconMessageCircle } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { api } from '~/trpc/server';
-import Chatbox from './Web/components/Chatbox';
+import Chatbox from './Chatbox';
 
 export default async function FloatingWidget() {
   const restaurant = await api.Restaurant.getOne();

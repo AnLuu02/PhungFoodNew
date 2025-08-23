@@ -1,16 +1,23 @@
 import { GridCol, Select, Textarea } from '@mantine/core';
-import { Controller } from 'react-hook-form';
+import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form';
+import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
+import { User } from '~/types/user';
 
-interface Props {
-  control: any;
-  errors: any;
-  watch: any;
-  provinces: any;
-  districts: any;
-  wards: any;
-}
-
-export default function AddressSection({ control, errors, watch, provinces, districts, wards }: Props) {
+export default function AddressSection({
+  control,
+  errors,
+  watch,
+  provinces,
+  districts,
+  wards
+}: {
+  control: Control<User, any, User>;
+  errors: FieldErrors<User>;
+  watch: UseFormWatch<User>;
+  provinces?: ProvinceResponse;
+  districts?: DistrictResponse;
+  wards?: WardResponse;
+}) {
   return (
     <>
       <GridCol span={4}>

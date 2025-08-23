@@ -315,22 +315,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             )}
           />
         </Grid.Col>
-        {/* <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='tag'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                leftSection={<IconTag size={18} stroke={1.5} />}
-                label='Tag'
-                placeholder='Sẽ tạo tự động'
-                error={errors.name?.message}
-                readOnly
-              />
-            )}
-          />
-        </Grid.Col> */}
+
         <Grid.Col span={6}>
           <Controller
             name='subCategoryId'

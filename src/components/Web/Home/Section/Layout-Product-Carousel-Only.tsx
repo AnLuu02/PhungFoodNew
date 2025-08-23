@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import BButton from '~/components/Button';
-import ProductCardCarouselVertical from '../components/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '../../Card/ProductCardCarouselVertical';
 
 type ISectionNoNav = {
   data?: any;
@@ -98,8 +98,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
               slideSize={{ base: '100%', sm: '33.3333%', md: '25%', xl: '20%' }}
               slideGap={rem(20)}
               h={320}
-              dragFree
-              align='start'
+              align='center'
               withControls={false}
               withIndicators
               getEmblaApi={setEmbla}

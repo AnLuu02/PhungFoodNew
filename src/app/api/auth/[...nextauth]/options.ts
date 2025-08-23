@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
           token.details = {
             id: userFromDb?.id,
             level: userFromDb?.level,
-            pointLevel: userFromDb?.pointLevel
+            pointUser: userFromDb?.pointUser
           };
         }
       } catch (error) {

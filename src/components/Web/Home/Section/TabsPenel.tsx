@@ -4,7 +4,7 @@ import { ActionIcon, Center, Flex, Group, rem, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
-import ProductCardCarouselVertical from '../components/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '../../Card/ProductCardCarouselVertical';
 
 const TabsPanelCarousel = ({ data }: any) => {
   const [embla, setEmbla] = useState<Embla | null>(null);
@@ -78,8 +78,7 @@ const TabsPanelCarousel = ({ data }: any) => {
           slideSize={{ base: '100%', sm: '33.33333%', md: '33.33333%', xl: '25%' }}
           slideGap={{ base: rem(20) }}
           h={320}
-          dragFree
-          align='start'
+          align='center'
           withControls={false}
           withIndicators
           slidesToScroll={1}

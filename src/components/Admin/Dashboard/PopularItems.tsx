@@ -91,7 +91,7 @@ export default function PopularItems({ products }: PopularItemsProps) {
           </TableThead>
           <TableTbody>
             {displayItems.map((item, index) => (
-              <TableTr key={index} className='transition-colors hover:bg-gray-50'>
+              <TableTr key={index} className='transition-colors hover:bg-mainColor/10'>
                 <TableTd>
                   <Group gap='sm'>
                     <Avatar src={item.image} size='sm' radius='md' className='border border-gray-200' />

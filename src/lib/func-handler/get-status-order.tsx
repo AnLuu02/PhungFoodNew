@@ -1,5 +1,13 @@
 import { OrderStatus } from '@prisma/client';
-import { IconCircleCheck, IconClock, IconTruckDelivery, IconUxCircle } from '@tabler/icons-react';
+import {
+  IconCheck,
+  IconCircleCheck,
+  IconClock,
+  IconTruck,
+  IconTruckDelivery,
+  IconUxCircle,
+  IconX
+} from '@tabler/icons-react';
 import { LocalOrderStatus } from '../zod/EnumType';
 
 const ORDER_STATUS_MAP: Record<
@@ -41,13 +49,53 @@ export const getStatusColor = (status: any) => ORDER_STATUS_MAP[status]?.color ?
 export const getStatusText = (status: any) => ORDER_STATUS_MAP[status]?.text ?? 'Không xác định';
 
 export const getStatusIcon = (status: any) => ORDER_STATUS_MAP[status]?.icon ?? null;
-export const getTotalOrderStatus = (mockOrders: any) => {
-  const completed = mockOrders.filter((order: any) => order.status === LocalOrderStatus.COMPLETED).length || 0;
-  const pending = mockOrders.filter((order: any) => order.status === LocalOrderStatus.PENDING).length || 0;
-  const delivered = mockOrders.filter((order: any) => order.status === LocalOrderStatus.DELIVERED).length || 0;
-  const processing = mockOrders.filter((order: any) => order.status === LocalOrderStatus.PROCESSING).length || 0;
-  const canceled = mockOrders.filter((order: any) => order.status === LocalOrderStatus.CANCELLED).length || 0;
-  const total = mockOrders.length || 0;
-  const completionRate = (completed / total) * 100 || 0;
-  return { completed, processing, canceled, completionRate, pending, delivered };
+
+export const getTotalOrderStatus = (orders: any[]) => {
+  const objStatus = orders.reduce((acc: any, order: any) => {
+    acc[order.status] = (acc[order.status] || 0) + 1;
+    return acc;
+  }, {});
+  const totalOrders = orders.length || 0;
+  const completionRate = (objStatus.COMPLETED / totalOrders) * 100 || 0;
+  return {
+    [LocalOrderStatus.COMPLETED]: objStatus.COMPLETED,
+    [LocalOrderStatus.PROCESSING]: objStatus.PROCESSING,
+    [LocalOrderStatus.CANCELLED]: objStatus.CANCELLED,
+    completionRate,
+    [LocalOrderStatus.PENDING]: objStatus.PENDING,
+    [LocalOrderStatus.DELIVERED]: objStatus.DELIVERED
+  };
 };
+
+export const ORDER_STATUS_UI = [
+  {
+    key: LocalOrderStatus.COMPLETED,
+    label: 'Hoàn thành',
+    color: '#008236',
+    icon: <IconCheck size={22} color='#008236' />
+  },
+  {
+    key: LocalOrderStatus.PENDING,
+    label: 'Chờ xử lý',
+    color: '#155DFC',
+    icon: <IconClock size={22} color='#155DFC' />
+  },
+  {
+    key: LocalOrderStatus.DELIVERED,
+    label: 'Đang giao',
+    color: '#009689',
+    icon: <IconTruck size={22} color='#009689' />
+  },
+  {
+    key: LocalOrderStatus.CANCELLED,
+    label: 'Đã hủy',
+    color: '#E7000B',
+    icon: <IconX size={22} color='#E7000B' />
+  },
+  {
+    key: LocalOrderStatus.PROCESSING,
+    label: 'Chưa thanh toán',
+    color: '#FF6900',
+    icon: <IconClock size={22} color='#FF6900' />
+  }
+];

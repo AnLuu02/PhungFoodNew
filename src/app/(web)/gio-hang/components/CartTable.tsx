@@ -1,6 +1,6 @@
 import { Badge, Box, Button, Group, NumberInput, Stack, Table, Text } from '@mantine/core';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 const CartTable = ({ cart, setCart, updateQuantity }: any) => {
@@ -18,16 +18,16 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
       <Table.Tbody>
         {cart.map((item: any) => (
           <Table.Tr key={item.id}>
-            <Table.Td>
+            <Table.Td className='text-sm'>
               <Group wrap='nowrap'>
-                <Box w={80} h={80} className='hidden overflow-hidden rounded-md md:block' pos={'relative'}>
+                <Box w={80} h={80} className='hidden overflow-hidden rounded-md sm:block' pos={'relative'}>
                   <Image
                     loading='lazy'
                     src={
                       getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                     }
                     fill
-                    style={{ objectFit: 'cover' }}
+                    className='object-cover'
                     alt={item.name}
                   />
                 </Box>
@@ -57,12 +57,12 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
                 </Stack>
               </Group>
             </Table.Td>
-            <Table.Td>
+            <Table.Td className='text-sm'>
               <Text className='text-red-500' size='md' fw={700}>
                 {item.price.toLocaleString()}₫
               </Text>
             </Table.Td>
-            <Table.Td>
+            <Table.Td className='text-sm'>
               <NumberInput
                 thousandSeparator=','
                 clampBehavior='strict'
@@ -75,15 +75,15 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
                 }}
                 min={0}
                 max={Number(item?.availableQuantity) || 100}
-                style={{ width: '80px' }}
+                className='w-[80px]'
               />
             </Table.Td>
-            <Table.Td>
+            <Table.Td className='text-sm'>
               <Text className='text-red-500' size='md' fw={700}>
                 {formatPriceLocaleVi(item.discount * item.quantity)}
               </Text>
             </Table.Td>
-            <Table.Td>
+            <Table.Td className='text-sm'>
               <Text className='text-red-500' size='md' fw={700}>
                 {formatPriceLocaleVi((item.price - item.discount) * item.quantity)}
               </Text>

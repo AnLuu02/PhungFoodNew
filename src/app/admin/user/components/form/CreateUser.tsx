@@ -54,7 +54,7 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
         type: LocalAddressType.USER
       },
       roleId: '',
-      pointLevel: 0,
+      pointUser: 0,
       level: LocalUserLevel.BRONZE
     }
   });

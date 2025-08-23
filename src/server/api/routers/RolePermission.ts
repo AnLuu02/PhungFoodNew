@@ -1,6 +1,9 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-
+type RoleWithPermissions = Prisma.RoleGetPayload<{
+  include: { permissions: true };
+}>;
 export const rolePermissionRouter = createTRPCRouter({
   find: publicProcedure
     .input(
@@ -65,13 +68,17 @@ export const rolePermissionRouter = createTRPCRouter({
     //     include: { permissions: true }
     //   });
     // }
-    return roles;
+    return roles satisfies RoleWithPermissions[];
   }),
   getOne: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
-    return await ctx.db.role.findUnique({
+    let role = await ctx.db.role.findUnique({
       where: { id: input.id },
       include: { permissions: true }
     });
+    if (!role) {
+      throw new Error('Role not found');
+    }
+    return role satisfies RoleWithPermissions;
   }),
   getOnePermission: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
     return await ctx.db.permission.findUnique({

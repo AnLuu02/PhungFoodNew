@@ -2,7 +2,7 @@
 import { Flex, Grid, GridCol } from '@mantine/core';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
-import ProductCardCarouselVertical from '~/components/Web/Home/components/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '~/components/Web/Card/ProductCardCarouselVertical';
 
 export const MenuList = ({ products, responseData }: { products: any; responseData: any }) => {
   return (

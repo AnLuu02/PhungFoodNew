@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 export const CreateTagVi = async (data: { old: any; new: any }) => {
-  const filePath = path.join(process.cwd(), 'src', 'app', 'lib', 'utils', 'constants', 'tags-vi.ts');
+  const filePath = path.join(process.cwd(), 'src', 'constants', 'tags-vi.ts');
   let content = await fs.readFile(filePath, 'utf8');
 
   const match = content.match(/const tags: Record<string, string> = ({[\s\S]*?});/);

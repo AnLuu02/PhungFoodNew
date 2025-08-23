@@ -1,93 +1,70 @@
 'use client';
-import { Group, Table, Text } from '@mantine/core';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import clsx from 'clsx';
+
+import { Box, Group, Table, Text } from '@mantine/core';
 import SearchQueryParams from '~/components/Search/SearchQueryParams';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 
 export default function TableRevenue({ revenues, s }: { revenues: any; s: string }) {
   const currentItems = revenues || [];
-  const columns: ColumnDef<any>[] = [
-    {
-      header: s === 'user' ? 'Người dùng' : s === 'date' ? 'Ngày' : s === 'month' ? 'Tháng' : 'Năm',
-      accessorKey: s === 'user' ? 'user.name' : 'createdAt',
-      cell: info => {
-        if (s === 'user') {
-          return info.getValue();
-        }
-        const date = info.row.original.date;
-        const month = info.row.original.month;
-        const year = info.row.original.year;
-        return s === 'date' ? `${date}/${month}/${year}` : s === 'month' ? `${month}/${year}` : `${year}`;
-      }
-    },
-    {
-      header: 'Tổng đơn hàng',
-      accessorKey: 'totalOrders'
-    },
-    {
-      header: 'Tổng chi',
-      accessorKey: 'totalSpent',
-      cell: info => {
-        const totalSpent = info.row.original.totalSpent;
-        return formatPriceLocaleVi(totalSpent);
-      }
-    }
-  ];
 
-  const table = useReactTable({
-    data: currentItems,
-    columns,
-    getCoreRowModel: getCoreRowModel()
-  });
+  const firstColumnTitle = s === 'user' ? 'Người dùng' : s === 'date' ? 'Ngày' : s === 'month' ? 'Tháng' : 'Năm';
 
   return (
     <>
-      <Group pb={'lg'}>
-        <Group justify='space-between' mt={'md'} w={'100%'}>
+      <Group pb='lg'>
+        <Group justify='space-between' mt='md' w='100%'>
           <Text fw={500}>Số lượng bản ghi: {currentItems?.length || 0}</Text>
           <Group>
             <SearchQueryParams />
           </Group>
         </Group>
       </Group>
-      <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+
+      <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-            {table.getHeaderGroups().map((headerGroup, index) => (
-              <Table.Tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <Table.Th key={header.id} colSpan={header.colSpan} style={{ minWidth: 100 }}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </Table.Th>
-                ))}
-              </Table.Tr>
-            ))}
+            <Table.Tr>
+              <Table.Th>{firstColumnTitle}</Table.Th>
+              <Table.Th>Tổng đơn hàng</Table.Th>
+              <Table.Th>Tổng chi</Table.Th>
+            </Table.Tr>
           </Table.Thead>
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              table.getRowModel().rows.map((row, index) => (
-                <Table.Tr key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <Table.Td key={cell.id}>
-                      <Text size='sm'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Text>
-                    </Table.Td>
-                  ))}
+              currentItems.map((item: any, index: number) => (
+                <Table.Tr key={index}>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      {s === 'user'
+                        ? item.user?.name
+                        : s === 'date'
+                          ? `${item.date}/${item.month}/${item.year}`
+                          : s === 'month'
+                            ? `${item.month}/${item.year}`
+                            : item.year}
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>{item.totalOrders}</Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>{formatPriceLocaleVi(item.totalSpent)}</Text>
+                  </Table.Td>
                 </Table.Tr>
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
+                <Table.Td colSpan={3} className='bg-gray-100 text-center'>
                   <Text size='md' c='dimmed'>
-                    Không có bản ghi phù hợp./
+                    Không có bản ghi phù hợp.
                   </Text>
                 </Table.Td>
               </Table.Tr>
             )}
           </Table.Tbody>
         </Table>
-      </div>
+      </Box>
     </>
   );
 }

@@ -1,4 +1,3 @@
-// next.config.js
 const withBundleAnalyzer = (await import('@next/bundle-analyzer')).default({
   enabled: process.env.ANALYZE === 'true'
 });
@@ -40,5 +39,4 @@ const config = {
   }
 };
 
-// Export kèm analyzer
 export default withBundleAnalyzer(config);

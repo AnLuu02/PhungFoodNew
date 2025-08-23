@@ -19,7 +19,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
         pos={'relative'}
         className='z-[101] bg-gray-100 text-white dark:bg-dark-card dark:text-dark-text'
         direction={{ base: 'column', sm: 'row', md: 'row' }}
-        py={{ base: 20, md: 0 }}
+        py={{ base: 20, sm: 0 }}
         gap={{ base: 'md', md: 0 }}
       >
         <Link href={'/'}>
@@ -31,7 +31,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
           <SearchComponentClient subCategories={dataSubCategories} />
         </Box>
         <Group>
-          <Box className='hidden xl:block'>
+          <Box className='hidden lg:block'>
             <PromotionButton />
           </Box>
           <LikeButton />

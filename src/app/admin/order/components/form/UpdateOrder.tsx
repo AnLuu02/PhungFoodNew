@@ -42,7 +42,9 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
     resolver: zodResolver(orderSchema),
     defaultValues: {
       id: '',
-      total: 0,
+      finalTotal: 0,
+      discountAmount: 0,
+      originalTotal: 0,
       status: LocalOrderStatus.PROCESSING,
       userId: '',
       paymentId: '',
@@ -94,7 +96,9 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
     if (data?.id) {
       reset({
         id: data?.id,
-        total: data?.total,
+        finalTotal: data?.finalTotal || 0,
+        discountAmount: data?.discountAmount || 0,
+        originalTotal: data?.originalTotal || 0,
         status: data?.status,
         userId: data?.userId || '',
         paymentId: data?.paymentId || '',
@@ -125,7 +129,9 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
           where: { id: formData.id },
           data: {
             ...formData,
-            total: Number(formData.total) || 0,
+            finalTotal: Number(formData.finalTotal) || 0,
+            discountAmount: Number(formData.discountAmount) || 0,
+            originalTotal: Number(formData.originalTotal) || 0,
             orderItems: {
               deleteMany: {
                 id: {
@@ -159,7 +165,8 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
                 }
               }
             }
-          }
+          },
+          orderId: orderId
         });
 
         if (result.success) {
@@ -353,7 +360,7 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
             <GridCol span={6}>
               <Controller
                 control={control}
-                name='total'
+                name='finalTotal'
                 render={({ field: { onChange, onBlur, value, name } }) => (
                   <NumberInput
                     thousandSeparator=','
@@ -362,7 +369,7 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
                     readOnly
                     label='Tổng tiền (chỉ đọc)'
                     placeholder='Sẽ được tính ngay sau khi gọi món.'
-                    error={errors.total?.message}
+                    error={errors.finalTotal?.message}
                     value={value}
                     onChange={onChange}
                     onBlur={onBlur}

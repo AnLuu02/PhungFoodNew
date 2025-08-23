@@ -6,67 +6,70 @@ import BButton from '~/components/Button';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
-type IStylesButtonCheckout = {
-  title?: string;
-  radius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  fullWidth?: boolean;
-  w?: any;
-  h?: any;
-  variant?: 'filled' | 'light' | 'outline' | 'default';
-  disabled?: boolean;
-  loading?: boolean;
-  active?: boolean;
-  type?: 'button' | 'submit' | 'reset' | undefined;
-};
+import { IStylesButtonCheckout } from '~/types/other';
+
 export const ButtonCheckout = ({
   stylesButtonCheckout,
   data,
-  total,
+  finalTotal,
+  originalTotal,
+  discountAmount,
   onClick
 }: {
   stylesButtonCheckout: IStylesButtonCheckout;
   data: any;
-  total: any;
+  finalTotal: number;
+  originalTotal: number;
+  discountAmount: number;
   onClick?: any;
 }) => {
-  const [seletedVouchers] = useLocalStorage<any[]>({
-    key: 'vouchers',
+  const [appliedVouchers] = useLocalStorage<any[]>({
+    key: 'applied-vouchers',
     defaultValue: []
   });
   const { data: user } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const mutationOrder = api.Order.create.useMutation();
-  const order: any = data ?? [];
+  const orderItems: any = data ?? [];
   const handleCreateOrder = async () => {
     setLoading(true);
-    if (order?.length > 0) {
-      const resp: any = await mutationOrder.mutateAsync({
-        total: total,
-        status: LocalOrderStatus.PROCESSING,
-        userId: user?.user?.id || '',
-        orderItems: order?.map((item: any) => ({
-          productId: item.id,
-          quantity: item.quantity,
-          price: Number(item.price) || 0
-        })),
-        vouchers: seletedVouchers?.map((item: any) => item.id) || []
-      });
+    try {
+      if (orderItems?.length > 0) {
+        const resp = await mutationOrder.mutateAsync({
+          finalTotal: finalTotal,
+          originalTotal: originalTotal,
+          discountAmount: discountAmount,
+          status: LocalOrderStatus.PROCESSING,
+          userId: user?.user?.id || '',
+          orderItems: orderItems?.map((item: any) => ({
+            productId: item.id,
+            quantity: item.quantity,
+            note: item.note,
+            price: Number(item.price) || 0
+          })),
+          vouchers: appliedVouchers?.map((item: any) => item.id).filter(Boolean) || []
+        });
 
-      if (resp.success) {
-        router.push(`/thanh-toan/${resp.record.id}`);
+        if (resp.success) {
+          setLoading(true);
+          router.push(`/thanh-toan/${resp.record.id}`);
+        } else {
+          NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
+        }
       } else {
-        NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
+        NotifyError('Đơn hàng không tồn tại.', 'Đơn hàng không hợp lệ.');
       }
-    } else {
-      NotifyError('Lỗi!', 'Đơn hàng không hợp lệ.');
+    } catch (e) {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <BButton
       loading={loading}
-      disabled={loading || order?.length === 0}
+      disabled={loading || orderItems?.length === 0}
       {...stylesButtonCheckout}
       onClick={() => {
         if (user?.user?.email) {

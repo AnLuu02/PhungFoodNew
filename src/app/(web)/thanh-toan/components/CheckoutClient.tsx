@@ -15,24 +15,30 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import useSWR from 'swr';
 import { z } from 'zod';
 import BButton from '~/components/Button';
-import fetcher from '~/lib/func-handler/fetcher';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { NotifyError } from '~/lib/func-handler/toast';
-import { LocalAddressType } from '~/lib/zod/EnumType';
+import { LocalAddressType, LocalVoucherType } from '~/lib/zod/EnumType';
 import { deliverySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import CartItemPayment from './CartItemPayment';
 import DeliveryCard from './DeliveryCard';
 import PaymentForm from './PaymentForm';
-export default function CheckoutClient({ order, orderId }: any) {
+export default function CheckoutClient({ order }: { order: any }) {
   const [loading, setLoading] = useState(false);
-  const updateMutationOrder = api.Order.update.useMutation();
-  const { discount, subtotal, tax, total } = useMemo(() => {
+  const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
+  const mutationUpdateOrder = api.Order.update.useMutation();
+  const { discountAmountByVoucher, discount, originalTotal, tax, finalTotal } = useMemo(() => {
+    const originalTotal = order?.orderItems?.reduce((sum: any, item: any) => sum + item.price * item.quantity, 0);
+    const discountAmountByVoucher = (order?.vouchers ?? []).reduce((sum: any, item: any) => {
+      const value =
+        item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
+      return sum + value;
+    }, 0);
     const discount = order?.orderItems?.reduce((sum: any, item: any) => {
       if (item.product.discount > 0) {
         return sum + item.product.discount * item.quantity;
@@ -40,31 +46,26 @@ export default function CheckoutClient({ order, orderId }: any) {
       return sum;
     }, 0);
 
-    const subtotal = order?.orderItems?.reduce((total: any, item: any) => total + item.price * item.quantity, 0);
-    const tax = (subtotal - discount) * 0.1;
-    const total = subtotal + tax - discount;
-    return {
-      discount,
-      subtotal,
-      tax,
-      total
-    };
+    const tax = originalTotal * 0.1;
+    const finalTotal = originalTotal + tax - discount - discountAmountByVoucher;
+    return { discountAmountByVoucher, discount, originalTotal, tax, finalTotal };
   }, [order]);
 
   const {
     control,
     watch,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<z.infer<typeof deliverySchema> & { paymentId: string }>({
     resolver: zodResolver(
       deliverySchema.extend({
-        paymentId: z.string().min(1, 'Chọn phương thức thanh toán.')
+        paymentId: z.string({ required_error: 'Chọn phương thức thanh toán.' }).min(1, 'Chọn phương thức thanh toán.')
       })
     ),
     mode: 'onChange',
     defaultValues: {
-      paymentId: 'vnpay',
+      paymentId: undefined,
       name: '',
       email: '',
       phone: '',
@@ -84,37 +85,57 @@ export default function CheckoutClient({ order, orderId }: any) {
       orderId: ''
     }
   });
-  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+
+  const { data: provinces, provinceMap, error: provincesError, isLoading: loadingProvinces } = useProvinces();
+
   const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
 
-  const { data: districts } = useSWR<any>(
-    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
-    fetcher
-  );
+  const { data: districts, districtMap, isLoading: loadingDistricts } = useDistricts(debouncedProvinceId);
+  const { data: wards, wardMap, isLoading: loadingWards } = useWards(debouncedDistrictId);
 
-  const { data: wards } = useSWR<any>(
-    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
-    fetcher
-  );
+  useEffect(() => {
+    if (order?.id) {
+      reset({
+        name: order?.delivery?.name,
+        email: order?.delivery?.email,
+        phone: order?.delivery?.phone,
+        paymentId: order?.payment?.id,
+        orderId: order?.id,
+        address: {
+          provinceId: order?.delivery?.address?.provinceId,
+          districtId: order?.delivery?.address?.districtId,
+          wardId: order?.delivery?.address?.wardId,
+          province: order?.delivery?.address?.province,
+          district: order?.delivery?.address?.district,
+          ward: order?.delivery?.address?.ward,
+          fullAddress: order?.delivery?.address?.fullAddress,
+          postalCode: order?.delivery?.address?.postalCode || '',
+          detail: order?.delivery?.address?.detail,
+          type: LocalAddressType.DELIVERY
+        },
+        note: order?.delivery?.note
+      });
+    }
+  }, [order]);
 
   const onSubmit: SubmitHandler<z.infer<typeof deliverySchema> & { paymentId: string }> = async (
     formData
   ): Promise<void> => {
     setLoading(true);
     if (order) {
-      const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
-      const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
-      const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
-      const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+      const province = formData?.address?.provinceId && provinceMap?.[formData?.address?.provinceId];
+      const district = formData?.address?.districtId && districtMap?.[formData?.address?.districtId];
+      const ward = formData?.address?.wardId && wardMap?.[formData?.address?.wardId];
+      const fullAddress = `${formData.address?.detail || ''}, ${ward || ''}, ${district || ''}, ${province || ''}`;
 
-      const resp: any = await updateMutationOrder.mutateAsync({
-        where: { id: orderId },
+      const resp = await mutationUpdateOrder.mutateAsync({
+        where: { id: order.id },
         data: {
           paymentId: formData.paymentId,
           delivery: {
             upsert: {
-              where: { orderId: orderId },
+              where: { orderId: order.id },
               update: {
                 name: formData.name,
                 email: formData.email,
@@ -127,9 +148,9 @@ export default function CheckoutClient({ order, orderId }: any) {
                     provinceId: formData.address?.provinceId || '',
                     districtId: formData.address?.districtId || '',
                     wardId: formData.address?.wardId || '',
-                    province: province?.province_name || '',
-                    district: district?.district_name || '',
-                    ward: ward?.ward_name || '',
+                    province: province || '',
+                    district: district || '',
+                    ward: ward || '',
                     fullAddress
                   }
                 }
@@ -146,16 +167,17 @@ export default function CheckoutClient({ order, orderId }: any) {
                     provinceId: formData.address?.provinceId || '',
                     districtId: formData.address?.districtId || '',
                     wardId: formData.address?.wardId || '',
-                    province: province?.province_name || '',
-                    district: district?.district_name || '',
-                    ward: ward?.ward_name || '',
+                    province: province || '',
+                    district: district || '',
+                    ward: ward || '',
                     fullAddress
                   }
                 }
               }
             }
           }
-        }
+        },
+        orderId: order.id
       });
 
       if (resp.success) {
@@ -166,13 +188,18 @@ export default function CheckoutClient({ order, orderId }: any) {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              amount: order.total,
+              amount: order?.finalTotal || 0,
               orderId: order.id
             })
           });
           const { paymentUrl } = await response.json();
-
           if (paymentUrl) {
+            order.vouchers && order.vouchers.length > 0
+              ? await mutationUseVoucher.mutateAsync({
+                  userId: order?.user.id || '',
+                  voucherIds: order.vouchers.map((v: any) => v.id)
+                })
+              : null;
             window.location.href = paymentUrl;
           }
         } catch (error) {
@@ -189,24 +216,14 @@ export default function CheckoutClient({ order, orderId }: any) {
   return (
     <form onSubmit={handleSubmit(onSubmit as any)}>
       <Grid>
-        <GridCol span={{ base: 12, sm: 6, md: 8, lg: 8 }}>
-          <Grid gutter='md'>
-            <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-              <DeliveryCard
-                control={control}
-                watch={watch}
-                errors={errors}
-                provinces={provinces}
-                districts={districts}
-                wards={wards}
-              />
-            </GridCol>
-            <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-              <PaymentForm control={control} />
-            </GridCol>
-          </Grid>
+        <GridCol span={{ base: 12, sm: 6, md: 8, lg: 4 }} className='h-fit'>
+          <DeliveryCard control={control} watch={watch} provinces={provinces} districts={districts} wards={wards} />
         </GridCol>
-        <GridCol span={{ base: 12, sm: 6, md: 4, lg: 4 }}>
+
+        <GridCol span={{ base: 12, sm: 6, md: 8, lg: 4 }} className='sticky top-[80px] h-fit'>
+          <PaymentForm control={control} errors={errors} />
+        </GridCol>
+        <GridCol span={{ base: 12, sm: 6, md: 4, lg: 4 }} className='sticky top-[80px] h-fit'>
           <Card shadow='sm' radius='md' withBorder>
             <Stack gap={'md'}>
               <Title order={2} className='font-quicksand text-xl'>
@@ -226,7 +243,7 @@ export default function CheckoutClient({ order, orderId }: any) {
                     Tạm tính
                   </Text>
                   <Text size='md' fw={700}>
-                    {formatPriceLocaleVi(subtotal)}
+                    {formatPriceLocaleVi(originalTotal)}
                   </Text>
                 </Group>
                 <Group justify='space-between'>
@@ -243,7 +260,7 @@ export default function CheckoutClient({ order, orderId }: any) {
                     Khuyến mãi:
                   </Text>
                   <Text size='md' fw={700}>
-                    -{formatPriceLocaleVi(0)}
+                    -{formatPriceLocaleVi(discountAmountByVoucher || 0)}
                   </Text>
                 </Group>
                 <Group justify='space-between' className='mb-2'>
@@ -261,7 +278,7 @@ export default function CheckoutClient({ order, orderId }: any) {
                     Tổng cộng
                   </Text>
                   <Text size='xl' fw={700} className='text-red-500'>
-                    {formatPriceLocaleVi(total)}
+                    {formatPriceLocaleVi(finalTotal)}
                   </Text>
                 </Group>
               </Stack>

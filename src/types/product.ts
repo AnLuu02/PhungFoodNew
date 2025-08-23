@@ -7,7 +7,7 @@ export type Product = {
 
   description?: string;
 
-  descriptionDetail?: string;
+  descriptionDetail?: DesDetailItem[];
 
   price: number;
 
@@ -36,4 +36,9 @@ export type Product = {
   subCategoryId: string;
 
   materials: string[];
+};
+
+type DesDetailItem = {
+  label: string;
+  value: string;
 };

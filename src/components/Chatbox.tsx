@@ -197,7 +197,7 @@ export default function Chatbox() {
     <Box
       w={{ base: 335, sm: 450, md: 450, lg: 400 }}
       h={{ base: 400, sm: 500, md: 500, lg: 500 }}
-      className='dark:bg-dark-card flex flex-col overflow-hidden bg-gray-100'
+      className='flex flex-col overflow-hidden bg-gray-100 dark:bg-dark-card'
     >
       <UnstyledButton
         p={'xs'}
@@ -209,7 +209,7 @@ export default function Chatbox() {
           <Group>
             <Avatar src={`/images/jpg/bot.jpg`} radius='xl' />
 
-            <div style={{ flex: 1 }}>
+            <Box style={{ flex: 1 }}>
               <Text size='md' fw={700} className='text-white'>
                 Chat support
               </Text>
@@ -217,7 +217,7 @@ export default function Chatbox() {
               <Text className='text-white' size='xs'>
                 phungfood@contact.com
               </Text>
-            </div>
+            </Box>
           </Group>
           <Menu width={200} shadow='md' zIndex={1000000} position='bottom-end'>
             <Menu.Target>

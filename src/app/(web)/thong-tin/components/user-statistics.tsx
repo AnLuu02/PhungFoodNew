@@ -1,13 +1,26 @@
 'use client';
 
-import { Box, Card, Center, Divider, Flex, Group, Progress, Select, Space, Stack, Text } from '@mantine/core';
-import { UserLevel } from '@prisma/client';
+import {
+  Box,
+  Button,
+  Card,
+  Center,
+  Divider,
+  Flex,
+  Progress,
+  Select,
+  Space,
+  Stack,
+  Text,
+  Title,
+  Tooltip
+} from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
-import LoadingComponent from '~/components/Loading/Loading';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
-import { getColorLevelUser, getLevelUser } from '~/lib/func-handler/level-user';
+import { getInfoLevelUser } from '~/constants';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { LocalUserLevel } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
 
 const LazyChart = dynamic(() => import('./UserSpendingChart'), {
@@ -40,8 +53,8 @@ export const userVIPLevel = 'Vàng';
 export default function UserStatistics() {
   const [selectedYear, setSelectedYear] = useState('2025');
   const { data: user } = useSession();
-  const { data: userDb, isLoading: isLoadingUserDb } = api.User.getOne.useQuery({ s: user?.user?.email || '' });
-  const { data: revenue, isLoading } = api.Revenue.getTotalSpentInMonthByUser.useQuery({
+  const { data: userDb } = api.User.getOne.useQuery({ s: user?.user?.email || '' });
+  const { data: revenue } = api.Revenue.getTotalSpentInMonthByUser.useQuery({
     userId: user?.user?.id || '',
     year: Number(selectedYear) || 2025
   });
@@ -52,74 +65,95 @@ export default function UserStatistics() {
         ...item,
         amount: revenue?.find((spend: any) => spend.month === months.indexOf(item) + 1)?.totalSpent || 0
       })),
-      totalSpent: revenue?.reduce((total, item) => total + Number(item?.totalSpent || 0), 0) || 0
+      totalSpent: revenue?.reduce((sum, item) => sum + Number(item?.totalSpent || 0), 0) || 0
     };
   }, [revenue]);
 
-  const getVIPProgress = (userDb: any) => {
-    return (userDb?.pointLevel || 0) * 100;
-  };
-
-  if (isLoading || isLoadingUserDb) {
-    return <LoadingComponent />;
-  }
+  const levelInfo = getInfoLevelUser(userDb?.level as LocalUserLevel);
 
   return (
-    <Card shadow='sm' padding='lg' radius='md' withBorder>
-      <Stack gap='md'>
-        <Box>
-          <Text fw={700} mb='xs' size='xl'>
-            Tổng quan chi tiêu
+    <Stack>
+      <Flex className='sm:items-center' gap={'md'} justify={'space-between'} direction={{ base: 'column', sm: 'row' }}>
+        <Box w={{ base: '100%', sm: '50%' }}>
+          <Title order={2} className='font-quicksand'>
+            Thống kê chi tiêu
+          </Title>
+          <Text size='sm' c={'dimmed'}>
+            Theo dõi và phân tích các khoản chi tiêu của bạn theo thời gian
           </Text>
-          <Flex align={'center'} justify={'space-between'} mb='xl'>
-            <Select
-              value={selectedYear}
-              onChange={value => setSelectedYear(value || '2023')}
-              data={Object.keys(mockYearlySpending).map(year => ({ value: year, label: year }))}
-              style={{ width: 120 }}
-            />
-            <Text size='xl' fw={700}>
-              <Center>
-                Đã chi:
-                <Space w={'xs'} />
-                <b className='text-red-500'>{formatPriceLocaleVi(totalSpent)}</b>
-              </Center>
-            </Text>
-          </Flex>
-          <LazyChart data={mockSpendingData} />
         </Box>
+        <Button className='rounded-md bg-mainColor hover:bg-mainColor/90'>Chi tiết các đơn hàng</Button>
+      </Flex>
 
-        <Flex gap={{ base: 'xs', md: 'md' }} justify={'space-between'} direction={{ base: 'column', md: 'row' }}>
-          <Box w={{ base: '100%', md: '50%' }}>
-            <Text fw={700} mb='xs'>
-              Tỷ lệ hoàn thành đơn hàng
+      <Card shadow='sm' padding='lg' radius='md' withBorder>
+        <Stack gap='md'>
+          <Box>
+            <Text fw={700} mb='xs' size='xl'>
+              Tổng quan chi tiêu
             </Text>
-            <Progress value={orderCompletionRate} size='sm' radius='xl' />
-            <Text size='sm' c='dimmed' mt='xs'>
-              {orderCompletionRate}% đơn đặt hàng của bạn đã được hoàn thành thành công
-            </Text>
-          </Box>
-
-          <Divider orientation='vertical' size={2} mx={'xl'} />
-
-          <Box w={{ base: '100%', md: '50%' }}>
-            <Flex align={'center'} mb='xs' gap={5}>
-              <Text fw={700}>Cấp V.I.P:</Text>
-              <Text fw={700} c={getColorLevelUser(userDb?.level as UserLevel)}>
-                {getLevelUser(userDb?.level as UserLevel)}
+            <Flex align={'center'} justify={'space-between'} mb='xl'>
+              <Select
+                value={selectedYear}
+                onChange={value => setSelectedYear(value || '2023')}
+                data={Object.keys(mockYearlySpending).map(year => ({ value: year, label: year }))}
+                style={{ width: 120 }}
+              />
+              <Text size='xl' fw={700}>
+                <Center>
+                  Đã chi:
+                  <Space w={'xs'} />
+                  <b className='text-red-500'>{formatPriceLocaleVi(totalSpent)}</b>
+                </Center>
               </Text>
             </Flex>
-            <Progress value={getVIPProgress(userDb)} size='sm' radius='xl' />
-            <Group mt='xs'>
-              {vipLevels.map(level => (
-                <Text key={level} size='sm' c='dimmed'>
-                  {level}
-                </Text>
-              ))}
-            </Group>
+            <LazyChart data={mockSpendingData} />
           </Box>
-        </Flex>
-      </Stack>
-    </Card>
+
+          <Flex
+            gap={{ base: 'xs', md: 'md' }}
+            mt={'md'}
+            justify={'space-between'}
+            direction={{ base: 'column', md: 'row' }}
+          >
+            <Box w={{ base: '100%', md: '50%' }} className='space-y-3'>
+              <Text fw={700}>Tỷ lệ hoàn thành đơn hàng</Text>
+              <Progress value={orderCompletionRate} size='md' radius='xl' />
+              <Text size='sm' c='dimmed'>
+                {orderCompletionRate}% đơn đặt hàng của bạn đã được hoàn thành thành công
+              </Text>
+            </Box>
+
+            <Divider orientation='vertical' size={2} mx={'xl'} />
+
+            <Box w={{ base: '100%', md: '50%' }} className='space-y-3'>
+              <Box className='flex items-center justify-between text-sm'>
+                <Text fw={700}>
+                  Tiến độ lên hạng
+                  <i> {getInfoLevelUser(levelInfo.nextLevel).viName}</i>
+                </Text>
+                <span className='font-medium text-gray-900'>{userDb?.pointUser || 0 / levelInfo.maxPoint} điểm</span>
+              </Box>
+              <Tooltip label={`${userDb?.pointUser || 0} điểm`}>
+                <Progress
+                  value={((userDb?.pointUser || 0) / (levelInfo.maxPoint + 1)) * 100}
+                  color={levelInfo.color}
+                  size='md'
+                  radius='xl'
+                />
+              </Tooltip>
+              <Box className='flex items-center justify-between text-xs'>
+                <Text size='xs' c='dimmed'>
+                  {levelInfo.viName} - ({userDb?.pointUser || 0} điểm)
+                </Text>
+                <Text size='xs' c={'dimmed'}>
+                  Cần thêm {levelInfo.maxPoint + 1 - (userDb?.pointUser || 0)} điểm để lên{' '}
+                  {getInfoLevelUser(levelInfo.nextLevel as LocalUserLevel).viName}
+                </Text>
+              </Box>
+            </Box>
+          </Flex>
+        </Stack>
+      </Card>
+    </Stack>
   );
 }

@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { IconBell, IconCheck, IconInfoCircle, IconTrash, IconTrashX, IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { formatTimeAgo } from '~/lib/func-handler/formatDate';
+import { formatTimeAgo } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { pusherClient } from '~/lib/pusher/client';
 import { api } from '~/trpc/react';
@@ -149,7 +149,7 @@ export default function NotificationDialog({ data, user }: any) {
 
   return (
     <Box pos={'fixed'} top={6} right={12} className='z-[9999] rounded-full' w={30} h={30} bg={'white'}>
-      <div style={{ position: 'relative' }}>
+      <Box style={{ position: 'relative' }}>
         <Menu
           opened={isOpen}
           offset={-6}
@@ -234,7 +234,7 @@ export default function NotificationDialog({ data, user }: any) {
                   <ScrollAreaAutosize mah={300} scrollbarSize={8}>
                     <Stack gap={0} pr={8}>
                       {notifications.map(notification => (
-                        <div key={notification.id}>
+                        <Box key={notification.id}>
                           <UnstyledButton
                             w='100%'
                             onClick={() => markAsRead(notification.id)}
@@ -252,14 +252,14 @@ export default function NotificationDialog({ data, user }: any) {
                                 size='xs'
                                 mt={4}
                               />
-                              <div style={{ flex: 1 }}>
+                              <Box style={{ flex: 1 }}>
                                 <Group justify='space-between' wrap='nowrap'>
                                   <Text size='sm' fw={!notification.read ? 700 : 500}>
                                     {notification.title}
                                   </Text>
                                   <Group gap={4}>
                                     {!notification.read ? (
-                                      <div
+                                      <Box
                                         style={{
                                           height: 8,
                                           width: 8,
@@ -278,7 +278,7 @@ export default function NotificationDialog({ data, user }: any) {
                                 <Text size='xs' c='dimmed' mt={4}>
                                   {formatTimeAgo(notification.createdAt)}
                                 </Text>
-                              </div>
+                              </Box>
                               <ActionIcon
                                 variant='subtle'
                                 color='gray'
@@ -293,7 +293,7 @@ export default function NotificationDialog({ data, user }: any) {
                             </Group>
                           </UnstyledButton>
                           <Divider />
-                        </div>
+                        </Box>
                       ))}
                     </Stack>
                   </ScrollAreaAutosize>
@@ -306,7 +306,7 @@ export default function NotificationDialog({ data, user }: any) {
             </Paper>
           </Menu.Dropdown>
         </Menu>
-      </div>
+      </Box>
       {isNotify && (
         <Paper
           shadow='md'

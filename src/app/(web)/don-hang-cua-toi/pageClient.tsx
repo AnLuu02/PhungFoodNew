@@ -28,9 +28,8 @@ import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { useModal } from '~/contexts/ModalContext';
-import { handleDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDate } from '~/lib/func-handler/formatDate';
-import { formatPriceLocaleVi } from '~/lib/func-handler/formatPrice';
+import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { formatDate, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getStatusColor, getStatusIcon, getStatusText } from '~/lib/func-handler/get-status-order';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
@@ -63,7 +62,9 @@ export default function MyOrderPageClient({ data }: any) {
         order?.payment?.name,
         order?.status,
         formatDate(order?.createdAt),
-        order?.total?.toString(),
+        order?.originalTotal?.toString(),
+        order?.finalTotal?.toString(),
+        order?.discountAmount?.toString(),
         order?.id?.toString()
       ]
         .filter(Boolean)
@@ -88,8 +89,17 @@ export default function MyOrderPageClient({ data }: any) {
     return Object.entries(counts).map(([status, count]) => ({ status, count }));
   }, [orders]);
 
-  const totalOrders = orders.length;
-  const totalAmount = useMemo(() => orders.reduce((sum: any, order: any) => sum + order.total, 0), [orders]);
+  const totalOrders = orders.length || 0;
+  const totalAmount = useMemo(
+    () =>
+      orders.reduce((sum: any, order: any) => {
+        if (order.status === LocalOrderStatus.COMPLETED) {
+          return sum + order.finalTotal;
+        }
+        return sum;
+      }, 0),
+    [orders]
+  );
 
   const mutationDelete = api.Order.delete.useMutation();
 
@@ -131,7 +141,7 @@ export default function MyOrderPageClient({ data }: any) {
                   h='100%'
                   className={clsx('cursor-pointer transition-all duration-300', {
                     'ring-2 ring-blue-500': selectedStatus === status,
-                    'hover:bg-gray-50': selectedStatus !== status
+                    'hover:bg-mainColor/10': selectedStatus !== status
                   })}
                   onClick={() => setSelectedStatus(selectedStatus === status ? null : status)}
                 >
@@ -143,7 +153,7 @@ export default function MyOrderPageClient({ data }: any) {
                     pos='absolute'
                     top={2}
                     right={2}
-                    className='hidden md:block'
+                    className='hidden sm:block'
                     label={
                       <Center>
                         <Text size='xs' c='dimmed' fw={700}>
@@ -190,7 +200,7 @@ export default function MyOrderPageClient({ data }: any) {
                 <SearchLocal setValue={setValueSearch} />
               </Box>
             </Flex>
-            <Box className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+            <Box className={`tableAdmin w-full overflow-x-auto`}>
               <Table striped highlightOnHover withTableBorder withColumnBorders>
                 <Table.Thead>
                   <Table.Tr>
@@ -217,27 +227,27 @@ export default function MyOrderPageClient({ data }: any) {
                   ) : (
                     displayedOrders.map((order: any) => (
                       <Table.Tr key={order.id}>
-                        <Table.Td w={100} style={{ maxWidth: 100, overflow: 'hidden' }}>
+                        <Table.Td w={100} className='max-w-[100px] overflow-hidden'>
                           <Tooltip label={order.id} withArrow>
                             <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
                           </Tooltip>
                         </Table.Td>
-                        <Table.Td>
+                        <Table.Td className='text-sm'>
                           <Highlight size='sm' highlight={valueSearch || ''}>
                             {order.payment?.name || 'Chưa thanh toán'}
                           </Highlight>
                         </Table.Td>
-                        <Table.Td>
+                        <Table.Td className='text-sm'>
                           <Highlight size='sm' highlight={valueSearch || ''}>
-                            {formatPriceLocaleVi(order.total)}
+                            {formatPriceLocaleVi(order.finalTotal || 0)}
                           </Highlight>
                         </Table.Td>
-                        <Table.Td>
+                        <Table.Td className='text-sm'>
                           <Highlight size='sm' highlight={valueSearch || ''}>
                             {formatDate(order.createdAt)}
                           </Highlight>
                         </Table.Td>
-                        <Table.Td>
+                        <Table.Td className='text-sm'>
                           <Tooltip label={getStatusText(order.status)}>
                             <Badge size='xs' color={getStatusColor(order.status)} p='xs'>
                               <Flex align='center'>
@@ -249,12 +259,18 @@ export default function MyOrderPageClient({ data }: any) {
                             </Badge>
                           </Tooltip>
                         </Table.Td>
-                        <Table.Td>
+                        <Table.Td className='text-sm'>
                           <Group gap={8}>
                             <Tooltip label='Xóa đơn hàng'>
                               <ActionIcon
                                 color='red'
-                                onClick={() => handleDelete({ id: order.id }, mutationDelete, 'Order')}
+                                onClick={() =>
+                                  confirmDelete({
+                                    id: { id: order.id },
+                                    mutationDelete,
+                                    entityName: 'đơn hàng'
+                                  })
+                                }
                               >
                                 <IconTrash size={16} />
                               </ActionIcon>
@@ -288,7 +304,15 @@ export default function MyOrderPageClient({ data }: any) {
               </Table>
             </Box>
             <Flex justify='flex-end' align='center' gap='md' direction={{ base: 'column-reverse', md: 'row' }}>
-              <Pagination classNames={{ control: 'bg-mainColor' }} total={totalPages} value={page} onChange={setPage} />
+              <Pagination
+                classNames={{
+                  control:
+                    'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
+                }}
+                total={totalPages}
+                value={page}
+                onChange={setPage}
+              />
               <Select
                 value={String(perPage)}
                 w={100}

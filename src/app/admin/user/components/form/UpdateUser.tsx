@@ -8,6 +8,7 @@ import {
   FileInput,
   Grid,
   GridCol,
+  NumberInput,
   PasswordInput,
   Select,
   Textarea,
@@ -20,6 +21,7 @@ import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { infoUserLevel } from '~/constants';
 import fetcher from '~/lib/func-handler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -53,7 +55,7 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
       phone: '',
       roleId: '',
       address: { detail: '', type: LocalAddressType.USER },
-      pointLevel: 0
+      pointUser: 0
     }
   });
   const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
@@ -93,7 +95,8 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
       phone: data?.phone || '',
       roleId: data?.roleId || '',
       address: data?.address as any,
-      pointLevel: data?.pointLevel
+      pointUser: data?.pointUser,
+      level: data?.level
     });
   }, [data, reset]);
   const utils = api.useUtils();
@@ -145,7 +148,7 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
 
   const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
 
-  if (loading || isLoading) return <LoadingSpiner />;
+  if (loading || isLoading || rolesLoading) return <LoadingSpiner />;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -372,6 +375,42 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
                 )}
               />
             </GridCol>
+            <GridCol span={4}>
+              <Controller
+                control={control}
+                name={`pointUser`}
+                defaultValue={0}
+                render={({ field }) => (
+                  <NumberInput
+                    {...field}
+                    defaultValue={0}
+                    min={0}
+                    label='Điểm tích lũy'
+                    placeholder='Nhập điểm tích lũy'
+                    error={errors?.pointUser?.message}
+                  />
+                )}
+              />
+            </GridCol>
+            <GridCol span={4}>
+              <Controller
+                control={control}
+                name={`level`}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    data={
+                      infoUserLevel.map(level => ({ value: level.key, label: level.viName })) || [
+                        { value: 0, label: 'Không cấp độ' }
+                      ]
+                    }
+                    label='Cấp độ'
+                    placeholder='Chọn cấp độ'
+                    error={errors?.pointUser?.message}
+                  />
+                )}
+              />
+            </GridCol>
             <GridCol span={12}>
               <Controller
                 control={control}
@@ -380,7 +419,7 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
                   <Textarea
                     {...field}
                     label='Địa chỉ chi tiết'
-                    placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
+                    placeholder='Địa chỉ cụ thể (đường, phố,...)'
                     resize='block'
                     error={errors?.address?.detail?.message}
                   />

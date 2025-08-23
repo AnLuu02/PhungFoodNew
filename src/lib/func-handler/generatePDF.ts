@@ -2,7 +2,7 @@ import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import path from 'path';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { formatPriceLocaleVi } from './formatPrice';
+import { formatPriceLocaleVi } from './Format';
 
 export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   try {
@@ -13,7 +13,7 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
       }, 0) || 0;
 
     const subtotal =
-      invoiceData?.orderItems?.reduce((total: number, item: any) => total + item.price * item.quantity, 0) || 0;
+      invoiceData?.orderItems?.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) || 0;
 
     const tax = Math.round((subtotal - discount) * 0.1);
     const finalTotal = subtotal - discount + tax;
@@ -139,7 +139,7 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
       font: customFont,
       color: rgb(0, 0, 0)
     });
-    y -= 30;
+    y -= 20;
 
     const tableTop = y;
     const tableWidth = width - 2 * margin;
@@ -268,6 +268,16 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
       '- ' + formatPriceLocaleVi(tax),
       formatPriceLocaleVi(finalTotal)
     ];
+
+    page.drawText(`Ghi chú: ${invoiceData?.delivery?.note !== '' ? invoiceData?.delivery?.note : 'Không có./'}`, {
+      x: margin,
+      y: y,
+      font: customFont,
+      size: 10,
+      color: rgb(0, 0, 0)
+    });
+
+    y -= 20;
 
     for (let i = 0; i < summaryLabels.length; i++) {
       const isLastItem = i === summaryLabels.length - 1;

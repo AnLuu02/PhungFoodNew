@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '~/components/Web/Home/components/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '~/components/Web/Card/ProductCardCarouselVertical';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {

@@ -1,4 +1,4 @@
-import { Stack } from '@mantine/core';
+import { Box, Stack } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import CustomerReviews from '~/components/Admin/Dashboard/CustomerReviews';
 import PopularItems from '~/components/Admin/Dashboard/PopularItems';
@@ -21,7 +21,7 @@ export default async function Dashboard() {
     reviews?.length > 0 ? (reviews.filter((review: any) => review.rating >= 4).length / reviews.length) * 100 : 0;
 
   return (
-    <div className='min-h-screen bg-gray-50 p-4'>
+    <Box className='min-h-screen p-4'>
       <Stack gap='lg' className='mx-auto max-w-7xl'>
         <ThongKeNhanh
           data={{
@@ -39,20 +39,20 @@ export default async function Dashboard() {
           }}
         />
 
-        <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-          <div className='lg:col-span-2'>
+        <Box className='grid grid-cols-1 gap-6 md:grid-cols-3'>
+          <Box className='md:col-span-2'>
             <SalesChart />
-          </div>
-          <div className='lg:col-span-1'>
+          </Box>
+          <Box className='md:col-span-1'>
             <CustomerReviews rating={highRatingPercentage} totalReviews={reviews?.length || 0} />
-          </div>
-        </div>
+          </Box>
+        </Box>
 
-        <div className='grid grid-cols-1 gap-6 xl:grid-cols-2'>
+        <Box className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
           <RecentOrders orders={orders} />
           <PopularItems products={products} />
-        </div>
+        </Box>
       </Stack>
-    </div>
+    </Box>
   );
 }

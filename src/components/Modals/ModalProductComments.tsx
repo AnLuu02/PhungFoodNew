@@ -1,7 +1,7 @@
 import { Grid, Modal, Title } from '@mantine/core';
 import RatingStatistics from '~/app/(web)/san-pham/[slug]/components/RatingStatistics';
 import Comments from '../Comments/Comments';
-import ProductCardCarouselVertical from '../Web/Home/components/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '../Web/Card/ProductCardCarouselVertical';
 
 function ModalProductComments({ type, opened, close, product }: any) {
   let ratingCountsDefault = [0, 0, 0, 0, 0];

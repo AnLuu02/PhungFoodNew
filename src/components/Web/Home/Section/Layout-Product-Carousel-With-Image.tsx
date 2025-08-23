@@ -17,7 +17,6 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button';
 import TabsPanelCarousel from './TabsPenel';
-import classes from './TabsStyles.module.css';
 const LayoutProductCarouselWithImage = ({
   title,
   content,
@@ -51,13 +50,13 @@ const LayoutProductCarouselWithImage = ({
       mih={500}
       h={{ base: 'max-content', md: 500 }}
       radius={'lg'}
-      className='dark:bg-dark-background bg-gray-100'
+      className='bg-gray-100 dark:bg-dark-background'
       p={0}
     >
       <Flex h={'100%'} direction={{ base: 'column', md: reverseGrid ? 'row-reverse' : 'row' }}>
         <BackgroundImage
           src={imageUrl || '/images/jpg/best-saller.jpg'}
-          className='relative hidden bg-cover bg-no-repeat lg:block'
+          className='relative hidden bg-cover bg-no-repeat md:block'
           h={'100%'}
           w={{ base: '100%', md: '25%' }}
           pos={'relative'}
@@ -86,7 +85,9 @@ const LayoutProductCarouselWithImage = ({
           value={active}
           onChange={(value: any) => setActive(value)}
           variant='pills'
-          classNames={classes}
+          classNames={{
+            tab: `hover:bg-transparent hover:text-subColor data-[active=true]:bg-transparent data-[active=true]:text-subColor`
+          }}
           className='relative'
           h={'100%'}
           p={'lg'}

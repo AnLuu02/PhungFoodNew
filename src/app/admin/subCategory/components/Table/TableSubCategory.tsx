@@ -1,134 +1,81 @@
 'use client';
-import { Avatar, Button, Checkbox, Group, Highlight, Menu, Table, Text } from '@mantine/core';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import clsx from 'clsx';
-import { useState } from 'react';
+
+import { Avatar, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
 export default function TableSubCategory({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.subCategories || [];
-  const columns: ColumnDef<any>[] = [
-    {
-      header: 'Tên',
-      accessorKey: 'name',
-      cell: info => <Highlight highlight={s}>{info.row.original.name}</Highlight>
-    },
-    {
-      header: 'Ảnh',
-      accessorKey: 'images[0].url',
-      cell: info => (
-        <Avatar src={info.row.original.image?.url} alt={info.row.original.image?.altText} size={40} radius={'md'} />
-      )
-    },
-    {
-      header: 'Thuộc loại',
-      accessorKey: 'category.name',
-      cell: info => <Highlight highlight={s}>{info.row.original.category.name}</Highlight>
-    },
-    {
-      header: 'Mô tả',
-      accessorKey: 'description',
-      cell: info => <Highlight highlight={s}>{info.row.original.description || 'Đang cập nhật.'}</Highlight>
-    },
-    {
-      header: 'Ngày tạo',
-      accessorKey: 'createdAt',
-      cell: info => new Date(info.getValue() as string).toLocaleDateString()
-    },
-    {
-      header: 'Thao tác',
-      cell: info => (
-        <Group className='text-center'>
-          {user?.user && (
-            <>
-              <UpdateSubCategoryButton id={info.row.original.id} />
-              {(user.user.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN || user.user.role?.name === 'ADMIN') && (
-                <DeleteSubCategoryButton id={info.row.original.id} />
-              )}
-            </>
-          )}
-        </Group>
-      )
-    }
-  ];
 
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const table = useReactTable({
-    data: currentItems,
-    columns,
-    state: {
-      columnVisibility
-    },
-    onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel()
-  });
   return (
     <>
-      <Group pb={'lg'}>
-        <Menu shadow='md' width={220}>
-          <Menu.Target>
-            <Button variant='outline'>Tùy chỉnh bảng</Button>
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            <Menu.Item onClick={table.getToggleAllColumnsVisibilityHandler()}>
-              <Checkbox
-                label='Tất cả'
-                checked={table.getIsAllColumnsVisible()}
-                onChange={table.getToggleAllColumnsVisibilityHandler()}
-              />
-            </Menu.Item>
-            {table.getAllLeafColumns().map(column => (
-              <Menu.Item key={column.id} onClick={column.getToggleVisibilityHandler()}>
-                <Checkbox
-                  label={column.id}
-                  checked={column.getIsVisible()}
-                  onChange={column.getToggleVisibilityHandler()}
-                />
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
-      </Group>
-      <div className={clsx('w-full overflow-x-auto', 'tableAdmin')}>
+      <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-            {table.getHeaderGroups().map((headerGroup, index) => (
-              <Table.Tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <Table.Th key={header.id} colSpan={header.colSpan} style={{ minWidth: 100 }}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </Table.Th>
-                ))}
-              </Table.Tr>
-            ))}
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Tên</Table.Th>
+              <Table.Th>Ảnh</Table.Th>
+              <Table.Th>Thuộc loại</Table.Th>
+              <Table.Th>Mô tả</Table.Th>
+              <Table.Th>Ngày tạo</Table.Th>
+              <Table.Th>Thao tác</Table.Th>
+            </Table.Tr>
           </Table.Thead>
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              table.getRowModel().rows.map((row, index) => (
-                <Table.Tr key={row.id}>
-                  {row.getVisibleCells().map(cell => (
-                    <Table.Td key={cell.id}>
-                      <Text size='sm'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Text>
-                    </Table.Td>
-                  ))}
+              currentItems.map((item: any) => (
+                <Table.Tr key={item.id}>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      <Highlight size='sm' highlight={s}>
+                        {item.name}
+                      </Highlight>
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Avatar src={item.image?.url} alt={item.image?.altText} size={40} radius='md' />
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      <Highlight size='sm' highlight={s}>
+                        {item.category?.name}
+                      </Highlight>
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>
+                      <Highlight size='sm' highlight={s}>
+                        {item.description || 'Đang cập nhật.'}
+                      </Highlight>
+                    </Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Text size='sm'>{new Date(item.createdAt).toLocaleDateString()}</Text>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Group>
+                      <UpdateSubCategoryButton id={item.id} />
+                      {(user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN ||
+                        user?.user?.role?.name === 'ADMIN') && <DeleteSubCategoryButton id={item.id} />}
+                    </Group>
+                  </Table.Td>
                 </Table.Tr>
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={columns.length} className='bg-gray-100 text-center'>
+                <Table.Td colSpan={6} className='bg-gray-100 text-center'>
                   <Text size='md' c='dimmed'>
-                    Không có bản ghi phù hợp./
+                    Không có bản ghi phù hợp.
                   </Text>
                 </Table.Td>
               </Table.Tr>
             )}
           </Table.Tbody>
         </Table>
-      </div>
+      </Box>
+
       <Group justify='space-between' mt='md'>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
