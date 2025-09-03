@@ -1,4 +1,3 @@
-import { OrderStatus } from '@prisma/client';
 import {
   IconCheck,
   IconCircleCheck,
@@ -11,7 +10,7 @@ import {
 import { LocalOrderStatus } from '../zod/EnumType';
 
 const ORDER_STATUS_MAP: Record<
-  OrderStatus | string | any,
+  LocalOrderStatus | string | any,
   {
     color: string;
     text: string;

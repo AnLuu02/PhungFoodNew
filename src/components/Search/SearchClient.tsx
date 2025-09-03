@@ -8,7 +8,6 @@ import {
   Flex,
   Group,
   Paper,
-  rem,
   Skeleton,
   Stack,
   Text,
@@ -67,12 +66,12 @@ export default function SearchComponentClient({ subCategories }: any) {
           }
           styles={{
             input: {
-              height: rem(48),
-              fontSize: rem(16)
+              height: 48,
+              fontSize: 16
             },
             section: {
               width: 'auto',
-              paddingRight: rem(12)
+              paddingRight: 12
             }
           }}
         />
@@ -120,7 +119,7 @@ export default function SearchComponentClient({ subCategories }: any) {
             radius='md'
             withBorder
             pos='absolute'
-            top={rem(52)}
+            top={52}
             left={0}
             right={0}
             style={{ zIndex: 102 }}
@@ -158,7 +157,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                             height: 'auto'
                           },
                           label: {
-                            fontSize: rem(14),
+                            fontSize: 14,
                             fontWeight: 400
                           }
                         }}
@@ -219,7 +218,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                         alt={product.name}
                         width={60}
                         height={60}
-                        style={{ borderRadius: rem(8), objectFit: 'cover' }}
+                        style={{ borderRadius: 8, objectFit: 'cover' }}
                       />
                       <Box>
                         <Text size='sm' fw={700} className='text-black dark:text-dark-text' lineClamp={2}>
@@ -242,7 +241,7 @@ export default function SearchComponentClient({ subCategories }: any) {
             radius='md'
             withBorder
             pos='absolute'
-            top={rem(52)}
+            top={52}
             left={0}
             right={0}
             style={{ zIndex: 102 }}

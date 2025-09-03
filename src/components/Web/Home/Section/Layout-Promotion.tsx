@@ -65,35 +65,63 @@ const LayoutPromotion = ({ data }: any) => {
 
           <Flex align={'center'} gap={'lg'}>
             <Group gap={'xs'}>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
-                <Text size='sm' p={0} className='text-mainColor' fw={700}>
+              <Flex
+                w={50}
+                h={60}
+                direction={'column'}
+                align={'center'}
+                justify={'center'}
+                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.day < 10 ? `0${timeExpire.day}` : timeExpire.day}
                 </Text>
-                <Text size='sm' p={0} className='text-black'>
+                <Text size='xs' className='text-white'>
                   Ngày
                 </Text>
               </Flex>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
-                <Text size='sm' p={0} className='text-mainColor' fw={700}>
+              <Flex
+                w={50}
+                h={60}
+                direction={'column'}
+                align={'center'}
+                justify={'center'}
+                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.hour < 10 ? `0${timeExpire.hour}` : timeExpire.hour}
                 </Text>
-                <Text size='sm' p={0} className='text-black'>
+                <Text size='xs' className='text-white'>
                   Giờ
                 </Text>
               </Flex>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
-                <Text size='sm' p={0} className='text-mainColor' fw={700}>
+              <Flex
+                w={50}
+                h={60}
+                direction={'column'}
+                align={'center'}
+                justify={'center'}
+                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.minute < 10 ? `0${timeExpire.minute}` : timeExpire.minute}
                 </Text>
-                <Text size='sm' p={0} className='text-black'>
+                <Text size='xs' className='text-white'>
                   Phút
                 </Text>
               </Flex>
-              <Flex direction={'column'} align={'center'} bg={'white'} className='rounded-md' w={45} h={45}>
-                <Text size='sm' p={0} className='text-mainColor' fw={700}>
+              <Flex
+                w={50}
+                h={60}
+                direction={'column'}
+                align={'center'}
+                justify={'center'}
+                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.second < 10 ? `0${timeExpire.second}` : timeExpire.second}
                 </Text>
-                <Text size='sm' p={0} className='text-black'>
+                <Text size='xs' className='text-white'>
                   Giây
                 </Text>
               </Flex>

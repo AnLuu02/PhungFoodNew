@@ -1,5 +1,5 @@
 'use client';
-import { ActionIcon, Box, Button, Center, Drawer, Flex, Text } from '@mantine/core';
+import { ActionIcon, Badge, Box, Button, Center, Drawer, Flex, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown, IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
@@ -86,7 +86,12 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
                 </Button>
               </Link>
             ))}
-            <PromotionButton />
+            <Box pos={'relative'}>
+              <PromotionButton />
+              <Badge color='red' size='sm' className='absolute right-[-6px] top-[-8px] animate-wiggle'>
+                Hot
+              </Badge>
+            </Box>
             <CartButton />
           </Flex>
 

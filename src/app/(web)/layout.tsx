@@ -1,4 +1,4 @@
-import { Box, rem } from '@mantine/core';
+import { Box } from '@mantine/core';
 import FloatingWidget from '~/components/FloatingWidget';
 import FooterWeb from '~/components/Web/Footer/FooterWeb';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
@@ -10,10 +10,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <>
       <Box p={0} m={0}>
         <HeaderWeb />
-        <Box px={{ base: rem(10), sm: rem(30), md: rem(30), lg: rem(130) }} mt={'md'}>
+        <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>
           {children}
         </Box>
-        <Box pl={{ base: rem(20), lg: rem(130) }} pr={{ base: rem(20), lg: rem(130) }}>
+        <Box pl={{ base: 20, lg: 130 }} pr={{ base: 20, lg: 130 }}>
           <ServiceComponent />
         </Box>
         <FloatingWidget />

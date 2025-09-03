@@ -16,8 +16,7 @@ import {
   Table,
   Text,
   ThemeIcon,
-  Title,
-  rem
+  Title
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
@@ -44,7 +43,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
         title={
           <Group gap='md'>
             <ThemeIcon size={40} radius='md' variant='light' color='teal'>
-              <IconPackage style={{ width: rem(24), height: rem(24) }} />
+              <IconPackage style={{ width: 24, height: 24 }} />
             </ThemeIcon>
             <Box>
               <Title order={2}>Thông tin đơn hàng</Title>
@@ -106,7 +105,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                   <Card withBorder radius='md'>
                     <Group gap='md'>
                       <ThemeIcon size={40} radius='md' variant='light' color='blue'>
-                        <IconCreditCard style={{ width: rem(24), height: rem(24) }} />
+                        <IconCreditCard style={{ width: 24, height: 24 }} />
                       </ThemeIcon>
                       <Box>
                         <Text fw={700} size='md'>
@@ -193,7 +192,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                   <Card withBorder radius='md'>
                     <Group gap='md' mb='md'>
                       <ThemeIcon size={40} radius='md' variant='light' color='grape'>
-                        <IconTruck style={{ width: rem(24), height: rem(24) }} />
+                        <IconTruck style={{ width: 24, height: 24 }} />
                       </ThemeIcon>
                       <Text fw={700} size='md'>
                         Thông tin vận chuyển
@@ -238,7 +237,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                 <Card withBorder radius='md'>
                   <Group gap='md' mb='md'>
                     <ThemeIcon size={40} radius='md' variant='light' color='teal'>
-                      <IconPackage style={{ width: rem(24), height: rem(24) }} />
+                      <IconPackage style={{ width: 24, height: 24 }} />
                     </ThemeIcon>
                     <Text fw={700} size='md'>
                       Các mặt hàng đã đặt

@@ -42,7 +42,7 @@ export default function ReusablePromoBanner({
       <Card className='relative overflow-hidden rounded-2xl border-0 shadow-2xl' p={0}>
         <Box className='relative w-full' style={{ height: `${height < 400 ? 400 : height}px` }}>
           <Image
-            src={backgroundImage || '/placeholder.svg'}
+            src={backgroundImage || '/images/png/delicious-burger-fries.png'}
             fill
             className='object-cover transition-transform duration-700 hover:scale-105'
             alt='Banner Background'
@@ -140,7 +140,7 @@ export default function ReusablePromoBanner({
           <Box className={`flex-1 p-8 md:p-12 ${layout === 'split' ? 'md:p-16' : ''} flex items-center justify-center`}>
             <Box className='relative w-full max-w-lg'>
               <Image
-                src={image || '/placeholder.svg'}
+                src={image || '/images/png/delicious-burger-fries.png'}
                 alt='Banner Visual'
                 width={500}
                 height={400}

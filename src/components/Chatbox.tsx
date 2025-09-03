@@ -11,7 +11,6 @@ import {
   Loader,
   Menu,
   Paper,
-  rem,
   ScrollArea,
   Stack,
   Text,
@@ -58,8 +57,8 @@ const TypingIndicator = () => (
     {[0, 1, 2].map(i => (
       <Box
         key={i}
-        w={rem(8)}
-        h={rem(8)}
+        w={8}
+        h={8}
         bg='gray.5'
         style={{
           borderRadius: '50%',
@@ -332,7 +331,7 @@ export default function Chatbox() {
                 gradient={{ from: 'blue', to: 'violet', deg: 45 }}
                 size='sm'
                 radius='xl'
-                style={{ marginRight: rem(4) }}
+                mr={4}
               >
                 {loading ? <Loader size='xs' color='white' /> : <IconSend size='1rem' />}
               </ActionIcon>

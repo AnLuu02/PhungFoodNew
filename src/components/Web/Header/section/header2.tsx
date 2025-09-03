@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Group, rem } from '@mantine/core';
+import { Badge, Box, Center, Flex, Group } from '@mantine/core';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 import SearchComponentClient from '~/components/Search/SearchClient';
@@ -12,8 +12,8 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
     <>
       <Flex
         h={{ base: 'max-content', md: 92 }}
-        pl={{ base: rem(20), lg: rem(130) }}
-        pr={{ base: rem(20), lg: rem(130) }}
+        pl={{ base: 20, lg: 130 }}
+        pr={{ base: 20, lg: 130 }}
         justify={'space-between'}
         align={'center'}
         pos={'relative'}
@@ -31,8 +31,11 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
           <SearchComponentClient subCategories={dataSubCategories} />
         </Box>
         <Group>
-          <Box className='hidden lg:block'>
+          <Box className='hidden lg:block' pos={'relative'}>
             <PromotionButton />
+            <Badge color='red' size='sm' className='absolute right-[-6px] top-[-8px] animate-wiggle'>
+              Hot
+            </Badge>
           </Box>
           <LikeButton />
           <CartButton />

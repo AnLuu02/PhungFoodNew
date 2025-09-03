@@ -1,4 +1,5 @@
 import { Container, Space } from '@mantine/core';
+import { formatDate } from '~/lib/func-handler/Format';
 import BannerSection from './Section/Banner-section';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
 import ReusablePromoBanner from './Section/Layout-Banner-Promotion';
@@ -27,78 +28,25 @@ const HomeWeb = ({
     <>
       {data.banner?.id && <BannerSection banner={data.banner} />}
       <Space h='xl' />
-      {/* Default Layout */}
-      {/* <ReusablePromoBanner
-        title='🎉 '
-        subtitle='Discover amazing features and boost your productivity'
-        buttonText='Get Started'
-        buttonLink='/signup'
-        layout='center'
-        variant='default'
-        height={400}
-        image='/images/banner/banner_about.jpg'
-      />
-      <Space h='xl' /> */}
-
-      {/* Gradient Variant */}
-      {/* <ReusablePromoBanner
-        title='Transform Your Business'
-        subtitle='With our cutting-edge solutions'
-        buttonText='Learn More'
-        buttonLink='/solutions'
-        layout='split'
-        variant='gradient'
-        height={500}
-        image='/images/banner/banner_about.jpg'
-        reverse={true}
-      />
-      <Space h='xl' /> */}
-
-      {/* Bold Variant */}
-      {/* <ReusablePromoBanner
-        title='Join Thousands of Happy Customers'
-        subtitle='Start your journey today'
-        buttonText='Sign Up Free'
-        buttonLink='/register'
-        layout='center'
-        variant='bold'
-        height={400}
-        image='/images/banner/banner_about.jpg'
-      />
-      <Space h='xl' /> */}
-
-      {/* Background Image */}
       <ReusablePromoBanner
         title='🎉 Ưu đãi đặc biệt 🎉'
         subtitle={
           <>
-            🔊 Từ ngày <b className='text-4xl italic text-yellow-500'>05-07-2025</b> đến hết ngày{' '}
-            <b className='text-4xl italic text-yellow-500'>27-07-2025</b> giảm giá{' '}
-            <b className='text-4xl italic text-yellow-500'> 15%</b> tất cả món ăn có trong cửa hàng.
+            🔊 Từ ngày <b className='text-4xl italic text-yellow-500'>{formatDate(new Date())}</b> đến hết ngày{' '}
+            <b className='text-4xl italic text-yellow-500'>
+              {formatDate(new Date().setDate(new Date().getDate() + 1))}
+            </b>{' '}
+            giảm giá <b className='text-4xl italic text-yellow-500'> 15%</b> tất cả món ăn có trong cửa hàng.
           </>
         }
         buttonText='Đặt ngay'
         buttonLink='/thuc-don'
         layout='center'
-        backgroundImage='/images/banner/banner_food1.jpg'
+        backgroundImage='/images/jpg/banner_food1.jpg'
         height={400}
         overlayColor='rgba(0,0,0,0.4)'
       />
       <Space h='xl' />
-
-      {/* Minimal Variant */}
-      {/* <ReusablePromoBanner
-        title='Simple. Powerful. Effective.'
-        subtitle="Everything you need, nothing you don't"
-        buttonText='Try It Now'
-        buttonLink='/trial'
-        layout='left'
-        variant='minimal'
-        height={200}
-        image='/images/banner/banner_about.jpg'
-      />
-      <Space h='xl' /> */}
-
       <Container pl={0} pr={0} size='xl'>
         {data.category?.anVat && (
           <>

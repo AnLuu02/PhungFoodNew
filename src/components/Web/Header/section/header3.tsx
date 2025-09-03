@@ -1,5 +1,5 @@
 'use client';
-import { Box, Burger, Button, Flex, Menu, rem, ScrollAreaAutosize, Text } from '@mantine/core';
+import { Box, Burger, Button, Flex, Menu, ScrollAreaAutosize, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCategory, IconChevronCompactDown } from '@tabler/icons-react';
 import Image from 'next/image';
@@ -18,7 +18,7 @@ const Header3 = ({ categories, subCategories }: any) => {
   const [opened, { open, close, toggle }] = useDisclosure();
   return (
     <Flex
-      px={{ base: rem(10), sm: rem(30), md: rem(30), lg: rem(130) }}
+      px={{ base: 10, sm: 30, md: 30, lg: 130 }}
       align={'center'}
       justify={'space-between'}
       py={'md'}

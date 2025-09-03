@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Box, Button, Flex, Group, List, Modal, rem, Stack, Text, Title } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Group, List, Modal, Stack, Text, Title } from '@mantine/core';
 import { IconDots, IconLighter, IconMicrophone, IconSquare, IconTrash, IconVolume } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useReducer, useRef, useState } from 'react';
@@ -177,8 +177,8 @@ export default function VoiceSearchModal() {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Box
                         key={i}
-                        w={rem(4)}
-                        h={rem(Math.random() * 20 + 10)}
+                        w={4}
+                        h={Math.random() * 20 + 10}
                         bg='var(--mantine-color-blue-6)'
                         style={{
                           animation: 'pulse 1s infinite',

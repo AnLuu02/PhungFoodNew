@@ -85,7 +85,7 @@ export default function BannerSection({ banner }: any) {
             { icon: '👨‍🍳', title: 'Tư vấn món ăn' },
             { icon: '📍', title: 'Tìm nhà hàng', href: '/lien-he' },
             { icon: '🧾', title: 'Đơn hàng của tôi', href: '/don-hang-cua-toi' },
-            { icon: '🎉', title: 'Đặt bàn & sự kiện' },
+            { icon: '📜', title: 'Chính sách', href: '/chinh-sach' },
             { icon: '⭐', title: 'Đánh giá & phản hồi' }
           ].map((service, index) => (
             <Link href={service.href || ''} key={index}>

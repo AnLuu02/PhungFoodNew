@@ -1,7 +1,7 @@
 'use client';
 
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Box, Card, CardSection, Center, Flex, rem, Space, Text, Title } from '@mantine/core';
+import { ActionIcon, Box, Card, CardSection, Center, Flex, Space, Text, Title } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconPlayerPlayFilled } from '@tabler/icons-react';
 import clsx from 'clsx';
 import dynamic from 'next/dynamic';
@@ -14,7 +14,7 @@ const RecipeModal = dynamic(() => import('~/components/Web/Home/components/recip
 const recipes = [
   {
     title: 'Cách làm mandu thịt, mandu kim chi và mandu rau củ',
-    image: '/images/temp/mandu.jpg',
+    image: '/images/jpg/mandu.jpg',
     duration: "30'",
     category: 'Trung bình',
     ingredients: [
@@ -36,7 +36,7 @@ const recipes = [
   },
   {
     title: 'Cách làm bánh tráng dừa mè nướng',
-    image: '/images/temp/banhtrangduamenuong.jpg',
+    image: '/images/jpg/banhtrangduamenuong.jpg',
     duration: '1h',
     category: 'Trung bình',
     ingredients: ['Bánh tráng', 'Dừa nạo', 'Mè đen', 'Đường cát', 'Muối'],
@@ -49,7 +49,7 @@ const recipes = [
   },
   {
     title: 'Cách làm bánh xoài đào',
-    image: '/images/temp/banhxoaidao.jpg',
+    image: '/images/jpg/banhxoaidao.jpg',
     duration: "25'",
     category: 'Trung bình',
     ingredients: [],
@@ -58,7 +58,7 @@ const recipes = [
   },
   {
     title: 'Cách làm bánh xèo vịt miền Tây',
-    image: '/images/temp/banhxeovit.jpg',
+    image: '/images/jpg/banhxeovit.jpg',
     duration: '1h',
     category: 'Trung bình',
     ingredients: [],
@@ -137,7 +137,7 @@ const LayoutCarouselSimple = () => {
           <Carousel
             w={'100%'}
             slideSize={{ base: '100%', sm: '50%', md: '25%' }}
-            slideGap={rem(20)}
+            slideGap={20}
             h={320}
             align='center'
             containScroll='trimSnaps'

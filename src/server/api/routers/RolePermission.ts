@@ -60,14 +60,6 @@ export const rolePermissionRouter = createTRPCRouter({
     let roles = await ctx.db.role.findMany({
       include: { permissions: true }
     });
-    // if (!roles?.length) {
-    //   await ctx.db.role.createMany({
-    //     data: seedRoles
-    //   });
-    //   roles = await ctx.db.role.findMany({
-    //     include: { permissions: true }
-    //   });
-    // }
     return roles satisfies RoleWithPermissions[];
   }),
   getOne: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
@@ -317,14 +309,6 @@ export const rolePermissionRouter = createTRPCRouter({
     let permissions = await ctx.db.permission.findMany({
       include: { roles: true }
     });
-    // if (!permissions?.length) {
-    //   await ctx.db.permission.createMany({
-    //     data: seedPermissions
-    //   });
-    //   permissions = await ctx.db.permission.findMany({
-    //     include: { roles: true }
-    //   });
-    // }
     return permissions;
   })
 });

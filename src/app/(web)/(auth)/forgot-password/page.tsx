@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Center, Grid, GridCol, rem, TextInput, Title } from '@mantine/core';
+import { Card, Center, Grid, GridCol, TextInput, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconMail } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
@@ -48,7 +48,7 @@ export default function ForgotPassword() {
             <Card.Section p={'md'}>
               <Grid>
                 <GridCol span={12} className='flex justify-center'>
-                  <Title className='font-quicksand' size={rem(28)}>
+                  <Title className='font-quicksand' size={28}>
                     Quên mật khẩu
                   </Title>
                 </GridCol>

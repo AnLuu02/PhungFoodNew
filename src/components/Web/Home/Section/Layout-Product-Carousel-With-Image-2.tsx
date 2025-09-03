@@ -1,6 +1,6 @@
 'use client';
 import { Carousel } from '@mantine/carousel';
-import { Box, Card, Flex, Grid, GridCol, rem, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
+import { Box, Card, Flex, Grid, GridCol, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -121,7 +121,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                       <Carousel
                         w={'100%'}
                         slideSize={{ base: '100%', sm: '33.33333%', md: '50%', lg: '25%' }}
-                        slideGap={rem(20)}
+                        slideGap={20}
                         h={320}
                         containScroll='trimSnaps'
                         align='center'

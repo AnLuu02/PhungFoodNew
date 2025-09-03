@@ -30,7 +30,7 @@ export default function DeliveryCard({
             <Controller
               name='email'
               control={control}
-              defaultValue={user?.user?.email || 'anluu0099@gmail.com'}
+              defaultValue={user?.user?.email}
               render={({ field, fieldState }) => (
                 <TextInput
                   label='Email'
@@ -47,7 +47,7 @@ export default function DeliveryCard({
             <Controller
               name='name'
               control={control}
-              defaultValue={user?.user?.name || 'Ann Luu'}
+              defaultValue={user?.user?.name}
               render={({ field, fieldState }) => (
                 <TextInput
                   leftSection={<IconUser size={18} stroke={1.5} />}

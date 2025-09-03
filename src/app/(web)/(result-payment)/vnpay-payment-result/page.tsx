@@ -1,19 +1,19 @@
 'use client';
-import { Box } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { getVietnameseStatusMessage, mapOrderStatusToUIStatus } from '~/lib/func-handler/Payment';
-import OrderStatusPage from './OrderStatusPage';
+import { api } from '~/trpc/react';
+import OrderStatusPage from './components/OrderStatusPage';
+import { PaymentStatusCardSkeleton } from './components/SkeletonLoading';
 
 export default function PaymentResult() {
   const searchParams = useSearchParams();
-  const { data: user, status } = useSession();
+  const orderId = searchParams.get('vnp_TxnRef') || searchParams.get('orderId');
+  const { data: order, isLoading: loadingOrder } = api.Order.getOne.useQuery({ s: orderId || '' });
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [queryParams, setQueryParams] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -56,19 +56,15 @@ export default function PaymentResult() {
           .catch(err => {
             console.error('Lỗi fetch trạng thái đơn hàng:', err);
           })
-          .finally(() => setIsLoading(false));
+          .finally(() => setLoading(false));
       } else {
-        setIsLoading(false);
+        setLoading(false);
       }
     }
   }, [searchParams, resetCart]);
 
-  if (isLoading || status === 'loading') {
-    return (
-      <Box className='flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4'>
-        <Box className='h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600'></Box>
-      </Box>
-    );
+  if (loading || loadingOrder) {
+    return <PaymentStatusCardSkeleton />;
   }
 
   if (queryParams) {
@@ -82,7 +78,7 @@ export default function PaymentResult() {
     return (
       <OrderStatusPage
         status={uiStatus}
-        customerName={user?.user?.name || 'Khách hàng'}
+        customerName={order?.user?.name || 'Khách hàng'}
         orderId={queryParams.orderId}
         amount={queryParams.amount}
         customTitle={title}
@@ -100,7 +96,7 @@ export default function PaymentResult() {
   return (
     <OrderStatusPage
       status='error'
-      customerName={user?.user?.name || 'Khách hàng'}
+      customerName={order?.user?.name || 'Khách hàng'}
       customTitle='Không tìm thấy thông tin đơn hàng'
       customMessage='Vui lòng kiểm tra lại đường dẫn hoặc liên hệ hỗ trợ khách hàng.'
       onBackToHome={() => {

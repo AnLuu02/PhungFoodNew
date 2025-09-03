@@ -48,6 +48,11 @@ export default {
           '40%': { transform: 'rotate(-3deg) scale(1)' },
           '50%': { transform: 'rotate(3deg) scale(1)' }
         },
+        'slide-right': {
+          '0%': { transform: 'translateX(0)', opacity: '0.3' },
+          '50%': { transform: 'translateX(20px)', opacity: '1' },
+          '100%': { transform: 'translateX(0)', opacity: '0.3' }
+        },
         shake: {
           '10%': { transform: 'rotate(15deg)' },
           '20%': { transform: 'rotate(-15deg)' },
@@ -73,7 +78,8 @@ export default {
         shake: 'shake 1s ease-in-out infinite',
         fadeTop: 'fadeTop 0.3s ease-in-out',
         fadeBottom: 'fadeBottom 0.3s ease-in-out',
-        pulse: 'pulse 1.5s ease-in-out infinite'
+        pulse: 'pulse 1.5s ease-in-out infinite',
+        'slide-right': 'slide-right 2s ease-in-out infinite'
       }
     },
     screens: {

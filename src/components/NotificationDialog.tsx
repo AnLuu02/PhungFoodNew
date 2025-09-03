@@ -135,7 +135,6 @@ export default function NotificationDialog({ data, user }: any) {
       channel.unsubscribe();
     };
   }, [user?.email]);
-  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (isNotify) {

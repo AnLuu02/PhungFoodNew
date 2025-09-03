@@ -1,6 +1,6 @@
 'use client';
 import { Carousel } from '@mantine/carousel';
-import { BackgroundImage, Box, Card, Flex, rem, Skeleton, Text } from '@mantine/core';
+import { BackgroundImage, Box, Card, Flex, Skeleton, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
     ''
   ) : pathname !== '/thuc-don' ? (
     <Flex
-      px={{ base: rem(10), sm: rem(30), md: rem(30), lg: rem(130) }}
+      px={{ base: 10, sm: 30, md: 30, lg: 130 }}
       align={'center'}
       justify={'space-between'}
       py={'md'}
@@ -36,7 +36,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
 
           <Carousel
             slideSize={{ base: '33.333333%', sm: '25%', md: '20%', lg: '16.666667%' }}
-            slideGap={{ base: rem(8), sm: rem(16) }}
+            slideGap={{ base: 8, sm: 16 }}
             align='start'
             w={{ base: '72%', sm: '60%', md: '100%', lg: '60%' }}
             slidesToScroll={1}
@@ -48,9 +48,9 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
             previousControlProps={{
               style: {
                 color: 'white',
-                borderRadius: rem(10),
-                width: rem(40),
-                height: rem(40),
+                borderRadius: 10,
+                width: 40,
+                height: 40,
                 backgroundColor: '#00BFA6'
               }
             }}
@@ -58,9 +58,9 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
             nextControlProps={{
               style: {
                 color: 'white',
-                borderRadius: rem(10),
-                width: rem(40),
-                height: rem(40),
+                borderRadius: 10,
+                width: 40,
+                height: 40,
                 backgroundColor: '#00BFA6'
               }
             }}

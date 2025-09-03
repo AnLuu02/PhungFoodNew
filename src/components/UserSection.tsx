@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Divider, Flex, Group, Menu, rem, Text, UnstyledButton } from '@mantine/core';
+import { Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconChevronDown, IconLogout, IconShoppingBag, IconUser, IconUserCircle } from '@tabler/icons-react';
 import clsx from 'clsx';
@@ -54,7 +54,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
               </Box>
             </Group>
             <IconChevronDown
-              style={{ width: rem(12), height: rem(12) }}
+              style={{ width: 12, height: 12 }}
               stroke={1.5}
               className={clsx('mr-4 text-gray-500', responsive && 'mr-0 hidden sm:block')}
             />
@@ -67,9 +67,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
           <Menu.Item
             fw={500}
             className='hover:bg-[rgba(0,0,0,0.2)]'
-            leftSection={
-              <IconUser color='black' fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />
-            }
+            leftSection={<IconUser color='black' fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
           >
             <Text size='sm' className='text-black' p={0}>
               Thông tin cá nhân
@@ -83,12 +81,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
             className='hover:bg-[rgba(0,0,0,0.2)]'
             fw={500}
             leftSection={
-              <IconShoppingBag
-                color='black'
-                fontWeight={'bold'}
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
+              <IconShoppingBag color='black' fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />
             }
           >
             <Text size='sm' className='text-black' p={0}>
@@ -100,7 +93,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
 
         <Menu.Item
           fw={500}
-          leftSection={<IconLogout fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+          leftSection={<IconLogout fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
           color='white'
           mt={'xs'}
           className='bg-red-500 hover:bg-red-600'

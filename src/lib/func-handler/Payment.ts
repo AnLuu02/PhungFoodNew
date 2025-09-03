@@ -18,7 +18,7 @@ export function mapOrderStatusToUIStatus(
   statusOrder: string,
   responseCode: string,
   transactionStatus: string
-): 'success' | 'processing' | 'delivered' | 'cancelled' | 'error' | 'payment_failed' {
+): 'success' | 'processing' | 'delivered' | 'cancelled' | 'error' | 'payment_failed' | 'not_found' {
   if (responseCode && responseCode !== '00') {
     return 'payment_failed';
   }
@@ -38,6 +38,8 @@ export function mapOrderStatusToUIStatus(
       return 'delivered';
     case 'CANCELLED':
       return 'cancelled';
+    case 'NOT_FOUND':
+      return 'not_found';
     default:
       if (responseCode === '00' && transactionStatus === '00') {
         return 'processing';
@@ -74,6 +76,11 @@ export function getVietnameseStatusMessage(status: string, responseCode?: string
         message: responseCode
           ? responseCodeMessages[responseCode] || 'Có lỗi xảy ra trong quá trình thanh toán'
           : 'Thanh toán không thành công'
+      };
+    case 'not_found':
+      return {
+        title: 'Không tìm thấy',
+        message: 'Không tìm thấy đơn hàng của bạn. Vui lòng kiểm tra lại mã đơn hàng.'
       };
     default:
       return {

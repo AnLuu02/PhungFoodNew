@@ -103,9 +103,14 @@ export default function MegaMenu({ categories }: any) {
                             style={{ objectFit: 'cover' }}
                             className='h-16 w-16'
                           />
-                          <Text size='sm' className='font-medium text-gray-800 dark:text-dark-text'>
-                            {category.name}
-                          </Text>
+                          <Stack>
+                            <Text size='sm' fw={700} className='font-medium text-gray-800 dark:text-dark-text'>
+                              {category.name}
+                            </Text>
+                            <Text size='sm' fw={700} className='font-medium text-gray-800 dark:text-dark-text'>
+                              {category.name}
+                            </Text>
+                          </Stack>
                         </Link>
                       </GridCol>
                     ))}
@@ -113,7 +118,9 @@ export default function MegaMenu({ categories }: any) {
                   <Divider />
                   <Box>
                     <Box className='flex items-center justify-between'>
-                      <h2 className='text-xl font-bold'>Bán chạy nhất {item.title} </h2>
+                      <Title className='font-quicksand text-xl font-bold' my={'md'}>
+                        Bán chạy nhất {item.title}{' '}
+                      </Title>
                       <Link
                         href='/thuc-don?loai=san-pham-ban-chay'
                         className='flex items-center text-blue-600 hover:underline'

@@ -1,20 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  Button,
-  Card,
-  Center,
-  Flex,
-  Grid,
-  GridCol,
-  PasswordInput,
-  rem,
-  Text,
-  TextInput,
-  Title
-} from '@mantine/core';
+import { Box, Button, Card, Center, Flex, Grid, GridCol, PasswordInput, Text, TextInput, Title } from '@mantine/core';
 import { IconKey, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -80,7 +67,7 @@ export default function Page() {
           <Card.Section p={'md'}>
             <Grid>
               <GridCol span={12} className='flex justify-center'>
-                <Title className='font-quicksand' size={rem(28)}>
+                <Title className='font-quicksand' size={28}>
                   ĐĂNG NHẬP
                 </Title>
               </GridCol>

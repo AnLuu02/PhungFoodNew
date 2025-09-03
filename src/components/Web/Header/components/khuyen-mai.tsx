@@ -7,7 +7,7 @@ const PromotionButton = () => {
     <Link href={`/khuyen-mai`}>
       <Button
         variant='outline'
-        className='hover:bg-mainColor text-mainColor border-mainColor hover:text-white'
+        className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
         radius={'xl'}
         leftSection={<IconGift size={20} />}
       >

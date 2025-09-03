@@ -1,7 +1,7 @@
 import { EMPTY_STRING, VND_SYMBOL } from '~/constants';
 
 export const formatDate = (date?: any) => {
-  return new Date(date || new Date()).toLocaleDateString();
+  return new Date(date || new Date()).toLocaleDateString('vi-VN');
 };
 
 export function formatTimeAgo(date: Date | string | number): string {
@@ -75,3 +75,14 @@ export const formatPriceLocaleVi = (value: number | string, suffix = VND_SYMBOL)
       : EMPTY_STRING;
   return valStr ? valStr.replace(/\B(?<!\,\d*)(?=(\d{3})+(?!\d))/g, '.') + suffix : EMPTY_STRING;
 };
+
+export function isStillValid({
+  createdAt,
+  limitTime
+}: {
+  createdAt: Date;
+  limitTime: number; // phút
+}): boolean {
+  const expiredAt = new Date(createdAt.getTime() + limitTime * 60 * 1000);
+  return new Date() <= expiredAt;
+}

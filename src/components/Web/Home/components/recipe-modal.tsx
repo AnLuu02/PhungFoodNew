@@ -1,6 +1,6 @@
 'use client';
 
-import { AspectRatio, Badge, Group, List, Modal, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
+import { AspectRatio, Badge, Box, Group, List, Modal, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { IconChefHat, IconClock, IconListCheck, IconVideo } from '@tabler/icons-react';
 import Image from 'next/image';
 
@@ -40,7 +40,7 @@ export default function RecipeModal({ recipe, opened, onClose }: any) {
         </Group>
 
         {recipe.videoId && (
-          <div>
+          <Box>
             <Text fw={600} size='lg' className='mb-2 flex items-center gap-2'>
               <IconVideo size={20} />
               Video hướng dẫn
@@ -53,11 +53,11 @@ export default function RecipeModal({ recipe, opened, onClose }: any) {
                 allowFullScreen
               />
             </AspectRatio>
-          </div>
+          </Box>
         )}
 
         {recipe.ingredients && (
-          <div>
+          <Box>
             <Text fw={600} size='lg' className='mb-2 flex items-center gap-2'>
               <IconListCheck size={20} />
               Nguyên liệu
@@ -67,11 +67,11 @@ export default function RecipeModal({ recipe, opened, onClose }: any) {
                 <List.Item key={index}>{ingredient}</List.Item>
               ))}
             </List>
-          </div>
+          </Box>
         )}
 
         {recipe.steps && (
-          <div>
+          <Box>
             <Text fw={600} size='lg' className='mb-2 flex items-center gap-2'>
               <IconChefHat size={20} />
               Các bước thực hiện
@@ -81,7 +81,7 @@ export default function RecipeModal({ recipe, opened, onClose }: any) {
                 <List.Item key={index}>{step}</List.Item>
               ))}
             </List>
-          </div>
+          </Box>
         )}
       </Stack>
     </Modal>

@@ -10,17 +10,18 @@ export const metadata: Metadata = {
 };
 export default async function FoodPromotionPage() {
   const user = await getServerSession(authOptions);
-  const [voucherData, productData] = await Promise.allSettled([
-    api.Voucher.getVoucherForUser({ userId: user?.user.id }),
+  const [userData, voucherData, productData] = await Promise.allSettled([
+    api.User.getOne({ s: user?.user.email || '', hasOrders: true }),
+    api.Voucher.getVoucherForUser({ userId: user?.user.id || '' }),
     api.Product.find({
       skip: 0,
       take: 10,
       discount: true
     })
   ]);
-
   return (
     <FoodPromotionPageClient
+      userData={userData.status === 'fulfilled' ? userData.value : null}
       voucherData={voucherData.status === 'fulfilled' ? voucherData.value : []}
       productData={productData.status === 'fulfilled' ? productData.value : []}
     />

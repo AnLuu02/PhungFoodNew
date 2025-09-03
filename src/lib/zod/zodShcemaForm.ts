@@ -100,9 +100,8 @@ export const deliverySchema = z.object({
   email: z.string({ required_error: 'Email là bắt buộc' }).email({ message: 'Email không hợp lệ' }),
 
   phone: z
-    .string()
+    .string({ required_error: 'Số điện thoại là bắt buộc' })
     .regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số')
-    .optional()
     .or(z.literal('')),
 
   address: addressSchema,

@@ -1,6 +1,6 @@
 'use client';
 import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
-import { ActionIcon, Box, Card, CardSection, Center, Flex, Group, rem, Stack, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Box, Card, CardSection, Center, Flex, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
@@ -106,7 +106,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                     />
                   </Box>
                 </CardSection>
-                <Stack gap={rem(1)} mt={'xs'} align='center'>
+                <Stack gap={1} mt={'xs'} align='center'>
                   <Tooltip label={item?.name || 'Cà chua'} withArrow>
                     <Text size={'md'} fw={700} lineClamp={1} className='hover:text-mainColor'>
                       {item?.name || 'Cà chua'}

@@ -9,7 +9,7 @@ import RecipeModal from './recipe-modal';
 const recipes = [
   {
     title: 'Cách làm mandu thịt, mandu kim chi và mandu rau củ',
-    image: '/images/temp/ot hiem.png',
+    image: '/images/png/delicious-burger-fries.png',
     duration: "30'",
     category: 'Trung bình',
     ingredients: [
@@ -31,7 +31,7 @@ const recipes = [
   },
   {
     title: 'Cách làm bánh tráng dừa mè nướng',
-    image: '/images/temp/xa lach.png',
+    image: '/images/png/delicious-burger-fries.png',
     duration: '1h',
     category: 'Trung bình',
     ingredients: ['Bánh tráng', 'Dừa nạo', 'Mè đen', 'Đường cát', 'Muối'],
@@ -44,7 +44,7 @@ const recipes = [
   },
   {
     title: 'Cách làm bánh xoài đào Jollibee',
-    image: '/images/temp/ot hiem.png',
+    image: '/images/png/delicious-burger-fries.png',
     duration: "25'",
     category: 'Trung bình',
     ingredients: [],
@@ -53,7 +53,7 @@ const recipes = [
   },
   {
     title: 'Cách làm bánh xèo vịt miền Tây',
-    image: '/images/temp/ot hiem.png',
+    image: '/images/png/delicious-burger-fries.png',
     duration: '1h',
     category: 'Trung bình',
     ingredients: [],

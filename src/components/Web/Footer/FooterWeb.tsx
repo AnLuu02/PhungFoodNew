@@ -1,4 +1,4 @@
-import { Badge, Box, Divider, Flex, Grid, GridCol, rem, Text, Title } from '@mantine/core';
+import { Badge, Box, Divider, Flex, Grid, GridCol, Text, Title } from '@mantine/core';
 import { IconPhone, IconTruck } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ export default async function FooterWeb() {
   return (
     <>
       <Box
-        px={{ base: rem(10), sm: rem(30), md: rem(30), lg: rem(130) }}
+        px={{ base: 10, sm: 30, md: 30, lg: 130 }}
         className='w-full overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 py-8 text-white dark:bg-dark-background'
       >
         <Grid className='w-full overflow-hidden' columns={24}>
@@ -185,7 +185,7 @@ export default async function FooterWeb() {
           </GridCol>
         </Grid>
         <Divider size={'xs'} mt={'xl'} variant='dotted' />
-        <Box className='flex flex-col items-center justify-between gap-4 sm:flex-row'>
+        <Box className='mb-4 flex flex-col items-start justify-between gap-1 sm:flex-row md:mb-0 md:items-center md:gap-4'>
           <Box className='text-sm text-gray-400'>
             <p>© 2025 Nhà Hàng Phụng Food. Tất cả quyền được bảo lưu.</p>
             <p className='mt-1'>MST: 0123456789 | Giấy phép KDDD: 123/GP-UBND</p>

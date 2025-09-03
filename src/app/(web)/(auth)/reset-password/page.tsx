@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Center, Grid, GridCol, PasswordInput, rem, TextInput, Title } from '@mantine/core';
+import { Card, Center, Grid, GridCol, PasswordInput, TextInput, Title } from '@mantine/core';
 import { IconMail } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -59,7 +59,7 @@ export default function ResetPassword({
           <Card.Section p={'md'}>
             <Grid>
               <GridCol span={12} className='flex justify-center'>
-                <Title className='font-quicksand' size={rem(28)}>
+                <Title className='font-quicksand' size={28}>
                   Đặt lại mật khẩu
                 </Title>
               </GridCol>

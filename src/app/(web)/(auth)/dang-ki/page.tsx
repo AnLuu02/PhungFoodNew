@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Center, Grid, GridCol, PasswordInput, rem, Select, Text, TextInput, Title } from '@mantine/core';
+import { Button, Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
@@ -113,7 +113,7 @@ export default function Page() {
           <Card.Section p='md'>
             <Grid w={'100%'}>
               <GridCol span={12} className='flex justify-center'>
-                <Title className='font-quicksand text-black dark:text-dark-text' order={2} size={rem(28)}>
+                <Title className='font-quicksand text-black dark:text-dark-text' order={2} size={28}>
                   ĐĂNG KÍ
                 </Title>
               </GridCol>

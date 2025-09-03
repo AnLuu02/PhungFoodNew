@@ -31,35 +31,35 @@ const mockItems: PopularItem[] = [
     category: 'Pizza',
     price: '299.000đ',
     orders: 145,
-    image: '/placeholder.svg?height=40&width=40'
+    image: '/images/png/delicious-burger-fries.png'
   },
   {
     name: 'Mì Ý Gà Alfredo',
     category: 'Mì Ý',
     price: '350.000đ',
     orders: 132,
-    image: '/placeholder.svg?height=40&width=40'
+    image: '/images/png/delicious-burger-fries.png'
   },
   {
     name: 'Salad Caesar',
     category: 'Salad',
     price: '199.000đ',
     orders: 98,
-    image: '/placeholder.svg?height=40&width=40'
+    image: '/images/png/delicious-burger-fries.png'
   },
   {
     name: 'Bánh mì tỏi',
     category: 'Khai vị',
     price: '89.000đ',
     orders: 87,
-    image: '/placeholder.svg?height=40&width=40'
+    image: '/images/png/delicious-burger-fries.png'
   },
   {
     name: 'Tiramisu',
     category: 'Tráng miệng',
     price: '149.000đ',
     orders: 76,
-    image: '/placeholder.svg?height=40&width=40'
+    image: '/images/png/delicious-burger-fries.png'
   }
 ];
 

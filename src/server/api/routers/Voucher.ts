@@ -88,21 +88,6 @@ export const voucherRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      let users_db: any[] = [];
-      if (input.pointUser && input.pointUser >= 0) {
-        users_db = await ctx.db.user.findMany({
-          where: {
-            pointUser: {
-              gte: input.pointUser
-            }
-          },
-          select: { id: true }
-        });
-      } else {
-        users_db = await ctx.db.user.findMany({
-          select: { id: true }
-        });
-      }
       const voucher = await ctx.db.voucher.create({
         data: {
           name: input.name,
@@ -120,15 +105,7 @@ export const voucherRouter = createTRPCRouter({
           startDate: input.startDate,
           endDate: input.endDate,
           applyAll: input.applyAll,
-          pointUser: input.pointUser,
-          voucherForUser: {
-            createMany: {
-              data: users_db.map(u => ({
-                userId: u.id,
-                quantityForUser: input.quantityForUser
-              }))
-            }
-          }
+          pointUser: input.pointUser
         }
       });
       revalidatePath('/admin/voucher');
@@ -182,6 +159,15 @@ export const voucherRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
+      let users_db: any;
+      if (input.userId && input.userId !== '') {
+        users_db = await ctx.db.user.findUnique({
+          where: {
+            id: input.userId
+          },
+          select: { pointUser: true }
+        });
+      }
       const voucher = await ctx.db.voucher.findMany({
         where: {
           status: VoucherStatus.ENABLED,
@@ -199,6 +185,13 @@ export const voucherRouter = createTRPCRouter({
                   userId: input.userId
                 }
               }
+            },
+            {
+              pointUser: users_db?.pointUser
+                ? {
+                    lte: users_db.pointUser
+                  }
+                : undefined
             }
           ]
         },

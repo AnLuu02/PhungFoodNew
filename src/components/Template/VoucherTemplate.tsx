@@ -1,11 +1,74 @@
-import { Box, Button, Card, Checkbox, Divider, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
+'use client';
+import { Box, Button, Card, Checkbox, Divider, Flex, Group, Progress, Stack, Text, Tooltip } from '@mantine/core';
 import clsx from 'clsx';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { api } from '~/trpc/react';
 import DateVoucher from '../Modals/DateVoucher';
-const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
+type VoucherTemplateProps = {
+  voucher: any;
+  products?: any;
+  setOpenDetail: any;
+};
+const VoucherTemplate = ({ voucher, products, setOpenDetail }: VoucherTemplateProps) => {
+  const [loading, setLoading] = useState(false);
+  const { data: user } = useSession();
+  const mutationRecivedVoucher = api.Voucher.update.useMutation();
+  const isReceived = voucher?.voucherForUser?.length > 0;
+  const utils = api.useUtils();
+
+  const handleReceivedVoucher = async (id: string) => {
+    setLoading(true);
+    try {
+      if (user?.user.id) {
+        await mutationRecivedVoucher.mutateAsync(
+          {
+            where: {
+              id: id
+            },
+            data: {
+              voucherForUser: {
+                create: {
+                  quantityForUser: voucher.quantityForUser,
+                  user: {
+                    connect: {
+                      id: user?.user.id
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            onSuccess: () => {
+              utils.Voucher.invalidate();
+              NotifySuccess('Thành công!', 'Nhận voucher thành công.');
+            },
+            onError: () => {
+              NotifyError('Thất bại!', 'Không thể nhận voucher vào lúc này.');
+            }
+          }
+        );
+      } else {
+        NotifyError('Chưa đăng nhập!', 'Đăng nhập để nhận voucher.');
+      }
+    } catch (error) {
+      setLoading(false);
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.', error as string);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUsedVoucher = (id: string) => {
+    alert('Sử dụng thành công voucher ' + id);
+  };
+
   return (
     <Card w={'98%'} p={0} shadow='xl' pos={'relative'} radius={'md'}>
       <Flex h={{ base: 'max-content', lg: 120 }}>
@@ -39,8 +102,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           {hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'active' ? (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`,
-                `bg-[#EDA500]`
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-[#EDA500] px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`
               )}
             >
               Dành cho bạn
@@ -48,8 +110,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
           ) : hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'upcoming' ? (
             <Box
               className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`,
-                `bg-[#00BB00]`
+                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-[#00BB00] px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`
               )}
             >
               Sắp đến hạn sử dụng
@@ -86,13 +147,22 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
                 {formatPriceLocaleVi(voucher?.maxDiscount)}
               </Text>
             </Tooltip>
-            <Progress
-              value={Math.floor((voucher?.usedQuantity / voucher?.quantity) * 100)}
-              color='red'
-              bg={'#DCDCDC'}
-              radius='xs'
-              my={8}
-            />
+            <Stack gap={1} mt={8}>
+              <Progress
+                value={Math.floor((voucher?.usedQuantity / voucher?.quantity) * 100)}
+                color='red'
+                bg={'#DCDCDC'}
+                radius='xs'
+              />
+              <Flex align={'center'} gap={4} justify={'end'}>
+                <Text size='xs' c='dimmed' lineClamp={1}>
+                  Còn lại:
+                </Text>
+                <Text size='xs' c='dimmed' lineClamp={1}>
+                  {voucher.availableQuantity}/{voucher.quantity}
+                </Text>
+              </Flex>
+            </Stack>
 
             <Flex align={'center'}>
               <DateVoucher item={voucher} />
@@ -109,11 +179,21 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: any) => {
               </Button>
             </Flex>
           </Flex>
-          <Checkbox
-            value={voucher?.id.toString()}
-            disabled={products && products.length > 0 && !allowedVoucher(voucher?.minOrderPrice || 0, products)}
-            id={`voucher-${voucher?.id.toString()}`}
-          />
+          {!isReceived ? (
+            <Button loading={loading} bg={'red'} size='xs' onClick={() => handleReceivedVoucher(voucher?.id)}>
+              Nhận
+            </Button>
+          ) : products && products.length >= 0 ? (
+            <Checkbox
+              value={voucher?.id.toString()}
+              disabled={products && products.length > 0 && !allowedVoucher(voucher?.minOrderPrice || 0, products)}
+              id={`voucher-${voucher?.id.toString()}`}
+            />
+          ) : (
+            <Button size='xs' onClick={() => handleUsedVoucher(voucher?.id)}>
+              Sử dụng
+            </Button>
+          )}
         </Flex>
       </Flex>
       <Box className='absolute right-[-6px] top-[6px] z-[1] rounded-l-[10px] bg-red-500/30 px-[8px] py-[2px] text-[12px] font-semibold text-red-500'>

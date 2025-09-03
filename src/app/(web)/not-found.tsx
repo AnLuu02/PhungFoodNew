@@ -5,18 +5,18 @@ import Link from 'next/link';
 export default function NotFound() {
   return (
     <Container size={420} my={40}>
-      <Title ta='center' className='font-quicksand text-9xl font-extrabold'>
+      <Title ta='center' className='font-quicksand text-9xl font-extrabold' c={'red'}>
         404
       </Title>
       <Text c='dimmed' size='lg' ta='center' mt='xl'>
         Oops! Page Not Found
       </Text>
       <Text size='lg' ta='center' mt='xl'>
-        The page you're looking for doesn't exist or has been moved.
+        Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.{' '}
       </Text>
       <Group justify='center' mt='xl'>
         <Link href='/'>
-          <Button size='md' leftSection={<IconHome size={20} />}>
+          <Button size='md' leftSection={<IconHome size={20} />} variant='outline'>
             Về trang chủ
           </Button>
         </Link>

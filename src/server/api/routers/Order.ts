@@ -345,53 +345,6 @@ export const orderRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      // return await withRedisCache(
-      //   `order:${input.s}`,
-      //   async () => {
-      //     return await ctx.db.order.findFirst({
-      //       where: {
-      //         OR: [
-      //           {
-      //             id: input.s?.trim()
-      //           },
-      //           {
-      //             user: {
-      //               email: {
-      //                 contains: input.s?.trim(),
-      //                 mode: 'insensitive'
-      //               }
-      //             }
-      //           }
-      //         ]
-      //       },
-      //       include: {
-      //         orderItems: {
-      //           include: {
-      //             product: {
-      //               include: {
-      //                 images: true
-      //               }
-      //             }
-      //           }
-      //         },
-      //         vouchers: true,
-      //         user: {
-      //           include: {
-      //             image: true,
-      //             address: true
-      //           }
-      //         },
-      //         payment: true,
-      //         delivery: {
-      //           include: {
-      //             address: true
-      //           }
-      //         }
-      //       }
-      //     });
-      //   },
-      //   60 * 60
-      // );
       return await ctx.db.order.findFirst({
         where: {
           OR: [

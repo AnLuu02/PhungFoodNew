@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Box, Button, Center, Flex, Group, Menu, rem, Text } from '@mantine/core';
+import { ActionIcon, Box, Button, Center, Flex, Group, Menu, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconClock, IconWorld } from '@tabler/icons-react';
 import clsx from 'clsx';
@@ -16,8 +16,8 @@ export const Header1 = ({ restaurant }: any) => {
       direction={{ base: 'column', sm: 'row', md: 'row' }}
       h={{ base: 'max-content', md: 40 }}
       pos={'relative'}
-      pl={{ base: rem(20), lg: rem(130) }}
-      pr={{ base: rem(20), sm: rem(60), lg: rem(130) }}
+      pl={{ base: 20, lg: 130 }}
+      pr={{ base: 20, sm: 60, lg: 130 }}
       align={'center'}
       justify={{ base: 'flex-start', sm: 'space-between', md: 'space-between' }}
       className='z-[100] bg-mainColor text-white'
@@ -35,7 +35,7 @@ export const Header1 = ({ restaurant }: any) => {
               size='xs'
               radius='xl'
               variant='subtle'
-              className='text-white'
+              className='text-white hover:text-subColor'
               leftSection={<IconClock size={16} />}
               color={!restaurantData?.isClose ? 'blue' : 'red'}
             >

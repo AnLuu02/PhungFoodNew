@@ -1,5 +1,5 @@
 'use client';
-import { Avatar, Badge, Box, Divider, Flex, Group, Menu, Text, UnstyledButton, rem } from '@mantine/core';
+import { Avatar, Badge, Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronDown, IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -60,7 +60,7 @@ export default function Header() {
                   </Text>
                 </Box>
                 <IconChevronDown
-                  style={{ width: rem(12), height: rem(12) }}
+                  style={{ width: 12, height: 12 }}
                   stroke={1.5}
                   className='hidden text-gray-500 sm:block'
                 />
@@ -68,15 +68,13 @@ export default function Header() {
             </UnstyledButton>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item leftSection={<IconUser style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}>
-              Profile
-            </Menu.Item>
-            <Menu.Item leftSection={<IconSettings style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}>
+            <Menu.Item leftSection={<IconUser style={{ width: 16, height: 16 }} stroke={1.5} />}>Profile</Menu.Item>
+            <Menu.Item leftSection={<IconSettings style={{ width: 16, height: 16 }} stroke={1.5} />}>
               Settings
             </Menu.Item>
             <Divider />
             <Menu.Item
-              leftSection={<IconLogout style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+              leftSection={<IconLogout style={{ width: 16, height: 16 }} stroke={1.5} />}
               color='red'
               onClick={() => signOut({ callbackUrl: 'https://www.facebook.com/' })}
             >

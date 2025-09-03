@@ -1,6 +1,6 @@
 'use client';
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Card, Flex, rem, Space, Text, Title } from '@mantine/core';
+import { ActionIcon, Card, Flex, Space, Text, Title } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -96,7 +96,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
             <Carousel
               w={'100%'}
               slideSize={{ base: '100%', sm: '33.3333%', md: '25%', xl: '20%' }}
-              slideGap={rem(20)}
+              slideGap={20}
               h={320}
               align='center'
               withControls={false}

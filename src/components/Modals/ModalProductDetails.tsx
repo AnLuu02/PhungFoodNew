@@ -77,7 +77,10 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
               <GridCol span={5}>
                 <Image
                   loading='lazy'
-                  src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/temp/xa lach.png'}
+                  src={
+                    getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) ||
+                    '/images/png/delicious-burger-fries.png'
+                  }
                   alt={product?.name}
                   className='cursor-pointer rounded-md object-cover'
                   width={350}

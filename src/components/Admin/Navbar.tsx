@@ -1,16 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Divider,
-  Group,
-  Menu,
-  NavLink,
-  rem,
-  ScrollArea,
-  Stack,
-  Text,
-  UnstyledButton
-} from '@mantine/core';
+import { Avatar, Box, Divider, Group, Menu, NavLink, ScrollArea, Stack, Text, UnstyledButton } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import {
   IconBrandPolymer,
@@ -102,7 +90,7 @@ export default function Navbar() {
                     {user?.user?.email}
                   </Text>
                 </Box>
-                <IconChevronDown style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
+                <IconChevronDown style={{ width: 12, height: 12 }} stroke={1.5} />
               </Group>
             </UnstyledButton>
           </Menu.Target>
@@ -112,7 +100,7 @@ export default function Navbar() {
             <Link href={`/thong-tin`} className='text-white'>
               <Menu.Item
                 fw={500}
-                leftSection={<IconUser fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+                leftSection={<IconUser fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
               >
                 Thông tin cá nhân
               </Menu.Item>
@@ -121,7 +109,7 @@ export default function Navbar() {
 
             <Menu.Item
               fw={500}
-              leftSection={<IconLogout fontWeight={'bold'} style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+              leftSection={<IconLogout fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
               color='white'
               mt={'xs'}
               className='bg-red-500 hover:bg-red-600'
@@ -184,7 +172,7 @@ export default function Navbar() {
             className='mb-4 flex cursor-pointer items-center rounded-lg p-2 transition-colors duration-300 hover:bg-red-500 hover:text-white'
             onClick={() => signOut()}
           >
-            <IconLogout style={{ width: rem(20), height: rem(20), marginRight: '8px' }} />
+            <IconLogout style={{ width: 20, height: 20, marginRight: '8px' }} />
             <Text size='sm' fw={700}>
               Đăng xuất
             </Text>

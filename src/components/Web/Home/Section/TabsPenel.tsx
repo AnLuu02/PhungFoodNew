@@ -1,6 +1,6 @@
 'use client';
 import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
-import { ActionIcon, Center, Flex, Group, rem, Text } from '@mantine/core';
+import { ActionIcon, Center, Flex, Group, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
@@ -76,7 +76,7 @@ const TabsPanelCarousel = ({ data }: any) => {
         <Carousel
           w='100%'
           slideSize={{ base: '100%', sm: '33.33333%', md: '33.33333%', xl: '25%' }}
-          slideGap={{ base: rem(20) }}
+          slideGap={20}
           h={320}
           align='center'
           withControls={false}
