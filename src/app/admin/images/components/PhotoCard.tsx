@@ -3,6 +3,7 @@ import { IconMaximize, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import { formatBytes } from './ListImages/ListImages';
@@ -71,7 +72,7 @@ export default function PhotoCard({ id, name, file, postingDate, onOpened }: Pho
           )}
         </Group>
         <Text size='sm' c='dimmed'>
-          Tải lên ngày: {postingDate.toLocaleDateString()}
+          Tải lên ngày: {formatDateViVN(postingDate)}
         </Text>
       </Stack>
 

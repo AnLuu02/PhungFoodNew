@@ -33,7 +33,7 @@ import {
 } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { restaurantSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';

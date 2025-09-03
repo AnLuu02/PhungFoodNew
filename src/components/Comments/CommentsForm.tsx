@@ -5,7 +5,7 @@ import { Flex, Rating, Text, Textarea } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Review } from '~/types/review';
@@ -39,7 +39,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
   const onSubmit: SubmitHandler<Review> = async formData => {
     try {
       if (!user?.user?.id) {
-        NotifyError('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
+        NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
         return;
       }
       setValue('productId', product.id);

@@ -2,74 +2,32 @@
 
 import { Badge, Box, Button, Card, Center, Flex, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import {
-  IconAlertTriangle,
-  IconArrowBack,
-  IconCircleDashedCheck,
-  IconCircleX,
-  IconClock,
-  IconCreditCard,
-  IconTruck
-} from '@tabler/icons-react';
+import { IconArrowBack, IconCreditCard } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useEffect } from 'react';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { statusConfig } from '~/lib/func-handler/status-order';
 
 interface OrderStatusPageProps {
   customerName: string;
   orderId?: string;
   amount?: number;
-  status: 'success' | 'processing' | 'delivered' | 'cancelled' | 'error' | 'payment_failed' | 'not_found';
+  status:
+    | 'COMPLETED'
+    | 'UNPAID'
+    | 'PENDING'
+    | 'CONFIRMED'
+    | 'SHIPPING'
+    | 'CANCELLED'
+    | 'ERROR'
+    | 'PAYMENT_FAILED'
+    | 'NOT_FOUND';
   customTitle?: string;
   customMessage?: string;
   onRetryPayment?: () => void;
   onBackToHome?: () => void;
   onReturnHome?: () => void;
 }
-
-const statusConfig = {
-  success: {
-    label: 'HOÀN THÀNH',
-    color: 'bg-green-500',
-    icon: IconCircleDashedCheck,
-    message: 'Đơn hàng đã được hoàn thành thành công'
-  },
-  processing: {
-    label: 'CHỜ XỬ LÝ',
-    color: 'bg-orange-500',
-    icon: IconClock,
-    message: 'Đơn hàng của bạn đang được xử lý'
-  },
-  delivered: {
-    label: 'ĐÃ GIAO HÀNG',
-    color: 'bg-green-500',
-    icon: IconTruck,
-    message: 'Đơn hàng đã được giao thành công'
-  },
-  error: {
-    label: 'LỖI XỬ LÝ',
-    color: 'bg-red-500',
-    icon: IconCircleX,
-    message: 'Có lỗi xảy ra khi xử lý đơn hàng của bạn'
-  },
-  payment_failed: {
-    label: 'THANH TOÁN THẤT BẠI',
-    color: 'bg-red-500',
-    icon: IconCreditCard,
-    message: 'Thanh toán không thành công, vui lòng thử lại'
-  },
-  cancelled: {
-    label: 'ĐÃ HỦY',
-    color: 'bg-gray-500',
-    icon: IconAlertTriangle,
-    message: 'Đơn hàng đã được hủy'
-  },
-  not_found: {
-    label: 'KHÔNG TÌM THẤY',
-    color: 'bg-gray-500',
-    icon: IconAlertTriangle,
-    message: 'Đơn hàng không tồn tại.'
-  }
-};
 
 export function OrderStatusPage({
   customerName,
@@ -85,7 +43,7 @@ export function OrderStatusPage({
   const [, , resetVoucher] = useLocalStorage<any[]>({ key: 'applied-vouchers', defaultValue: [] });
 
   useEffect(() => {
-    const isSuccessState = ['delivered', 'success'].includes(status);
+    const isSuccessState = ['SHIPPING', 'COMPLETED', 'CONFIRMED'].includes(status);
     if (isSuccessState) {
       resetVoucher();
     }
@@ -94,17 +52,16 @@ export function OrderStatusPage({
   const currentStatus = statusConfig[status];
   const StatusIcon = currentStatus.icon;
 
-  const isErrorState = ['error', 'payment_failed', 'cancelled', 'not_found'].includes(status);
-  const isSuccessState = ['delivered', 'success'].includes(status);
+  const isErrorState = ['ERROR', 'PAYMENT_FAILED', 'CANCELLED', 'NOT_FOUND'].includes(status);
 
   const displayTitle =
     customTitle ||
     (isErrorState
-      ? status === 'payment_failed'
+      ? status === 'PAYMENT_FAILED'
         ? 'Thanh toán thất bại'
-        : status === 'cancelled'
+        : status === 'CANCELLED'
           ? 'Đơn hàng đã hủy'
-          : status === 'not_found'
+          : status === 'NOT_FOUND'
             ? 'Đơn hàng không tồn tại'
             : 'Có lỗi xảy ra'
       : 'Đơn hàng đã được thanh toán');
@@ -112,22 +69,25 @@ export function OrderStatusPage({
   const displayMessage = customMessage || currentStatus.message;
 
   const handleBackToHome = onBackToHome || onReturnHome || (() => {});
+  console.log(currentStatus);
 
   return (
     <Card
       withBorder
       radius={'lg'}
       shadow='xl'
-      className={`mx-auto w-full max-w-md ${isErrorState ? 'bg-red-50' : isSuccessState ? 'bg-green-50' : 'bg-blue-50'}`}
+      className={`mx-auto w-full max-w-md`}
+      style={{
+        backgroundColor: currentStatus.color + '10'
+      }}
     >
       <Box className='space-y-6 p-8 text-center'>
         <Box className='flex justify-center'>
           <Box
-            className={`h-20 w-20 ${isErrorState ? 'bg-red-100' : isSuccessState ? 'bg-green-100' : 'bg-blue-100'} flex items-center justify-center rounded-full`}
+            className={`flex h-20 w-20 items-center justify-center rounded-full`}
+            style={{ backgroundColor: currentStatus.color + '22' }}
           >
-            <StatusIcon
-              className={`h-12 w-12 ${isErrorState ? 'text-red-600' : isSuccessState ? 'text-green-600' : 'text-blue-600'}`}
-            />
+            <StatusIcon className={`h-12 w-12`} style={{ color: currentStatus.color }} />
           </Box>
         </Box>
 
@@ -135,7 +95,7 @@ export function OrderStatusPage({
           <Title order={2} className='font-quicksand text-2xl font-bold text-gray-900'>
             {displayTitle}
           </Title>
-          <Text size='lg' className='text-gray-700'>
+          <Text size='lg' c={'dimmed'} fw={600}>
             Chào, {customerName}
           </Text>
         </Box>
@@ -144,7 +104,8 @@ export function OrderStatusPage({
           <Badge
             fw={700}
             size='xl'
-            className={`${currentStatus.color} text-white`}
+            className={`text-white`}
+            style={{ backgroundColor: currentStatus.color }}
             leftSection={<StatusIcon className='h-5 w-5' />}
           >
             {currentStatus.label}
@@ -189,13 +150,23 @@ export function OrderStatusPage({
         ) : null}
 
         <Box className='space-y-3'>
-          {status === 'payment_failed' && onRetryPayment && (
+          {status === 'PAYMENT_FAILED' && onRetryPayment && (
             <Button
               onClick={onRetryPayment}
-              className='flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 py-3 font-semibold text-white transition-colors hover:bg-red-700'
+              leftSection={<IconCreditCard className='h-4 w-4' />}
+              className='flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 font-semibold text-white transition-colors hover:bg-red-700'
             >
-              <IconCreditCard className='h-4 w-4' />
               Thử thanh toán lại
+            </Button>
+          )}
+
+          {status === 'UNPAID' && onRetryPayment && (
+            <Button
+              onClick={onRetryPayment}
+              leftSection={<IconCreditCard className='h-4 w-4' />}
+              className='flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 font-semibold text-white transition-colors hover:bg-red-700'
+            >
+              <Link href={`/thanh-toan/${orderId}`}> Tiếp tục thanh toán</Link>
             </Button>
           )}
 

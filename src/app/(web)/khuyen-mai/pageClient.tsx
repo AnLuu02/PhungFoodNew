@@ -136,9 +136,6 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
   }, [filteredPromotions, page]);
 
   const totalPages = useMemo(() => Math.ceil(filteredPromotions.length / ITEMS_PER_PAGE), [filteredPromotions]);
-
-  console.log(userData);
-
   const [levelUser, levelNextUser] = useMemo(() => {
     const levelUser = getInfoLevelUser(userData?.level || LocalUserLevel.BRONZE);
     const levelNextUser = getInfoLevelUser(levelUser?.nextLevel || LocalUserLevel.BRONZE);
@@ -522,7 +519,13 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                   <Stack>
                     <Title className='flex items-center justify-between font-quicksand text-2xl'>
                       Tiến độ
-                      <Badge radius={'md'} size='xl' py={'lg'} className={`bg-[${levelUser.color}] text-lg text-white`}>
+                      <Badge
+                        radius={'md'}
+                        size='xl'
+                        py={'lg'}
+                        className={`text-lg text-white`}
+                        style={{ backgroundColor: levelUser.color }}
+                      >
                         {levelUser.viName}
                       </Badge>
                     </Title>

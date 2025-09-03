@@ -19,7 +19,7 @@ import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import fetcher from '~/lib/func-handler/fetcher';
-import { fileToBase64 } from '~/lib/func-handler/handle-file-upload';
+import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
 import { userSchema } from '~/lib/zod/zodShcemaForm';

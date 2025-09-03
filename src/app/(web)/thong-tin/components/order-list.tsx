@@ -29,14 +29,8 @@ import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { useModal } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDate, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import {
-  getStatusColor,
-  getStatusIcon,
-  getStatusText,
-  getTotalOrderStatus,
-  ORDER_STATUS_UI
-} from '~/lib/func-handler/get-status-order';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/status-order';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
 
@@ -197,13 +191,13 @@ export default function OrderList({ orders }: { orders: any }) {
                   Hoàn thành
                 </Tabs.Tab>
                 <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.PENDING}>
-                  Chờ xử lý
+                  Chờ xác nhận
                 </Tabs.Tab>
-                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.PROCESSING}>
+                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.UNPAID}>
                   Chưa thanh toán
                 </Tabs.Tab>
-                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.DELIVERED}>
-                  Đang giao hàng
+                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.SHIPPING}>
+                  Đang giao
                 </Tabs.Tab>
                 <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.CANCELLED}>
                   Đã hủy
@@ -242,78 +236,81 @@ export default function OrderList({ orders }: { orders: any }) {
                 </Table.Thead>
                 <Table.Tbody>
                   {displayedOrders?.length > 0 ? (
-                    displayedOrders.map((order: any) => (
-                      <Table.Tr key={order.id}>
-                        <Table.Td w={100} style={{ maxWidth: 100, overflow: 'hidden' }}>
-                          <Tooltip label={order.id} withArrow>
-                            <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
-                          </Tooltip>
-                        </Table.Td>
-                        <Table.Td className='text-sm'>{formatDate(order.date)}</Table.Td>
-                        <Table.Td className='text-sm'>{formatPriceLocaleVi(order.finalTotal || 0)}</Table.Td>
-                        <Table.Td style={{ textTransform: 'capitalize' }}>
-                          <Badge
-                            size='xs'
-                            color={getStatusColor(order.status)}
-                            p={'xs'}
-                            className='align-items-center flex'
-                          >
-                            <Flex align={'center'}>
-                              <Text size='10px' fw={700}>
-                                {getStatusText(order.status)}
-                              </Text>
-                              {getStatusIcon(order.status)}
-                            </Flex>
-                          </Badge>
-                        </Table.Td>
-                        <Table.Td className='text-sm'>
-                          <Group gap={8}>
-                            <Tooltip label='Xóa đơn hàng'>
-                              <ActionIcon
-                                color='red'
-                                onClick={() => {
-                                  confirmDelete({
-                                    id: { id: order.id },
-                                    mutationDelete,
-                                    entityName: 'đơn hàng'
-                                  });
-                                }}
-                              >
-                                <IconTrash size={16} />
-                              </ActionIcon>
+                    displayedOrders.map((order: any) => {
+                      const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
+                      return (
+                        <Table.Tr key={order.id}>
+                          <Table.Td w={100} style={{ maxWidth: 100, overflow: 'hidden' }}>
+                            <Tooltip label={order.id} withArrow>
+                              <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
                             </Tooltip>
+                          </Table.Td>
+                          <Table.Td className='text-sm'>{formatDateViVN(order.date)}</Table.Td>
+                          <Table.Td className='text-sm'>{formatPriceLocaleVi(order.finalTotal || 0)}</Table.Td>
+                          <Table.Td style={{ textTransform: 'capitalize' }}>
+                            <Badge
+                              size='xs'
+                              color={statusInfo.color || 'gray'}
+                              p={'xs'}
+                              className='align-items-center flex'
+                            >
+                              <Flex align={'center'}>
+                                <Text size='10px' fw={700}>
+                                  {statusInfo.label}
+                                </Text>
+                                <statusInfo.icon />
+                              </Flex>
+                            </Badge>
+                          </Table.Td>
+                          <Table.Td className='text-sm'>
+                            <Group gap={8}>
+                              <Tooltip label='Xóa đơn hàng'>
+                                <ActionIcon
+                                  color='red'
+                                  onClick={() => {
+                                    confirmDelete({
+                                      id: { id: order.id },
+                                      mutationDelete,
+                                      entityName: 'đơn hàng'
+                                    });
+                                  }}
+                                >
+                                  <IconTrash size={16} />
+                                </ActionIcon>
+                              </Tooltip>
 
-                            {order?.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
+                              {order?.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
 
-                            {order?.status === LocalOrderStatus.PROCESSING && (
-                              <Link href={`/thanh-toan/${order.id}`}>
-                                <Tooltip label='Tiếp tục thanh toán'>
-                                  <Button size='xs'>Thanh toán</Button>
-                                </Tooltip>
-                              </Link>
-                            )}
+                              {order?.status === LocalOrderStatus.UNPAID && (
+                                <Link href={`/thanh-toan/${order.id}`}>
+                                  <Tooltip label='Tiếp tục thanh toán'>
+                                    <Button size='xs'>Thanh toán</Button>
+                                  </Tooltip>
+                                </Link>
+                              )}
 
-                            {order?.status === LocalOrderStatus.CANCELLED && (
-                              <Link href={`/thanh-toan/${order.id}`}>
-                                <Tooltip label='Đặt lại đơn hàng'>
-                                  <Button size='xs'>Đặt lại</Button>
-                                </Tooltip>
-                              </Link>
-                            )}
-                            <Tooltip label='Chi tiết'>
-                              <Button
-                                size='xs'
-                                onClick={() => {
-                                  openModal('orders', null, order);
-                                }}
-                              >
-                                Chi tiết
-                              </Button>
-                            </Tooltip>
-                          </Group>
-                        </Table.Td>
-                      </Table.Tr>
-                    ))
+                              {order?.status === LocalOrderStatus.CANCELLED && (
+                                <Link href={`/thanh-toan/${order.id}`}>
+                                  <Tooltip label='Đặt lại đơn hàng'>
+                                    <Button size='xs'>Đặt lại</Button>
+                                  </Tooltip>
+                                </Link>
+                              )}
+                              <Tooltip label='Chi tiết'>
+                                <Button
+                                  size='xs'
+                                  onClick={() => {
+                                    openModal('orders', null, order);
+                                  }}
+                                >
+                                  Chi tiết
+                                </Button>
+                              </Tooltip>
+                            </Group>
+                          </Table.Td>
+                        </Table.Tr>
+                      );
+                    })
                   ) : (
                     <Table.Tr>
                       <Table.Td colSpan={4}>

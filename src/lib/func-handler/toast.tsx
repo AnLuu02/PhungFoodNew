@@ -1,6 +1,6 @@
 import { Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconX } from '@tabler/icons-react';
+import { IconAlertCircle, IconX } from '@tabler/icons-react';
 
 const showNotification = ({
   id,
@@ -32,12 +32,11 @@ const showNotification = ({
     ),
     color,
     icon: icon,
-
     loading: false
   });
 };
 
-export const NotifySuccess = (title = 'Success', message = 'Thao tác thành công./') => {
+export const NotifySuccess = (title = 'Thành công!', message = 'Thao tác thành công./') => {
   showNotification({
     id: 'toast-success',
     title: title,
@@ -46,12 +45,21 @@ export const NotifySuccess = (title = 'Success', message = 'Thao tác thành cô
   });
 };
 
-export const NotifyError = (title = 'Error', message = 'Thao tác thất bại. Hãy thử lại./') => {
+export const NotifyError = (title = 'Thất bại!', message = 'Thao tác thất bại. Hãy thử lại./') => {
   showNotification({
     id: 'toast-error',
     title: title,
     message,
     color: 'red',
     icon: <IconX size={20} />
+  });
+};
+export const NotifyWarning = (title = 'Cảnh báo!', message = ' Thao tác thất bại. Hãy thử lại./') => {
+  showNotification({
+    id: 'toast-warning',
+    title: title,
+    message,
+    color: 'yellow',
+    icon: <IconAlertCircle size={20} />
   });
 };

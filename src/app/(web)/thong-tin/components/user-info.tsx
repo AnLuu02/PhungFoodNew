@@ -24,8 +24,8 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
-import { formatDate } from '~/lib/func-handler/Format';
-import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/get-status-order';
+import { formatDateViVN } from '~/lib/func-handler/Format';
+import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/status-order';
 import { LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
 
 export default function UserInfo({ userInfor }: { userInfor: any }) {
@@ -117,7 +117,7 @@ export default function UserInfo({ userInfor }: { userInfor: any }) {
                 Ngày sinh
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.dateOfBirth ? formatDate(userInfor?.dateOfBirth) : 'Đang cập nhật'}
+                {userInfor?.dateOfBirth ? formatDateViVN(userInfor?.dateOfBirth) : 'Đang cập nhật'}
               </Text>
             </Grid.Col>
             <Grid.Col span={6}>

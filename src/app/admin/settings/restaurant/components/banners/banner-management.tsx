@@ -20,7 +20,7 @@ import {
 import { IconChevronLeft, IconChevronRight, IconFile, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { bannerSchema } from '~/lib/zod/zodShcemaForm';

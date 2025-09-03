@@ -23,7 +23,7 @@ import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { createTag } from '~/lib/func-handler/generateTag';
-import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType, LocalProductStatus } from '~/lib/zod/EnumType';
 import { productSchema } from '~/lib/zod/zodShcemaForm';

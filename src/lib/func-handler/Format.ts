@@ -1,6 +1,6 @@
 import { EMPTY_STRING, VND_SYMBOL } from '~/constants';
 
-export const formatDate = (date?: any) => {
+export const formatDateViVN = (date?: any) => {
   return new Date(date || new Date()).toLocaleDateString('vi-VN');
 };
 

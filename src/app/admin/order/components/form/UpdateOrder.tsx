@@ -45,7 +45,7 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
       finalTotal: 0,
       discountAmount: 0,
       originalTotal: 0,
-      status: LocalOrderStatus.PROCESSING,
+      status: LocalOrderStatus.UNPAID,
       userId: '',
       paymentId: '',
       orderItems: [],

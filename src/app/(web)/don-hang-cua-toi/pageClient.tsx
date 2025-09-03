@@ -29,8 +29,8 @@ import Empty from '~/components/Empty';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { useModal } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDate, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getStatusColor, getStatusIcon, getStatusText } from '~/lib/func-handler/get-status-order';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { getStatusInfo } from '~/lib/func-handler/status-order';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
 
@@ -61,7 +61,7 @@ export default function MyOrderPageClient({ data }: any) {
       [
         order?.payment?.name,
         order?.status,
-        formatDate(order?.createdAt),
+        formatDateViVN(order?.createdAt),
         order?.originalTotal?.toString(),
         order?.finalTotal?.toString(),
         order?.discountAmount?.toString(),
@@ -133,49 +133,52 @@ export default function MyOrderPageClient({ data }: any) {
                 </Stack>
               </Card>
             </Grid.Col>
-            {statusCounts.map(({ status, count }) => (
-              <Grid.Col key={status} span={{ base: 6, sm: 4, md: 6, lg: 6 }}>
-                <Card
-                  withBorder
-                  shadow='sm'
-                  h='100%'
-                  className={clsx('cursor-pointer transition-all duration-300', {
-                    'ring-2 ring-blue-500': selectedStatus === status,
-                    'hover:bg-mainColor/10': selectedStatus !== status
-                  })}
-                  onClick={() => setSelectedStatus(selectedStatus === status ? null : status)}
-                >
-                  <RingProgress
-                    size={50}
-                    roundCaps
-                    thickness={5}
-                    sections={[{ value: (count / totalOrders) * 100, color: getStatusColor(status) }]}
-                    pos='absolute'
-                    top={2}
-                    right={2}
-                    className='hidden sm:block'
-                    label={
-                      <Center>
-                        <Text size='xs' c='dimmed' fw={700}>
-                          {count}
-                        </Text>
-                      </Center>
-                    }
-                  />
-                  <Stack gap={0}>
-                    <Text size='xl' className='font-bold'>
-                      {count}
-                    </Text>
-                    <Text size='sm' c={getStatusColor(status)} fw={700}>
-                      {getStatusText(status)}
-                    </Text>
-                    <Text size='xs' c='dimmed'>
-                      Chiếm {((count / totalOrders) * 100).toFixed(1)}%
-                    </Text>
-                  </Stack>
-                </Card>
-              </Grid.Col>
-            ))}
+            {statusCounts.map(({ status, count }) => {
+              const statusInfo = getStatusInfo(status as LocalOrderStatus);
+              return (
+                <Grid.Col key={status} span={{ base: 6, sm: 4, md: 6, lg: 6 }}>
+                  <Card
+                    withBorder
+                    shadow='sm'
+                    h='100%'
+                    className={clsx('cursor-pointer transition-all duration-300', {
+                      'ring-2 ring-blue-500': selectedStatus === status,
+                      'hover:bg-mainColor/10': selectedStatus !== status
+                    })}
+                    onClick={() => setSelectedStatus(selectedStatus === status ? null : status)}
+                  >
+                    <RingProgress
+                      size={50}
+                      roundCaps
+                      thickness={5}
+                      sections={[{ value: (count / totalOrders) * 100, color: statusInfo.color }]}
+                      pos='absolute'
+                      top={2}
+                      right={2}
+                      className='hidden sm:block'
+                      label={
+                        <Center>
+                          <Text size='xs' c='dimmed' fw={700}>
+                            {count}
+                          </Text>
+                        </Center>
+                      }
+                    />
+                    <Stack gap={0}>
+                      <Text size='xl' className='font-bold'>
+                        {count}
+                      </Text>
+                      <Text size='sm' c={statusInfo.color} fw={700}>
+                        {statusInfo.label}
+                      </Text>
+                      <Text size='xs' c='dimmed'>
+                        Chiếm {((count / totalOrders) * 100).toFixed(1)}%
+                      </Text>
+                    </Stack>
+                  </Card>
+                </Grid.Col>
+              );
+            })}
           </Grid>
         </Paper>
       </Grid.Col>
@@ -225,80 +228,83 @@ export default function MyOrderPageClient({ data }: any) {
                       </Table.Td>
                     </Table.Tr>
                   ) : (
-                    displayedOrders.map((order: any) => (
-                      <Table.Tr key={order.id}>
-                        <Table.Td w={100} className='max-w-[100px] overflow-hidden'>
-                          <Tooltip label={order.id} withArrow>
-                            <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
-                          </Tooltip>
-                        </Table.Td>
-                        <Table.Td className='text-sm'>
-                          <Highlight size='sm' highlight={valueSearch || ''}>
-                            {order.payment?.name || 'Chưa thanh toán'}
-                          </Highlight>
-                        </Table.Td>
-                        <Table.Td className='text-sm'>
-                          <Highlight size='sm' highlight={valueSearch || ''}>
-                            {formatPriceLocaleVi(order.finalTotal || 0)}
-                          </Highlight>
-                        </Table.Td>
-                        <Table.Td className='text-sm'>
-                          <Highlight size='sm' highlight={valueSearch || ''}>
-                            {formatDate(order.createdAt)}
-                          </Highlight>
-                        </Table.Td>
-                        <Table.Td className='text-sm'>
-                          <Tooltip label={getStatusText(order.status)}>
-                            <Badge size='xs' color={getStatusColor(order.status)} p='xs'>
-                              <Flex align='center'>
-                                <Text size='10px' fw={700}>
-                                  {getStatusText(order.status)}
-                                </Text>
-                                {getStatusIcon(order.status)}
-                              </Flex>
-                            </Badge>
-                          </Tooltip>
-                        </Table.Td>
-                        <Table.Td className='text-sm'>
-                          <Group gap={8}>
-                            <Tooltip label='Xóa đơn hàng'>
-                              <ActionIcon
-                                color='red'
-                                onClick={() =>
-                                  confirmDelete({
-                                    id: { id: order.id },
-                                    mutationDelete,
-                                    entityName: 'đơn hàng'
-                                  })
-                                }
-                              >
-                                <IconTrash size={16} />
-                              </ActionIcon>
+                    displayedOrders.map((order: any) => {
+                      const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
+                      return (
+                        <Table.Tr key={order.id}>
+                          <Table.Td w={100} className='max-w-[100px] overflow-hidden'>
+                            <Tooltip label={order.id} withArrow>
+                              <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
                             </Tooltip>
-                            {order.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order.id} />}
-                            {order.status === LocalOrderStatus.PROCESSING && (
-                              <Link href={`/thanh-toan/${order.id}`}>
-                                <Tooltip label='Tiếp tục thanh toán'>
-                                  <Button size='xs'>Thanh toán</Button>
-                                </Tooltip>
-                              </Link>
-                            )}
-                            {order.status === LocalOrderStatus.CANCELLED && (
-                              <Link href={`/thanh-toan/${order.id}`}>
-                                <Tooltip label='Đặt lại đơn hàng'>
-                                  <Button size='xs'>Đặt lại</Button>
-                                </Tooltip>
-                              </Link>
-                            )}
-                            <Tooltip label='Chi tiết'>
-                              <Button size='xs' onClick={() => openModal('orders', null, order)}>
-                                Chi tiết
-                              </Button>
+                          </Table.Td>
+                          <Table.Td className='text-sm'>
+                            <Highlight size='sm' highlight={valueSearch || ''}>
+                              {order.payment?.name || 'Chưa thanh toán'}
+                            </Highlight>
+                          </Table.Td>
+                          <Table.Td className='text-sm'>
+                            <Highlight size='sm' highlight={valueSearch || ''}>
+                              {formatPriceLocaleVi(order.finalTotal || 0)}
+                            </Highlight>
+                          </Table.Td>
+                          <Table.Td className='text-sm'>
+                            <Highlight size='sm' highlight={valueSearch || ''}>
+                              {formatDateViVN(order.createdAt)}
+                            </Highlight>
+                          </Table.Td>
+                          <Table.Td className='text-sm'>
+                            <Tooltip label={statusInfo.label}>
+                              <Badge size='xs' color={statusInfo.color} p='xs'>
+                                <Flex align='center'>
+                                  <Text size='10px' fw={700}>
+                                    {statusInfo.label}
+                                  </Text>
+                                  <statusInfo.icon />
+                                </Flex>
+                              </Badge>
                             </Tooltip>
-                          </Group>
-                        </Table.Td>
-                      </Table.Tr>
-                    ))
+                          </Table.Td>
+                          <Table.Td className='text-sm'>
+                            <Group gap={8}>
+                              <Tooltip label='Xóa đơn hàng'>
+                                <ActionIcon
+                                  color='red'
+                                  onClick={() =>
+                                    confirmDelete({
+                                      id: { id: order.id },
+                                      mutationDelete,
+                                      entityName: 'đơn hàng'
+                                    })
+                                  }
+                                >
+                                  <IconTrash size={16} />
+                                </ActionIcon>
+                              </Tooltip>
+                              {order.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order.id} />}
+                              {order.status === LocalOrderStatus.UNPAID && (
+                                <Link href={`/thanh-toan/${order.id}`}>
+                                  <Tooltip label='Tiếp tục thanh toán'>
+                                    <Button size='xs'>Thanh toán</Button>
+                                  </Tooltip>
+                                </Link>
+                              )}
+                              {order.status === LocalOrderStatus.CANCELLED && (
+                                <Link href={`/thanh-toan/${order.id}`}>
+                                  <Tooltip label='Đặt lại đơn hàng'>
+                                    <Button size='xs'>Đặt lại</Button>
+                                  </Tooltip>
+                                </Link>
+                              )}
+                              <Tooltip label='Chi tiết'>
+                                <Button size='xs' onClick={() => openModal('orders', null, order)}>
+                                  Chi tiết
+                                </Button>
+                              </Tooltip>
+                            </Group>
+                          </Table.Td>
+                        </Table.Tr>
+                      );
+                    })
                   )}
                 </Table.Tbody>
               </Table>

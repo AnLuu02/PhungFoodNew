@@ -12,7 +12,7 @@ import { breakpoints } from '~/constants';
 import { useModal } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
 import ButtonAddToCart from '../../ButtonAddToCart';
@@ -126,7 +126,7 @@ const ProductCardCarouselVertical = ({ product }: { product?: any }) => {
                         NotifySuccess('Thành công!', 'Xóa yêu thích thành công.');
                         setLoading(true);
                       } else {
-                        NotifyError('Chưa đăng nhập!', 'Vui lớng đăng nhập.');
+                        NotifyWarning('Chưa đăng nhập!', 'Vui lớng đăng nhập.');
                       }
                     }}
                   />
@@ -140,7 +140,7 @@ const ProductCardCarouselVertical = ({ product }: { product?: any }) => {
                         NotifySuccess('Thành công!', 'Thêm yêu thích thành công.');
                         setLoading(true);
                       } else {
-                        NotifyError('Chưa đăng nhập!', 'Vui lớng đăng nhập.');
+                        NotifyWarning('Chưa đăng nhập!', 'Vui lòng đăng nhập.');
                       }
                     }}
                   />

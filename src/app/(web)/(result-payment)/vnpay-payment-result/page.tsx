@@ -11,6 +11,7 @@ export default function PaymentResult() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('vnp_TxnRef') || searchParams.get('orderId');
   const { data: order, isLoading: loadingOrder } = api.Order.getOne.useQuery({ s: orderId || '' });
+  const amount = order?.finalTotal || 0;
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [queryParams, setQueryParams] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -24,22 +25,18 @@ export default function PaymentResult() {
         orderId: searchParams.get('vnp_TxnRef') || searchParams.get('orderId'),
         amount: Number(searchParams.get('vnp_Amount')) / 100,
         bankCode: searchParams.get('vnp_BankCode'),
-        payDate: searchParams.get('vnp_PayDate') || searchParams.get('transDate'),
+        transDate: searchParams.get('vnp_PayDate') || searchParams.get('transDate'),
         responseCode: searchParams.get('vnp_ResponseCode'),
         error: searchParams.get('error'),
-        message: searchParams.get('message'),
-        statusOrder: searchParams.get('statusOrder')
+        statusOrder: searchParams.get('statusOrder'),
+        useLocal: searchParams.get('useLocal') || '1'
       };
-      setQueryParams(params);
-      const hasOtherFields = Object.keys(params).some(
-        key => key !== 'orderId' && key !== 'payDate' && key !== 'statusOrder' && key !== 'message' && params[key]
-      );
-      if (params.orderId && params.payDate && !hasOtherFields) {
+      if (params.orderId && params.transDate && !params.useLocal) {
         hasFetched.current = true;
         fetch('/api/vnpay/querydr', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ orderId: params.orderId, transDate: params.payDate })
+          body: JSON.stringify({ orderId: params.orderId, transDate: params.transDate })
         })
           .then(res => res.json())
           .then(data => {
@@ -48,7 +45,7 @@ export default function PaymentResult() {
               transactionStatus: data.vnp_TransactionStatus,
               amount: Number(data.vnp_Amount) / 100,
               bankCode: data.vnp_BankCode,
-              payDate: data.vnp_PayDate,
+              transDate: data.vnp_PayDate,
               responseCode: data.vnp_ResponseCode,
               error: data.vnp_Message
             });
@@ -60,6 +57,7 @@ export default function PaymentResult() {
       } else {
         setLoading(false);
       }
+      setQueryParams(params);
     }
   }, [searchParams, resetCart]);
 
@@ -69,18 +67,18 @@ export default function PaymentResult() {
 
   if (queryParams) {
     const uiStatus = mapOrderStatusToUIStatus(
-      queryParams.statusOrder,
+      queryParams.statusOrder === order?.status ? queryParams.statusOrder : order?.status || 'ERROR',
       queryParams.responseCode,
       queryParams.transactionStatus
     );
-    const { title, message } = getVietnameseStatusMessage(uiStatus, queryParams.responseCode);
 
+    const { title, message } = getVietnameseStatusMessage(uiStatus, queryParams.responseCode);
     return (
       <OrderStatusPage
         status={uiStatus}
         customerName={order?.user?.name || 'Khách hàng'}
         orderId={queryParams.orderId}
-        amount={queryParams.amount}
+        amount={queryParams.amount || amount}
         customTitle={title}
         customMessage={message}
         onRetryPayment={() => {
@@ -95,7 +93,7 @@ export default function PaymentResult() {
 
   return (
     <OrderStatusPage
-      status='error'
+      status='ERROR'
       customerName={order?.user?.name || 'Khách hàng'}
       customTitle='Không tìm thấy thông tin đơn hàng'
       customMessage='Vui lòng kiểm tra lại đường dẫn hoặc liên hệ hỗ trợ khách hàng.'

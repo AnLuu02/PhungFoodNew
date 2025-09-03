@@ -4,7 +4,7 @@ import { ActionIcon, Button, FileInput, Grid, GridCol, Image, Select, Textarea, 
 import { IconFile } from '@tabler/icons-react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
-import { fileToBase64 } from '~/lib/func-handler/handle-file-upload';
+import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { subCategorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';

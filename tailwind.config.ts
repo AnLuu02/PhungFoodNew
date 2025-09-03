@@ -35,8 +35,7 @@ export default {
         // mainColor: 'linear-gradient(135deg, #228be6 0%, #7048e8 100%)'
       },
       fontFamily: {
-        sans: ['var(--font-merge-black)', ...fontFamily.sans],
-        mergeblack: ['var(--font-merge-black)'],
+        sans: ['var(--font-quicksand)', ...fontFamily.sans],
         quicksand: ['var(--font-quicksand)', ...fontFamily.sans]
       },
       keyframes: {

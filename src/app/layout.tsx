@@ -13,15 +13,10 @@ import { Quicksand } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import { TRPCReactProvider } from '~/trpc/react';
 
-import localFont from 'next/font/local';
 import ScrollToTop from '~/components/ScrollToTop';
 import { ModalProvider } from '~/contexts/ModalContext';
 import { authOptions } from './api/auth/[...nextauth]/options';
 
-const font = localFont({
-  src: './fonts/my-font-mergeblack.ttf',
-  variable: '--font-merge-black'
-});
 const quickSandFont = Quicksand({
   subsets: ['latin'],
   display: 'swap',
@@ -72,7 +67,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <ColorSchemeScript defaultColorScheme='light' />
         <link rel='icon' href='/favicon.ico' />
       </head>
-      <body className={`${quickSandFont.className} ${font.variable}`}>
+      <body className={`${quickSandFont.className}`}>
         <TRPCReactProvider session={session as Session}>
           <MantineProvider defaultColorScheme='light'>
             <Notifications />

@@ -3,7 +3,7 @@
 import { Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { DeleteVoucherButton, UpdateVoucherButton } from '../Button';
 
@@ -58,8 +58,8 @@ export default function TableVoucher({ s, data, user }: { s: string; data: any; 
                   <Table.Td className='text-sm'>{item.availableQuantity}</Table.Td>
                   <Table.Td className='text-sm'>{item.pointUser ?? 'Không yêu cầu'}</Table.Td>
                   <Table.Td className='text-sm'>{item.orderId ?? 'Không có'}</Table.Td>
-                  <Table.Td className='text-sm'>{new Date(item.startDate).toLocaleDateString()}</Table.Td>
-                  <Table.Td className='text-sm'>{new Date(item.endDate).toLocaleDateString()}</Table.Td>
+                  <Table.Td className='text-sm'> {formatDateViVN(item.startDate)} </Table.Td>
+                  <Table.Td className='text-sm'>{formatDateViVN(item.endDate)}</Table.Td>
                   <Table.Td className='text-sm'>
                     <Group>
                       <UpdateVoucherButton id={item.id} />

@@ -3,7 +3,7 @@ import { Box, Button, Center, Flex, Group, Modal, Paper, Progress, ScrollArea, T
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDate, formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 
@@ -150,7 +150,7 @@ export default function ModalDetailVoucher({ openDetail, onClose, products }: an
               Hạn sử dụng mã
             </Text>
             <Text fw={500} size='sm' c={'dimmed'}>
-              {`Từ ${formatDate(voucherDetail?.startDate)} đến ${(voucherDetail?.endDate, formatDate(voucherDetail?.endDate))}`}
+              {`Từ ${formatDateViVN(voucherDetail?.startDate)} đến ${(voucherDetail?.endDate, formatDateViVN(voucherDetail?.endDate))}`}
             </Text>
           </Box>
 
@@ -191,7 +191,7 @@ export default function ModalDetailVoucher({ openDetail, onClose, products }: an
             <Text fw={500} size='sm' c={'dimmed'}>
               Voucher giảm tối đa {formatPriceLocaleVi(voucherDetail?.maxDiscount)} cho đơn hàng hợp lệ từ{' '}
               {formatPriceLocaleVi(voucherDetail?.minOrderPrice)} áp dụng cho toàn bộ sản phẩm trong cửa hàng Phụng
-              Food. HSD: {formatDate(voucherDetail?.endDate)}. Số lượng có hạn chỉ còn{' '}
+              Food. HSD: {formatDateViVN(voucherDetail?.endDate)}. Số lượng có hạn chỉ còn{' '}
               {voucherDetail?.quantity - voucherDetail?.usedQuantity} cái.
             </Text>
           </Box>

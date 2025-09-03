@@ -4,7 +4,7 @@ import { compare } from 'bcryptjs';
 import { randomInt } from 'crypto';
 import { z } from 'zod';
 import { UserRole } from '~/constants';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-upload';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { hashPassword } from '~/lib/func-handler/hashPassword';
 import { getOtpEmail, sendEmail } from '~/lib/func-handler/sendEmail';
 import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/lib/zod/EnumType';

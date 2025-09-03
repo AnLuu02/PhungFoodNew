@@ -1,4 +1,4 @@
-import { formatDate } from './Format';
+import { formatDateViVN } from './Format';
 
 export const calculateMoney = (product: any) => {
   return product?.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0);
@@ -36,7 +36,7 @@ export const hoursRemainingVoucher = (startDate: any, endDate: any) => {
     const hours = Math.floor(diff / (1000 * 60 * 60));
     return {
       type: 'upcoming',
-      value: hours < 24 ? `Có hiệu lực sau: ${hours} giờ` : `Có hiệu lực từ: ${formatDate(startDate)}`
+      value: hours < 24 ? `Có hiệu lực sau: ${hours} giờ` : `Có hiệu lực từ: ${formatDateViVN(startDate)}`
     };
   } else if (now >= start && now < end) {
     const timeLeft = end - now;
@@ -49,7 +49,7 @@ export const hoursRemainingVoucher = (startDate: any, endDate: any) => {
     } else {
       return {
         type: 'active',
-        value: `HSD: ${formatDate(endDate)} `
+        value: `HSD: ${formatDateViVN(endDate)} `
       };
     }
   }

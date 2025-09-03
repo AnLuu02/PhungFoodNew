@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/toast';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
@@ -55,7 +55,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: VoucherTemplatePr
           }
         );
       } else {
-        NotifyError('Chưa đăng nhập!', 'Đăng nhập để nhận voucher.');
+        NotifyWarning('Chưa đăng nhập!', 'Đăng nhập để nhận voucher.');
       }
     } catch (error) {
       setLoading(false);

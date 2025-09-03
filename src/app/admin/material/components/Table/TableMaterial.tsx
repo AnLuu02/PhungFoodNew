@@ -2,7 +2,7 @@
 import { Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { formatDate } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 
 export default function TableMaterial({ s, data, user }: { s: string; data: any; user?: any }) {
@@ -42,7 +42,7 @@ export default function TableMaterial({ s, data, user }: { s: string; data: any;
                       {row.description}
                     </Highlight>
                   </Table.Td>{' '}
-                  <Table.Td className='text-sm'>{formatDate(row.createdAt)}</Table.Td>
+                  <Table.Td className='text-sm'>{formatDateViVN(row.createdAt)}</Table.Td>
                   <Table.Td className='text-sm'>
                     <Group className='text-center'>
                       {user?.user && (

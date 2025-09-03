@@ -3,6 +3,7 @@
 import { Box, Group, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { LocalPaymentType } from '~/lib/zod/EnumType';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 
@@ -40,7 +41,7 @@ export default function TablePayment({ s, data, user }: { s: string; data: any; 
                     <Text size='sm'>{item.isDefault ? 'Có' : 'Không'}</Text>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>{new Date(item.createdAt).toLocaleDateString()}</Text>
+                    <Text size='sm'>{formatDateViVN(item.createdAt)}</Text>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Group>

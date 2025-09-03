@@ -5,7 +5,7 @@ export const sampleOrders = Array.from({ length: 20 }, (_, i) => ({
   payment: { name: i % 2 === 0 ? 'VNPAY' : 'COD' },
   originalTotal: (Math.random() * 500000 + 50000).toFixed(0),
   createdAt: new Date(Date.now() - i * 86400000).toISOString(),
-  status: ['COMPLETED', 'PROCESSING', 'DELIVERED', 'PENDING', 'CANCELLED'][i % 5]
+  status: ['COMPLETED', 'UNPAID', 'SHIPPING', 'CONFIRMED', 'PENDING', 'CANCELLED'][i % 5]
 }));
 
 export const generateSampleOrdersInfoUser = (count = 50) => {
@@ -17,11 +17,12 @@ export const generateSampleOrdersInfoUser = (count = 50) => {
   const getRandomPrice = () => Math.floor(Math.random() * 4950000) + 50000;
 
   const statuses = [
-    LocalOrderStatus.PROCESSING,
+    LocalOrderStatus.UNPAID,
     LocalOrderStatus.PENDING,
-    LocalOrderStatus.DELIVERED,
+    LocalOrderStatus.SHIPPING,
     LocalOrderStatus.COMPLETED,
-    LocalOrderStatus.CANCELLED
+    LocalOrderStatus.CANCELLED,
+    LocalOrderStatus.CONFIRMED
   ];
 
   return Array.from({ length: count }, (_, i) => ({
@@ -34,9 +35,9 @@ export const generateSampleOrdersInfoUser = (count = 50) => {
 
 export const mockOrders = [
   { id: '1', date: '2023-05-01', originalTotal: 99.99, status: 'completed' },
-  { id: '2', date: '2023-05-15', originalTotal: 149.99, status: 'processing' },
+  { id: '2', date: '2023-05-15', originalTotal: 149.99, status: 'unpaid' },
   { id: '3', date: '2023-05-20', originalTotal: 79.99, status: 'canceled' },
-  { id: '4', date: '2023-06-01', originalTotal: 189.99, status: 'completed' },
-  { id: '5', date: '2023-06-10', originalTotal: 59.99, status: 'processing' },
+  { id: '4', date: '2023-06-01', originalTotal: 189.99, status: 'confirmed' },
+  { id: '5', date: '2023-06-10', originalTotal: 59.99, status: 'pending' },
   { id: '6', date: '2023-06-15', originalTotal: 129.99, status: 'completed' }
 ];

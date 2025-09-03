@@ -80,7 +80,14 @@ export default function StorePolicyPage() {
                   key={sec.id}
                   onClick={() => handleNavClick(sec.id)}
                   px={16}
-                  className={`${activeSection === sec.id ? `font-bold text-mainColor bg-[${MAIN_YELLOW + '22'}]` : 'bg-transparent font-medium text-black dark:text-white'} flex cursor-pointer items-center gap-2.5 rounded-md py-3 transition-colors`}
+                  className={`${
+                    activeSection === sec.id
+                      ? 'font-bold text-mainColor'
+                      : 'bg-transparent font-medium text-black dark:text-white'
+                  } flex cursor-pointer items-center gap-2.5 rounded-md py-3 transition-colors`}
+                  style={{
+                    backgroundColor: activeSection === sec.id ? `${MAIN_YELLOW}22` : 'transparent'
+                  }}
                 >
                   {sec.icon}
                   {sec.label}

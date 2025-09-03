@@ -4,6 +4,7 @@ import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { UserRole } from '~/constants';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { DeleteUserButton, UpdateUserButton } from '../Button';
 
 export default function TableUser({ s, data, user }: { s: string; data: any; user?: any }) {
@@ -68,7 +69,7 @@ export default function TableUser({ s, data, user }: { s: string; data: any; use
                     </Text>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>{new Date(item.createdAt).toLocaleDateString()}</Text>
+                    <Text size='sm'>{formatDateViVN(item.createdAt)} </Text>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Text size='sm'>{item.pointUser}</Text>

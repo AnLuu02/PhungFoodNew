@@ -3,6 +3,7 @@
 import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { DeleteReviewButton, UpdateReviewButton } from '../Button';
 
 export default function TableReview({ s, data, user }: { s: string; data: any; user?: any }) {
@@ -52,7 +53,7 @@ export default function TableReview({ s, data, user }: { s: string; data: any; u
                     </Text>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>{new Date(item.createdAt).toLocaleDateString()}</Text>
+                    <Text size='sm'> {formatDateViVN(item.createdAt)} </Text>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Group>

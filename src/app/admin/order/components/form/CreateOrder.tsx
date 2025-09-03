@@ -41,7 +41,7 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
       finalTotal: 0,
       originalTotal: 0,
       discountAmount: 0,
-      status: LocalOrderStatus.PROCESSING,
+      status: LocalOrderStatus.UNPAID,
       userId: '',
       paymentId: '',
       orderItems: [],

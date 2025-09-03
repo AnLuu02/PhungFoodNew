@@ -18,69 +18,90 @@ export function mapOrderStatusToUIStatus(
   statusOrder: string,
   responseCode: string,
   transactionStatus: string
-): 'success' | 'processing' | 'delivered' | 'cancelled' | 'error' | 'payment_failed' | 'not_found' {
+):
+  | 'COMPLETED'
+  | 'UNPAID'
+  | 'SHIPPING'
+  | 'CANCELLED'
+  | 'CONFIRMED'
+  | 'PENDING'
+  | 'ERROR'
+  | 'PAYMENT_FAILED'
+  | 'NOT_FOUND' {
   if (responseCode && responseCode !== '00') {
-    return 'payment_failed';
+    return 'PAYMENT_FAILED';
   }
 
   if (transactionStatus === '01' || transactionStatus === '02') {
-    return 'payment_failed';
+    return 'PAYMENT_FAILED';
   }
 
   switch (statusOrder?.toUpperCase()) {
     case 'COMPLETED':
-      return 'success';
+      return 'COMPLETED';
     case 'PENDING':
-      return 'processing';
-    case 'PROCESSING':
-      return 'processing';
-    case 'DELIVERED':
-      return 'delivered';
+      return 'PENDING';
+    case 'UNPAID':
+      return 'UNPAID';
+    case 'SHIPPING':
+      return 'SHIPPING';
     case 'CANCELLED':
-      return 'cancelled';
+      return 'CANCELLED';
     case 'NOT_FOUND':
-      return 'not_found';
+      return 'NOT_FOUND';
+    case 'CONFIRMED':
+      return 'CONFIRMED';
     default:
       if (responseCode === '00' && transactionStatus === '00') {
-        return 'processing';
+        return 'PENDING';
       }
-      return 'error';
+      return 'ERROR';
   }
 }
 export function getVietnameseStatusMessage(status: string, responseCode?: string): { title: string; message: string } {
   switch (status) {
-    case 'success':
+    case 'COMPLETED':
       return {
         title: 'Đơn hàng đã hoàn thành',
         message: 'Đơn hàng của bạn đã được giao thành công. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!'
       };
-    case 'processing':
+    case 'PENDING':
       return {
-        title: 'Đơn hàng đang được xử lý',
+        title: 'Thanh toán thành công',
+        message: 'Đơn hàng của bạn đang chờ nhà hàng xác nhận. Chúng tôi sẽ giao hàng trong thời gian sớm nhất.'
+      };
+    case 'UNPAID':
+      return {
+        title: 'Đơn hàng chưa thanh toán',
         message:
-          'Đơn hàng của bạn đã được thanh toán thành công và đang được xử lý. Chúng tôi sẽ giao hàng trong thời gian sớm nhất.'
+          'Đơn hàng của bạn chưa được thanh toán. Vui lòng hoàn tất thanh toán để chúng tôi có thể xử lý đơn hàng của bạn nhanh chóng nhất.'
       };
-    case 'delivered':
+    case 'SHIPPING':
       return {
-        title: 'Đơn hàng đã được giao',
-        message: 'Đơn hàng của bạn đã được giao thành công. Hy vọng bạn hài lòng với sản phẩm!'
+        title: 'Đơn hàng đang được giao',
+        message: 'Đơn hàng của bạn đang trong quá trình giao đến bạn. Vui lòng chờ đợi trong giây lát nhé!'
       };
-    case 'cancelled':
+    case 'CANCELLED':
       return {
         title: 'Đơn hàng đã bị hủy',
         message: 'Đơn hàng của bạn đã bị hủy. Nếu bạn đã thanh toán, chúng tôi sẽ hoàn tiền trong 3-5 ngày làm việc.'
       };
-    case 'payment_failed':
+    case 'PAYMENT_FAILED':
       return {
         title: 'Thanh toán thất bại',
         message: responseCode
           ? responseCodeMessages[responseCode] || 'Có lỗi xảy ra trong quá trình thanh toán'
           : 'Thanh toán không thành công'
       };
-    case 'not_found':
+    case 'NOT_FOUND':
       return {
         title: 'Không tìm thấy',
         message: 'Không tìm thấy đơn hàng của bạn. Vui lòng kiểm tra lại mã đơn hàng.'
+      };
+    case 'CONFIRMED':
+      return {
+        title: 'Đã xác nhận',
+        message: 'Đơn hàng của bạn đã được xác nhận và đang trong quá trình chuẩn bị giao hàng.'
       };
     default:
       return {

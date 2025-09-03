@@ -23,7 +23,7 @@ import useSWR from 'swr';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { infoUserLevel } from '~/constants';
 import fetcher from '~/lib/func-handler/fetcher';
-import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalGender } from '~/lib/zod/EnumType';
 import { userSchema } from '~/lib/zod/zodShcemaForm';

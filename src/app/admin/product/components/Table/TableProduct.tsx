@@ -3,7 +3,7 @@
 import { Avatar, Badge, Box, Group, Highlight, Spoiler, Table, Text, Tooltip } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalImageType, LocalProductStatus } from '~/lib/zod/EnumType';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
@@ -70,7 +70,7 @@ export default function TableProduct({ s, data, user }: { s: string; data: any; 
                     </Tooltip>
                   </Table.Td>
 
-                  <Table.Td className='text-sm'>{new Date(item.createdAt).toLocaleDateString()}</Table.Td>
+                  <Table.Td className='text-sm'> {formatDateViVN(item.createdAt)} </Table.Td>
 
                   <Table.Td className='text-sm'>
                     <Group>

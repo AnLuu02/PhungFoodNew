@@ -20,14 +20,15 @@ import {
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
-import { formatDate, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getStatusColor, getStatusIcon, getStatusText } from '~/lib/func-handler/get-status-order';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType, LocalVoucherType } from '~/lib/zod/EnumType';
+import { getStatusInfo } from '~/lib/func-handler/status-order';
+import { LocalImageType, LocalOrderStatus, LocalVoucherType } from '~/lib/zod/EnumType';
 import InvoiceToPrint from '../InvoceToPrint';
 
 function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {
   const isDesktop = useMediaQuery(`(min-width:1024px)`);
+  const statusInfo = getStatusInfo(order?.status || LocalOrderStatus.PENDING);
   return (
     <>
       <Modal
@@ -78,24 +79,19 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                         Mã đơn: <b>{order?.id}</b>
                       </Text>
                       <Text size='sm' className='flex items-center justify-between'>
-                        Ngày đặt: <b>{formatDate(order?.createdAt)}</b>
+                        Ngày đặt: <b>{formatDateViVN(order?.createdAt)}</b>
                       </Text>
 
                       <Flex align={'center'} justify={'space-between'}>
                         <Text size='sm' className='flex items-center justify-between'>
                           Trạng thái:
                         </Text>
-                        <Badge
-                          size='xs'
-                          color={getStatusColor(order.status)}
-                          p={'xs'}
-                          className='align-items-center flex'
-                        >
+                        <Badge size='xs' color={statusInfo.color} p={'xs'} className='align-items-center flex'>
                           <Flex align={'center'}>
                             <Text size='10px' fw={700}>
-                              {getStatusText(order.status)}
+                              {statusInfo.label}
                             </Text>
-                            {getStatusIcon(order.status)}
+                            <statusInfo.icon />
                           </Flex>
                         </Badge>
                       </Flex>

@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import CustomPagination from '~/components/Pagination';
-import { vercelBlobToFile } from '~/lib/func-handler/handle-file-upload';
+import { formatDateViVN } from '~/lib/func-handler/Format';
+import { vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { api } from '~/trpc/react';
 import PhotoCard from '../PhotoCard';
 export const formatBytes = (bytes: number) => {
@@ -94,7 +95,7 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
           <Badge color='blue'>
             Kích thước: {showfullImage?.dimensions?.width || 0}x{showfullImage?.dimensions?.height || 0} pixels
           </Badge>
-          <Text size='sm'>Tải lên ngày: {new Date().toLocaleDateString()}</Text>
+          <Text size='sm'>Tải lên ngày: {formatDateViVN(new Date())} </Text>
         </Stack>
       </Modal>
       <Group justify='space-between' mt='md'>

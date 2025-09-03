@@ -1,5 +1,5 @@
 import { Container, Space } from '@mantine/core';
-import { formatDate } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import BannerSection from './Section/Banner-section';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
 import ReusablePromoBanner from './Section/Layout-Banner-Promotion';
@@ -32,9 +32,9 @@ const HomeWeb = ({
         title='🎉 Ưu đãi đặc biệt 🎉'
         subtitle={
           <>
-            🔊 Từ ngày <b className='text-4xl italic text-yellow-500'>{formatDate(new Date())}</b> đến hết ngày{' '}
+            🔊 Từ ngày <b className='text-4xl italic text-yellow-500'>{formatDateViVN(new Date())}</b> đến hết ngày{' '}
             <b className='text-4xl italic text-yellow-500'>
-              {formatDate(new Date().setDate(new Date().getDate() + 1))}
+              {formatDateViVN(new Date().setDate(new Date().getDate() + 1))}
             </b>{' '}
             giảm giá <b className='text-4xl italic text-yellow-500'> 15%</b> tất cả món ăn có trong cửa hàng.
           </>

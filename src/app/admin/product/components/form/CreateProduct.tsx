@@ -22,7 +22,7 @@ import { IconFile, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
-import { fileToBase64 } from '~/lib/func-handler/handle-file-upload';
+import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalProductStatus } from '~/lib/zod/EnumType';
 import { productSchema } from '~/lib/zod/zodShcemaForm';

@@ -12,15 +12,7 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
-import {
-  IconCircleCheck,
-  IconEdit,
-  IconPlus,
-  IconPrinter,
-  IconTrash,
-  IconTruckDelivery,
-  IconXboxX
-} from '@tabler/icons-react';
+import { IconEdit, IconPlus, IconPrinter, IconTrash, IconXboxX } from '@tabler/icons-react';
 import { useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
@@ -178,42 +170,6 @@ export function DeleteOrderButton({ id }: { id: string }) {
           }}
         >
           <IconTrash size={24} />
-        </ActionIcon>
-      </Tooltip>
-    </>
-  );
-}
-
-export function SuccessOrderButton({ id }: { id: string }) {
-  const utils = api.useUtils();
-  const mutation = api.Order.update.useMutation();
-
-  return (
-    <>
-      <Tooltip label='Hoàn thành đơn hàng'>
-        <ActionIcon
-          variant='subtle'
-          onClick={() => {
-            handleConfirm(
-              id,
-              mutation,
-              {
-                where: {
-                  id: id
-                },
-                data: {
-                  status: LocalOrderStatus.COMPLETED
-                }
-              },
-              'Hoàn thành đơn hàng',
-              'Bạn chắc chắn muốn hoàn thành đơn hàng này?',
-              () => {
-                utils.Order.invalidate();
-              }
-            );
-          }}
-        >
-          <IconCircleCheck size={24} />
         </ActionIcon>
       </Tooltip>
     </>
@@ -487,15 +443,14 @@ export function SendMessageOrderButton({ userId, email }: any) {
   );
 }
 
-export function DeliveryOrderButton({ id }: { id: string }) {
+export function HandleStateOrderButton({ id, status, title }: { id: string; status: LocalOrderStatus; title: string }) {
   const utils = api.useUtils();
   const mutation = api.Order.update.useMutation();
-
   return (
     <>
-      <Tooltip label='Giao hàng'>
-        <ActionIcon
-          variant='subtle'
+      <Tooltip label={title || 'Giao hàng'}>
+        <Button
+          variant='outline'
           onClick={() => {
             handleConfirm(
               id,
@@ -505,19 +460,20 @@ export function DeliveryOrderButton({ id }: { id: string }) {
                   id: id
                 },
                 data: {
-                  status: LocalOrderStatus.DELIVERED
-                }
+                  status: status || LocalOrderStatus.UNPAID
+                },
+                orderId: id
               },
-              'Giao hàng',
-              'Bạn chắc chắn muốn giao đơn hàng này?',
+              title || 'Giao hàng',
+              `Bạn chắc chắn muốn ${title || 'giao hàng'} đơn hàng này?`,
               () => {
                 utils.Order.invalidate();
               }
             );
           }}
         >
-          <IconTruckDelivery size={24} />
-        </ActionIcon>
+          {title || 'Giao hàng'}
+        </Button>
       </Tooltip>
     </>
   );
@@ -543,7 +499,8 @@ export function CancleOrderButton({ id }: { id: string }) {
                 },
                 data: {
                   status: LocalOrderStatus.CANCELLED
-                }
+                },
+                orderId: id
               },
               'Hủy  đơn hàng',
               'Bạn chắc chắn muốn hủy đơn hàng này?',

@@ -30,8 +30,9 @@ export enum LocalPaymentType {
 export enum LocalOrderStatus {
   COMPLETED = 'COMPLETED',
   PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  DELIVERED = 'DELIVERED',
+  UNPAID = 'UNPAID',
+  CONFIRMED = 'CONFIRMED',
+  SHIPPING = 'SHIPPING',
   CANCELLED = 'CANCELLED'
 }
 

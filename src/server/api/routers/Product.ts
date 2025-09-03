@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { UserRole } from '~/constants';
 import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-upload';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { LocalEntityType, LocalImageType, LocalOrderStatus, LocalProductStatus } from '~/lib/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';

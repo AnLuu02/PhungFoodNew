@@ -6,7 +6,7 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { TOP_POSITION_STICKY } from '~/constants';
-import { formatDate } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
@@ -76,7 +76,7 @@ const News = async ({
                   <Group gap={5} m={0} p={0}>
                     <IconClockHour10 size={16} color='gray' />
                     <Text size='sm' c={'dimmed'}>
-                      {formatDate(item.pubDate)}
+                      {formatDateViVN(item.pubDate)}
                     </Text>
                   </Group>
                   <Text size='sm' lineClamp={1}>

@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
+import { formatTransDate } from '~/lib/func-handler/Format';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
 import CheckoutClient from '../components/CheckoutClient';
 
@@ -13,19 +15,20 @@ async function CheckoutPage({ params }: { params: { slug: string } }) {
 
   if (!order?.id) {
     redirect(
-      `/vnpay-payment-result?statusOrder=${encodeURIComponent('not_found')}${orderId ? `&orderId=${encodeURIComponent(orderId.trim())}` : ''}`
+      `/vnpay-payment-result?statusOrder=${encodeURIComponent('NOT_FOUND')}${orderId ? `&orderId=${encodeURIComponent(orderId.trim())}` : ''}`
     );
   }
 
-  // if (order.status !== LocalOrderStatus.PROCESSING && order.status !== LocalOrderStatus.CANCELLED) {
-  //   const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
-  //   redirect(
-  //     `/vnpay-payment-result?orderId=${encodeURIComponent(orderId.trim())}` +
-  //       `&transDate=${encodeURIComponent(transDate.trim())}` +
-  //       `&statusOrder=${encodeURIComponent(order.status.trim())}` +
-  //       `&message=${encodeURIComponent('Đơn hàng đã được thanh toán')}`
-  //   );
-  // }
+  if (order.status !== LocalOrderStatus.UNPAID && order.status !== LocalOrderStatus.CANCELLED) {
+    const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
+    redirect(
+      `/vnpay-payment-result?orderId=${encodeURIComponent(orderId.trim())}` +
+        `&transDate=${encodeURIComponent(transDate.trim())}` +
+        `&statusOrder=${encodeURIComponent(order.status.trim())}` +
+        `&useLocal=1`
+    );
+  }
+
   return <CheckoutClient order={order} />;
 }
 

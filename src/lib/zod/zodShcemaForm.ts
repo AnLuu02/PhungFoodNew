@@ -173,7 +173,7 @@ export const materialSchema = z.object({
   name: z.string().min(1, 'Tên không được để trống'),
   tag: z.string().optional(),
   description: z.string().optional(),
-  category: z.string().min(1, 'Category is required')
+  category: z.string().min(1, 'Danh mục không được để trống')
 });
 
 export const restaurantSchema = z.object({

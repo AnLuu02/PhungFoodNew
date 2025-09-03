@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import BButton from '~/components/Button';
-import { NotifyError } from '~/lib/func-handler/toast';
+import { NotifyError, NotifyWarning } from '~/lib/func-handler/toast';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
 import { IStylesButtonCheckout } from '~/types/other';
@@ -40,7 +40,7 @@ export const ButtonCheckout = ({
           finalTotal: finalTotal,
           originalTotal: originalTotal,
           discountAmount: discountAmount,
-          status: LocalOrderStatus.PROCESSING,
+          status: LocalOrderStatus.UNPAID,
           userId: user?.user?.id || '',
           orderItems: orderItems?.map((item: any) => ({
             productId: item.id,
@@ -76,7 +76,7 @@ export const ButtonCheckout = ({
           onClick?.();
           handleCreateOrder();
         } else {
-          NotifyError('Chưa đăng nhập', 'Vui lòng đăng nhập để tiến hành thanh toán.');
+          NotifyWarning('Chưa đăng nhập', 'Vui lòng đăng nhập để tiến hành thanh toán.');
         }
       }}
     />
