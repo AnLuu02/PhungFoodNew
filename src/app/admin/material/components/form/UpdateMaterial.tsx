@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { categoriesMaterial } from '~/constants';
 import { createTag } from '~/lib/func-handler/generateTag';
@@ -10,7 +10,13 @@ import { materialSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Material } from '~/types/material';
 
-export default function UpdateMaterial({ materialId, setOpened }: { materialId: string; setOpened: any }) {
+export default function UpdateMaterial({
+  materialId,
+  setOpened
+}: {
+  materialId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const queryResult = materialId ? api.Material.getOne.useQuery({ s: materialId || '' }) : { data: null };
   const { data } = queryResult;
 
@@ -52,7 +58,7 @@ export default function UpdateMaterial({ materialId, setOpened }: { materialId: 
 
   const onSubmit: SubmitHandler<Material> = async formData => {
     if (materialId) {
-      let result = await updateMutation.mutateAsync({
+      const result = await updateMutation.mutateAsync({
         ...formData,
         tag: createTag(formData.name)
       });

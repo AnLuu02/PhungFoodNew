@@ -1,12 +1,29 @@
 'use client';
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { Controller } from 'react-hook-form';
+import { Control, Controller, FieldErrors, UseFormGetValues, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
+import { Order } from '~/types/order';
 
-const OrderItemForm = ({ index, removeOrderItem, control, watch, setValue, getValues, errors }: any) => {
+const OrderItemForm = ({
+  index,
+  removeOrderItem,
+  control,
+  watch,
+  setValue,
+  getValues,
+  errors
+}: {
+  index: number;
+  removeOrderItem: (index: number) => void;
+  control: Control<Order, any, Order>;
+  watch: UseFormWatch<Order>;
+  setValue: UseFormSetValue<Order>;
+  getValues: UseFormGetValues<Order>;
+  errors: FieldErrors<Order>;
+}) => {
   const [productOrderItem, setProductOrderItem] = useState<any>({});
   const { data: products } = api.Product.getAll.useQuery({
     hasCategory: true,
@@ -28,7 +45,7 @@ const OrderItemForm = ({ index, removeOrderItem, control, watch, setValue, getVa
   useEffect(() => {
     setValue(
       'originalTotal',
-      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0).toString()
+      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0)
     );
   }, [chooseProduct, chooseQuantity, orderItems]);
 
@@ -46,7 +63,7 @@ const OrderItemForm = ({ index, removeOrderItem, control, watch, setValue, getVa
                 {...field}
                 placeholder='Select products'
                 data={products?.map((product: any) => ({ value: product.id, label: product.name }))}
-                error={errors.OrderItems?.[index]?.productsId?.message}
+                error={errors.orderItems?.[index]?.productId?.message}
               />
             )}
           />
@@ -55,7 +72,7 @@ const OrderItemForm = ({ index, removeOrderItem, control, watch, setValue, getVa
           <Controller
             control={control}
             name={`orderItems.${index}.quantity`}
-            defaultValue='1'
+            defaultValue={1}
             rules={{
               validate: value =>
                 Number(value) <= Number(productOrderItem?.availableQuantity) ||
@@ -78,13 +95,12 @@ const OrderItemForm = ({ index, removeOrderItem, control, watch, setValue, getVa
           <Controller
             name={`orderItems.${index}.price`}
             control={control}
-            rules={{ required: 'User is required' }}
             render={({ field }) => (
               <NumberInput
                 thousandSeparator=','
                 label={`Giá (chỉ đọc)`}
                 readOnly
-                error={errors.OrderItems?.[index]?.name?.message}
+                error={errors.orderItems?.[index]?.price?.message}
                 {...field}
               />
             )}

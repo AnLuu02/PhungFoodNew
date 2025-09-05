@@ -1,15 +1,14 @@
 import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import dynamic from 'next/dynamic';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import SearchQueryParams from '~/components/Search/SearchQueryParams';
 import { api } from '~/trpc/server';
 import { CreateCategoryButton, CreateManyCategoryButton } from './components/Button';
+import TableCategory from './components/Table/TableCategory';
 export const metadata: Metadata = {
   title: 'Quản lý danh mục '
 };
-const TableCategory = dynamic(() => import('./components/Table/TableCategory'), { ssr: false });
 
 export default async function CategoryManagementPage({
   searchParams

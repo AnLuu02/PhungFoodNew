@@ -46,10 +46,10 @@ export const confirmDelete = ({
           await callback?.();
           NotifySuccess('Thành công!', success);
         } else {
-          NotifyError('Thất bại!', error);
+          NotifyError('Thất bại!');
         }
       } catch (e) {
-        NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+        NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.' + e);
       }
     }
   });

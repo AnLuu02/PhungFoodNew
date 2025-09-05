@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     const paymentUrl = `${vnpUrl}?${qs.stringify(vnp_Params, { encode: false })}`;
 
     return NextResponse.json({ paymentUrl }, { status: 200, headers: { 'Access-Control-Allow-Origin': '*' } });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Payment error:', error);
     return NextResponse.json({ error: 'Failed to create payment URL' }, { status: 500 });
   }

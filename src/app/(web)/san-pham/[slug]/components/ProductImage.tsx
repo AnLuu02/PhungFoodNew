@@ -1,28 +1,24 @@
 'use client';
 
 import { Carousel } from '@mantine/carousel';
-import { ActionIcon, Box, Flex, Group, Modal, Paper, Text, UnstyledButton } from '@mantine/core';
+import { Box, Flex, Modal, Paper, Text, UnstyledButton } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import {
-  IconBrandFacebook,
-  IconBrandPinterest,
-  IconBrandTwitter,
-  IconChevronLeft,
-  IconChevronRight
-} from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
+import ShareSocials from '~/components/ShareSocial';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-
 export default function ProductImage({
   thumbnail,
   gallery,
-  discount
+  discount,
+  tag
 }: {
   thumbnail: string;
   gallery: { url: string }[];
   discount?: number;
+  tag: string;
 }) {
   const isDesktop = useMediaQuery(`(min-width:1024px)`);
   const [currentImage, setCurrentImage] = useState(thumbnail);
@@ -112,20 +108,7 @@ export default function ProductImage({
               />
             </Box>
             <Box mt='md'>
-              <Group gap='xs'>
-                <Text size='md' fw={700}>
-                  Chia sẻ
-                </Text>
-                <ActionIcon color='blue' radius='xl' size={'lg'}>
-                  <IconBrandFacebook />
-                </ActionIcon>
-                <ActionIcon color='red' radius='xl' size={'lg'}>
-                  <IconBrandPinterest />
-                </ActionIcon>
-                <ActionIcon color='blue' radius='xl' size={'lg'}>
-                  <IconBrandTwitter />
-                </ActionIcon>
-              </Group>
+              <ShareSocials data={{ tag }} />
             </Box>
           </Flex>
         </Paper>

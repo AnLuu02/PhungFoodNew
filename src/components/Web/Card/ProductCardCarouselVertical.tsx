@@ -24,7 +24,6 @@ const ProductCardCarouselVertical = ({ product }: { product?: any }) => {
   const { openModal } = useModal();
   const [like, setLike] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingDetail, setLoadingDetail] = useState<boolean>(false);
   const utils = api.useUtils();
 
   useEffect(() => {
@@ -179,27 +178,12 @@ const ProductCardCarouselVertical = ({ product }: { product?: any }) => {
             <Rating fractions={4} readOnly value={product?.rating || 0} onChange={() => {}} color={'#FFC522'} />
             <Text
               onClick={() => {
-                if (!user?.user?.email) {
-                  NotifyError('Vui lòng đăng nhập', 'Vui lòng đăng nhập trước khi đánh giá.');
-                  return;
-                }
-                if (pathname !== '/') {
-                  openModal('comments', null, product);
-                }
+                isMobile ? router.push(`/san-pham/${product?.tag}/danh-gia`) : openModal('comments', null, product);
               }}
               size='xs'
               className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline'
             >
-              {pathname === '/' ? (
-                <Link
-                  className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline'
-                  href={`/san-pham/${product?.tag}/danh-gia`}
-                >
-                  Có {product?.totalRating || 0} đánh giá
-                </Link>
-              ) : (
-                `Có ${product?.totalRating || 0} đánh giá`
-              )}
+              Có {product?.totalRating || 0} đánh giá
             </Text>
           </Flex>
           <Box>

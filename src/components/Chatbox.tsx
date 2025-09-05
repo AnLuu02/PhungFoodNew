@@ -121,7 +121,7 @@ export default function Chatbox() {
       };
       recognitionRef.current.start();
       mediaRecorderRef.current.start();
-    } catch (error) {
+    } catch {
       NotifyError('Không có quyền truy cập microphone');
       dispatch({ type: 'RESET' });
     }
@@ -182,8 +182,8 @@ export default function Chatbox() {
 
       const data = await res.json();
       setMessages(prev => [...prev, { sender: 'Bot', text: data.reply, timestamp: new Date().toISOString() }]);
-    } catch (error) {
-      console.error('Lỗi gửi tin nhắn:', error);
+    } catch {
+      NotifyError('Lỗi hệ thống, thử lại sau.');
       setMessages(prev => [
         ...prev,
         { sender: 'Bot', text: 'Lỗi hệ thống, thử lại sau.', timestamp: new Date().toISOString() }

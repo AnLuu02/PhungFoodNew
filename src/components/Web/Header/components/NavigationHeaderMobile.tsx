@@ -1,7 +1,7 @@
 'use client';
-import { ActionIcon, Badge, Box, Button, Center, Drawer, Flex, Text } from '@mantine/core';
+import { Badge, Box, Button, Center, Drawer, Flex, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconCaretDown, IconX } from '@tabler/icons-react';
+import { IconCaretDown } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -48,10 +48,6 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
           <Drawer.CloseButton />
         </Drawer.Header>
         <Drawer.Body pb={0}>
-          <ActionIcon bg={'red'} c='black' pos={'absolute'} top={10} right={10} onClick={close} className='z-[99]'>
-            <IconX size={20} color='black' />
-          </ActionIcon>
-
           <Box mb={20}>
             <UserSection width={'100%'} />
           </Box>

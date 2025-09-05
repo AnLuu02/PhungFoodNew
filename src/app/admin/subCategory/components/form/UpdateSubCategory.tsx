@@ -2,7 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionIcon, Button, FileInput, Grid, GridCol, Image, Select, Textarea, TextInput } from '@mantine/core';
 import { IconFile } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { createTag } from '~/lib/func-handler/generateTag';
@@ -12,7 +12,13 @@ import { subCategorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { SubCategory } from '~/types/subCategory';
 
-export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCategoryId: string; setOpened: any }) {
+export default function UpdateSubCategory({
+  subCategoryId,
+  setOpened
+}: {
+  subCategoryId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const queryResult: any = subCategoryId ? api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }) : { data: null };
   const { data, isLoading: isLoadingDataSubCategory } = queryResult;
   const [loading, setLoading] = useState(false);
@@ -80,7 +86,7 @@ export default function UpdateSubCategory({ subCategoryId, setOpened }: { subCat
           base64: base64 as string
         }
       };
-      let result = await updateMutation.mutateAsync({
+      const result = await updateMutation.mutateAsync({
         ...formDataWithImageUrlAsString,
         tag: createTag(formDataWithImageUrlAsString.name)
       });

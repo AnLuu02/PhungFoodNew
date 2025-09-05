@@ -36,21 +36,19 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
           right={0}
         >
           <ActionIcon
-            variant='subtle'
             radius={'50%'}
             size={'lg'}
             onClick={scrollPrev}
-            className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
+            className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
             disabled={!prevBtnEnabled}
           >
             <IconChevronLeft size={'xs'} />
           </ActionIcon>
           <ActionIcon
-            variant='subtle'
             radius={'50%'}
             size={'lg'}
             onClick={scrollNext}
-            className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
+            className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
             disabled={!nextBtnEnabled}
           >
             <IconChevronRight size={'xs'} />

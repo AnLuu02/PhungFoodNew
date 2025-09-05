@@ -100,7 +100,7 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         data: z.array(
           z.object({
-            name: z.string().min(1, 'Name is required'),
+            name: z.string().min(1, 'Tên vai trò không được để trống'),
             permissionIds: z.array(z.string())
           })
         )
@@ -245,7 +245,7 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         data: z.array(
           z.object({
-            name: z.string().min(1, 'Name is required'),
+            name: z.string().min(1, 'Tên vai trò không được để trống'),
             description: z.string().optional()
           })
         )

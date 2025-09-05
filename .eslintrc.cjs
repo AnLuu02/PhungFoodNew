@@ -21,7 +21,8 @@ const config = {
     '@typescript-eslint/no-unsafe-argument': 0,
     '@typescript-eslint/ban-types': 0,
     'react/display-name': [0],
-    'prettier/prettier': [1]
+    'prettier/prettier': [1],
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }]
   },
   ignorePatterns: ['prisma/**/*.cjs']
 };

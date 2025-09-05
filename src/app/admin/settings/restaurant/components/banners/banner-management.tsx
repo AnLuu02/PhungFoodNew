@@ -128,7 +128,7 @@ export default function BannerManagement({ data }: any) {
         : await mutationCreate.mutateAsync(payload);
 
       result.success ? NotifySuccess(result.message) : NotifyError(result.message);
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
@@ -322,7 +322,7 @@ export default function BannerManagement({ data }: any) {
             name='gallery'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: files =>
                 files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
                   ? true
@@ -353,7 +353,7 @@ export default function BannerManagement({ data }: any) {
             name='banner1'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: file =>
                 file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true
@@ -382,7 +382,7 @@ export default function BannerManagement({ data }: any) {
             name='banner2'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: file =>
                 file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true

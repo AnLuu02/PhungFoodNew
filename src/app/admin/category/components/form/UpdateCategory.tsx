@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -9,7 +9,13 @@ import { categorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Category } from '~/types/category';
 
-export default function UpdateCategory({ categoryId, setOpened }: { categoryId: string; setOpened: any }) {
+export default function UpdateCategory({
+  categoryId,
+  setOpened
+}: {
+  categoryId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const queryResult = categoryId ? api.Category.getOne.useQuery({ s: categoryId || '' }) : { data: null };
   const { data } = queryResult;
 
@@ -48,7 +54,7 @@ export default function UpdateCategory({ categoryId, setOpened }: { categoryId: 
 
   const onSubmit: SubmitHandler<Category> = async formData => {
     if (categoryId) {
-      let result = await updateMutation.mutateAsync({
+      const result = await updateMutation.mutateAsync({
         where: {
           id: categoryId
         },

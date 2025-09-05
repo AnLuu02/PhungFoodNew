@@ -47,7 +47,7 @@ export const paymentRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        name: z.string().min(1, 'Name is required'),
+        name: z.string().min(1, 'Tên phương thức không được để trống'),
         tag: z.string(),
         type: z.nativeEnum(PaymentType),
         provider: z.string().optional(),
@@ -132,7 +132,7 @@ export const paymentRouter = createTRPCRouter({
     .input(
       z.object({
         paymentId: z.string(),
-        name: z.string().min(1, 'Name is required'),
+        name: z.string().min(1, 'Tên phương thức không được để trống'),
         tag: z.string(),
         type: z.nativeEnum(PaymentType),
         provider: z.string().optional(),

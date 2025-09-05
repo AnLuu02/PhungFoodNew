@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalVoucherStatus, LocalVoucherType } from '~/lib/zod/EnumType';
@@ -23,7 +23,13 @@ import { voucherSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Voucher } from '~/types/voucher';
 
-export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: string; setOpened: any }) {
+export default function UpdateVoucher({
+  voucherId,
+  setOpened
+}: {
+  voucherId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const [applyForLevel, setApplyForLevel] = useState(false);
 
   const { data: queryResult } = voucherId
@@ -98,7 +104,7 @@ export default function UpdateVoucher({ voucherId, setOpened }: { voucherId: str
 
   const onSubmit: SubmitHandler<Voucher> = async formData => {
     if (voucherId) {
-      let result = await updateMutation.mutateAsync({
+      const result = await updateMutation.mutateAsync({
         where: { id: voucherId },
         data: {
           ...formData

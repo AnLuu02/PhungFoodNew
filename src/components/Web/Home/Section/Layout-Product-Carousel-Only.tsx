@@ -55,19 +55,17 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
 
           <Flex align={'center'} justify={{ base: 'space-between' }}>
             <ActionIcon
-              variant='subtle'
               radius={'50%'}
               size={'lg'}
               onClick={scrollPrev}
-              className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
+              className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
               disabled={!prevBtnEnabled}
             >
               <IconChevronLeft size={'xs'} />
             </ActionIcon>
             <Space w={'xs'} />
             <ActionIcon
-              variant='subtle'
-              className='bg-mainColor text-white hover:bg-mainColor/90 disabled:cursor-not-allowed disabled:opacity-40'
+              className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
               radius={'50%'}
               size={'lg'}
               onClick={scrollNext}

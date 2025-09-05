@@ -29,28 +29,22 @@ export default function TableReview({ s, data, user }: { s: string; data: any; u
               currentItems.map((item: any) => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.user?.name}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.user?.name}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.product?.name}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.product?.name}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Badge color='blue'>{item.rating} ⭐</Badge>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.comment}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.comment}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Text size='sm'> {formatDateViVN(item.createdAt)} </Text>

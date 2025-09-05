@@ -42,7 +42,6 @@ import {
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
-import ModalDetailVoucher from '~/components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
 import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
 import { getInfoLevelUser } from '~/constants';
@@ -121,10 +120,6 @@ const ITEMS_PER_PAGE = 4;
 export default function FoodPromotionPageClient({ userData, voucherData, productData }: any) {
   const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState<string | null>('all');
-  const [openDetail, setOpenDetail] = useState<{ opened: boolean; voucherDetail: any }>({
-    opened: false,
-    voucherDetail: {}
-  });
   const filteredPromotions = useMemo(() => {
     if (activeTab === 'all') return voucherData || [];
     return voucherData?.filter((promo: any) => promo.type === activeTab) || [];
@@ -232,126 +227,123 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
           )}
         </Box>
 
-        <Box>
-          <Box className='mb-12 text-center'>
-            <Badge
-              radius={'sm'}
-              size='md'
-              leftSection={<IconReceiptDollarFilled className='h-4 w-4' />}
-              className='mb-4 bg-orange-50 text-xs text-orange-600'
-            >
-              Khuyến mãi hấp dẫn
-            </Badge>
-            <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-orange-600 sm:text-5xl'>
-              Số lượng có hạn
-            </Title>
-            <Text c={'dimmed'} className='mx-auto max-w-2xl text-pretty text-lg'>
-              Nhanh tay săn nhận ngay những voucher giảm giá sâu, ăn thả ga! Số lượng có hạn.
-            </Text>
-          </Box>
-
-          <Card withBorder shadow='sm' padding='lg' radius='lg'>
-            <Tabs
-              variant='pills'
-              value={activeTab}
-              onChange={(value: any) => {
-                setActiveTab(value);
-                setPage(1);
-              }}
-              styles={{
-                tab: {
-                  border: '1px solid ',
-                  marginRight: 6
-                }
-              }}
-              classNames={{
-                tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
-              }}
-            >
-              <Flex
-                gap={'md'}
-                direction={{ base: 'column', md: 'row' }}
-                justify={'space-between'}
-                className='items-center sm:items-start md:items-center'
+        {paginatedPromotions?.length > 0 && (
+          <Box>
+            <Box className='mb-12 text-center'>
+              <Badge
+                radius={'sm'}
+                size='md'
+                leftSection={<IconReceiptDollarFilled className='h-4 w-4' />}
+                className='mb-4 bg-orange-50 text-xs text-orange-600'
               >
-                <Group align='center'>
-                  <ThemeIcon
-                    size='xl'
-                    classNames={{
-                      root: 'bg-subColor text-white'
-                    }}
-                  >
-                    <IconGift />
-                  </ThemeIcon>
-                  <Stack gap={1}>
-                    <Title order={3} className='font-quicksand'>
-                      Nhận thưởng ngay
-                    </Title>
-                    <Text size='xs' c={'dimmed'}>
-                      Có {filteredPromotions.length || 0} voucher
-                    </Text>
-                  </Stack>
-                </Group>
-                <Divider w={'60%'} className='sm:hidden' />
-                <Tabs.List>
-                  <Group gap={0}>
-                    <Tabs.Tab size={'md'} fw={700} value='all'>
-                      Tất cả
-                    </Tabs.Tab>
-                    <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.PERCENTAGE}>
-                      Phầm trăm
-                    </Tabs.Tab>
-                    <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.FIXED}>
-                      Tiền mặt
-                    </Tabs.Tab>
-                  </Group>
-                </Tabs.List>
-              </Flex>
+                Khuyến mãi hấp dẫn
+              </Badge>
+              <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-orange-600 sm:text-5xl'>
+                Số lượng có hạn
+              </Title>
+              <Text c={'dimmed'} className='mx-auto max-w-2xl text-pretty text-lg'>
+                Nhanh tay săn nhận ngay những voucher giảm giá sâu, ăn thả ga! Số lượng có hạn.
+              </Text>
+            </Box>
 
-              <Divider my='sm' />
-              <Tabs.Panel value={activeTab || 'all'}>
-                {paginatedPromotions?.length > 0 ? (
-                  <Grid mt='md'>
-                    {paginatedPromotions.map((promo: any) => (
-                      <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
-                        <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
-                      </GridCol>
-                    ))}
-                  </Grid>
-                ) : (
-                  <Empty
-                    title='Không có khuyến mãi nào'
-                    content='Vui lòng quay lại sau. Xin cảm ơn!'
-                    size='xs'
-                    hasButton={false}
-                  />
-                )}
+            <Card withBorder shadow='sm' padding='lg' radius='lg'>
+              <Tabs
+                variant='pills'
+                value={activeTab}
+                onChange={(value: any) => {
+                  setActiveTab(value);
+                  setPage(1);
+                }}
+                styles={{
+                  tab: {
+                    border: '1px solid ',
+                    marginRight: 6
+                  }
+                }}
+                classNames={{
+                  tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
+                }}
+              >
                 <Flex
-                  mt='xl'
-                  justify='flex-end'
-                  align={'center'}
                   gap={'md'}
-                  direction={{ base: 'column-reverse', md: 'row' }}
+                  direction={{ base: 'column', md: 'row' }}
+                  justify={'space-between'}
+                  className='items-center sm:items-start md:items-center'
                 >
-                  <Pagination
-                    total={totalPages}
-                    value={page}
-                    onChange={setPage}
-                    classNames={{
-                      control:
-                        'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
-                    }}
-                  />
+                  <Group align='center'>
+                    <ThemeIcon
+                      size='xl'
+                      classNames={{
+                        root: 'bg-subColor text-white'
+                      }}
+                    >
+                      <IconGift />
+                    </ThemeIcon>
+                    <Stack gap={1}>
+                      <Title order={3} className='font-quicksand'>
+                        Nhận thưởng ngay
+                      </Title>
+                      <Text size='xs' c={'dimmed'}>
+                        Có {filteredPromotions.length || 0} voucher
+                      </Text>
+                    </Stack>
+                  </Group>
+                  <Divider w={'60%'} className='sm:hidden' />
+                  <Tabs.List>
+                    <Group gap={0}>
+                      <Tabs.Tab size={'md'} fw={700} value='all'>
+                        Tất cả
+                      </Tabs.Tab>
+                      <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.PERCENTAGE}>
+                        Phầm trăm
+                      </Tabs.Tab>
+                      <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.FIXED}>
+                        Tiền mặt
+                      </Tabs.Tab>
+                    </Group>
+                  </Tabs.List>
                 </Flex>
-              </Tabs.Panel>
-            </Tabs>
-            <ModalDetailVoucher
-              openDetail={openDetail}
-              onClose={() => setOpenDetail({ opened: false, voucherDetail: {} })}
-              products={[]}
-            />
-          </Card>
-        </Box>
+
+                <Divider my='sm' />
+                <Tabs.Panel value={activeTab || 'all'}>
+                  {paginatedPromotions?.length > 0 ? (
+                    <Grid mt='md'>
+                      {paginatedPromotions.map((promo: any) => (
+                        <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
+                          <VoucherTemplate voucher={promo} />
+                        </GridCol>
+                      ))}
+                    </Grid>
+                  ) : (
+                    <Empty
+                      title='Không có khuyến mãi nào'
+                      content='Vui lòng quay lại sau. Xin cảm ơn!'
+                      size='xs'
+                      hasButton={false}
+                    />
+                  )}
+                  <Flex
+                    mt='xl'
+                    justify='flex-end'
+                    align={'center'}
+                    gap={'md'}
+                    direction={{ base: 'column-reverse', md: 'row' }}
+                  >
+                    <Pagination
+                      total={totalPages}
+                      value={page}
+                      onChange={setPage}
+                      classNames={{
+                        control:
+                          'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
+                      }}
+                    />
+                  </Flex>
+                </Tabs.Panel>
+              </Tabs>
+            </Card>
+          </Box>
+        )}
 
         {/* Membership Tiers */}
         <Box>

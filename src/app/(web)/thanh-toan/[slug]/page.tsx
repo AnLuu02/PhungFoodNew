@@ -15,7 +15,7 @@ async function CheckoutPage({ params }: { params: { slug: string } }) {
 
   if (!order?.id) {
     redirect(
-      `/vnpay-payment-result?statusOrder=${encodeURIComponent('NOT_FOUND')}${orderId ? `&orderId=${encodeURIComponent(orderId.trim())}` : ''}`
+      `/vnpay-payment-result?statusOrder=${encodeURIComponent('ERROR')}${orderId ? `&orderId=${encodeURIComponent(orderId.trim())}` : ''}`
     );
   }
 

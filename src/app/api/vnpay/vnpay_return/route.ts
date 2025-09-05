@@ -49,8 +49,8 @@ export async function GET(req: NextRequest) {
   return NextResponse.redirect(redirectUrl);
 }
 function sortObject(obj: any) {
-  let sorted: Record<string, string> = {};
-  let str = [];
+  const sorted: Record<string, string> = {};
+  const str = [];
   let key;
   for (key in obj) {
     if (obj.hasOwnProperty(key)) {

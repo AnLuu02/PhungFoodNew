@@ -29,28 +29,22 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
               currentItems.map((item: any) => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.name}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.name}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Avatar src={item.image?.url} alt={item.image?.altText} size={40} radius='md' />
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.category?.name}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.category?.name}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.description || 'Đang cập nhật.'}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.description || 'Đang cập nhật.'}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Text size='sm'> {formatDateViVN(item.createdAt)} </Text>

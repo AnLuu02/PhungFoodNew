@@ -49,7 +49,7 @@ export default function Page() {
       } else if (result?.ok && result.url) {
         window.location.href = result.url;
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

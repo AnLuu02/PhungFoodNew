@@ -39,8 +39,8 @@ export async function vercelBlobToFile(
     }
 
     return await fetchFile(urls[0] as string);
-  } catch (error) {
-    console.error('Error converting Vercel Blob URL to file:', error);
+  } catch {
+    console.error('Error converting Vercel Blob URL to file:');
     return null;
   }
 }

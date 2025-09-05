@@ -1,7 +1,11 @@
 import { EMPTY_STRING, VND_SYMBOL } from '~/constants';
 
 export const formatDateViVN = (date?: any) => {
-  return new Date(date || new Date()).toLocaleDateString('vi-VN');
+  return new Date(date || new Date()).toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
 };
 
 export function formatTimeAgo(date: Date | string | number): string {

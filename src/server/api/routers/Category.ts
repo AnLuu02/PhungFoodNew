@@ -187,7 +187,7 @@ export const categoryRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        name: z.string().min(1, 'Name is required'),
+        name: z.string().min(1, 'Tên danh mục không được để trống'),
         description: z.string().optional(),
         tag: z.string()
       })
@@ -210,7 +210,7 @@ export const categoryRouter = createTRPCRouter({
       z.object({
         data: z.array(
           z.object({
-            name: z.string().min(1, 'Name is required'),
+            name: z.string().min(1, 'Tên danh mục không được để trống'),
             description: z.string().optional(),
             tag: z.string()
           })

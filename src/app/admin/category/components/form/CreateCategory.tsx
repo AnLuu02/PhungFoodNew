@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -8,7 +9,7 @@ import { categorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Category } from '~/types/category';
 
-export default function CreateCategory({ setOpened }: { setOpened: any }) {
+export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
@@ -33,7 +34,7 @@ export default function CreateCategory({ setOpened }: { setOpened: any }) {
   const onSubmit: SubmitHandler<Category> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync({
+        const result = await mutation.mutateAsync({
           ...formData,
           tag: createTag(formData.name)
         });
@@ -44,7 +45,7 @@ export default function CreateCategory({ setOpened }: { setOpened: any }) {
         }
         NotifySuccess(result.message);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

@@ -15,7 +15,7 @@ const Header3 = ({ categories, subCategories }: any) => {
   const [imgMounted, setImgMounted] = useState(false);
   const subCategoriesData: any = subCategories || [];
   const categoriesData: any = categories || [];
-  const [opened, { open, close, toggle }] = useDisclosure();
+  const [opened, { close, toggle }] = useDisclosure();
   return (
     <Flex
       px={{ base: 10, sm: 30, md: 30, lg: 130 }}

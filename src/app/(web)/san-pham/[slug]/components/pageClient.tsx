@@ -19,18 +19,7 @@ import {
   Title
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import {
-  IconBrandFacebook,
-  IconBrandPinterest,
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconEye,
-  IconMail,
-  IconPencil,
-  IconRefresh,
-  IconShieldCheck,
-  IconTruck
-} from '@tabler/icons-react';
+import { IconEye, IconPencil, IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import ButtonAddToCart from '~/components/ButtonAddToCart';
 import Comments from '~/components/Comments/Comments';
@@ -46,21 +35,28 @@ import RatingStatistics from './RatingStatistics';
 import RelatedProducts from './RelatedProducts';
 
 import clsx from 'clsx';
+import ShareSocials from '~/components/ShareSocial';
 
 export default function ProductDetailClient(data: any) {
   const [activeTab, setActiveTab] = useState('description');
   const [note, setNote] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const { product, dataRelatedProducts, dataHintProducts }: any = data?.data || {
+  const { product, dataRelatedProducts, dataHintProducts, dataVouchers }: any = data?.data || {
     product: {},
     dataRelatedProducts: [],
-    dataHintProducts: []
+    dataHintProducts: [],
+    dataVouchers: []
   };
-
-  const relatedProducts = dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [];
-  const hintProducts = dataHintProducts?.filter((item: any) => item.id !== product?.id) || [];
+  console.log('Dataaaa', dataVouchers);
   const discount = product?.discount || 0;
-  const inStock = useMemo(() => product?.availableQuantity - product?.soldQuantity > 0, [product]);
+  const [relatedProducts, hintProducts, inStock, gallery] = useMemo(() => {
+    return [
+      dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [],
+      dataHintProducts?.filter((item: any) => item.id !== product?.id) || [],
+      product?.availableQuantity - product?.soldQuantity > 0,
+      product?.images?.filter((item: any) => item.type !== LocalImageType.THUMBNAIL && item.url) || []
+    ];
+  }, [product]);
   const ratingCounts = useMemo(() => {
     let ratingCountsDefault = [0, 0, 0, 0, 0];
     return (
@@ -72,9 +68,6 @@ export default function ProductDetailClient(data: any) {
   }, [product?.review]);
 
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
-  const gallery = useMemo(() => {
-    return product?.images?.filter((item: any) => item.type !== LocalImageType.THUMBNAIL && item.url) || [];
-  }, [product]);
 
   return (
     <Box>
@@ -102,6 +95,7 @@ export default function ProductDetailClient(data: any) {
                   ]
             }
             discount={discount}
+            tag={product?.tag || ''}
           />
         </Grid.Col>
         <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='h-fit'>
@@ -218,7 +212,7 @@ export default function ProductDetailClient(data: any) {
                     </Text>
                   }
                   searchable
-                  placeholder='Pick value'
+                  placeholder='Chọn'
                   data={['1 người ăn', '2 người ăn', '3 người ăn', '5 người ']}
                 />
               </Group>
@@ -248,16 +242,7 @@ export default function ProductDetailClient(data: any) {
                 Đã bán: <b className='text-red-500'>{product?.soldQuantity || 0}</b> sản phẩm
               </Text>
             </Stack>
-            <Group gap={5}>
-              <Text c={'dimmed'} size='sm'>
-                Chia sẻ:
-              </Text>
-              <IconBrandFacebook size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-              <IconBrandPinterest size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-              <IconBrandTwitter size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-              <IconBrandYoutube size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-              <IconMail size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-            </Group>
+            <ShareSocials data={product} type='detail' />
             <Group mt={{ base: 20, sm: 'xs', md: 'xs', lg: 'xl' }} grow>
               <Stack align='center' gap={5}>
                 <IconTruck style={{ width: 24, height: 24 }} stroke={1.5} />
@@ -282,11 +267,11 @@ export default function ProductDetailClient(data: any) {
         </Grid.Col>
       </Grid>
       <Grid mt={'md'}>
-        {!isMobile && (
+        {dataVouchers?.length > 0 && !isMobile ? (
           <Grid.Col span={12}>
-            <DiscountCodes />
+            <DiscountCodes data={dataVouchers || []} />
           </Grid.Col>
-        )}
+        ) : null}
 
         <Grid.Col
           mt={{ base: 'md', sm: 0 }}

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { redis } from '~/lib/cache/redis';
 import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
+import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
@@ -300,8 +301,8 @@ export const restaurantRouter = createTRPCRouter({
               altText: `Ảnh ${item.fileName} loại ${LocalImageType.GALLERY}`,
               entityType: LocalEntityType.RESTAURANT
             };
-          } catch (error) {
-            console.error('Failed to upload image:', item.fileName, error);
+          } catch {
+            NotifyError('Có lỗi xảy ra khi tải ảnh lên Vercel Blob');
             return null;
           }
         }),
@@ -316,8 +317,8 @@ export const restaurantRouter = createTRPCRouter({
               altText: `Ảnh ${item.fileName} loại ${LocalImageType.BANNER}`,
               entityType: LocalEntityType.RESTAURANT
             };
-          } catch (error) {
-            console.error('Failed to upload image:', item.fileName, error);
+          } catch {
+            NotifyError('Có lỗi xảy ra khi tải ảnh lên Vercel Blob');
             return null;
           }
         })

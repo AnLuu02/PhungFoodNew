@@ -57,7 +57,7 @@ export default function TableVoucher({ s, data, user }: { s: string; data: any; 
                   <Table.Td className='text-sm'>{item.usedQuantity}</Table.Td>
                   <Table.Td className='text-sm'>{item.availableQuantity}</Table.Td>
                   <Table.Td className='text-sm'>{item.pointUser ?? 'Không yêu cầu'}</Table.Td>
-                  <Table.Td className='text-sm'>{item.orderId ?? 'Không có'}</Table.Td>
+                  <Table.Td className='text-sm'>{item.code ?? 'Không có'}</Table.Td>
                   <Table.Td className='text-sm'> {formatDateViVN(item.startDate)} </Table.Td>
                   <Table.Td className='text-sm'>{formatDateViVN(item.endDate)}</Table.Td>
                   <Table.Td className='text-sm'>

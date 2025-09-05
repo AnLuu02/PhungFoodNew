@@ -58,7 +58,7 @@ export default function NotificationDialog({ data, user }: any) {
       } else {
         NotifyError('Thất bại!', res.message || 'Không thể xóa thông báo.');
       }
-    } catch (err) {
+    } catch {
       NotifyError('Lỗi!', 'Đã xảy ra lỗi khi xóa thông báo.');
     }
   };
@@ -78,7 +78,7 @@ export default function NotificationDialog({ data, user }: any) {
       } else {
         NotifyError('Thất bại!', res.message || 'Không thể xóa các thông báo.');
       }
-    } catch (err) {
+    } catch {
       NotifyError('Lỗi!', 'Đã xảy ra lỗi khi xóa các thông báo.');
     }
   };
@@ -100,7 +100,7 @@ export default function NotificationDialog({ data, user }: any) {
       } else {
         NotifyError('Thất bại!', res.message || 'Không thể xóa tất cả thông báo.');
       }
-    } catch (err) {
+    } catch {
       NotifyError('Lỗi!', 'Đã xảy ra lỗi khi xóa tất cả thông báo.');
     }
   };

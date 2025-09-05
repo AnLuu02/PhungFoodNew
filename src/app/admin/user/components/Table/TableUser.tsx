@@ -32,18 +32,14 @@ export default function TableUser({ s, data, user }: { s: string; data: any; use
               currentItems.map((item: any) => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.name}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.name}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.email}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.email}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Badge
@@ -55,18 +51,14 @@ export default function TableUser({ s, data, user }: { s: string; data: any; use
                     </Badge>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.phone}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.phone}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.address?.fullAddress}
-                      </Highlight>
-                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.address?.fullAddress}
+                    </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Text size='sm'>{formatDateViVN(item.createdAt)} </Text>

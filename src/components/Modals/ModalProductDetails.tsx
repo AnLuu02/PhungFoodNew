@@ -20,14 +20,7 @@ import {
   Stack,
   Text
 } from '@mantine/core';
-import {
-  IconBrandFacebook,
-  IconBrandPinterest,
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconMail,
-  IconX
-} from '@tabler/icons-react';
+import { IconX } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -36,17 +29,19 @@ import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
+import { ModalProps } from '~/types/modal';
 import ButtonAddToCart from '../ButtonAddToCart';
+import ShareSocials from '../ShareSocial';
 
-function ModalProductDetails({ type, product, opened, close }: { type: any; product: any; opened: any; close: any }) {
+function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState('');
   const [showfullImage, setShowfullImage] = useState(false);
-  const inStock = product?.availableQuantity - product?.soldQuantity > 0;
+  const inStock = data?.availableQuantity - data?.soldQuantity > 0;
 
   useEffect(() => {
     setQuantity(1);
-  }, [product]);
+  }, [data]);
 
   return (
     <>
@@ -55,7 +50,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
         className='animate-fadeBottom'
         opened={opened && type === 'details'}
         radius={'md'}
-        onClose={close}
+        onClose={onClose}
         size='70%'
         h={'max-content'}
         transitionProps={{ transition: 'fade-down', duration: 200 }}
@@ -68,26 +63,26 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
           }
         }}
       >
-        <ActionIcon bg={'transparent'} c='black' pos={'absolute'} top={5} right={10} onClick={close}>
+        <ActionIcon bg={'transparent'} c='black' pos={'absolute'} top={5} right={10} onClick={onClose}>
           <IconX size={20} />
         </ActionIcon>
         {type === 'details' && (
           <Paper p='md' radius='md'>
             <Grid>
-              <GridCol span={5}>
+              <GridCol span={5} className='sticky top-0 h-fit'>
                 <Image
                   loading='lazy'
                   src={
-                    getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) ||
+                    getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) ||
                     '/images/png/delicious-burger-fries.png'
                   }
-                  alt={product?.name}
+                  alt={data?.name}
                   className='cursor-pointer rounded-md object-cover'
                   width={350}
                   style={{ objectFit: 'cover' }}
                   height={350}
                   onClick={() => {
-                    setCurrentImage(getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '');
+                    setCurrentImage(getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '');
                     setShowfullImage(true);
                   }}
                 />
@@ -103,7 +98,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                     withControls={false}
                     slidesToScroll={1}
                   >
-                    {product?.images?.map((item: any, index: number) => (
+                    {data?.images?.map((item: any, index: number) => (
                       <Carousel.Slide key={index}>
                         <Card withBorder radius={'sm'}>
                           <Card.Section
@@ -139,23 +134,23 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                 </Box>
               </GridCol>
 
-              <GridCol span={7}>
+              <GridCol span={7} className='h-fit'>
                 <Stack gap='md'>
                   <Flex align='center' gap={'xs'}>
                     <Badge className={clsx(inStock ? 'bg-mainColor' : 'bg-red-500')} radius={'sm'}>
                       {inStock ? 'Còn hàng' : 'Hết hàng'}
                     </Badge>
-                    <Rating value={product?.rating?.toFixed(1)} readOnly size='sm' color={'#FFC522'} />
+                    <Rating value={data?.rating?.toFixed(1)} readOnly size='sm' color={'#FFC522'} />
                     <Text size='xs' c='dimmed'>
-                      Có {product?.totalRating} đánh giá
+                      Có {data?.totalRating} đánh giá
                     </Text>
                   </Flex>
-                  <Link href={`/san-pham/${product?.tag}`} onClick={close}>
+                  <Link href={`/san-pham/${data?.tag}`} onClick={onClose}>
                     <Text
                       fw={700}
                       className='cursor-pointer text-3xl text-black transition-all duration-200 ease-in-out hover:text-mainColor'
                     >
-                      {product?.name || 'Súp bông tuyết'}
+                      {data?.name || 'Súp bông tuyết'}
                     </Text>
                   </Link>
 
@@ -164,24 +159,24 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                       Mã sản phẩm:
                     </Text>
                     <Text className='text-mainColor' fw={700} size='sm'>
-                      {product?.id || 'asd15as5d465as65d465a16198'}
+                      {data?.id || 'asd15as5d465as65d465a16198'}
                     </Text>
                   </Group>
 
                   <Group>
                     <Group align='end'>
-                      {product?.discount && (
+                      {data?.discount && (
                         <Text size='md' c={'dimmed'} td='line-through'>
-                          {formatPriceLocaleVi(product?.price) || '0đ'}
+                          {formatPriceLocaleVi(data?.price) || '0đ'}
                         </Text>
                       )}
                       <Text fw={700} className='text-3xl text-subColor'>
-                        {formatPriceLocaleVi(product?.price - product?.discount) || '0đ'}
+                        {formatPriceLocaleVi(data?.price - data?.discount) || '0đ'}
                       </Text>
                     </Group>
-                    {product?.discount > 0 && (
+                    {data?.discount > 0 && (
                       <Badge color='red'>
-                        {product?.discount ? `-${formatPriceLocaleVi(product?.discount)} ` : `180.000đ`}
+                        {data?.discount ? `-${formatPriceLocaleVi(data?.discount)} ` : `180.000đ`}
                       </Badge>
                     )}
                   </Group>
@@ -194,7 +189,7 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                     my={'xs'}
                   >
                     <Spoiler maxHeight={60} showLabel='Xem thêm' hideLabel='Ẩn'>
-                      <Text size='sm'>{product?.description || `Không có nội dung.`}</Text>
+                      <Text size='sm'>{data?.description || `Không có nội dung.`}</Text>
                     </Spoiler>
                   </Card>
 
@@ -223,19 +218,19 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                           </Text>
                         }
                         searchable
-                        placeholder='Pick value'
+                        placeholder='Chọn'
                         data={['1 người ăn', '2 người ăn', '3 người ăn', '5 người ']}
                       />
                     </Group>
                     <ButtonAddToCart
-                      product={{ ...product, quantity }}
+                      product={{ ...data, quantity }}
                       style={{
                         title: 'Mua hàng',
                         size: 'md',
                         fullWidth: true,
                         radius: 'sm'
                       }}
-                      handleAfterAdd={close}
+                      handleAfterAdd={onClose}
                       notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}
                     />
                   </Flex>
@@ -244,25 +239,16 @@ function ModalProductDetails({ type, product, opened, close }: { type: any; prod
                       Thương hiệu: Phụng Food Việt Nam
                     </Text>
                     <Text c={'dimmed'} size='sm'>
-                      Loại sản phẩm: {product?.subCategory?.name || 'Súp bông tuyết'}
+                      Loại sản phẩm: {data?.subCategory?.name || 'Súp bông tuyết'}
                     </Text>
                     <Text c={'dimmed'} size='sm'>
-                      Khuyến mãi: <b className='text-red-500'>giảm {formatPriceLocaleVi(product?.discount)}</b>
+                      Khuyến mãi: <b className='text-red-500'>giảm {formatPriceLocaleVi(data?.discount)}</b>
                     </Text>
                     <Text c={'dimmed'} size='sm'>
-                      Đã bán: <b className='text-red-500'>{product?.soldQuantity || 0}</b> sản phẩm
+                      Đã bán: <b className='text-red-500'>{data?.soldQuantity || 0}</b> sản phẩm
                     </Text>
                   </Stack>
-                  <Group gap={5}>
-                    <Text c={'dimmed'} size='sm'>
-                      Chia sẻ:
-                    </Text>
-                    <IconBrandFacebook size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-                    <IconBrandPinterest size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-                    <IconBrandTwitter size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-                    <IconBrandYoutube size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-                    <IconMail size={16} className='cursor-pointer hover:scale-150 hover:text-mainColor' />
-                  </Group>
+                  <ShareSocials data={data} type='detail' />
                 </Stack>
               </GridCol>
             </Grid>

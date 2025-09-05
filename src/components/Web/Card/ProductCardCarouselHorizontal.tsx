@@ -3,21 +3,17 @@ import { Badge, Box, Button, Card, Flex, Group, Progress, Text, Tooltip } from '
 import { useMediaQuery } from '@mantine/hooks';
 import { IconEye, IconHeart } from '@tabler/icons-react';
 import clsx from 'clsx';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { breakpoints } from '~/constants';
 import { useModal } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import ButtonAddToCart from '../../ButtonAddToCart';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
-  const { data: user } = useSession();
-  const pathname = usePathname();
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModal();
@@ -133,11 +129,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             />
             <Text
               onClick={() => {
-                if (user?.user?.email) {
-                  pathname == '/' ? router.push(`/san-pham/${data?.tag}/danh-gia`) : openModal('comments', null, data);
-                } else {
-                  NotifyError('Vui lòng đăng nhập', 'Vui lòng đăng nhập trước khi đánh giá.');
-                }
+                isMobile ? router.push(`/san-pham/${data?.tag}/danh-gia`) : openModal('comments', null, data);
               }}
               size='xs'
               className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline'

@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { categoriesMaterial } from '~/constants';
 import { createTag } from '~/lib/func-handler/generateTag';
@@ -9,7 +10,7 @@ import { materialSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Material } from '~/types/material';
 
-export default function CreateMaterial({ setOpened }: { setOpened: any }) {
+export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
@@ -37,7 +38,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: any }) {
   const onSubmit: SubmitHandler<Material> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync({
+        const result = await mutation.mutateAsync({
           ...formData,
           tag: createTag(formData.name)
         });
@@ -48,7 +49,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: any }) {
         }
         NotifySuccess(result.message);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

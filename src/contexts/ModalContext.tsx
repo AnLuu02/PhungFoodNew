@@ -1,17 +1,8 @@
 'use client';
 
 import { createContext, ReactNode, useContext, useState } from 'react';
+import { ModalContextType, ModalType } from '~/types/modal';
 
-export type ModalType = 'comments' | 'details' | 'confirm' | 'orders' | 'success' | null;
-
-interface ModalContextType {
-  opened: boolean;
-  modalType: ModalType;
-  modalContent: ReactNode | null;
-  modalData: any;
-  openModal: (type: ModalType, content?: ReactNode, data?: any) => void;
-  closeModal: () => void;
-}
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

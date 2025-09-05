@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, GridCol, MultiSelect, Paper, Stack, Switch, Text, Textarea, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -9,12 +9,16 @@ import { notificationSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Notification } from '~/types/notification';
 
-export default function UpdateNotification({ notificationId, setOpened }: { notificationId: string; setOpened: any }) {
+export default function UpdateNotification({
+  notificationId,
+  setOpened
+}: {
+  notificationId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const { data: user, isLoading: isLoadingUser } = api.User.getAll.useQuery();
-
   const queryResult = notificationId ? api.Notification.getOne.useQuery({ s: notificationId || '' }) : { data: null };
   const { data } = queryResult;
-
   const {
     control,
     handleSubmit,
@@ -56,7 +60,7 @@ export default function UpdateNotification({ notificationId, setOpened }: { noti
 
   const onSubmit: SubmitHandler<Notification> = async formData => {
     if (notificationId) {
-      let result = await updateMutation.mutateAsync({
+      const result = await updateMutation.mutateAsync({
         where: {
           id: notificationId
         },

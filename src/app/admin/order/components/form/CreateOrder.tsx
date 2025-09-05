@@ -16,9 +16,11 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import fetcher from '~/lib/func-handler/fetcher';
+import { getStatusInfo } from '~/lib/func-handler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalOrderStatus } from '~/lib/zod/EnumType';
 import { orderSchema } from '~/lib/zod/zodShcemaForm';
@@ -26,7 +28,8 @@ import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
 import OrderItemForm from './OrderItemForm';
 
-export default function CreateOrder({ setOpened }: { setOpened: any }) {
+export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
+  const [users, setUsers] = useState<any>([]);
   const {
     control,
     handleSubmit,
@@ -88,7 +91,6 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
     fetcher
   );
   const { data: payments } = api.Payment.getAll.useQuery();
-  const { data: users } = api.User.getAll.useQuery();
   const utils = api.useUtils();
   const mutation = api.Order.create.useMutation({
     onSuccess: () => {
@@ -98,45 +100,44 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
 
   const onSubmit: SubmitHandler<Order> = async formData => {
     try {
-      if (formData) {
-        if (formData.orderItems.length === 0) {
-          NotifyError('Không hợp lệ.', 'Bạn phải có ít nhất một sản phẩm trong hóa đơn.');
-        } else {
-          const province = provinces?.results?.find(
-            (item: any) => item.province_id === formData?.delivery?.address?.provinceId
-          );
-          const district = districts?.results?.find(
-            (item: any) => item.district_id === formData?.delivery?.address?.districtId
-          );
-          const ward = wards?.results?.find((item: any) => item.ward_id === formData?.delivery?.address?.wardId);
-          const fullAddress = `${formData?.delivery?.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+      if (!formData) return;
+      if (formData.orderItems.length === 0) {
+        NotifyError('Không hợp lệ.', 'Bạn phải có ít nhất một sản phẩm trong hóa đơn.');
+      } else {
+        const province = provinces?.results?.find(
+          (item: any) => item.province_id === formData?.delivery?.address?.provinceId
+        );
+        const district = districts?.results?.find(
+          (item: any) => item.district_id === formData?.delivery?.address?.districtId
+        );
+        const ward = wards?.results?.find((item: any) => item.ward_id === formData?.delivery?.address?.wardId);
+        const fullAddress = `${formData?.delivery?.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
 
-          let result = await mutation.mutateAsync({
-            ...formData,
-            delivery: {
-              ...formData?.delivery,
-              address: {
-                ...formData?.delivery.address,
-                detail: formData?.delivery.address?.detail || '',
-                provinceId: formData?.delivery.address?.provinceId || '',
-                districtId: formData?.delivery.address?.districtId || '',
-                wardId: formData?.delivery.address?.wardId || '',
-                province: province?.province_name || '',
-                district: district?.district_name || '',
-                ward: ward?.ward_name || '',
-                fullAddress
-              }
-            } as any
-          });
-          if (result.success) {
-            NotifySuccess(result.message);
-            setOpened(false);
-          } else {
-            NotifyError(result.message);
-          }
+        const result = await mutation.mutateAsync({
+          ...formData,
+          delivery: {
+            ...formData?.delivery,
+            address: {
+              ...formData?.delivery.address,
+              detail: formData?.delivery.address?.detail || '',
+              provinceId: formData?.delivery.address?.provinceId || '',
+              districtId: formData?.delivery.address?.districtId || '',
+              wardId: formData?.delivery.address?.wardId || '',
+              province: province?.province_name || '',
+              district: district?.district_name || '',
+              ward: ward?.ward_name || '',
+              fullAddress
+            }
+          } as any
+        });
+        if (result.success) {
+          NotifySuccess(result.message);
+          setOpened(false);
+        } else {
+          NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
@@ -285,13 +286,16 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
               <Controller
                 name='userId'
                 control={control}
-                rules={{ required: 'User is required' }}
                 render={({ field }) => (
                   <Select
                     label='Khách hàng'
+                    onClick={async () => {
+                      const usersData = await utils.User.getAll.fetch();
+                      setUsers(usersData);
+                    }}
                     searchable
-                    placeholder='Select your User'
-                    data={users?.map(user => ({ value: user.id, label: user.name }))}
+                    placeholder='Chọn khách hàng'
+                    data={users?.map((user: any) => ({ value: user.id, label: user.name }))}
                     {...field}
                     error={errors.userId?.message}
                   />
@@ -302,13 +306,12 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
               <Controller
                 name='paymentId'
                 control={control}
-                rules={{ required: 'Payment is required' }}
                 render={({ field }) => (
                   <Select
                     {...field}
                     label='Phương thức thanh toán'
                     searchable
-                    placeholder='Select your Payment'
+                    placeholder='Chọn phương thức thanh toán'
                     data={payments?.map(payment => ({ value: payment.id, label: payment.name }))}
                     error={errors.paymentId?.message}
                   />
@@ -340,12 +343,14 @@ export default function CreateOrder({ setOpened }: { setOpened: any }) {
               <Controller
                 name='status'
                 control={control}
-                rules={{ required: 'Status is required' }}
                 render={({ field }) => (
                   <Select
                     label='Trạng thái (chỉ đọc)'
-                    placeholder='Select your Status'
-                    data={Object.values(OrderStatus)}
+                    placeholder='Chọn trạng thái'
+                    data={Object.values(OrderStatus).map(status => ({
+                      value: status,
+                      label: getStatusInfo(status as LocalOrderStatus).label
+                    }))}
                     {...field}
                     error={errors.status?.message}
                     readOnly

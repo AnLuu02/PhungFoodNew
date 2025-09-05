@@ -67,11 +67,10 @@ export const layoutRouter = createTRPCRouter({
     );
   }),
   getDataProductDetail: publicProcedure
-    .input(z.object({ slug: z.string() }))
+    .input(z.object({ slug: z.string(), userId: z.string().optional() }))
 
     .query(async ({ ctx, input }) => {
       const caller = createCaller(ctx);
-
       const product = await caller.Product.getOne({
         s: input?.slug || '',
         hasCategory: true,
@@ -80,15 +79,21 @@ export const layoutRouter = createTRPCRouter({
 
       if (!product) return null;
 
-      const [dataRelatedProducts, dataHintProducts] = await Promise.all([
+      const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
         caller.Product.getFilter({ s: product?.subCategory?.tag || '' }),
-        caller.Product.getFilter({ s: product?.subCategory?.category?.tag || '' })
+        caller.Product.getFilter({ s: product?.subCategory?.category?.tag || '' }),
+        caller.Voucher.getVoucherForUser({ userId: input.userId || '' })
       ]);
 
-      const results: any = { product, dataRelatedProducts, dataHintProducts };
+      const results: any = {
+        product,
+        dataRelatedProducts: dataRelatedProducts?.status === 'fulfilled' ? dataRelatedProducts.value : [],
+        dataHintProducts: dataHintProducts?.status === 'fulfilled' ? dataHintProducts.value : [],
+        dataVouchers: dataVouchers?.status === 'fulfilled' ? dataVouchers.value : []
+      };
       return results;
     }),
-  getDataAdminDashboard: publicProcedure.input(z.object({ period: z.any() })).query(async ({ ctx, input }) => {
+  getDataAdminDashboard: publicProcedure.input(z.object({ period: z.any() })).query(async ({ ctx }) => {
     const caller = createCaller(ctx);
     const results: any = await Promise.allSettled([
       caller.Category.getAll(),

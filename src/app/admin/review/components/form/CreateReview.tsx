@@ -1,13 +1,14 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Review } from '~/types/review';
 
-export default function CreateReview({ setOpened }: { setOpened: any }) {
+export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
@@ -42,13 +43,13 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
   const onSubmit: SubmitHandler<Review> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync(formData);
+        const result = await mutation.mutateAsync(formData);
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
@@ -60,12 +61,11 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
           <Controller
             name='productId'
             control={control}
-            rules={{ required: 'Product is required' }}
             render={({ field }) => (
               <Select
                 searchable
                 label='Product'
-                placeholder='Select your Product'
+                placeholder=' Chọn sản phẩm'
                 data={products?.map((product: any) => ({ value: product.id, label: product.name })) || []}
                 value={field.value}
                 onChange={field.onChange}
@@ -79,12 +79,11 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
           <Controller
             name='userId'
             control={control}
-            rules={{ required: 'user is required' }}
             render={({ field }) => (
               <Select
                 searchable
                 label='user'
-                placeholder='Select your user'
+                placeholder=' Chọn khách hàng'
                 data={users?.map((user: any) => ({ value: user.id, label: user.name })) || []}
                 value={field.value}
                 onChange={field.onChange}
@@ -102,7 +101,7 @@ export default function CreateReview({ setOpened }: { setOpened: any }) {
               required: 'rating is required',
               validate: value => (value >= 0 && value <= 5) || 'Rating must be between 0 and 5'
             }}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
               <Flex align={'center'} justify={'space-between'}>
                 <NumberInput
                   label='Đánh giá'

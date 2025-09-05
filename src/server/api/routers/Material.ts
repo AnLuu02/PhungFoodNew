@@ -71,10 +71,10 @@ export const materialRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        name: z.string().min(1, 'Name is required'),
+        name: z.string().min(1, 'Tên nguyên liệu không được để trống'),
         tag: z.string(),
         description: z.string().optional(),
-        category: z.string().min(1, 'Category is required')
+        category: z.string().min(1, 'Danh mục không được để trống')
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -113,10 +113,10 @@ export const materialRouter = createTRPCRouter({
       z.object({
         data: z.array(
           z.object({
-            name: z.string().min(1, 'Name is required'),
+            name: z.string().min(1, 'Tên nguyên liệu không được để trống'),
             tag: z.string(),
             description: z.string().optional(),
-            category: z.string().min(1, 'Category is required')
+            category: z.string().min(1, 'Danh mục không được để trống')
           })
         )
       })
@@ -210,9 +210,9 @@ export const materialRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        name: z.string().min(1, 'Name is required'),
-        category: z.string().min(1, 'Category is required'),
-        tag: z.string().min(1, 'Tag is required'),
+        name: z.string().min(1, 'Tên nguyên liệu không được để trống'),
+        category: z.string().min(1, 'Danh mục không được để trống'),
+        tag: z.string().min(1, 'Tag không được để trống'),
         description: z.string().optional()
       })
     )

@@ -16,7 +16,7 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
@@ -28,7 +28,13 @@ import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
 import OrderItemForm from './OrderItemForm';
 
-export default function UpdateOrder({ orderId, setOpened }: { orderId: string; setOpened: any }) {
+export default function UpdateOrder({
+  orderId,
+  setOpened
+}: {
+  orderId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const { data, isLoading } = orderId ? api.Order.getOne.useQuery({ s: orderId || '' }) : {};
   const {
     control,
@@ -124,59 +130,58 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
 
   const onSubmit: SubmitHandler<Order> = async formData => {
     try {
-      if (orderId) {
-        let result = await updateMutation.mutateAsync({
-          where: { id: formData.id },
-          data: {
-            ...formData,
-            finalTotal: Number(formData.finalTotal) || 0,
-            discountAmount: Number(formData.discountAmount) || 0,
-            originalTotal: Number(formData.originalTotal) || 0,
-            orderItems: {
-              deleteMany: {
-                id: {
-                  notIn: formData?.orderItems?.map(item => item?.id)?.filter(Boolean)
-                }
-              },
-              upsert: formData.orderItems.map(item => ({
-                where: { id: item.id || '' },
-                update: {
-                  productId: item.productId,
-                  quantity: item.quantity,
-                  price: item.price
-                },
-                create: {
-                  productId: item.productId,
-                  quantity: item.quantity,
-                  price: item.price
-                }
-              }))
+      if (!orderId) return;
+      const result = await updateMutation.mutateAsync({
+        where: { id: formData.id },
+        data: {
+          ...formData,
+          finalTotal: Number(formData.finalTotal) || 0,
+          discountAmount: Number(formData.discountAmount) || 0,
+          originalTotal: Number(formData.originalTotal) || 0,
+          orderItems: {
+            deleteMany: {
+              id: {
+                notIn: formData?.orderItems?.map(item => item?.id)?.filter(Boolean)
+              }
             },
-            delivery: {
+            upsert: formData.orderItems.map(item => ({
+              where: { id: item.id || '' },
               update: {
-                name: formData.delivery.name,
-                email: formData.delivery.email,
-                phone: formData.delivery.phone,
-                note: formData.delivery.note,
-                address: {
-                  update: {
-                    ...formData.delivery.address
-                  }
+                productId: item.productId,
+                quantity: item.quantity,
+                price: item.price
+              },
+              create: {
+                productId: item.productId,
+                quantity: item.quantity,
+                price: item.price
+              }
+            }))
+          },
+          delivery: {
+            update: {
+              name: formData.delivery.name,
+              email: formData.delivery.email,
+              phone: formData.delivery.phone,
+              note: formData.delivery.note,
+              address: {
+                update: {
+                  ...formData.delivery.address
                 }
               }
             }
-          },
-          orderId: orderId
-        });
+          }
+        },
+        orderId: orderId
+      });
 
-        if (result.success) {
-          NotifySuccess(result.message);
-          setOpened(false);
-        } else {
-          NotifyError(result.message);
-        }
+      if (result.success) {
+        NotifySuccess(result.message);
+        setOpened(false);
+      } else {
+        NotifyError(result.message);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xây ra ngoại lệ. Vui lòng kiểm tra lai.');
     }
   };
@@ -327,12 +332,11 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
               <Controller
                 name='userId'
                 control={control}
-                rules={{ required: 'User is required' }}
                 render={({ field }) => (
                   <Select
                     label='Khách hàng'
                     searchable
-                    placeholder='Select your User'
+                    placeholder=' Chọn khách hàng'
                     data={users?.map(user => ({ value: user.id, label: user.name }))}
                     {...field}
                     error={errors.userId?.message}
@@ -344,13 +348,12 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
               <Controller
                 name='paymentId'
                 control={control}
-                rules={{ required: 'Payment is required' }}
                 render={({ field }) => (
                   <Select
                     {...field}
                     label='Phương thức thanh toán'
                     searchable
-                    placeholder='Select your Payment'
+                    placeholder=' Chọn phương thức thanh toán'
                     data={payments?.map(payment => ({ value: payment.id, label: payment.name }))}
                     error={errors.paymentId?.message}
                   />
@@ -382,11 +385,10 @@ export default function UpdateOrder({ orderId, setOpened }: { orderId: string; s
               <Controller
                 name='status'
                 control={control}
-                rules={{ required: 'Status is required' }}
                 render={({ field }) => (
                   <Select
                     label='Trạng thái (chỉ đọc)'
-                    placeholder='Select your Status'
+                    placeholder=' Chọn trạng thái'
                     data={Object.values(OrderStatus)}
                     {...field}
                     error={errors.status?.message}

@@ -12,16 +12,7 @@ interface OrderStatusPageProps {
   customerName: string;
   orderId?: string;
   amount?: number;
-  status:
-    | 'COMPLETED'
-    | 'UNPAID'
-    | 'PENDING'
-    | 'CONFIRMED'
-    | 'SHIPPING'
-    | 'CANCELLED'
-    | 'ERROR'
-    | 'PAYMENT_FAILED'
-    | 'NOT_FOUND';
+  status: 'COMPLETED' | 'UNPAID' | 'PENDING' | 'CONFIRMED' | 'SHIPPING' | 'CANCELLED' | 'ERROR' | 'PAYMENT_FAILED';
   customTitle?: string;
   customMessage?: string;
   onRetryPayment?: () => void;
@@ -52,7 +43,7 @@ export function OrderStatusPage({
   const currentStatus = statusConfig[status];
   const StatusIcon = currentStatus.icon;
 
-  const isErrorState = ['ERROR', 'PAYMENT_FAILED', 'CANCELLED', 'NOT_FOUND'].includes(status);
+  const isErrorState = ['ERROR', 'PAYMENT_FAILED', 'CANCELLED'].includes(status);
 
   const displayTitle =
     customTitle ||
@@ -61,9 +52,7 @@ export function OrderStatusPage({
         ? 'Thanh toán thất bại'
         : status === 'CANCELLED'
           ? 'Đơn hàng đã hủy'
-          : status === 'NOT_FOUND'
-            ? 'Đơn hàng không tồn tại'
-            : 'Có lỗi xảy ra'
+          : 'Có lỗi xảy ra'
       : 'Đơn hàng đã được thanh toán');
 
   const displayMessage = customMessage || currentStatus.message;

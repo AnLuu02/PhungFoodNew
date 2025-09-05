@@ -8,6 +8,7 @@ import {
   Modal,
   MultiSelect,
   Select,
+  Text,
   TextInput,
   Title,
   Tooltip
@@ -259,7 +260,7 @@ export function SendMessageAllUserAdvanced() {
   };
   return (
     <>
-      <Tooltip label='Gửi thông báo hàng loạt'>
+      <Tooltip label={<Text size='sm'>Gửi thông báo hàng loạt</Text>}>
         <Button variant='outline' onClick={() => setOpened(true)}>
           Gửi thông báo hàng loạt
         </Button>
@@ -268,7 +269,11 @@ export function SendMessageAllUserAdvanced() {
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={3}>Gửi thông báo hàng loạt</Title>}
+        title={
+          <Title order={3} className='font-quicksand'>
+            Gửi thông báo hàng loạt
+          </Title>
+        }
         position='right'
         size='lg'
       >

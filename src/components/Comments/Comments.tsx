@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, ScrollAreaAutosize } from '@mantine/core';
+import { Box, Divider, ScrollAreaAutosize } from '@mantine/core';
 import { memo } from 'react';
 import LoadingComponent from '~/components/Loading/Loading';
 import { api } from '~/trpc/react';
@@ -28,6 +28,7 @@ function Comments({ product, max_height_scroll }: any) {
           </ScrollAreaAutosize>
         </>
       )}
+      <Divider my={'md'} />
       <CommentsForm product={product} />
     </>
   );

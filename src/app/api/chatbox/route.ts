@@ -10,7 +10,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 export async function POST(req: Request) {
   const { message } = await req.json();
   const restaurant = await api.Restaurant.getOne();
-  let subPrompt = `
+  const subPrompt = `
       Đây là câu hỏi của người dùng: ${message}
      
       Dưới đây là các thuộc tính để lọc sản phầm:

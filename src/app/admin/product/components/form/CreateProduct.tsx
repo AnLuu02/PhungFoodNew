@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import { ProductStatus } from '@prisma/client';
 import { IconFile, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
@@ -48,7 +48,7 @@ export const regions = [
   }
 ];
 
-export default function CreateProduct({ setOpened }: { setOpened: any }) {
+export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials, isLoading } = api.Material.getAll.useQuery();
   const [imageAddition, setImageAddition] = useState<File[]>([]);
@@ -115,7 +115,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
           gallery: gallery_format
         };
 
-        let result = await mutation.mutateAsync({
+        const result = await mutation.mutateAsync({
           ...formDataWithImages,
           tag: createTag(formData.name),
           descriptionDetail: (formData.descriptionDetail ?? []).map((item: any) => ({
@@ -130,7 +130,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
           NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
@@ -299,7 +299,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             render={({ field }) => (
               <Select
                 label='Danh mục'
-                placeholder='Select your category'
+                placeholder=' Chọn danh mục'
                 searchable
                 data={categories?.map(category => ({
                   value: category.id,
@@ -480,11 +480,11 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             name='thumbnail'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: file =>
                 file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true
-                  : 'Only PNG, JPEG, or JPG files are allowed'
+                  : 'Chỉ cho phép các định dạng file: PNG, JPEG, hoặc JPG'
             }}
             render={({ field }) => (
               <FileInput
@@ -507,7 +507,7 @@ export default function CreateProduct({ setOpened }: { setOpened: any }) {
             name='gallery'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: files =>
                 files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
                   ? true

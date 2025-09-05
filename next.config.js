@@ -22,6 +22,11 @@ const config = {
       },
       {
         protocol: 'https',
+        hostname: 'foodish-api.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
         pathname: '/**'
       },

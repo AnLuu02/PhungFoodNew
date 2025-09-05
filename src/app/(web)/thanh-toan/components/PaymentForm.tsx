@@ -85,7 +85,7 @@ const PaymentForm = ({ control, errors }: any) => {
                   }}
                   name='paymentId'
                   className='mb-4'
-                  error={errors.paymentId?.message}
+                  error={fieldState.error?.message}
                 >
                   <Paper withBorder p='md' radius='md'>
                     {payment?.map((item: any, index: number) => (
@@ -107,7 +107,7 @@ const PaymentForm = ({ control, errors }: any) => {
                             </Text>
                           </Flex>
                         }
-                        error={errors.paymentId ? true : false}
+                        error={fieldState.error ? true : false}
                         color='blue'
                         size='sm'
                         key={index}

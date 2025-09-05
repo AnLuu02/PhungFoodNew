@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import { ProductStatus } from '@prisma/client';
 import { IconFile, IconTrash } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { createTag } from '~/lib/func-handler/generateTag';
@@ -31,7 +31,13 @@ import { api } from '~/trpc/react';
 import { Product } from '~/types/product';
 import { regions } from './CreateProduct';
 
-export default function UpdateProduct({ productId, setOpened }: { productId: string; setOpened: any }) {
+export default function UpdateProduct({
+  productId,
+  setOpened
+}: {
+  productId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const [loading, setLoading] = useState(false);
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials, isLoading } = api.Material.getAll.useQuery();
@@ -144,7 +150,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
           thumbnail: thumbnail_format as any,
           gallery: images_format as any
         };
-        let result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
+        const result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
@@ -152,7 +158,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
           NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
@@ -323,7 +329,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             render={({ field }) => (
               <Select
                 label='Danh mục'
-                placeholder='Select your category'
+                placeholder=' Chọn danh mục'
                 searchable
                 data={categories?.map(category => ({
                   value: category.id,
@@ -457,7 +463,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             name='thumbnail'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: file =>
                 file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true
@@ -484,7 +490,7 @@ export default function UpdateProduct({ productId, setOpened }: { productId: str
             name='gallery'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: files =>
                 files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
                   ? true

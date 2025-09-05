@@ -71,7 +71,7 @@ export function CreateManyCategoryButton() {
       const rows = XLSX.utils.sheet_to_json(sheet);
       setData(rows);
       setOpened(true);
-    } catch (error) {
+    } catch {
       resetFileInput();
       NotifyError('Lỗi khi đọc file. Vui lòng kiểm tra lại.');
     }
@@ -82,7 +82,7 @@ export function CreateManyCategoryButton() {
       setLoading(true);
       const formatData_: any = formatDataExcel(mapFields, data);
       await importMutation.mutateAsync({ data: formatData_ });
-    } catch (error) {
+    } catch {
       setLoading(false);
       NotifyError('Import thất bại! Sai định dạng dữ liệu.');
     }

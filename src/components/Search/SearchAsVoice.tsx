@@ -83,7 +83,7 @@ export default function VoiceSearchModal() {
       };
       recognitionRef.current.start();
       mediaRecorderRef.current.start();
-    } catch (error) {
+    } catch {
       NotifyError('Không có quyền truy cập microphone');
       dispatch({ type: 'RESET' });
     }

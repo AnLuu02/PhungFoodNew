@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'email', type: 'text', placeholder: 'jsmith' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Vui lòng nhập đầy đủ email và mật khẩu.');
         }
@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       try {
         if (user.email) {
           const { email, name, image } = user;
@@ -58,8 +58,8 @@ export const authOptions: NextAuthOptions = {
           });
         }
         return true;
-      } catch (error) {
-        console.error('Error in signIn callback:', error);
+      } catch {
+        console.error('Error in signIn callback:');
         return false;
       }
     },

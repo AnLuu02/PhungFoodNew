@@ -7,6 +7,7 @@ import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { LocalEntityType, LocalImageType, LocalOrderStatus, LocalProductStatus } from '~/lib/zod/EnumType';
 
+import { NotifyError } from '~/lib/func-handler/toast';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { createCaller } from '../root';
 
@@ -472,8 +473,8 @@ export const productRouter = createTRPCRouter({
               altText: `Ảnh ${item.fileName} loại ${LocalImageType.GALLERY}`,
               entityType: LocalEntityType.PRODUCT
             };
-          } catch (error) {
-            console.error('Failed to upload image:', item.fileName, error);
+          } catch {
+            NotifyError('Có lỗi xảy ra khi tải ảnh lên Vercel Blob');
             return null;
           }
         })
@@ -771,7 +772,7 @@ export const productRouter = createTRPCRouter({
       let products;
       switch (query) {
         case 'all':
-          products = orders?.map((order: any) => {});
+          products = [];
           break;
         case 'week':
           products = orders.filter((order: any) => order.createdAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));

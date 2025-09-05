@@ -248,19 +248,11 @@ export default function OrderList({ orders }: { orders: any }) {
                           <Table.Td className='text-sm'>{formatDateViVN(order.date)}</Table.Td>
                           <Table.Td className='text-sm'>{formatPriceLocaleVi(order.finalTotal || 0)}</Table.Td>
                           <Table.Td style={{ textTransform: 'capitalize' }}>
-                            <Badge
-                              size='xs'
-                              color={statusInfo.color || 'gray'}
-                              p={'xs'}
-                              className='align-items-center flex'
-                            >
-                              <Flex align={'center'}>
-                                <Text size='10px' fw={700}>
-                                  {statusInfo.label}
-                                </Text>
-                                <statusInfo.icon />
-                              </Flex>
-                            </Badge>
+                            <Tooltip label={statusInfo.label}>
+                              <Badge leftSection={<statusInfo.icon size={16} />} color={statusInfo.color}>
+                                {statusInfo.label}
+                              </Badge>
+                            </Tooltip>
                           </Table.Td>
                           <Table.Td className='text-sm'>
                             <Group gap={8}>

@@ -72,7 +72,7 @@ export function CreateManyRoleButton() {
 
       setData(rows);
       setOpened(true);
-    } catch (error) {
+    } catch {
       resetFileInput();
       NotifyError('Lỗi khi đọc file. Vui lòng kiểm tra lại.');
     }
@@ -98,7 +98,7 @@ export function CreateManyRoleButton() {
       await importMutation.mutateAsync({
         data: reduceData
       });
-    } catch (error) {
+    } catch {
       setLoading(false);
       NotifyError('Import thất bại! Sai định dạng dữ liệu.');
     }

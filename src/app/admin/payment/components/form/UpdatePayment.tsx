@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -10,7 +10,13 @@ import { paymentSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Payment } from '~/types/payment';
 
-export default function UpdatePayment({ paymentId, setOpened }: { paymentId: string; setOpened: any }) {
+export default function UpdatePayment({
+  paymentId,
+  setOpened
+}: {
+  paymentId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const queryResult = paymentId ? api.Payment.getOne.useQuery({ s: paymentId || '' }) : { data: null };
   const { data } = queryResult;
 
@@ -57,7 +63,7 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
     try {
       if (paymentId) {
         const updatedFormData = { ...formData, tag: createTag(formData.name) };
-        let result = await updateMutation.mutateAsync({ paymentId, ...updatedFormData });
+        const result = await updateMutation.mutateAsync({ paymentId, ...updatedFormData });
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
@@ -65,7 +71,7 @@ export default function UpdatePayment({ paymentId, setOpened }: { paymentId: str
           NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

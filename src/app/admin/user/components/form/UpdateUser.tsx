@@ -17,7 +17,7 @@ import {
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
@@ -30,7 +30,13 @@ import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
 
-export default function UpdateUser({ email, setOpened }: { email: string; setOpened: any }) {
+export default function UpdateUser({
+  email,
+  setOpened
+}: {
+  email: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const queryResult = email ? api.User.getOne.useQuery({ s: email || '' }) : { data: null };
   const { data } = queryResult;
   const [loading, setLoading] = useState(false);
@@ -136,7 +142,7 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
         }
       };
 
-      let result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
+      const result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
       if (result.success) {
         NotifySuccess(result.message);
         setOpened(false);
@@ -170,13 +176,13 @@ export default function UpdateUser({ email, setOpened }: { email: string; setOpe
             name='image.url'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: file =>
                 file && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true
                   : 'Only PNG, JPEG, or JPG files are allowed'
             }}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
               <FileInput
                 leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh chính'

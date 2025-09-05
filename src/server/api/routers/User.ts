@@ -85,9 +85,9 @@ export const userRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        name: z.string().min(1, 'Name is required'),
+        name: z.string().min(1, 'Tên không được để trống'),
         gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
-        email: z.string().email({ message: 'Invalid email' }),
+        email: z.string().email({ message: 'Email không hợp lệ' }),
         image: z
           .object({
             fileName: z.string(),
@@ -95,8 +95,8 @@ export const userRouter = createTRPCRouter({
           })
           .optional(),
         dateOfBirth: z.date().optional(),
-        password: z.string().min(6, { message: 'Password should include at least 6 characters' }),
-        phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
+        password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
+        phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
         address: addressSchema.optional(),
         pointUser: z.number().default(0),
         level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
@@ -195,8 +195,8 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        name: z.string().min(1, 'Name is required'),
-        email: z.string().email({ message: 'Invalid email' }),
+        name: z.string().min(1, 'Tên không được để trống'),
+        email: z.string().email({ message: 'Email không hợp lệ' }),
         image: z
           .object({
             fileName: z.string(),
@@ -205,8 +205,8 @@ export const userRouter = createTRPCRouter({
           .optional(),
         gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
         dateOfBirth: z.date().optional(),
-        password: z.string().min(6, { message: 'Password should include at least 6 characters' }),
-        phone: z.string().max(10, { message: 'Phone number must not exceed 10 characters' }).optional(),
+        password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
+        phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
         address: addressSchema,
         pointUser: z.number().default(0),
         level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),

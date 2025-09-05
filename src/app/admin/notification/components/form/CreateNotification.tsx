@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, GridCol, MultiSelect, Paper, Stack, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -8,7 +9,7 @@ import { notificationSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Notification } from '~/types/notification';
 
-export default function CreateNotification({ setOpened }: { setOpened: any }) {
+export default function CreateNotification({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const { data: user, isLoading: isLoadingUser } = api.User.getAll.useQuery();
   const {
     control,
@@ -39,7 +40,7 @@ export default function CreateNotification({ setOpened }: { setOpened: any }) {
   const onSubmit: SubmitHandler<Notification> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync(formData);
+        const result = await mutation.mutateAsync(formData);
         setOpened(false);
         if (!result.success) {
           NotifyError(result.message);
@@ -47,7 +48,7 @@ export default function CreateNotification({ setOpened }: { setOpened: any }) {
         }
         NotifySuccess(result.message);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

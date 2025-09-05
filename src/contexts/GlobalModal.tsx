@@ -2,44 +2,54 @@
 
 import dynamic from 'next/dynamic';
 import React from 'react';
+import ModalDetailVoucher from '~/components/Modals/ModalVoucherDetail';
 import { useModal } from './ModalContext';
 
-const ModalProductComments = dynamic(() => import('~/components/Modals/ModalProductComments'), { ssr: false });
+const ModalProductComments = dynamic(() => import('~/components/Modals/ModalProductComments'));
 
-const ModalProductDetails = dynamic(() => import('~/components/Modals/ModalProductDetails'), { ssr: false });
+const ModalProductDetails = dynamic(() => import('~/components/Modals/ModalProductDetails'));
 
-const ModalOrderDetails = dynamic(() => import('~/components/Modals/ModalOrderDetails'), { ssr: false });
+const ModalOrderDetails = dynamic(() => import('~/components/Modals/ModalOrderDetails'));
 
-const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'), { ssr: false });
+const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'));
+
+const ModalRecipe = dynamic(() => import('~/components/Modals/ModalRecipe').then(m => m.ModalRecipe), { ssr: false });
 
 export const GlobalModal: React.FC = () => {
-  const { opened, modalType, modalContent, modalData, closeModal } = useModal();
+  const { opened, modalType, modalData, closeModal } = useModal();
 
   return (
     <>
       <ModalProductComments
         type={modalType}
         opened={opened && modalType === 'comments'}
-        close={closeModal}
-        product={modalData}
+        onClose={closeModal}
+        data={modalData}
+      />
+      <ModalRecipe type={modalType} opened={opened && modalType === 'recipe'} onClose={closeModal} data={modalData} />
+      <ModalDetailVoucher
+        type={modalType}
+        opened={opened && modalType === 'voucher'}
+        onClose={closeModal}
+        data={modalData}
       />
       <ModalProductDetails
         type={modalType}
         opened={opened && modalType === 'details'}
-        close={closeModal}
-        product={modalData}
+        onClose={closeModal}
+        data={modalData}
       />
       <ModalOrderDetails
         type={modalType}
         opened={opened && modalType === 'orders'}
-        close={closeModal}
-        order={modalData}
+        onClose={closeModal}
+        data={modalData}
       />
       <ModalSuccessAddToCart
         type={modalType}
         opened={opened && modalType === 'success'}
         onClose={closeModal}
-        product={modalData}
+        data={modalData}
       />
     </>
   );

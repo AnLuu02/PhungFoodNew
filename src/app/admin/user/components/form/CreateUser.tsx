@@ -16,6 +16,7 @@ import {
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import fetcher from '~/lib/func-handler/fetcher';
@@ -26,7 +27,7 @@ import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
 
-export default function CreateUser({ setOpened }: { setOpened: any }) {
+export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
@@ -90,7 +91,7 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
         const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
         const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
 
-        let result = await mutation.mutateAsync({
+        const result = await mutation.mutateAsync({
           ...formData,
           image: {
             fileName: fileName as string,
@@ -115,7 +116,7 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
           NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Xảy ra ngoại lệ khi tạo người dùng.');
     }
   };
@@ -142,13 +143,13 @@ export default function CreateUser({ setOpened }: { setOpened: any }) {
             name='image.url'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: file =>
                 file && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true
                   : 'Only PNG, JPEG, or JPG files are allowed'
             }}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
               <FileInput
                 leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh chính'

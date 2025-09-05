@@ -16,7 +16,8 @@ import {
   Table,
   Text,
   ThemeIcon,
-  Title
+  Title,
+  Tooltip
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
@@ -24,11 +25,12 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { getStatusInfo } from '~/lib/func-handler/status-order';
 import { LocalImageType, LocalOrderStatus, LocalVoucherType } from '~/lib/zod/EnumType';
+import { ModalProps } from '~/types/modal';
 import InvoiceToPrint from '../InvoceToPrint';
 
-function ModalOrderDetails({ type, order, opened, close }: { type: any; order: any; opened: any; close: any }) {
+function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
   const isDesktop = useMediaQuery(`(min-width:1024px)`);
-  const statusInfo = getStatusInfo(order?.status || LocalOrderStatus.PENDING);
+  const statusInfo = getStatusInfo(data?.status || LocalOrderStatus.PENDING);
   return (
     <>
       <Modal
@@ -36,7 +38,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
         className='animate-fadeBottom'
         opened={opened && type === 'orders'}
         radius={'md'}
-        onClose={close}
+        onClose={onClose}
         size={!isDesktop ? '100%' : '70%'}
         h={'max-content'}
         transitionProps={{ transition: 'fade-down', duration: 200 }}
@@ -49,10 +51,10 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
             <Box>
               <Title order={2}>Thông tin đơn hàng</Title>
               <Text size='sm' c={'dimmed'}>
-                #{order?.id}
+                #{data?.id}
               </Text>
             </Box>
-            <InvoiceToPrint id={order?.id || ''} />
+            <InvoiceToPrint id={data?.id || ''} />
           </Group>
         }
         pos={'relative'}
@@ -76,24 +78,21 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                     </Group>
                     <Stack gap={'md'}>
                       <Text size='sm' className='flex items-center justify-between'>
-                        Mã đơn: <b>{order?.id}</b>
+                        Mã đơn: <b>{data?.id}</b>
                       </Text>
                       <Text size='sm' className='flex items-center justify-between'>
-                        Ngày đặt: <b>{formatDateViVN(order?.createdAt)}</b>
+                        Ngày đặt: <b>{formatDateViVN(data?.createdAt)}</b>
                       </Text>
 
                       <Flex align={'center'} justify={'space-between'}>
                         <Text size='sm' className='flex items-center justify-between'>
                           Trạng thái:
                         </Text>
-                        <Badge size='xs' color={statusInfo.color} p={'xs'} className='align-items-center flex'>
-                          <Flex align={'center'}>
-                            <Text size='10px' fw={700}>
-                              {statusInfo.label}
-                            </Text>
-                            <statusInfo.icon />
-                          </Flex>
-                        </Badge>
+                        <Tooltip label={statusInfo.label}>
+                          <Badge leftSection={<statusInfo.icon size={16} />} color={statusInfo.color}>
+                            {statusInfo.label}
+                          </Badge>
+                        </Tooltip>
                       </Flex>
                     </Stack>
                   </Card>
@@ -108,7 +107,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                           Phương thức thanh toán
                         </Text>
                         <Text size='sm' c='dimmed'>
-                          {order?.payment?.name || 'Chưa thanh toán'}
+                          {data?.payment?.name || 'Chưa thanh toán'}
                         </Text>
                       </Box>
                     </Group>
@@ -124,16 +123,16 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                       <Box className='flex items-center justify-between'>
                         <Text size='sm'>Tổng tiền hàng:</Text>
                         <Text fw={700} size='md'>
-                          {formatPriceLocaleVi(order.originalTotal || 0)}
+                          {formatPriceLocaleVi(data.originalTotal || 0)}
                         </Text>
                       </Box>
-                      {order?.vouchers?.length > 0 && (
+                      {data?.vouchers?.length > 0 && (
                         <Box className='space-y-2'>
                           <Text size='xs' className='flex items-center gap-2 font-medium text-gray-700'>
                             <IconTag className='h-4 w-4' />
                             Voucher áp dụng
                           </Text>
-                          {order.vouchers.map((voucher: any) => (
+                          {data.vouchers.map((voucher: any) => (
                             <Box key={voucher.id} className='ml-6 space-y-1'>
                               <Box className='flex items-center justify-between'>
                                 <Box className='flex items-center gap-2'>
@@ -169,9 +168,9 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                       </Box>
                       <Divider />
 
-                      {order?.discountAmount > 0 && (
+                      {data?.discountAmount > 0 && (
                         <Text size='md' fw={700} className='flex items-center justify-between text-red-600'>
-                          Tổng giảm giá: <b>-{formatPriceLocaleVi(order?.discountAmount)}</b>
+                          Tổng giảm giá: <b>-{formatPriceLocaleVi(data?.discountAmount)}</b>
                         </Text>
                       )}
 
@@ -180,7 +179,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                         className='flex items-center justify-between rounded-lg bg-emerald-50 p-3 text-lg font-bold text-emerald-600'
                       >
                         Thành tiền:
-                        <b className='font-semibold'>{formatPriceLocaleVi(order?.finalTotal || 0)}</b>
+                        <b className='font-semibold'>{formatPriceLocaleVi(data?.finalTotal || 0)}</b>
                       </Text>
                     </Stack>
                   </Card>
@@ -196,18 +195,18 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                     </Group>
                     <Stack gap='xs'>
                       <Text size='sm'>
-                        <b>Khách hàng:</b> {order?.delivery?.name || order?.user?.name}
+                        <b>Khách hàng:</b> {data?.delivery?.name || data?.user?.name}
                       </Text>
                       <Text size='sm'>
-                        <b>Email:</b> {order?.delivery?.email || order?.user?.email}
+                        <b>Email:</b> {data?.delivery?.email || data?.user?.email}
                       </Text>
-                      {order?.user?.address?.fullAddress && (
+                      {data?.user?.address?.fullAddress && (
                         <Text size='sm'>
-                          <b>Địa chỉ:</b> {order?.user?.address?.fullAddress || order?.user?.address?.fullAddress}
+                          <b>Địa chỉ:</b> {data?.user?.address?.fullAddress || data?.user?.address?.fullAddress}
                         </Text>
                       )}
                       <Text size='sm'>
-                        <b>Địa chỉ nhận:</b> {order?.delivery?.address?.fullAddress || 'Chờ cập nhật.'}
+                        <b>Địa chỉ nhận:</b> {data?.delivery?.address?.fullAddress || 'Chờ cập nhật.'}
                       </Text>
 
                       <Spoiler
@@ -219,7 +218,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                         }}
                       >
                         <Text size='sm'>
-                          <b>Ghi chú:</b> {order?.delivery?.note || 'Không có./'}
+                          <b>Ghi chú:</b> {data?.delivery?.note || 'Không có./'}
                         </Text>
                       </Spoiler>
                     </Stack>
@@ -250,7 +249,7 @@ function ModalOrderDetails({ type, order, opened, close }: { type: any; order: a
                       </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                      {order?.orderItems.map((item: any) => (
+                      {data?.orderItems.map((item: any) => (
                         <Table.Tr key={item.id}>
                           <Table.Td w={'40%'}>{item.product.name}</Table.Td>
                           <Table.Td className='text-sm'>

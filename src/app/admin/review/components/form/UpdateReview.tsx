@@ -1,14 +1,20 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Review } from '~/types/review';
 
-export default function UpdateReview({ reviewId, setOpened }: { reviewId: string; setOpened: any }) {
+export default function UpdateReview({
+  reviewId,
+  setOpened
+}: {
+  reviewId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
   const queryResult = reviewId ? api.Review.getFilter.useQuery({ s: reviewId || '' }) : { data: null };
   const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: 'ADMIN' });
   const { data: users } = api.User.getAll.useQuery();
@@ -53,13 +59,13 @@ export default function UpdateReview({ reviewId, setOpened }: { reviewId: string
     try {
       if (reviewId) {
         const updatedFormData = { ...formData };
-        let result = await updateMutation.mutateAsync({ reviewId, ...updatedFormData });
+        const result = await updateMutation.mutateAsync({ reviewId, ...updatedFormData });
         if (result.success) {
           NotifySuccess(result.message);
           setOpened(false);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
@@ -71,12 +77,11 @@ export default function UpdateReview({ reviewId, setOpened }: { reviewId: string
           <Controller
             name='productId'
             control={control}
-            rules={{ required: 'Product is required' }}
             render={({ field }) => (
               <Select
                 searchable
                 label='Product'
-                placeholder='Select your Product'
+                placeholder=' Chọn sản phẩm'
                 data={products?.map((product: any) => ({ value: product.id, label: product.name })) || []}
                 value={field.value}
                 onChange={field.onChange}
@@ -90,12 +95,11 @@ export default function UpdateReview({ reviewId, setOpened }: { reviewId: string
           <Controller
             name='userId'
             control={control}
-            rules={{ required: 'user is required' }}
             render={({ field }) => (
               <Select
                 searchable
                 label='user'
-                placeholder='Select your user'
+                placeholder=' Chọn khách hàng'
                 data={users?.map((user: any) => ({ value: user.id, label: user.name })) || []}
                 value={field.value}
                 onChange={field.onChange}
@@ -113,7 +117,7 @@ export default function UpdateReview({ reviewId, setOpened }: { reviewId: string
               required: 'rating is required',
               validate: value => (value >= 0 && value <= 5) || 'Rating must be between 0 and 5'
             }}
-            render={({ field, fieldState }) => (
+            render={({ field }) => (
               <Flex align={'center'} justify={'space-between'}>
                 <NumberInput label='Đánh giá' {...field} min={0} max={5} error={errors.rating?.message} />
                 <Rating size={'lg'} {...field} fractions={4} color={'#FFC522'} />

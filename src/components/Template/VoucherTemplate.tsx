@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
+import { useModal } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/toast';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
@@ -13,9 +14,9 @@ import DateVoucher from '../Modals/DateVoucher';
 type VoucherTemplateProps = {
   voucher: any;
   products?: any;
-  setOpenDetail: any;
 };
-const VoucherTemplate = ({ voucher, products, setOpenDetail }: VoucherTemplateProps) => {
+const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
+  const { openModal } = useModal();
   const [loading, setLoading] = useState(false);
   const { data: user } = useSession();
   const mutationRecivedVoucher = api.Voucher.update.useMutation();
@@ -57,9 +58,9 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: VoucherTemplatePr
       } else {
         NotifyWarning('Chưa đăng nhập!', 'Đăng nhập để nhận voucher.');
       }
-    } catch (error) {
+    } catch {
       setLoading(false);
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.', error as string);
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     } finally {
       setLoading(false);
     }
@@ -172,7 +173,7 @@ const VoucherTemplate = ({ voucher, products, setOpenDetail }: VoucherTemplatePr
                 pos={'relative'}
                 className='z-[0] bg-white text-blue-500 dark:bg-dark-card'
                 onClick={() => {
-                  setOpenDetail({ opened: true, voucherDetail: { ...voucher } });
+                  openModal('voucher', null, { voucher, products });
                 }}
               >
                 Điều kiện

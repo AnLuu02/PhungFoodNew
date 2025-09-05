@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, Flex, Group, Highlight, Table, Text } from '@mantine/core';
+import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
@@ -59,13 +59,8 @@ export default function TableOrder({ s, data, user }: { data: any; s: string; us
                     <Table.Td className='text-sm'>{formatDateViVN(order.createdAt)} </Table.Td>
                     <Table.Td className='text-sm'>
                       <Group className='text-center'>
-                        <Badge size='xs' color={statusInfo.color} p='xs' className='align-items-center flex'>
-                          <Flex align='center'>
-                            <Text size='10px' fw={700}>
-                              {statusInfo.label}
-                            </Text>
-                            <statusInfo.icon />
-                          </Flex>
+                        <Badge leftSection={<statusInfo.icon size={16} />} color={statusInfo.color}>
+                          {statusInfo.label}
                         </Badge>
                       </Group>
                     </Table.Td>

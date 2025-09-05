@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -9,7 +10,7 @@ import { paymentSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Payment } from '~/types/payment';
 
-export default function CreatePayment({ setOpened }: { setOpened: any }) {
+export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
@@ -36,7 +37,7 @@ export default function CreatePayment({ setOpened }: { setOpened: any }) {
   const onSubmit: SubmitHandler<Payment> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync({
+        const result = await mutation.mutateAsync({
           ...formData,
           tag: createTag(formData.name)
         });
@@ -47,7 +48,7 @@ export default function CreatePayment({ setOpened }: { setOpened: any }) {
           NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { NotifyError } from '~/lib/func-handler/toast';
 
 const providers = [
   { name: 'google', icon: '/images/png/google.png' },
@@ -21,8 +22,8 @@ const LoginServices = () => {
     setLoadingProvider(provider);
     try {
       await signIn(provider, { callbackUrl });
-    } catch (error) {
-      console.error(`Error logging in with ${provider}:`, error);
+    } catch {
+      NotifyError('Đăng nhập thất bại. Vui lòng thử lại sau.');
     } finally {
       setLoadingProvider(null);
     }

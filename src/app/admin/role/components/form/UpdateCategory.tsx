@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, MultiSelect, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -15,7 +15,13 @@ const roleSchema = z.object({
 
 type RoleFormData = z.infer<typeof roleSchema>;
 
-export default function UpdateRole({ setOpened, roleId }: { setOpened: any; roleId: string }) {
+export default function UpdateRole({
+  setOpened,
+  roleId
+}: {
+  setOpened: Dispatch<SetStateAction<boolean>>;
+  roleId: string;
+}) {
   const {
     control,
     handleSubmit,
@@ -52,7 +58,7 @@ export default function UpdateRole({ setOpened, roleId }: { setOpened: any; role
       } else {
         NotifyError(result.message);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Có lỗi xảy ra khi cập nhật vai trò');
     }
   };

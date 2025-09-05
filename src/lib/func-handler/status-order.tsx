@@ -82,14 +82,6 @@ export const statusConfig: Record<LocalOrderStatus | string | any, any> = {
     color: '#FF0000',
     icon: IconCreditCard,
     message: 'Thanh toán không thành công, vui lòng thử lại'
-  },
-
-  NOT_FOUND: {
-    key: 'NOT_FOUND',
-    label: 'KHÔNG TÌM THẤY',
-    color: '#CCCCCC',
-    icon: IconAlertTriangle,
-    message: 'Đơn hàng không tồn tại.'
   }
 };
 

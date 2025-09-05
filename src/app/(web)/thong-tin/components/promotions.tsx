@@ -20,7 +20,6 @@ import {
 import { IconGift } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
-import ModalDetailVoucher from '~/components/Modals/ModalDetailVoucher';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 
@@ -28,10 +27,6 @@ export default function Promotions({ vouchers }: { vouchers: any }) {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(4);
   const [activeTab, setActiveTab] = useState<string | null>('all');
-  const [openDetail, setOpenDetail] = useState<{ opened: boolean; voucherDetail: any }>({
-    opened: false,
-    voucherDetail: {}
-  });
   const filteredPromotions = useMemo(() => {
     if (activeTab === 'all') return vouchers;
     return vouchers.filter((promo: any) => promo.type === activeTab);
@@ -120,7 +115,7 @@ export default function Promotions({ vouchers }: { vouchers: any }) {
               <Grid mt='md'>
                 {displayedPromotions.map((promo: any) => (
                   <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
-                    <VoucherTemplate voucher={promo} setOpenDetail={setOpenDetail} />
+                    <VoucherTemplate voucher={promo} />
                   </GridCol>
                 ))}
               </Grid>
@@ -160,11 +155,6 @@ export default function Promotions({ vouchers }: { vouchers: any }) {
             </Flex>
           </Tabs.Panel>
         </Tabs>
-        <ModalDetailVoucher
-          openDetail={openDetail}
-          onClose={() => setOpenDetail({ opened: false, voucherDetail: {} })}
-          products={[]}
-        />
       </Card>
     </Stack>
   );

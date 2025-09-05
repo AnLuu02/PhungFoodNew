@@ -208,9 +208,9 @@ export const GlobalSearch = ({ width }: any) => {
                       href={d.url}
                       label={
                         <Box ml={'md'}>
-                          <Text size='md' fw={500}>
-                            <Highlight highlight={debounced}>{d.name}</Highlight>
-                          </Text>
+                          <Highlight size='md' fw={500} highlight={debounced}>
+                            {d.name}
+                          </Highlight>
                           <Flex>
                             {result.type === 'product' && (
                               <>

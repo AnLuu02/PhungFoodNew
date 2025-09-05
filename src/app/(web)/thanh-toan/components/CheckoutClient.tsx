@@ -202,8 +202,8 @@ export default function CheckoutClient({ order }: { order: any }) {
               : null;
             window.location.href = paymentUrl;
           }
-        } catch (error) {
-          console.error('Lỗi:', error);
+        } catch {
+          NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
         } finally {
           setLoading(false);
         }

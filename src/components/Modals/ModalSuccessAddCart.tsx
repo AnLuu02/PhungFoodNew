@@ -9,15 +9,9 @@ import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
+import { ModalProps } from '~/types/modal';
 
-interface SuccessModalProps {
-  type: any;
-  opened: boolean;
-  onClose: () => void;
-  product: any;
-}
-
-export default function ModalSuccessAddToCart({ type, opened, onClose, product }: SuccessModalProps) {
+export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [note, setNote] = useState('');
   return (
@@ -49,10 +43,8 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
             <Box className='relative h-16 w-16'>
               <Image
                 loading='lazy'
-                src={
-                  getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-                }
-                alt={product?.name || 'Hành tây'}
+                src={getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                alt={data?.name || 'Hành tây'}
                 height={60}
                 width={60}
                 style={{ objectFit: 'cover' }}
@@ -60,9 +52,9 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
               />
             </Box>
             <Box>
-              <Text fw={700}>{product?.name || 'Hành tây'}</Text>
+              <Text fw={700}>{data?.name || 'Hành tây'}</Text>
               <Text className='text-mainColor' fw={600}>
-                {formatPriceLocaleVi(product?.price || 0)}
+                {formatPriceLocaleVi(data?.price || 0)}
               </Text>
             </Box>
           </Group>
@@ -87,9 +79,9 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
               color='dark'
               onClick={() => {
                 if (note !== '') {
-                  const existingItem = cart.find((item: any) => item.id === product?.id);
+                  const existingItem = cart.find((item: any) => item.id === data?.id);
                   if (existingItem) {
-                    setCart(cart.map((item: any) => (item.id === product?.id ? { ...item, note } : item)));
+                    setCart(cart.map((item: any) => (item.id === data?.id ? { ...item, note } : item)));
                   }
                 }
                 onClose();
@@ -101,9 +93,9 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, product }
             </Button>
             <ButtonCheckout
               stylesButtonCheckout={{ fullWidth: true, title: 'Thanh toán ngay', radius: 'sm' }}
-              data={[...cart, { ...product, note }]}
-              finalTotal={product?.price || 0}
-              originalTotal={product?.price || 0}
+              data={[...cart, { ...data, note }]}
+              finalTotal={data?.price || 0}
+              originalTotal={data?.price || 0}
               discountAmount={0}
               onClick={onClose}
             />

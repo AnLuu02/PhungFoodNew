@@ -3,7 +3,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconGift, IconPlus, IconTag, IconX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import ModalShowVoucher from '~/components/Modals/ModalShowVoucher';
+import ModalListVoucher from '~/components/Modals/ModalListVoucher';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { allowedVoucher } from '~/lib/func-handler/vouchers-calculate';
@@ -49,8 +49,8 @@ const ApplyVoucher = ({ totalOrderPrice }: any) => {
           NotifyError('Thông báo!', 'Voucher này đã áp dụng rồi.');
         }
       }
-    } catch (error) {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.', error as string);
+    } catch {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     } finally {
       setLoading(false);
     }
@@ -82,9 +82,11 @@ const ApplyVoucher = ({ totalOrderPrice }: any) => {
             onClick={async () => {
               if (user?.user.id) {
                 setShowVoucher(true);
+                setLoading(true);
                 const data = await utils.Voucher.getVoucherForUser.fetch({
                   userId: user.user.id
                 });
+                setLoading(false);
                 setVoucherData(data);
               } else {
                 NotifyError('Cảnh báo!', 'Vui lớng đăng nhập để xem.');
@@ -155,7 +157,12 @@ const ApplyVoucher = ({ totalOrderPrice }: any) => {
           )}
         </Box>
       </Box>
-      <ModalShowVoucher opened={showVoucher} products={cart} data={voucherData} onClose={() => setShowVoucher(false)} />
+      <ModalListVoucher
+        opened={showVoucher}
+        loading={loading}
+        data={{ vouchers: voucherData, products: cart }}
+        onClose={() => setShowVoucher(false)}
+      />
       <Divider py={0} />
     </>
   );

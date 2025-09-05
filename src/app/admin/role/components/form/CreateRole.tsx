@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, MultiSelect, TextInput } from '@mantine/core';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -13,13 +14,11 @@ const roleSchema = z.object({
 
 type RoleForm = z.infer<typeof roleSchema>;
 
-export default function CreateRole({ setOpened }: { setOpened: any }) {
+export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
-
     handleSubmit,
-    formState: { errors, isSubmitting },
-    setValue
+    formState: { errors, isSubmitting }
   } = useForm<RoleForm>({
     resolver: zodResolver(roleSchema),
     defaultValues: {
@@ -43,7 +42,7 @@ export default function CreateRole({ setOpened }: { setOpened: any }) {
         NotifySuccess('Tạo vai trò thành công');
         setOpened(false);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

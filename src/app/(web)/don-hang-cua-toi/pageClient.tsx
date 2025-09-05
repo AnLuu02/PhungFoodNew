@@ -254,13 +254,8 @@ export default function MyOrderPageClient({ data }: any) {
                           </Table.Td>
                           <Table.Td className='text-sm'>
                             <Tooltip label={statusInfo.label}>
-                              <Badge size='xs' color={statusInfo.color} p='xs'>
-                                <Flex align='center'>
-                                  <Text size='10px' fw={700}>
-                                    {statusInfo.label}
-                                  </Text>
-                                  <statusInfo.icon />
-                                </Flex>
+                              <Badge leftSection={<statusInfo.icon size={16} />} color={statusInfo.color}>
+                                {statusInfo.label}
                               </Badge>
                             </Tooltip>
                           </Table.Td>

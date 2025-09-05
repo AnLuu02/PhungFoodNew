@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionIcon, Button, FileInput, Grid, GridCol, Image, Select, Textarea, TextInput } from '@mantine/core';
 import { IconFile } from '@tabler/icons-react';
+import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
@@ -10,7 +11,7 @@ import { subCategorySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { SubCategory } from '~/types/subCategory';
 
-export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
+export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
@@ -42,7 +43,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
         const file = formData?.thumbnail?.url as File;
         const fileName = file?.name || '';
         const base64 = file ? await fileToBase64(file) : '';
-        let result = await mutation.mutateAsync({
+        const result = await mutation.mutateAsync({
           ...formData,
           tag: createTag(formData.name),
           thumbnail: {
@@ -57,7 +58,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
           NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Error created SubCategory');
     }
   };
@@ -80,7 +81,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: any }) {
             name='thumbnail.url'
             control={control}
             rules={{
-              required: 'File or URL is required',
+              required: 'File hoặc URL là bắt buộc',
               validate: file =>
                 file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true

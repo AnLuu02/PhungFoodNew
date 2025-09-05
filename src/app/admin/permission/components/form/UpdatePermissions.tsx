@@ -1,7 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -15,7 +15,13 @@ const permissionSchema = z.object({
 
 type PermissionFormData = z.infer<typeof permissionSchema>;
 
-export default function UpdatePermission({ setOpened, permissionId }: { setOpened: any; permissionId: string }) {
+export default function UpdatePermission({
+  setOpened,
+  permissionId
+}: {
+  setOpened: Dispatch<SetStateAction<boolean>>;
+  permissionId: string;
+}) {
   const {
     control,
     handleSubmit,
@@ -53,7 +59,7 @@ export default function UpdatePermission({ setOpened, permissionId }: { setOpene
       } else {
         NotifyError(result.message);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

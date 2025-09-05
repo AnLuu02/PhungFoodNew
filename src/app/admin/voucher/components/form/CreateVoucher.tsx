@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -24,7 +24,7 @@ import { voucherSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Voucher } from '~/types/voucher';
 
-export default function CreateVoucher({ setOpened }: { setOpened: any }) {
+export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const [applyForLevel, setApplyForLevel] = useState(false);
   const { data, isLoading } = api.Product.getAll.useQuery({
     hasCategoryChild: false,
@@ -79,7 +79,7 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
   const onSubmit: SubmitHandler<Voucher> = async formData => {
     try {
       if (formData) {
-        let result = await mutation.mutateAsync({
+        const result = await mutation.mutateAsync({
           ...formData,
           type: formData.type,
           tag: createTag(formData.name),
@@ -93,7 +93,7 @@ export default function CreateVoucher({ setOpened }: { setOpened: any }) {
           NotifyError(result.message);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Error created Voucher');
     }
   };

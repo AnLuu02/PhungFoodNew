@@ -43,12 +43,12 @@ export const CommentsForm = ({ product }: { product: any }) => {
         return;
       }
       setValue('productId', product.id);
-      let result = await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
+      const result = await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
       if (result.success) {
         reset();
         NotifySuccess(result.message);
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
@@ -61,17 +61,22 @@ export const CommentsForm = ({ product }: { product: any }) => {
 
         <Controller
           control={control}
+          disabled={isSubmitting || !user?.user?.id}
           name='rating'
-          render={({ field }) => <Rating size='lg' color={'#FFC522'} {...field} />}
+          render={({ field }) => (
+            <Rating disabled={isSubmitting || !user?.user?.id} size='lg' color={'#FFC522'} {...field} />
+          )}
         />
       </Flex>
       <Controller
         control={control}
         name='comment'
+        disabled={isSubmitting || !user?.user?.id}
         render={({ field }) => (
           <Textarea
             placeholder='Chúng tôi hoan nghênh mọi góp ý của bạn.'
             flex={1}
+            disabled={isSubmitting || !user?.user?.id}
             {...field}
             error={errors.comment?.message}
           />
@@ -83,7 +88,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
         size='sm'
         fullWidth
         loading={isSubmitting}
-        disabled={isSubmitting || watch('comment') === '' || watch('rating') === 0}
+        disabled={isSubmitting || watch('comment') === '' || watch('rating') === 0 || !user?.user?.id}
         title='Đánh giá'
       />
     </form>

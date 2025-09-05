@@ -103,12 +103,12 @@ export default function MegaMenu({ categories }: any) {
                             style={{ objectFit: 'cover' }}
                             className='h-16 w-16'
                           />
-                          <Stack>
-                            <Text size='sm' fw={700} className='font-medium text-gray-800 dark:text-dark-text'>
+                          <Stack gap={2}>
+                            <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
                               {category.name}
                             </Text>
-                            <Text size='sm' fw={700} className='font-medium text-gray-800 dark:text-dark-text'>
-                              {category.name}
+                            <Text size='sm' fw={700} className='flex items-center text-gray-800 dark:text-dark-text'>
+                              Số lượng: {category.product.length || 0}
                             </Text>
                           </Stack>
                         </Link>
@@ -119,7 +119,7 @@ export default function MegaMenu({ categories }: any) {
                   <Box>
                     <Box className='flex items-center justify-between'>
                       <Title className='font-quicksand text-xl font-bold' my={'md'}>
-                        Bán chạy nhất {item.title}{' '}
+                        Bán chạy nhất {item.title}
                       </Title>
                       <Link
                         href='/thuc-don?loai=san-pham-ban-chay'
@@ -158,9 +158,9 @@ export default function MegaMenu({ categories }: any) {
                                     style={{ objectFit: 'cover' }}
                                   />
                                 </Paper>
-                                <h3 className='line-clamp-2 text-sm font-medium text-gray-800 dark:text-dark-text'>
+                                <Text size='sm' className='line-clamp-2 text-gray-800 dark:text-dark-text'>
                                   {product.description}
-                                </h3>
+                                </Text>
                               </Stack>
                             </Link>
                           </GridCol>

@@ -28,7 +28,7 @@ export default async function RoleManagementPage({
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
       <Title mb='xs' className='font-quicksand'>
-        Quản lý danh mục
+        Quản lý quyền, vai trò
       </Title>
       <Group justify='space-between' mb='md'>
         <Text fw={500} size='md'>

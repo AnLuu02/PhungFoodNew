@@ -95,7 +95,7 @@ export default function Page() {
           NotifyError('Cảnh báo!', `${result.message}`);
         }
       }
-    } catch (error) {
+    } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };

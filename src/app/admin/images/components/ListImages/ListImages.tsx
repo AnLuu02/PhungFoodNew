@@ -42,8 +42,8 @@ export default function ListImage({ currentPage, s, limit }: { currentPage: stri
                 ...image
               };
             }
-          } catch (error) {
-            console.error('Lỗi khi tải ảnh:', error);
+          } catch {
+            console.error('Lỗi khi tải ảnh:');
             return image.url;
           }
         })
