@@ -16,7 +16,9 @@ export default function ProductDetails({ product }: { product: any }) {
           alt='Hình ảnh sản phẩm'
           className='object-cover'
         />
-        <Title order={2}>{product.name}</Title>
+        <Title order={2} className='font-quicksand'>
+          {product.name}
+        </Title>
         <Group>
           <Badge size='lg' variant='filled'>
             {formatPriceLocaleVi(product.price)}

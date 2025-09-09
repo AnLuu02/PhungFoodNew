@@ -37,7 +37,7 @@ import { api } from '~/trpc/react';
 const InvoiceToPrint = dynamic(() => import('~/components/InvoceToPrint'), {
   ssr: false
 });
-const SearchLocal = dynamic(() => import('~/components/Search/SearchLocal'), {
+const SearchLocal = dynamic(() => import('~/components/Search/search-local'), {
   ssr: false
 });
 export default function MyOrderPageClient({ data }: any) {

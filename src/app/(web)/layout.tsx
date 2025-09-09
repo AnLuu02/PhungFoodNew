@@ -1,6 +1,6 @@
 import { Box } from '@mantine/core';
 import FloatingWidget from '~/components/FloatingWidget';
-import FooterWeb from '~/components/Web/Footer/FooterWeb';
+import FooterWeb from '~/components/Web/Footer/footer-web';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import ServiceComponent from '~/components/Web/Home/components/ServiceComponent';
 import { GlobalModal } from '~/contexts/GlobalModal';

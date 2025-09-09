@@ -12,6 +12,8 @@ export default {
         // mainColor: '#00BFA6',
         subColor: '#f8c144',
         mainColor: '#008b4b',
+        // subColor: '#7048e8',
+        // mainColor: '#228be6',
         dark: {
           background: '#1e1e1e',
           // card: '#2a2a2a',
@@ -30,9 +32,6 @@ export default {
         md: '0.5rem',
         lg: '1rem',
         xl: '2rem'
-      },
-      backgroundImage: {
-        // mainColor: 'linear-gradient(135deg, #228be6 0%, #7048e8 100%)'
       },
       fontFamily: {
         sans: ['var(--font-quicksand)', ...fontFamily.sans],
@@ -82,11 +81,11 @@ export default {
       }
     },
     screens: {
-      xs: '576px', // 30em
-      sm: '768px', // 48em
-      md: '992px', // 64em
-      lg: '1200px', // 74em
-      xl: '1440px' // 90em
+      xs: '576px',
+      sm: '768px',
+      md: '992px',
+      lg: '1200px',
+      xl: '1440px'
     }
   },
   plugins: []

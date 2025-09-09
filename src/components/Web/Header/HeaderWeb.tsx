@@ -8,17 +8,18 @@ import Header2 from './section/header2';
 import Header3 from './section/header3';
 
 const HeaderWeb = async () => {
-  const user = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
   const [restaurant, categories, subCategories, notifications] = await Promise.all([
     api.Restaurant.getOne(),
     api.Category.getAll(),
     api.SubCategory.getAll(),
-    user?.user?.email ? api.Notification.getFilter({ s: user?.user?.email || '' }) : undefined
+    user?.email ? api.Notification.getFilter({ s: user?.email || '' }) : undefined
   ]);
 
   return (
     <>
-      {user?.user?.email && <NotificationDialog data={notifications} user={user?.user} />}
+      {user?.email && <NotificationDialog data={notifications} user={user} />}
       <Header1 restaurant={restaurant} />
       <Header2 subCategories={subCategories} />
       <Header3 categories={categories} subCategories={subCategories} />

@@ -86,7 +86,7 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
           availableQuantity: formData.quantity,
           pointUser: Number(formData.pointUser) || 0
         });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {

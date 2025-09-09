@@ -1,9 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -13,8 +13,9 @@ import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/zod/EnumTyp
 import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
-const DateTimePicker = dynamic(() => import('@mantine/dates').then(m => m.DateTimePicker), { ssr: false });
-const AddressSection = dynamic(() => import('../components/AdressSection'), { ssr: false });
+import AddressSection from '../components/AdressSection';
+// const DateTimePicker = dynamic(() => import('@mantine/dates').then(m => m.DateTimePicker), { ssr: false });
+// const AddressSection = dynamic(() => import('../components/AdressSection'), { ssr: false });
 
 export default function Page() {
   const router = useRouter();
@@ -88,7 +89,7 @@ export default function Page() {
             fullAddress: fullAddress
           }
         });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess('Thành công!', `${result.message}`);
           router.push('/dang-nhap');
         } else {
@@ -103,13 +104,7 @@ export default function Page() {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Center my={'md'}>
-        <Card
-          w={{ base: '100%', sm: '50vw', md: '40vw', lg: '33vw' }}
-          h={'max-content'}
-          py={'xs'}
-          shadow='xl'
-          radius={'md'}
-        >
+        <Card w={{ base: '100%', sm: '50vw', md: '40vw' }} h={'max-content'} py={'xs'} shadow='xl' radius={'md'}>
           <Card.Section p='md'>
             <Grid w={'100%'}>
               <GridCol span={12} className='flex justify-center'>
@@ -134,9 +129,9 @@ export default function Page() {
                   render={({ field }) => (
                     <TextInput
                       leftSection={<IconMail size={18} stroke={1.5} />}
-                      placeholder='E-mail, số điện thoại'
+                      placeholder='E-mail'
                       type='email'
-                      label='E-mail, số điện thoại'
+                      label='E-mail'
                       {...field}
                       error={errors.email?.message}
                     />

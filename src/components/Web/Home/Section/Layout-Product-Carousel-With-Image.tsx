@@ -16,7 +16,7 @@ import {
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button';
-import TabsPanelCarousel from './TabsPenel';
+import TabsPanelCarousel from './TabsPanel';
 const LayoutProductCarouselWithImage = ({
   title,
   content,

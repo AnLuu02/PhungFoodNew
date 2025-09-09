@@ -3,6 +3,7 @@ import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const materialRouter = createTRPCRouter({
   find: publicProcedure
@@ -77,7 +78,7 @@ export const materialRouter = createTRPCRouter({
         category: z.string().min(1, 'Danh mục không được để trống')
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingMaterial = await ctx.db.material.findMany({
         where: {
           tag: input.tag
@@ -97,15 +98,15 @@ export const materialRouter = createTRPCRouter({
           await CreateTagVi({ old: [], new: material });
         }
         return {
-          success: true,
+          code: 'OK',
           message: 'Tạo nguyên liệu thành công.',
-          record: material
+          data: material
         };
       }
       return {
-        success: false,
+        code: 'CONFLICT',
         message: 'Nguyên liệu đã tồn tại. ',
-        record: existingMaterial
+        data: existingMaterial
       };
     }),
   createMany: publicProcedure
@@ -121,7 +122,7 @@ export const materialRouter = createTRPCRouter({
         )
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingTags = await ctx.db.material.findMany({
         where: {
           tag: { in: input.data.map(item => item.tag) }
@@ -133,7 +134,7 @@ export const materialRouter = createTRPCRouter({
       const newData = input.data.filter(item => !existingTagSet.has(item.tag));
 
       if (newData.length === 0) {
-        return { success: false, message: 'Tất cả nguyên liệu đều đã tồn tại.' };
+        return { code: 'CONFLICT', message: 'Tất cả nguyên liệu đều đã tồn tại.', data: [] };
       }
 
       const materials = await ctx.db.material.createMany({
@@ -147,9 +148,9 @@ export const materialRouter = createTRPCRouter({
       }
 
       return {
-        success: true,
+        code: 'OK',
         message: `Đã thêm ${materials.count} nguyên liệu mới.`,
-        record: newData
+        data: newData
       };
     }),
 
@@ -159,15 +160,14 @@ export const materialRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const material = await ctx.db.material.delete({
         where: { id: input.id }
       });
-
       return {
-        success: true,
+        code: 'OK',
         message: 'Xóa nguyên liệu thành công.',
-        record: material
+        data: material
       };
     }),
 
@@ -216,7 +216,7 @@ export const materialRouter = createTRPCRouter({
         description: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingMaterial: any = await ctx.db.material.findFirst({
         where: {
           tag: input.tag
@@ -243,16 +243,16 @@ export const materialRouter = createTRPCRouter({
           await CreateTagVi({ old: material, new: updateMaterial });
         }
         return {
-          success: true,
+          code: 'OK',
           message: 'Cập nhật nguyên liệu thành công.',
-          record: material
+          data: material
         };
       }
 
       return {
-        success: false,
+        code: 'CONFLICT',
         message: 'Nguyên liệu đã tồn tại. ',
-        record: existingMaterial
+        data: existingMaterial
       };
     })
 });

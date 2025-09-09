@@ -16,7 +16,7 @@ export default function UpdateCategory({
   categoryId: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = categoryId ? api.Category.getOne.useQuery({ s: categoryId || '' }) : { data: null };
+  const queryResult = api.Category.getOne.useQuery({ s: categoryId || '' }, { enabled: !!categoryId });
   const { data } = queryResult;
 
   const {
@@ -64,11 +64,11 @@ export default function UpdateCategory({
         }
       });
       setOpened(false);
-      if (!result.success) {
-        NotifyError(result.message);
+      if (result.code === 'OK') {
+        NotifySuccess(result.message);
         return;
       }
-      NotifySuccess(result.message);
+      NotifyError(result.message);
     }
   };
 

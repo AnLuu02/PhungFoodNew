@@ -22,7 +22,11 @@ export function CreateProductButton() {
         fullScreen
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo sản phẩm</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo sản phẩm
+          </Title>
+        }
       >
         <CreateProduct setOpened={setOpened} />
       </Modal>
@@ -43,7 +47,11 @@ export function UpdateProductButton({ id }: { id: string }) {
         size={'80%'}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật danh mục</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật danh mục
+          </Title>
+        }
       >
         <UpdateProduct productId={id.toString()} setOpened={setOpened} />
       </Modal>

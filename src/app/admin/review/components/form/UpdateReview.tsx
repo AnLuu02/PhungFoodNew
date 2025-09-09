@@ -15,7 +15,7 @@ export default function UpdateReview({
   reviewId: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = reviewId ? api.Review.getFilter.useQuery({ s: reviewId || '' }) : { data: null };
+  const queryResult = api.Review.getFilter.useQuery({ s: reviewId || '' }, { enabled: !!reviewId });
   const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: 'ADMIN' });
   const { data: users } = api.User.getAll.useQuery();
   const { data } = queryResult;
@@ -60,7 +60,7 @@ export default function UpdateReview({
       if (reviewId) {
         const updatedFormData = { ...formData };
         const result = await updateMutation.mutateAsync({ reviewId, ...updatedFormData });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         }

@@ -2,7 +2,7 @@
 import { Box, Button } from '@mantine/core';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import InvoicePrintTemplate from '~/components/Template/InvoicePrintTemplate';
+import InvoicePrintTemplate from '~/components/Template/invoice-print-template';
 import { api } from '~/trpc/react';
 
 export default function InvoiceToPrint({ id }: any) {

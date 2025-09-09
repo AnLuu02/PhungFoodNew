@@ -7,8 +7,10 @@ import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { LocalEntityType, LocalImageType, LocalOrderStatus, LocalProductStatus } from '~/lib/zod/EnumType';
 
+import { redis } from '~/lib/cache/redis';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { createCaller } from '../root';
 
 export async function updateSales(ctx: any, status: OrderStatus, productId: string, soldQuantity: number) {
@@ -290,21 +292,22 @@ export const productRouter = createTRPCRouter({
         materials: z.array(z.string()).optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      redis.del('get-data-home-page');
       const existed = await ctx.db.product.findFirst({
         where: { tag: input.tag }
       });
 
       if (existed) {
         return {
-          success: false,
+          code: 'CONFLICT',
           message: 'Sản phẩm đã tồn tại. Hãy thử lại.',
-          record: existed
+          data: existed
         };
       }
 
       let thumbnailURL: string | null = null;
-      if (input.thumbnail) {
+      if (input.thumbnail && input.thumbnail.fileName !== '') {
         const buffer = Buffer.from(input.thumbnail.base64, 'base64');
         const blob = await put(input.thumbnail.fileName, buffer, { access: 'public', token: tokenBlobVercel });
         thumbnailURL = blob.url;
@@ -360,9 +363,9 @@ export const productRouter = createTRPCRouter({
       }
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo sản phẩm thành công.',
-        record: product
+        data: product
       };
     }),
 
@@ -396,7 +399,7 @@ export const productRouter = createTRPCRouter({
         materials: z.array(z.string()).optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingProduct = await ctx.db.product.findUnique({
         where: { id: input.id },
         include: { images: true }
@@ -404,9 +407,9 @@ export const productRouter = createTRPCRouter({
 
       if (!existingProduct) {
         return {
-          success: false,
+          code: 'NOT_FOUND',
           message: 'Sản phẩm không tồn tại.',
-          record: null
+          data: null
         };
       }
 
@@ -416,9 +419,9 @@ export const productRouter = createTRPCRouter({
 
       if (duplicateProduct) {
         return {
-          success: false,
+          code: 'CONFLICT',
           message: 'Sản phẩm đã tồn tại.',
-          record: duplicateProduct
+          data: duplicateProduct
         };
       }
 
@@ -547,9 +550,9 @@ export const productRouter = createTRPCRouter({
       }
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Cập nhật sản phẩm thành công.',
-        record: updatedProduct
+        data: updatedProduct
       };
     }),
 
@@ -559,7 +562,7 @@ export const productRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const product = await ctx.db.product.findFirst({
         where: { id: input.id },
         include: { images: true }
@@ -572,9 +575,9 @@ export const productRouter = createTRPCRouter({
         include: { images: true }
       });
       return {
-        success: true,
+        code: 'OK',
         message: 'Xóa sản phẩm thành công.',
-        record: productDeleted
+        data: productDeleted
       };
     }),
   getFilter: publicProcedure

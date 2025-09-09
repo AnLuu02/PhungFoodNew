@@ -44,14 +44,21 @@ export default function NotificationDialog({ data, user }: any) {
     setNotifications(notifications.map(n => (n.id === id ? { ...n, isRead: true } : n)));
   };
 
-  const deleteMutation = api.Notification.deleteFilter.useMutation();
+  const deleteMutation = api.Notification.deleteFilter.useMutation({
+    onSuccess: result => {
+      NotifySuccess('Thành công!', result.message);
+    },
+    onError: error => {
+      NotifyError('Thất bại!', error.message);
+    }
+  });
   const deleteNotification = async (id: string) => {
     try {
       const res = await deleteMutation.mutateAsync({
         where: { id }
       });
 
-      if (res.success) {
+      if (res.code === 'OK') {
         setNotifications(notifications.filter(n => n.id !== id));
         setSelectedIds(selectedIds.filter(selectedId => selectedId !== id));
         NotifySuccess('Thành công!', res.message);
@@ -71,7 +78,7 @@ export default function NotificationDialog({ data, user }: any) {
         }
       });
 
-      if (res.success) {
+      if (res.code === 'OK') {
         setNotifications(notifications.filter(n => !selectedIds.includes(n.id)));
         setSelectedIds([]);
         NotifySuccess('Thành công!', res.message);
@@ -93,7 +100,7 @@ export default function NotificationDialog({ data, user }: any) {
         }
       });
 
-      if (res.success) {
+      if (res.code === 'OK') {
         setNotifications([]);
         setSelectedIds([]);
         NotifySuccess('Thành công!', res.message);

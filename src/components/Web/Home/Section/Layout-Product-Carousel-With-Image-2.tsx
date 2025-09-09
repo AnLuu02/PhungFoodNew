@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import BButton from '~/components/Button';
 import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '../../Card/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '../../Card/product-card-carousel-vertical';
 
 type ITypeProduct = {
   title?: string;
@@ -124,14 +124,14 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                         slideGap={20}
                         h={320}
                         containScroll='trimSnaps'
-                        align='center'
+                        align='start'
                         withControls={false}
                         slidesToScroll={1}
                       >
                         {products?.length ? (
                           products?.map((item: any, index: number) => (
                             <Carousel.Slide key={index} h={320}>
-                              <ProductCardCarouselVertical product={item} />
+                              <ProductCardCarouselVertical data={item} />
                             </Carousel.Slide>
                           ))
                         ) : (

@@ -1,12 +1,13 @@
 'use client';
 import { Badge, Box, Button, Card, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconEye, IconHeart } from '@tabler/icons-react';
+import { IconEye } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
+import ToggleLikeButton from '~/components/ButtonToggleLike';
 import { breakpoints } from '~/constants';
 import { useModal } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
@@ -22,11 +23,18 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   }, [data]);
 
   return (
-    <Card radius={'md'} withBorder className='bg-white dark:bg-dark-card' p={0} pos={'relative'}>
+    <Card
+      radius={'md'}
+      withBorder
+      className='group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:shadow-lg dark:bg-dark-card'
+      padding={0}
+      pos={'relative'}
+    >
       <Flex h={162} gap={'xs'}>
-        <Box w={'36%'} className='group/item relative flex cursor-pointer items-center justify-center' pos={'relative'}>
+        <Box w={'36%'} className='group relative flex cursor-pointer items-center justify-center' pos={'relative'}>
           <Image
             loading='lazy'
+            id={`productImage-${data?.id}`}
             src={getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             fill
             style={{ objectFit: 'cover' }}
@@ -40,10 +48,10 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             h='100%'
             w='100%'
             className={clsx(
-              'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover/item:visible lg:invisible'
+              'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover:visible lg:invisible'
             )}
           >
-            <Button.Group className='group-hover/item:animate-fadeTop'>
+            <Button.Group className='group-hover:animate-fadeTop'>
               <Tooltip label='Xem nhanh'>
                 {isMobile ? (
                   <Button
@@ -72,17 +80,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                   </Button>
                 )}
               </Tooltip>
-              <Tooltip label='Thêm vào yêu thích'>
-                <Button
-                  size='xs'
-                  p={5}
-                  className={clsx('text-mainColor hover:text-subColor')}
-                  w={'max-content'}
-                  variant='default'
-                >
-                  <IconHeart />
-                </Button>
-              </Tooltip>
+              <ToggleLikeButton data={data} />
             </Button.Group>
           </Box>
         </Box>

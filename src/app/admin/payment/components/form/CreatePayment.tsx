@@ -41,7 +41,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
           ...formData,
           tag: createTag(formData.name)
         });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {

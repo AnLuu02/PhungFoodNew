@@ -20,7 +20,11 @@ export function CreateNotificationButton() {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo danh mục</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo danh mục
+          </Title>
+        }
       >
         <CreateNotification setOpened={setOpened} />
       </Modal>
@@ -39,7 +43,11 @@ export function UpdateNotificationButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật danh mục</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật danh mục
+          </Title>
+        }
       >
         <UpdateNotification notificationId={id.toString()} setOpened={setOpened} />
       </Modal>

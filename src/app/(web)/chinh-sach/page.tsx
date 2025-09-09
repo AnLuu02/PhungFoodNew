@@ -65,7 +65,7 @@ export default function StorePolicyPage() {
 
   return (
     <Box className='min-h-screen'>
-      <Title order={1} ta='center' fw={900} c={MAIN_GREEN} mb={24} size={36}>
+      <Title order={1} ta='center' fw={900} c={MAIN_GREEN} mb={24} size={36} className='font-quicksand'>
         Chính Sách & Hỗ Trợ Khách Hàng
       </Title>
       <Text ta='center' c={'dimmed'} size='lg' mb={32}>

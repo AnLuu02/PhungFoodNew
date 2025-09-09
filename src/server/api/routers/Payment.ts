@@ -4,6 +4,7 @@ import { seedPayments } from '~/lib/data-test/seed';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const paymentRouter = createTRPCRouter({
   find: publicProcedure
@@ -54,7 +55,7 @@ export const paymentRouter = createTRPCRouter({
         isDefault: z.boolean().default(false)
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingpayment = await ctx.db.payment.findMany({
         where: {
           tag: input.tag
@@ -75,15 +76,15 @@ export const paymentRouter = createTRPCRouter({
           await CreateTagVi({ old: [], new: payment });
         }
         return {
-          success: true,
+          code: 'OK',
           message: 'Tạo thành công.',
-          record: payment
+          data: payment
         };
       }
       return {
-        success: false,
+        code: 'CONFLICT',
         message: 'Phương thức đã tồn tại. Hãy thử lại.',
-        record: existingpayment
+        data: existingpayment
       };
     }),
   delete: publicProcedure
@@ -92,12 +93,16 @@ export const paymentRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const payment = await ctx.db.payment.delete({
         where: { id: input.id }
       });
 
-      return payment;
+      return {
+        code: 'OK',
+        message: 'Xóa phương thức thanh cong.',
+        data: payment
+      };
     }),
 
   getOne: publicProcedure
@@ -139,7 +144,7 @@ export const paymentRouter = createTRPCRouter({
         isDefault: z.boolean().default(false)
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingpayment: any = await ctx.db.payment.findMany({
         where: {
           id: input.paymentId
@@ -166,16 +171,16 @@ export const paymentRouter = createTRPCRouter({
           await CreateTagVi({ old: payment, new: updatePayment });
         }
         return {
-          success: true,
+          code: 'OK',
           message: 'Cập nhật thành công.',
-          record: payment
+          data: payment
         };
       }
 
       return {
-        success: false,
+        code: 'CONFLICT',
         message: 'Phương thức đã tồn tại. Hãy thử lại.',
-        record: existingpayment
+        data: existingpayment
       };
     })
 });

@@ -2,7 +2,7 @@ import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
-import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import SearchInput from '~/components/Search/search-input';
 import { api } from '~/trpc/server';
 import { CreateManyPermissionButton, CreatePermissionButton } from './components/Button';
 import TablePermission from './components/Table/TablePermissions';
@@ -38,7 +38,7 @@ export default async function PermissionManagementPage({
           Số lượng bản ghi: {totalData && totalData?.length}
         </Text>
         <Group>
-          <SearchQueryParams />
+          <SearchInput />
           {user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && (
             <>
               <CreatePermissionButton />

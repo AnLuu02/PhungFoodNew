@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const favouriteFoodRouter = createTRPCRouter({
   create: publicProcedure
@@ -10,7 +11,7 @@ export const favouriteFoodRouter = createTRPCRouter({
         userId: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const favourite_food = await ctx.db.favouriteFood.create({
         data: {
           productId: input.productId,
@@ -18,9 +19,9 @@ export const favouriteFoodRouter = createTRPCRouter({
         }
       });
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo  thành công.',
-        record: favourite_food
+        data: favourite_food
       };
     }),
   delete: publicProcedure
@@ -30,7 +31,7 @@ export const favouriteFoodRouter = createTRPCRouter({
         productId: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const { userId, productId } = input;
       const favourite_food = await ctx.db.favouriteFood.delete({
         where: {
@@ -42,9 +43,9 @@ export const favouriteFoodRouter = createTRPCRouter({
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Xóa  thành công.',
-        record: favourite_food
+        data: favourite_food
       };
     }),
 

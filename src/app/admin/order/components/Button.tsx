@@ -37,7 +37,11 @@ export function CreateOrderButton() {
         size={'100%'}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo hóa đơn</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo hóa đơn
+          </Title>
+        }
       >
         <CreateOrder setOpened={setOpened} />
       </Modal>
@@ -137,7 +141,9 @@ export function UpdateOrderButton({ id }: { id: string }) {
         onClose={() => setOpened(false)}
         title={
           <Group gap={'xs'}>
-            <Title order={2}>Cập nhật hóa đơn</Title>
+            <Title order={2} className='font-quicksand'>
+              Cập nhật hóa đơn
+            </Title>
 
             <InvoiceToPrint id={id} />
           </Group>
@@ -245,7 +251,7 @@ export function SendMessageAllUserAdvanced() {
 
     await fetch('/api/notify', {
       method: 'POST',
-      body: JSON.stringify({ email: emails, data: data?.record || [] }),
+      body: JSON.stringify({ email: emails, data: data?.data || [] }),
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -389,7 +395,7 @@ export function SendMessageOrderButton({ userId, email }: any) {
 
     await fetch('/api/notify', {
       method: 'POST',
-      body: JSON.stringify({ email, data: data?.record || [] }),
+      body: JSON.stringify({ email, data: data?.data || [] }),
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -409,7 +415,11 @@ export function SendMessageOrderButton({ userId, email }: any) {
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={3}>Gửi thông báo cho khách hàng</Title>}
+        title={
+          <Title order={3} className='font-quicksand'>
+            Gửi thông báo cho khách hàng
+          </Title>
+        }
         position='right'
         size='md'
       >

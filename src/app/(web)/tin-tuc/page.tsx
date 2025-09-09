@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
-import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import SearchInput from '~/components/Search/search-input';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/server';
@@ -111,7 +111,7 @@ const News = async ({
         top={{ base: 0, sm: TOP_POSITION_STICKY, md: TOP_POSITION_STICKY, lg: TOP_POSITION_STICKY }}
       >
         <Stack gap={'md'}>
-          <SearchQueryParams />
+          <SearchInput />
           <Paper withBorder className='h-[max-content] rounded-md border-mainColor' mb={20}>
             <Box className='rounded-t-md bg-mainColor p-2 text-white'>
               <Text size='sm' fw={700}>

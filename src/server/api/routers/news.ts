@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
 const parser = new Parser();
-const urlRss = 'https://vnexpress.net/rss/tin-moi-nhat.rss';
+const urlRss = 'https://ngoisao.vnexpress.net/rss/am-thuc.rss';
 
 export const newsRouter = createTRPCRouter({
   fetchNews: publicProcedure
@@ -24,7 +24,6 @@ export const newsRouter = createTRPCRouter({
           : feed.items;
 
         const pagedItems = filteredItems.slice(skip, skip + take);
-
         return {
           pagination: {
             totalPage: Math.ceil(filteredItems.length / take),
@@ -35,7 +34,8 @@ export const newsRouter = createTRPCRouter({
             link: item.link,
             pubDate: item.pubDate,
             description: item.contentSnippet || '',
-            image: item.enclosure?.url || ''
+            image: item.enclosure?.url || '',
+            categories: item.categories
           }))
         };
       } catch (error) {

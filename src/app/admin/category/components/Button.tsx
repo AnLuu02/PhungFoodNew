@@ -27,7 +27,7 @@ export function CreateManyCategoryButton() {
   };
   const importMutation = api.Category.createMany.useMutation({
     onSuccess: data => {
-      if (data.success) {
+      if (data.code === 'OK') {
         NotifySuccess(data.message);
         utils.Category.invalidate();
       } else {
@@ -129,7 +129,11 @@ export function CreateManyCategoryButton() {
           setOpened(false);
           resetFileInput();
         }}
-        title={<Title order={3}>Xem trước dữ liệu</Title>}
+        title={
+          <Title order={3} className='font-quicksand'>
+            Xem trước dữ liệu
+          </Title>
+        }
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
           <Box className={`tableAdmin w-full overflow-x-auto`}>
@@ -188,7 +192,11 @@ export function CreateCategoryButton() {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo danh mục</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo danh mục
+          </Title>
+        }
       >
         <CreateCategory setOpened={setOpened} />
       </Modal>
@@ -206,7 +214,11 @@ export function UpdateCategoryButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật danh mục</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật danh mục
+          </Title>
+        }
       >
         <UpdateCategory categoryId={id.toString()} setOpened={setOpened} />
       </Modal>

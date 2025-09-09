@@ -1,7 +1,7 @@
 'use client';
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateUser from './form/CreateUser';
@@ -19,7 +19,11 @@ export function CreateUserButton() {
         size='100%'
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo người dùng</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo người dùng
+          </Title>
+        }
       >
         <CreateUser setOpened={setOpened} />
       </Modal>
@@ -27,8 +31,21 @@ export function CreateUserButton() {
   );
 }
 
-export function UpdateUserButton({ email, isClient = false }: { email: string; isClient?: boolean }) {
+export function UpdateUserButton({
+  email,
+  openedFromClient,
+  setOpenedFromClient
+}: {
+  email: string;
+  openedFromClient?: boolean;
+  setOpenedFromClient?: any;
+}) {
   const [opened, setOpened] = useState(false);
+  useEffect(() => {
+    if (openedFromClient) {
+      setOpened(true);
+    }
+  }, [openedFromClient]);
   return (
     <>
       <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
@@ -38,8 +55,15 @@ export function UpdateUserButton({ email, isClient = false }: { email: string; i
         closeOnClickOutside={false}
         size='100%'
         opened={opened}
-        onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật người dùng</Title>}
+        onClose={() => {
+          setOpened(false);
+          openedFromClient && setOpenedFromClient?.(false);
+        }}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật người dùng
+          </Title>
+        }
       >
         <UpdateUser email={email.toString()} setOpened={setOpened} />
       </Modal>

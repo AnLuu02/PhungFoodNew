@@ -39,7 +39,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollPrev}
-            className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
+            className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
             disabled={!prevBtnEnabled}
           >
             <IconChevronLeft size={'xs'} />
@@ -48,7 +48,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollNext}
-            className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
+            className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
             disabled={!nextBtnEnabled}
           >
             <IconChevronRight size={'xs'} />
@@ -74,7 +74,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
           slideSize={{ base: '50%', xl: '11.11%', sm: '25%', md: '20%' }}
           slideGap='4px'
           h={200}
-          align='center'
+          align='start'
           withControls={false}
           withIndicators
           slidesToScroll={1}

@@ -11,11 +11,11 @@ export type User = {
 
   image?: Image;
 
-  roleId?: string;
+  roleId: string;
 
   password: string;
 
-  phone?: string;
+  phone: string;
 
   address?: Address;
 

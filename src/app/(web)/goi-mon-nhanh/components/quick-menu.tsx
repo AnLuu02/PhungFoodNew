@@ -3,7 +3,7 @@ import { Flex, Grid, GridCol } from '@mantine/core';
 import Link from 'next/link';
 import BButton from '~/components/Button';
 import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '~/components/Web/Card/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '~/components/Web/Card/product-card-carousel-vertical';
 
 const QuickMenu = ({ categories, products, searchParams }: any) => {
   return (
@@ -26,7 +26,7 @@ const QuickMenu = ({ categories, products, searchParams }: any) => {
           {products?.length > 0 ? (
             products.map((item: any, index: number) => (
               <GridCol span={{ base: 12, md: 6, lg: 3 }} key={`${item.id}+${index}`}>
-                <ProductCardCarouselVertical product={item} key={index} />
+                <ProductCardCarouselVertical data={item} key={index} />
               </GridCol>
             ))
           ) : (

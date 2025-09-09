@@ -127,7 +127,7 @@ export default function BannerManagement({ data }: any) {
         ? await mutationUpdate.mutateAsync({ ...payload, id: data.id })
         : await mutationCreate.mutateAsync(payload);
 
-      result.success ? NotifySuccess(result.message) : NotifyError(result.message);
+      result.code === 'OK' ? NotifySuccess(result.message) : NotifyError(result.message);
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }

@@ -49,7 +49,9 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
               <IconPackage style={{ width: 24, height: 24 }} />
             </ThemeIcon>
             <Box>
-              <Title order={2}>Thông tin đơn hàng</Title>
+              <Title order={2} className='font-quicksand'>
+                Thông tin đơn hàng
+              </Title>
               <Text size='sm' c={'dimmed'}>
                 #{data?.id}
               </Text>

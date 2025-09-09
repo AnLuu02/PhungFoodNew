@@ -53,7 +53,7 @@ export default function UpdatePermission({
   const onSubmit: SubmitHandler<PermissionFormData> = async data => {
     try {
       const result = await mutation.mutateAsync(data);
-      if (result.success) {
+      if (result.code === 'OK') {
         NotifySuccess(result.message);
         setOpened(false);
       } else {

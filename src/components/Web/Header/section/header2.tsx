@@ -1,7 +1,7 @@
 import { Badge, Box, Center, Flex, Group } from '@mantine/core';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
-import SearchComponentClient from '~/components/Search/SearchClient';
+import SearchComponentClient from '~/components/Search/search-client';
 import CartButton from '../components/gio-hang-button';
 import PromotionButton from '../components/khuyen-mai';
 import LikeButton from '../components/yeu-thich';

@@ -17,7 +17,7 @@ export default function UpdatePayment({
   paymentId: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = paymentId ? api.Payment.getOne.useQuery({ s: paymentId || '' }) : { data: null };
+  const queryResult = api.Payment.getOne.useQuery({ s: paymentId || '' }, { enabled: !!paymentId });
   const { data } = queryResult;
 
   const {
@@ -64,7 +64,7 @@ export default function UpdatePayment({
       if (paymentId) {
         const updatedFormData = { ...formData, tag: createTag(formData.name) };
         const result = await updateMutation.mutateAsync({ paymentId, ...updatedFormData });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {

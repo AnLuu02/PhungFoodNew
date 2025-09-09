@@ -2,7 +2,7 @@ import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
-import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import SearchInput from '~/components/Search/search-input';
 import { api } from '~/trpc/server';
 import { CreateManyRoleButton, CreateRoleButton } from './components/Button';
 import TableRole from './components/Table/TableCategory';
@@ -28,14 +28,14 @@ export default async function RoleManagementPage({
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
       <Title mb='xs' className='font-quicksand'>
-        Quản lý quyền, vai trò
+        Quản vai trò
       </Title>
       <Group justify='space-between' mb='md'>
         <Text fw={500} size='md'>
           Số lượng bản ghi: {totalData && totalData?.length}
         </Text>
         <Group>
-          <SearchQueryParams />{' '}
+          <SearchInput />{' '}
           {user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && (
             <>
               <CreateRoleButton />

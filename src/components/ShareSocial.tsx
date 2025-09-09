@@ -8,6 +8,7 @@ import {
   IconBrandWhatsapp,
   IconMail
 } from '@tabler/icons-react';
+import { NotifySuccess } from '~/lib/func-handler/toast';
 
 function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' | 'detail' }) {
   const DOMAIN = process.env.NEXT_PUBLIC_BASE_URL_DEPLOY || 'http://localhost:3000';
@@ -72,13 +73,12 @@ function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' 
           </Tooltip>
         ))}
 
-        {/* Copy link */}
         <Button
           size='xs'
           variant='subtle'
           onClick={() => {
             navigator.clipboard.writeText(currentUrl);
-            alert('Đã copy link!');
+            NotifySuccess('Thành công!', 'Sao chép link thành công.');
           }}
           title='Copy link'
           className='transition-transform hover:scale-105 hover:text-mainColor'

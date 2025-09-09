@@ -5,7 +5,7 @@ import { IconSearch } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useRef } from 'react';
 
-export default function SearchQueryParams() {
+export default function SearchInput() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();

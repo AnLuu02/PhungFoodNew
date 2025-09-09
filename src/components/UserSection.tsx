@@ -1,11 +1,10 @@
 'use client';
 
-import { Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
+import { Avatar, Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconChevronDown, IconLogout, IconShoppingBag, IconUser, IconUserCircle } from '@tabler/icons-react';
 import clsx from 'clsx';
 import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
@@ -42,7 +41,13 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
           <Flex justify={'space-between'} align={'center'} gap={7} w={'100%'}>
             <Group gap={7}>
               <Box pos={'relative'} w={30} h={30} className='overflow-hidden rounded-full'>
-                <Image src={user?.user?.image || ''} alt='User avatar' fill style={{ objectFit: 'cover' }} />
+                <Avatar
+                  radius={'xl'}
+                  size={30}
+                  src={user?.user?.image}
+                  alt='User avatar'
+                  style={{ objectFit: 'cover' }}
+                />
               </Box>
               <Box className={clsx('text-left', responsive && 'hidden sm:block')}>
                 <Text fw={700} size='sm' lh={1} className='text-black'>

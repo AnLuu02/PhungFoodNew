@@ -135,7 +135,11 @@ export default function VoiceSearchModal() {
           resetRecording();
           audioChunksRef.current = [];
         }}
-        title={<Title order={3}>Tìm kiếm bằng giọng nói</Title>}
+        title={
+          <Title order={3} className='font-quicksand'>
+            Tìm kiếm bằng giọng nói
+          </Title>
+        }
         size='md'
         radius={'lg'}
         padding='lg'

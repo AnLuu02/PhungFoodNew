@@ -123,7 +123,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             value: item.value
           }))
         });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {

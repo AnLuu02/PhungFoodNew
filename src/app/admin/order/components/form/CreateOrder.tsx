@@ -130,7 +130,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
             }
           } as any
         });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {
@@ -359,7 +359,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
               />
             </Grid.Col>
 
-            <Title order={3} mt='lg'>
+            <Title order={3} mt='lg' className='font-quicksand'>
               Món ăn
             </Title>
             {orderItemFields.map((field, index) => (

@@ -35,7 +35,12 @@ export default function UpdateOrder({
   orderId: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data, isLoading } = orderId ? api.Order.getOne.useQuery({ s: orderId || '' }) : {};
+  const { data, isLoading } = api.Order.getOne.useQuery(
+    { s: orderId || '' },
+    {
+      enabled: !!orderId
+    }
+  );
   const {
     control,
     handleSubmit,
@@ -175,7 +180,7 @@ export default function UpdateOrder({
         orderId: orderId
       });
 
-      if (result.success) {
+      if (result.code === 'OK') {
         NotifySuccess(result.message);
         setOpened(false);
       } else {
@@ -398,7 +403,7 @@ export default function UpdateOrder({
               />
             </GridCol>
 
-            <Title order={3} mt='lg'>
+            <Title order={3} mt='lg' className='font-quicksand'>
               Món ăn
             </Title>
             {orderItemFields.map((field, index) => (

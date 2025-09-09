@@ -1,7 +1,7 @@
 'use client';
 import { Box, Flex, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import { useMemo, useState } from 'react';
-import TabsPanelCarouselSimple from './TabsPenelSimple';
+import TabsPanelCarouselSimple from './TabsPanelSimple';
 export type IDataCategory = {
   anVat: any;
   monChinh: any;

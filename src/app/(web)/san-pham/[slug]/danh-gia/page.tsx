@@ -4,8 +4,8 @@ import { Box, Divider, Grid, GridCol, ScrollAreaAutosize } from '@mantine/core';
 import { useMemo } from 'react';
 import { CommentsForm } from '~/components/Comments/CommentsForm';
 import { CommentsList } from '~/components/Comments/CommentsList';
-import CardSkeleton from '~/components/Web/Card/CardSkeleton';
-import ProductCardCarouselVertical from '~/components/Web/Card/ProductCardCarouselVertical';
+import CardSkeleton from '~/components/Web/Card/card-skeleton';
+import ProductCardCarouselVertical from '~/components/Web/Card/product-card-carousel-vertical';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { api } from '~/trpc/react';
 import RatingStatistics from '../components/RatingStatistics';
@@ -33,7 +33,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           className='h-fit'
           span={{ base: 12, sm: 5, md: 3, lg: 3 }}
         >
-          {isLoading ? <CardSkeleton /> : <ProductCardCarouselVertical product={product} />}
+          {isLoading ? <CardSkeleton /> : <ProductCardCarouselVertical data={product} />}
         </GridCol>
         <GridCol
           pos={{ base: 'relative', md: 'sticky' }}

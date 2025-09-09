@@ -4,7 +4,7 @@ export const recipes = [
     title: 'Cách làm mandu (thịt, kim chi, rau củ)',
     description: 'Mandu – bánh bao Hàn Quốc làm với nhân thịt, kim chi hoặc rau củ, dễ làm tại nhà và thơm ngon.',
     image: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80',
-    videoUrl: 'https://www.youtube.com/watch?v=I1qHVVbYG8Y', // YouTube xem được
+    videoUrl: 'https://www.youtube.com/watch?v=I1qHVVbYG8Y',
     duration: '25 phút',
     difficulty: 'Trung bình',
     servings: '4 người',

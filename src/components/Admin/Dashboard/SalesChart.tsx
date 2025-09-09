@@ -19,7 +19,7 @@ export default function SalesChart() {
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder className='h-full'>
       <Group justify='space-between' mb='md'>
-        <Title order={4} className='text-gray-800'>
+        <Title order={4} className='font-quicksand text-gray-800'>
           Doanh số bán hàng
         </Title>
         <SegmentedControl

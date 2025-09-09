@@ -25,7 +25,9 @@ export default function SettingPageClient({ data }: { data: { restaurant: any; b
         }}
       >
         <Flex justify='space-between' mb='lg' align={'center'}>
-          <Title order={2}>Cài đặt</Title>
+          <Title order={2} className='font-quicksand'>
+            Cài đặt
+          </Title>
           <Tabs.List>
             <Tabs.Tab value='general' leftSection={<IconBuildingStore size={16} />}>
               Tổng quan

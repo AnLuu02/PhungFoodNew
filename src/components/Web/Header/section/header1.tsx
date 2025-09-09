@@ -5,7 +5,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconClock, IconWorld } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
-import ControlModeTheme from '../../../ControlModeTheme';
+import ButtonControlModeTheme from '../../../ButtonControlModeTheme';
 import UserSection from '../../../UserSection';
 
 export const Header1 = ({ restaurant }: any) => {
@@ -96,7 +96,7 @@ export const Header1 = ({ restaurant }: any) => {
             top={{ base: 8, sm: 15, md: 0, lg: 8 }}
             className='sm:hidden md:block'
           >
-            <ControlModeTheme />
+            <ButtonControlModeTheme />
           </Box>
         </Group>
       </Group>

@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic';
 import React from 'react';
-import ModalDetailVoucher from '~/components/Modals/ModalVoucherDetail';
 import { useModal } from './ModalContext';
 
 const ModalProductComments = dynamic(() => import('~/components/Modals/ModalProductComments'));
@@ -13,7 +12,9 @@ const ModalOrderDetails = dynamic(() => import('~/components/Modals/ModalOrderDe
 
 const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'));
 
-const ModalRecipe = dynamic(() => import('~/components/Modals/ModalRecipe').then(m => m.ModalRecipe), { ssr: false });
+const ModalRecipe = dynamic(() => import('~/components/Modals/ModalRecipe'));
+
+const ModalDetailVoucher = dynamic(() => import('~/components/Modals/ModalVoucherDetail'));
 
 export const GlobalModal: React.FC = () => {
   const { opened, modalType, modalData, closeModal } = useModal();
@@ -26,7 +27,6 @@ export const GlobalModal: React.FC = () => {
         onClose={closeModal}
         data={modalData}
       />
-      <ModalRecipe type={modalType} opened={opened && modalType === 'recipe'} onClose={closeModal} data={modalData} />
       <ModalDetailVoucher
         type={modalType}
         opened={opened && modalType === 'voucher'}
@@ -51,6 +51,7 @@ export const GlobalModal: React.FC = () => {
         onClose={closeModal}
         data={modalData}
       />
+      <ModalRecipe type={modalType} opened={opened && modalType === 'recipe'} onClose={closeModal} data={modalData} />
     </>
   );
 };

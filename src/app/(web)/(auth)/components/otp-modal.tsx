@@ -61,7 +61,7 @@ export default function OtpModal({ opened, onClose, email }: OtpModalProps) {
   };
 
   const requestPasswordReset = api.User.requestPasswordReset.useMutation({
-    onSuccess: data => {
+    onSuccess: () => {
       setLoadingOtp(false);
       NotifySuccess('Mã OTP đã được gửi lại!');
       setTimeLeft(60);

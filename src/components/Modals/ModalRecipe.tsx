@@ -34,12 +34,9 @@ import { useState } from 'react';
 import { ModalProps } from '~/types/modal';
 import { Recipe } from '../../types/recipe';
 
-export function ModalRecipe({ type, opened, onClose, data }: ModalProps<Recipe>) {
+export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<Recipe>) {
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
-
-  if (!data) return null;
-
   const toggleStep = (stepNumber: number) => {
     setCheckedSteps(prev => (prev.includes(stepNumber) ? prev.filter(s => s !== stepNumber) : [...prev, stepNumber]));
   };
@@ -60,18 +57,16 @@ export function ModalRecipe({ type, opened, onClose, data }: ModalProps<Recipe>)
       padding={0}
       centered
       scrollAreaComponent={ScrollAreaAutosize}
-      className='animate-fadeBottom'
+      className='animate-fadeBottom overflow-y-hidden'
       transitionProps={{ transition: 'fade-down', duration: 200 }}
       pos={'relative'}
     >
       {type === 'recipe' && (
         <Box className='flex h-full flex-col'>
-          {/* Hero Section */}
           <Box className='relative h-[70vh] overflow-hidden'>
             <Image src={data.image || '/placeholder.svg'} alt={data.title} className='h-full w-full object-cover' />
             <Box className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20' />
 
-            {/* Close Button */}
             <Button
               variant='ghost'
               size='icon'
@@ -80,8 +75,6 @@ export function ModalRecipe({ type, opened, onClose, data }: ModalProps<Recipe>)
             >
               <IconX className='h-5 w-5' />
             </Button>
-
-            {/* Hero Content */}
             <Box className='absolute bottom-0 left-0 right-0 p-8 text-white'>
               <Box className='mb-4 flex items-center gap-3'>
                 <Badge className='border-0 bg-emerald-600 text-white hover:bg-emerald-700'>{data.category}</Badge>
@@ -120,10 +113,8 @@ export function ModalRecipe({ type, opened, onClose, data }: ModalProps<Recipe>)
             </Box>
           </Box>
 
-          {/* Content */}
           <Box className='flex-1 overflow-y-auto'>
             <Box className='p-8'>
-              {/* Action Buttons */}
               <Box className='mb-8 flex flex-wrap gap-3'>
                 <Button
                   variant='outline'

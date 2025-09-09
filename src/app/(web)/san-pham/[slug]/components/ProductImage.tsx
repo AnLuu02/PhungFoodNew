@@ -1,12 +1,11 @@
 'use client';
 
-import { Carousel } from '@mantine/carousel';
-import { Box, Flex, Modal, Paper, Text, UnstyledButton } from '@mantine/core';
+import { Box, Flex, Paper, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
+import { ImageZoomModal } from '~/components/Modals/ModalZoomImage';
 import ShareSocials from '~/components/ShareSocial';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 export default function ProductImage({
@@ -23,15 +22,12 @@ export default function ProductImage({
   const isDesktop = useMediaQuery(`(min-width:1024px)`);
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showFullImage, setShowFullImage] = useState(false);
-  const [activeSlide, setActiveSlide] = useState(0);
-
   const allImages = [{ url: thumbnail }, ...gallery];
-  const displayImages = allImages.slice(0, !isDesktop ? 3 : 4);
+  const displayImages = allImages.slice(1, !isDesktop ? 3 : 4);
   const remainingCount = allImages.length > (!isDesktop ? 3 : 4) ? allImages.length - (!isDesktop ? 3 : 4) : 0;
 
   const handleThumbnailClick = (image: string, index: number) => {
     setCurrentImage(image);
-    setActiveSlide(index);
     setShowFullImage(true);
   };
 
@@ -67,32 +63,42 @@ export default function ProductImage({
                 item.url === currentImage && 'border-2 border-mainColor'
               )}
             >
-              {index === (!isDesktop ? 2 : 3) && remainingCount > 0 ? (
-                <Box pos='relative'>
-                  <Image
-                    loading='lazy'
-                    src={item.url || '/images/jpg/empty-300x240.jpg'}
-                    width={110}
-                    height={110}
-                    className='object-cover'
-                    alt='Thumbnail'
-                  />
-                  <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
-                    +{remainingCount}
-                  </Box>
-                </Box>
-              ) : (
+              <Box pos='relative'>
                 <Image
                   loading='lazy'
                   src={item.url || '/images/jpg/empty-300x240.jpg'}
                   width={110}
-                  className='object-cover'
                   height={110}
+                  className='object-cover'
                   alt='Thumbnail'
                 />
-              )}
+              </Box>
             </Paper>
           ))}
+          {remainingCount > 0 && (
+            <Paper
+              onClick={() => handleThumbnailClick(currentImage, remainingCount - 1)}
+              w={110}
+              h={110}
+              withBorder
+              radius='md'
+              className={clsx('cursor-pointer overflow-hidden')}
+            >
+              <Box pos='relative'>
+                <Image
+                  loading='lazy'
+                  src={currentImage || '/images/jpg/empty-300x240.jpg'}
+                  width={110}
+                  height={110}
+                  className='object-cover'
+                  alt='Thumbnail'
+                />
+                <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
+                  +{remainingCount}
+                </Box>
+              </Box>
+            </Paper>
+          )}
         </Flex>
 
         <Paper radius='md' className='relative mb-4' w='100%'>
@@ -100,7 +106,7 @@ export default function ProductImage({
             <Box pos={'relative'} w={'100%'} mih={{ base: 300, md: 470 }} className='overflow-hidden'>
               <Image
                 loading='lazy'
-                src={currentImage || thumbnail}
+                src={thumbnail || currentImage}
                 alt='Product'
                 className='cursor-pointer rounded-md object-cover'
                 fill
@@ -135,70 +141,18 @@ export default function ProductImage({
           </Flex>
         ) : null}
       </Flex>
-
-      <Modal
-        size='xl'
-        opened={showFullImage}
+      <ImageZoomModal
+        activeImage={{
+          src: currentImage,
+          alt: 'Ảnh chính sản phẩm'
+        }}
+        gallery={[{ url: thumbnail }, ...gallery].map(item => ({
+          src: item.url,
+          alt: 'Ảnh mô tả sản phẩm'
+        }))}
+        isOpen={showFullImage}
         onClose={() => setShowFullImage(false)}
-        centered
-        padding={0}
-        className='overflow-hidden'
-      >
-        <Carousel
-          loop
-          withControls
-          initialSlide={activeSlide}
-          onSlideChange={index => setActiveSlide(index)}
-          nextControlIcon={<IconChevronRight size={30} />}
-          nextControlProps={{ style: { backgroundColor: 'gray', color: 'white' } }}
-          previousControlProps={{ style: { backgroundColor: 'gray', color: 'white' } }}
-          previousControlIcon={<IconChevronLeft size={30} />}
-          styles={{
-            control: {
-              '&[data-inactive]': {
-                opacity: 0,
-                cursor: 'default'
-              }
-            }
-          }}
-        >
-          {allImages.map((item, index) => (
-            <Carousel.Slide key={index}>
-              <Flex align='center' justify='center' h={{ base: 300, md: 400 }} w={{ base: 300, md: 600 }}>
-                <Image
-                  loading='lazy'
-                  src={item.url || '/images/jpg/empty-300x240.jpg'}
-                  className='object-contain'
-                  fill
-                  alt='Product Image'
-                />
-              </Flex>
-            </Carousel.Slide>
-          ))}
-        </Carousel>
-
-        <Flex gap='xs' p='md' wrap='wrap' justify='center'>
-          {allImages.map((item, index) => (
-            <UnstyledButton
-              key={index}
-              onClick={() => setActiveSlide(index)}
-              className={clsx(
-                'overflow-hidden rounded-[4px] transition duration-200',
-                activeSlide === index ? 'border-2 border-mainColor opacity-100' : 'border-none opacity-60'
-              )}
-            >
-              <Image
-                loading='lazy'
-                src={item.url || '/images/jpg/empty-300x240.jpg'}
-                width={60}
-                height={60}
-                alt=''
-                className='object-cover'
-              />
-            </UnstyledButton>
-          ))}
-        </Flex>
-      </Modal>
+      />
     </>
   );
 }

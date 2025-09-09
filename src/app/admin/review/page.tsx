@@ -2,7 +2,7 @@ import { Card, Group, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
-import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import SearchInput from '~/components/Search/search-input';
 import { api } from '~/trpc/server';
 import { CreateReviewButton } from './components/Button';
 import TableReview from './components/Table/TableReview';
@@ -33,7 +33,7 @@ export default async function ReviewManagementPage({
       <Group justify='space-between' mb='md'>
         <Text fw={500}>Số lượng bản ghi: {totalData && totalData?.length}</Text>
         <Group>
-          <SearchQueryParams />
+          <SearchInput />
           {user?.user?.role === 'ADMIN' ||
             (user?.user?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN && <CreateReviewButton />)}
         </Group>

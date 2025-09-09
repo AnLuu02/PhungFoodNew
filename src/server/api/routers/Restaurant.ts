@@ -6,6 +6,7 @@ import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/h
 import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const restaurantRouter = createTRPCRouter({
   getOne: publicProcedure.query(async ({ ctx }) => {
@@ -44,7 +45,7 @@ export const restaurantRouter = createTRPCRouter({
         closedHours: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       let imgURL: string | undefined;
 
       if (input?.logo?.fileName) {
@@ -74,7 +75,7 @@ export const restaurantRouter = createTRPCRouter({
         }
       });
 
-      return { success: true, message: 'Cập nhật nhà hàng thành công.', record: res };
+      return { code: 'OK', message: 'Cập nhật nhà hàng thành công.', data: res };
     }),
 
   update: publicProcedure
@@ -104,7 +105,7 @@ export const restaurantRouter = createTRPCRouter({
         closedHours: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.restaurant.findFirst({
         where: {
           id: input.id
@@ -161,7 +162,13 @@ export const restaurantRouter = createTRPCRouter({
           }
         });
         await redis.del('getOne-restaurant');
-        return { success: true, message: 'Cập nhật nhà hàng thành công.', record: updatedRestaurant };
+        return { code: 'OK', message: 'Cập nhật nhà hàng thành công.', data: updatedRestaurant };
+      } else {
+        return {
+          code: 'ERROR',
+          message: 'Nhà hàng khong tìm thấy.',
+          data: null
+        };
       }
     }),
   getOneBanner: publicProcedure
@@ -200,7 +207,7 @@ export const restaurantRouter = createTRPCRouter({
         endDate: z.date().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       let bannerURLs: any;
       let galleryURLs: any;
 
@@ -250,9 +257,9 @@ export const restaurantRouter = createTRPCRouter({
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo banner thành công.',
-        record: banner
+        data: banner
       };
     }),
   updateBanner: publicProcedure
@@ -280,7 +287,7 @@ export const restaurantRouter = createTRPCRouter({
         isActive: z.boolean()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingBanner = await ctx.db.banner.findUnique({
         where: { id: input.id },
         include: { images: true }
@@ -347,9 +354,9 @@ export const restaurantRouter = createTRPCRouter({
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Cập nhật banner thành công.',
-        record: updated
+        data: updated
       };
     })
 });

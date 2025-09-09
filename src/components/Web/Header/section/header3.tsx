@@ -6,10 +6,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
-import ControlModeTheme from '../../../ControlModeTheme';
-import DynamicCartButton from '../components/DynamicCartButton';
-import NavigationHeader from '../components/NavigationHeader';
-import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
+import ButtonControlModeTheme from '../../../ButtonControlModeTheme';
+import DynamicCartButton from '../components/dynamic-cart-button';
+import NavigationHeader from '../components/navigation-header';
+import NavigationHeaderMobile from '../components/navigation-header-mobile';
 
 const Header3 = ({ categories, subCategories }: any) => {
   const [imgMounted, setImgMounted] = useState(false);
@@ -38,7 +38,7 @@ const Header3 = ({ categories, subCategories }: any) => {
         </Box>
         <Box className='hidden sm:order-2 sm:block md:hidden'>
           <Button variant='outline' className='border-mainColor text-mainColor' radius={'xl'} leftSection='Chế độ'>
-            <ControlModeTheme />
+            <ButtonControlModeTheme />
           </Button>
         </Box>
         <Box className='sm:order-1' p={0} m={0}>

@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { addressSchema } from '~/lib/zod/zodShcemaForm';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const deliveryRouter = createTRPCRouter({
   create: publicProcedure
@@ -17,7 +18,7 @@ export const deliveryRouter = createTRPCRouter({
         orderId: z.string().min(1, 'Order ID là bắt buộc')
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const delivery = await ctx.db.delivery.create({
         data: {
           name: input.name,
@@ -36,9 +37,9 @@ export const deliveryRouter = createTRPCRouter({
         }
       });
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo danh mục thành công.',
-        record: delivery
+        data: delivery
       };
     }),
   update: publicProcedure
@@ -54,7 +55,7 @@ export const deliveryRouter = createTRPCRouter({
         orderId: z.string().min(1, 'Order ID là bắt buộc')
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingDelivery: any = await ctx.db.delivery.findFirst({
         where: {
           id: input.id
@@ -79,16 +80,16 @@ export const deliveryRouter = createTRPCRouter({
           }
         });
         return {
-          success: true,
+          code: 'OK',
           message: 'Cập nhật danh mục thành công.',
-          record: delivery
+          data: delivery
         };
       }
 
       return {
-        success: false,
+        code: 'CONFLICT',
         message: 'Danh mục đã tồn tại. Hãy thử lại.',
-        record: existingDelivery
+        data: existingDelivery
       };
     })
 });

@@ -51,7 +51,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<S
             base64: base64 as string
           }
         });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {

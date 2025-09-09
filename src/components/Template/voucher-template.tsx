@@ -10,7 +10,7 @@ import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/to
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
-import DateVoucher from '../Modals/DateVoucher';
+import DateVoucher from '../date-voucher';
 type VoucherTemplateProps = {
   voucher: any;
   products?: any;

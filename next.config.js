@@ -22,17 +22,17 @@ const config = {
       },
       {
         protocol: 'https',
+        hostname: 'i1-ngoisao.vnecdn.net',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
         hostname: 'foodish-api.com',
         pathname: '/**'
       },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
-        pathname: '/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'raw.githubusercontent.com',
         pathname: '/**'
       },
       {

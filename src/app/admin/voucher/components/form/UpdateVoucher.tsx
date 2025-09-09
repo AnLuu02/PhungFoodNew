@@ -32,9 +32,12 @@ export default function UpdateVoucher({
 }) {
   const [applyForLevel, setApplyForLevel] = useState(false);
 
-  const { data: queryResult } = voucherId
-    ? api.Voucher.getOne.useQuery({ voucherId: voucherId || '' })
-    : { data: null };
+  const { data: queryResult } = api.Voucher.getOne.useQuery(
+    { voucherId: voucherId || '' },
+    {
+      enabled: !!voucherId
+    }
+  );
 
   const {
     control,
@@ -110,7 +113,7 @@ export default function UpdateVoucher({
           ...formData
         }
       });
-      if (result.success) {
+      if (result.code === 'OK') {
         NotifySuccess(result.message);
         setOpened(false);
       } else {

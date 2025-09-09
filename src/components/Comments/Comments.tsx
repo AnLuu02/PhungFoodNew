@@ -9,7 +9,7 @@ import { CommentsList } from './CommentsList';
 
 function Comments({ product, max_height_scroll }: any) {
   const { data, isLoading } = api.Review.getFilter.useQuery({ s: product?.id });
-  const review = data ?? [];
+  const reviews = data ?? [];
 
   return (
     <>
@@ -23,7 +23,7 @@ function Comments({ product, max_height_scroll }: any) {
             className='mb-4 max-h-[60vh] overflow-y-auto'
           >
             <Box mr={'xs'}>
-              <CommentsList data={review} />
+              <CommentsList data={reviews} />
             </Box>
           </ScrollAreaAutosize>
         </>

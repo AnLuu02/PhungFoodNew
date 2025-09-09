@@ -42,11 +42,11 @@ export const confirmDelete = ({
     onConfirm: async () => {
       try {
         const result = await mutationDelete.mutateAsync({ ...id });
-        if (result?.success || result?.id) {
+        if (result?.code == 'OK' || result?.id) {
           await callback?.();
           NotifySuccess('Thành công!', success);
         } else {
-          NotifyError('Thất bại!');
+          NotifyError('Thất bại!', error);
         }
       } catch (e) {
         NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.' + e);

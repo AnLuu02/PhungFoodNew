@@ -17,7 +17,7 @@ export default function UpdateNotification({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data: user, isLoading: isLoadingUser } = api.User.getAll.useQuery();
-  const queryResult = notificationId ? api.Notification.getOne.useQuery({ s: notificationId || '' }) : { data: null };
+  const queryResult = api.Notification.getOne.useQuery({ s: notificationId || '' }, { enabled: !!notificationId });
   const { data } = queryResult;
   const {
     control,
@@ -69,11 +69,11 @@ export default function UpdateNotification({
         }
       });
       setOpened(false);
-      if (!result.success) {
-        NotifyError(result.message);
+      if (result.code === 'OK') {
+        NotifySuccess(result.message);
         return;
       }
-      NotifySuccess(result.message);
+      NotifyError(result.message);
     }
   };
   const selectedUserIds = watch('userId', []);

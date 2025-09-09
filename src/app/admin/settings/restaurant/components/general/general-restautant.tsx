@@ -133,7 +133,7 @@ export default function GeneralSettingsManagement({ data }: { data: any }) {
     let result = formData.id
       ? await updateMutation.mutateAsync(formDataWithImageUrlAsString)
       : await createMutation.mutateAsync(formDataWithImageUrlAsString);
-    if (result?.success) {
+    if (result?.code === 'OK') {
       NotifySuccess(result.message);
     } else {
       NotifyError(result?.message);

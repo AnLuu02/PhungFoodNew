@@ -180,7 +180,7 @@ export default function CheckoutClient({ order }: { order: any }) {
         orderId: order.id
       });
 
-      if (resp.success) {
+      if (resp.code === 'OK') {
         try {
           const response = await fetch('/api/vnpay/create_payment_url', {
             method: 'POST',

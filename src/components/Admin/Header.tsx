@@ -5,8 +5,8 @@ import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import ControlModeTheme from '../ControlModeTheme';
-import { GlobalSearch } from '../Search/GlobalSearch';
+import ButtonControlModeTheme from '../ButtonControlModeTheme';
+import { GlobalSearch } from '../Search/global-search';
 
 export default function Header() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
@@ -36,7 +36,7 @@ export default function Header() {
 
       <Flex align={'center'} gap={'md'} className='hidden lg:flex'>
         <GlobalSearch width={{ base: '100%', sm: 350, md: 300, lg: 400 }} />
-        <ControlModeTheme />
+        <ButtonControlModeTheme />
         <Menu
           width={260}
           position='bottom-end'

@@ -58,8 +58,6 @@ export function OrderStatusPage({
   const displayMessage = customMessage || currentStatus.message;
 
   const handleBackToHome = onBackToHome || onReturnHome || (() => {});
-  console.log(currentStatus);
-
   return (
     <Card
       withBorder

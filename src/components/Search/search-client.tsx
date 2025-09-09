@@ -25,7 +25,7 @@ import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
-import VoiceSearchModal from './SearchAsVoice';
+import VoiceSearchModal from './search-as-voice';
 
 export default function SearchComponentClient({ subCategories }: any) {
   const router = useRouter();
@@ -100,7 +100,13 @@ export default function SearchComponentClient({ subCategories }: any) {
                       color='gray.6'
                       key={index}
                       size='sm'
-                      className='cursor-pointer hover:opacity-70'
+                      styles={{
+                        label: {
+                          textTransform: 'lowercase',
+                          fontSize: 12
+                        }
+                      }}
+                      className='cursor-pointer duration-200 hover:border-mainColor/20 hover:bg-mainColor/10 hover:text-mainColor'
                     >
                       {item.name}
                     </Badge>

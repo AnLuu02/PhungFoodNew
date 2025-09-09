@@ -84,9 +84,9 @@ export default function BannerSection({ banner }: any) {
             { icon: '🍽️', title: 'Gọi món', href: '/thuc-don' },
             { icon: '👨‍🍳', title: 'Tư vấn món ăn' },
             { icon: '📍', title: 'Tìm nhà hàng', href: '/lien-he' },
-            { icon: '🧾', title: 'Đơn hàng của tôi', href: '/don-hang-cua-toi' },
+            { icon: '🛒', title: 'Đơn hàng', href: '/don-hang-cua-toi' },
             { icon: '📜', title: 'Chính sách', href: '/chinh-sach' },
-            { icon: '⭐', title: 'Đánh giá & phản hồi' }
+            { icon: '⭐', title: 'Đánh giá' }
           ].map((service, index) => (
             <Link href={service.href || ''} key={index}>
               <Paper

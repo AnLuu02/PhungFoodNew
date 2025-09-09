@@ -30,27 +30,24 @@ export const CommentsForm = ({ product }: { product: any }) => {
     }
   });
   const mutation = api.Review.create.useMutation({
-    onSuccess: () => {
+    onSuccess: result => {
       utils.Review.invalidate();
       utils.Product.invalidate();
+      reset();
+      NotifySuccess(result.message);
+    },
+    onError: error => {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.', error.message);
     }
   });
   const utils = api.useUtils();
   const onSubmit: SubmitHandler<Review> = async formData => {
-    try {
-      if (!user?.user?.id) {
-        NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
-        return;
-      }
-      setValue('productId', product.id);
-      const result = await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
-      if (result.success) {
-        reset();
-        NotifySuccess(result.message);
-      }
-    } catch {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    if (!user?.user?.id) {
+      NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
+      return;
     }
+    setValue('productId', product.id);
+    await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='w-full space-y-4'>

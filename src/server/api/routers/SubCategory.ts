@@ -6,6 +6,7 @@ import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/h
 import { LocalEntityType, LocalImageType, LocalProductStatus } from '~/lib/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const subCategoryRouter = createTRPCRouter({
   find: publicProcedure
@@ -105,7 +106,7 @@ export const subCategoryRouter = createTRPCRouter({
           .optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.subCategory.findFirst({
         where: {
           AND: [{ name: input.name }, { categoryId: input.categoryId }]
@@ -115,9 +116,9 @@ export const subCategoryRouter = createTRPCRouter({
 
       if (existed) {
         return {
-          success: false,
+          code: 'CONFLICT',
           message: 'Danh mục đã tồn tại. Hãy thử lại.',
-          record: existed
+          data: existed
         };
       }
 
@@ -152,9 +153,9 @@ export const subCategoryRouter = createTRPCRouter({
       }
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo danh mục thành công.',
-        record: subCategory
+        data: subCategory
       };
     }),
   update: publicProcedure
@@ -173,7 +174,7 @@ export const subCategoryRouter = createTRPCRouter({
           .optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.subCategory.findFirst({
         where: {
           AND: [{ id: input.id }, { categoryId: input.categoryId }]
@@ -236,16 +237,16 @@ export const subCategoryRouter = createTRPCRouter({
           await CreateTagVi({ old: subCategory, new: updateSubCategory });
         }
         return {
-          success: true,
+          code: 'OK',
           message: 'Cập nhật danh mục thành công.',
-          record: subCategory
+          data: subCategory
         };
       }
 
       return {
-        success: false,
+        code: 'CONFLICT',
         message: 'Danh mục đã tồn tại. Hãy thử lại.',
-        record: existed
+        data: existed
       };
     }),
   delete: publicProcedure
@@ -254,7 +255,7 @@ export const subCategoryRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const subCategory = await ctx.db.subCategory.findUnique({
         where: { id: input.id },
         include: { image: true }
@@ -269,9 +270,9 @@ export const subCategoryRouter = createTRPCRouter({
       const deletedSubCategory = await ctx.db.subCategory.delete({ where: { id: input.id } });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Đã xóa SubCategory và ảnh liên quan.',
-        record: deletedSubCategory
+        data: deletedSubCategory
       };
     }),
 

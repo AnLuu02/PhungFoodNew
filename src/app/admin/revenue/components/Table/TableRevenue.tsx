@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Group, Table, Text } from '@mantine/core';
-import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import SearchInput from '~/components/Search/search-input';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 
 export default function TableRevenue({ revenues, s }: { revenues: any; s: string }) {
@@ -15,7 +15,7 @@ export default function TableRevenue({ revenues, s }: { revenues: any; s: string
         <Group justify='space-between' mt='md' w='100%'>
           <Text fw={500}>Số lượng bản ghi: {currentItems?.length || 0}</Text>
           <Group>
-            <SearchQueryParams />
+            <SearchInput />
           </Group>
         </Group>
       </Group>

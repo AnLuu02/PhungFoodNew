@@ -1,15 +1,18 @@
 import { Container, Space } from '@mantine/core';
+import { recipes } from '~/lib/data-test/recipe';
 import { formatDateViVN } from '~/lib/func-handler/Format';
+import { ConsumerCard } from '../Card/card-overview-vertical';
+import ProductCardCarouselVertical from '../Card/product-card-carousel-vertical';
 import BannerSection from './Section/Banner-section';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
 import ReusablePromoBanner from './Section/Layout-Banner-Promotion';
-import LayoutCarouselSimple from './Section/Layout-Carousel-Simple';
+import LayoutGridCarouselOnly from './Section/Layout-Grid-Carousel-Only';
 import FastMenuSection from './Section/Layout-Menu-Quick-Sale-Order';
-import LayoutProductCarouselOnly from './Section/Layout-Product-Carousel-Only';
 import LayoutProductCarouselWithImage from './Section/Layout-Product-Carousel-With-Image';
 import LayoutProductCarouselWithImage2 from './Section/Layout-Product-Carousel-With-Image-2';
 import LayoutPromotion from './Section/Layout-Promotion';
 import LayoutGrid3Col from './Section/LayoutGrid3Col';
+import RecipeCard from './components/recip-card';
 
 const HomeWeb = ({
   data
@@ -22,6 +25,7 @@ const HomeWeb = ({
     productBestSaler: any;
     productNew: any;
     productHot: any;
+    news: any;
   };
 }) => {
   return (
@@ -94,14 +98,30 @@ const HomeWeb = ({
 
         {data.productHot?.products?.length > 0 && (
           <>
-            <LayoutProductCarouselOnly title='Sản phẩm nổi bật' data={data.productHot?.products} />
+            <LayoutGridCarouselOnly
+              title='Sản phẩm nổi bật'
+              data={data.productHot?.products}
+              navigation={{
+                href: '/thuc-don?loai=san-pham-hot',
+                label: 'Xem tất cả'
+              }}
+              CardElement={<ProductCardCarouselVertical />}
+            />
             <Space h='xl' />
           </>
         )}
 
         {data.productNew?.products?.length > 0 && (
           <>
-            <LayoutProductCarouselOnly title='Sản phẩm mới' data={data.productNew?.products} />
+            <LayoutGridCarouselOnly
+              title='Sản phẩm mới'
+              data={data.productNew?.products}
+              navigation={{
+                href: '/thuc-don?loai=san-pham-moi',
+                label: 'Xem tất cả'
+              }}
+              CardElement={<ProductCardCarouselVertical />}
+            />
             <Space h='xl' />
           </>
         )}
@@ -136,7 +156,36 @@ const HomeWeb = ({
         )}
 
         <>
-          <LayoutCarouselSimple />
+          <LayoutGridCarouselOnly
+            title='Video hướng dẫn'
+            data={recipes}
+            configs={{
+              slideSize: { base: '100%', sm: '50%', md: '25%' },
+              h: 'max-content'
+            }}
+            navigation={{
+              href: '/huong-dan',
+              label: 'Xem tất cả'
+            }}
+            CardElement={<RecipeCard />}
+          />
+          <Space h='xl' className='hidden sm:block' />
+        </>
+
+        <>
+          <LayoutGridCarouselOnly
+            title='Tin tức tiêu dùng'
+            data={data.news?.news}
+            configs={{
+              slideSize: { base: '100%', sm: '50%', md: '25%' },
+              h: 'max-content'
+            }}
+            navigation={{
+              href: '/tin-tuc',
+              label: 'Xem tất cả'
+            }}
+            CardElement={<ConsumerCard />}
+          />
           <Space h='xl' className='hidden sm:block' />
         </>
 

@@ -11,6 +11,7 @@ import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/
 import { addressSchema } from '~/lib/zod/zodShcemaForm';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const userRouter = createTRPCRouter({
   find: publicProcedure
@@ -103,7 +104,7 @@ export const userRouter = createTRPCRouter({
         roleId: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const [existed, roles] = await ctx.db.$transaction([
         ctx.db.user.findFirst({
           where: {
@@ -127,9 +128,9 @@ export const userRouter = createTRPCRouter({
       }
       if (existed) {
         return {
-          success: false,
+          code: 'CONFLICT',
           message: 'Người dùng đã tồn tại. Hãy thử lại.',
-          record: existed
+          data: existed
         };
       }
 
@@ -186,9 +187,9 @@ export const userRouter = createTRPCRouter({
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo người dùng thành công.',
-        record: user
+        data: user
       };
     }),
   update: publicProcedure
@@ -210,10 +211,10 @@ export const userRouter = createTRPCRouter({
         address: addressSchema,
         pointUser: z.number().default(0),
         level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
-        roleId: z.string().optional()
+        roleId: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.user.findFirst({
         where: {
           email: { equals: input.email }
@@ -236,6 +237,11 @@ export const userRouter = createTRPCRouter({
           imgURL = oldImage?.url;
         }
       }
+
+      if (oldImage && oldImage.url && input.image?.fileName === '') {
+        await del(oldImage.url, { token: tokenBlobVercel });
+      }
+
       if (!existed || existed.id === input.id) {
         const user = await ctx.db.user.update({
           where: { id: input.id },
@@ -280,21 +286,26 @@ export const userRouter = createTRPCRouter({
                     }
                   }
                 }
-              : undefined
+              : oldImage?.url && input.image?.fileName === ''
+                ? {
+                    delete: {
+                      id: oldImage?.id || ''
+                    }
+                  }
+                : undefined
           }
         });
-
         return {
-          success: true,
+          code: 'OK',
           message: 'Cập nhật Người dùng thành công.',
-          record: user
+          data: user
         };
       }
 
       return {
-        success: false,
+        code: 'CONFLICT',
         message: 'Người dùng đã tồn tại. Hãy thử lại.',
-        record: existed
+        data: existed
       };
     }),
   delete: publicProcedure
@@ -303,7 +314,7 @@ export const userRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const user = await ctx.db.user.findUnique({
         where: { id: input.id },
         include: { image: true }
@@ -318,9 +329,9 @@ export const userRouter = createTRPCRouter({
       const deleteduser = await ctx.db.user.delete({ where: { id: input.id } });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Đã xóa user và ảnh liên quan.',
-        record: deleteduser
+        data: deleteduser
       };
     }),
   getFilter: publicProcedure
@@ -380,7 +391,7 @@ export const userRouter = createTRPCRouter({
 
   requestPasswordReset: publicProcedure
     .input(z.object({ email: z.string().email() }))
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const user = await ctx.db.user.findUnique({
         where: { email: input.email }
       });
@@ -401,7 +412,7 @@ export const userRouter = createTRPCRouter({
       const emailContent = getOtpEmail(otp);
       await sendEmail(input.email, 'Mã OTP đặt lại mật khẩu', emailContent);
 
-      return { message: 'Mã OTP đã được gửi qua email!' };
+      return { code: 'OK', message: 'Mã OTP đã được gửi qua email!', data: user };
     }),
 
   resetPassword: publicProcedure
@@ -412,7 +423,7 @@ export const userRouter = createTRPCRouter({
         token: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const user = await ctx.db.user.findUnique({
         where: {
           email: input.email
@@ -439,7 +450,7 @@ export const userRouter = createTRPCRouter({
         }
       });
 
-      return { message: 'Mật khẩu đã được đặt lại.' };
+      return { code: 'OK', message: 'Mật khẩu đã được đặt lại.', data: user };
     }),
 
   verifyOtp: publicProcedure
@@ -449,7 +460,7 @@ export const userRouter = createTRPCRouter({
         otp: z.string().length(6)
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const user = await ctx.db.user.findFirst({
         where: {
           email: input.email,
@@ -462,6 +473,6 @@ export const userRouter = createTRPCRouter({
         throw new Error('OTP không hợp lệ hoặc đã hết hạn.');
       }
 
-      return { sussess: true };
+      return { code: 'OK', message: 'OTP hợp lệ.', data: user };
     })
 });

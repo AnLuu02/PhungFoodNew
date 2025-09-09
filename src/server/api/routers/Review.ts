@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const reviewRouter = createTRPCRouter({
   find: publicProcedure
@@ -122,7 +123,7 @@ export const reviewRouter = createTRPCRouter({
         comment: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const review = await ctx.db.review.create({
         data: {
           userId: input.userId,
@@ -147,9 +148,9 @@ export const reviewRouter = createTRPCRouter({
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Đánh giá thành công.',
-        record: review
+        data: review
       };
     }),
   delete: publicProcedure
@@ -158,7 +159,7 @@ export const reviewRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const review = await ctx.db.review.delete({
         where: { id: input.id }
       });
@@ -178,18 +179,12 @@ export const reviewRouter = createTRPCRouter({
         }
       });
       return {
-        success: true,
+        code: 'OK',
         message: 'Xóa bình luận thành công.',
-        record: review
+        data: review
       };
     }),
-  //
-  //
-  //
-  //
-  //
-  //
-  //----------------------------------------------------get filter
+
   getFilter: publicProcedure
     .input(
       z.object({
@@ -227,7 +222,7 @@ export const reviewRouter = createTRPCRouter({
         comment: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const review = await ctx.db.review.update({
         where: { id: input?.reviewId },
         data: {
@@ -253,9 +248,9 @@ export const reviewRouter = createTRPCRouter({
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Cập nhật đánh giá thành công.',
-        record: review
+        data: review
       };
     })
 });

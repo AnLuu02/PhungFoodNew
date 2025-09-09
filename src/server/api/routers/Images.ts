@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const imageRouter = createTRPCRouter({
   find: publicProcedure
@@ -71,15 +72,15 @@ export const imageRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const image = await ctx.db.image.delete({
         where: { id: input.id }
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Xóa ảnh thành công.',
-        record: image
+        data: image
       };
     }),
 

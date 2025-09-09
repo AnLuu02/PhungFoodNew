@@ -51,9 +51,9 @@ export const ButtonCheckout = ({
           vouchers: appliedVouchers?.map((item: any) => item.id).filter(Boolean) || []
         });
 
-        if (resp.success) {
+        if (resp.code === 'OK') {
           setLoading(true);
-          router.push(`/thanh-toan/${resp.record.id}`);
+          router.push(`/thanh-toan/${resp.data.id}`);
         } else {
           NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
         }

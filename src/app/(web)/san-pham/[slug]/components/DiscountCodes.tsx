@@ -1,7 +1,7 @@
 'use client';
 
 import { Center, Grid, GridCol, Paper, Spoiler, Title } from '@mantine/core';
-import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import VoucherTemplate from '~/components/Template/voucher-template';
 
 export default function DiscountCodes({ data }: any) {
   return (

@@ -17,9 +17,10 @@ import {
 } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { breakpoints } from '~/constants';
-import ControlModeTheme from '../ControlModeTheme';
-import { GlobalSearch } from '../Search/GlobalSearch';
+import ButtonControlModeTheme from '../ButtonControlModeTheme';
+import { GlobalSearch } from '../Search/global-search';
 
 const navItems = [
   { label: 'Tổng quan', icon: IconLayoutDashboard, href: '/admin' },
@@ -71,6 +72,7 @@ const navItems = [
 export default function Navbar() {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { data: user } = useSession();
+  const pathname = usePathname();
 
   return (
     <>
@@ -95,7 +97,7 @@ export default function Navbar() {
             </UnstyledButton>
           </Menu.Target>
           <Menu.Dropdown>
-            <ControlModeTheme />
+            <ButtonControlModeTheme />
             <Divider />
             <Link href={`/thong-tin`} className='text-white'>
               <Menu.Item
@@ -139,12 +141,16 @@ export default function Navbar() {
                   leftSection={<item.icon size={16} />}
                   childrenOffset={28}
                   classNames={{
-                    root: 'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
+                    root: `${item.children.some(child => child.href.includes(pathname)) ? '!bg-mainColor/10' : ''} rounded-md hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white`
                   }}
                 >
                   {item.children.map(child => (
                     <Box key={child.label} py={'xs'} pl={'md'} w={'100%'}>
-                      <Link key={child.label} href={child.href} className='hover:text-red-500'>
+                      <Link
+                        key={child.label}
+                        href={child.href}
+                        className={`${child.href === pathname ? 'text-red-500' : ''} hover:text-red-500`}
+                      >
                         <Text size='sm' fw={700}>
                           {child.label}
                         </Text>
@@ -169,7 +175,7 @@ export default function Navbar() {
           })}
 
           <div
-            className='mb-4 flex cursor-pointer items-center rounded-lg p-2 transition-colors duration-300 hover:bg-red-500 hover:text-white'
+            className='mb-4 flex cursor-pointer items-center rounded-md p-2 transition-colors duration-300 hover:bg-red-500 hover:text-white'
             onClick={() => signOut()}
           >
             <IconLogout style={{ width: 20, height: 20, marginRight: '8px' }} />

@@ -26,7 +26,7 @@ export function CreateManyPermissionButton() {
   };
   const importMutation = api.RolePermission.createManyPermission.useMutation({
     onSuccess: data => {
-      if (data.success) {
+      if (data.code === 'OK') {
         NotifySuccess(data.message);
         utils.RolePermission.invalidate();
       } else {
@@ -133,7 +133,11 @@ export function CreateManyPermissionButton() {
           setOpened(false);
           resetFileInput();
         }}
-        title={<Title order={3}>Xem trước dữ liệu</Title>}
+        title={
+          <Title order={3} className='font-quicksand'>
+            Xem trước dữ liệu
+          </Title>
+        }
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
           <Box className={`tableAdmin w-full overflow-x-auto`}>
@@ -192,7 +196,11 @@ export function CreatePermissionButton() {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo quyền mới</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo quyền mới
+          </Title>
+        }
       >
         <CreatePermission setOpened={setOpened} />
       </Modal>
@@ -211,7 +219,11 @@ export function UpdatePermissionButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật quyền</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật quyền
+          </Title>
+        }
       >
         <UpdatePermission permissionId={id.toString()} setOpened={setOpened} />
       </Modal>

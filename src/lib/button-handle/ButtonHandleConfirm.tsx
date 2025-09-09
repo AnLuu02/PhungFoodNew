@@ -25,7 +25,7 @@ export const handleConfirm = (
         const result = id
           ? await mutation.mutateAsync({ id: id as string, ...formData })
           : await mutation.mutateAsync(formData);
-        if (result.success || result?.id) {
+        if (result?.code === 'OK' || result?.id) {
           callback();
           NotifySuccess('Thành công!', `${title}`);
         } else {

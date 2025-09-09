@@ -5,6 +5,7 @@ import { redis } from '~/lib/cache/redis';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { deliverySchema } from '~/lib/zod/zodShcemaForm';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { updatepointUser, updateSales } from './Product';
 import { updateRevenue } from './Revenue';
 
@@ -190,7 +191,7 @@ export const orderRouter = createTRPCRouter({
         vouchers: z.array(z.string()).default([])
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const order = await ctx.db.order.create({
         data: {
           originalTotal: Number(input.originalTotal) || 0,
@@ -222,18 +223,18 @@ export const orderRouter = createTRPCRouter({
       });
       if (!order) {
         return {
-          success: false,
-          message: 'Tạo đơn hàng khóa.',
-          record: order
+          code: 'ERROR',
+          message: 'Tạo đơn hàng không thành cong.',
+          data: order
         };
       }
       if (order && order.status === LocalOrderStatus.COMPLETED) {
         updatepointUser(ctx, input.userId, Number(input.finalTotal) || 0);
       }
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo đơn hàng thành công.',
-        record: order
+        data: order
       };
     }),
   update: publicProcedure
@@ -244,7 +245,7 @@ export const orderRouter = createTRPCRouter({
         orderId: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       redis.del(`order:${input.orderId}`);
       const order: any = await ctx.db.order.update({
         where: input.where as Prisma.OrderWhereUniqueInput,
@@ -264,9 +265,9 @@ export const orderRouter = createTRPCRouter({
         );
       }
       return {
-        success: true,
+        code: 'OK',
         message: 'Cập nhật đơn hàng thành công.',
-        record: order
+        data: order
       };
     }),
   delete: publicProcedure
@@ -275,15 +276,15 @@ export const orderRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const order = await ctx.db.order.delete({
         where: { id: input.id }
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo đơn hàng thành công.',
-        record: order
+        data: order
       };
     }),
 

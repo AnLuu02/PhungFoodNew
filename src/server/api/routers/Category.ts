@@ -5,6 +5,7 @@ import { seedCategory } from '~/lib/data-test/seed';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 import { LocalProductStatus } from '~/lib/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingCategory = async (ctx: any, tag: string) => {
   return await ctx.db.category.findFirst({ where: { tag } });
 };
@@ -84,15 +85,15 @@ export const categoryRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const category = await ctx.db.category.delete({
         where: { id: input.id }
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Xóa danh mục thành công.',
-        record: category
+        data: category
       };
     }),
 
@@ -192,10 +193,10 @@ export const categoryRouter = createTRPCRouter({
         tag: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingCategory = await findExistingCategory(ctx, input.tag);
       if (existingCategory) {
-        return { success: false, message: 'Danh mục đã tồn tại.' };
+        return { code: 'CONFLICT', message: 'Danh mục đã tồn tại.', data: [] };
       }
       const category = await ctx.db.category.create({
         data: input
@@ -203,7 +204,11 @@ export const categoryRouter = createTRPCRouter({
       if (category?.tag) {
         await CreateTagVi({ old: [], new: category });
       }
-      return { success: true, message: 'Tạo danh mục thành công.', record: category };
+      return {
+        code: 'OK',
+        message: 'Tạo danh mục thành công.',
+        data: category
+      };
     }),
   createMany: publicProcedure
     .input(
@@ -217,7 +222,7 @@ export const categoryRouter = createTRPCRouter({
         )
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingTags = await ctx.db.category.findMany({
         where: {
           tag: { in: input.data.map(item => item.tag) }
@@ -229,7 +234,7 @@ export const categoryRouter = createTRPCRouter({
       const newData = input.data.filter(item => !existingTagSet.has(item.tag));
 
       if (newData.length === 0) {
-        return { success: false, message: 'Tất cả danh mục đều đã tồn tại.' };
+        return { code: 'CONFLICT', message: 'Tất cả danh mục đều đã tồn tại.', data: [] };
       }
 
       const categories = await ctx.db.category.createMany({
@@ -243,9 +248,9 @@ export const categoryRouter = createTRPCRouter({
       }
 
       return {
-        success: true,
+        code: 'OK',
         message: `Đã thêm ${categories.count} danh mục mới.`,
-        record: newData
+        data: newData
       };
     }),
 
@@ -256,11 +261,11 @@ export const categoryRouter = createTRPCRouter({
         data: z.record(z.any())
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingCategory = await findExistingCategory(ctx, input.data.tag);
 
       if (existingCategory && existingCategory.id !== input.where.id) {
-        return { success: false, message: 'Danh mục đã tồn tại.' };
+        return { code: 'CONFLICT', message: 'Danh mục đã tồn tại.', data: [] };
       }
 
       const category = await ctx.db.category.update({
@@ -270,6 +275,6 @@ export const categoryRouter = createTRPCRouter({
 
       await CreateTagVi({ old: existingCategory, new: category });
 
-      return { success: true, message: 'Cập nhật danh mục thành công.', record: category };
+      return { code: 'OK', message: 'Cập nhật danh mục thành công.', data: category };
     })
 });

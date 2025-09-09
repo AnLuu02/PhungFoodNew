@@ -19,7 +19,11 @@ export function CreateReviewButton() {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo đánh giá</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo đánh giá
+          </Title>
+        }
       >
         <CreateReview setOpened={setOpened} />
       </Modal>
@@ -38,7 +42,11 @@ export function UpdateReviewButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật đánh giá</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật đánh giá
+          </Title>
+        }
       >
         <UpdateReview reviewId={id.toString()} setOpened={setOpened} />
       </Modal>

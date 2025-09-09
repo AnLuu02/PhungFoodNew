@@ -3,7 +3,7 @@
 import { Card, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import React, { useEffect } from 'react';
-import ProductCardCarouselHorizontal from '../../Card/ProductCardCarouselHorizontal';
+import ProductCardCarouselHorizontal from '../../Card/product-card-carousel-horizontal';
 
 const LayoutPromotion = ({ data }: any) => {
   const productDiscount = data ?? [];

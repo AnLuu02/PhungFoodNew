@@ -42,7 +42,7 @@ import {
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
-import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import VoucherTemplate from '~/components/Template/voucher-template';
 import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
 import { getInfoLevelUser } from '~/constants';
 import { LocalUserLevel, LocalVoucherType } from '~/lib/zod/EnumType';
@@ -345,7 +345,6 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
           </Box>
         )}
 
-        {/* Membership Tiers */}
         <Box>
           <Box className='mb-12 text-center'>
             <Badge
@@ -407,7 +406,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                       >
                         <Icon className='h-8 w-8 text-white' />
                       </Box>
-                      <Title order={3} className='text-2xl font-bold' style={{ color: level.color }}>
+                      <Title order={3} className='font-quicksand text-2xl font-bold' style={{ color: level.color }}>
                         {level.name}
                       </Title>
                       <Box className='text-base font-medium text-gray-600'>{level.range}</Box>
@@ -430,7 +429,6 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
           </Box>
         </Box>
 
-        {/* Hệ thống tích điểm */}
         <Box>
           <Box className='mb-12 text-center'>
             <Badge
@@ -566,7 +564,11 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                           Tổng điểm
                         </Text>
                       </Paper>
-                      <Paper withBorder radius={'lg'} className='border-blue-200 bg-blue-100 p-3 text-center shadow-lg'>
+                      <Paper
+                        withBorder
+                        radius={'lg'}
+                        className='border-blue-200 bg-blue-100 p-3 text-center font-quicksand shadow-lg'
+                      >
                         <Title order={1} fw={700} className='font-quicksand text-blue-600'>
                           {userData.order.length || 0}
                         </Title>

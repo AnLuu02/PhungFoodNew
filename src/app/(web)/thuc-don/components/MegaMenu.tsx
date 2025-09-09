@@ -107,7 +107,7 @@ export default function MegaMenu({ categories }: any) {
                             <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
                               {category.name}
                             </Text>
-                            <Text size='sm' fw={700} className='flex items-center text-gray-800 dark:text-dark-text'>
+                            <Text size='xs' className='flex items-center text-blue-600 dark:text-dark-text'>
                               Số lượng: {category.product.length || 0}
                             </Text>
                           </Stack>

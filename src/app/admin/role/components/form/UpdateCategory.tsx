@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, MultiSelect, TextInput } from '@mantine/core';
+import { Button, Checkbox, Grid, TextInput } from '@mantine/core';
+import { useListState } from '@mantine/hooks';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,7 +15,12 @@ const roleSchema = z.object({
 });
 
 type RoleFormData = z.infer<typeof roleSchema>;
-
+const initialValues = [
+  { label: 'Quyền đọc', checked: false, key: 'read' },
+  { label: 'Quyền tạo mới', checked: false, key: 'create' },
+  { label: 'Quyền cập nhật', checked: false, key: 'update' },
+  { label: 'Quyền xóa', checked: false, key: 'delete' }
+];
 export default function UpdateRole({
   setOpened,
   roleId
@@ -25,12 +31,16 @@ export default function UpdateRole({
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
     setValue
   } = useForm<RoleFormData>({
     resolver: zodResolver(roleSchema),
     defaultValues: { roleId, name: '', permissionIds: [] }
   });
+  const [values, handlers] = useListState(initialValues);
+  const allChecked = values.every(value => value.checked);
+  const indeterminate = values.some(value => value.checked) && !allChecked;
 
   const utils = api.useUtils();
   const { data: permissionsData } = api.RolePermission.getPermissions.useQuery();
@@ -44,15 +54,24 @@ export default function UpdateRole({
   useEffect(() => {
     if (roleData) {
       setValue('name', roleData.name || '');
-      const permissions = roleData.permissions?.map((p: any) => p.id) || [];
-      setValue('permissionIds', permissions.length > 0 ? (permissions as [string, ...string[]]) : ['1']);
+      const permissionIds = roleData.permissions?.map((p: any) => p.id) || [];
+      setValue('permissionIds', permissionIds.length > 0 ? (permissionIds as [string, ...string[]]) : ['1']);
     }
   }, [roleData, setValue]);
+
+  useEffect(() => {
+    const validPermissions = values.filter(value => value.checked);
+    const permissionIds =
+      permissionsData
+        ?.flatMap(p => validPermissions.filter(v => p.name.includes(v.key)).map(() => p.id))
+        .filter((id): id is string => Boolean(id)) || [];
+    setValue('permissionIds', permissionIds.length > 0 ? (permissionIds as [string, ...string[]]) : ['1']);
+  }, [values, permissionsData, setValue]);
 
   const onSubmit: SubmitHandler<RoleFormData> = async data => {
     try {
       const result = await mutation.mutateAsync(data);
-      if (result.success) {
+      if (result.code === 'OK') {
         NotifySuccess(result.message);
         setOpened(false);
       } else {
@@ -62,6 +81,16 @@ export default function UpdateRole({
       NotifyError('Có lỗi xảy ra khi cập nhật vai trò');
     }
   };
+  const items = values.map((value, index) => (
+    <Checkbox
+      mt='xs'
+      ml={33}
+      label={value.label}
+      key={value.key}
+      checked={value.checked}
+      onChange={event => handlers.setItemProp(index, 'checked', event.currentTarget.checked)}
+    />
+  ));
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -83,6 +112,17 @@ export default function UpdateRole({
           />
         </Grid.Col>
         <Grid.Col span={12}>
+          <>
+            <Checkbox
+              checked={allChecked}
+              indeterminate={indeterminate}
+              label='Áp dụng tất cả'
+              onChange={() => handlers.setState(current => current.map(value => ({ ...value, checked: !allChecked })))}
+            />
+            {items}
+          </>
+        </Grid.Col>
+        {/* <Grid.Col span={12}>
           <Controller
             control={control}
             name='permissionIds'
@@ -96,7 +136,7 @@ export default function UpdateRole({
               />
             )}
           />
-        </Grid.Col>
+        </Grid.Col> */}
       </Grid>
       <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
         Cập nhật

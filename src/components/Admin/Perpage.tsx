@@ -18,7 +18,9 @@ const PageSizeSelector = () => {
 
   return (
     <Group align='center'>
-      <Title order={5}>Hiển thị:</Title>
+      <Title order={5} className='font-quicksand'>
+        Hiển thị:
+      </Title>
       <Select
         size={'xs'}
         defaultValue={limit}

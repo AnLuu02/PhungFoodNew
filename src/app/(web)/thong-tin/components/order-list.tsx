@@ -26,7 +26,7 @@ import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
-import SearchLocal from '~/components/Search/SearchLocal';
+import SearchLocal from '~/components/Search/search-local';
 import { useModal } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';

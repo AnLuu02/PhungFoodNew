@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 type RoleWithPermissions = Prisma.RoleGetPayload<{
   include: { permissions: true };
 }>;
@@ -85,8 +86,8 @@ export const rolePermissionRouter = createTRPCRouter({
         permissionIds: z.array(z.string())
       })
     )
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.db.role.create({
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const role = await ctx.db.role.create({
         data: {
           name: input.name,
           permissions: {
@@ -94,6 +95,11 @@ export const rolePermissionRouter = createTRPCRouter({
           }
         }
       });
+      return {
+        code: 'OK',
+        message: 'Tạo vai trò thanh cong.',
+        data: role
+      };
     }),
   createManyRole: publicProcedure
     .input(
@@ -106,7 +112,7 @@ export const rolePermissionRouter = createTRPCRouter({
         )
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existing = await ctx.db.role.findMany({
         where: {
           name: { in: input.data.map(item => item.name) }
@@ -117,7 +123,7 @@ export const rolePermissionRouter = createTRPCRouter({
       const newData = input.data.filter(item => !existingSet.has(item.name));
 
       if (newData.length === 0) {
-        return { success: false, message: 'Tất cả vai trò đều đã tồn tại.' };
+        return { code: 'CONFLICT', message: 'Tất cả vai trò đều đã tồn tại.', data: [] };
       }
       const permissions = await Promise.all(
         newData.map(async item => {
@@ -134,9 +140,9 @@ export const rolePermissionRouter = createTRPCRouter({
       );
 
       return {
-        success: true,
+        code: 'OK',
         message: `Đã thêm ${permissions.length} vai trò mới.`,
-        record: newData
+        data: newData
       };
     }),
   updateRole: publicProcedure
@@ -147,7 +153,7 @@ export const rolePermissionRouter = createTRPCRouter({
         permissionIds: z.array(z.string())
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const role = await ctx.db.role.update({
         where: { id: input.roleId },
         data: {
@@ -161,21 +167,24 @@ export const rolePermissionRouter = createTRPCRouter({
         throw new Error('Role not found');
       }
       return {
-        success: true,
-        message: 'Role updated successfully'
+        code: 'OK',
+        message: 'Cập nhật thành công.',
+        data: role
       };
     }),
 
-  deleteRole: publicProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    const role = await ctx.db.role.delete({
-      where: { id: input.id }
-    });
-    return {
-      success: true,
-      message: 'Xóa vai trò thành công',
-      record: role
-    };
-  }),
+  deleteRole: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const role = await ctx.db.role.delete({
+        where: { id: input.id }
+      });
+      return {
+        code: 'OK',
+        message: 'Xóa vai trò thành công',
+        data: role
+      };
+    }),
 
   findPermission: publicProcedure
     .input(
@@ -235,10 +244,15 @@ export const rolePermissionRouter = createTRPCRouter({
 
   createPermission: publicProcedure
     .input(z.object({ name: z.string(), description: z.string().optional() }))
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.db.permission.create({
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const permission = await ctx.db.permission.create({
         data: { name: input.name, description: input.description }
       });
+      return {
+        code: 'OK',
+        message: 'Tạo quyen thanh cong.',
+        data: permission
+      };
     }),
   createManyPermission: publicProcedure
     .input(
@@ -251,7 +265,7 @@ export const rolePermissionRouter = createTRPCRouter({
         )
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existing = await ctx.db.permission.findMany({
         where: {
           name: { in: input.data.map(item => item.name) }
@@ -262,7 +276,7 @@ export const rolePermissionRouter = createTRPCRouter({
       const newData = input.data.filter(item => !existingSet.has(item.name));
 
       if (newData.length === 0) {
-        return { success: false, message: 'Tất cả quyền đều đã tồn tại.' };
+        return { code: 'CONFLICT', message: 'Tất cả quyền đều đã tồn tại.', data: [] };
       }
 
       const permissions = await ctx.db.permission.createMany({
@@ -270,9 +284,9 @@ export const rolePermissionRouter = createTRPCRouter({
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: `Đã thêm ${permissions.count} quyền mới.`,
-        record: newData
+        data: newData
       };
     }),
 
@@ -284,7 +298,7 @@ export const rolePermissionRouter = createTRPCRouter({
         description: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const role = await ctx.db.permission.update({
         where: { id: input.permissionId },
         data: {
@@ -296,15 +310,23 @@ export const rolePermissionRouter = createTRPCRouter({
         throw new Error('Role not found');
       }
       return {
-        success: true,
-        message: 'Role updated successfully'
+        code: 'OK',
+        message: 'Cập nhật thành công.',
+        data: role
       };
     }),
-  deletePermission: publicProcedure.input(z.object({ permisssionId: z.string() })).mutation(async ({ ctx, input }) => {
-    return await ctx.db.permission.delete({
-      where: { id: input.permisssionId }
-    });
-  }),
+  deletePermission: publicProcedure
+    .input(z.object({ permisssionId: z.string() }))
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const permission = await ctx.db.permission.delete({
+        where: { id: input.permisssionId }
+      });
+      return {
+        code: 'OK',
+        message: 'Xóa quyen thanh cong.',
+        data: permission
+      };
+    }),
   getAllPermission: publicProcedure.query(async ({ ctx }) => {
     let permissions = await ctx.db.permission.findMany({
       include: { roles: true }

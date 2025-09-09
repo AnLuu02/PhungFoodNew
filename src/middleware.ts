@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { UserRole } from './constants';
 import { formatDateViVN } from './lib/func-handler/Format';
 
-const protectedRoutes = ['/admin', '/thong-tin', '/thanh-toan', '/yeu-thich', '/don-hang-cua-toi'];
+const protectedRoutes = ['/admin', '/thong-tin', '/thanh-toan', '/don-hang-cua-toi'];
 const authPages = ['/dang-nhap', '/dang-ki'];
 
 export async function middleware(request: NextRequest) {
@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/thong-tin/:path*', '/thanh-toan/:path*', '/yeu-thich/:path*', '/dang-nhap', '/dang-ki']
+  matcher: ['/admin/:path*', '/thong-tin/:path*', '/thanh-toan/:path*', '/dang-nhap', '/dang-ki']
 };

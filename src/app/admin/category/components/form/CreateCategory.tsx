@@ -39,11 +39,11 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
           tag: createTag(formData.name)
         });
         setOpened(false);
-        if (!result.success) {
-          NotifyError(result.message);
+        if (result.code === 'OK') {
+          NotifySuccess(result.message);
           return;
         }
-        NotifySuccess(result.message);
+        NotifyError(result.message);
       }
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

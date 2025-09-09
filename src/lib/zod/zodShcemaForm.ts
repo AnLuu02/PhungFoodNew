@@ -178,10 +178,17 @@ export const materialSchema = z.object({
 
 export const restaurantSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, 'Tên nhà hàng là bắt buộc'),
   address: z.string().min(1, 'Địa chỉ là bắt buộc'),
-  phone: z.string().min(1, 'Số điện thoại không được để trống'),
-  email: z.string().email('Email không hợp lệ').optional(),
+
+  name: z.string({ required_error: 'Tên nhà hàng là bắt buộc' }).min(1, 'Tên nhà hàng là bắt buộc'),
+
+  email: z.string({ required_error: 'Email là bắt buộc' }).email({ message: 'Email không hợp lệ' }),
+
+  phone: z
+    .string({ required_error: 'Số điện thoại là bắt buộc' })
+    .regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số')
+    .or(z.literal('')),
+
   description: z.string().optional(),
   logo: imageSchema.optional(),
   website: z.string().optional(),
@@ -208,11 +215,20 @@ export const bannerSchema = z.object({
 
 export const userSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, 'Tên không được để trống'),
-  email: z.string().email({ message: 'Email không hợp lệ (vd: example@gmail.com)' }),
+  name: z.string({ required_error: 'Tên người dùng là bắt buộc' }).min(1, 'Tên người dùng là bắt buộc'),
+
+  email: z
+    .string({ required_error: 'Email là bắt buộc' })
+    .email({ message: 'Email không hợp lệ (vd: example@gmail.com)' }),
+
+  phone: z
+    .string({ required_error: 'Số điện thoại là bắt buộc' })
+    .regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số')
+    .or(z.literal('')),
+
   image: imageSchema.optional(),
   gender: z.nativeEnum(LocalGender).default(LocalGender.OTHER),
-  roleId: z.string().optional(),
+  roleId: z.string(),
   dateOfBirth: z.date().optional(),
   password: z
     .string()

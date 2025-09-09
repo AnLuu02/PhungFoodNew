@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { withRedisCache } from '~/lib/cache/withRedisCache';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 export const voucherRouter = createTRPCRouter({
   find: publicProcedure
     .input(
@@ -87,7 +88,7 @@ export const voucherRouter = createTRPCRouter({
         pointUser: z.number().optional()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const voucher = await ctx.db.voucher.create({
         data: {
           name: input.name,
@@ -110,9 +111,9 @@ export const voucherRouter = createTRPCRouter({
       });
       revalidatePath('/admin/voucher');
       return {
-        success: true,
+        code: 'OK',
         message: 'Tạo khuyến mãi thành công.',
-        record: voucher
+        data: voucher
       };
     }),
   delete: publicProcedure
@@ -121,12 +122,16 @@ export const voucherRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const voucher = await ctx.db.voucher.delete({
         where: { id: input.id }
       });
 
-      return voucher;
+      return {
+        code: 'OK',
+        message: 'Xóa khuyến mái thành cong.',
+        data: voucher
+      };
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -208,7 +213,7 @@ export const voucherRouter = createTRPCRouter({
         voucherIds: z.array(z.string())
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const { userId, voucherIds } = input;
       let records = await ctx.db.voucherForUser.findMany({
         where: {
@@ -280,7 +285,7 @@ export const voucherRouter = createTRPCRouter({
         })
       ]);
 
-      return { success: true };
+      return { code: 'OK', message: 'Dùng khuyến mái thanh cong', data: records };
     }),
 
   update: publicProcedure
@@ -290,7 +295,7 @@ export const voucherRouter = createTRPCRouter({
         data: z.record(z.any())
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       try {
         const existingVoucher: any = await ctx.db.voucher.findFirst({
           where: input.where
@@ -302,22 +307,22 @@ export const voucherRouter = createTRPCRouter({
             data: input.data as Prisma.VoucherUpdateInput
           });
           return {
-            success: true,
+            code: 'OK',
             message: 'Cập nhật khuyến mãi thành công.',
-            record: updateVoucher
+            data: updateVoucher
           };
         }
 
         return {
-          success: false,
+          code: 'CONFLICT',
           message: 'Khuyến mãi đã tồn tại. Hãy thử lại.',
-          record: existingVoucher
+          data: existingVoucher
         };
       } catch (error) {
         return {
-          success: false,
+          code: 'ERROR',
           message: 'Lỗi khi cập nhật khuyến mãi. Hãy thử lại.',
-          record: error
+          data: error
         };
       }
     })

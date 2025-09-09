@@ -8,11 +8,11 @@ export const HEIGHT_HEADER = 110;
 export const HEIGHT_HEADER_AND_BREADCRUMB = HEIGHT_HEADER + 100;
 export const TOP_POSITION_STICKY = 70;
 export const breakpoints = {
-  xs: 576, // 30em
-  sm: 768, // 48em
-  md: 992, // 64em
-  lg: 1200, // 74em
-  xl: 1408 // 90em
+  xs: 576,
+  sm: 768,
+  md: 992,
+  lg: 1200,
+  xl: 1408
 };
 export const UserRole = {
   ADMIN: 'ADMIN',

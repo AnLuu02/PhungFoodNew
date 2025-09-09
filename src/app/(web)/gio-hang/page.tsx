@@ -6,9 +6,9 @@ import dynamic from 'next/dynamic';
 import Empty from '~/components/Empty';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import RecapCart from '../thanh-toan/components/recapCart';
-import CartTable from './components/CartTable';
+import CartTable from './components/cart-table';
 
-const ShoppingCartMobile = dynamic(() => import('./components/CartMobile'), { ssr: false });
+const ShoppingCartMobile = dynamic(() => import('./components/cart-mobile'), { ssr: false });
 
 export default function ShoppingCart() {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });

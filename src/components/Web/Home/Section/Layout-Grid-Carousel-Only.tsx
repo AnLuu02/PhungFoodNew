@@ -1,20 +1,35 @@
 'use client';
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Card, Flex, Space, Text, Title } from '@mantine/core';
+import { ActionIcon, Card, Flex, Space, StyleProp, Text, Title } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import BButton from '~/components/Button';
-import ProductCardCarouselVertical from '../../Card/ProductCardCarouselVertical';
 
-type ISectionNoNav = {
-  data?: any;
+const LayoutGridCarouselOnly = ({
+  data,
+  title,
+  navigation,
+  configs = {
+    slideSize: { base: '100%', sm: '33.3333%', md: '25%', xl: '20%' },
+    h: 320
+  },
+  CardElement
+}: {
+  data: any;
   title?: string;
-};
-
-const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
-  const products = data || [];
+  configs?: {
+    slideSize?: StyleProp<string | number> | undefined;
+    h?: any;
+  };
+  navigation: {
+    href: string;
+    label: string;
+  };
+  CardElement: JSX.Element;
+}) => {
+  const dataRender = data || [];
 
   const [embla, setEmbla] = useState<Embla | null>(null);
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
@@ -37,7 +52,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
   }, [embla, onSelect]);
 
   return (
-    <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} className='bg-gray-100 dark:bg-dark-card' p={0}>
+    <Card mih={500} h={'max-content'} radius={'lg'} className='bg-gray-100 dark:bg-dark-card' p={0}>
       <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
         <Flex
           align={'center'}
@@ -58,14 +73,14 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
               radius={'50%'}
               size={'lg'}
               onClick={scrollPrev}
-              className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
+              className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
               disabled={!prevBtnEnabled}
             >
               <IconChevronLeft size={'xs'} />
             </ActionIcon>
             <Space w={'xs'} />
             <ActionIcon
-              className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
+              className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
               radius={'50%'}
               size={'lg'}
               onClick={scrollNext}
@@ -75,7 +90,7 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
             </ActionIcon>
           </Flex>
         </Flex>
-        {products?.length <= 0 ? (
+        {dataRender?.length <= 0 ? (
           <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
             <Image
               style={{ objectFit: 'cover' }}
@@ -93,25 +108,28 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
           <>
             <Carousel
               w={'100%'}
-              slideSize={{ base: '100%', sm: '33.3333%', md: '25%', xl: '20%' }}
+              slideSize={configs?.slideSize}
               slideGap={20}
-              h={320}
-              align='center'
+              h={configs?.h}
+              align='start'
               withControls={false}
               withIndicators
               getEmblaApi={setEmbla}
               containScroll='trimSnaps'
               slidesToScroll={1}
             >
-              {products?.map((item: any, index: number) => (
-                <Carousel.Slide key={index} h={320}>
-                  <ProductCardCarouselVertical product={item} key={index} />
+              {dataRender?.map((item: any, index: number) => (
+                <Carousel.Slide key={index} className={`overflow-hidden`}>
+                  {React.cloneElement(CardElement, {
+                    data: item,
+                    key: index
+                  })}
                 </Carousel.Slide>
               ))}
             </Carousel>
-            <Flex align={'center'} justify={'center'} mt={30}>
-              <Link href={`/thuc-don?loai=san-pham-moi`}>
-                <BButton title={'Xem tất cả'} variant='outline' size='sm' />
+            <Flex align={'center'} justify={'center'} my={30}>
+              <Link href={navigation.href || `/thuc-don?loai=san-pham-moi`}>
+                <BButton title={navigation.label || 'Xem tất cả'} variant='outline' size='sm' />
               </Link>
             </Flex>
           </>
@@ -121,4 +139,4 @@ const LayoutProductCarouselOnly = ({ data, title }: ISectionNoNav) => {
   );
 };
 
-export default LayoutProductCarouselOnly;
+export default LayoutGridCarouselOnly;

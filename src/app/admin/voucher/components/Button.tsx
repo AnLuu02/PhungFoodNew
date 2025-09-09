@@ -21,7 +21,11 @@ export function CreateVoucherButton() {
         size={'80%'}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo voucher</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo voucher
+          </Title>
+        }
       >
         <CreateVoucher setOpened={setOpened} />
       </Modal>
@@ -42,7 +46,11 @@ export function UpdateVoucherButton({ id }: { id: string }) {
         scrollAreaComponent={ScrollAreaAutosize}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật voucher</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật voucher
+          </Title>
+        }
       >
         <UpdateVoucher voucherId={id.toString()} setOpened={setOpened} />
       </Modal>

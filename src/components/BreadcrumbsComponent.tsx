@@ -84,10 +84,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
                           <Image
                             loading='lazy'
                             style={{ objectFit: 'cover' }}
-                            src={
-                              item?.image?.url ||
-                              'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-4.png'
-                            }
+                            src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                             height={130}
                             width={130}
                             alt={item.name}

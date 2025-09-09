@@ -364,14 +364,6 @@ enum PaymentType {
   E_WALLET
 }
 
-// enum OrderStatus {
-//   COMPLETED
-//   PENDING
-//   PROCESSING
-//   DELIVERED
-//   CANCELLED
-// }
-
 enum OrderStatus {
   COMPLETED
   PENDING

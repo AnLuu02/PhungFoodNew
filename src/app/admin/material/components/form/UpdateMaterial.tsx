@@ -17,7 +17,7 @@ export default function UpdateMaterial({
   materialId: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = materialId ? api.Material.getOne.useQuery({ s: materialId || '' }) : { data: null };
+  const queryResult = api.Material.getOne.useQuery({ s: materialId || '' }, { enabled: !!materialId });
   const { data } = queryResult;
 
   const {
@@ -63,11 +63,11 @@ export default function UpdateMaterial({
         tag: createTag(formData.name)
       });
       setOpened(false);
-      if (!result.success) {
-        NotifyError(result.message);
+      if (result.code === 'OK') {
+        NotifySuccess(result.message);
         return;
       }
-      NotifySuccess(result.message);
+      NotifyError(result.message);
     }
   };
 

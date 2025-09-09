@@ -20,7 +20,7 @@ import {
 import { IconGift } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
-import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import VoucherTemplate from '~/components/Template/voucher-template';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 
 export default function Promotions({ vouchers }: { vouchers: any }) {

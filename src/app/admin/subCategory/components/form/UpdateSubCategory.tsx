@@ -19,7 +19,7 @@ export default function UpdateSubCategory({
   subCategoryId: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult: any = subCategoryId ? api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }) : { data: null };
+  const queryResult: any = api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }, { enabled: !!subCategoryId });
   const { data, isLoading: isLoadingDataSubCategory } = queryResult;
   const [loading, setLoading] = useState(false);
 
@@ -90,7 +90,7 @@ export default function UpdateSubCategory({
         ...formDataWithImageUrlAsString,
         tag: createTag(formDataWithImageUrlAsString.name)
       });
-      if (result.success) {
+      if (result.code === 'OK') {
         NotifySuccess(result.message);
         setOpened(false);
       } else {

@@ -109,7 +109,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
             fullAddress
           }
         });
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {

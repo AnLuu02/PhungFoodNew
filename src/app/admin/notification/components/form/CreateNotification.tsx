@@ -42,11 +42,11 @@ export default function CreateNotification({ setOpened }: { setOpened: Dispatch<
       if (formData) {
         const result = await mutation.mutateAsync(formData);
         setOpened(false);
-        if (!result.success) {
-          NotifyError(result.message);
+        if (result.code === 'OK') {
+          NotifySuccess(result.message);
           return;
         }
-        NotifySuccess(result.message);
+        NotifyError(result.message);
       }
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

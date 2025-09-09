@@ -4,7 +4,7 @@ import { Skeleton, Switch, useComputedColorScheme, useMantineColorScheme } from 
 import { IconMoonStars, IconSun } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
-export default function ControlModeTheme() {
+export default function ButtonControlModeTheme() {
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', {
     getInitialValueInEffect: true
@@ -25,14 +25,9 @@ export default function ControlModeTheme() {
       color='dark.4'
       checked={isDark}
       onChange={() => setColorScheme(isDark ? 'light' : 'dark')}
-      onLabel={<IconSun size={16} stroke={2.5} color='var(--mantine-color-yellow-4)' />}
-      offLabel={<IconMoonStars size={16} stroke={2.5} color='var(--mantine-color-blue-6)' />}
+      onLabel={<IconSun size={16} stroke={2.5} className='text-yellow-400' />}
+      offLabel={<IconMoonStars size={16} stroke={2.5} className='text-blue-600' />}
       aria-label='Toggle theme'
-      styles={{
-        track: {
-          transition: 'background-color 200ms ease'
-        }
-      }}
     />
   );
 }

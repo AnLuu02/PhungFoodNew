@@ -19,6 +19,8 @@ import {
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import {
+  IconArrowsDiagonal,
+  IconArrowsDiagonalMinimize,
   IconDotsVertical,
   IconMicrophone,
   IconRobot,
@@ -27,7 +29,9 @@ import {
   IconTrash,
   IconUser
 } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { useEffect, useReducer, useRef, useState } from 'react';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { NotifyError } from '~/lib/func-handler/toast';
 interface Message {
   sender: 'Bot' | 'User';
@@ -71,6 +75,8 @@ const TypingIndicator = () => (
 );
 
 export default function Chatbox() {
+  const { data: user } = useSession();
+  const [size, setSize] = useState<{ width: number; height: number }>({ width: 400, height: 500 });
   const [messages, setMessages, resetMessages] = useLocalStorage<Message[]>({
     key: 'chatbox-messages',
     defaultValue: [
@@ -179,7 +185,6 @@ export default function Chatbox() {
         body: JSON.stringify({ message: messageRef.current })
       });
       messageRef.current = '';
-
       const data = await res.json();
       setMessages(prev => [...prev, { sender: 'Bot', text: data.reply, timestamp: new Date().toISOString() }]);
     } catch {
@@ -193,44 +198,58 @@ export default function Chatbox() {
   };
 
   return (
-    <Box
-      w={{ base: 335, sm: 450, md: 450, lg: 400 }}
-      h={{ base: 400, sm: 500, md: 500, lg: 500 }}
-      className='flex flex-col overflow-hidden bg-gray-100 dark:bg-dark-card'
+    <Flex
+      direction={'column'}
+      w={{ base: 335, sm: size.width }}
+      h={{ base: 400, sm: size.height }}
+      className='overflow-hidden bg-gray-100 duration-300 ease-in-out dark:bg-dark-card'
     >
-      <UnstyledButton
-        p={'xs'}
-        style={{
-          background: 'linear-gradient(135deg, #228be6 0%, #7048e8 100%)'
-        }}
-      >
+      <UnstyledButton p={'xs'} className='bg-gradient-to-br from-[#228be6] to-[#7048e8]'>
         <Flex align={'center'} gap={'xs'} justify={'space-between'}>
           <Group>
             <Avatar src={`/images/jpg/bot.jpg`} radius='xl' />
 
-            <Box style={{ flex: 1 }}>
-              <Text size='md' fw={700} className='text-white'>
-                Chat support
+            <Box flex={1} className='text-white'>
+              <Text size='md' fw={700}>
+                Trợ lí AI
               </Text>
-
-              <Text className='text-white' size='xs'>
-                phungfood@contact.com
-              </Text>
+              <Text size='xs'>phungfood@contact.com</Text>
             </Box>
           </Group>
-          <Menu width={200} shadow='md' zIndex={1000000} position='bottom-end'>
-            <Menu.Target>
-              <ActionIcon variant='transparent' size={30} color='white'>
-                <IconDotsVertical color='white' size={20} />
-              </ActionIcon>
-            </Menu.Target>
+          <Group>
+            <Box className='hidden sm:block'>
+              {size.width <= 400 && size.height <= 500 ? (
+                <ActionIcon
+                  onClick={() => {
+                    setSize({ width: 450, height: 540 });
+                  }}
+                >
+                  <IconArrowsDiagonal className='cursor-pointer text-white' size={20} />
+                </ActionIcon>
+              ) : (
+                <ActionIcon
+                  onClick={() => {
+                    setSize({ width: 400, height: 500 });
+                  }}
+                >
+                  <IconArrowsDiagonalMinimize className='cursor-pointer text-white' size={20} />
+                </ActionIcon>
+              )}
+            </Box>
+            <Menu width={200} shadow='md' zIndex={1000000} position='bottom-end'>
+              <Menu.Target>
+                <ActionIcon variant='transparent' size={30} color='white'>
+                  <IconDotsVertical color='white' size={20} />
+                </ActionIcon>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Item leftSection={<IconTrash size={14} color='red' />} onClick={() => resetMessages()}>
-                Xóa đoạn chat
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+              <Menu.Dropdown>
+                <Menu.Item leftSection={<IconTrash size={14} color='red' />} onClick={() => resetMessages()}>
+                  Xóa đoạn chat
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
         </Flex>
       </UnstyledButton>
       <ScrollArea className='mb-4 flex-grow' scrollbarSize={7} viewportRef={scrollAreaRef}>
@@ -243,8 +262,18 @@ export default function Chatbox() {
                 align='flex-start'
                 gap='sm'
               >
-                <Avatar size='sm' radius='xl' color={message.sender === 'Bot' ? 'blue' : 'violet'} variant='filled'>
-                  {message.sender === 'Bot' ? <IconRobot size='1rem' /> : <IconUser size='1rem' />}
+                <Avatar
+                  size='sm'
+                  radius='xl'
+                  color={message.sender === 'Bot' ? 'blue' : 'violet'}
+                  variant='filled'
+                  src={(message.sender === 'User' && user?.user?.image) || ''}
+                >
+                  {message.sender === 'Bot' ? (
+                    <IconRobot size='1rem' />
+                  ) : user?.user?.image ? null : (
+                    <IconUser size='1rem' />
+                  )}
                 </Avatar>
 
                 <Box maw='80%'>
@@ -258,15 +287,15 @@ export default function Chatbox() {
                       borderRadius: message.sender === 'Bot' ? '1rem 1rem 1rem 0.25rem' : '1rem 1rem 0.25rem 1rem'
                     }}
                   >
-                    <Text size='sm' c={message.sender === 'Bot' ? 'dark' : 'white'} style={{ wordBreak: 'break-word' }}>
-                      {message.text}
-                    </Text>
+                    <Text
+                      dangerouslySetInnerHTML={{ __html: message.text }}
+                      size='sm'
+                      c={message.sender === 'Bot' ? 'dark' : 'white'}
+                      style={{ wordBreak: 'break-word' }}
+                    />
                   </Paper>
                   <Text size='xs' c='dimmed' ta={message.sender === 'User' ? 'right' : 'left'} mt={4} px='sm'>
-                    {new Date(message.timestamp).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
+                    {formatDateViVN(message.timestamp)}
                   </Text>
                 </Box>
               </Flex>
@@ -347,6 +376,6 @@ export default function Chatbox() {
           />
         </Flex>
       </Stack>
-    </Box>
+    </Flex>
   );
 }

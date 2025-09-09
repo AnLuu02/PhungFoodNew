@@ -80,13 +80,7 @@ export const formatPriceLocaleVi = (value: number | string, suffix = VND_SYMBOL)
   return valStr ? valStr.replace(/\B(?<!\,\d*)(?=(\d{3})+(?!\d))/g, '.') + suffix : EMPTY_STRING;
 };
 
-export function isStillValid({
-  createdAt,
-  limitTime
-}: {
-  createdAt: Date;
-  limitTime: number; // phút
-}): boolean {
+export function isStillValid({ createdAt, limitTime }: { createdAt: Date; limitTime: number }): boolean {
   const expiredAt = new Date(createdAt.getTime() + limitTime * 60 * 1000);
   return new Date() <= expiredAt;
 }

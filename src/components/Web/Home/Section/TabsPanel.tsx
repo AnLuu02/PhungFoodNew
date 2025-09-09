@@ -4,7 +4,7 @@ import { ActionIcon, Center, Flex, Group, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
-import ProductCardCarouselVertical from '../../Card/ProductCardCarouselVertical';
+import ProductCardCarouselVertical from '../../Card/product-card-carousel-vertical';
 
 const TabsPanelCarousel = ({ data }: any) => {
   const [embla, setEmbla] = useState<Embla | null>(null);
@@ -40,7 +40,7 @@ const TabsPanelCarousel = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollPrev}
-            className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
+            className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
             disabled={!prevBtnEnabled}
           >
             <IconChevronLeft size={'xs'} />
@@ -49,7 +49,7 @@ const TabsPanelCarousel = ({ data }: any) => {
             radius={'50%'}
             size={'lg'}
             onClick={scrollNext}
-            className='bg-mainColor text-white hover:bg-mainColor/70 hover:text-white disabled:cursor-not-allowed disabled:bg-mainColor/70'
+            className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
             disabled={!nextBtnEnabled}
           >
             <IconChevronRight size={'xs'} />
@@ -76,7 +76,7 @@ const TabsPanelCarousel = ({ data }: any) => {
           slideSize={{ base: '100%', sm: '33.33333%', md: '33.33333%', xl: '25%' }}
           slideGap={20}
           h={320}
-          align='center'
+          align='start'
           withControls={false}
           withIndicators
           slidesToScroll={1}
@@ -85,7 +85,7 @@ const TabsPanelCarousel = ({ data }: any) => {
         >
           {data.map((product: any, index: number) => (
             <CarouselSlide key={index} h={320}>
-              <ProductCardCarouselVertical product={product} key={product.id} />
+              <ProductCardCarouselVertical data={product} key={product.id} />
             </CarouselSlide>
           ))}
         </Carousel>

@@ -1,63 +1,10 @@
 import { Box, Flex, Paper, Radio, Skeleton, Stack, Text, Title } from '@mantine/core';
-import { IconTruck } from '@tabler/icons-react';
-import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { api } from '~/trpc/react';
 
 const PaymentForm = ({ control, errors }: any) => {
   const { data: paymentData, isLoading } = api.Payment.getAll.useQuery();
   const payment = paymentData ?? [];
-  const [paymentMethod, setPaymentMethod] = useState('cod');
-
-  const paymentOptions = [
-    {
-      id: 'cod',
-      label: 'Thanh toán khi nhận hàng (COD)',
-      icon: <IconTruck size={24} color='#4C6EF5' />
-    },
-    {
-      id: 'momo',
-      label: 'Thanh toán qua Ví Momo',
-      icon: (
-        <Box
-          component='img'
-          src='/images/png/momo.png'
-          alt='Momo'
-          width={24}
-          height={24}
-          style={{ objectFit: 'contain' }}
-        />
-      )
-    },
-    {
-      id: 'vnpay',
-      label: 'Thanh toán ví điện tử VNPAY',
-      icon: (
-        <Box
-          component='img'
-          src='/images/png/vnpay.png'
-          alt='VNPAY'
-          width={60}
-          height={24}
-          style={{ objectFit: 'contain' }}
-        />
-      )
-    },
-    {
-      id: 'paypal',
-      label: 'Thanh toán qua Paypal',
-      icon: (
-        <Box
-          component='img'
-          src='/images/png/paypal.png'
-          alt='Paypal'
-          width={24}
-          height={24}
-          style={{ objectFit: 'contain' }}
-        />
-      )
-    }
-  ];
   return (
     <Paper withBorder p='md' radius='md' mb='md'>
       <Box mb='md'>
@@ -119,34 +66,6 @@ const PaymentForm = ({ control, errors }: any) => {
               )}
             />
           )}
-          {/* {paymentOptions.map(option => (
-            <Paper
-              key={option.id}
-              withBorder
-              p='md'
-              radius='md'
-              style={{
-                cursor: 'pointer',
-                borderColor: paymentMethod === option.id ? '#4C6EF5' : '#e9ecef'
-              }}
-              onClick={() => setPaymentMethod(option.id)}
-            >
-              <Flex align='center' gap='md'>
-                <Radio
-                  checked={paymentMethod === option.id}
-                  onChange={() => setPaymentMethod(option.id)}
-                  color='blue'
-                  size='sm'
-                />
-                <Flex w={40} justify='center'>
-                  {option.icon}
-                </Flex>
-                <Text size='sm' fw={500}>
-                  {option.label}
-                </Text>
-              </Flex>
-            </Paper>
-          ))} */}
         </Stack>
       </Box>
 

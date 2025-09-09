@@ -19,7 +19,11 @@ export function CreatePaymentButton() {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo phương thức thanh toán</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo phương thức thanh toán
+          </Title>
+        }
       >
         <CreatePayment setOpened={setOpened} />
       </Modal>
@@ -38,7 +42,11 @@ export function UpdatePaymentButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật phương thức thanh toán</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật phương thức thanh toán
+          </Title>
+        }
       >
         <UpdatePayment paymentId={id.toString()} setOpened={setOpened} />
       </Modal>

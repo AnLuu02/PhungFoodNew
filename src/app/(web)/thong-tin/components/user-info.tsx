@@ -21,7 +21,7 @@ import {
 import { IconUpload } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/func-handler/Format';
@@ -29,6 +29,7 @@ import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/status-
 import { LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
 
 export default function UserInfo({ userInfor }: { userInfor: any }) {
+  const [opened, setOpened] = useState(false);
   const { statusObj }: any = useMemo(() => {
     const orderData =
       userInfor?.order?.map((order: any) => ({
@@ -47,16 +48,22 @@ export default function UserInfo({ userInfor }: { userInfor: any }) {
       <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
         <Card shadow='lg' radius='lg' withBorder pos='relative' bg={`${levelInfo.color}22`} className='pt-10 sm:p-7'>
           <Box pos='absolute' top={10} right={4}>
-            <UpdateUserButton email={userInfor?.email || ''} isClient={true} />
+            <UpdateUserButton
+              email={userInfor?.email || ''}
+              openedFromClient={opened}
+              setOpenedFromClient={setOpened}
+            />
           </Box>
           <Group mb='md' align='flex-start'>
             <Tooltip label='Đổi ảnh đại diện'>
               <Box w={90} h={90} pos='relative' className='group cursor-pointer overflow-hidden rounded-full'>
                 <Avatar src={userInfor?.image?.url} size={90} radius={45} />
-                <Flex className='absolute inset-0 hidden cursor-pointer group-hover:block group-hover:bg-[rgba(0,0,0,0.4)]'>
+                <Flex
+                  onClick={() => setOpened(true)}
+                  className='absolute inset-0 hidden cursor-pointer group-hover:block group-hover:bg-[rgba(0,0,0,0.4)]'
+                >
                   <Center className='h-full w-full' component='label'>
                     <IconUpload size={26} stroke={1.5} color='white' />
-                    <input type='file' hidden accept='image/*' />
                   </Center>
                 </Flex>
               </Box>

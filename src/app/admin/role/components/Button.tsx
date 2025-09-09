@@ -26,7 +26,7 @@ export function CreateManyRoleButton() {
   };
   const importMutation = api.RolePermission.createManyRole.useMutation({
     onSuccess: data => {
-      if (data.success) {
+      if (data.code === 'OK') {
         NotifySuccess(data.message);
         utils.RolePermission.invalidate();
       } else {
@@ -144,7 +144,11 @@ export function CreateManyRoleButton() {
           setOpened(false);
           resetFileInput();
         }}
-        title={<Title order={3}>Xem trước dữ liệu</Title>}
+        title={
+          <Title order={3} className='font-quicksand'>
+            Xem trước dữ liệu
+          </Title>
+        }
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
           <Box className={`tableAdmin w-full overflow-x-auto`}>
@@ -203,7 +207,11 @@ export function CreateRoleButton() {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo quyền mới</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo quyền mới
+          </Title>
+        }
       >
         <CreateRole setOpened={setOpened} />
       </Modal>
@@ -222,7 +230,11 @@ export function UpdateRoleButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật Vai trò</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật Vai trò
+          </Title>
+        }
       >
         <UpdateRole roleId={id.toString()} setOpened={setOpened} />
       </Modal>

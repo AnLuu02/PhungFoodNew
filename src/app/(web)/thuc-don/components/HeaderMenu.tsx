@@ -3,7 +3,7 @@ import { Box, Button, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/c
 import { useMediaQuery } from '@mantine/hooks';
 import { IconX } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import SearchQueryParams from '~/components/Search/SearchQueryParams';
+import SearchInput from '~/components/Search/search-input';
 import { breakpoints } from '~/constants';
 import tags from '~/constants/tags-vi';
 import { getTagFromQuery } from '~/lib/func-handler/generateTag';
@@ -43,7 +43,7 @@ export default function HeaderMenu({ products }: { products: any[] }) {
                 <PriceRangeFilter />
                 <SortFilter />
                 <Box w={{ base: '100%', md: '40%' }}>
-                  <SearchQueryParams />
+                  <SearchInput />
                 </Box>
               </GridCol>
             )}

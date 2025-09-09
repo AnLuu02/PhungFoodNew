@@ -33,7 +33,7 @@ export default async function FooterWeb() {
           </GridCol>
           <GridCol span={{ base: 24, sm: 12, md: 5 }}>
             <Box className='space-y-4'>
-              <Title order={3} className='mb-4 font-semibold'>
+              <Title order={3} className='mb-4 font-quicksand font-semibold'>
                 Liên Hệ
               </Title>
               <Box className='space-y-3 text-sm'>
@@ -70,7 +70,7 @@ export default async function FooterWeb() {
 
           <GridCol span={{ base: 24, sm: 12, md: 5 }}>
             <Box className='space-y-4'>
-              <Title order={3} className='mb-4 font-semibold'>
+              <Title order={3} className='mb-4 font-quicksand font-semibold'>
                 Đặt Hàng Online
               </Title>
               <Box className='space-y-3 text-sm'>
@@ -108,7 +108,7 @@ export default async function FooterWeb() {
 
           <GridCol span={{ base: 24, sm: 12, md: 5 }}>
             <Box className='space-y-4'>
-              <Title order={3} className='mb-4 font-semibold'>
+              <Title order={3} className='mb-4 font-quicksand font-semibold'>
                 Chính sách & Hỗ trợ
               </Title>
               <Flex direction={'column'} className='space-y-3 text-sm'>
@@ -130,7 +130,7 @@ export default async function FooterWeb() {
               </Flex>
 
               <Box className='pt-4'>
-                <Title order={4} className='mb-3 font-medium'>
+                <Title order={4} className='mb-3 font-quicksand font-medium'>
                   Theo Dõi Chúng Tôi
                 </Title>
                 <Flex align={'center'} gap={'md'}>

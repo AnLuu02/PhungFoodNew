@@ -44,7 +44,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
     try {
       if (formData) {
         const result = await mutation.mutateAsync(formData);
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         }

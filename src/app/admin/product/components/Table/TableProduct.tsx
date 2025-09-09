@@ -16,10 +16,10 @@ export default function TableProduct({ s, data, user }: { s: string; data: any; 
         <Table striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>
             <Table.Tr>
-              <Table.Th>Tên</Table.Th>
-              <Table.Th>Ảnh</Table.Th>
-              <Table.Th>Giá tiền</Table.Th>
-              <Table.Th>Mô tả</Table.Th>
+              <Table.Th w={100}>Tên</Table.Th>
+              <Table.Th w={100}>Ảnh</Table.Th>
+              <Table.Th w={100}>Giá tiền</Table.Th>
+              <Table.Th w={400}>Mô tả</Table.Th>
               <Table.Th>Danh mục</Table.Th>
               <Table.Th>Trạng thái</Table.Th>
               <Table.Th>Ngày tạo</Table.Th>

@@ -42,9 +42,8 @@ export default function UpdateProduct({
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials, isLoading } = api.Material.getAll.useQuery();
 
-  const queryResult = productId
-    ? api.Product.getOne.useQuery({ s: productId || '', userRole: 'ADMIN' })
-    : { data: null };
+  const queryResult = api.Product.getOne.useQuery({ s: productId || '', userRole: 'ADMIN' }, { enabled: !!productId });
+
   const { data } = queryResult;
 
   const [imageAddition, setImageAddition] = useState<File[]>([]);
@@ -151,7 +150,7 @@ export default function UpdateProduct({
           gallery: images_format as any
         };
         const result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
-        if (result.success) {
+        if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
         } else {

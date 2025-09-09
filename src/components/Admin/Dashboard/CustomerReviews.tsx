@@ -10,7 +10,7 @@ export default function CustomerReviews({ rating, totalReviews }: CustomerReview
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder className='h-full'>
-      <Title order={4} mb='md' className='text-gray-800'>
+      <Title order={4} mb='md' className='font-quicksand text-gray-800'>
         Đánh giá khách hàng
       </Title>
 

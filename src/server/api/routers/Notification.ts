@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingnotification = async (ctx: any, tag: string) => {
   return await ctx.db.notification.findFirst({ where: { tag } });
 };
@@ -103,15 +104,15 @@ export const notificationRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const notification = await ctx.db.notification.delete({
         where: { id: input.id }
       });
 
       return {
-        success: true,
+        code: 'OK',
         message: 'Xóa thông báo thành công.',
-        record: notification
+        data: notification
       };
     }),
   deleteFilter: publicProcedure
@@ -120,22 +121,22 @@ export const notificationRouter = createTRPCRouter({
         where: z.record(z.any())
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       try {
         const deleted = await ctx.db.notification.deleteMany({
           where: input.where as Prisma.NotificationWhereInput
         });
 
         return {
-          success: true,
+          code: 'OK',
           message: `Đã xóa ${deleted.count} thông báo.`,
-          record: deleted
+          data: deleted
         };
       } catch (error) {
         return {
-          success: false,
+          code: 'ERROR',
           message: 'Xóa thông báo thất bại.',
-          error: error instanceof Error ? error.message : 'Lỗi không xác định'
+          data: error instanceof Error ? error.message : 'Lỗi không xác định'
         };
       }
     }),
@@ -232,7 +233,7 @@ export const notificationRouter = createTRPCRouter({
         isSendToAll: z.boolean()
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const notification = await ctx.db.notification.create({
         data: {
           title: input.title,
@@ -242,7 +243,7 @@ export const notificationRouter = createTRPCRouter({
           user: { connect: input.userId.map(id => ({ id })) }
         }
       });
-      return { success: true, message: 'Tạo thông báo thành công.', record: notification };
+      return { code: 'OK', message: 'Tạo thông báo thành công.', data: notification };
     }),
 
   update: publicProcedure
@@ -252,16 +253,16 @@ export const notificationRouter = createTRPCRouter({
         data: z.record(z.any())
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingNotification = await findExistingnotification(ctx, input.data.id);
 
       if (existingNotification && existingNotification.id !== input.where.id) {
-        return { success: false, message: 'Thông báo đã tồn tại.' };
+        return { code: 'CONFLICT', message: 'Thông báo đã tồn tại.', data: existingNotification };
       }
       const notification = await ctx.db.notification.update({
         where: input.where as Prisma.NotificationWhereUniqueInput,
         data: input.data as Prisma.NotificationUpdateInput
       });
-      return { success: true, message: 'Cập nhật thông báo thành công.', record: notification };
+      return { code: 'OK', message: 'Cập nhật thông báo thành công.', data: notification };
     })
 });

@@ -1,7 +1,7 @@
 'use client';
 import { Box, Button, Card, Flex, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import BButton from '~/components/Button';
-import TabsPanelCarousel from './TabsPenel';
+import TabsPanelCarousel from './TabsPanel';
 
 const LayoutHotProduct = ({ data }: any) => {
   return (

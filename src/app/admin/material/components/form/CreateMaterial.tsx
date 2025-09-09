@@ -14,9 +14,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    watch,
-    setValue
+    formState: { errors, isSubmitting }
   } = useForm<Material>({
     resolver: zodResolver(materialSchema),
     defaultValues: {
@@ -29,26 +27,21 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
   });
 
   const utils = api.useUtils();
-  const mutation = api.Material.create.useMutation({
-    onSuccess: () => {
-      utils.Material.invalidate();
-    }
-  });
+  const mutation = api.Material.create.useMutation();
 
   const onSubmit: SubmitHandler<Material> = async formData => {
     try {
-      if (formData) {
-        const result = await mutation.mutateAsync({
-          ...formData,
-          tag: createTag(formData.name)
-        });
-        setOpened(false);
-        if (!result.success) {
-          NotifyError(result.message);
-          return;
-        }
-        NotifySuccess(result.message);
+      const result = await mutation.mutateAsync({
+        ...formData,
+        tag: createTag(formData.name)
+      });
+      setOpened(false);
+      if (result.code == 'OK') {
+        NotifyError(result.message);
+        utils.Material.invalidate();
+        return;
       }
+      NotifySuccess(result.message);
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }

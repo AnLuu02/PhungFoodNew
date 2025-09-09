@@ -39,20 +39,20 @@ export function CreateManyMaterialButton() {
   };
   const importMutation = api.Material.createMany.useMutation({
     onSuccess: data => {
-      if (data.success) {
+      if (data.code === 'OK') {
         NotifySuccess(data.message);
         utils.Material.invalidate();
-      } else {
-        NotifyError(data.message);
+        setOpened(false);
+        setData([]);
+        setLoading(false);
+        resetFileInput();
+        return;
       }
-      setOpened(false);
-      setData([]);
-      setLoading(false);
-      resetFileInput();
+      NotifyError(data.message);
     },
     onError: error => {
       setLoading(false);
-      NotifyError('Import thất bại! Sai định dạng dữ liệu.');
+      NotifyError('Import thất bại! Sai định dạng dữ liệu.', error.message);
     }
   });
 
@@ -143,7 +143,11 @@ export function CreateManyMaterialButton() {
           setOpened(false);
           resetFileInput();
         }}
-        title={<Title order={3}>Xem trước dữ liệu</Title>}
+        title={
+          <Title order={3} className='font-quicksand'>
+            Xem trước dữ liệu
+          </Title>
+        }
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
           <Box className={`tableAdmin w-full overflow-x-auto`}>
@@ -207,7 +211,11 @@ export function CreateMaterialButton() {
         opened={opened}
         closeOnClickOutside={false}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Tạo danh mục</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Tạo danh mục
+          </Title>
+        }
       >
         <CreateMaterial setOpened={setOpened} />
       </Modal>
@@ -226,7 +234,11 @@ export function UpdateMaterialButton({ id }: { id: string }) {
         opened={opened}
         closeOnClickOutside={false}
         onClose={() => setOpened(false)}
-        title={<Title order={2}>Cập nhật danh mục</Title>}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Cập nhật danh mục
+          </Title>
+        }
       >
         <UpdateMaterial materialId={id.toString()} setOpened={setOpened} />
       </Modal>

@@ -3,7 +3,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ActionIcon,
   Avatar,
+  Box,
   Button,
+  ButtonGroup,
   Center,
   FileInput,
   Grid,
@@ -16,12 +18,12 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
-import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { IconCalendar, IconFile, IconMail, IconPhone, IconUpload } from '@tabler/icons-react';
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { infoUserLevel } from '~/constants';
+import { infoUserLevel, UserRole } from '~/constants';
 import fetcher from '~/lib/func-handler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -37,10 +39,10 @@ export default function UpdateUser({
   email: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = email ? api.User.getOne.useQuery({ s: email || '' }) : { data: null };
+  const queryResult = api.User.getOne.useQuery({ s: email || '' }, { enabled: !!email });
   const { data } = queryResult;
   const [loading, setLoading] = useState(false);
-
+  const refInputImage = useRef<HTMLInputElement>(null);
   const {
     control,
     handleSubmit,
@@ -106,11 +108,7 @@ export default function UpdateUser({
     });
   }, [data, reset]);
   const utils = api.useUtils();
-  const updateMutation = api.User.update.useMutation({
-    onSuccess: () => {
-      utils.User.getAll.invalidate();
-    }
-  });
+  const updateMutation = api.User.update.useMutation();
 
   const onSubmit: SubmitHandler<User> = async formData => {
     if (email) {
@@ -141,11 +139,11 @@ export default function UpdateUser({
           base64: base64 as string
         }
       };
-
       const result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
-      if (result.success) {
+      if (result.code === 'OK') {
         NotifySuccess(result.message);
         setOpened(false);
+        utils.User.getOne.invalidate({ s: email || '' });
       } else {
         NotifyError(result.message);
       }
@@ -161,16 +159,42 @@ export default function UpdateUser({
       <Grid>
         <GridCol span={3}>
           <Center>
-            <Avatar
-              src={
-                watch('image.url') instanceof File
-                  ? URL.createObjectURL(watch('image.url') as File)
-                  : '/images/jpg/empty-300x240.jpg'
-              }
-              size={200}
-              alt='Product Image'
-              className='mb-4'
-            />
+            <Box
+              w={200}
+              h={200}
+              className='group overflow-hidden rounded-full transition-all duration-300'
+              pos={'relative'}
+            >
+              <Avatar
+                src={
+                  watch('image.url') instanceof File
+                    ? URL.createObjectURL(watch('image.url') as File)
+                    : '/images/jpg/empty-300x240.jpg'
+                }
+                size={200}
+                alt='Product Image'
+                className='mb-4'
+              />
+              <Box className='z-1 absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100'>
+                <ButtonGroup>
+                  <Button
+                    size='xs'
+                    bg={'red'}
+                    disabled={!watch('image.url')}
+                    onClick={() => {
+                      setValue('image.url', undefined);
+                    }}
+                  >
+                    Gỡ
+                  </Button>
+                  <Button size='xs'>
+                    <label className='cursor-pointer' htmlFor='image'>
+                      {!watch('image.url') ? <IconUpload /> : 'Thay đổi'}
+                    </label>
+                  </Button>
+                </ButtonGroup>
+              </Box>
+            </Box>
           </Center>
           <Controller
             name='image.url'
@@ -184,6 +208,7 @@ export default function UpdateUser({
             }}
             render={({ field }) => (
               <FileInput
+                id='image'
                 leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh chính'
                 placeholder='Choose a file'
@@ -266,6 +291,7 @@ export default function UpdateUser({
               <Controller
                 control={control}
                 name='roleId'
+                disabled={data?.role?.name !== UserRole.SUPER_ADMIN && data?.role?.name !== UserRole.ADMIN}
                 render={({ field }) => (
                   <Select
                     label='Vai trò'
@@ -386,6 +412,7 @@ export default function UpdateUser({
                 control={control}
                 name={`pointUser`}
                 defaultValue={0}
+                disabled={data?.role?.name !== UserRole.SUPER_ADMIN && data?.role?.name !== UserRole.ADMIN}
                 render={({ field }) => (
                   <NumberInput
                     {...field}
@@ -401,6 +428,7 @@ export default function UpdateUser({
             <GridCol span={4}>
               <Controller
                 control={control}
+                disabled={data?.role?.name !== UserRole.SUPER_ADMIN && data?.role?.name !== UserRole.ADMIN}
                 name={`level`}
                 render={({ field }) => (
                   <Select
