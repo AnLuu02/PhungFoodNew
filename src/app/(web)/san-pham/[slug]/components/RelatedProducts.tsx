@@ -45,14 +45,14 @@ export default function RelatedProducts({ data }: any) {
                       lineClamp={1}
                       size='md'
                       fw={700}
-                      className='cursor-pointer text-black hover:text-mainColor dark:text-dark-text'
+                      className='cursor-pointer text-black hover:text-mainColor dark:text-white'
                     >
                       {product?.name || 'Cá thu'}
                     </Text>
                   </Tooltip>
                 </Link>
                 <Group gap='xs'>
-                  <Text c='red' fw={700}>
+                  <Text className='text-red-600' fw={700}>
                     {formatPriceLocaleVi(product.price - product.discount)}
                   </Text>
                   {product.discount > 0 && (

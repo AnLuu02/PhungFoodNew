@@ -1,5 +1,3 @@
-import { ProductStatus } from '@prisma/client';
-
 export type Product = {
   id: string;
 
@@ -7,7 +5,9 @@ export type Product = {
 
   description?: string;
 
-  descriptionDetail?: DesDetailItem[];
+  descriptionDetailJson?: any;
+
+  descriptionDetailHtml?: string;
 
   price: number;
 
@@ -15,7 +15,7 @@ export type Product = {
 
   region: string;
 
-  status: ProductStatus;
+  isActive: boolean;
 
   tags: string[];
 

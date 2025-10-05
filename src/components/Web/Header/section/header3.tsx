@@ -22,7 +22,7 @@ const Header3 = ({ categories, subCategories }: any) => {
       align={'center'}
       justify={'space-between'}
       py={'md'}
-      className='sticky top-0 z-[100] bg-white text-black dark:bg-dark-background dark:text-dark-text'
+      className='sticky top-0 z-[100] bg-white text-black dark:bg-dark-background dark:text-white'
       direction={{ base: 'row', md: 'row' }}
     >
       <Burger opened={opened} onClick={toggle} aria-label='Toggle navigation' className='md:hidden' />
@@ -88,7 +88,7 @@ const Header3 = ({ categories, subCategories }: any) => {
                               />
                             }
                           >
-                            <Text size='sm' fw={700} className='dark:text-dark-text'>
+                            <Text size='sm' fw={700} className='dark:text-white'>
                               {item?.name}
                             </Text>
                           </Menu.Item>

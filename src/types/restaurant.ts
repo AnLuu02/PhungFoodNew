@@ -11,8 +11,6 @@ export type Restaurant = {
 
   email: string;
 
-  isClose: boolean;
-
   description?: string;
 
   logo: Image;
@@ -21,9 +19,24 @@ export type Restaurant = {
 
   socials: Social[];
 
-  openedHours?: string;
+  openingHours: OpeningHour[];
 
-  closedHours?: string;
+  theme?: Theme;
+};
+export type OpeningHour = {
+  id: string;
+
+  dayOfWeek: string;
+
+  viNameDay: string;
+
+  openTime?: string;
+
+  isClosed: boolean;
+
+  closeTime?: string;
+
+  restaurantId: number;
 };
 
 type Social = {
@@ -46,4 +59,20 @@ export type Banner = {
   startDate: Date;
 
   endDate: Date;
+};
+
+export type Theme = {
+  id?: string;
+
+  primaryColor: string;
+
+  secondaryColor: string;
+
+  themeMode: 'light' | 'dark' | 'auto';
+
+  fontFamily?: string;
+
+  borderRadius?: string;
+
+  faviconUrl?: string;
 };

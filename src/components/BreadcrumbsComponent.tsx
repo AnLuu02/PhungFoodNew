@@ -19,7 +19,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
       align={'center'}
       justify={'space-between'}
       py={'md'}
-      className='bg-gray-100 text-black dark:bg-dark-card dark:text-dark-text'
+      className='bg-gray-100 text-black dark:bg-dark-card dark:text-white'
     >
       <BreadcrumbsBase />
     </Flex>
@@ -65,7 +65,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
               }
             }}
           >
-            {subCategoriesData?.length <= 0
+            {subCategoriesData?.length === 0
               ? [1, 2, 3, 4, 5, 6].map(item => (
                   <Carousel.Slide key={item}>
                     <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>

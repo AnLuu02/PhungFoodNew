@@ -2,7 +2,6 @@
 import { Box, Button, Flex, Menu, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown } from '@tabler/icons-react';
-import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -56,12 +55,11 @@ function NavigationHeader({ categories }: { categories?: any }) {
                   radius={'xl'}
                   variant='subtle'
                   px={'md'}
-                  className={clsx(
-                    'transition hover:bg-mainColor hover:text-white',
+                  className={`transition hover:bg-mainColor hover:text-white ${
                     pathname === item.href
                       ? 'bg-mainColor text-white'
                       : 'bg-[#f1faf6] text-mainColor dark:bg-dark-card dark:hover:bg-mainColor'
-                  )}
+                  } `}
                   rightSection={item.href === '/thuc-don' && <IconCaretDown size={18} />}
                 >
                   <Text fw={700} size='sm'>
@@ -86,13 +84,11 @@ function NavigationHeader({ categories }: { categories?: any }) {
               radius={'xl'}
               variant='subtle'
               px={'md'}
-              className={clsx(
-                'text-mainColor hover:bg-mainColor hover:text-white',
+              className={`text-mainColor hover:bg-mainColor hover:text-white ${
                 pathname === item.href
                   ? 'bg-mainColor text-white'
-                  : 'bg-[#f1faf6] text-mainColor dark:bg-dark-card dark:hover:bg-mainColor',
-                item.href === '/goi-mon-nhanh' ? 'animate-wiggle bg-red-600 text-white dark:bg-red-600' : ''
-              )}
+                  : 'bg-[#f1faf6] text-mainColor dark:bg-dark-card dark:hover:bg-mainColor'
+              } ${item.href === '/goi-mon-nhanh' ? 'animate-wiggle bg-red-600 text-white dark:bg-red-600' : ''} `}
               rightSection={item.href === '/thuc-don' && <IconCaretDown size={18} />}
             >
               <Text fw={700} size='sm'>

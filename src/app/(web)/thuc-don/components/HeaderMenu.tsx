@@ -3,12 +3,12 @@ import { Box, Button, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/c
 import { useMediaQuery } from '@mantine/hooks';
 import { IconX } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import SearchInput from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/search-input';
 import { breakpoints } from '~/constants';
 import tags from '~/constants/tags-vi';
 import { getTagFromQuery } from '~/lib/func-handler/generateTag';
-import PriceRangeFilter from './Filter/price-range-filter';
-import SortFilter from './Filter/sort-filter';
+import { PriceRangeFilter } from './Filter/PriceRangeFilter';
+import { SortFilter } from './Filter/SortFilter';
 import HeaderSearchResults from './HeaderSearchResults';
 
 export default function HeaderMenu({ products }: { products: any[] }) {
@@ -58,6 +58,14 @@ export default function HeaderMenu({ products }: { products: any[] }) {
                   <Button
                     key={tag}
                     variant='outline'
+                    styles={{
+                      root: {
+                        border: '1px solid'
+                      }
+                    }}
+                    classNames={{
+                      root: `!rounded-md !border-mainColor !font-bold text-mainColor hover:bg-mainColor/10 hover:text-mainColor data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+                    }}
                     rightSection={
                       <IconX
                         size={16}

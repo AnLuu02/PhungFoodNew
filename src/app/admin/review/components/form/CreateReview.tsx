@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -12,7 +13,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<Review>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
@@ -29,7 +30,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
     hasCategoryChild: true,
     hasCategory: true,
     hasReview: true,
-    userRole: 'ADMIN'
+    userRole: UserRole.ADMIN
   });
   const { data: users } = api.User.getAll.useQuery();
 
@@ -124,7 +125,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
           />
         </Grid.Col>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Tạo mới
       </Button>
     </form>

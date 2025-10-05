@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: parseInt(process.env.EMAIL_PORT || '587'),
   secure: false,
@@ -20,23 +20,34 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
 };
 
 export const getOtpEmail = (otp: string) => `
-  <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.5;">
-    <h2 style="color: #ff6b6b;">Mã OTP đặt lại mật khẩu</h2>
-    <p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình.</p>
-    <p>Đây là mã OTP của bạn:</p>
+  <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; color: #333;">
+    <h2 style="color: #2e86de; margin-bottom: 16px;">Xác nhận đặt lại mật khẩu</h2>
+    
+    <p>Xin chào,</p>
+    <p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình trên <strong>Fast Food App</strong>.</p>
+    <p>Vui lòng sử dụng mã OTP dưới đây để hoàn tất quá trình xác nhận:</p>
+    
     <p style="
-      font-size: 32px; 
+      font-size: 28px; 
       font-weight: bold; 
-      letter-spacing: 8px; 
-      padding: 12px 24px; 
-      background-color: #f3f3f3; 
+      letter-spacing: 6px; 
+      padding: 14px 28px; 
+      background-color: #f5f7fa; 
       display: inline-block; 
       border-radius: 8px;
+      border: 1px solid #dcdfe3;
+      margin: 16px 0;
     ">
       ${otp}
     </p>
-    <p>Mã OTP có hiệu lực trong <strong>15 phút</strong>.</p>
-    <hr />
-    <p style="font-size: 12px; color: #888;">Fast Food App - Cà Mau</p>
+    
+    <p>Mã OTP này có hiệu lực trong vòng <strong>15 phút</strong>.</p>
+    <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email hoặc liên hệ ngay với bộ phận hỗ trợ để được giúp đỡ.</p>
+    
+    <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+    <p style="font-size: 12px; color: #888; text-align: center;">
+      Fast Food App © 2025<br/>
+      Đây là email tự động, vui lòng không trả lời trực tiếp.
+    </p>
   </div>
 `;

@@ -1,7 +1,6 @@
 'use client';
 import { Carousel } from '@mantine/carousel';
 import { Box, Card, Flex, Grid, GridCol, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
-import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -24,7 +23,13 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
   const products = data[tab]?.products || [];
 
   return (
-    <Card mih={500} h={{ base: 'max-content', md: 500 }} radius={'lg'} className='bg-gray-100' p={0}>
+    <Card
+      mih={500}
+      h={{ base: 'max-content', md: 500 }}
+      radius={'lg'}
+      className='bg-gray-100 dark:bg-dark-background'
+      p={0}
+    >
       <Tabs
         defaultValue='rau-cu'
         value={tab}
@@ -46,7 +51,10 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
               direction={{ base: 'column', sm: 'row', md: 'row' }}
               gap={'md'}
             >
-              <Title order={1} className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor'>
+              <Title
+                order={1}
+                className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-white'
+              >
                 {title || 'Thịt nhập khẩu'}
               </Title>
 
@@ -73,7 +81,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                 justify={'space-between'}
                 h={'100%'}
                 w={{ base: 0, sm: 0, md: '40%', lg: '25%' }}
-                className={clsx(imgaePositon && 'order-2', 'hidden md:block', 'overflow-hidden')}
+                className={`${imgaePositon && 'order-2'} hidden overflow-hidden md:block`}
               >
                 <Box
                   mb={'xs'}
@@ -85,7 +93,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                   <Image
                     style={{ objectFit: 'cover' }}
                     loading='lazy'
-                    src='/images/webp/img_3banner_1.webp'
+                    src='/images/jpg/mon-chay-1.jpg'
                     alt='Restaurant Image 1'
                     fill
                     className='cursor-pointer transition-all duration-500 ease-in-out hover:scale-105'
@@ -101,7 +109,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                   <Image
                     style={{ objectFit: 'cover' }}
                     loading='lazy'
-                    src='/images/webp/img_3banner_2.webp'
+                    src='/images/jpg/mon-chay-2.jpg'
                     alt='Restaurant Image 1'
                     fill
                     className='cursor-pointer transition-all duration-500 ease-in-out hover:scale-105'
@@ -116,7 +124,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                       direction={'column'}
                       h={'100%'}
                       w={{ base: '100%', md: '100%' }}
-                      className={clsx('relative', imgaePositon && 'order-1')}
+                      className={`relative ${imgaePositon && 'order-1'}`}
                     >
                       <Carousel
                         w={'100%'}
@@ -139,7 +147,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                             hasButton={false}
                             size='md'
                             title='Không có sản phẩm phù hợp'
-                            content='Vuiید quay lại sau'
+                            content='Vui lòng quay lại sau'
                           />
                         )}
                       </Carousel>

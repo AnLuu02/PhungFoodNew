@@ -1,7 +1,7 @@
 import { Text } from '@mantine/core';
 import { hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
 
-const DateVoucher = ({ item }: { item: any }) => {
+export const DateVoucher = ({ item }: { item: any }) => {
   return hoursRemainingVoucher(item.startDate, item?.endDate)?.type == 'active' ? (
     <Text c='dimmed' size='xs' pr={4}>
       {hoursRemainingVoucher(item.startDate, item?.endDate)?.value}
@@ -16,4 +16,3 @@ const DateVoucher = ({ item }: { item: any }) => {
     </Text>
   );
 };
-export default DateVoucher;

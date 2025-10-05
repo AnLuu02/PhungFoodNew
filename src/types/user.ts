@@ -15,6 +15,8 @@ export type User = {
 
   password: string;
 
+  isActive: boolean;
+
   phone: string;
 
   address?: Address;

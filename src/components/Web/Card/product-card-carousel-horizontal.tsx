@@ -2,7 +2,6 @@
 import { Badge, Box, Button, Card, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconEye } from '@tabler/icons-react';
-import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -47,9 +46,9 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             top={0}
             h='100%'
             w='100%'
-            className={clsx(
+            className={
               'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover:visible lg:invisible'
-            )}
+            }
           >
             <Button.Group className='group-hover:animate-fadeTop'>
               <Tooltip label='Xem nhanh'>
@@ -59,7 +58,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                     p={5}
                     w={'max-content'}
                     variant='default'
-                    className={clsx('border-t-r-0 text-mainColor hover:text-subColor')}
+                    className={`border-t-r-0 text-mainColor hover:text-subColor`}
                   >
                     <Link href={`/san-pham/${data?.tag}`}>
                       <IconEye />
@@ -74,7 +73,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                     p={5}
                     w={'max-content'}
                     variant='default'
-                    className={clsx('text-mainColor hover:text-subColor')}
+                    className={`text-mainColor hover:text-subColor`}
                   >
                     <IconEye />
                   </Button>
@@ -130,7 +129,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
                 isMobile ? router.push(`/san-pham/${data?.tag}/danh-gia`) : openModal('comments', null, data);
               }}
               size='xs'
-              className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline'
+              className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline dark:text-white'
             >
               Có {data?.totalRating || 0} đánh giá
             </Text>

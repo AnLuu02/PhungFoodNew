@@ -12,12 +12,13 @@ export function CreatePaymentButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
         Tạo mới
       </Button>
       <Modal
         closeOnClickOutside={false}
         opened={opened}
+        size={'xl'}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -42,6 +43,7 @@ export function UpdatePaymentButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
+        size={'xl'}
         title={
           <Title order={2} className='font-quicksand'>
             Cập nhật phương thức thanh toán

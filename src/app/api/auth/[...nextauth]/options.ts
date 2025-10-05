@@ -70,11 +70,6 @@ export const authOptions: NextAuthOptions = {
         if (userFromDb?.id) {
           token.role = userFromDb?.role?.name;
           token.id = userFromDb?.id;
-          token.details = {
-            id: userFromDb?.id,
-            level: userFromDb?.level,
-            pointUser: userFromDb?.pointUser
-          };
         }
       } catch (error) {
         console.error('Error in jwt callback:', error);
@@ -85,12 +80,11 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.role = token.role;
         session.user.id = token.id;
-        session.user.details = token.details;
       }
       return session;
     }
   },
   pages: {
-    signIn: '/dang-nhap'
+    signIn: '/auth/login'
   }
 };

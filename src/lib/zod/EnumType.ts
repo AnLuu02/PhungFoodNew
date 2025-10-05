@@ -17,11 +17,6 @@ export enum LocalVoucherType {
   FIXED = 'FIXED'
 }
 
-export enum LocalVoucherStatus {
-  ENABLED = 'ENABLED',
-  DISABLED = 'DISABLED'
-}
-
 export enum LocalPaymentType {
   CREDIT_CARD = 'CREDIT_CARD',
   E_WALLET = 'E_WALLET'
@@ -53,8 +48,4 @@ export enum LocalUserLevel {
 export enum LocalAddressType {
   USER = 'USER',
   DELIVERY = 'DELIVERY'
-}
-export enum LocalProductStatus {
-  ACTIVE = 'ACTIVE',
-  HIDDEN = 'HIDDEN'
 }

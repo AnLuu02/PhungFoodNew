@@ -29,7 +29,7 @@ declare global {
 
 export default function NotificationDialog({ data, user }: any) {
   const notificationsData = data ?? [];
-  const [notifications, setNotifications] = useState<any[]>([...notificationsData]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
@@ -134,7 +134,7 @@ export default function NotificationDialog({ data, user }: any) {
     const channel = pusherClient.subscribe(`user-${user?.email}`);
     channel.bind('new-notify', (data: any) => {
       setIsNotify(true);
-      setNotifications([...notifications, data]);
+      setNotifications(prev => [...prev, data]);
     });
 
     return () => {
@@ -154,7 +154,7 @@ export default function NotificationDialog({ data, user }: any) {
   }, [isNotify]);
 
   return (
-    <Box pos={'fixed'} top={6} right={12} className='z-[9999] rounded-full' w={30} h={30} bg={'white'}>
+    <Box pos={'fixed'} top={6} right={12} className='z-[200] rounded-full' w={30} h={30} bg={'white'}>
       <Box style={{ position: 'relative' }}>
         <Menu
           opened={isOpen}
@@ -246,7 +246,7 @@ export default function NotificationDialog({ data, user }: any) {
                             onClick={() => markAsRead(notification.id)}
                             pos={'relative'}
                             p={'md'}
-                            className='hover:bg-[rgba(0,0,0,0.2)] dark:bg-dark-card dark:text-dark-text dark:hover:bg-[rgba(255,255,255,0.2)]'
+                            className='hover:bg-[rgba(0,0,0,0.2)] dark:bg-dark-card dark:text-white dark:hover:bg-[rgba(255,255,255,0.2)]'
                           >
                             <Group align='flex-start' gap='md'>
                               <Checkbox
@@ -305,7 +305,7 @@ export default function NotificationDialog({ data, user }: any) {
                   </ScrollAreaAutosize>
                 </>
               ) : (
-                <Text ta='center' c='dimmed' py='xl'>
+                <Text ta='center' size='sm' className='italic' c='dimmed' py='lg'>
                   Không có thông báo.
                 </Text>
               )}

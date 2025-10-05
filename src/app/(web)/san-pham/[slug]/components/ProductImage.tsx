@@ -2,7 +2,6 @@
 
 import { Box, Flex, Paper, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ImageZoomModal } from '~/components/Modals/ModalZoomImage';
@@ -58,10 +57,9 @@ export default function ProductImage({
               key={index}
               radius='md'
               onClick={() => handleThumbnailClick(item.url, index)}
-              className={clsx(
-                'cursor-pointer overflow-hidden',
-                item.url === currentImage && 'border-2 border-mainColor'
-              )}
+              className={`cursor-pointer overflow-hidden ${
+                item.url === currentImage ? 'border-2 border-mainColor' : ''
+              }`}
             >
               <Box pos='relative'>
                 <Image
@@ -82,7 +80,7 @@ export default function ProductImage({
               h={110}
               withBorder
               radius='md'
-              className={clsx('cursor-pointer overflow-hidden')}
+              className={`cursor-pointer overflow-hidden`}
             >
               <Box pos='relative'>
                 <Image
@@ -132,10 +130,10 @@ export default function ProductImage({
             px='xs'
             py='md'
           >
-            <Text size='xs' fw={700} c='white'>
+            <Text size='xs' fw={700} className='text-white'>
               -{formatPriceLocaleVi(discount)}
             </Text>
-            <Text size='xs' fw={700} c='white'>
+            <Text size='xs' fw={700} className='text-white'>
               OFF
             </Text>
           </Flex>

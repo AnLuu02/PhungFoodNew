@@ -2,6 +2,7 @@
 import { ActionIcon, Box, Group, NumberInput, Paper, Text, Tooltip } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 
 interface CartItemProps {
   image: string;
@@ -56,7 +57,7 @@ export default function CartItemFastMenu({ image, name, price, quantity, onQuant
             styles={{ input: { textAlign: 'center' } }}
           />
           <Text className='ml-auto' fw={700} size='sm'>
-            {price?.toLocaleString()}đ
+            {formatPriceLocaleVi(price || 0)}
           </Text>
         </Group>
       </Box>

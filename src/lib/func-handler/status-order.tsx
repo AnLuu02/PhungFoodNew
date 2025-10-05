@@ -25,42 +25,42 @@ export const ORDER_STATUS_MAP: Record<
 > = {
   [LocalOrderStatus.COMPLETED]: {
     key: LocalOrderStatus.COMPLETED,
-    label: 'HOÀN THÀNH',
+    label: 'Hoàn thành',
     color: '#008236',
     icon: IconCircleDashedCheck,
     message: 'Đơn hàng đã được hoàn thành thành công'
   },
   [LocalOrderStatus.UNPAID]: {
     key: LocalOrderStatus.UNPAID,
-    label: 'CHỜ THANH TOÁN',
+    label: 'Chờ thanh toán',
     color: '#FF6900',
     icon: IconClock,
     message: 'Đơn hàng của bạn chưa được thanh toán'
   },
   [LocalOrderStatus.PENDING]: {
     key: LocalOrderStatus.PENDING,
-    label: 'CHỜ XÁC NHẬN',
+    label: 'Chờ xác nhận',
     color: '#155DFC',
     icon: IconClock,
     message: 'Đơn hàng của bạn đang chờ nhà hàng xác nhận.'
   },
   [LocalOrderStatus.CONFIRMED]: {
     key: LocalOrderStatus.CONFIRMED,
-    label: 'ĐÃ XÁC NHẬN - ĐANG CHUẨN BỊ',
+    label: 'Đã xác nhận - đang chuẩn bị',
     color: '#155DFC',
     icon: IconClock,
     message: 'Đơn hàng của bạn đã được nhà hàng xác nhận. Đang chuẩn bị hàng.'
   },
   [LocalOrderStatus.SHIPPING]: {
     key: LocalOrderStatus.SHIPPING,
-    label: 'ĐANG GIAO HÀNG',
+    label: 'Đang giao hàng',
     color: '#009689',
     icon: IconTruck,
     message: 'Đơn hàng đang trên đường giao đến bạn'
   },
   [LocalOrderStatus.CANCELLED]: {
     key: LocalOrderStatus.CANCELLED,
-    label: 'ĐÃ HỦY',
+    label: 'Đã hủy',
     color: '#E7000B',
     icon: IconAlertTriangle,
     message: 'Đơn hàng đã bị hủy'

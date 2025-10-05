@@ -5,16 +5,16 @@ import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import dynamic from 'next/dynamic';
 import Empty from '~/components/Empty';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
-import RecapCart from '../thanh-toan/components/recapCart';
-import CartTable from './components/cart-table';
+import { RecapCart } from '../thanh-toan/components/RecapCarted';
+import CartTable from './components/CartTable';
 
-const ShoppingCartMobile = dynamic(() => import('./components/cart-mobile'), { ssr: false });
+const ShoppingCartMobile = dynamic(() => import('./components/CartMobile'), { ssr: false });
 
 export default function ShoppingCart() {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 
-  if (cart && cart?.length <= 0)
+  if (cart && cart?.length === 0)
     return (
       <Empty
         url='/thuc-don'
@@ -50,7 +50,7 @@ export default function ShoppingCart() {
         top={isMobile ? 0 : TOP_POSITION_STICKY}
         order={{ base: 1, sm: 2, md: 2, lg: 2 }}
       >
-        <RecapCart order={cart} loading={false} paymentMethod={''} type={'cart'} />
+        <RecapCart order={cart} loading={false} />
       </GridCol>
     </Grid>
   );

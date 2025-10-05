@@ -1,7 +1,5 @@
 import { z } from 'zod';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
-
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
@@ -31,6 +29,12 @@ export const materialRouter = createTRPCRouter({
               },
               {
                 description: { contains: s?.trim(), mode: 'insensitive' }
+              },
+              {
+                category: {
+                  contains: s?.trim(),
+                  mode: 'insensitive'
+                }
               }
             ]
           }
@@ -48,6 +52,12 @@ export const materialRouter = createTRPCRouter({
               },
               {
                 description: { contains: s?.trim(), mode: 'insensitive' }
+              },
+              {
+                category: {
+                  contains: s?.trim(),
+                  mode: 'insensitive'
+                }
               }
             ]
           },
@@ -191,19 +201,13 @@ export const materialRouter = createTRPCRouter({
       return material;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return await withRedisCache(
-      'material:getAll',
-      async () => {
-        const material = await ctx.db.material.findMany({
-          include: {
-            products: true
-          }
-        });
+    const material = await ctx.db.material.findMany({
+      include: {
+        products: true
+      }
+    });
 
-        return material;
-      },
-      60 * 60 * 24
-    );
+    return material;
   }),
 
   update: publicProcedure

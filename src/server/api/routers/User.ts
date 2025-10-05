@@ -6,9 +6,10 @@ import { z } from 'zod';
 import { UserRole } from '~/constants';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { hashPassword } from '~/lib/func-handler/hashPassword';
+import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
 import { getOtpEmail, sendEmail } from '~/lib/func-handler/sendEmail';
 import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/lib/zod/EnumType';
-import { addressSchema } from '~/lib/zod/zodShcemaForm';
+import { baseAddressSchema } from '~/lib/zod/zodShcemaForm';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -19,62 +20,93 @@ export const userRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        sort: z.array(z.string()).optional(),
+        filter: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, s } = input;
+      const { skip, take, s, sort, filter } = input;
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalUsers, totalUsersQuery, users] = await ctx.db.$transaction([
         ctx.db.user.count(),
         ctx.db.user.count({
           where: {
-            OR: [
-              {
-                name: { contains: s, mode: 'insensitive' }
-              },
-              {
-                address: {
-                  detail: { contains: s, mode: 'insensitive' }
+            AND: {
+              OR: [
+                {
+                  name: { contains: s, mode: 'insensitive' }
+                },
+                {
+                  address: {
+                    detail: { contains: s, mode: 'insensitive' }
+                  }
+                },
+                {
+                  phone: { contains: s, mode: 'insensitive' }
+                },
+                {
+                  email: { contains: s, mode: 'insensitive' }
                 }
-              },
-              {
-                phone: { contains: s, mode: 'insensitive' }
-              },
-              {
-                email: { contains: s, mode: 'insensitive' }
+              ],
+              isActive: filter?.includes('ACTIVE@#@$@@')
+                ? true
+                : filter?.includes('INACTIVE@#@$@@')
+                  ? false
+                  : undefined,
+              role: {
+                name: filter?.includes('STAFF@#@$@@')
+                  ? 'STAFF'
+                  : filter?.includes('CUSTOMER@#@$@@')
+                    ? 'CUSTOMER'
+                    : undefined
               }
-            ]
-          }
+            }
+          },
+          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : undefined
         }),
         ctx.db.user.findMany({
           skip: startPageItem,
           take,
           where: {
-            OR: [
-              {
-                name: { contains: s, mode: 'insensitive' }
-              },
-              {
-                address: {
-                  detail: { contains: s, mode: 'insensitive' }
+            AND: {
+              OR: [
+                {
+                  name: { contains: s, mode: 'insensitive' }
+                },
+                {
+                  address: {
+                    detail: { contains: s, mode: 'insensitive' }
+                  }
+                },
+                {
+                  phone: { contains: s, mode: 'insensitive' }
+                },
+                {
+                  email: { contains: s, mode: 'insensitive' }
                 }
-              },
-              {
-                phone: { contains: s, mode: 'insensitive' }
-              },
-              {
-                email: { contains: s, mode: 'insensitive' }
+              ],
+              isActive: filter === 'ACTIVE@#@$@@' ? true : filter === 'INACTIVE@#@$@@' ? false : undefined,
+              role: {
+                name: filter?.includes('STAFF@#@$@@')
+                  ? 'STAFF'
+                  : filter?.includes('CUSTOMER@#@$@@')
+                    ? 'CUSTOMER'
+                    : undefined
               }
-            ]
+            }
           },
+          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : undefined,
           include: {
             role: true
           }
         })
       ]);
-      const totalPages = Math.ceil(s ? (totalUsersQuery == 0 ? 1 : totalUsersQuery / take) : totalUsers / take);
+      const totalPages = Math.ceil(
+        Object.entries(input)?.length > 2 ? (totalUsersQuery == 0 ? 1 : totalUsersQuery / take) : totalUsers / take
+      );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
+
       return {
         users,
         pagination: {
@@ -89,6 +121,7 @@ export const userRouter = createTRPCRouter({
         name: z.string().min(1, 'Tên không được để trống'),
         gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
         email: z.string().email({ message: 'Email không hợp lệ' }),
+        isActive: z.boolean().default(true),
         image: z
           .object({
             fileName: z.string(),
@@ -98,7 +131,7 @@ export const userRouter = createTRPCRouter({
         dateOfBirth: z.date().optional(),
         password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
         phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
-        address: addressSchema.optional(),
+        address: baseAddressSchema.optional(),
         pointUser: z.number().default(0),
         level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
         roleId: z.string().optional()
@@ -120,8 +153,8 @@ export const userRouter = createTRPCRouter({
       if (roles.length > 0) {
         if (input.roleId) {
           defaultRole = { id: input.roleId };
-        } else if (input?.email === process.env.NEXT_PUBLIC_EMAIL_SUPER_ADMIN) {
-          defaultRole = roles.find(role => role.name === UserRole.SUPER_ADMIN);
+        } else if (input?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN) {
+          defaultRole = roles.find(role => role.name === UserRole.ADMIN);
         } else {
           defaultRole = roles.find(role => role.name === UserRole.CUSTOMER);
         }
@@ -152,12 +185,13 @@ export const userRouter = createTRPCRouter({
           email: input.email,
           gender: input.gender,
           dateOfBirth: input.dateOfBirth,
+          isActive: input.isActive,
           password: passwordHash,
           phone: input.phone,
           address: input.address
-            ? {
+            ? ({
                 create: input.address
-              }
+              } as any)
             : undefined,
           pointUser: input.pointUser,
           level: input.level,
@@ -180,7 +214,7 @@ export const userRouter = createTRPCRouter({
                 }
               : {
                   create: {
-                    name: UserRole.SUPER_ADMIN
+                    name: UserRole.ADMIN
                   }
                 }
         }
@@ -198,6 +232,7 @@ export const userRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().min(1, 'Tên không được để trống'),
         email: z.string().email({ message: 'Email không hợp lệ' }),
+        isActive: z.boolean().default(true),
         image: z
           .object({
             fileName: z.string(),
@@ -208,7 +243,7 @@ export const userRouter = createTRPCRouter({
         dateOfBirth: z.date().optional(),
         password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
         phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
-        address: addressSchema,
+        address: baseAddressSchema,
         pointUser: z.number().default(0),
         level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
         roleId: z.string()
@@ -249,6 +284,7 @@ export const userRouter = createTRPCRouter({
             name: input.name,
             email: input.email,
             dateOfBirth: input.dateOfBirth,
+            isActive: input.isActive,
             phone: input.phone,
             gender: input.gender,
             address: {
@@ -259,7 +295,7 @@ export const userRouter = createTRPCRouter({
                 update: {
                   ...input.address
                 }
-              }
+              } as any
             },
             pointUser: input.pointUser,
             level: input.level,
@@ -346,7 +382,12 @@ export const userRouter = createTRPCRouter({
           OR: [
             { id: { equals: input.s?.trim() } },
             { name: { equals: input.s?.trim() } },
-            { email: { equals: input.s?.trim() } }
+            { email: { equals: input.s?.trim() } },
+            {
+              role: {
+                name: { equals: input.s?.trim() }
+              }
+            }
           ]
         }
       });
@@ -355,6 +396,30 @@ export const userRouter = createTRPCRouter({
       }
       return user;
     }),
+  getSaler: publicProcedure.query(async ({ ctx, input }) => {
+    const user = await ctx.db.user.findMany({
+      where: {
+        role: {
+          name: {
+            not: 'CUSTOMER',
+            mode: 'insensitive'
+          }
+        }
+      },
+      include: {
+        role: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+    if (!user) {
+      throw new Error(`User  not found.`);
+    }
+    return user;
+  }),
   getOne: publicProcedure
     .input(
       z.object({
@@ -374,23 +439,58 @@ export const userRouter = createTRPCRouter({
         include: {
           order: input.hasOrders || false,
           image: true,
-          role: true,
+          role: {
+            include: {
+              permissions: true
+            }
+          },
+          userPermissions: {
+            include: {
+              permission: true
+            }
+          },
           address: true
         }
       });
+      const rolePermissions = user?.role?.permissions || [];
+      const overrides = user?.userPermissions || [];
+
+      const finalSet = new Set(rolePermissions.map(p => p.id));
+
+      for (const up of overrides) {
+        if (up.granted) {
+          finalSet.add(up.permissionId);
+        } else {
+          finalSet.delete(up.permissionId);
+        }
+      }
+
+      const permissionsFinal = [
+        ...rolePermissions.filter(p => finalSet.has(p.id)),
+        ...overrides
+          .filter(up => up.granted && !rolePermissions.some(p => p.id === up.permissionId))
+          .map(up => up.permission)
+      ];
+
       if (!user) {
         throw new Error(`Người dùng không tồn tại.`);
       }
-      return user;
+      return {
+        ...user,
+        role: {
+          ...user.role,
+          permissions: permissionsFinal
+        }
+      };
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const user = await ctx.db.user.findMany();
+    const user = await ctx.db.user.findMany({ include: { role: true } });
     return user;
   }),
 
   requestPasswordReset: publicProcedure
-    .input(z.object({ email: z.string().email() }))
+    .input(z.object({ email: z.string().email(), timeExpiredMinutes: z.number().default(3) }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const user = await ctx.db.user.findUnique({
         where: { email: input.email }
@@ -402,8 +502,7 @@ export const userRouter = createTRPCRouter({
 
       const otp = randomInt(100000, 999999).toString();
       const now = new Date();
-      const otpExpiry = new Date(now.getTime() + 1 * 60 * 1000);
-
+      const otpExpiry = new Date(now.getTime() + (input.timeExpiredMinutes || 3) * 60 * 1000);
       await ctx.db.user.update({
         where: { email: input.email },
         data: { resetToken: otp, resetTokenExpiry: otpExpiry }
@@ -433,7 +532,8 @@ export const userRouter = createTRPCRouter({
         throw new Error('Email không tồn tại');
       }
 
-      const isTokenValid = await compare(user.resetToken || '', input.token);
+      const isTokenValid =
+        (await compare(user.resetToken || '', input.token)) && (user.resetTokenExpiry || new Date()) > new Date();
 
       if (!isTokenValid) {
         throw new Error('OTP không hợp lệ hoặc đã hết hạn.');
@@ -461,11 +561,12 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const now = new Date();
       const user = await ctx.db.user.findFirst({
         where: {
           email: input.email,
           resetToken: input.otp,
-          resetTokenExpiry: { gte: new Date() }
+          resetTokenExpiry: { gte: now }
         }
       });
 

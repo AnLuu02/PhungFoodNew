@@ -27,6 +27,16 @@ const config = {
       },
       {
         protocol: 'https',
+        hostname: 'i1-dulich.vnecdn.net',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'vcdn1-ngoisao.vnecdn.net',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
         hostname: 'foodish-api.com',
         pathname: '/**'
       },

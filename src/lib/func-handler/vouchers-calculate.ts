@@ -54,3 +54,43 @@ export const hoursRemainingVoucher = (startDate: any, endDate: any) => {
     }
   }
 };
+
+export const getPromotionStatus = (promotion: any) => {
+  const now = new Date();
+  const start = new Date(promotion.startDate);
+  const end = new Date(promotion.endDate);
+
+  if (!promotion.isActive)
+    return {
+      name: 'INACTIVE',
+      viName: 'Tạm ẩn'
+    };
+  if (now < start)
+    return {
+      name: 'SCHEDULED',
+      viName: 'Sắp đến'
+    };
+  if (now > end)
+    return {
+      name: 'EXPIRED',
+      viName: 'Hết hạn'
+    };
+  return {
+    name: 'ACTIVE',
+    viName: 'Khả dụng'
+  };
+};
+export const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'ACTIVE':
+      return 'bg-green-100 text-green-800';
+    case 'SCHEDULED':
+      return 'bg-blue-100 text-blue-800';
+    case 'EXPIRED':
+      return 'bg-red-100 text-red-800';
+    case 'INACTIVE':
+      return 'bg-gray-200 text-gray-800 dark:text-white';
+    default:
+      return 'bg-gray-200 text-gray-800 dark:text-white';
+  }
+};

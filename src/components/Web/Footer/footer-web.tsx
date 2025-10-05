@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Logo from '~/components/Logo';
 import { api } from '~/trpc/server';
 export default async function FooterWeb() {
-  const restaurant = await api.Restaurant.getOne();
+  const restaurant = await api.Restaurant.getOneActive();
   return (
     <>
       <Box
@@ -13,7 +13,7 @@ export default async function FooterWeb() {
         className='w-full overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 py-8 text-white dark:bg-dark-background'
       >
         <Grid className='w-full overflow-hidden' columns={24}>
-          <GridCol span={{ base: 24, sm: 12, md: 9 }}>
+          <GridCol span={{ base: 24, sm: 12, md: 9 }} className='mb-4 sm:mb-0'>
             <Box className='space-y-2'>
               <Logo width={200} height={80} />
               <Text className='text-xl font-bold' tt={'uppercase'}>
@@ -31,7 +31,7 @@ export default async function FooterWeb() {
               </Box>
             </Box>
           </GridCol>
-          <GridCol span={{ base: 24, sm: 12, md: 5 }}>
+          <GridCol span={{ base: 24, sm: 12, md: 5 }} className='mb-4 sm:mb-0'>
             <Box className='space-y-4'>
               <Title order={3} className='mb-4 font-quicksand font-semibold'>
                 Liên Hệ
@@ -46,7 +46,7 @@ export default async function FooterWeb() {
                         {restaurant?.phone || '09180646181'}
                       </a>
                     </Box>
-                    <Box className='text-gray-400'>Đặt món: 0942486950</Box>
+                    <Box className='text-gray-400 dark:text-white'>Đặt món: 0942486950</Box>
                   </Box>
                 </Box>
                 <Box className='flex items-start gap-3'>
@@ -57,7 +57,7 @@ export default async function FooterWeb() {
                         {restaurant?.email || 'anluu099@gmail'}
                       </a>
                     </Box>
-                    <Box className='text-gray-400'>Hỗ trợ 24/7</Box>
+                    <Box className='text-gray-400 dark:text-white'>Hỗ trợ 24/7</Box>
                   </Box>
                 </Box>
                 <Box className='flex items-start gap-3'>
@@ -68,7 +68,7 @@ export default async function FooterWeb() {
             </Box>
           </GridCol>
 
-          <GridCol span={{ base: 24, sm: 12, md: 5 }}>
+          <GridCol span={{ base: 24, sm: 12, md: 5 }} className='mb-4 sm:mb-0'>
             <Box className='space-y-4'>
               <Title order={3} className='mb-4 font-quicksand font-semibold'>
                 Đặt Hàng Online
@@ -78,35 +78,35 @@ export default async function FooterWeb() {
                   <Box className='h-4 w-4 text-green-400'>🌐</Box>
                   <Box>
                     <Box className='font-medium'>Đặt hàng 24/7</Box>
-                    <Box className='text-gray-400'>Qua website & app</Box>
+                    <Box className='text-gray-400 dark:text-white'>Qua website & app</Box>
                   </Box>
                 </Box>
                 <Box className='flex items-center gap-3'>
                   <IconTruck className='h-4 w-4 text-blue-400' />
                   <Box>
                     <Box className='font-medium'>Giao hàng: 9:00 - 21:30</Box>
-                    <Box className='text-gray-400'>Hàng ngày</Box>
+                    <Box className='text-gray-400 dark:text-white'>Hàng ngày</Box>
                   </Box>
                 </Box>
                 <Box className='flex items-center gap-3'>
                   <Box className='h-4 w-4 text-yellow-400'>⚡</Box>
                   <Box>
                     <Box className='font-medium'>Giao nhanh 30-45 phút</Box>
-                    <Box className='text-gray-400'>Trong bán kính 15km</Box>
+                    <Box className='text-gray-400 dark:text-white'>Trong bán kính 15km</Box>
                   </Box>
                 </Box>
                 <Box className='flex items-center gap-3'>
                   <Box className='h-4 w-4 text-purple-400'>💳</Box>
                   <Box>
                     <Box className='font-medium'>Thanh toán đa dạng</Box>
-                    <Box className='text-gray-400'>Tiền mặt, thẻ, ví điện tử</Box>
+                    <Box className='text-gray-400 dark:text-white'>Tiền mặt, thẻ, ví điện tử</Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
           </GridCol>
 
-          <GridCol span={{ base: 24, sm: 12, md: 5 }}>
+          <GridCol span={{ base: 24, sm: 12, md: 5 }} className='mb-4 sm:mb-0'>
             <Box className='space-y-4'>
               <Title order={3} className='mb-4 font-quicksand font-semibold'>
                 Chính sách & Hỗ trợ
@@ -186,12 +186,12 @@ export default async function FooterWeb() {
         </Grid>
         <Divider size={'xs'} mt={'xl'} variant='dotted' />
         <Box className='mb-4 flex flex-col items-start justify-between gap-1 sm:flex-row md:mb-0 md:items-center md:gap-4'>
-          <Box className='text-sm text-gray-400'>
+          <Box className='text-sm text-gray-400 dark:text-white'>
             <p>© 2025 Nhà Hàng Phụng Food. Tất cả quyền được bảo lưu.</p>
             <p className='mt-1'>MST: 0123456789 | Giấy phép KDDD: 123/GP-UBND</p>
           </Box>
           <Box className='flex items-center gap-4 text-sm'>
-            <span className='text-gray-400'>Chứng nhận:</span>
+            <span className='text-gray-400 dark:text-white'>Chứng nhận:</span>
             <Box className='flex gap-2'>
               <Badge variant='outline' className='border-green-300 bg-green-100 text-xs text-green-800'>
                 HACCP

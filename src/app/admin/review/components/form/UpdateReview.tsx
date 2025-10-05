@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -16,14 +17,14 @@ export default function UpdateReview({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const queryResult = api.Review.getFilter.useQuery({ s: reviewId || '' }, { enabled: !!reviewId });
-  const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: 'ADMIN' });
+  const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: UserRole.ADMIN });
   const { data: users } = api.User.getAll.useQuery();
   const { data } = queryResult;
 
   const {
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset
   } = useForm<Review>({
     resolver: zodResolver(reviewSchema),
@@ -133,7 +134,7 @@ export default function UpdateReview({
           />
         </Grid.Col>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Cập nhật
       </Button>
     </form>

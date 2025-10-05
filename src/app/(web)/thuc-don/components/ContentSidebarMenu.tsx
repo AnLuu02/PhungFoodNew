@@ -4,11 +4,11 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconFilter } from '@tabler/icons-react';
 import { useState } from 'react';
 import { breakpoints } from '~/constants';
-import { MaterialFilter } from './Filter/material-filter';
-import { MenuCategoryFilter } from './Filter/menu-category-filter';
-import { PriceCheckedFilter } from './Filter/price-checked-filter';
-import PriceRangeFilter from './Filter/price-range-filter';
-import SortFilter from './Filter/sort-filter';
+import { MaterialFilter } from './Filter/MaterialFilter';
+import { MenuCategoryFilter } from './Filter/MenuCategoryFilter';
+import { PriceCheckedFilter } from './Filter/PriceCheckedFilter';
+import { PriceRangeFilter } from './Filter/PriceRangeFilter';
+import { SortFilter } from './Filter/SortFilter';
 
 export default function ContentSidebarMenu({ categories, materials }: any) {
   const [drawerOpened, setDrawerOpened] = useState(false);

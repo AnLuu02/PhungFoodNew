@@ -1,7 +1,5 @@
-import { PaymentType } from '@prisma/client';
 import { z } from 'zod';
 import { seedPayments } from '~/lib/data-test/seed';
-import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -48,43 +46,27 @@ export const paymentRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        name: z.string().min(1, 'Tên phương thức không được để trống'),
-        tag: z.string(),
-        type: z.nativeEnum(PaymentType),
-        provider: z.string().optional(),
-        isDefault: z.boolean().default(false)
+        provider: z.string(),
+        name: z.string(),
+        apiKey: z.string().optional(),
+        secretKey: z.string().optional(),
+        clientId: z.string().optional(),
+        clientSecret: z.string().optional(),
+        webhookUrl: z.string().optional(),
+        webhookSecret: z.string().optional(),
+        isSandbox: z.boolean().default(true),
+        isActive: z.boolean().default(true),
+        metadata: z.any().optional()
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const existingpayment = await ctx.db.payment.findMany({
-        where: {
-          tag: input.tag
-        }
+      const payment = await ctx.db.payment.create({
+        data: input
       });
-
-      if (!existingpayment?.length) {
-        const payment = await ctx.db.payment.create({
-          data: {
-            name: input.name,
-            tag: input.tag,
-            type: input.type,
-            provider: input.provider || '',
-            isDefault: input.isDefault
-          }
-        });
-        if (payment?.tag) {
-          await CreateTagVi({ old: [], new: payment });
-        }
-        return {
-          code: 'OK',
-          message: 'Tạo thành công.',
-          data: payment
-        };
-      }
       return {
-        code: 'CONFLICT',
-        message: 'Phương thức đã tồn tại. Hãy thử lại.',
-        data: existingpayment
+        code: 'OK',
+        message: 'Tạo thành công.',
+        data: payment
       };
     }),
   delete: publicProcedure
@@ -120,67 +102,53 @@ export const paymentRouter = createTRPCRouter({
       if (!payment) {
         throw new Error(`Payment not found.`);
       }
-      return payment;
+      return {
+        code: 'OK',
+        message: 'Lấy phương thức thanh cong.',
+        data: payment
+      };
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    let payment = await ctx.db.payment.findMany();
-    if (!payment?.length) {
+    let payments = await ctx.db.payment.findMany();
+    if (!payments?.length) {
       await ctx.db.payment.createMany({
         data: seedPayments
       });
-      payment = await ctx.db.payment.findMany();
+      payments = await ctx.db.payment.findMany();
     }
-    return payment;
+    return {
+      code: 'OK',
+      message: 'Lấy phương thức thanh cong.',
+      data: payments
+    };
   }),
 
   update: publicProcedure
     .input(
       z.object({
-        paymentId: z.string(),
-        name: z.string().min(1, 'Tên phương thức không được để trống'),
-        tag: z.string(),
-        type: z.nativeEnum(PaymentType),
-        provider: z.string().optional(),
-        isDefault: z.boolean().default(false)
+        id: z.string(),
+        provider: z.string(),
+        name: z.string(),
+        apiKey: z.string().optional(),
+        secretKey: z.string().optional(),
+        clientId: z.string().optional(),
+        clientSecret: z.string().optional(),
+        webhookUrl: z.string().optional(),
+        webhookSecret: z.string().optional(),
+        isSandbox: z.boolean().default(true),
+        isActive: z.boolean().default(true),
+        metadata: z.any().optional()
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const existingpayment: any = await ctx.db.payment.findMany({
-        where: {
-          id: input.paymentId
-        }
+      const payment: any = await ctx.db.payment.update({
+        where: { id: input?.id },
+        data: input
       });
-
-      if (!existingpayment || (existingpayment && existingpayment?.some((item: any) => item?.id == input?.paymentId))) {
-        const [payment, updatePayment] = await ctx.db.$transaction([
-          ctx.db.payment.findUnique({
-            where: { id: input?.paymentId }
-          }),
-          ctx.db.payment.update({
-            where: { id: input?.paymentId },
-            data: {
-              name: input.name,
-              tag: input.tag,
-              type: input.type,
-              provider: input.provider || '',
-              isDefault: input.isDefault
-            }
-          })
-        ]);
-        if (payment?.tag && updatePayment?.tag) {
-          await CreateTagVi({ old: payment, new: updatePayment });
-        }
-        return {
-          code: 'OK',
-          message: 'Cập nhật thành công.',
-          data: payment
-        };
-      }
-
       return {
-        code: 'CONFLICT',
-        message: 'Phương thức đã tồn tại. Hãy thử lại.',
-        data: existingpayment
+        code: 'OK',
+        message: 'Cập nhật thành công.',
+        data: payment
       };
     })
 });

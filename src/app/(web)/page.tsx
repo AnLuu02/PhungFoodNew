@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const HomePage = async () => {
-  const data = await api.Layout.getDataHomePage();
+  const data = await api.Page.getInit();
   return <HomeWeb data={data} />;
 };
 

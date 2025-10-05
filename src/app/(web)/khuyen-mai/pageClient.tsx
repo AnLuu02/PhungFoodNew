@@ -261,7 +261,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                   }
                 }}
                 classNames={{
-                  tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
+                  tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
                 }}
               >
                 <Flex
@@ -364,7 +364,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end lg:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -409,7 +409,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                       <Title order={3} className='font-quicksand text-2xl font-bold' style={{ color: level.color }}>
                         {level.name}
                       </Title>
-                      <Box className='text-base font-medium text-gray-600'>{level.range}</Box>
+                      <Box className='text-base font-medium text-gray-600 dark:text-white'>{level.range}</Box>
                     </Box>
 
                     <Box className='space-y-3'>
@@ -603,15 +603,15 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                       </Title>
                       <Box className='space-y-3'>
                         <Box className='flex items-center justify-between'>
-                          <span className='text-gray-700'>8 đơn hàng × trung bình 250.000 VND</span>
+                          <span className='text-gray-700 dark:text-white'>8 đơn hàng × trung bình 250.000 VND</span>
                           <span className='font-bold text-orange-600'>250 điểm</span>
                         </Box>
                         <Box className='flex items-center justify-between'>
-                          <span className='text-gray-700'>Tiền thưởng cuối tuần (gấp đôi điểm)</span>
+                          <span className='text-gray-700 dark:text-white'>Tiền thưởng cuối tuần (gấp đôi điểm)</span>
                           <span className='font-bold text-orange-600'>+500 điểm</span>
                         </Box>
                         <Box className='flex items-center justify-between'>
-                          <span className='text-gray-700'>Tiền thưởng đăng ký</span>
+                          <span className='text-gray-700 dark:text-white'>Tiền thưởng đăng ký</span>
                           <span className='font-bold text-orange-600'>+500 điểm</span>
                         </Box>
                         <hr className='border-orange-200' />
@@ -716,7 +716,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'

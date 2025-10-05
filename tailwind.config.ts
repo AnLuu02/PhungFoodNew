@@ -9,17 +9,14 @@ export default {
     extend: {
       colors: {
         // subColor: '#f8c144',
-        // mainColor: '#00BFA6',
-        subColor: '#f8c144',
-        mainColor: '#008b4b',
-        // subColor: '#7048e8',
-        // mainColor: '#228be6',
+        // mainColor: '#008b4b',
+        mainColor: 'rgb(var(--color-mainColor) / <alpha-value>)',
+        subColor: 'rgb(var(--color-subColor) / <alpha-value>)',
         dark: {
           background: '#1e1e1e',
-          // card: '#2a2a2a',
           card: '#2E2E2E',
           surface: '#333333',
-          text: '#e0e0e0',
+          text: '#C9C9BF',
           dimmed: '#424242',
           muted: '#9ca3af',
           border: '#444444',

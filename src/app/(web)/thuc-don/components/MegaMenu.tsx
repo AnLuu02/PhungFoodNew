@@ -43,9 +43,9 @@ export default function MegaMenu({ categories }: any) {
           <Box className='mb-5'>
             <Title
               order={1}
-              className='flex items-center gap-2 font-quicksand text-xl font-bold text-blue-600 dark:text-dark-text'
+              className='flex items-center gap-2 font-quicksand text-xl font-bold text-blue-600 dark:text-white'
             >
-              <Box className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:text-dark-text'>
+              <Box className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:text-white'>
                 <Box className='text-2xl'>🍕</Box>
               </Box>
               Danh mục nổi bât
@@ -71,7 +71,7 @@ export default function MegaMenu({ categories }: any) {
                     }
                   >
                     <Link key={item.title} href={`/thuc-don?danh-muc=${item.tag}`}>
-                      <Text size='md' className='text-gray-700 dark:text-dark-text' fw={600}>
+                      <Text size='md' className='text-gray-700 dark:text-white' fw={600}>
                         {item.name}
                       </Text>
                     </Link>
@@ -104,10 +104,10 @@ export default function MegaMenu({ categories }: any) {
                             className='h-16 w-16'
                           />
                           <Stack gap={2}>
-                            <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
+                            <Text size='sm' fw={700} className='text-gray-800 dark:text-white'>
                               {category.name}
                             </Text>
-                            <Text size='xs' className='flex items-center text-blue-600 dark:text-dark-text'>
+                            <Text size='xs' className='flex items-center text-blue-600 dark:text-white'>
                               Số lượng: {category.product.length || 0}
                             </Text>
                           </Stack>
@@ -158,7 +158,7 @@ export default function MegaMenu({ categories }: any) {
                                     style={{ objectFit: 'cover' }}
                                   />
                                 </Paper>
-                                <Text size='sm' className='line-clamp-2 text-gray-800 dark:text-dark-text'>
+                                <Text size='sm' className='line-clamp-2 text-gray-800 dark:text-white'>
                                   {product.description}
                                 </Text>
                               </Stack>

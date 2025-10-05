@@ -1,13 +1,11 @@
 import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { redis } from '~/lib/cache/redis';
+import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/func-handler/PrismaHelper';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { deliverySchema } from '~/lib/zod/zodShcemaForm';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
-import { updatepointUser, updateSales } from './Product';
-import { updateRevenue } from './Revenue';
 
 export const orderRouter = createTRPCRouter({
   find: publicProcedure
@@ -15,124 +13,112 @@ export const orderRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        filter: z.string().optional().nullable(),
+        sort: z.array(z.string()).optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, s } = input;
+      const { skip, take, s, filter, sort } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalOrders, totalOrdersQuery, orders] = await ctx.db.$transaction([
         ctx.db.order.count(),
         ctx.db.order.count({
-          where: s?.trim()
-            ? {
-                OR: [
-                  {
-                    payment: {
-                      OR: [
-                        {
-                          name: {
-                            contains: s?.trim(),
-                            mode: 'insensitive'
-                          }
-                        },
-                        {
-                          tag: {
-                            contains: s?.trim(),
-                            mode: 'insensitive'
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    user: {
-                      OR: [
-                        {
-                          name: {
-                            contains: s?.trim(),
-                            mode: 'insensitive'
-                          }
-                        },
-                        {
-                          email: {
-                            contains: s?.trim(),
-                            mode: 'insensitive'
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    originalTotal: {
-                      equals: Number(s?.trim()) || 0
-                    }
-                  },
-                  {
-                    discountAmount: {
-                      equals: Number(s?.trim()) || 0
-                    }
-                  },
-                  {
-                    finalTotal: {
-                      equals: Number(s?.trim()) || 0
-                    }
-                  }
-                ]
-              }
-            : undefined
-        }),
-        ctx.db.order.findMany({
-          skip: startPageItem,
-          take,
-          where: s?.trim()
-            ? {
-                OR: [
-                  {
-                    payment: {
-                      OR: [
-                        {
-                          name: {
-                            contains: s?.trim(),
-                            mode: 'insensitive'
-                          }
-                        },
-                        {
-                          tag: {
-                            contains: s?.trim(),
-                            mode: 'insensitive'
-                          }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    user: {
+          where: {
+            OR: [
+              {
+                payment: {
+                  OR: [
+                    {
                       name: {
                         contains: s?.trim(),
                         mode: 'insensitive'
                       }
                     }
-                  },
-                  {
-                    originalTotal: {
-                      equals: Number(s?.trim()) || 0
-                    }
-                  },
-                  {
-                    discountAmount: {
-                      equals: Number(s?.trim()) || 0
-                    }
-                  },
-                  {
-                    finalTotal: {
-                      equals: Number(s?.trim()) || 0
-                    }
+                  ]
+                }
+              },
+              {
+                user: {
+                  name: {
+                    contains: s?.trim(),
+                    mode: 'insensitive'
                   }
-                ]
+                }
+              },
+              {
+                originalTotal: {
+                  equals: Number(s?.trim()) || 0
+                }
+              },
+              {
+                discountAmount: {
+                  equals: Number(s?.trim()) || 0
+                }
+              },
+              {
+                finalTotal: {
+                  equals: Number(s?.trim()) || 0
+                }
               }
-            : undefined,
+            ],
+            status: filter
+              ? {
+                  equals: filter?.trim() as LocalOrderStatus
+                }
+              : undefined
+          },
+          orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined
+        }),
+        ctx.db.order.findMany({
+          skip: startPageItem,
+          take,
+          where: {
+            OR: [
+              {
+                payment: {
+                  OR: [
+                    {
+                      name: {
+                        contains: s?.trim(),
+                        mode: 'insensitive'
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                user: {
+                  name: {
+                    contains: s?.trim(),
+                    mode: 'insensitive'
+                  }
+                }
+              },
+              {
+                originalTotal: {
+                  equals: Number(s?.trim()) || 0
+                }
+              },
+              {
+                discountAmount: {
+                  equals: Number(s?.trim()) || 0
+                }
+              },
+              {
+                finalTotal: {
+                  equals: Number(s?.trim()) || 0
+                }
+              }
+            ],
+            status: filter
+              ? {
+                  equals: filter?.trim() as LocalOrderStatus
+                }
+              : undefined
+          },
+          orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined,
           include: {
             payment: true,
             user: {
@@ -141,7 +127,7 @@ export const orderRouter = createTRPCRouter({
                 address: true
               }
             },
-            delivery: true,
+            delivery: { include: { address: true } },
             orderItems: {
               include: {
                 product: {
@@ -156,7 +142,7 @@ export const orderRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        s?.trim() ? (totalOrdersQuery == 0 ? 1 : totalOrdersQuery / take) : totalOrders / take
+        Object.entries(input)?.length > 2 ? (totalOrdersQuery == 0 ? 1 : totalOrdersQuery / take) : totalOrders / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -207,7 +193,7 @@ export const orderRouter = createTRPCRouter({
                   address: {
                     create: input.delivery.address
                   }
-                }
+                } as any
               }
             : undefined,
           transactionId: input.transactionId,
@@ -219,6 +205,9 @@ export const orderRouter = createTRPCRouter({
           vouchers: {
             connect: input.vouchers.map(voucherId => ({ id: voucherId }))
           }
+        },
+        include: {
+          orderItems: true
         }
       });
       if (!order) {
@@ -228,8 +217,16 @@ export const orderRouter = createTRPCRouter({
           data: order
         };
       }
+
+      //test admin
       if (order && order.status === LocalOrderStatus.COMPLETED) {
         updatepointUser(ctx, input.userId, Number(input.finalTotal) || 0);
+        updateRevenue(ctx, order.status, input.userId, order);
+        await Promise.all(
+          order?.orderItems?.map((orderItem: any) => {
+            return updateSales(ctx, order.status, orderItem.productId, orderItem?.quantity);
+          })
+        );
       }
       return {
         code: 'OK',
@@ -246,7 +243,6 @@ export const orderRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      redis.del(`order:${input.orderId}`);
       const order: any = await ctx.db.order.update({
         where: input.where as Prisma.OrderWhereUniqueInput,
         data: input.data,
@@ -256,7 +252,7 @@ export const orderRouter = createTRPCRouter({
       });
 
       if (order && order.status === LocalOrderStatus.COMPLETED) {
-        updateRevenue(ctx, order.status, order.userId, order.finalTotal);
+        updateRevenue(ctx, order.status, order.userId, order);
         updatepointUser(ctx, order.userId, order.finalTotal);
         await Promise.all(
           order?.orderItems?.map((orderItem: any) => {
@@ -304,8 +300,7 @@ export const orderRouter = createTRPCRouter({
             {
               user: {
                 email: {
-                  contains: input.s?.trim(),
-                  mode: 'insensitive'
+                  equals: input.s?.trim()
                 }
               }
             }

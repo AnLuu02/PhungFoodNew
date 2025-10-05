@@ -47,10 +47,19 @@ const OrderItemForm = ({
       'originalTotal',
       orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0)
     );
+    setValue(
+      'finalTotal',
+      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0)
+    );
   }, [chooseProduct, chooseQuantity, orderItems]);
 
   return (
-    <Box mb='md' p='md' style={{ border: '1px solid #e0e0e0', borderRadius: '8px' }}>
+    <Box
+      mb='md'
+      p='md'
+      style={{ border: '1px solid #e0e0e0', borderRadius: '8px' }}
+      className='bg-gray-100 dark:bg-dark-card'
+    >
       <Grid gutter='md'>
         <Grid.Col span={12}>
           <Controller
@@ -62,7 +71,12 @@ const OrderItemForm = ({
                 searchable
                 {...field}
                 placeholder='Select products'
-                data={products?.map((product: any) => ({ value: product.id, label: product.name }))}
+                data={products?.map((product: any) => ({
+                  value: product.id,
+                  label: product.name,
+                  disabled:
+                    !product.availableQuantity || watch(`orderItems`).some((item: any) => item.productId === product.id)
+                }))}
                 error={errors.orderItems?.[index]?.productId?.message}
               />
             )}
@@ -73,11 +87,6 @@ const OrderItemForm = ({
             control={control}
             name={`orderItems.${index}.quantity`}
             defaultValue={1}
-            rules={{
-              validate: value =>
-                Number(value) <= Number(productOrderItem?.availableQuantity) ||
-                `Trong kho chỉ còn ${productOrderItem?.availableQuantity} sản phẩm.`
-            }}
             render={({ field }) => (
               <NumberInput
                 {...field}

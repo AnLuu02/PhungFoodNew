@@ -13,10 +13,11 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
-import { IconEdit, IconPlus, IconPrinter, IconTrash, IconXboxX } from '@tabler/icons-react';
+import { IconCopy, IconEdit, IconPlus, IconPrinter, IconTrash, IconXboxX } from '@tabler/icons-react';
 import { useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { UserRole } from '~/constants';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { handleConfirm } from '~/lib/button-handle/ButtonHandleConfirm';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -29,7 +30,7 @@ export function CreateOrderButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
         Tạo mới
       </Button>
       <Modal
@@ -75,8 +76,8 @@ export function SendOrderButton({ order }: any) {
     <>
       <Button
         leftSection={<IconPrinter size={16} />}
-        className='text-mainColor'
-        variant='outline'
+        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-white`}
+        variant='subtle'
         loading={loading}
         onClick={() => {
           sendTestEmail();
@@ -113,8 +114,8 @@ export function PrintOrderButton({ order }: any) {
     <>
       <Button
         leftSection={<IconPrinter size={16} />}
-        className='text-mainColor'
-        variant='outline'
+        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-white`}
+        variant='subtle'
         loading={loading}
         onClick={() => {
           sendTestEmail();
@@ -183,6 +184,58 @@ export function DeleteOrderButton({ id }: { id: string }) {
   );
 }
 
+export function CopyOrderButton({ data }: { data: any }) {
+  const [loading, setLoading] = useState(false);
+  const utils = api.useUtils();
+  const mutationCreate = api.Order.create.useMutation();
+  return (
+    <>
+      <Tooltip label='Nhân bản hóa đơn'>
+        <ActionIcon
+          variant='subtle'
+          loading={loading}
+          onClick={async () => {
+            setLoading(true);
+            await mutationCreate.mutateAsync({
+              originalTotal: data?.originalTotal || 0,
+              discountAmount: data?.discountAmount || 0,
+              finalTotal: data?.finalTotal || 0,
+              status: data?.status || LocalOrderStatus.UNPAID,
+              userId: data?.userId || '',
+              paymentId: data?.paymentId || '',
+              note: data?.note || '',
+              transactionId: data?.transactionId || '',
+              orderItems: data?.orderItems || [],
+              delivery: {
+                ...data?.delivery,
+                id: undefined,
+                orderId: undefined,
+                address: {
+                  ...data?.delivery.address,
+                  id: undefined,
+                  detail: data?.delivery.address?.detail || '',
+                  provinceId: data?.delivery.address?.provinceId || '',
+                  districtId: data?.delivery.address?.districtId || '',
+                  wardId: data?.delivery.address?.wardId || '',
+                  province: data?.delivery?.address?.province || '',
+                  district: data?.delivery?.address?.district || '',
+                  ward: data?.delivery?.address?.ward || '',
+                  fullAddress: data?.delivery?.address?.fullAddress
+                }
+              } as any
+            });
+            utils.Order.invalidate();
+            setLoading(false);
+            NotifySuccess('Copy hóa đơn thành công!');
+          }}
+        >
+          <IconCopy size={24} />
+        </ActionIcon>
+      </Tooltip>
+    </>
+  );
+}
+
 const statusOptions = Object.values(LocalOrderStatus).map(status => ({
   value: status,
   label: status
@@ -202,11 +255,14 @@ export function SendMessageAllUserAdvanced() {
 
   const createNotifyMutation = api.Notification.create.useMutation();
 
-  const { data: allUsers = [], isLoading: loadingUsers } = api.User.getAll.useQuery(undefined, {
-    enabled: mode === 'ALL' || mode === 'SELECTED'
-  });
+  const { data: allUsers = [], isLoading: loadingUsers } = api.User.getFilter.useQuery(
+    { s: UserRole.CUSTOMER },
+    {
+      enabled: mode === 'ALL' || mode === 'SELECTED'
+    }
+  );
 
-  const { data: filteredOrders = [], isLoading: loadingOrders } = api.Order.getFilter.useQuery(
+  const { data: filteredOrders = [] } = api.Order.getFilter.useQuery(
     { s: selectedStatuses.join(',') },
     {
       enabled: mode === 'BY_STATUS' && selectedStatuses.length > 0
@@ -303,6 +359,7 @@ export function SendMessageAllUserAdvanced() {
         {mode === 'SELECTED' && (
           <MultiSelect
             label='Chọn người dùng'
+            disabled={allUsers.length === 0}
             data={allUsers.map(u => ({
               value: u.id,
               label: u.name ? `${u.name} (${u.email})` : u.email
@@ -312,6 +369,10 @@ export function SendMessageAllUserAdvanced() {
             searchable
             mt='md'
             rightSection={loadingUsers ? <LoadingSpiner /> : undefined}
+            error={
+              (selectedUsers.length === 0 && 'Chưa chọn người dùng') ||
+              (allUsers.length === 0 && 'Hiện không có khách hàng.')
+            }
           />
         )}
 

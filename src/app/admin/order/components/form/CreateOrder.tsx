@@ -36,7 +36,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
     watch,
     setValue,
     getValues,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<Order>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
@@ -97,7 +97,6 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
       utils.Order.invalidate();
     }
   });
-
   const onSubmit: SubmitHandler<Order> = async formData => {
     try {
       if (!formData) return;
@@ -145,7 +144,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
-        <GridCol span={6}>
+        <GridCol span={6} className='sticky top-0 h-fit'>
           <Card shadow='sm' padding='lg' radius='md' withBorder>
             <Title order={2} className='mb-4 font-quicksand text-xl'>
               Thông tin vận chuyển
@@ -280,7 +279,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
             </Stack>
           </Card>
         </GridCol>
-        <GridCol span={6}>
+        <GridCol span={6} className='h-fit'>
           <Grid gutter='md'>
             <Grid.Col span={6}>
               <Controller
@@ -312,7 +311,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                     label='Phương thức thanh toán'
                     searchable
                     placeholder='Chọn phương thức thanh toán'
-                    data={payments?.map(payment => ({ value: payment.id, label: payment.name }))}
+                    data={payments?.data?.map(payment => ({ value: payment.id, label: payment.name }))}
                     error={errors.paymentId?.message}
                   />
                 )}
@@ -353,7 +352,6 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                     }))}
                     {...field}
                     error={errors.status?.message}
-                    readOnly
                   />
                 )}
               />
@@ -395,7 +393,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
           </Grid>
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới
       </Button>
     </form>

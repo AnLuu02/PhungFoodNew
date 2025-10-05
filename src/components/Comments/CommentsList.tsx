@@ -3,6 +3,7 @@
 import { Avatar, Box, Button, Center, Flex, Group, Paper, Rating, Space, Spoiler, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/react';
 
 export const CommentsList = ({ data }: { data: any[] }) => {
@@ -12,8 +13,8 @@ export const CommentsList = ({ data }: { data: any[] }) => {
 
   if (!data || data.length === 0) {
     return (
-      <Center mb={'lg'} className='bg-gray-100'>
-        <Text size='lg' className='text-gray-500'>
+      <Center mb={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+        <Text size='lg' className='text-gray-500 dark:text-white'>
           <i>--- Chưa có đánh giá ---</i>
         </Text>
       </Center>
@@ -26,10 +27,10 @@ export const CommentsList = ({ data }: { data: any[] }) => {
         <Group gap={7}>
           <Avatar src={comment?.user?.image?.url} alt='User avatar' radius='lg' size={30} />
           <Box className='hidden text-left sm:block'>
-            <Text fw={700} size='sm' lh={1} className='text-black dark:text-dark-text'>
+            <Text fw={700} size='sm' lh={1} className='text-black dark:text-white'>
               {comment?.user?.name}
             </Text>
-            <Text size='xs' fw={700} className='text-gray-500'>
+            <Text size='xs' fw={700} className='text-gray-500 dark:text-white'>
               {comment?.user?.email}
             </Text>
           </Box>
@@ -47,8 +48,8 @@ export const CommentsList = ({ data }: { data: any[] }) => {
           <Text size='sm'>{comment.comment || ''}</Text>
         </Spoiler>
       </Flex>
-      <Text size='xs' className='absolute bottom-2 right-2 text-gray-500'>
-        {new Date(comment.createdAt || '').toLocaleString() || '02:53 ngày 17-01-2024'}
+      <Text size='xs' className='absolute bottom-2 right-2 text-gray-500 dark:text-white'>
+        {formatDateViVN(comment.createdAt || new Date())}
       </Text>
       {comment.userId === user?.user?.id && (
         <Button

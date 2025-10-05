@@ -1,6 +1,5 @@
 'use client';
 import { Box, Button, Card, Checkbox, Divider, Flex, Group, Progress, Stack, Text, Tooltip } from '@mantine/core';
-import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -10,7 +9,7 @@ import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/to
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
-import DateVoucher from '../date-voucher';
+import { DateVoucher } from '../date-voucher';
 type VoucherTemplateProps = {
   voucher: any;
   products?: any;
@@ -102,25 +101,19 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
           </Flex>
           {hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'active' ? (
             <Box
-              className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-[#EDA500] px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`
-              )}
+              className={`absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-[#EDA500] px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`}
             >
               Dành cho bạn
             </Box>
           ) : hoursRemainingVoucher(voucher.startDate, voucher?.endDate)?.type == 'upcoming' ? (
             <Box
-              className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-[#00BB00] px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`
-              )}
+              className={`absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-[#00BB00] px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`}
             >
               Sắp đến hạn sử dụng
             </Box>
           ) : (
             <Box
-              className={clsx(
-                `absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`
-              )}
+              className={`absolute right-[-6px] top-[6px] z-[1] hidden rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white shadow-md md:block`}
             >
               Sắp hết hạn
             </Box>

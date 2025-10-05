@@ -1,68 +1,72 @@
 'use client';
+import { Box, Group, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Text } from '@mantine/core';
+import { SearchInput } from '~/components/Search/search-input';
+import { formatDateViVN } from '~/lib/func-handler/Format';
+import { api } from '~/trpc/react';
+import { CopyRevenueButton, CreateRevenueButton, UpdateRevenueButton } from '../Button';
 
-import { Box, Group, Table, Text } from '@mantine/core';
-import SearchInput from '~/components/Search/search-input';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-
-export default function TableRevenue({ revenues, s }: { revenues: any; s: string }) {
-  const currentItems = revenues || [];
-
-  const firstColumnTitle = s === 'user' ? 'Người dùng' : s === 'date' ? 'Ngày' : s === 'month' ? 'Tháng' : 'Năm';
+export default function TableRevenue({ revenues }: { revenues: any }) {
+  const { data: dataClient } = api.Revenue.getAll.useQuery(undefined, { initialData: revenues });
+  const currentItems = dataClient || [];
 
   return (
     <>
-      <Group pb='lg'>
-        <Group justify='space-between' mt='md' w='100%'>
+      <Group pb={'lg'}>
+        <Group justify='space-between' mt={'md'} w={'100%'}>
           <Text fw={500}>Số lượng bản ghi: {currentItems?.length || 0}</Text>
           <Group>
             <SearchInput />
+            <CreateRevenueButton />
           </Group>
         </Group>
       </Group>
 
       <Box className={`tableAdmin w-full overflow-x-auto`}>
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
-            <Table.Tr>
-              <Table.Th>{firstColumnTitle}</Table.Th>
-              <Table.Th>Tổng đơn hàng</Table.Th>
-              <Table.Th>Tổng chi</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
+        <Table striped highlightOnHover>
+          <TableThead className='rounded-lg text-sm uppercase leading-normal'>
+            <TableTr>
+              <TableTh>Mã </TableTh>
+              <TableTh>Tổng chi</TableTh>
+              <TableTh>Tổng đơn</TableTh>
+              <TableTh>Ngày</TableTh>
+              <TableTh>Tháng</TableTh>
+              <TableTh>Năm</TableTh>
+              <TableTh>Tạo ngày</TableTh>
+              <TableTh>Thao tác</TableTh>
+            </TableTr>
+          </TableThead>
 
-          <Table.Tbody>
+          <TableTbody>
             {currentItems.length > 0 ? (
-              currentItems.map((item: any, index: number) => (
-                <Table.Tr key={index}>
-                  <Table.Td className='text-sm'>
-                    <Text size='sm'>
-                      {s === 'user'
-                        ? item.user?.name
-                        : s === 'date'
-                          ? `${item.date}/${item.month}/${item.year}`
-                          : s === 'month'
-                            ? `${item.month}/${item.year}`
-                            : item.year}
-                    </Text>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Text size='sm'>{item.totalOrders}</Text>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Text size='sm'>{formatPriceLocaleVi(item.totalSpent)}</Text>
-                  </Table.Td>
-                </Table.Tr>
-              ))
+              currentItems.map((revenue: any) => {
+                return (
+                  <TableTr key={revenue.id}>
+                    <TableTd className='text-sm'>{revenue.id}</TableTd>
+                    <TableTd className='text-sm'>{revenue.totalSpent || 0}</TableTd>
+                    <TableTd className='text-sm'>{revenue.totalOrders || 0}</TableTd>
+                    <TableTd className='text-sm'>{revenue?.day}</TableTd>
+                    <TableTd className='text-sm'>{revenue?.month} </TableTd>
+                    <TableTd className='text-sm'>{revenue?.year} </TableTd>
+                    <TableTd className='text-sm'>{formatDateViVN(revenue?.createdAt || new Date())}</TableTd>
+                    <TableTd className='text-sm'>
+                      <Group className='text-center'>
+                        <UpdateRevenueButton id={revenue.id || ''} />
+                        <CopyRevenueButton data={revenue} />
+                      </Group>
+                    </TableTd>
+                  </TableTr>
+                );
+              })
             ) : (
-              <Table.Tr>
-                <Table.Td colSpan={3} className='bg-gray-100 text-center'>
+              <TableTr>
+                <TableTd colSpan={7} className='bg-gray-100 text-center dark:bg-dark-card'>
                   <Text size='md' c='dimmed'>
                     Không có bản ghi phù hợp.
                   </Text>
-                </Table.Td>
-              </Table.Tr>
+                </TableTd>
+              </TableTr>
             )}
-          </Table.Tbody>
+          </TableTbody>
         </Table>
       </Box>
     </>

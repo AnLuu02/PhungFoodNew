@@ -1,8 +1,9 @@
-import { Card, Group, Text, Title } from '@mantine/core';
+import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
-import SearchInput from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/search-input';
+import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserAdvanced } from './components/Button';
 import TableOrder from './components/Table/TableOrder';
@@ -16,29 +17,44 @@ export default async function OrderManagementPage({
     s?: string;
     page?: string;
     limit?: string;
+    filter?: string;
+    sort?: string;
   };
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
-  const totalData = await api.Order.getAll();
+  const filter = searchParams?.filter as LocalOrderStatus;
+  const sortArr = (
+    searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
+  )?.filter(Boolean);
+  const allData = await api.Order.getAll();
   const user = await getServerSession(authOptions);
-  const data = await api.Order.find({ skip: +currentPage, take: +limit, s });
+  const data = await api.Order.find({ skip: +currentPage, take: +limit, s, filter, sort: sortArr });
   return (
-    <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
-      <Title mb='xs' className='font-quicksand'>
-        Quản lý hóa đơn
-      </Title>
-      <Group justify='space-between' mb='md'>
-        <Text fw={500}>Số lượng bản ghi: {totalData && totalData?.length}</Text>
-        <Group>
-          <SearchInput />
-          <CreateOrderButton />
-          <SendMessageAllUserAdvanced />
+    <>
+      <Divider my={'md'} />
+      <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
+        <Flex align={'center'} justify={'space-between'}>
+          <Box>
+            <Title mb={4} className='font-quicksand' order={2}>
+              Quản lý hóa đơn
+            </Title>
+            <Text size='sm' c={'dimmed'}>
+              Danh sách tất cả hóa đơn trong hệ thống PhungFood
+            </Text>
+          </Box>
+        </Flex>
+        <Group justify='space-between' mb='md'>
+          <Text fw={500}>Số lượng bản ghi: {allData && allData?.length}</Text>
+          <Group>
+            <SearchInput />
+            <CreateOrderButton />
+            <SendMessageAllUserAdvanced />
+          </Group>
         </Group>
-      </Group>
-
-      <TableOrder data={data} s={s} user={user} />
-    </Card>
+        <TableOrder data={data} s={s} user={user} allData={allData} />
+      </Stack>
+    </>
   );
 }

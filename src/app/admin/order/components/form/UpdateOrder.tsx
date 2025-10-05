@@ -21,6 +21,7 @@ import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-fo
 import useSWR from 'swr';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import fetcher from '~/lib/func-handler/fetcher';
+import { getStatusInfo } from '~/lib/func-handler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalOrderStatus } from '~/lib/zod/EnumType';
 import { orderSchema } from '~/lib/zod/zodShcemaForm';
@@ -48,7 +49,7 @@ export default function UpdateOrder({
     watch,
     setValue,
     getValues,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<Order>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
@@ -359,7 +360,7 @@ export default function UpdateOrder({
                     label='Phương thức thanh toán'
                     searchable
                     placeholder=' Chọn phương thức thanh toán'
-                    data={payments?.map(payment => ({ value: payment.id, label: payment.name }))}
+                    data={payments?.data?.map(payment => ({ value: payment.id, label: payment.name }))}
                     error={errors.paymentId?.message}
                   />
                 )}
@@ -394,10 +395,12 @@ export default function UpdateOrder({
                   <Select
                     label='Trạng thái (chỉ đọc)'
                     placeholder=' Chọn trạng thái'
-                    data={Object.values(OrderStatus)}
+                    data={Object.values(OrderStatus).map(status => ({
+                      value: status,
+                      label: getStatusInfo(status as LocalOrderStatus).label
+                    }))}
                     {...field}
                     error={errors.status?.message}
-                    readOnly
                   />
                 )}
               />
@@ -439,7 +442,7 @@ export default function UpdateOrder({
           </Grid>
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
       </Button>
     </form>

@@ -14,24 +14,39 @@ export default function BannerSection({ banner }: any) {
   const gallery = banner?.images?.filter((image: any) => image?.type === LocalImageType.GALLERY) || [];
   const banners = banner?.images?.filter((image: any) => image?.type === LocalImageType.BANNER) || [];
 
-  const slides = gallery.map((slide: any) => (
-    <Carousel.Slide key={slide.id} className='rounded-md'>
-      <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
-        <Image
-          style={{ objectFit: 'cover' }}
-          src={slide.url || '/images/jpg/empty-300x240.jpg'}
-          alt={slide.altText}
-          fill
-          className='rounded-md'
-        />
-      </Box>
-    </Carousel.Slide>
-  ));
+  const slides =
+    gallery.length > 0 ? (
+      gallery.map((slide: any) => (
+        <Carousel.Slide key={slide.id} className='rounded-md'>
+          <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
+            <Image
+              style={{ objectFit: 'cover' }}
+              src={slide.url || '/images/jpg/empty-300x240.jpg'}
+              alt={slide.altText}
+              fill
+              className='rounded-md'
+            />
+          </Box>
+        </Carousel.Slide>
+      ))
+    ) : (
+      <Carousel.Slide className='rounded-md'>
+        <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
+          <Image
+            style={{ objectFit: 'cover' }}
+            src={'/images/jpg/empty-300x240.jpg'}
+            alt={'empty'}
+            fill
+            className='rounded-md'
+          />
+        </Box>
+      </Carousel.Slide>
+    );
 
   return (
     <Box>
       <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
-        <Box w={{ base: '100%', lg: '66.666667%' }}>
+        <Box w={{ base: '100%', lg: '66.666667%' }} className='h-fit'>
           <Carousel
             withControls
             withIndicators
@@ -56,6 +71,7 @@ export default function BannerSection({ banner }: any) {
           align='center'
           justify='space-between'
           w={{ base: '100%', lg: '33.333333%' }}
+          gap={'md'}
           className='hidden lg:flex'
         >
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
@@ -82,7 +98,7 @@ export default function BannerSection({ banner }: any) {
         <SimpleGrid cols={{ base: 2, sm: 3, md: 6 }} spacing='md'>
           {[
             { icon: '🍽️', title: 'Gọi món', href: '/thuc-don' },
-            { icon: '👨‍🍳', title: 'Tư vấn món ăn' },
+            { icon: '👨‍🍳', title: 'Tư vấn' },
             { icon: '📍', title: 'Tìm nhà hàng', href: '/lien-he' },
             { icon: '🛒', title: 'Đơn hàng', href: '/don-hang-cua-toi' },
             { icon: '📜', title: 'Chính sách', href: '/chinh-sach' },
@@ -91,7 +107,7 @@ export default function BannerSection({ banner }: any) {
             <Link href={service.href || ''} key={index}>
               <Paper
                 key={index}
-                className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-dark-text'
+                className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-white'
                 radius={'md'}
                 p={'sm'}
                 h={'100%'}

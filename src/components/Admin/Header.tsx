@@ -27,10 +27,17 @@ export default function Header() {
         w={{ base: '100%', sm: 'max-content', md: 'max-content', lg: 'max-content' }}
       >
         <Link href={'/'}>
-          <Image src='/logo/logo_phungfood_1.png' alt='logo' width={150} height={50} style={{ objectFit: 'cover' }} />
+          <Image
+            src='/logo/logo_phungfood_1.png'
+            alt='logo'
+            priority
+            width={150}
+            height={50}
+            style={{ objectFit: 'cover' }}
+          />
         </Link>
         <Badge bg={'red'} radius={'sm'} className='hidden lg:block'>
-          {session?.user?.role || 'Super Admin'}
+          {session?.user?.role || 'Admin'}
         </Badge>
       </Flex>
 
@@ -62,7 +69,7 @@ export default function Header() {
                 <IconChevronDown
                   style={{ width: 12, height: 12 }}
                   stroke={1.5}
-                  className='hidden text-gray-500 sm:block'
+                  className='hidden text-gray-500 dark:text-white sm:block'
                 />
               </Group>
             </UnstyledButton>

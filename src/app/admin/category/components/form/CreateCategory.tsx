@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
@@ -13,11 +13,12 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<Category>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       id: '',
+      isActive: true,
       name: '',
       tag: '',
       description: ''
@@ -53,7 +54,7 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
-        <Grid.Col span={6}>
+        <GridCol span={12}>
           <Controller
             control={control}
             name='name'
@@ -67,8 +68,8 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
               />
             )}
           />
-        </Grid.Col>
-        <Grid.Col span={12}>
+        </GridCol>
+        <GridCol span={12}>
           <Controller
             control={control}
             name='description'
@@ -82,9 +83,25 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
               />
             )}
           />
-        </Grid.Col>
+        </GridCol>
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='isActive'
+            render={({ field }) => (
+              <Switch
+                checked={field.value}
+                onChange={event => field.onChange(event.currentTarget.checked)}
+                onBlur={field.onBlur}
+                name={field.name}
+                size='sm'
+                label='Tình trạng'
+              />
+            )}
+          />
+        </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới
       </Button>
     </form>

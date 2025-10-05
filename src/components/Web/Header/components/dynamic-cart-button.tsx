@@ -2,7 +2,6 @@
 import { Box, Button } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconShoppingBag } from '@tabler/icons-react';
-import clsx from 'clsx';
 import Link from 'next/link';
 import useScrollPosition from '~/components/Hooks/use-on-scroll';
 import { HEIGHT_HEADER } from '~/constants';
@@ -13,7 +12,7 @@ export default function DynamicCartButton({ heightShow }: { heightShow?: number 
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   return (
     scroll >= (heightShow || HEIGHT_HEADER) && (
-      <Box className={clsx('animate-fadeTop')}>
+      <Box className={`animate-fadeTop`}>
         <Box className='md:hidden lg:block'>
           <CartButton />
         </Box>

@@ -13,21 +13,25 @@ import {
   NumberInput,
   PasswordInput,
   Select,
+  Switch,
   Textarea,
   TextInput
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconFile, IconMail, IconPhone, IconUpload } from '@tabler/icons-react';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
+import { z } from 'zod';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { infoUserLevel, UserRole } from '~/constants';
 import fetcher from '~/lib/func-handler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalAddressType, LocalGender } from '~/lib/zod/EnumType';
+import { LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
 import { userSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
@@ -39,19 +43,23 @@ export default function UpdateUser({
   email: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = api.User.getOne.useQuery({ s: email || '' }, { enabled: !!email });
-  const { data } = queryResult;
+  const { data: session } = useSession();
+  const { data: user } = api.User.getOne.useQuery({ s: email || '' }, { enabled: !!email });
   const [loading, setLoading] = useState(false);
-  const refInputImage = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
   const {
     control,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
     setValue
   } = useForm<User>({
-    resolver: zodResolver(userSchema),
+    resolver: zodResolver(
+      userSchema.extend({
+        phone: z.string().optional().nullable()
+      })
+    ),
     defaultValues: {
       id: '',
       name: '',
@@ -59,10 +67,11 @@ export default function UpdateUser({
       image: undefined,
       gender: LocalGender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
+      isActive: true,
       password: '',
       phone: '',
       roleId: '',
-      address: { detail: '', type: LocalAddressType.USER },
+      address: undefined,
       pointUser: 0
     }
   });
@@ -81,8 +90,8 @@ export default function UpdateUser({
   );
   useEffect(() => {
     setLoading(true);
-    if (data && data?.image?.url && data?.image?.url !== '') {
-      vercelBlobToFile(data?.image?.url as string)
+    if (user && user?.image?.url && user?.image?.url !== '') {
+      vercelBlobToFile(user?.image?.url as string)
         .then(file => {
           setValue('image.url', file as File);
         })
@@ -94,19 +103,20 @@ export default function UpdateUser({
       setLoading(false);
     }
     reset({
-      id: data?.id,
-      name: data?.name,
-      email: data?.email,
-      password: data?.password,
-      dateOfBirth: data?.dateOfBirth || new Date(),
-      gender: data?.gender || LocalGender.OTHER,
-      phone: data?.phone || '',
-      roleId: data?.roleId || '',
-      address: data?.address as any,
-      pointUser: data?.pointUser,
-      level: data?.level
+      id: user?.id,
+      name: user?.name,
+      email: user?.email,
+      password: user?.password,
+      dateOfBirth: user?.dateOfBirth || new Date(),
+      gender: user?.gender || LocalGender.OTHER,
+      phone: user?.phone || '',
+      roleId: user?.roleId || '',
+      address: user?.address as any,
+      pointUser: user?.pointUser,
+      level: user?.level,
+      isActive: user?.isActive
     });
-  }, [data, reset]);
+  }, [user, reset]);
   const utils = api.useUtils();
   const updateMutation = api.User.update.useMutation();
 
@@ -143,7 +153,7 @@ export default function UpdateUser({
       if (result.code === 'OK') {
         NotifySuccess(result.message);
         setOpened(false);
-        utils.User.getOne.invalidate({ s: email || '' });
+        utils.User.invalidate();
       } else {
         NotifyError(result.message);
       }
@@ -151,6 +161,13 @@ export default function UpdateUser({
   };
 
   const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
+
+  const [pointUserValue] = useDebouncedValue(watch('pointUser'), 500);
+
+  useEffect(() => {
+    const level = infoUserLevel.find(level => level.minPoint <= pointUserValue && level.maxPoint >= pointUserValue);
+    setValue('level', level?.key || LocalUserLevel.BRONZE);
+  }, [pointUserValue]);
 
   if (loading || isLoading || rolesLoading) return <LoadingSpiner />;
 
@@ -209,7 +226,7 @@ export default function UpdateUser({
             render={({ field }) => (
               <FileInput
                 id='image'
-                leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh chính'
                 placeholder='Choose a file'
                 leftSectionPointerEvents='none'
@@ -231,7 +248,7 @@ export default function UpdateUser({
                     {...field}
                     required
                     label='Tên'
-                    placeholder='Enter your name'
+                    placeholder='Nhập tên người dùng'
                     error={errors.name?.message}
                   />
                 )}
@@ -249,23 +266,8 @@ export default function UpdateUser({
                     required
                     leftSection={<IconMail size={18} stroke={1.5} />}
                     label='Email'
-                    placeholder='Enter your tag'
+                    placeholder='Nhập email người dùng'
                     error={errors.email?.message}
-                  />
-                )}
-              />
-            </GridCol>
-
-            <GridCol span={4}>
-              <Controller
-                control={control}
-                name='password'
-                render={({ field }) => (
-                  <PasswordInput
-                    label='Mật khẩu'
-                    placeholder='Enter your name'
-                    error={errors.password?.message}
-                    {...field}
                   />
                 )}
               />
@@ -280,7 +282,7 @@ export default function UpdateUser({
                     {...field}
                     label='Số điện thoại'
                     leftSection={<IconPhone size={18} stroke={1.5} />}
-                    placeholder='Enter your name'
+                    placeholder='Nhập số điện thoại người dùng'
                     error={errors.phone?.message}
                   />
                 )}
@@ -291,14 +293,25 @@ export default function UpdateUser({
               <Controller
                 control={control}
                 name='roleId'
-                disabled={data?.role?.name !== UserRole.SUPER_ADMIN && data?.role?.name !== UserRole.ADMIN}
+                disabled={session?.user.role !== UserRole.ADMIN}
                 render={({ field }) => (
                   <Select
                     label='Vai trò'
                     searchable
                     placeholder='Chọn vai trò'
                     {...field}
-                    data={roles?.map(role => ({ value: role.id, label: role.name })) || []}
+                    data={
+                      roles?.map(role => ({
+                        value: role.id,
+                        label:
+                          role.name === UserRole.ADMIN
+                            ? 'Quản trị viên'
+                            : role.name === UserRole.STAFF
+                              ? 'Nhân viên'
+                              : 'Khách hàng',
+                        disabled: role.name === UserRole.ADMIN
+                      })) || []
+                    }
                     error={errors.roleId?.message}
                   />
                 )}
@@ -412,7 +425,7 @@ export default function UpdateUser({
                 control={control}
                 name={`pointUser`}
                 defaultValue={0}
-                disabled={data?.role?.name !== UserRole.SUPER_ADMIN && data?.role?.name !== UserRole.ADMIN}
+                disabled={session?.user.role !== UserRole.ADMIN}
                 render={({ field }) => (
                   <NumberInput
                     {...field}
@@ -428,7 +441,7 @@ export default function UpdateUser({
             <GridCol span={4}>
               <Controller
                 control={control}
-                disabled={data?.role?.name !== UserRole.SUPER_ADMIN && data?.role?.name !== UserRole.ADMIN}
+                disabled={session?.user.role !== UserRole.ADMIN}
                 name={`level`}
                 render={({ field }) => (
                   <Select
@@ -445,6 +458,44 @@ export default function UpdateUser({
                 )}
               />
             </GridCol>
+            {pathname.includes('/admin/user') && (
+              <>
+                <GridCol span={4}>
+                  <Controller
+                    control={control}
+                    name='password'
+                    render={({ field }) => (
+                      <PasswordInput
+                        label='Mật khẩu'
+                        withAsterisk
+                        placeholder='Nhập mật khẩu người dùng'
+                        error={errors.password?.message}
+                        {...field}
+                      />
+                    )}
+                  />
+                </GridCol>
+                <GridCol span={4}>
+                  <Controller
+                    control={control}
+                    name={`isActive`}
+                    disabled={session?.user.role !== UserRole.ADMIN}
+                    render={({ field }) => (
+                      <Switch
+                        name={field.name}
+                        checked={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        disabled={session?.user.role !== UserRole.ADMIN}
+                        label='Trạng thái'
+                        error={errors?.isActive?.message}
+                      />
+                    )}
+                  />
+                </GridCol>
+              </>
+            )}
+
             <GridCol span={12}>
               <Controller
                 control={control}
@@ -462,7 +513,7 @@ export default function UpdateUser({
             </GridCol>
 
             <GridCol span={12}>
-              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
                 Cập nhật
               </Button>
             </GridCol>

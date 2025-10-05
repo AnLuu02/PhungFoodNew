@@ -79,7 +79,7 @@ export function OrderStatusPage({
         </Box>
 
         <Box className='space-y-2'>
-          <Title order={2} className='font-quicksand text-2xl font-bold text-gray-900'>
+          <Title order={2} className='font-quicksand text-2xl font-bold text-gray-900 dark:text-white'>
             {displayTitle}
           </Title>
           <Text size='lg' c={'dimmed'} fw={600}>
@@ -99,7 +99,7 @@ export function OrderStatusPage({
           </Badge>
         </Center>
 
-        <Box className='space-y-3 text-gray-600'>
+        <Box className='space-y-3 text-gray-600 dark:text-white'>
           <Text className='text-base leading-relaxed'>{displayMessage}</Text>
           {!isErrorState && !customMessage && (
             <>
@@ -118,7 +118,7 @@ export function OrderStatusPage({
                 <Text size='sm' c={'dimmed'}>
                   Mã đơn hàng
                 </Text>
-                <Text size='sm' className='font-mono font-semibold text-gray-900'>
+                <Text size='sm' className='font-mono font-semibold text-gray-900 dark:text-white'>
                   {orderId}
                 </Text>
               </Box>
@@ -128,7 +128,7 @@ export function OrderStatusPage({
                 <Text size='sm' c={'dimmed'}>
                   Số tiền:
                 </Text>
-                <Text size='lg' className='font-semibold text-gray-900'>
+                <Text size='lg' className='font-semibold text-gray-900 dark:text-white'>
                   {formatPriceLocaleVi(amount)}
                 </Text>
               </Flex>

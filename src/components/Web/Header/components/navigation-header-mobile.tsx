@@ -2,7 +2,6 @@
 import { Badge, Box, Button, Center, Drawer, Flex, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown } from '@tabler/icons-react';
-import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -68,12 +67,11 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
                   radius={'xl'}
                   variant='subtle'
                   px={'md'}
-                  className={clsx(
-                    'transition hover:bg-mainColor hover:text-white',
+                  className={`transition hover:bg-mainColor hover:text-white ${
                     pathname === item.href
                       ? 'bg-mainColor text-white'
                       : 'bg-[#f1faf6] text-mainColor dark:bg-dark-card dark:hover:bg-mainColor'
-                  )}
+                  } `}
                   rightSection={item.href === '/thuc-don' && <IconCaretDown size={18} />}
                 >
                   <Text fw={700} size='sm'>

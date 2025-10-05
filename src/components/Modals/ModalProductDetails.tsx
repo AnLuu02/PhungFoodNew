@@ -20,7 +20,6 @@ import {
   Text
 } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
-import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -123,7 +122,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
             <GridCol span={{ base: 12, lg: 7 }}>
               <Stack gap='md'>
                 <Flex align='center' gap={'xs'}>
-                  <Badge className={clsx(inStock ? 'bg-mainColor' : 'bg-red-500')} radius={'sm'}>
+                  <Badge className={`${inStock ? 'bg-mainColor' : 'bg-red-500'}`} radius={'sm'}>
                     {inStock ? 'Còn hàng' : 'Hết hàng'}
                   </Badge>
                   <Rating value={data?.rating?.toFixed(1)} readOnly size='sm' color={'#FFC522'} />

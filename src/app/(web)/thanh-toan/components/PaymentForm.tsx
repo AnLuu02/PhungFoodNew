@@ -2,9 +2,9 @@ import { Box, Flex, Paper, Radio, Skeleton, Stack, Text, Title } from '@mantine/
 import { Controller } from 'react-hook-form';
 import { api } from '~/trpc/react';
 
-const PaymentForm = ({ control, errors }: any) => {
+export const PaymentForm = ({ control }: any) => {
   const { data: paymentData, isLoading } = api.Payment.getAll.useQuery();
-  const payment = paymentData ?? [];
+  const payment = paymentData?.data ?? [];
   return (
     <Paper withBorder p='md' radius='md' mb='md'>
       <Box mb='md'>
@@ -71,11 +71,10 @@ const PaymentForm = ({ control, errors }: any) => {
 
       <Text size='sm' c='dimmed' mt='lg'>
         Nếu bạn không hài lòng với sản phẩm của chúng tôi? Bạn hoàn toàn có thể trả lại sản phẩm{' '}
-        <Text component='a' href='#' c='blue' style={{ textDecoration: 'none' }}>
+        <Text component='a' href='#' style={{ textDecoration: 'none', color: 'blue' }}>
           Tại đây
         </Text>
       </Text>
     </Paper>
   );
 };
-export default PaymentForm;

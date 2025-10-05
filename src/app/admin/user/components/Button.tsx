@@ -1,18 +1,19 @@
 'use client';
-import { ActionIcon, Button, Modal, Title } from '@mantine/core';
-import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
+import { ActionIcon, Button, Modal, Title, Tooltip } from '@mantine/core';
+import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateUser from './form/CreateUser';
+import UpdatePermissionUser from './form/UpdatePermissionUser';
 import UpdateUser from './form/UpdateUser';
 
 export function CreateUserButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
-        Tạo mới
+      <Button radius={'md'} leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} bg={'#195EFE'}>
+        Tạo người dùng
       </Button>
       <Modal
         closeOnClickOutside={false}
@@ -26,6 +27,32 @@ export function CreateUserButton() {
         }
       >
         <CreateUser setOpened={setOpened} />
+      </Modal>
+    </>
+  );
+}
+
+export function UpdatePermissions({ email }: { email: any }) {
+  const [opened, setOpened] = useState(false);
+  return (
+    <>
+      <Tooltip label='Cập nhật quyền'>
+        <ActionIcon variant='transparent' color='black' onClick={() => setOpened(true)}>
+          <IconKey size={20} />
+        </ActionIcon>
+      </Tooltip>
+      <Modal
+        closeOnClickOutside={false}
+        size='70%'
+        opened={opened}
+        onClose={() => setOpened(false)}
+        title={
+          <Title order={2} className='font-quicksand'>
+            Quản lý quyền người dùng
+          </Title>
+        }
+      >
+        <UpdatePermissionUser email={email} setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -48,9 +75,11 @@ export function UpdateUserButton({
   }, [openedFromClient]);
   return (
     <>
-      <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
-        <IconEdit size={24} />
-      </ActionIcon>
+      <Tooltip label='Cập nhật người dùng'>
+        <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
+          <IconEdit size={24} />
+        </ActionIcon>
+      </Tooltip>
       <Modal
         closeOnClickOutside={false}
         size='100%'
@@ -77,22 +106,24 @@ export function DeleteUserButton({ id }: { id: string }) {
 
   return (
     <>
-      <ActionIcon
-        variant='subtle'
-        color='red'
-        onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'người dùng',
-            callback: () => {
-              utils.User.invalidate();
-            }
-          });
-        }}
-      >
-        <IconTrash size={24} />
-      </ActionIcon>
+      <Tooltip label='Xóa người dùng'>
+        <ActionIcon
+          variant='subtle'
+          color='red'
+          onClick={() => {
+            confirmDelete({
+              id: { id },
+              mutationDelete,
+              entityName: 'người dùng',
+              callback: () => {
+                utils.User.invalidate();
+              }
+            });
+          }}
+        >
+          <IconTrash size={24} />
+        </ActionIcon>
+      </Tooltip>
     </>
   );
 }

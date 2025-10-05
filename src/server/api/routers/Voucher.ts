@@ -1,8 +1,6 @@
-import { Prisma, VoucherStatus } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -28,9 +26,6 @@ export const voucherRouter = createTRPCRouter({
                 name: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
-                tag: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
                 description: { contains: s?.trim(), mode: 'insensitive' }
               }
             ]
@@ -43,9 +38,6 @@ export const voucherRouter = createTRPCRouter({
             OR: [
               {
                 name: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                tag: { contains: s?.trim(), mode: 'insensitive' }
               },
               {
                 description: { contains: s?.trim(), mode: 'insensitive' }
@@ -70,11 +62,10 @@ export const voucherRouter = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
-        tag: z.string().min(1, 'Tag không được để trống'),
         name: z.string().min(1, 'Tên voucher không được để trống'),
         description: z.string().optional(),
         type: z.enum(['PERCENTAGE', 'FIXED']),
-        status: z.enum(['ENABLED', 'DISABLED']),
+        isActive: z.boolean().default(true),
         discountValue: z.number().min(1, 'Giá trị giảm không hợp lệ'),
         minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
         maxDiscount: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
@@ -92,11 +83,10 @@ export const voucherRouter = createTRPCRouter({
       const voucher = await ctx.db.voucher.create({
         data: {
           name: input.name,
-          tag: input.tag,
           description: input.description,
           type: input.type,
           code: input.code,
-          status: input.status,
+          isActive: input.isActive,
           discountValue: input.discountValue,
           minOrderPrice: input.minOrderPrice,
           maxDiscount: input.maxDiscount,
@@ -109,7 +99,6 @@ export const voucherRouter = createTRPCRouter({
           pointUser: input.pointUser
         }
       });
-      revalidatePath('/admin/voucher');
       return {
         code: 'OK',
         message: 'Tạo khuyến mãi thành công.',
@@ -135,13 +124,7 @@ export const voucherRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return await withRedisCache(
-      'voucher:getAll',
-      async () => {
-        return await ctx.db.voucher.findMany({});
-      },
-      60 * 60 * 24
-    );
+    return await ctx.db.voucher.findMany({});
   }),
   getOne: publicProcedure
     .input(
@@ -175,7 +158,7 @@ export const voucherRouter = createTRPCRouter({
       }
       const voucher = await ctx.db.voucher.findMany({
         where: {
-          status: VoucherStatus.ENABLED,
+          isActive: true,
           startDate: {
             lte: new Date()
           },

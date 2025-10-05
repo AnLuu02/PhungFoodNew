@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -9,19 +10,36 @@ export const reviewRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        sort: z.array(z.string()).optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { skip, take, s } = input;
-
+      const { skip, take, s, sort } = input;
+      const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
       const [totalReviews, totalReviewsQuery, reviews] = await ctx.db.$transaction([
         ctx.db.review.count(),
         ctx.db.review.count({
-          where: s?.trim()
-            ? {
-                OR: [
+          where: {
+            OR: filterStar
+              ? [
+                  {
+                    AND: [
+                      {
+                        rating: {
+                          gte: Number(filterStar)
+                        }
+                      },
+                      {
+                        rating: {
+                          lt: Number(filterStar) + 1
+                        }
+                      }
+                    ]
+                  }
+                ]
+              : [
                   {
                     comment: {
                       contains: s?.trim(),
@@ -45,15 +63,31 @@ export const reviewRouter = createTRPCRouter({
                     }
                   }
                 ]
-              }
-            : undefined
+          },
+          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined
         }),
         ctx.db.review.findMany({
           skip: startPageItem,
           take,
-          where: s?.trim()
-            ? {
-                OR: [
+          where: {
+            OR: filterStar
+              ? [
+                  {
+                    AND: [
+                      {
+                        rating: {
+                          gte: Number(filterStar)
+                        }
+                      },
+                      {
+                        rating: {
+                          lt: Number(filterStar) + 1
+                        }
+                      }
+                    ]
+                  }
+                ]
+              : [
                   {
                     comment: {
                       contains: s?.trim(),
@@ -77,8 +111,8 @@ export const reviewRouter = createTRPCRouter({
                     }
                   }
                 ]
-              }
-            : undefined,
+          },
+          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined,
           select: {
             id: true,
             rating: true,
@@ -87,7 +121,8 @@ export const reviewRouter = createTRPCRouter({
             user: {
               select: {
                 id: true,
-                name: true
+                name: true,
+                image: true
               }
             },
             product: {
@@ -102,7 +137,11 @@ export const reviewRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        s?.trim() ? (totalReviewsQuery == 0 ? 1 : totalReviewsQuery / take) : totalReviews / take
+        Object.entries(input)?.length > 2
+          ? totalReviewsQuery == 0
+            ? 1
+            : totalReviewsQuery / take
+          : totalReviews / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 

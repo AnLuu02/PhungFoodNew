@@ -1,40 +1,19 @@
-import { OrderStatus, ProductStatus } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { UserRole } from '~/constants';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
-import { LocalEntityType, LocalImageType, LocalOrderStatus, LocalProductStatus } from '~/lib/zod/EnumType';
+import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
 
-import { redis } from '~/lib/cache/redis';
+import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { createCaller } from '../root';
 
-export async function updateSales(ctx: any, status: OrderStatus, productId: string, soldQuantity: number) {
-  await ctx.db.product.update({
-    where: { id: productId },
-    data: {
-      soldQuantity: status === LocalOrderStatus.COMPLETED ? { increment: soldQuantity } : { decrement: soldQuantity },
-      availableQuantity:
-        status === LocalOrderStatus.COMPLETED ? { decrement: soldQuantity } : { increment: soldQuantity }
-    }
-  });
-}
-
-export async function updatepointUser(ctx: any, userId: string, orderTotalPrice: number) {
-  await ctx.db.user.update({
-    where: { id: userId },
-    data: {
-      pointUser: { increment: orderTotalPrice >= 10000 ? orderTotalPrice / 10000 : 0 }
-    }
-  });
-}
-
 type FilterOptions = {
   s?: string;
+  filter?: string;
   discount?: boolean;
   bestSaler?: boolean;
   newProduct?: boolean;
@@ -46,25 +25,10 @@ type FilterOptions = {
   'loai-san-pham'?: string;
 };
 
-const buildSortFilter = (sort: any) => {
-  const orderBy: any[] = [];
-
-  if (sort?.includes('price-asc') || sort?.includes('price-desc')) {
-    orderBy.push({
-      price: sort.includes('price-asc') ? 'asc' : 'desc'
-    });
-  }
-
-  if (sort?.includes('name-asc') || sort?.includes('name-desc')) {
-    orderBy.push({
-      name: sort.includes('name-asc') ? 'asc' : 'desc'
-    });
-  }
-  return orderBy?.map(item => item).filter(Boolean);
-};
 const buildFilter = (input: FilterOptions, userRole: any) => {
   const {
     s,
+    filter,
     discount,
     bestSaler,
     newProduct,
@@ -75,11 +39,12 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
     'danh-muc': danhMuc,
     'loai-san-pham': loaiSanPham
   } = input;
+  const search = s?.trim();
   return [
     userRole && userRole != UserRole.CUSTOMER
       ? undefined
       : {
-          status: LocalProductStatus.ACTIVE
+          isActive: true
         },
     loaiSanPham || danhMuc
       ? {
@@ -95,27 +60,42 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
           }
         }
       : undefined,
-    s
+    search
       ? {
           OR: [
             {
               materials: {
                 some: {
-                  category: { equals: s?.trim() }
+                  category: { equals: search }
                 }
               }
             },
             {
               tags: {
-                has: s?.trim()
+                has: search
               }
             },
-            { name: { contains: s?.trim(), mode: 'insensitive' } },
-            { subCategory: { tag: { equals: s?.trim() } } },
+            { name: { contains: search, mode: 'insensitive' } },
             {
-              region: { contains: s?.trim(), mode: 'insensitive' }
+              subCategory: {
+                OR: [
+                  { tag: { equals: search } },
+                  {
+                    category: {
+                      OR: [
+                        { tag: { contains: search, mode: 'insensitive' } },
+                        { name: { contains: search, mode: 'insensitive' } }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              region: { contains: search, mode: 'insensitive' }
             }
-          ]
+          ],
+          isActive: filter === 'ACTIVE@#@$@@' ? true : filter === 'INACTIVE@#@$@@' ? false : undefined
         }
       : undefined,
     discount ? { discount: { gt: 0 } } : undefined,
@@ -158,6 +138,7 @@ export const productRouter = createTRPCRouter({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
         s: z.string().optional(),
+        filter: z.string().optional(),
         sort: z.array(z.string()).optional(),
         'nguyen-lieu': z.array(z.string()).optional(),
         discount: z.boolean().optional(),
@@ -180,6 +161,7 @@ export const productRouter = createTRPCRouter({
         skip,
         take,
         s,
+        filter,
         sort,
         price,
         discount,
@@ -192,10 +174,10 @@ export const productRouter = createTRPCRouter({
       } = input;
 
       const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-
-      const filter = buildFilter(
+      const filterParams = buildFilter(
         {
           s,
+          filter,
           discount,
           bestSaler,
           newProduct,
@@ -212,14 +194,14 @@ export const productRouter = createTRPCRouter({
         ctx.db.product.count(),
         ctx.db.product.count({
           where: {
-            AND: filter.length > 0 ? filter : undefined
+            AND: filterParams.length > 0 ? filterParams : undefined
           } as any
         }),
         ctx.db.product.findMany({
           skip: startPageItem,
           take,
           where: {
-            AND: filter.length > 0 ? filter : undefined
+            AND: filterParams.length > 0 ? filterParams : undefined
           } as any,
           include: {
             images: true,
@@ -236,11 +218,11 @@ export const productRouter = createTRPCRouter({
             review: true,
             favouriteFood: true
           },
-          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort) : undefined
+          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['price', 'name']) : undefined
         })
       ]);
       const totalPages = Math.ceil(
-        s || danhMuc || loaiSanPham || sort || discount || price
+        Object.entries(input).length > 2
           ? totalProductsQuery == 0
             ? 1
             : totalProductsQuery / take
@@ -248,7 +230,6 @@ export const productRouter = createTRPCRouter({
       );
 
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-
       return {
         products,
         pagination: {
@@ -262,17 +243,15 @@ export const productRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1, 'Tên không được để trống'),
         description: z.string().optional(),
-        descriptionDetail: z.array(
-          z.object({
-            label: z.string().min(1, 'Label không được bỏ trONGL'),
-            value: z.string().min(1, 'Value không được bỏ trONGL')
-          })
-        ),
+        descriptionDetailJson: z.any().optional().nullable(),
+        descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
         tag: z.string(),
+        availableQuantity: z.coerce.number().min(0, 'Số lượng khả dụng không âm'),
+        soldQuantity: z.coerce.number().min(0, 'Số lượng đã bán không âm'),
         price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
         discount: z.number().min(0, 'Giảm giá không được âm').default(0),
         tags: z.array(z.string()).optional(),
-        status: z.nativeEnum(ProductStatus).default(LocalProductStatus.ACTIVE),
+        isActive: z.boolean().default(true),
         region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
         thumbnail: z
           .object({
@@ -293,7 +272,6 @@ export const productRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      redis.del('get-data-home-page');
       const existed = await ctx.db.product.findFirst({
         where: { tag: input.tag }
       });
@@ -326,14 +304,17 @@ export const productRouter = createTRPCRouter({
         data: {
           name: input.name,
           description: input.description,
-          descriptionDetail: input.descriptionDetail,
+          descriptionDetailJson: input.descriptionDetailJson,
+          descriptionDetailHtml: input.descriptionDetailHtml,
           tag: input.tag,
           price: input.price,
           discount: input.discount,
           subCategoryId: input.subCategoryId,
+          availableQuantity: input.availableQuantity,
+          soldQuantity: input.soldQuantity,
           region: input.region,
           tags: input.tags,
-          status: input.status,
+          isActive: input.isActive,
           materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
           images: {
             create: [
@@ -375,12 +356,16 @@ export const productRouter = createTRPCRouter({
         id: z.string(),
         name: z.string().min(1, 'Tên không được để trống'),
         description: z.string().optional(),
+        descriptionDetailJson: z.any().optional().nullable(),
+        descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
         tag: z.string(),
         price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
         discount: z.number().min(0, 'Giảm giá không được âm').default(0),
         region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
+        availableQuantity: z.coerce.number().min(0, 'Số lượng khả dụng không âm'),
+        soldQuantity: z.coerce.number().min(0, 'Số lượng đã bán không âm'),
         tags: z.array(z.string()).optional(),
-        status: z.nativeEnum(ProductStatus).default(LocalProductStatus.ACTIVE),
+        isActive: z.boolean().default(true),
         thumbnail: z
           .object({
             fileName: z.string(),
@@ -500,11 +485,15 @@ export const productRouter = createTRPCRouter({
             description: input.description,
             tag: input.tag,
             price: input.price,
+            descriptionDetailJson: input.descriptionDetailJson,
+            descriptionDetailHtml: input.descriptionDetailHtml,
+            availableQuantity: input.availableQuantity,
+            soldQuantity: input.soldQuantity,
             discount: input.discount,
             subCategoryId: input.subCategoryId,
             region: input.region,
             tags: input.tags,
-            status: input.status,
+            isActive: input.isActive,
             materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
             images:
               newImages?.length > 0
@@ -548,7 +537,6 @@ export const productRouter = createTRPCRouter({
       if (updatedProduct?.tag && product?.tag) {
         await CreateTagVi({ old: product, new: updatedProduct });
       }
-
       return {
         code: 'OK',
         message: 'Cập nhật sản phẩm thành công.',
@@ -592,20 +580,21 @@ export const productRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { s, hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
+      const search = s?.trim();
       const product = await ctx.db.product.findMany({
         where: {
           ...(userRole && userRole != UserRole.CUSTOMER
             ? {}
             : {
-                status: LocalProductStatus.ACTIVE
+                isActive: true
               }),
           OR: [
-            { id: s?.trim() },
-            { tag: s?.trim() },
+            { id: search },
+            { tag: search },
             {
               materials: {
                 some: {
-                  category: s?.trim()
+                  category: search
                 }
               }
             },
@@ -613,12 +602,12 @@ export const productRouter = createTRPCRouter({
               subCategory: {
                 OR: [
                   {
-                    tag: s?.trim()
+                    tag: search
                   },
 
                   {
                     category: {
-                      tag: s?.trim()
+                      tag: search
                     }
                   }
                 ]
@@ -661,57 +650,51 @@ export const productRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { s, hasCategory, hasCategoryChild, hasReview, hasUser, userRole }: any = input;
-      return await withRedisCache(
-        `getOne-product-${s}`,
-        async () => {
-          return await ctx.db.product.findFirst({
-            where: {
-              ...(userRole && userRole != UserRole.CUSTOMER
-                ? {}
-                : {
-                    status: LocalProductStatus.ACTIVE
-                  }),
+      return await ctx.db.product.findFirst({
+        where: {
+          ...(userRole && userRole != UserRole.CUSTOMER
+            ? {}
+            : {
+                isActive: true
+              }),
 
-              OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
-            },
-            include: {
-              images: true,
-              materials: true,
-              subCategory: {
-                include: {
-                  image: true,
-                  ...(hasCategoryChild
-                    ? {
-                        category: hasCategory ? true : false
-                      }
-                    : false)
-                }
-              },
-              review: {
-                ...(hasReview
-                  ? {
-                      include: {
-                        user: {
-                          ...(hasUser
-                            ? {
-                                select: {
-                                  id: true,
-                                  name: true,
-                                  image: true
-                                }
-                              }
-                            : false)
-                        }
-                      }
-                    }
-                  : false)
-              },
-              favouriteFood: true
-            }
-          });
+          OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
         },
-        60 * 60
-      );
+        include: {
+          images: true,
+          materials: true,
+          subCategory: {
+            include: {
+              image: true,
+              ...(hasCategoryChild
+                ? {
+                    category: hasCategory ? true : false
+                  }
+                : false)
+            }
+          },
+          review: {
+            ...(hasReview
+              ? {
+                  include: {
+                    user: {
+                      ...(hasUser
+                        ? {
+                            select: {
+                              id: true,
+                              name: true,
+                              image: true
+                            }
+                          }
+                        : false)
+                    }
+                  }
+                }
+              : false)
+          },
+          favouriteFood: true
+        }
+      });
     }),
   getAll: publicProcedure
     .input(
@@ -726,11 +709,7 @@ export const productRouter = createTRPCRouter({
       const { hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
       const product = await ctx.db.product.findMany({
         where: {
-          ...(userRole && userRole != UserRole.CUSTOMER
-            ? {}
-            : {
-                status: LocalProductStatus.ACTIVE
-              })
+          ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
         },
         include: {
           images: true,

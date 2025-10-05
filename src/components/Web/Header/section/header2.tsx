@@ -17,7 +17,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
         justify={'space-between'}
         align={'center'}
         pos={'relative'}
-        className='z-[101] bg-gray-100 text-white dark:bg-dark-card dark:text-dark-text'
+        className='z-[101] bg-gray-100 text-white dark:bg-dark-card dark:text-white'
         direction={{ base: 'column', sm: 'row', md: 'row' }}
         py={{ base: 20, sm: 0 }}
         gap={{ base: 'md', md: 0 }}

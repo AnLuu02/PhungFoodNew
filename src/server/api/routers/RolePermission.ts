@@ -23,22 +23,49 @@ export const rolePermissionRouter = createTRPCRouter({
         ctx.db.role.count(),
         ctx.db.role.count({
           where: {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            OR: [
+              { name: { contains: s?.trim(), mode: 'insensitive' } },
+              { id: { contains: s?.trim(), mode: 'insensitive' } },
+              { viName: { contains: s?.trim(), mode: 'insensitive' } },
+              {
+                permissions: {
+                  some: {
+                    OR: [
+                      { id: { contains: s?.trim(), mode: 'insensitive' } },
+                      { name: { contains: s?.trim(), mode: 'insensitive' } },
+                      { viName: { contains: s?.trim(), mode: 'insensitive' } },
+                      { description: { contains: s?.trim(), mode: 'insensitive' } }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }),
         ctx.db.role.findMany({
           skip: startPageItem,
           take,
           where: {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            OR: [
+              { name: { contains: s?.trim(), mode: 'insensitive' } },
+              { id: { contains: s?.trim(), mode: 'insensitive' } },
+              { viName: { contains: s?.trim(), mode: 'insensitive' } },
+              {
+                permissions: {
+                  some: {
+                    OR: [
+                      { id: { contains: s?.trim(), mode: 'insensitive' } },
+                      { name: { contains: s?.trim(), mode: 'insensitive' } },
+                      { viName: { contains: s?.trim(), mode: 'insensitive' } },
+                      { description: { contains: s?.trim(), mode: 'insensitive' } }
+                    ]
+                  }
+                }
+              }
+            ]
           },
           include: {
-            permissions: {
-              select: {
-                id: true,
-                name: true
-              }
-            }
+            permissions: true
           }
         })
       ]);
@@ -59,7 +86,12 @@ export const rolePermissionRouter = createTRPCRouter({
 
   getAllRole: publicProcedure.query(async ({ ctx }) => {
     let roles = await ctx.db.role.findMany({
-      include: { permissions: true }
+      include: {
+        permissions: true,
+        users: {
+          include: { role: true }
+        }
+      }
     });
     return roles satisfies RoleWithPermissions[];
   }),
@@ -83,6 +115,7 @@ export const rolePermissionRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
+        viName: z.string().optional(),
         permissionIds: z.array(z.string())
       })
     )
@@ -90,6 +123,7 @@ export const rolePermissionRouter = createTRPCRouter({
       const role = await ctx.db.role.create({
         data: {
           name: input.name,
+          viName: input.viName,
           permissions: {
             connect: input.permissionIds.map(id => ({ id }))
           }
@@ -107,6 +141,7 @@ export const rolePermissionRouter = createTRPCRouter({
         data: z.array(
           z.object({
             name: z.string().min(1, 'Tên vai trò không được để trống'),
+            viName: z.string().optional(),
             permissionIds: z.array(z.string())
           })
         )
@@ -130,6 +165,7 @@ export const rolePermissionRouter = createTRPCRouter({
           const role = await ctx.db.role.create({
             data: {
               name: item.name,
+              viName: item.viName,
               permissions: {
                 connect: item.permissionIds.map(id => ({ id }))
               }
@@ -150,16 +186,38 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         roleId: z.string(),
         name: z.string(),
+        viName: z.string().optional(),
         permissionIds: z.array(z.string())
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const role = await ctx.db.role.update({
+      const role = await ctx.db.role.upsert({
         where: { id: input.roleId },
-        data: {
+        create: {
           name: input.name,
+          viName: input.viName,
           permissions: {
-            set: input.permissionIds.map(id => ({ id }))
+            connect: input.permissionIds.map(id => ({ id }))
+          }
+        },
+        update: {
+          name: input.name,
+          viName: input.viName,
+          permissions: {
+            connect: input.permissionIds.map(id => ({ id })),
+            disconnect: (
+              await ctx.db.permission.findMany({
+                where: {
+                  roles: {
+                    some: { id: input.roleId }
+                  },
+                  id: {
+                    notIn: input.permissionIds
+                  }
+                },
+                select: { id: true }
+              })
+            ).map(p => ({ id: p.id }))
           }
         }
       });
@@ -205,7 +263,9 @@ export const rolePermissionRouter = createTRPCRouter({
           where: {
             OR: [
               { id: { contains: s?.trim(), mode: 'insensitive' } },
-              { name: { contains: s?.trim(), mode: 'insensitive' } }
+              { name: { contains: s?.trim(), mode: 'insensitive' } },
+              { viName: { contains: s?.trim(), mode: 'insensitive' } },
+              { description: { contains: s?.trim(), mode: 'insensitive' } }
             ]
           }
         }),
@@ -215,11 +275,19 @@ export const rolePermissionRouter = createTRPCRouter({
           where: {
             OR: [
               { id: { contains: s?.trim(), mode: 'insensitive' } },
-              { name: { contains: s?.trim(), mode: 'insensitive' } }
+              { name: { contains: s?.trim(), mode: 'insensitive' } },
+              { viName: { contains: s?.trim(), mode: 'insensitive' } },
+              { description: { contains: s?.trim(), mode: 'insensitive' } }
             ]
           },
           include: {
-            roles: true
+            roles: {
+              select: {
+                id: true,
+                name: true,
+                viName: true
+              }
+            }
           }
         })
       ]);
@@ -238,15 +306,15 @@ export const rolePermissionRouter = createTRPCRouter({
       };
     }),
 
-  getPermissions: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.permission.findMany();
-  }),
-
   createPermission: publicProcedure
-    .input(z.object({ name: z.string(), description: z.string().optional() }))
+    .input(z.object({ name: z.string(), viName: z.string().optional(), description: z.string().optional() }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const permission = await ctx.db.permission.create({
-        data: { name: input.name, description: input.description }
+        data: {
+          name: input.name,
+          viName: input.viName,
+          description: input.description
+        }
       });
       return {
         code: 'OK',
@@ -259,6 +327,7 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         data: z.array(
           z.object({
+            viName: z.string().optional(),
             name: z.string().min(1, 'Tên vai trò không được để trống'),
             description: z.string().optional()
           })
@@ -295,6 +364,7 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         permissionId: z.string(),
         name: z.string(),
+        viName: z.string().optional(),
         description: z.string().optional()
       })
     )
@@ -302,6 +372,7 @@ export const rolePermissionRouter = createTRPCRouter({
       const role = await ctx.db.permission.update({
         where: { id: input.permissionId },
         data: {
+          viName: input.viName,
           name: input.name,
           description: input.description
         }
@@ -332,5 +403,25 @@ export const rolePermissionRouter = createTRPCRouter({
       include: { roles: true }
     });
     return permissions;
-  })
+  }),
+  //user permision
+  updateUserPermissions: publicProcedure
+    .input(z.array(z.object({ userId: z.string(), permissionId: z.string(), granted: z.boolean() })))
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const userPermissions = await ctx.db.$transaction(
+        input.map(item =>
+          ctx.db.userPermission.upsert({
+            where: { userId_permissionId: { userId: item.userId, permissionId: item.permissionId } },
+            update: { granted: item.granted },
+            create: { userId: item.userId, permissionId: item.permissionId, granted: item.granted }
+          })
+        )
+      );
+
+      return {
+        code: 'OK',
+        message: 'Cập nhật thành công.',
+        data: userPermissions
+      };
+    })
 });

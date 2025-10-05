@@ -2,10 +2,15 @@
 
 import { Avatar, Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconChevronDown, IconLogout, IconShoppingBag, IconUser, IconUserCircle } from '@tabler/icons-react';
-import clsx from 'clsx';
+import { IconChevronDown, IconLock, IconLogout, IconShoppingBag, IconUser, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+
+const menuUser = [
+  { label: 'Thông tin cá nhân', href: '/thong-tin', icon: IconUser },
+  { label: 'Đơn hàng của tôi', href: '/don-hang-cua-toi', icon: IconShoppingBag },
+  { label: 'Đổi mật khẩu', href: '/auth/password/change-password', icon: IconLock }
+];
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -18,14 +23,14 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
     return (
       <Group gap={'xs'} align={'center'} justify='center'>
         <IconUserCircle size={20} fontWeight={'bold'} />
-        <Link href='/dang-ki' className={clsx(responsive ? 'text-white' : 'text-black dark:text-dark-text')}>
-          <Text size='sm' className={clsx('cursor-pointer font-bold hover:underline')}>
+        <Link href='/auth/register' className={`${responsive ? 'text-white' : 'text-black dark:text-white'}`}>
+          <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng kí
           </Text>
         </Link>
         <Text>/</Text>
-        <Link href='/dang-nhap' className={clsx(responsive ? 'text-white' : 'text-black dark:text-dark-text')}>
-          <Text size='sm' className={clsx('cursor-pointer font-bold hover:underline')}>
+        <Link href='/auth/login' className={`${responsive ? 'text-white' : 'text-black dark:text-white'}`}>
+          <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng nhập
           </Text>
         </Link>
@@ -49,7 +54,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
                   style={{ objectFit: 'cover' }}
                 />
               </Box>
-              <Box className={clsx('text-left', responsive && 'hidden sm:block')}>
+              <Box className={`text-left ${responsive && 'hidden sm:block'}`}>
                 <Text fw={700} size='sm' lh={1} className='text-black'>
                   {user?.user?.name}
                 </Text>
@@ -61,40 +66,33 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
             <IconChevronDown
               style={{ width: 12, height: 12 }}
               stroke={1.5}
-              className={clsx('mr-4 text-gray-500', responsive && 'mr-0 hidden sm:block')}
+              className={`mr-4 text-gray-500 dark:text-white ${responsive && 'mr-0 hidden sm:block'}`}
             />
           </Flex>
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown className='bg-subColor'>
         <Divider />
-        <Link href={`/thong-tin`}>
-          <Menu.Item
-            fw={500}
-            className='hover:bg-[rgba(0,0,0,0.2)]'
-            leftSection={<IconUser color='black' fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
-          >
-            <Text size='sm' className='text-black' p={0}>
-              Thông tin cá nhân
-            </Text>
-          </Menu.Item>
-        </Link>
-        <Divider />
 
-        <Link href={`/don-hang-cua-toi`}>
-          <Menu.Item
-            className='hover:bg-[rgba(0,0,0,0.2)]'
-            fw={500}
-            leftSection={
-              <IconShoppingBag color='black' fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />
-            }
-          >
-            <Text size='sm' className='text-black' p={0}>
-              Đơn hàng của tôi
-            </Text>
-          </Menu.Item>
-        </Link>
-        <Divider />
+        {menuUser.map((item, index) => (
+          <>
+            <Link key={index} href={item.href}>
+              <Menu.Item
+                fw={500}
+                key={index}
+                className='hover:bg-[rgba(0,0,0,0.2)]'
+                leftSection={
+                  <item.icon color='black' fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />
+                }
+              >
+                <Text size='sm' className='text-black' p={0}>
+                  {item.label}
+                </Text>
+              </Menu.Item>
+            </Link>
+            <Divider />
+          </>
+        ))}
 
         <Menu.Item
           fw={500}

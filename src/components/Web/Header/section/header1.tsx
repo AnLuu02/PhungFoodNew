@@ -3,14 +3,19 @@
 import { ActionIcon, Box, Button, Center, Flex, Group, Menu, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconClock, IconWorld } from '@tabler/icons-react';
-import clsx from 'clsx';
 import Image from 'next/image';
+import { useMemo } from 'react';
+import UserSectionDesktop from '~/components/UserSectionDesktop';
 import ButtonControlModeTheme from '../../../ButtonControlModeTheme';
-import UserSection from '../../../UserSection';
 
 export const Header1 = ({ restaurant }: any) => {
   const restaurantData = restaurant ?? {};
   const [language, setLanguage] = useLocalStorage<any>({ key: 'language', defaultValue: 'vn' });
+  const timeOpen = useMemo(() => {
+    const timeIndex = new Date().getDay();
+    const timeOpens = restaurantData?.openingHours ?? [];
+    return timeOpens[timeIndex];
+  }, [restaurantData]);
   return (
     <Flex
       direction={{ base: 'column', sm: 'row', md: 'row' }}
@@ -30,18 +35,18 @@ export const Header1 = ({ restaurant }: any) => {
 
       <Group align={'center'} justify='center' gap={0}>
         <Group gap='md' align={'center'} justify='center'>
-          {restaurantData?.openedHours && restaurantData?.closedHours ? (
+          {timeOpen?.openTime && timeOpen?.closeTime ? (
             <Button
               size='xs'
               radius='xl'
-              variant='subtle'
-              className='text-white hover:text-subColor'
+              variant='transparent'
+              className='hover:text-subColor'
               leftSection={<IconClock size={16} />}
-              color={!restaurantData?.isClose ? 'blue' : 'red'}
+              classNames={{
+                root: `font-quicksand hover:text-subColor ${!timeOpen?.isClosed ? 'text-white' : 'text-subColor'}`
+              }}
             >
-              {!restaurantData?.isClose
-                ? `MỞ CỬA: ${restaurantData?.openedHours} ĐẾN ${restaurantData?.closedHours}`
-                : `ĐÃ ĐÓNG CỬA: MỞ LẠI LÚC ${restaurantData?.closedHours}`}
+              {!timeOpen?.isClosed ? `MỞ CỬA: ${timeOpen?.openTime} ĐẾN ${timeOpen?.closeTime}` : `ĐÃ ĐÓNG CỬA`}
             </Button>
           ) : (
             ''
@@ -64,7 +69,7 @@ export const Header1 = ({ restaurant }: any) => {
                     height={language === 'vn' ? 35 : 20}
                     alt='vietnam-flag'
                     style={{ objectFit: 'cover' }}
-                    className={clsx(language === 'vn' ? '' : 'cursor-pointer')}
+                    className={`${language === 'vn' ? '' : 'cursor-pointer'}`}
                   />
                 }
               >
@@ -80,7 +85,7 @@ export const Header1 = ({ restaurant }: any) => {
                     height={language === 'us' ? 35 : 20}
                     alt='english-flag'
                     style={{ objectFit: 'cover' }}
-                    className={clsx(language === 'us' ? '' : 'cursor-pointer')}
+                    className={`${language === 'us' ? '' : 'cursor-pointer'}`}
                   />
                 }
               >
@@ -88,8 +93,7 @@ export const Header1 = ({ restaurant }: any) => {
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <UserSection responsive={true} />
-
+          {<UserSectionDesktop responsive={true} />}
           <Box
             pos={{ base: 'fixed', sm: 'unset', md: 'unset', lg: 'fixed' }}
             left={{ base: 5, sm: 0, md: 0, lg: 5 }}

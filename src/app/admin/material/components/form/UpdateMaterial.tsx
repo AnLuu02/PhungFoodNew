@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { categoriesMaterial } from '~/constants';
@@ -23,15 +23,14 @@ export default function UpdateMaterial({
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-    watch,
-    setValue
+    formState: { errors, isSubmitting, isDirty },
+    reset
   } = useForm<Material>({
     resolver: zodResolver(materialSchema),
     defaultValues: {
       id: '',
       name: '',
+      category: '',
       tag: '',
       description: ''
     }
@@ -74,7 +73,7 @@ export default function UpdateMaterial({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
-        <Grid.Col span={6}>
+        <GridCol span={6}>
           <Controller
             control={control}
             name='name'
@@ -88,9 +87,9 @@ export default function UpdateMaterial({
               />
             )}
           />
-        </Grid.Col>
+        </GridCol>
 
-        <Grid.Col span={6}>
+        <GridCol span={6}>
           <Controller
             control={control}
             name='category'
@@ -110,8 +109,8 @@ export default function UpdateMaterial({
               />
             )}
           />
-        </Grid.Col>
-        <Grid.Col span={12}>
+        </GridCol>
+        <GridCol span={12}>
           <Controller
             control={control}
             name='description'
@@ -125,9 +124,9 @@ export default function UpdateMaterial({
               />
             )}
           />
-        </Grid.Col>
+        </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới
       </Button>
     </form>

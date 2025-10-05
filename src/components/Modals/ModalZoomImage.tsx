@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Box, Button, Flex, Image, Modal, Paper, UnstyledButton } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Image, Modal, Paper, Text, UnstyledButton } from '@mantine/core';
 import {
   IconChevronCompactLeft,
   IconChevronCompactRight,
@@ -10,7 +10,6 @@ import {
   IconZoomIn,
   IconZoomOut
 } from '@tabler/icons-react';
-import clsx from 'clsx';
 import type React from 'react';
 
 import { TouchList, useEffect, useRef, useState } from 'react';
@@ -184,7 +183,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
           onClick={() => handlePrev(index)}
           size='xl'
           radius='xl'
-          className='absolute left-6 top-[50%] z-50'
+          className='absolute left-6 top-[50%] z-50 bg-mainColor duration-200 hover:bg-subColor disabled:bg-gray-50'
         >
           <IconChevronCompactLeft className='h-5 w-5' />
         </ActionIcon>
@@ -193,7 +192,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
           onClick={() => handleNext(index)}
           size='xl'
           radius='xl'
-          className='absolute right-6 top-[50%] z-50'
+          className='absolute right-6 top-[50%] z-50 bg-mainColor duration-200 hover:bg-subColor disabled:bg-gray-50'
         >
           <IconChevronCompactRight className='h-5 w-5' />
         </ActionIcon>
@@ -236,14 +235,14 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
           </Button>
         </Box>
 
-        <Box className='absolute bottom-4 left-4 z-50 rounded-lg border border-white/20 bg-black/50 px-3 py-2 text-white'>
-          <span className='text-sm font-medium'>{Math.round(scale * 100)}%</span>
+        <Box className='absolute bottom-28 left-[50%] z-50 translate-x-[-50%] rounded-md border border-white/20 bg-black/50 px-3 py-2 text-white sm:bottom-4 sm:left-4 sm:translate-x-0'>
+          <Text size='sm'>{Math.round(scale * 100)}%</Text>
         </Box>
 
         {scale > 1 && (
-          <Box className='absolute bottom-4 right-4 z-50 flex items-center gap-2 rounded-lg border border-white/20 bg-black/50 px-3 py-2 text-white'>
+          <Box className='absolute right-4 top-16 z-50 flex items-center gap-2 rounded-lg border border-white/20 bg-black/50 px-3 py-2 text-white'>
             <IconHandMove className='h-4 w-4' />
-            <span className='text-sm'>Kéo để di chuyển</span>
+            <Text size='sm'>Kéo để di chuyển</Text>
           </Box>
         )}
 
@@ -254,12 +253,11 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
                 <UnstyledButton
                   key={index}
                   onClick={() => handleThumbnailClick(item, index)}
-                  className={clsx(
-                    'overflow-hidden rounded-[4px] transition duration-200',
+                  className={`overflow-hidden rounded-[4px] transition duration-200 ${
                     item.src === currentImage?.src
                       ? 'border-2 border-solid border-mainColor opacity-100'
                       : 'border-none opacity-60'
-                  )}
+                  } `}
                 >
                   <Image
                     loading='lazy'
@@ -282,12 +280,11 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
                   handleThumbnailClick(totalImages[displayImages.length] as ImageType, displayImages.length)
                 }
                 p={0}
-                className={clsx(
-                  'cursor-pointer overflow-hidden',
+                className={`cursor-pointer overflow-hidden ${
                   index >= displayImages.length
                     ? 'border-2 border-solid border-mainColor opacity-100'
                     : 'border-none opacity-60'
-                )}
+                } `}
               >
                 <Box pos='relative'>
                   <Image
@@ -333,7 +330,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
           />
         </Box>
 
-        <Box className='absolute bottom-4 left-1/2 z-50 -translate-x-1/2 transform rounded-lg border border-white/20 bg-black/50 px-4 py-2 text-white'>
+        <Box className='absolute bottom-4 left-1/2 z-50 hidden -translate-x-1/2 transform rounded-lg border border-white/20 bg-black/50 px-4 py-2 text-white xl:block'>
           <Box className='space-y-1 text-center text-xs'>
             <Box>Cuộn chuột để zoom • Kéo để di chuyển</Box>
             <Box className='text-white/70'>ESC để đóng</Box>

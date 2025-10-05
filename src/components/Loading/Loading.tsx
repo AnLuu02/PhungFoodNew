@@ -11,7 +11,7 @@ export default function LoadingComponent() {
     };
   }, []);
   return (
-    <Flex align={'center'} justify={'center'} pos={'fixed'} top={0} left={0} bottom={0} right={0} className='z-[9999]'>
+    <Flex align={'center'} justify={'center'} pos={'fixed'} top={0} left={0} bottom={0} right={0} className='z-[200]'>
       <Image
         style={{ objectFit: 'cover' }}
         src={'/images/gif/loading.gif'}

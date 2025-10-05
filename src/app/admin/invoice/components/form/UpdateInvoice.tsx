@@ -1,0 +1,208 @@
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button, Grid, GridCol, Select, TextInput } from '@mantine/core';
+import { useEffect, type Dispatch, type SetStateAction } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { invoiceSchema } from '~/lib/zod/zodShcemaForm';
+import { api } from '~/trpc/react';
+import { Invoice } from '~/types/invoice';
+
+export default function UpdateInvoice({
+  invoiceId,
+  setOpened
+}: {
+  invoiceId: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
+  const { data: orders } = api.Order.getAll.useQuery(undefined, { enabled: invoiceId !== '' });
+  const { data: salers } = api.User.getSaler.useQuery(undefined, { enabled: invoiceId !== '' });
+  const { data: invoice } = api.Invoice.getOne.useQuery({ s: invoiceId }, { enabled: invoiceId !== '' });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting, isDirty }
+  } = useForm<Invoice>({
+    resolver: zodResolver(invoiceSchema),
+    defaultValues: {
+      id: '',
+      orderId: '',
+      salerId: '',
+      invoiceNumber: '',
+      status: 'PAID',
+      currency: 'VND',
+      taxCode: ''
+    }
+  });
+
+  const utils = api.useUtils();
+  const mutation = api.Invoice.update.useMutation();
+
+  useEffect(() => {
+    if (!invoice) return;
+    const invoiceData = invoice.data as Invoice;
+    reset({
+      id: invoiceData.id,
+      orderId: invoiceData.orderId,
+      salerId: invoiceData.salerId,
+      invoiceNumber: invoiceData.invoiceNumber,
+      status: invoiceData.status,
+      currency: invoiceData.currency,
+      taxCode: invoiceData.taxCode
+    });
+  }, [invoice]);
+  const onSubmit: SubmitHandler<Invoice> = async formData => {
+    try {
+      const result = await mutation.mutateAsync(formData);
+      if (result.code !== 'OK') {
+        NotifyError(result.message);
+        utils.Invoice.invalidate();
+        return;
+      }
+      setOpened(false);
+      NotifySuccess(result.message);
+    } catch {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Grid gutter='md'>
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='orderId'
+            render={({ field }) => (
+              <Select
+                label='Đơn hàng'
+                placeholder='Chọn Đơn hàng'
+                searchable
+                data={orders?.map(order => ({
+                  value: order.id,
+                  label: `DH-${order.id}`
+                }))}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.orderId?.message}
+              />
+            )}
+          />
+        </GridCol>
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='salerId'
+            render={({ field }) => (
+              <Select
+                label='Saler'
+                placeholder='Chọn Saler'
+                searchable
+                data={salers?.map(sale => ({
+                  value: sale.id,
+                  label: sale.name + `  (${sale?.role?.name})`
+                }))}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.salerId?.message}
+              />
+            )}
+          />
+        </GridCol>
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='invoiceNumber'
+            render={({ field }) => (
+              <TextInput
+                label='Số hóa đơn'
+                withAsterisk
+                placeholder='Số hóa đơn'
+                {...field}
+                error={errors.invoiceNumber?.message}
+              />
+            )}
+          />
+        </GridCol>
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='status'
+            render={({ field }) => (
+              <Select
+                label='Trạng thái'
+                placeholder='Chọn Trạng thái'
+                searchable
+                data={[
+                  {
+                    value: 'PAID',
+                    label: 'Hoàn thành'
+                  },
+                  {
+                    value: 'PENDING',
+                    label: 'Chưa hoàn thành'
+                  },
+                  {
+                    value: 'CANCELLED',
+                    label: 'Đã hủy'
+                  }
+                ]}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.status?.message}
+              />
+            )}
+          />
+        </GridCol>
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='currency'
+            render={({ field }) => (
+              <Select
+                label='Tiền tệ'
+                placeholder='Chọn Tiền tệ'
+                searchable
+                data={[
+                  {
+                    value: 'vnd',
+                    label: 'VND'
+                  },
+                  {
+                    value: 'usd',
+                    label: 'USD'
+                  },
+                  {
+                    value: 'euro',
+                    label: 'EURO'
+                  }
+                ]}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.currency?.message}
+              />
+            )}
+          />
+        </GridCol>
+
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='taxCode'
+            render={({ field }) => (
+              <TextInput label='Mã số thuế' placeholder='Mã số thuế' {...field} error={errors.taxCode?.message} />
+            )}
+          />
+        </GridCol>
+      </Grid>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+        Cập nhật
+      </Button>
+    </form>
+  );
+}

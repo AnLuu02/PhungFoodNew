@@ -84,12 +84,11 @@ function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' 
           className='transition-transform hover:scale-105 hover:text-mainColor'
           styles={{
             root: {
-              border: '1px solid ',
-              marginRight: 6
+              border: '1px solid '
             }
           }}
           classNames={{
-            root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
+            root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
           }}
         >
           Sao chép

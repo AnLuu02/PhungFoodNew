@@ -1,4 +1,8 @@
 const tags: Record<string, string> = {
+  "1": "1",
+  "123": "123",
+  "1223412": "1223412",
+  "21312312": "21312312",
   "gioi-thieu": "Giới thiệu",
   "gio-hang": "Giỏ hàng",
   "thong-tin": "Thông tin cá nhân",
@@ -11,7 +15,7 @@ const tags: Record<string, string> = {
   "tin-tuc": "Tin tức",
   "chinh-sach": "Chính sách",
   "dang-nhap": "Đăng nhập",
-  "dang-ki": "Đăng kí",
+  "register": "Đăng ký",
   "san-pham": "Sản phẩm",
   "yeu-thich": "Yêu thích",
   "danh-gia": "Đánh giá",
@@ -28,7 +32,7 @@ const tags: Record<string, string> = {
   "price-desc": "Giá từ cao đến thấp",
   "name-asc": "Tên A-Z",
   "name-desc": "Tên Z-A",
-  "new": "Mới nhất",
+  "new": "New",
   "old": "Cũ nhất",
   "best-seller": "Bán chạy",
   "com-tam-suon-bi-cha": "Cơm tấm sườn bì chả",
@@ -96,7 +100,7 @@ const tags: Record<string, string> = {
   "che": "Chè ",
   "kem": "Kem",
   "sua-chua": "Sữa Chua",
-  "trai-cay-dia": "Trái Cây Dĩa",
+  "trai-cay": "Trái Cây",
   "bun-bo-hue": "Bún bò Huế",
   "ca-phe-sua-da": "Cà phê sữa đá",
   "bun-cha-ha-noi": "Bún chả Hà Nội",
@@ -113,7 +117,18 @@ const tags: Record<string, string> = {
   "keo-ngot": "Kẹo ngọt",
   "rau-cau": "Rau câu",
   "nguyen-thuy-linh": "Nguyễn Thùy Linh",
-  "nguyen-thi-meo-meo": "Nguyễn Thị Mèo Meo"
+  "nguyen-thi-meo-meo": "Nguyễn Thị Mèo Meo",
+  "com-com": "Cơm cớm",
+  "banh-cuon": "Bánh cuốn",
+  "sua-chua-trai-cay": "Sữa chua trái cây",
+  "xoi-xoai": "Xôi xoài",
+  "xoi-ngot-la-dua": "Xôi ngọt lá dứa",
+  "cha-gio-chien": "Chả giò chiên",
+  "bun-bo-chay": "Bún bò chay",
+  "com-rang-dua-chuot": "Cơm rang dưa chuột",
+  "bun-mam-chay": "Bún mắm chay",
+  "thit-ngong": "Thịt ngỗng",
+  "test1": "Test1"
 };
 
 export default tags;

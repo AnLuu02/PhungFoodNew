@@ -21,7 +21,6 @@ import {
   Tooltip
 } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
-import clsx from 'clsx';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -141,10 +140,7 @@ export default function MyOrderPageClient({ data }: any) {
                     withBorder
                     shadow='sm'
                     h='100%'
-                    className={clsx('cursor-pointer transition-all duration-300', {
-                      'ring-2 ring-blue-500': selectedStatus === status,
-                      'hover:bg-mainColor/10': selectedStatus !== status
-                    })}
+                    className={`cursor-pointer transition-all duration-300 ${selectedStatus === status ? 'ring-2 ring-blue-500' : 'hover:bg-mainColor/10'} `}
                     onClick={() => setSelectedStatus(selectedStatus === status ? null : status)}
                   >
                     <RingProgress

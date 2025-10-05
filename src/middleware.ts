@@ -4,7 +4,7 @@ import { UserRole } from './constants';
 import { formatDateViVN } from './lib/func-handler/Format';
 
 const protectedRoutes = ['/admin', '/thong-tin', '/thanh-toan', '/don-hang-cua-toi'];
-const authPages = ['/dang-nhap', '/dang-ki'];
+const authPages = ['/auth/login', '/auth/register'];
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!token && protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
-    const loginUrl = new URL('/dang-nhap', request.url);
+    const loginUrl = new URL('/auth/login', request.url);
     loginUrl.searchParams.set('callbackUrl', currentUrl);
 
     return NextResponse.redirect(loginUrl);
@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/thong-tin/:path*', '/thanh-toan/:path*', '/dang-nhap', '/dang-ki']
+  matcher: ['/admin/:path*', '/thong-tin/:path*', '/thanh-toan/:path*', '/auth/login', '/auth/register']
 };

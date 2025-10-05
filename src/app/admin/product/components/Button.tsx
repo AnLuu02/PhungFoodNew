@@ -12,7 +12,7 @@ export function CreateProductButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
         Tạo mới
       </Button>
       <Modal

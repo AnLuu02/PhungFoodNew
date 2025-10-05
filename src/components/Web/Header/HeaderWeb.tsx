@@ -11,7 +11,7 @@ const HeaderWeb = async () => {
   const session = await getServerSession(authOptions);
   const user = session?.user;
   const [restaurant, categories, subCategories, notifications] = await Promise.all([
-    api.Restaurant.getOne(),
+    api.Restaurant.getOneActive(),
     api.Category.getAll(),
     api.SubCategory.getAll(),
     user?.email ? api.Notification.getFilter({ s: user?.email || '' }) : undefined

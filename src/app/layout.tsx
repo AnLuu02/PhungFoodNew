@@ -1,7 +1,10 @@
 import '@mantine/carousel/styles.css';
+import '@mantine/charts/styles.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/tiptap/styles.css';
+
 import '~/styles/globals.css';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
@@ -15,6 +18,8 @@ import { TRPCReactProvider } from '~/trpc/react';
 
 import ScrollToTop from '~/components/ScrollToTop';
 import { ModalProvider } from '~/contexts/ModalContext';
+import { hexToRgb } from '~/lib/func-handler/hexToRgb';
+import { api } from '~/trpc/server';
 import { authOptions } from './api/auth/[...nextauth]/options';
 
 const quickSandFont = Quicksand({
@@ -60,16 +65,29 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerSession(authOptions);
+  const theme = await api.Restaurant.getTheme();
+  const defaultScheme =
+    theme?.themeMode === 'dark' || theme?.themeMode === 'light' || theme?.themeMode === 'auto'
+      ? theme.themeMode
+      : 'light';
+  const mainColor = theme?.primaryColor || '#00BFA6';
+  const subColor = theme?.secondaryColor || '#f8c144';
 
   return (
-    <html lang='en'>
+    <html
+      lang='en'
+      style={{
+        ['--color-mainColor' as any]: hexToRgb(mainColor),
+        ['--color-subColor' as any]: hexToRgb(subColor)
+      }}
+    >
       <head>
-        <ColorSchemeScript defaultColorScheme='light' />
+        <ColorSchemeScript defaultColorScheme={defaultScheme} />
         <link rel='icon' href='/favicon.ico' />
       </head>
       <body className={`${quickSandFont.className}`}>
         <TRPCReactProvider session={session as Session}>
-          <MantineProvider defaultColorScheme='light'>
+          <MantineProvider defaultColorScheme={defaultScheme}>
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>

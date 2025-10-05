@@ -5,7 +5,7 @@ import { IconSearch } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useRef } from 'react';
 
-export default function SearchInput() {
+export function SearchInput({ width }: { width?: string | number | undefined }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -35,8 +35,9 @@ export default function SearchInput() {
       placeholder='Tìm kiếm'
       defaultValue={searchParams.get('s') || ''}
       onChange={event => handleSearch(event.currentTarget.value)}
-      leftSection={<IconSearch size={16} className='text-gray-300' />}
+      leftSection={<IconSearch size={16} className='text-gray-300 dark:text-white' />}
       rightSectionWidth={40}
+      w={width}
       rightSection={
         <Box
           style={{

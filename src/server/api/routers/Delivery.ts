@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { addressSchema } from '~/lib/zod/zodShcemaForm';
+import { deliveryAddressSchema } from '~/lib/zod/zodShcemaForm';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -12,7 +12,7 @@ export const deliveryRouter = createTRPCRouter({
         name: z.string().min(1, 'Name là bắt buộc'),
         email: z.string().min(1, 'Email là bắt buộc'),
         phone: z.string().min(1, 'Phone là bắt buộc'),
-        address: addressSchema,
+        address: deliveryAddressSchema,
         note: z.string().optional(),
         userId: z.string().min(1, 'Ai là người mua hàng?'),
         orderId: z.string().min(1, 'Order ID là bắt buộc')
@@ -27,7 +27,7 @@ export const deliveryRouter = createTRPCRouter({
           address: {
             create: {
               ...input.address
-            }
+            } as any
           },
           note: input.note,
           orderId: input.orderId
@@ -49,7 +49,7 @@ export const deliveryRouter = createTRPCRouter({
         name: z.string().min(1, 'Name là bắt buộc'),
         email: z.string().min(1, 'Email là bắt buộc'),
         phone: z.string().min(1, 'Phone là bắt buộc'),
-        address: addressSchema,
+        address: deliveryAddressSchema,
         note: z.string().optional(),
         userId: z.string().min(1, 'Ai là người mua hàng?'),
         orderId: z.string().min(1, 'Order ID là bắt buộc')
@@ -73,7 +73,7 @@ export const deliveryRouter = createTRPCRouter({
             address: {
               update: {
                 ...input.address
-              }
+              } as any
             },
             note: input.note,
             orderId: input.orderId

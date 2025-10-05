@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
@@ -22,12 +22,13 @@ export default function UpdateCategory({
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset
   } = useForm<Category>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       id: '',
+      isActive: true,
       name: '',
       tag: '',
       description: ''
@@ -39,6 +40,7 @@ export default function UpdateCategory({
       reset({
         id: data?.id,
         name: data?.name,
+        isActive: data?.isActive || false,
         tag: data?.tag,
         description: data?.description || ''
       });
@@ -75,7 +77,7 @@ export default function UpdateCategory({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
-        <Grid.Col span={6}>
+        <GridCol span={12}>
           <Controller
             control={control}
             name='name'
@@ -89,9 +91,9 @@ export default function UpdateCategory({
               />
             )}
           />
-        </Grid.Col>
+        </GridCol>
 
-        <Grid.Col span={12}>
+        <GridCol span={12}>
           <Controller
             control={control}
             name='description'
@@ -99,9 +101,25 @@ export default function UpdateCategory({
               <Textarea size='sm' label='Mô tả' placeholder='Nhập mô tả' error={errors.name?.message} {...field} />
             )}
           />
-        </Grid.Col>
+        </GridCol>
+        <GridCol span={6}>
+          <Controller
+            control={control}
+            name='isActive'
+            render={({ field }) => (
+              <Switch
+                checked={field.value}
+                onChange={event => field.onChange(event.currentTarget.checked)}
+                onBlur={field.onBlur}
+                name={field.name}
+                size='sm'
+                label='Tình trạng'
+              />
+            )}
+          />
+        </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
       </Button>
     </form>

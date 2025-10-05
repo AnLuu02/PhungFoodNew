@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
-import DashboardContent from './components/dashboard-content';
+import { DashboardContent } from './components/DashboardContent';
 
 export const metadata: Metadata = {
   title: 'Thông tin khách hàng - Phụng Food',

@@ -20,7 +20,7 @@ import { api } from '~/trpc/react';
 const defaultGlobalSearchData = [
   {
     type: 'admintrator',
-    title: 'Quản trị',
+    label: 'Quản trị',
     data: [
       {
         name: 'Sản phẩm bán',
@@ -44,7 +44,7 @@ const defaultGlobalSearchData = [
   },
   {
     type: 'brand',
-    title: 'Thương hiệu',
+    label: 'Thương hiệu',
     data: [
       {
         name: 'Trang chủ Phụng-Food',
@@ -64,21 +64,14 @@ const defaultGlobalSearchData = [
 export const GlobalSearch = ({ width }: any) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [value, setValue] = useState('');
-  const [results, setResults] = useState<{ type: string; title: string; data: any }[]>([]);
+  const [results, setResults] = useState<{ type: string; label: string; data: any }[]>([]);
   const [debounced] = useDebouncedValue(value, 500);
 
-  const { data: category, isLoading: isLoadingCategory } = api.Category.find.useQuery(
+  const { data, isLoading } = api.Search.searchGlobal.useQuery(
     { skip: 0, take: 10, s: debounced ?? '' },
     { enabled: !!debounced }
   );
-  const { data: product, isLoading: isLoadingProduct } = api.Product.find.useQuery(
-    { skip: 0, take: 10, s: debounced ?? '', userRole: 'ADMIN' },
-    { enabled: !!debounced }
-  );
-  const { data: user, isLoading: isLoadingUser } = api.User.find.useQuery(
-    { skip: 0, take: 10, s: debounced ?? '' },
-    { enabled: !!debounced }
-  );
+
   useWindowEvent('keydown', event => {
     if (event.ctrlKey && event.key === 'k') {
       event.preventDefault();
@@ -88,31 +81,31 @@ export const GlobalSearch = ({ width }: any) => {
   useEffect(() => {
     if (debounced) {
       const rs: any = [];
-      if (category && category.categories.length > 0) {
+      if (data && data.categories.length > 0) {
         rs.push({
           type: 'category',
-          title: 'Danh mục',
-          data: category.categories.map((item: any) => ({
+          label: 'Danh mục',
+          data: data.categories.map((item: any) => ({
             ...item,
             icon: <IconListTree key={item.id} size={24} />
           }))
         });
       }
-      if (product && product.products.length > 0) {
+      if (data && data.products.length > 0) {
         rs.push({
           type: 'product',
-          title: 'Sản phẩm',
-          data: product.products.map((item: any) => ({
+          label: 'Sản phẩm',
+          data: data.products.map((item: any) => ({
             ...item,
             icon: <IconCheese key={item.id} size={24} />
           }))
         });
       }
-      if (user && user.users.length > 0) {
+      if (data && data.users.length > 0) {
         rs.push({
           type: 'user',
-          title: 'Người dung',
-          data: user.users.map((item: any) => ({
+          label: 'Người dung',
+          data: data.users.map((item: any) => ({
             ...item,
             icon: <IconUser key={item.id} size={24} />
           }))
@@ -122,12 +115,12 @@ export const GlobalSearch = ({ width }: any) => {
     } else {
       setResults([...defaultGlobalSearchData]);
     }
-  }, [debounced, category, product, user]);
+  }, [debounced, data]);
   return (
     <>
       <TextInput
         placeholder='Search...'
-        leftSection={<IconSearch size={24} className='text-gray-300' />}
+        leftSection={<IconSearch size={24} className='text-gray-300 dark:text-white' />}
         rightSectionWidth={80}
         pointer
         w={width}
@@ -173,15 +166,7 @@ export const GlobalSearch = ({ width }: any) => {
           value={value}
           onChange={event => setValue(event.currentTarget.value)}
           placeholder='Search...'
-          leftSection={
-            <>
-              {isLoadingProduct && isLoadingCategory && isLoadingUser ? (
-                <Loader color={'dimmed'} className='' size={20} />
-              ) : (
-                <IconSearch size={24} />
-              )}
-            </>
-          }
+          leftSection={<>{isLoading ? <Loader color={'dimmed'} className='' size={20} /> : <IconSearch size={24} />}</>}
           style={{ width: '100%' }}
           onClick={open}
           m={0}
@@ -194,7 +179,7 @@ export const GlobalSearch = ({ width }: any) => {
             results.map((result, index) => (
               <Box pb={10} key={index}>
                 <Text size='sm' fw={500} c='dimmed' pl={'md'}>
-                  {result.title}
+                  {result.label}
                 </Text>
                 {result.data?.length > 0 &&
                   result.data.map((d: any, index: number) => (

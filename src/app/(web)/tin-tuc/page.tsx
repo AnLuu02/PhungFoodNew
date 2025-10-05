@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
-import SearchInput from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/search-input';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/server';
@@ -68,7 +68,7 @@ const News = async ({
                       highlight={s}
                       size='xl'
                       fw={700}
-                      className='text-black hover:text-mainColor dark:text-dark-text'
+                      className='text-black hover:text-mainColor dark:text-white'
                     >
                       {item.title}
                     </Highlight>
@@ -79,7 +79,7 @@ const News = async ({
                       {formatDateViVN(item.pubDate)}
                     </Text>
                   </Group>
-                  <Text size='sm' lineClamp={1}>
+                  <Text size='sm' lineClamp={3}>
                     {item.description}
                   </Text>
                   <Link href={item.link} target='_blank'>
@@ -140,7 +140,7 @@ const News = async ({
                         size='sm'
                         fw={500}
                         lineClamp={2}
-                        className='text-black hover:text-mainColor dark:text-dark-text'
+                        className='text-black hover:text-mainColor dark:text-white'
                       >
                         {item.title}
                       </Highlight>

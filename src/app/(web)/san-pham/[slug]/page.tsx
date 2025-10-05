@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { api } from '~/trpc/server';
-import ProductDetailClient from './components/pageClient';
+import ProductDetailClient from './pageClient';
 
 type Props = {
   params: { slug: string };
@@ -15,7 +15,7 @@ const getProduct = async (slug: string, userId: string) => {
   return withRedisCache(
     redisKey,
     async () => {
-      return await api.Layout.getDataProductDetail({ slug, userId });
+      return await api.Page.getInitProductDetail({ slug, userId });
     },
     60 * 60 * 24
   );
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function ProductDetail({ params }: Props) {
   const { slug } = params;
   const user = await getServerSession(authOptions);
-  const data = await getProduct(slug, user?.user?.id || '');
+  const data = await api.Page.getInitProductDetail({ slug, userId: user?.user?.id || '' });
 
   if (!data?.product) {
     return notFound();

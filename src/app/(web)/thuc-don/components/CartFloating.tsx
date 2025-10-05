@@ -7,7 +7,7 @@ import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 
 export default function CartFloating() {
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  if (cart && cart?.length <= 0) return null;
+  if (cart && cart?.length === 0) return null;
   const totalPrice = cart.reduce(
     (sum, item) => sum + (Number(item?.price || 0) - Number(item?.discount || 0)) * Number(item?.quantity || 0),
     0

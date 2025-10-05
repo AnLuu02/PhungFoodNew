@@ -1,6 +1,5 @@
 import { useLocalStorage } from '@mantine/hooks';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import BButton from '~/components/Button';
 import { NotifyError, NotifyWarning } from '~/lib/func-handler/toast';
@@ -28,7 +27,6 @@ export const ButtonCheckout = ({
     defaultValue: []
   });
   const { data: user } = useSession();
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const mutationOrder = api.Order.create.useMutation();
   const orderItems: any = data ?? [];
@@ -53,7 +51,7 @@ export const ButtonCheckout = ({
 
         if (resp.code === 'OK') {
           setLoading(true);
-          router.push(`/thanh-toan/${resp.data.id}`);
+          window.location.href = `/thanh-toan/${resp.data.id}`;
         } else {
           NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
         }

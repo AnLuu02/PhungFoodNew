@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const restaurant = await api.Restaurant.getOne();
+  const restaurant = await api.Restaurant.getOneActive();
   return (
     <>
       <Box pos={'relative'} mx={{ base: -10, sm: -30, md: -30, lg: -130 }} mt={-16}>
@@ -25,7 +25,7 @@ export default async function AboutPage() {
             fill
             className='absolute inset-0 z-[-1] object-cover'
           />
-          <Box className='relative z-10 mx-auto max-w-4xl px-4 text-center text-dark-text'>
+          <Box className='relative z-10 mx-auto max-w-4xl px-4 text-center text-white'>
             <Badge className='mb-4 bg-subColor/90 p-3'>🍔 Câu chuyện của chúng tôi</Badge>
             <Title className='text mb-6 text-balance font-quicksand text-3xl font-bold md:text-6xl'>
               Hương Vị Truyền Thống,
@@ -43,7 +43,7 @@ export default async function AboutPage() {
       <Stack gap={50} pos={'relative'} mt={50}>
         <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl'>
           <Stack gap='md'>
-            <Title className='font-quicksand text-3xl text-mainColor sm:text-5xl'>Câu chuyện của chúng tôi</Title>
+            <Title className='font-quicksand text-3xl text-mainColor sm:text-4xl'>Câu chuyện của chúng tôi</Title>
             <Text>
               Mama Reastaurant là một nhà hàng gia đình mang truyền thống ẩm thực phong phú của Việt Nam vào đĩa thức ăn
               của bạn. Chúng tôi chuyên về ẩm thực miền Tây Việt Nam đồng thời cung cấp các món ăn được yêu thích từ cả
@@ -98,7 +98,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -163,7 +163,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -249,7 +249,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -377,36 +377,15 @@ export default async function AboutPage() {
               <Text fw={700} mt='md'>
                 Giờ hoạt động:
               </Text>
-              <Text>
-                Thứ Hai - Thứ Năm:{' '}
-                <b>
-                  <i>{restaurant?.openedHours} giờ</i>
-                </b>{' '}
-                -{' '}
-                <b>
-                  <i>{restaurant?.closedHours} giờ</i>
-                </b>
-              </Text>
-              <Text>
-                Thứ Sáu - Thứ Bảy:{' '}
-                <b>
-                  <i>{restaurant?.openedHours} giờ</i>
-                </b>{' '}
-                -{' '}
-                <b>
-                  <i>{restaurant?.closedHours} giờ</i>
-                </b>
-              </Text>
-              <Text>
-                Chủ Nhật:{' '}
-                <b>
-                  <i>{restaurant?.openedHours} giờ</i>
-                </b>{' '}
-                -{' '}
-                <b>
-                  <i>{restaurant?.closedHours} giờ</i>
-                </b>
-              </Text>
+              {restaurant?.openingHours ? (
+                restaurant.openingHours.map((hours, index) => (
+                  <Text>
+                    {hours.viNameDay}: <b>{hours?.openTime} Giờ</b> - <b>{hours?.closeTime} Giờ</b>
+                  </Text>
+                ))
+              ) : (
+                <Text>Thứ 2 - Chủ Nhật: 10:00 - 22:00</Text>
+              )}
               <Group mt='md'>
                 <ThemeIcon size='lg' color='green'>
                   <IconPhone />
@@ -451,7 +430,7 @@ export default async function AboutPage() {
             Tham gia cộng đồng khách hàng thân thiết và nhận những ưu đãi hấp dẫn ngay hôm nay
           </Text>
           <Box className='flex flex-col justify-center gap-4 sm:flex-row'>
-            <Link href={'/dang-ki'}>
+            <Link href={'/auth/register'}>
               <BButton size='lg' w={'max-content'} title={' Đăng ký ngay'} radius='sm' />
             </Link>
 

@@ -1,7 +1,7 @@
 import { Container, Space } from '@mantine/core';
 import { recipes } from '~/lib/data-test/recipe';
 import { formatDateViVN } from '~/lib/func-handler/Format';
-import { ConsumerCard } from '../Card/card-overview-vertical';
+import { ConsumerCard } from '../Card/card-consumer';
 import ProductCardCarouselVertical from '../Card/product-card-carousel-vertical';
 import BannerSection from './Section/Banner-section';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
@@ -169,7 +169,7 @@ const HomeWeb = ({
             }}
             CardElement={<RecipeCard />}
           />
-          <Space h='xl' className='hidden sm:block' />
+          <Space h='xl' />
         </>
 
         <>
@@ -186,7 +186,7 @@ const HomeWeb = ({
             }}
             CardElement={<ConsumerCard />}
           />
-          <Space h='xl' className='hidden sm:block' />
+          <Space h='xl' />
         </>
 
         {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (

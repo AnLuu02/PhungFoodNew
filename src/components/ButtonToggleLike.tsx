@@ -4,7 +4,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 const ToggleLikeButton = ({ data }: any) => {
   const { data: user } = useSession();
@@ -30,26 +30,8 @@ const ToggleLikeButton = ({ data }: any) => {
     }
   }, [data, user]);
 
-  const mutationAddFavourite = api.FavouriteFood.create.useMutation({
-    onSuccess: () => {
-      setLike(true);
-      setLoading(false);
-      utils.FavouriteFood.invalidate();
-    },
-    onError: error => {
-      NotifyError(error.message);
-    }
-  });
-  const mutationCancleFavourite = api.FavouriteFood.delete.useMutation({
-    onSuccess: () => {
-      setLike(false);
-      setLoading(false);
-      utils.FavouriteFood.invalidate();
-    },
-    onError: error => {
-      NotifyError(error.message);
-    }
-  });
+  const mutationAddFavourite = api.FavouriteFood.create.useMutation();
+  const mutationCancleFavourite = api.FavouriteFood.delete.useMutation();
 
   return (
     <Button
@@ -66,13 +48,17 @@ const ToggleLikeButton = ({ data }: any) => {
           <IconHeartFilled
             onClick={async () => {
               if (user) {
-                await mutationCancleFavourite.mutateAsync({ userId: user?.user?.id, productId: data.id });
                 setLoading(true);
+                await mutationCancleFavourite.mutateAsync({ userId: user?.user?.id, productId: data.id });
+                setLike(false);
+                setLoading(false);
+                utils.FavouriteFood.invalidate();
+                NotifySuccess('Thành công!', 'Xoá yêu thích thành công.');
               } else {
                 setLike(false);
                 setLocalFavouriteFood(localFavouriteFood.filter((item: any) => item.id !== data.id));
+                NotifySuccess('Thành công!', 'Xoá yêu thích thành công.');
               }
-              NotifySuccess('Thành công!', 'Xóa yêu thích thành công.');
             }}
           />
         </Tooltip>
@@ -81,13 +67,17 @@ const ToggleLikeButton = ({ data }: any) => {
           <IconHeart
             onClick={async () => {
               if (user) {
-                await mutationAddFavourite.mutateAsync({ userId: user?.user?.id, productId: data.id });
                 setLoading(true);
+                await mutationAddFavourite.mutateAsync({ userId: user?.user?.id, productId: data.id });
+                setLike(true);
+                setLoading(false);
+                utils.FavouriteFood.invalidate();
+                NotifySuccess('Thành công!', 'Xóa yêu thích thành công.');
               } else {
                 setLike(true);
                 setLocalFavouriteFood([...localFavouriteFood, data]);
+                NotifySuccess('Thành công!', 'Xóa yêu thích thành công.');
               }
-              NotifySuccess('Thành công!', 'Thêm yêu thích thành công.');
             }}
           />
         </Tooltip>

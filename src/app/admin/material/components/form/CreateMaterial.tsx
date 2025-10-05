@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Select, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { categoriesMaterial } from '~/constants';
@@ -14,7 +14,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<Material>({
     resolver: zodResolver(materialSchema),
     defaultValues: {
@@ -35,12 +35,12 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
         ...formData,
         tag: createTag(formData.name)
       });
-      setOpened(false);
-      if (result.code == 'OK') {
+      if (result.code !== 'OK') {
         NotifyError(result.message);
         utils.Material.invalidate();
         return;
       }
+      setOpened(false);
       NotifySuccess(result.message);
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
@@ -50,7 +50,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
-        <Grid.Col span={6}>
+        <GridCol span={6}>
           <Controller
             control={control}
             name='name'
@@ -64,9 +64,9 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
               />
             )}
           />
-        </Grid.Col>
+        </GridCol>
 
-        <Grid.Col span={6}>
+        <GridCol span={6}>
           <Controller
             control={control}
             name='category'
@@ -86,8 +86,8 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
               />
             )}
           />
-        </Grid.Col>
-        <Grid.Col span={12}>
+        </GridCol>
+        <GridCol span={12}>
           <Controller
             control={control}
             name='description'
@@ -101,9 +101,9 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
               />
             )}
           />
-        </Grid.Col>
+        </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
       </Button>
     </form>

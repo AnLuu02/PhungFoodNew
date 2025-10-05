@@ -19,7 +19,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
     reset,
     setValue,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<Review>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
@@ -85,7 +85,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
         size='sm'
         fullWidth
         loading={isSubmitting}
-        disabled={isSubmitting || watch('comment') === '' || watch('rating') === 0 || !user?.user?.id}
+        disabled={isSubmitting || watch('comment') === '' || watch('rating') === 0 || !isDirty || !user?.user?.id}
         title='Đánh giá'
       />
     </form>

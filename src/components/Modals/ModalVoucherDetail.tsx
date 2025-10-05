@@ -1,6 +1,5 @@
 import { Box, Button, Center, Flex, Group, Modal, Paper, Progress, ScrollArea, Text, Tooltip } from '@mantine/core';
 
-import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
@@ -72,27 +71,19 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
                 </Flex>
                 {hoursRemainingVoucher(voucher?.startDate, voucher?.endDate)?.type == 'active' ? (
                   <Box
-                    className={clsx(
-                      `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`,
-                      `bg-[#EDA500]`
-                    )}
+                    className={`absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-[#EDA500] px-[4px] py-[2px] text-[9px] font-semibold text-white`}
                   >
                     Dành cho bạn
                   </Box>
                 ) : hoursRemainingVoucher(voucher?.startDate, voucher?.endDate)?.type == 'upcoming' ? (
                   <Box
-                    className={clsx(
-                      `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`,
-                      `bg-[#00BB00]`
-                    )}
+                    className={`absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-[#00BB00] px-[4px] py-[2px] text-[9px] font-semibold text-white`}
                   >
                     Sắp đến hạn sử dụng
                   </Box>
                 ) : (
                   <Box
-                    className={clsx(
-                      `absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`
-                    )}
+                    className={`absolute right-[-6px] top-[6px] z-[1] rounded-[2px] bg-red-500 px-[4px] py-[2px] text-[9px] font-semibold text-white`}
                   >
                     Sắp hết hạn
                   </Box>
@@ -107,7 +98,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
                           lineClamp={1}
                           size='sm'
                           fw={700}
-                          className='cursor-pointer text-center text-black hover:text-mainColor dark:text-dark-text'
+                          className='cursor-pointer text-center text-black hover:text-mainColor dark:text-white'
                         >
                           {voucher?.name || 'Cá thu'}
                         </Text>

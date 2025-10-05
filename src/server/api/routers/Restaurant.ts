@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { redis } from '~/lib/cache/redis';
@@ -9,11 +10,54 @@ import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const restaurantRouter = createTRPCRouter({
-  getOne: publicProcedure.query(async ({ ctx }) => {
+  getOneActive: publicProcedure.query(async ({ ctx }) => {
     return await withRedisCache(
-      'getOne-restaurant',
+      'getOneActive',
       async () => {
-        return await ctx.db.restaurant.findFirst({ include: { logo: true, socials: true } });
+        const result = await ctx.db.restaurant.findFirst({
+          where: { email: 'anluu099@gmail.com' },
+          include: { logo: true, socials: true, theme: true, openingHours: true }
+        });
+        if (!result) {
+          const openingHoursData = [
+            { dayOfWeek: 'Sunday', viNameDay: 'Chủ nhật', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: 'Monday', viNameDay: 'Thứ hai', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: 'Tuesday', viNameDay: 'Thứ ba', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: 'Wednesday', viNameDay: 'Thứ tư', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: 'Thursday', viNameDay: 'Thứ năm', openTime: '08:00', closeTime: '23:00' },
+            { dayOfWeek: 'Friday', viNameDay: 'Thứ sáu', openTime: '09:00', closeTime: '23:00' },
+            { dayOfWeek: 'Saturday', viNameDay: 'Thứ bảy', openTime: '09:00', closeTime: '21:00' }
+          ];
+          await ctx.db.restaurant.create({
+            data: {
+              name: 'PhungFoodRes',
+              isActive: true,
+              description: 'Chuyên cung cấp các món ăn đặc sản vùng miền nói chung và miền Tây sông nước nói riêng.',
+              address: '123 Đường Lê Lợi, Quận 1, TP.HCM',
+              phone: '0918064618',
+              website: 'https://phung-food-new.vercel.app/',
+              email: 'anluu099@gmail.com',
+              theme: {
+                create: {
+                  primaryColor: '#008b4b',
+                  secondaryColor: '#f8c144',
+                  themeMode: 'light'
+                }
+              },
+              openingHours: {
+                createMany: {
+                  data: openingHoursData
+                }
+              }
+            }
+          });
+          const result = await ctx.db.restaurant.findFirst({
+            where: { isActive: true },
+            include: { logo: true, socials: true, theme: true, openingHours: true }
+          });
+          return result;
+        }
+        return result;
       },
       60 * 60 * 24
     );
@@ -40,9 +84,16 @@ export const restaurantRouter = createTRPCRouter({
           })
         ),
         email: z.string().email().optional(),
-        isClose: z.boolean().optional(),
-        openedHours: z.string().optional(),
-        closedHours: z.string().optional()
+        theme: z
+          .object({
+            primaryColor: z.string(),
+            secondaryColor: z.string(),
+            themeMode: z.string().default('light'),
+            fontFamily: z.string().optional(),
+            borderRadius: z.string().optional(),
+            faviconUrl: z.string().optional()
+          })
+          .optional()
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -57,11 +108,13 @@ export const restaurantRouter = createTRPCRouter({
       const res = await ctx.db.restaurant.create({
         data: {
           ...input,
+          theme: input?.theme && {
+            create: input?.theme
+          },
           socials: {
             createMany: { data: input.socials }
           },
           email: input.email ?? '',
-          isClose: input.isClose ?? false,
           logo: imgURL
             ? {
                 create: {
@@ -100,9 +153,28 @@ export const restaurantRouter = createTRPCRouter({
           })
         ),
         email: z.string().email().optional(),
-        isClose: z.boolean().optional(),
-        openedHours: z.string().optional(),
-        closedHours: z.string().optional()
+        theme: z
+          .object({
+            primaryColor: z.string(),
+            secondaryColor: z.string(),
+            themeMode: z.string().default('light'),
+            fontFamily: z.string().nullable(),
+            borderRadius: z.string().nullable(),
+            faviconUrl: z.string().nullable()
+          })
+          .optional(),
+        openingHours: z
+          .array(
+            z.object({
+              id: z.string(),
+              dayOfWeek: z.string(),
+              viNameDay: z.string(),
+              openTime: z.string().optional(),
+              closeTime: z.string().optional(),
+              isClosed: z.boolean()
+            })
+          )
+          .optional()
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -140,6 +212,14 @@ export const restaurantRouter = createTRPCRouter({
                 create: social
               }))
             },
+            theme: input?.theme && {
+              update: {
+                where: {
+                  restaurantId: input.id
+                },
+                data: input?.theme
+              }
+            },
             logo: imgURL
               ? {
                   upsert: {
@@ -158,10 +238,22 @@ export const restaurantRouter = createTRPCRouter({
                     } as any
                   }
                 }
-              : undefined
+              : undefined,
+            openingHours: {
+              update: input.openingHours?.map(item => ({
+                where: { id: item.id },
+                data: {
+                  dayOfWeek: item.dayOfWeek,
+                  viNameDay: item.viNameDay,
+                  openTime: item.openTime,
+                  closeTime: item.closeTime,
+                  isClosed: item.isClosed
+                }
+              }))
+            }
           }
         });
-        await redis.del('getOne-restaurant');
+        await Promise.all([redis.del('theme-default'), redis.del('getOneActive')]);
         return { code: 'OK', message: 'Cập nhật nhà hàng thành công.', data: updatedRestaurant };
       } else {
         return {
@@ -171,6 +263,70 @@ export const restaurantRouter = createTRPCRouter({
         };
       }
     }),
+  updateRestaurant: publicProcedure
+    .input(
+      z.object({
+        where: z.record(z.string(), z.any()),
+        data: z.record(z.string(), z.any())
+      })
+    )
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const { where, data } = input;
+      const updatedRestaurant = await ctx.db.restaurant.update({
+        where: where as Prisma.RestaurantWhereUniqueInput,
+        data: data
+      });
+      return { code: 'OK', message: 'Cập nhật nhà hàng thành công.', data: updatedRestaurant };
+    }),
+  changeTheme: publicProcedure
+    .input(
+      z.object({
+        restaurantId: z.string(),
+        primaryColor: z.string(),
+        secondaryColor: z.string(),
+        themeMode: z.string().default('light'),
+        fontFamily: z.string().optional().nullable(),
+        borderRadius: z.string().optional().nullable(),
+        faviconUrl: z.string().optional().nullable()
+      })
+    )
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      try {
+        const [, theme] = await Promise.all([
+          redis.del('theme-default'),
+          redis.del('getOneActive'),
+          ctx.db.theme.upsert({
+            where: { restaurantId: input.restaurantId },
+            update: {
+              ...input
+            },
+            create: {
+              ...input
+            }
+          })
+        ]);
+        return {
+          code: 'OK',
+          message: 'Thay đổi theme thành công.',
+          data: theme
+        };
+      } catch {
+        return {
+          code: 'ERROR',
+          message: 'Đã có lỗi xảy ra.',
+          data: null
+        };
+      }
+    }),
+  getTheme: publicProcedure.query(async ({ ctx }) => {
+    return withRedisCache(
+      'theme-default',
+      async () => {
+        return await ctx.db.theme.findFirst({});
+      },
+      60 * 60 * 24
+    );
+  }),
   getOneBanner: publicProcedure
     .input(
       z.object({
@@ -183,6 +339,11 @@ export const restaurantRouter = createTRPCRouter({
         include: { images: true }
       });
     }),
+  getAllBanner: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.banner.findMany({
+      include: { images: true }
+    });
+  }),
   createBanner: publicProcedure
     .input(
       z.object({
@@ -358,5 +519,66 @@ export const restaurantRouter = createTRPCRouter({
         message: 'Cập nhật banner thành công.',
         data: updated
       };
+    }),
+  setDefaultBanner: publicProcedure
+    .input(
+      z.object({
+        id: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      try {
+        await ctx.db.banner.updateMany({
+          where: { isActive: true },
+          data: { isActive: false }
+        });
+        const banner = await ctx.db.banner.update({
+          where: { id: input.id },
+          data: { isActive: true }
+        });
+        return {
+          code: 'OK',
+          message: 'Cập nhật banner thành công.',
+          data: banner
+        };
+      } catch (error) {
+        return {
+          code: 'ERROR',
+          message: 'Đã có lỗi xảy ra.',
+          data: null
+        };
+      }
+    }),
+  deleteBanner: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        otherId: z.string().optional()
+      })
+    )
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      try {
+        let result;
+        result = await ctx.db.banner.delete({
+          where: { id: input.id }
+        });
+        if (input.otherId) {
+          result = await ctx.db.banner.update({
+            where: { id: input.otherId },
+            data: { isActive: true }
+          });
+        }
+        return {
+          code: 'OK',
+          message: 'Cập nhật banner thành công.',
+          data: result
+        };
+      } catch (error) {
+        return {
+          code: 'ERROR',
+          message: 'Đã có lỗi xảy ra.',
+          data: null
+        };
+      }
     })
 });

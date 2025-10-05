@@ -70,10 +70,10 @@ export default function PopularItems({ products }: PopularItemsProps) {
     <Card withBorder padding='md' radius='md' className='h-full'>
       <CardSection withBorder inheritPadding py='xs' className='bg-gray-50'>
         <Group justify='space-between'>
-          <Text fw={700} className='text-gray-800'>
+          <Text fw={700} className='text-gray-800 dark:text-white'>
             Món ăn phổ biến
           </Text>
-          <Text size='sm' c='dimmed' className='text-gray-600'>
+          <Text size='sm' c='dimmed' className='text-gray-600 dark:text-white'>
             Trong tháng này
           </Text>
         </Group>
@@ -83,10 +83,10 @@ export default function PopularItems({ products }: PopularItemsProps) {
         <Table striped highlightOnHover withTableBorder withColumnBorders className='min-w-full'>
           <TableThead>
             <TableTr className='bg-gray-50'>
-              <TableTh className='font-semibold text-gray-700'>Sản phẩm</TableTh>
-              <TableTh className='font-semibold text-gray-700'>Danh mục</TableTh>
-              <TableTh className='font-semibold text-gray-700'>Giá</TableTh>
-              <TableTh className='font-semibold text-gray-700'>Số lượng đặt</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-white'>Sản phẩm</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-white'>Danh mục</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-white'>Giá</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-white'>Số lượng đặt</TableTh>
             </TableTr>
           </TableThead>
           <TableTbody>
@@ -95,11 +95,11 @@ export default function PopularItems({ products }: PopularItemsProps) {
                 <TableTd>
                   <Group gap='sm'>
                     <Avatar src={item.image} size='sm' radius='md' className='border border-gray-200' />
-                    <Text className='font-medium text-gray-800'>{item.name}</Text>
+                    <Text className='font-medium text-gray-800 dark:text-white'>{item.name}</Text>
                   </Group>
                 </TableTd>
                 <TableTd>
-                  <Text className='inline-block rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600'>
+                  <Text className='inline-block rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600 dark:text-white'>
                     {item.category}
                   </Text>
                 </TableTd>

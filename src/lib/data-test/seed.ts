@@ -1,19 +1,25 @@
-import { LocalPaymentType } from '../zod/EnumType';
-
 export const seedPayments = [
   {
     name: 'Thanh toán VnPay',
-    tag: 'thanh-toan-vnpay',
-    type: LocalPaymentType.E_WALLET,
     provider: 'vnpay',
-    isDefault: true
+    isSandbox: true,
+    isActive: true
+  },
+  {
+    name: 'Thanh toán Momo',
+    provider: 'momo',
+    isSandbox: true,
+    isActive: true
+  },
+  {
+    name: 'Thanh toán ZaloPay',
+    provider: 'zalopay',
+    isSandbox: true,
+    isActive: true
   }
 ];
 
 export const seedRoles = [
-  {
-    name: 'SUPER_ADMIN'
-  },
   {
     name: 'ADMIN'
   },

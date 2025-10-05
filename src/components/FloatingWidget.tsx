@@ -6,10 +6,10 @@ import { api } from '~/trpc/server';
 import Chatbox from './Chatbox';
 
 export default async function FloatingWidget() {
-  const restaurant = await api.Restaurant.getOne();
+  const restaurant = await api.Restaurant.getOneActive();
   return (
     <>
-      <Box pos={'fixed'} bottom={100} left={20} className='z-[9999] flex flex-col space-y-4'>
+      <Box pos={'fixed'} bottom={100} left={20} className='z-[200] flex flex-col space-y-4'>
         <Menu shadow='md' width={'max-content'} position='top-start' offset={0} zIndex={10000}>
           <MenuTarget>
             <Center
@@ -33,7 +33,7 @@ export default async function FloatingWidget() {
           </MenuDropdown>
         </Menu>
       </Box>
-      <Box pos={'fixed'} bottom={100} right={{ base: -15, sm: 20 }} className='z-[9999] flex flex-col space-y-4'>
+      <Box pos={'fixed'} bottom={100} right={{ base: -15, sm: 20 }} className='z-[200] flex flex-col space-y-4'>
         <Menu shadow='md' width={250} position='top'>
           <MenuTarget>
             <Box>
@@ -85,14 +85,16 @@ export default async function FloatingWidget() {
               Nhắn với chúng tôi qua Zalo
             </MenuItem>
 
-            <MenuItem
-              leftSection={<Image src={'/images/svg/icon-messager.svg'} alt='zalo' width={24} height={24} />}
-              component='a'
-              href={`https://m.me/${restaurant?.socials.find(item => item.key === 'facebook')?.url || 'anluu099'}`}
-              target='_blank'
-            >
-              Nhắn với chúng tôi qua Messenger
-            </MenuItem>
+            {restaurant?.socials && (
+              <MenuItem
+                leftSection={<Image src={'/images/svg/icon-messager.svg'} alt='zalo' width={24} height={24} />}
+                component='a'
+                href={`https://m.me/${restaurant?.socials.find(item => item.key === 'facebook')?.url || 'anluu099'}`}
+                target='_blank'
+              >
+                Nhắn với chúng tôi qua Messenger
+              </MenuItem>
+            )}
             <MenuItem
               leftSection={<Image src={'/images/svg/icon-location.svg'} alt='location' width={24} height={24} />}
               component='a'

@@ -2,8 +2,8 @@ import { Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { api } from '~/trpc/server';
-import QuickCart from './components/quick-cart';
-import QuickMenu from './components/quick-menu';
+import { QuickCart } from './components/QuickCart';
+import { QuickMenu } from './components/QuickMenu';
 
 export const metadata: Metadata = {
   title: 'Gọi món nhanh - Phụng Food',
@@ -20,13 +20,13 @@ const FastMenu = async ({
   };
 }) => {
   const categoriesData = await api.Category.getAll();
-  const foderItems = await api.Product.find({
+  const foodItems = await api.Product.find({
     skip: Number(searchParams?.page) || 0,
     take: Number(searchParams?.limit) || 12,
     'danh-muc': searchParams?.['danh-muc']
   });
   const categories = categoriesData || [];
-  const products = foderItems?.products || [];
+  const products = foodItems?.products || [];
 
   return (
     <Grid gutter={'md'}>

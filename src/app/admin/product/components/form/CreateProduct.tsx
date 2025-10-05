@@ -12,19 +12,19 @@ import {
   NumberInput,
   Paper,
   Select,
+  Switch,
   TagsInput,
   Text,
   Textarea,
   TextInput
 } from '@mantine/core';
-import { ProductStatus } from '@prisma/client';
-import { IconFile, IconTrash } from '@tabler/icons-react';
+import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalProductStatus } from '~/lib/zod/EnumType';
 import { productSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Product } from '~/types/product';
@@ -50,13 +50,15 @@ export const regions = [
 
 export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const { data: categories } = api.SubCategory.getAll.useQuery();
-  const { data: materials, isLoading } = api.Material.getAll.useQuery();
+  const { data: materials } = api.Material.getAll.useQuery();
   const [imageAddition, setImageAddition] = useState<File[]>([]);
+  const [json, setJson] = useState<any>(null);
+  const [html, setHtml] = useState<string>('<p>Đang cập nhật</p>');
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     watch
   } = useForm<Product>({
     resolver: zodResolver(productSchema),
@@ -65,21 +67,21 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
       name: '',
       tag: '',
       description: '',
+      descriptionDetailJson: {},
+      descriptionDetailHtml: '<p>Đang cập nhật</p>',
       discount: 0,
+      availableQuantity: 0,
+      soldQuantity: 0,
       price: 0,
       thumbnail: undefined,
       gallery: [],
       tags: [],
-      status: LocalProductStatus.ACTIVE,
+      isActive: true,
       region: 'Miền Nam',
       subCategoryId: '',
       materials: []
-    }
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'descriptionDetail'
+    },
+    mode: 'onChange'
   });
 
   const utils = api.useUtils();
@@ -99,7 +101,6 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
                 base64: (await fileToBase64(formData.thumbnail)) as string
               }
             : undefined;
-
         const gallery_format =
           formData.gallery &&
           (await Promise.all(
@@ -118,10 +119,8 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
         const result = await mutation.mutateAsync({
           ...formDataWithImages,
           tag: createTag(formData.name),
-          descriptionDetail: (formData.descriptionDetail ?? []).map((item: any) => ({
-            label: item.label,
-            value: item.value
-          }))
+          descriptionDetailJson: json,
+          descriptionDetailHtml: html
         });
         if (result.code === 'OK') {
           NotifySuccess(result.message);
@@ -389,23 +388,63 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             )}
           />
         </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='availableQuantity'
+            render={({ field }) => (
+              <NumberInput
+                thousandSeparator=','
+                hideControls
+                label='Số lượng khả dụng'
+                placeholder='Nhập Số lượng khả dụng'
+                error={errors.discount?.message}
+                {...field}
+              />
+            )}
+          />
+        </Grid.Col>
 
         <Grid.Col span={6}>
           <Controller
             control={control}
-            name='status'
+            name='soldQuantity'
+            defaultValue={0}
             render={({ field }) => (
-              <Select
-                label='Trạng thái'
-                placeholder='Hiển thị hay ẩn'
-                data={Object.values(ProductStatus)?.map(category => ({
-                  value: category,
-                  label: category === LocalProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
-                }))}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={errors.subCategoryId?.message}
+              <NumberInput
+                {...field}
+                thousandSeparator=','
+                hideControls
+                value={field.value ?? 0}
+                onChange={val => field.onChange(val ? Number(val) : 0)}
+                min={0}
+                label='Số lượng đã bán'
+                placeholder='Số lượng đã bán'
+                error={errors.soldQuantity?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='isActive'
+            render={({ field }) => (
+              <Switch
+                label='Trạng thái (Ẩn / Hiện)'
+                error={errors.isActive?.message}
+                checked={field.value}
+                onChange={event => {
+                  const checked = event.target.checked;
+                  field.onChange(checked);
+                }}
+                thumbIcon={
+                  !!field.value ? (
+                    <IconCheck size={12} color='var(--mantine-color-teal-6)' stroke={3} />
+                  ) : (
+                    <IconX size={12} color='var(--mantine-color-red-6)' stroke={3} />
+                  )
+                }
               />
             )}
           />
@@ -431,48 +470,15 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
 
         <Grid.Col span={12}>
           <Text fw={600} size='lg'>
-            Thông tin chi tiết
+            Mô tả chi tiết
           </Text>
-
-          {fields.map((field, index) => (
-            <Flex key={field.id} gap='md' align='center' mt='xs'>
-              <Controller
-                control={control}
-                name={`descriptionDetail.${index}.label`}
-                render={({ field }) => (
-                  <TextInput
-                    {...field}
-                    placeholder='Ví dụ: Xuất xứ'
-                    label={`Label ${index + 1}`}
-                    withAsterisk
-                    style={{ flex: 1 }}
-                  />
-                )}
-              />
-
-              <Controller
-                control={control}
-                name={`descriptionDetail.${index}.value`}
-                render={({ field }) => (
-                  <TextInput
-                    {...field}
-                    placeholder='Ví dụ: Lạc Dương, Lâm Đồng'
-                    label={`Value ${index + 1}`}
-                    withAsterisk
-                    style={{ flex: 2 }}
-                  />
-                )}
-              />
-
-              <ActionIcon color='red' variant='light' onClick={() => remove(index)} mt={22}>
-                <IconTrash />
-              </ActionIcon>
-            </Flex>
-          ))}
-
-          <Button variant='light' color='green' mt='md' onClick={() => append({ label: '', value: '' })}>
-            + Thêm thông tin
-          </Button>
+          <TiptapEditor
+            value={json}
+            onChange={({ json, html }) => {
+              setJson(json);
+              setHtml(html);
+            }}
+          />
         </Grid.Col>
 
         <Grid.Col span={12} hidden>
@@ -489,9 +495,9 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => (
               <FileInput
                 id='thumbnail'
-                leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh chính'
-                placeholder='Choose a file'
+                placeholder='Chọn một file'
                 leftSectionPointerEvents='none'
                 value={field.value as unknown as File}
                 onChange={field.onChange}
@@ -516,9 +522,9 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => (
               <FileInput
                 id='gallery'
-                leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh bổ sung'
-                placeholder='Choose a file'
+                placeholder='Chọn một file'
                 leftSectionPointerEvents='none'
                 value={field.value as unknown as File[]}
                 onChange={value => {
@@ -533,7 +539,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             )}
           />
         </Grid.Col>
-        <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+        <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
           Tạo sản phẩm
         </Button>
       </Grid>

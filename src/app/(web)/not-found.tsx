@@ -5,7 +5,7 @@ import Link from 'next/link';
 export default function NotFound() {
   return (
     <Container size={420} my={40}>
-      <Title ta='center' className='font-quicksand text-9xl font-extrabold' c={'red'}>
+      <Title ta='center' className='font-quicksand text-9xl font-extrabold text-red-600'>
         404
       </Title>
       <Text c='dimmed' size='lg' ta='center' mt='xl'>

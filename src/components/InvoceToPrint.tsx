@@ -21,10 +21,10 @@ export default function InvoiceToPrint({ id }: any) {
 
       <Button
         onClick={() => handlePrint()}
-        size='md'
+        size='sm'
         variant='subtle'
         loading={isLoading}
-        className={`!rounded-md !border-[#e5e5e5] !font-bold text-black duration-200 hover:bg-gray-100 hover:text-black/90 dark:!border-dark-dimmed`}
+        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-white`}
       >
         In hóa đơn
       </Button>

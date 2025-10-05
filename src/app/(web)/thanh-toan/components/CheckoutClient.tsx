@@ -25,9 +25,9 @@ import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalVoucherType } from '~/lib/zod/EnumType';
 import { deliverySchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
-import CartItemPayment from './CartItemPayment';
-import DeliveryCard from './DeliveryCard';
-import PaymentForm from './PaymentForm';
+import { CartItemPayment } from './CartItemPayment';
+import { DeliveryCard } from './DeliveryCard';
+import { PaymentForm } from './PaymentForm';
 export default function CheckoutClient({ order }: { order: any }) {
   const [loading, setLoading] = useState(false);
   const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
@@ -56,7 +56,7 @@ export default function CheckoutClient({ order }: { order: any }) {
     watch,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { isSubmitting }
   } = useForm<z.infer<typeof deliverySchema> & { paymentId: string }>({
     resolver: zodResolver(
       deliverySchema.extend({
@@ -81,18 +81,17 @@ export default function CheckoutClient({ order }: { order: any }) {
         detail: '',
         type: LocalAddressType.DELIVERY
       },
-      note: '',
-      orderId: ''
+      note: ''
     }
   });
 
-  const { data: provinces, provinceMap, error: provincesError, isLoading: loadingProvinces } = useProvinces();
+  const { data: provinces, provinceMap } = useProvinces();
 
   const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
 
-  const { data: districts, districtMap, isLoading: loadingDistricts } = useDistricts(debouncedProvinceId);
-  const { data: wards, wardMap, isLoading: loadingWards } = useWards(debouncedDistrictId);
+  const { data: districts, districtMap } = useDistricts(debouncedProvinceId);
+  const { data: wards, wardMap } = useWards(debouncedDistrictId);
 
   useEffect(() => {
     if (order?.id) {
@@ -101,7 +100,6 @@ export default function CheckoutClient({ order }: { order: any }) {
         email: order?.delivery?.email,
         phone: order?.delivery?.phone,
         paymentId: order?.payment?.id,
-        orderId: order?.id,
         address: {
           provinceId: order?.delivery?.address?.provinceId,
           districtId: order?.delivery?.address?.districtId,
@@ -221,7 +219,7 @@ export default function CheckoutClient({ order }: { order: any }) {
         </GridCol>
 
         <GridCol span={{ base: 12, sm: 6, md: 8, lg: 4 }} className='sticky top-[80px] h-fit'>
-          <PaymentForm control={control} errors={errors} />
+          <PaymentForm control={control} />
         </GridCol>
         <GridCol span={{ base: 12, sm: 6, md: 4, lg: 4 }} className='sticky top-[80px] h-fit'>
           <Card shadow='sm' radius='md' withBorder>
@@ -287,7 +285,13 @@ export default function CheckoutClient({ order }: { order: any }) {
                 <Button variant='subtle' leftSection={<IconArrowLeft size={16} />} component='a' href='/gio-hang'>
                   Giỏ hàng
                 </Button>
-                <BButton radius={'sm'} size='md' type='submit' loading={loading} title={' THANH TOÁN'} />
+                <BButton
+                  radius={'sm'}
+                  size='md'
+                  type='submit'
+                  loading={loading || isSubmitting}
+                  title={' THANH TOÁN'}
+                />
               </Flex>
             </Stack>
           </Card>

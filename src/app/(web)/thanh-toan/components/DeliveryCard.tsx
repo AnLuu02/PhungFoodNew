@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { Controller } from 'react-hook-form';
 import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
 
-export default function DeliveryCard({
+export function DeliveryCard({
   control,
   watch,
   provinces,

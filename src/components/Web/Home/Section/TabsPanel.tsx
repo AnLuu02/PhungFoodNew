@@ -56,7 +56,7 @@ const TabsPanelCarousel = ({ data }: any) => {
           </ActionIcon>
         </Group>
       </Center>
-      {data?.length <= 0 ? (
+      {data?.length === 0 ? (
         <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
           <Image
             style={{ objectFit: 'cover' }}

@@ -12,20 +12,22 @@ import {
   NumberInput,
   Paper,
   Select,
+  Switch,
   TagsInput,
   Text,
   Textarea,
   TextInput
 } from '@mantine/core';
-import { ProductStatus } from '@prisma/client';
-import { IconFile, IconTrash } from '@tabler/icons-react';
+import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
+import { UserRole } from '~/constants';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalImageType, LocalProductStatus } from '~/lib/zod/EnumType';
+import { LocalImageType } from '~/lib/zod/EnumType';
 import { productSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Product } from '~/types/product';
@@ -40,18 +42,19 @@ export default function UpdateProduct({
 }) {
   const [loading, setLoading] = useState(false);
   const { data: categories } = api.SubCategory.getAll.useQuery();
-  const { data: materials, isLoading } = api.Material.getAll.useQuery();
+  const { data: materials } = api.Material.getAll.useQuery();
 
-  const queryResult = api.Product.getOne.useQuery({ s: productId || '', userRole: 'ADMIN' }, { enabled: !!productId });
-
-  const { data } = queryResult;
+  const { data } = api.Product.getOne.useQuery(
+    { s: productId || '', userRole: UserRole.ADMIN },
+    { enabled: !!productId }
+  );
 
   const [imageAddition, setImageAddition] = useState<File[]>([]);
 
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
     watch,
     setValue
@@ -65,13 +68,18 @@ export default function UpdateProduct({
       price: 0,
       discount: 0,
       region: 'Miền Nam',
+      availableQuantity: 0,
+      soldQuantity: 0,
       tags: [],
-      status: LocalProductStatus.ACTIVE,
+      isActive: false,
+      descriptionDetailJson: {},
+      descriptionDetailHtml: '<p>Đang cập nhật</p>',
       thumbnail: undefined,
       gallery: [],
       subCategoryId: '',
       materials: []
-    }
+    },
+    mode: 'onChange'
   });
 
   useEffect(() => {
@@ -103,9 +111,13 @@ export default function UpdateProduct({
         discount: data?.discount,
         region: data?.region,
         tags: data?.tags,
-        status: data?.status,
+        availableQuantity: data?.availableQuantity || 0,
+        soldQuantity: data?.soldQuantity || 0,
+        isActive: data?.isActive || false,
         subCategoryId: data?.subCategoryId as string,
-        materials: data?.materials.map(material => material.id)
+        materials: Array.isArray(data?.materials) ? data.materials.map((material: any) => material.id) : [],
+        descriptionDetailJson: data?.descriptionDetailJson || {},
+        descriptionDetailHtml: data?.descriptionDetailHtml || '<p>Đang cập nhật</p>'
       });
     }
   }, [data, reset]);
@@ -149,7 +161,11 @@ export default function UpdateProduct({
           thumbnail: thumbnail_format as any,
           gallery: images_format as any
         };
-        const result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
+        const result = await updateMutation.mutateAsync({
+          ...formDataWithImageUrlAsString,
+          descriptionDetailJson: formData.descriptionDetailJson,
+          descriptionDetailHtml: formData.descriptionDetailHtml
+        });
         if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);
@@ -422,19 +438,61 @@ export default function UpdateProduct({
         <Grid.Col span={6}>
           <Controller
             control={control}
-            name='status'
+            name='availableQuantity'
             render={({ field }) => (
-              <Select
-                label='Trạng thái'
-                placeholder='Hiển thị hay ẩn'
-                data={Object.values(ProductStatus)?.map(category => ({
-                  value: category,
-                  label: category === LocalProductStatus.ACTIVE ? 'Hiển thị' : 'Tạm ẩn'
-                }))}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={errors.subCategoryId?.message}
+              <NumberInput
+                thousandSeparator=','
+                hideControls
+                label='Số lượng khả dụng'
+                placeholder='Nhập Số lượng khả dụng'
+                error={errors.discount?.message}
+                {...field}
+              />
+            )}
+          />
+        </Grid.Col>
+
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='soldQuantity'
+            defaultValue={0}
+            render={({ field }) => (
+              <NumberInput
+                {...field}
+                thousandSeparator=','
+                hideControls
+                value={field.value ?? 0}
+                onChange={val => field.onChange(val ? Number(val) : 0)}
+                min={0}
+                label='Số lượng đã bán'
+                placeholder='Số lượng đã bán'
+                error={errors.soldQuantity?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='isActive'
+            render={({ field }) => (
+              <Switch
+                label='Trạng thái (Ẩn / Hiện)'
+                error={errors.isActive?.message}
+                checked={field.value}
+                onChange={event => {
+                  const checked = event.target.checked;
+                  field.onChange(checked);
+                }}
+                thumbIcon={
+                  !!field.value ? (
+                    <IconCheck size={12} color='var(--mantine-color-teal-6)' stroke={3} />
+                  ) : (
+                    <IconX size={12} color='var(--mantine-color-red-6)' stroke={3} />
+                  )
+                }
               />
             )}
           />
@@ -471,9 +529,9 @@ export default function UpdateProduct({
             render={({ field }) => (
               <FileInput
                 id='thumbnail'
-                leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh chính'
-                placeholder='Choose a file'
+                placeholder='Chọn một file'
                 leftSectionPointerEvents='none'
                 value={field.value as unknown as File}
                 onChange={field.onChange}
@@ -498,9 +556,9 @@ export default function UpdateProduct({
             render={({ field }) => (
               <FileInput
                 id='gallery'
-                leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh bổ sung'
-                placeholder='Choose a file'
+                placeholder='Chọn một file'
                 leftSectionPointerEvents='none'
                 value={field.value as unknown as File[]}
                 onChange={value => {
@@ -511,6 +569,24 @@ export default function UpdateProduct({
                 error={errors.thumbnail?.message}
                 accept='image/png,image/jpeg,image/jpg'
                 multiple
+              />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <Text fw={600} size='lg'>
+            Mô tả chi tiết
+          </Text>
+          <Controller
+            control={control}
+            name='descriptionDetailJson'
+            render={({ field }) => (
+              <TiptapEditor
+                value={field.value}
+                onChange={value => {
+                  field.onChange(value.json);
+                  setValue('descriptionDetailHtml', value.html);
+                }}
               />
             )}
           />

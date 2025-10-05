@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
 import { generatePDF } from '~/lib/func-handler/generatePDF';
+import { transporter } from '~/lib/func-handler/sendEmail';
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,22 +9,12 @@ export async function POST(req: NextRequest) {
     if (!to || !invoiceData) {
       return NextResponse.json({ error: 'Thiếu thông tin email hoặc hóa đơn' }, { status: 400 });
     }
-
     const pdfBuffer = await generatePDF(invoiceData);
-
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.SMTP_EMAIL,
-        pass: process.env.SMTP_PASSWORD
-      }
-    });
-
     await transporter.sendMail({
-      from: `"Fast Food" <${process.env.SMTP_EMAIL}>`,
+      from: `"Phụng Food" <${process.env.SMTP_EMAIL}>`,
       to: to,
       subject: 'Hóa đơn mua hàng',
-      text: `Cảm ơn bạn đã mua hàng tại Fast Food! Hóa đơn của bạn có tổng tiền ${invoiceData?.originalTotal || 0} VND.`,
+      text: `Cảm ơn bạn đã mua hàng tại Phụng Food! Hóa đơn của bạn có tổng tiền ${invoiceData?.originalTotal || 0} VND.`,
       attachments: [
         {
           filename: `Hóa đơn mua hàng - ${invoiceData?.user.name || 'empty'}.pdf`,

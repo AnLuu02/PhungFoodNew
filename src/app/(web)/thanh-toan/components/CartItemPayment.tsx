@@ -4,7 +4,7 @@ import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 
-export default function CartItemPayment({ item }: any) {
+export function CartItemPayment({ item }: any) {
   return (
     <>
       <Group key={item.id} wrap='nowrap'>

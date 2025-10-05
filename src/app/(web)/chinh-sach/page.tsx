@@ -26,17 +26,14 @@ import {
 } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';
 
-const MAIN_YELLOW = '#f8c144';
-const MAIN_GREEN = '#008b4b';
-
 const sections: { id: string; label: string; icon: JSX.Element }[] = [
-  { id: 'general', label: 'Chính sách chung', icon: <IconShield size={18} color={MAIN_GREEN} /> },
-  { id: 'payment', label: 'Phương thức thanh toán', icon: <IconCreditCard size={18} color={MAIN_GREEN} /> },
-  { id: 'delivery', label: 'Chính sách giao hàng', icon: <IconTruck size={18} color={MAIN_GREEN} /> },
-  { id: 'order-guide', label: 'Hướng dẫn đặt món', icon: <IconGift size={18} color={MAIN_GREEN} /> },
-  { id: 'support', label: 'Hỗ trợ & liên hệ', icon: <IconPhone size={18} color={MAIN_GREEN} /> },
-  { id: 'promotion', label: 'Chính sách khuyến mãi', icon: <IconGift size={18} color={MAIN_GREEN} /> },
-  { id: 'security', label: 'Bảo mật & điều khoản', icon: <IconInfoCircle size={18} color={MAIN_GREEN} /> }
+  { id: 'general', label: 'Chính sách chung', icon: <IconShield size={18} className='text-mainColor' /> },
+  { id: 'payment', label: 'Phương thức thanh toán', icon: <IconCreditCard size={18} className='text-mainColor' /> },
+  { id: 'delivery', label: 'Chính sách giao hàng', icon: <IconTruck size={18} className='text-mainColor' /> },
+  { id: 'order-guide', label: 'Hướng dẫn đặt món', icon: <IconGift size={18} className='text-mainColor' /> },
+  { id: 'support', label: 'Hỗ trợ & liên hệ', icon: <IconPhone size={18} className='text-mainColor' /> },
+  { id: 'promotion', label: 'Chính sách khuyến mãi', icon: <IconGift size={18} className='text-mainColor' /> },
+  { id: 'security', label: 'Bảo mật & điều khoản', icon: <IconInfoCircle size={18} className='text-mainColor' /> }
 ];
 
 export default function StorePolicyPage() {
@@ -65,7 +62,7 @@ export default function StorePolicyPage() {
 
   return (
     <Box className='min-h-screen'>
-      <Title order={1} ta='center' fw={900} c={MAIN_GREEN} mb={24} size={36} className='font-quicksand'>
+      <Title order={1} ta='center' fw={900} mb={24} size={36} className='font-quicksand text-mainColor'>
         Chính Sách & Hỗ Trợ Khách Hàng
       </Title>
       <Text ta='center' c={'dimmed'} size='lg' mb={32}>
@@ -82,16 +79,13 @@ export default function StorePolicyPage() {
                   px={16}
                   className={`${
                     activeSection === sec.id
-                      ? 'font-bold text-mainColor'
-                      : 'bg-transparent font-medium text-black dark:text-white'
+                      ? 'bg-mainColor/10 font-bold text-mainColor'
+                      : 'transparent bg-transparent font-medium text-black dark:text-white'
                   } flex cursor-pointer items-center gap-2.5 rounded-md py-3 transition-colors`}
-                  style={{
-                    backgroundColor: activeSection === sec.id ? `${MAIN_YELLOW}22` : 'transparent'
-                  }}
                 >
                   {sec.icon}
                   {sec.label}
-                  {activeSection === sec.id && <IconChevronRight size={16} color={MAIN_YELLOW} className='ml-auto' />}
+                  {activeSection === sec.id && <IconChevronRight size={16} className='ml-auto text-subColor' />}
                 </Anchor>
               ))}
             </Stack>
@@ -108,10 +102,10 @@ export default function StorePolicyPage() {
           >
             <Card shadow='sm' radius='md' p={32} withBorder mb={32}>
               <Group mb={8}>
-                <ThemeIcon color={MAIN_GREEN} size='lg' radius='xl'>
+                <ThemeIcon classNames={{ root: 'bg-mainColor' }} size='lg' radius='xl'>
                   <IconShield size={24} />
                 </ThemeIcon>
-                <Title order={2} size={24} fw={700} c={MAIN_GREEN}>
+                <Title order={2} size={24} fw={700} className='font-quicksand text-mainColor'>
                   Chính sách chung
                 </Title>
               </Group>
@@ -147,10 +141,10 @@ export default function StorePolicyPage() {
           >
             <Card shadow='sm' radius='md' p={32} withBorder mb={32}>
               <Group mb={8}>
-                <ThemeIcon color={MAIN_GREEN} size='lg' radius='xl'>
+                <ThemeIcon classNames={{ root: 'bg-mainColor' }} size='lg' radius='xl'>
                   <IconCreditCard size={24} />
                 </ThemeIcon>
-                <Title order={2} size={24} fw={700} c={MAIN_GREEN}>
+                <Title order={2} size={24} fw={700} className='font-quicksand text-mainColor'>
                   Phương thức thanh toán
                 </Title>
               </Group>
@@ -184,10 +178,10 @@ export default function StorePolicyPage() {
           >
             <Card shadow='sm' radius='md' p={32} withBorder mb={32}>
               <Group mb={8}>
-                <ThemeIcon color={MAIN_GREEN} size='lg' radius='xl'>
+                <ThemeIcon classNames={{ root: 'bg-mainColor' }} size='lg' radius='xl'>
                   <IconTruck size={24} />
                 </ThemeIcon>
-                <Title order={2} size={24} fw={700} c={MAIN_GREEN}>
+                <Title order={2} size={24} fw={700} className='font-quicksand text-mainColor'>
                   Chính sách giao hàng
                 </Title>
               </Group>
@@ -218,10 +212,10 @@ export default function StorePolicyPage() {
           >
             <Card shadow='sm' radius='md' p={32} withBorder mb={32}>
               <Group mb={8}>
-                <ThemeIcon color={MAIN_YELLOW} size='lg' radius='xl'>
+                <ThemeIcon classNames={{ root: 'bg-mainColor' }} size='lg' radius='xl'>
                   <IconGift size={24} />
                 </ThemeIcon>
-                <Title order={2} size={24} fw={700} c={MAIN_GREEN}>
+                <Title order={2} size={24} fw={700} className='font-quicksand text-mainColor'>
                   Hướng dẫn đặt món
                 </Title>
               </Group>
@@ -253,10 +247,10 @@ export default function StorePolicyPage() {
           >
             <Card shadow='sm' radius='md' p={32} withBorder mb={32}>
               <Group mb={8}>
-                <ThemeIcon color={MAIN_GREEN} size='lg' radius='xl'>
+                <ThemeIcon classNames={{ root: 'bg-mainColor' }} size='lg' radius='xl'>
                   <IconPhone size={24} />
                 </ThemeIcon>
-                <Title order={2} size={24} fw={700} c={MAIN_GREEN}>
+                <Title order={2} size={24} fw={700} className='font-quicksand text-mainColor'>
                   Hỗ trợ & liên hệ
                 </Title>
               </Group>
@@ -300,10 +294,10 @@ export default function StorePolicyPage() {
           >
             <Card shadow='sm' radius='md' p={32} withBorder mb={32}>
               <Group mb={8}>
-                <ThemeIcon color={MAIN_YELLOW} size='lg' radius='xl'>
+                <ThemeIcon classNames={{ root: 'bg-mainColor' }} size='lg' radius='xl'>
                   <IconGift size={24} />
                 </ThemeIcon>
-                <Title order={2} size={24} fw={700} c={MAIN_GREEN}>
+                <Title order={2} size={24} fw={700} className='font-quicksand text-mainColor'>
                   Chính sách khuyến mãi
                 </Title>
               </Group>
@@ -333,10 +327,10 @@ export default function StorePolicyPage() {
           >
             <Card shadow='sm' radius='md' p={32} withBorder mb={32}>
               <Group mb={8}>
-                <ThemeIcon color={MAIN_GREEN} size='lg' radius='xl'>
+                <ThemeIcon classNames={{ root: 'bg-mainColor' }} size='lg' radius='xl'>
                   <IconInfoCircle size={24} />
                 </ThemeIcon>
-                <Title order={2} size={24} fw={700} c={MAIN_GREEN}>
+                <Title order={2} size={24} fw={700} className='font-quicksand text-mainColor'>
                   Bảo mật & điều khoản
                 </Title>
               </Group>
@@ -365,9 +359,9 @@ export default function StorePolicyPage() {
           </Box>
         </Grid.Col>
       </Grid>
-      <Box ta='center' py={24} c='gray.6'>
+      <Box ta='center' py={24}>
         <Divider mb={12} />
-        <Text size='sm'>
+        <Text size='sm' c={'dimmed'}>
           Chính sách này được cập nhật lần cuối vào tháng 1 năm 2025. Chúng tôi có quyền thay đổi để duy trì tiêu chuẩn
           cao nhất về an toàn và chất lượng thực phẩm.
         </Text>

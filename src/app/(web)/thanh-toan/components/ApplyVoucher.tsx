@@ -10,7 +10,7 @@ import { allowedVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
 
-const ApplyVoucher = ({ totalOrderPrice }: any) => {
+export const ApplyVoucher = ({ totalOrderPrice }: any) => {
   const [showVoucher, setShowVoucher] = useState(false);
   const [loading, setLoading] = useState(false);
   const [voucherData, setVoucherData] = useState<any[]>([]);
@@ -60,9 +60,6 @@ const ApplyVoucher = ({ totalOrderPrice }: any) => {
     NotifySuccess('Thành công!', 'Voucher đã được xóa.');
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN').format(price) + '₫';
-  };
   return (
     <>
       <Divider />
@@ -167,5 +164,3 @@ const ApplyVoucher = ({ totalOrderPrice }: any) => {
     </>
   );
 };
-
-export default ApplyVoucher;

@@ -39,7 +39,7 @@ export default function RecipeCard({ data }: any) {
 
         <Badge className='absolute left-3 top-3 bg-mainColor text-white'>{data.category}</Badge>
 
-        <Badge variant='light' className='absolute right-3 top-3 bg-white/90 text-gray-700'>
+        <Badge variant='light' className='absolute right-3 top-3 bg-white/90 text-gray-700 dark:text-white'>
           {data.views} lượt xem
         </Badge>
 
@@ -58,13 +58,13 @@ export default function RecipeCard({ data }: any) {
             fw={600}
             size='md'
             lineClamp={2}
-            className='line-clamp-2 leading-relaxed text-gray-900 transition-colors group-hover:text-mainColor'
+            className='line-clamp-2 leading-relaxed text-gray-900 transition-colors group-hover:text-mainColor dark:text-white'
           >
             {data.title.length < 40 ? `${data.title} - PhungFood dành cho bạn` : data.title}
           </Text>
         </Tooltip>
 
-        <Group justify='space-between' gap='xs' className='text-xs text-gray-500'>
+        <Group justify='space-between' gap='xs' className='text-xs text-gray-500 dark:text-white'>
           <Group gap={4}>
             <IconClock className='h-3 w-3' />
             <span>{data.duration}</span>

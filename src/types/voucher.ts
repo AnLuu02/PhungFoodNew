@@ -1,4 +1,4 @@
-import { VoucherStatus, VoucherType } from '@prisma/client';
+import { VoucherType } from '@prisma/client';
 
 export type Voucher = {
   id: string;
@@ -11,7 +11,7 @@ export type Voucher = {
 
   type: VoucherType;
 
-  status: VoucherStatus;
+  isActive: boolean;
 
   code: string;
 

@@ -9,7 +9,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 export async function POST(req: Request) {
   const { message } = await req.json();
-  const restaurant = await api.Restaurant.getOne();
+  const restaurant = await api.Restaurant.getOneActive();
   const subPrompt = `
       Đây là câu hỏi của người dùng: ${message}
      
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
              ${restaurant?.email}
           </a>
         </p>
-        <p style="margin: 8px 0; color: #555;"><strong>Thời gian mở cửa:</strong> ${restaurant?.openedHours || 'Đang cập nhật'} - ${restaurant?.closedHours || 'Đang cập nhật'}</p>
+        <p style="margin: 8px 0; color: #555;"><strong>Thời gian mở cửa:</strong> ${'Đang cập nhật'} - ${'Đang cập nhật'}</p>
         ${
           restaurant && restaurant?.socials?.length > 0
             ? restaurant?.socials

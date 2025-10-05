@@ -7,10 +7,10 @@ import {
   IconChevronDown,
   IconCreditCardPay,
   IconDatabaseDollar,
-  IconImageInPicture,
   IconLayoutDashboard,
   IconLogout,
   IconMenuOrder,
+  IconReport,
   IconSettings,
   IconTicket,
   IconUser
@@ -24,19 +24,23 @@ import { GlobalSearch } from '../Search/global-search';
 
 const navItems = [
   { label: 'Tổng quan', icon: IconLayoutDashboard, href: '/admin' },
-
   {
-    label: 'Quản lý doanh thu',
+    label: 'Báo cáo',
     icon: IconDatabaseDollar,
-    children: [{ label: 'Doanh thu', icon: IconDatabaseDollar, href: '/admin/revenue' }]
+    defaultOpened: true,
+    children: [
+      { label: 'Báo cáo', icon: IconReport, href: '/admin/reports' },
+      { label: 'Analytics', icon: IconReport, href: '/admin/analytics' }
+    ]
   },
   {
     label: 'Quản lý sản phẩm',
     icon: IconCheese,
+
     children: [
       { label: 'Danh mục', icon: IconCategory, href: '/admin/category' },
-      { label: 'Danh mục con', icon: IconCategory, href: '/admin/subCategory' },
-      { label: 'Sản phẩm', icon: IconCheese, href: '/admin/product' },
+      { label: 'Mặc hàng', icon: IconCheese, href: '/admin/product' },
+      { label: 'Kho hàng', icon: IconCheese, href: '/admin/warehouse' },
       { label: 'Nguyên liệu', icon: IconBrandPolymer, href: '/admin/material' },
       { label: 'Khuyến mãi', icon: IconTicket, href: '/admin/voucher' },
       { label: 'Đánh giá', icon: IconUser, href: '/admin/review' }
@@ -47,25 +51,26 @@ const navItems = [
     icon: IconUser,
     children: [
       { label: 'Người dùng', icon: IconUser, href: '/admin/user' },
-      { label: 'Phương thức thanh toán', icon: IconCreditCardPay, href: '/admin/payment' },
-      { label: 'Vai trò', icon: IconUser, href: '/admin/role' },
-      { label: 'Quyền hạn', icon: IconUser, href: '/admin/permission' }
+      { label: 'Phân quyền', icon: IconUser, href: '/admin/role' }
     ]
   },
   {
-    label: 'Quản lý đơn hàng',
+    label: 'Quản lý bán hàng',
     icon: IconMenuOrder,
-    children: [{ label: 'Đơn bán hàng', icon: IconMenuOrder, href: '/admin/order' }]
-  },
-  {
-    label: 'Quản lý ảnh',
-    icon: IconImageInPicture,
-    children: [{ label: 'Ảnh', icon: IconImageInPicture, href: '/admin/images' }]
+    defaultOpened: true,
+    children: [
+      { label: 'Đơn bán hàng', icon: IconMenuOrder, href: '/admin/order' },
+      { label: 'Hóa đơn', icon: IconMenuOrder, href: '/admin/invoice' },
+      { label: 'Thanh toán', icon: IconCreditCardPay, href: '/admin/payment' }
+    ]
   },
   {
     label: 'Cài đặt',
     icon: IconSettings,
-    children: [{ label: 'Nhà hàng', icon: IconImageInPicture, href: '/admin/settings/restaurant' }]
+    children: [
+      { label: 'Hệ thống', icon: IconSettings, href: '/admin/settings' },
+      { label: 'Giao diện nâng cao', icon: IconSettings, href: '/admin/settings/theme-advance' }
+    ]
   }
 ];
 
@@ -138,25 +143,30 @@ export default function Navbar() {
                       {item.label}
                     </Text>
                   }
+                  defaultOpened={item.defaultOpened}
                   leftSection={<item.icon size={16} />}
                   childrenOffset={28}
                   classNames={{
-                    root: `${item.children.some(child => child.href.includes(pathname)) ? '!bg-mainColor/10' : ''} rounded-md hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white`
+                    root: `${item?.href === pathname || item.children.some(child => child.href === pathname) ? '!bg-mainColor/10' : ''} rounded-md hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white`
                   }}
                 >
-                  {item.children.map(child => (
-                    <Box key={child.label} py={'xs'} pl={'md'} w={'100%'}>
-                      <Link
-                        key={child.label}
-                        href={child.href}
-                        className={`${child.href === pathname ? 'text-red-500' : ''} hover:text-red-500`}
-                      >
-                        <Text size='sm' fw={700}>
-                          {child.label}
-                        </Text>
+                  <Box className={`border-0 border-l border-solid border-gray-300 pl-2`}>
+                    {item.children.map(child => (
+                      <Link key={child.label} href={child.href}>
+                        <Box
+                          key={child.label}
+                          py={'xs'}
+                          pl={'md'}
+                          w={'100%'}
+                          className={`${child.href === pathname ? 'bg-mainColor/10' : ''} my-1 rounded-md hover:bg-mainColor/10`}
+                        >
+                          <Text size='sm' fw={700}>
+                            {child.label}
+                          </Text>
+                        </Box>
                       </Link>
-                    </Box>
-                  ))}
+                    ))}
+                  </Box>
                 </NavLink>
               );
             }
@@ -168,6 +178,9 @@ export default function Navbar() {
                     {item.label}
                   </Text>
                 }
+                classNames={{
+                  root: `${item?.href === pathname ? '!bg-mainColor/10' : ''} rounded-md hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white`
+                }}
                 href={item.href}
                 leftSection={<item.icon size={16} />}
               />

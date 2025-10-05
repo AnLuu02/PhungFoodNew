@@ -1,4 +1,4 @@
-import { Button, Center } from '@mantine/core';
+import { Button, Center, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,8 +17,10 @@ export default function UnauthorizedPage() {
         height={400}
         style={{ objectFit: 'cover' }}
       />
-      <h1 className='text-4xl font-bold text-red-500'>403 - Không có quyền truy cập</h1>
-      <p className='mt-2 text-gray-600'>Bạn không có quyền truy cập vào trang này.</p>
+      <Title order={1} className='font-quicksand text-4xl font-bold text-red-500'>
+        403 - Không có quyền truy cập
+      </Title>
+      <Text className='mt-2 text-gray-600 dark:text-white'>Bạn không có quyền truy cập vào trang này.</Text>
       <Link href='/' className='mt-4 rounded-sm text-black hover:underline'>
         <Button>Quay lại trang chủ</Button>
       </Link>

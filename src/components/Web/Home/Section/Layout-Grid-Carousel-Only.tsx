@@ -52,7 +52,7 @@ const LayoutGridCarouselOnly = ({
   }, [embla, onSelect]);
 
   return (
-    <Card mih={500} h={'max-content'} radius={'lg'} className='bg-gray-100 dark:bg-dark-card' p={0}>
+    <Card mih={500} h={'max-content'} radius={'lg'} className='bg-gray-100 dark:bg-dark-background' p={0}>
       <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
         <Flex
           align={'center'}
@@ -63,7 +63,7 @@ const LayoutGridCarouselOnly = ({
         >
           <Title
             order={2}
-            className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-dark-text'
+            className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-white'
           >
             {title || 'Sản phẩm mới'}
           </Title>
@@ -90,7 +90,7 @@ const LayoutGridCarouselOnly = ({
             </ActionIcon>
           </Flex>
         </Flex>
-        {dataRender?.length <= 0 ? (
+        {dataRender?.length === 0 ? (
           <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
             <Image
               style={{ objectFit: 'cover' }}

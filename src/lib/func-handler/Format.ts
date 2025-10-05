@@ -1,10 +1,17 @@
 import { EMPTY_STRING, VND_SYMBOL } from '~/constants';
 
-export const formatDateViVN = (date?: any) => {
+export const formatDateViVN = (date?: any, options?: { hour?: boolean }) => {
+  if (!date) return EMPTY_STRING;
   return new Date(date || new Date()).toLocaleDateString('vi-VN', {
     day: '2-digit',
     month: '2-digit',
-    year: 'numeric'
+    year: 'numeric',
+    ...(options?.hour && {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    })
   });
 };
 
@@ -83,4 +90,18 @@ export const formatPriceLocaleVi = (value: number | string, suffix = VND_SYMBOL)
 export function isStillValid({ createdAt, limitTime }: { createdAt: Date; limitTime: number }): boolean {
   const expiredAt = new Date(createdAt.getTime() + limitTime * 60 * 1000);
   return new Date() <= expiredAt;
+}
+
+export function formatMoneyShort(amount: number): string {
+  if (amount >= 1_000_000_000) {
+    const billions = amount / 1_000_000_000;
+    return (billions % 1 === 0 ? billions : billions.toFixed(1)) + ' tỉ';
+  } else if (amount >= 1_000_000) {
+    const millions = amount / 1_000_000;
+    return (millions % 1 === 0 ? millions : millions.toFixed(1)) + 'tr';
+  } else if (amount >= 1_000) {
+    const thousands = amount / 1_000;
+    return (thousands % 1 === 0 ? thousands : thousands.toFixed(1)) + 'nghìn';
+  }
+  return amount.toString();
 }

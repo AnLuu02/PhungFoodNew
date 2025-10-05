@@ -1,11 +1,12 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Group, Radio, Select, TextInput } from '@mantine/core';
-import type { Dispatch, SetStateAction } from 'react';
+import { Button, Grid, Switch, TextInput } from '@mantine/core';
+import { useDebouncedValue } from '@mantine/hooks';
+import { IconCheck, IconX } from '@tabler/icons-react';
+import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalPaymentType } from '~/lib/zod/EnumType';
 import { paymentSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
 import { Payment } from '~/types/payment';
@@ -14,18 +15,28 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting }
+    watch,
+    setValue,
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<Payment>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       id: '',
-      name: '',
-      tag: '',
-      type: LocalPaymentType.CREDIT_CARD,
       provider: '',
-      isDefault: false
+      name: '',
+      apiKey: '',
+      secretKey: '',
+      clientId: '',
+      clientSecret: '',
+      webhookUrl: '',
+      webhookSecret: '',
+      isSandbox: true,
+      isActive: true,
+      metadata: undefined
     }
   });
+
+  const [debouceName] = useDebouncedValue(watch('name'), 800);
 
   const utils = api.useUtils();
   const mutation = api.Payment.create.useMutation({
@@ -33,20 +44,19 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
       utils.Payment.invalidate();
     }
   });
+  useEffect(() => {
+    const tagProvider = createTag(debouceName);
+    setValue('provider', tagProvider);
+  }, [debouceName]);
 
   const onSubmit: SubmitHandler<Payment> = async formData => {
     try {
-      if (formData) {
-        const result = await mutation.mutateAsync({
-          ...formData,
-          tag: createTag(formData.name)
-        });
-        if (result.code === 'OK') {
-          NotifySuccess(result.message);
-          setOpened(false);
-        } else {
-          NotifyError(result.message);
-        }
+      const result = await mutation.mutateAsync(formData);
+      if (result.code === 'OK') {
+        NotifySuccess(result.message);
+        setOpened(false);
+      } else {
+        NotifyError(result.message);
       }
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
@@ -56,6 +66,13 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
+        <Controller
+          control={control}
+          name='id'
+          render={({ field }) => (
+            <TextInput {...field} label='id' placeholder='Nhập id' error={errors.name?.message} className='hidden' />
+          )}
+        />
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -64,7 +81,22 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
               <TextInput
                 {...field}
                 label='Tên phương thức'
-                placeholder='Nhập tên phương thức'
+                placeholder='Nhập Tên phương thức'
+                error={errors.name?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='provider'
+            render={({ field }) => (
+              <TextInput
+                {...field}
+                readOnly
+                label='Nhà cung cấp (tự tạo theo tên)'
+                placeholder='Nhà cung cấp'
                 error={errors.name?.message}
               />
             )}
@@ -74,70 +106,117 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
         <Grid.Col span={6}>
           <Controller
             control={control}
-            name='type'
+            name='apiKey'
             render={({ field }) => (
-              <Select
-                label='Phương thức thanh toán'
-                placeholder='Chọn phương thức '
-                searchable
-                data={[
-                  { value: LocalPaymentType.CREDIT_CARD, label: 'Thẻ tín dụng' },
-                  { value: LocalPaymentType.E_WALLET, label: 'Ví điện tử' }
-                ]}
-                error={errors.type?.message}
-                value={field.value}
-                onChange={field.onChange}
-              />
+              <TextInput {...field} label='API Key' placeholder='Nhập API Key' error={errors.name?.message} />
             )}
           />
         </Grid.Col>
-
         <Grid.Col span={6}>
           <Controller
             control={control}
-            name='provider'
+            name='secretKey'
             render={({ field }) => (
-              <Select
-                label='Nhà cung cấp thanh toán'
-                placeholder='Chọn phương thức thanh toán'
-                searchable
-                data={[
-                  { value: 'momo', label: 'Momo' },
-                  { value: 'zalopay', label: 'ZaloPay' },
-                  { value: 'vnpay', label: 'VNPay' },
-                  { value: 'paypal', label: 'PayPal' },
-                  { value: 'visa', label: 'Visa' },
-                  { value: 'mastercard', label: 'MasterCard' }
-                ]}
-                error={errors.provider?.message}
-                value={field.value}
-                onChange={field.onChange}
+              <TextInput {...field} label='Secret Key' placeholder='Nhập Secret Key' error={errors.name?.message} />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='clientId'
+            render={({ field }) => (
+              <TextInput {...field} label='Client ID' placeholder='Nhập Client ID' error={errors.name?.message} />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='clientSecret'
+            render={({ field }) => (
+              <TextInput
+                {...field}
+                label=' Client Secret'
+                placeholder='Nhập   Client Secret'
+                error={errors.name?.message}
               />
             )}
           />
         </Grid.Col>
-
-        <Grid.Col span={12}>
+        <Grid.Col span={6}>
           <Controller
             control={control}
-            name='isDefault'
+            name='webhookUrl'
             render={({ field }) => (
-              <Radio.Group
-                label='Phương thức thanh toán mặc định'
-                error={errors.isDefault?.message}
-                value={field.value ? 'true' : 'false'}
-                onChange={value => field.onChange(value === 'true')}
-              >
-                <Group mt='xs'>
-                  <Radio value='true' label='Có' />
-                  <Radio value='false' label='Không' />
-                </Group>
-              </Radio.Group>
+              <TextInput {...field} label='Webhook Url' placeholder='Nhập  Webhook Url' error={errors.name?.message} />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='webhookSecret'
+            render={({ field }) => (
+              <TextInput
+                {...field}
+                label='Webhook Secret'
+                placeholder='Nhập  Webhook Secret'
+                error={errors.name?.message}
+              />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='isActive'
+            render={({ field }) => (
+              <Switch
+                label='Trạng thái (Ẩn / Hiện)'
+                error={errors.isActive?.message}
+                checked={field.value}
+                onChange={event => {
+                  const checked = event.target.checked;
+                  field.onChange(checked);
+                }}
+                thumbIcon={
+                  !!field.value ? (
+                    <IconCheck size={12} color='var(--mantine-color-teal-6)' stroke={3} />
+                  ) : (
+                    <IconX size={12} color='var(--mantine-color-red-6)' stroke={3} />
+                  )
+                }
+              />
+            )}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='isSandbox'
+            render={({ field }) => (
+              <Switch
+                label='Trạng thái (Thử nghiệm / Production)'
+                error={errors.isActive?.message}
+                checked={field.value}
+                onChange={event => {
+                  const checked = event.target.checked;
+                  field.onChange(checked);
+                }}
+                thumbIcon={
+                  !!field.value ? (
+                    <IconCheck size={12} color='var(--mantine-color-teal-6)' stroke={3} />
+                  ) : (
+                    <IconX size={12} color='var(--mantine-color-red-6)' stroke={3} />
+                  )
+                }
+              />
             )}
           />
         </Grid.Col>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới
       </Button>
     </form>

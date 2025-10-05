@@ -1,5 +1,4 @@
 import { Button } from '@mantine/core';
-import clsx from 'clsx';
 
 export type IBButton = {
   title?: String;
@@ -14,6 +13,7 @@ export type IBButton = {
   active?: boolean;
   type?: 'button' | 'submit' | 'reset' | undefined;
   onClick?: () => void;
+  rest?: any;
 };
 const BButton = ({
   title = 'Mua hàng',
@@ -27,6 +27,7 @@ const BButton = ({
   disabled,
   loading,
   active,
+  rest,
   onClick
 }: IBButton) => {
   return (
@@ -40,16 +41,15 @@ const BButton = ({
       h={h}
       fullWidth={fullWidth}
       variant={variant}
+      {...rest}
       onClick={onClick}
-      className={clsx(
-        'transition-all duration-200 ease-in-out',
+      className={`transition-all duration-200 ease-in-out ${
         variant === 'outline'
           ? 'border-mainColor text-mainColor hover:border-mainColor hover:bg-mainColor hover:text-white'
           : disabled || loading
             ? ''
-            : 'bg-mainColor text-white hover:bg-subColor hover:text-black',
-        active && 'bg-mainColor text-white'
-      )}
+            : 'bg-mainColor text-white hover:bg-subColor hover:text-black'
+      } ${active ? 'bg-mainColor text-white' : ''} `}
     >
       {title}
     </Button>

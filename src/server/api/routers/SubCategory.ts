@@ -1,9 +1,8 @@
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
-import { LocalEntityType, LocalImageType, LocalProductStatus } from '~/lib/zod/EnumType';
+import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -36,7 +35,12 @@ export const subCategoryRouter = createTRPCRouter({
               },
               {
                 category: {
-                  tag: { contains: s?.trim(), mode: 'insensitive' }
+                  OR: [
+                    { tag: { contains: s?.trim(), mode: 'insensitive' } },
+                    {
+                      name: { contains: s?.trim(), mode: 'insensitive' }
+                    }
+                  ]
                 }
               }
             ]
@@ -58,7 +62,12 @@ export const subCategoryRouter = createTRPCRouter({
               },
               {
                 category: {
-                  tag: { contains: s?.trim(), mode: 'insensitive' }
+                  OR: [
+                    { tag: { contains: s?.trim(), mode: 'insensitive' } },
+                    {
+                      name: { contains: s?.trim(), mode: 'insensitive' }
+                    }
+                  ]
                 }
               }
             ]
@@ -68,7 +77,7 @@ export const subCategoryRouter = createTRPCRouter({
             image: true,
             product: {
               where: {
-                status: LocalProductStatus.ACTIVE
+                isActive: true
               },
               include: {
                 favouriteFood: true,
@@ -95,6 +104,7 @@ export const subCategoryRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1, 'Tên danh mục không được để trống'),
+        isActive: z.boolean().default(true),
         description: z.string().optional(),
         tag: z.string(),
         categoryId: z.string(),
@@ -133,6 +143,7 @@ export const subCategoryRouter = createTRPCRouter({
       const subCategory = await ctx.db.subCategory.create({
         data: {
           name: input.name,
+          isActive: input.isActive,
           tag: input.tag,
           description: input.description,
           categoryId: input.categoryId,
@@ -162,6 +173,7 @@ export const subCategoryRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        isActive: z.boolean().default(true),
         name: z.string().min(1, 'Tên danh mục không được để trống'),
         description: z.string().optional(),
         tag: z.string(),
@@ -207,6 +219,7 @@ export const subCategoryRouter = createTRPCRouter({
             where: { id: input.id },
             data: {
               name: input.name,
+              isActive: input.isActive,
               tag: input.tag,
               description: input.description,
               categoryId: input.categoryId,
@@ -328,17 +341,11 @@ export const subCategoryRouter = createTRPCRouter({
       return subCategory;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return await withRedisCache(
-      'subCategory:getAll',
-      async () => {
-        return await ctx.db.subCategory.findMany({
-          include: {
-            image: true,
-            category: true
-          }
-        });
-      },
-      60 * 60 * 24
-    );
+    return await ctx.db.subCategory.findMany({
+      include: {
+        image: true,
+        category: true
+      }
+    });
   })
 });

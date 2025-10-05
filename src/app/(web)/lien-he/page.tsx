@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: 'Liên hệ chúng tôi để đặt món, tư vấn thực đơn, hợp tác hoặc phản hồi dịch vụ.'
 };
 const Contact = async () => {
-  const restaurant = await api.Restaurant.getOne();
+  const restaurant = await api.Restaurant.getOneActive();
   return (
     <Grid w={'100%'}>
       <GridCol className='flex justify-between' span={12}>
@@ -77,7 +77,14 @@ const Contact = async () => {
             </Flex>
           </GridCol>
           <GridCol span={{ base: 12, md: 6 }}>
-            <Flex direction='column' w={'100%'} h={'500px'} className='bg-gray-100' align={'center'} justify={'center'}>
+            <Flex
+              direction='column'
+              w={'100%'}
+              h={'500px'}
+              className='bg-gray-100 dark:bg-dark-card'
+              align={'center'}
+              justify={'center'}
+            >
               <iframe
                 src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.0667450974274!2d106.60273367451757!3d10.806200058644913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752b92b2423a45%3A0x1a966c9c45ff7eee!2sB&#39;s%20Mart!5e0!3m2!1svi!2s!4v1735319059137!5m2!1svi!2s'
                 width='100%'

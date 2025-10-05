@@ -1,9 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { seedCategory } from '~/lib/data-test/seed';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
-import { LocalProductStatus } from '~/lib/zod/EnumType';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingCategory = async (ctx: any, tag: string) => {
@@ -66,7 +64,11 @@ export const categoryRouter = createTRPCRouter({
         })
       ]);
       const totalPages = Math.ceil(
-        s?.trim() ? (totalCategoriesQuery == 0 ? 1 : totalCategoriesQuery / take) : totalCategories / take
+        Object.entries(input)?.length > 2
+          ? totalCategoriesQuery == 0
+            ? 1
+            : totalCategoriesQuery / take
+          : totalCategories / take
       );
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
@@ -136,58 +138,53 @@ export const categoryRouter = createTRPCRouter({
       return category;
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
-    return await withRedisCache(
-      'category:getAll',
-      async () => {
-        let category = await ctx.db.category.findMany({
+    let category = await ctx.db.category.findMany({
+      include: {
+        subCategory: {
           include: {
-            subCategory: {
+            image: true,
+            product: {
+              where: {
+                isActive: true
+              },
               include: {
-                image: true,
-                product: {
-                  where: {
-                    status: LocalProductStatus.ACTIVE
-                  },
-                  include: {
-                    images: true
-                  }
+                images: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!category?.length) {
+      await ctx.db.category.createMany({
+        data: seedCategory
+      });
+      category = await ctx.db.category.findMany({
+        include: {
+          subCategory: {
+            include: {
+              image: true,
+              product: {
+                where: {
+                  isActive: true
+                },
+                include: {
+                  images: true
                 }
               }
             }
           }
-        });
-
-        if (!category?.length) {
-          await ctx.db.category.createMany({
-            data: seedCategory
-          });
-          category = await ctx.db.category.findMany({
-            include: {
-              subCategory: {
-                include: {
-                  image: true,
-                  product: {
-                    where: {
-                      status: LocalProductStatus.ACTIVE
-                    },
-                    include: {
-                      images: true
-                    }
-                  }
-                }
-              }
-            }
-          });
         }
+      });
+    }
 
-        return category;
-      },
-      60 * 60
-    );
+    return category;
   }),
   create: publicProcedure
     .input(
       z.object({
+        isActive: z.boolean().default(true),
         name: z.string().min(1, 'Tên danh mục không được để trống'),
         description: z.string().optional(),
         tag: z.string()

@@ -23,7 +23,7 @@ export default function SearchLocal({ setValue }: { setValue: (value: string) =>
       ref={searchInputRef}
       placeholder='Tìm kiếm'
       onChange={event => handleSearch(event.currentTarget.value)}
-      leftSection={<IconSearch size={16} className='text-gray-300' />}
+      leftSection={<IconSearch size={16} className='text-gray-300 dark:text-white' />}
       rightSectionWidth={40}
       w={'100%'}
       rightSection={

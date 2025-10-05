@@ -32,7 +32,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
     control,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting, isDirty }
   } = useForm<User>({
     resolver: zodResolver(userSchema),
     defaultValues: {
@@ -42,6 +42,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
       image: undefined,
       gender: LocalGender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
+      isActive: true,
       password: '',
       phone: '',
       address: {
@@ -121,7 +122,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
     }
   };
 
-  const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
+  const { data: roles } = api.RolePermission.getAllRole.useQuery();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -151,9 +152,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
             }}
             render={({ field }) => (
               <FileInput
-                leftSection={<ActionIcon size='sx' color='gray' variant='transparent' component={IconFile} />}
+                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
                 label='Ảnh chính'
-                placeholder='Choose a file'
+                placeholder='Chọn một file'
                 leftSectionPointerEvents='none'
                 {...field}
                 error={errors.image?.message}
@@ -173,7 +174,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     {...field}
                     required
                     label='Tên'
-                    placeholder='Enter your name'
+                    placeholder='Nhập tên người dùng'
                     error={errors.name?.message}
                   />
                 )}
@@ -191,7 +192,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     required
                     leftSection={<IconMail size={18} stroke={1.5} />}
                     label='Email'
-                    placeholder='Enter your tag'
+                    placeholder='Nhập email người dùng'
                     error={errors.email?.message}
                   />
                 )}
@@ -205,7 +206,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                 render={({ field }) => (
                   <PasswordInput
                     label='Mật khẩu'
-                    placeholder='Enter your name'
+                    placeholder='Nhập mật khẩu người dùng'
                     error={errors.password?.message}
                     {...field}
                   />
@@ -222,7 +223,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     {...field}
                     label='Số điện thoại'
                     leftSection={<IconPhone size={18} stroke={1.5} />}
-                    placeholder='Enter your name'
+                    placeholder='Nhập số điện thoại người dùng'
                     error={errors.phone?.message}
                   />
                 )}
@@ -365,7 +366,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
             </GridCol>
 
             <GridCol span={12}>
-              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
                 Tạo mới
               </Button>
             </GridCol>

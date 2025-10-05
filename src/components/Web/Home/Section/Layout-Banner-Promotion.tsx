@@ -35,7 +35,7 @@ export default function ReusablePromoBanner({
   image,
   reverse = false,
   bgColor = '#f8f9fa',
-  textColor = 'text-gray-900'
+  textColor = 'text-gray-900 dark:text-white'
 }: ReusablePromoBannerProps) {
   if (backgroundImage) {
     return (
@@ -111,7 +111,7 @@ export default function ReusablePromoBanner({
 
             {subtitle && (
               <p
-                className={`text-lg sm:text-xl md:text-2xl ${variant === 'bold' ? 'text-white/90' : 'text-gray-600'} `}
+                className={`text-lg sm:text-xl md:text-2xl ${variant === 'bold' ? 'text-white/90' : 'text-gray-600 dark:text-white'} `}
               >
                 {subtitle}
               </p>
