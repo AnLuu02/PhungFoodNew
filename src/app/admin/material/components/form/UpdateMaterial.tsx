@@ -52,6 +52,9 @@ export default function UpdateMaterial({
   const updateMutation = api.Material.update.useMutation({
     onSuccess: () => {
       utils.Material.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

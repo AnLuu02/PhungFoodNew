@@ -135,7 +135,7 @@ export const pageRouter = createTRPCRouter({
         revenueByOrderStatus,
         distributionProducts,
         recentActivitiesApp
-      ] = results.map((item: any) => (item.status === 'fulfilled' ? item.value : []));
+      ] = results.map((item: any) => (item.status === 'fulfilled' ? item.value : Array.isArray(item.value) ? [] : {}));
       return {
         overview,
         topUsers,

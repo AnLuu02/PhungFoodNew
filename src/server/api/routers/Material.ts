@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const materialRouter = createTRPCRouter({
@@ -80,6 +80,7 @@ export const materialRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:material'))
     .input(
       z.object({
         name: z.string().min(1, 'Tên nguyên liệu không được để trống'),
@@ -165,6 +166,7 @@ export const materialRouter = createTRPCRouter({
     }),
 
   delete: publicProcedure
+    .use(requirePermission('delete:material'))
     .input(
       z.object({
         id: z.string()
@@ -211,6 +213,7 @@ export const materialRouter = createTRPCRouter({
   }),
 
   update: publicProcedure
+    .use(requirePermission('update:material'))
     .input(
       z.object({
         id: z.string(),

@@ -3,15 +3,18 @@ import { Box, Flex, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconBell, IconGardenCart } from '@tabler/icons-react';
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 
 export default function CartFloating() {
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   if (cart && cart?.length === 0) return null;
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + (Number(item?.price || 0) - Number(item?.discount || 0)) * Number(item?.quantity || 0),
-    0
-  );
+  const totalPrice = useMemo(() => {
+    return cart.reduce(
+      (sum, item) => sum + (Number(item?.price || 0) - Number(item?.discount || 0)) * Number(item?.quantity || 0),
+      0
+    );
+  }, [cart]);
   return (
     <Link href='/gio-hang'>
       <Box className='fixed bottom-0 right-[80px] z-50 cursor-pointer rounded-t-xl bg-mainColor text-white shadow-lg hover:opacity-80'>

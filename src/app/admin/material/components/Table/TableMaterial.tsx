@@ -25,7 +25,7 @@ import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 
-export default function TableMaterial({ s, data, allData, user }: { s: string; data: any; allData: any; user?: any }) {
+export default function TableMaterial({ s, data, allData }: { s: string; data: any; allData: any }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();

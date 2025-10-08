@@ -38,6 +38,9 @@ export default function UpdatePermission({
   const mutation = api.RolePermission.updatePermission.useMutation({
     onSuccess: () => {
       utils.RolePermission.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

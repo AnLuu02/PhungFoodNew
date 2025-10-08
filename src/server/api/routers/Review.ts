@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
 
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const reviewRouter = createTRPCRouter({
@@ -154,6 +154,7 @@ export const reviewRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:review'))
     .input(
       z.object({
         userId: z.string(),
@@ -193,6 +194,7 @@ export const reviewRouter = createTRPCRouter({
       };
     }),
   delete: publicProcedure
+    .use(requirePermission('delete:review'))
     .input(
       z.object({
         id: z.string()
@@ -252,6 +254,7 @@ export const reviewRouter = createTRPCRouter({
   }),
 
   update: publicProcedure
+    .use(requirePermission('update:review'))
     .input(
       z.object({
         reviewId: z.string(),

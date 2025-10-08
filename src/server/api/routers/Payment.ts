@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { seedPayments } from '~/lib/data-test/seed';
 
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const paymentRouter = createTRPCRouter({
@@ -44,6 +44,7 @@ export const paymentRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:payment'))
     .input(
       z.object({
         provider: z.string(),
@@ -70,6 +71,7 @@ export const paymentRouter = createTRPCRouter({
       };
     }),
   delete: publicProcedure
+    .use(requirePermission('delete:payment'))
     .input(
       z.object({
         id: z.string()
@@ -124,6 +126,7 @@ export const paymentRouter = createTRPCRouter({
   }),
 
   update: publicProcedure
+    .use(requirePermission('update:payment'))
     .input(
       z.object({
         id: z.string(),

@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingnotification = async (ctx: any, tag: string) => {
   return await ctx.db.notification.findFirst({ where: { tag } });
@@ -99,6 +99,7 @@ export const notificationRouter = createTRPCRouter({
     }),
 
   delete: publicProcedure
+    .use(requirePermission('delete:notification'))
     .input(
       z.object({
         id: z.string()
@@ -224,6 +225,7 @@ export const notificationRouter = createTRPCRouter({
     return notification;
   }),
   create: publicProcedure
+    .use(requirePermission('create:notification'))
     .input(
       z.object({
         userId: z.array(z.string()),
@@ -247,6 +249,7 @@ export const notificationRouter = createTRPCRouter({
     }),
 
   update: publicProcedure
+    .use(requirePermission('update:notification'))
     .input(
       z.object({
         where: z.record(z.any()),

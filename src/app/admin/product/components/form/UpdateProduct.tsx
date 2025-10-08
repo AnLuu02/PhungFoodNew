@@ -130,6 +130,9 @@ export default function UpdateProduct({
   const updateMutation = api.Product.update.useMutation({
     onSuccess: () => {
       utils.Product.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

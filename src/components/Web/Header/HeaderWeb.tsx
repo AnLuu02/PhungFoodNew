@@ -7,11 +7,10 @@ import { Header1 } from './section/header1';
 import Header2 from './section/header2';
 import Header3 from './section/header3';
 
-const HeaderWeb = async () => {
+const HeaderWeb = async ({ restaurant }: { restaurant: any }) => {
   const session = await getServerSession(authOptions);
   const user = session?.user;
-  const [restaurant, categories, subCategories, notifications] = await Promise.all([
-    api.Restaurant.getOneActive(),
+  const [categories, subCategories, notifications] = await Promise.all([
     api.Category.getAll(),
     api.SubCategory.getAll(),
     user?.email ? api.Notification.getFilter({ s: user?.email || '' }) : undefined

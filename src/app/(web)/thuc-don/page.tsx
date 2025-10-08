@@ -47,7 +47,7 @@ export default async function MenuSection({
   return (
     <Box pos={'relative'}>
       <HeaderMenu products={data} />
-      <MenuList products={data} responseData={responseData} />
+      <MenuList responseData={responseData} />
       <CartFloating />
     </Box>
   );

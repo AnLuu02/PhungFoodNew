@@ -49,14 +49,21 @@ export default function UpdateCategory({
 
   const utils = api.useUtils();
   const updateMutation = api.Category.update.useMutation({
-    onSuccess: () => {
-      utils.Category.invalidate();
+    onSuccess: result => {
+      if (result.code === 'OK') {
+        setOpened(false);
+        utils.Category.invalidate();
+        NotifySuccess(result.message);
+      }
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 
   const onSubmit: SubmitHandler<Category> = async formData => {
     if (categoryId) {
-      const result = await updateMutation.mutateAsync({
+      await updateMutation.mutateAsync({
         where: {
           id: categoryId
         },
@@ -65,12 +72,6 @@ export default function UpdateCategory({
           tag: createTag(formData.name)
         }
       });
-      setOpened(false);
-      if (result.code === 'OK') {
-        NotifySuccess(result.message);
-        return;
-      }
-      NotifyError(result.message);
     }
   };
 

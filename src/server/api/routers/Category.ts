@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { seedCategory } from '~/lib/data-test/seed';
 import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingCategory = async (ctx: any, tag: string) => {
   return await ctx.db.category.findFirst({ where: { tag } });
@@ -82,6 +82,7 @@ export const categoryRouter = createTRPCRouter({
     }),
 
   delete: publicProcedure
+    .use(requirePermission('delete:category'))
     .input(
       z.object({
         id: z.string()
@@ -182,6 +183,7 @@ export const categoryRouter = createTRPCRouter({
     return category;
   }),
   create: publicProcedure
+    .use(requirePermission('create:category'))
     .input(
       z.object({
         isActive: z.boolean().default(true),
@@ -208,6 +210,7 @@ export const categoryRouter = createTRPCRouter({
       };
     }),
   createMany: publicProcedure
+    .use(requirePermission('create:category'))
     .input(
       z.object({
         data: z.array(
@@ -252,6 +255,7 @@ export const categoryRouter = createTRPCRouter({
     }),
 
   update: publicProcedure
+    .use(requirePermission('update:category'))
     .input(
       z.object({
         where: z.record(z.any()),

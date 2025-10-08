@@ -7,7 +7,7 @@ import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
 
 import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
 import { NotifyError } from '~/lib/func-handler/toast';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { createCaller } from '../root';
 
@@ -239,6 +239,7 @@ export const productRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:product'))
     .input(
       z.object({
         name: z.string().min(1, 'Tên không được để trống'),
@@ -351,6 +352,7 @@ export const productRouter = createTRPCRouter({
     }),
 
   update: publicProcedure
+    .use(requirePermission('update:product'))
     .input(
       z.object({
         id: z.string(),
@@ -545,6 +547,7 @@ export const productRouter = createTRPCRouter({
     }),
 
   delete: publicProcedure
+    .use(requirePermission('delete:product'))
     .input(
       z.object({
         id: z.string()

@@ -131,6 +131,9 @@ export default function UpdateOrder({
   const updateMutation = api.Order.update.useMutation({
     onSuccess: () => {
       utils.Order.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

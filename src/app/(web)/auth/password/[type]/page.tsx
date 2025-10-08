@@ -5,7 +5,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
-import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button';
 import { NotifyError } from '~/lib/func-handler/toast';
@@ -18,7 +17,6 @@ const TIME_EXPIRED_MINUTES = 3;
 
 export default function ForgotPassword() {
   const { data: user } = useSession();
-  const { type } = useParams<{ type: string }>();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure();

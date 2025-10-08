@@ -4,7 +4,7 @@ import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
 
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const subCategoryRouter = createTRPCRouter({
@@ -101,6 +101,7 @@ export const subCategoryRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:subCategory'))
     .input(
       z.object({
         name: z.string().min(1, 'Tên danh mục không được để trống'),
@@ -170,6 +171,7 @@ export const subCategoryRouter = createTRPCRouter({
       };
     }),
   update: publicProcedure
+    .use(requirePermission('update:subCategory'))
     .input(
       z.object({
         id: z.string(),
@@ -263,6 +265,8 @@ export const subCategoryRouter = createTRPCRouter({
       };
     }),
   delete: publicProcedure
+    .use(requirePermission('delete:subCategory'))
+
     .input(
       z.object({
         id: z.string()

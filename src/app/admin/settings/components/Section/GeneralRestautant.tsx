@@ -102,12 +102,18 @@ export default function GeneralSettingsManagement({ data }: { data: any }) {
   const updateMutation = api.Restaurant.update.useMutation({
     onSuccess: () => {
       utils.Restaurant.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 
   const createMutation = api.Restaurant.create.useMutation({
     onSuccess: () => {
       utils.Restaurant.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

@@ -3,9 +3,10 @@
 import { Box, Flex, Paper, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ImageZoomModal } from '~/components/Modals/ModalZoomImage';
 import ShareSocials from '~/components/ShareSocial';
+import { breakpoints } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 export default function ProductImage({
   thumbnail,
@@ -18,12 +19,15 @@ export default function ProductImage({
   discount?: number;
   tag: string;
 }) {
-  const isDesktop = useMediaQuery(`(min-width:1024px)`);
+  const isDesktop = useMediaQuery(`(min-width:${breakpoints.md}px)`);
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showFullImage, setShowFullImage] = useState(false);
   const allImages = [{ url: thumbnail }, ...gallery];
-  const displayImages = allImages.slice(1, !isDesktop ? 3 : 4);
-  const remainingCount = allImages.length > (!isDesktop ? 3 : 4) ? allImages.length - (!isDesktop ? 3 : 4) : 0;
+  const [displayImages, remainingCount] = useMemo(() => {
+    const displayImages = allImages.slice(1, !isDesktop ? 3 : 4);
+    const remainingCount = allImages.length > (!isDesktop ? 3 : 4) ? allImages.length - (!isDesktop ? 3 : 4) : 0;
+    return [displayImages, remainingCount];
+  }, [allImages, isDesktop]);
 
   const handleThumbnailClick = (image: string, index: number) => {
     setCurrentImage(image);

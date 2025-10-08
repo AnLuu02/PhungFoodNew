@@ -2,11 +2,9 @@ import { Box, Button, Center, Menu, MenuDropdown, MenuItem, MenuTarget } from '@
 import { IconChevronCompactLeft, IconMessageCircle } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { api } from '~/trpc/server';
 import Chatbox from './Chatbox';
 
-export default async function FloatingWidget() {
-  const restaurant = await api.Restaurant.getOneActive();
+export default async function FloatingWidget({ restaurant }: { restaurant: any }) {
   return (
     <>
       <Box pos={'fixed'} bottom={100} left={20} className='z-[200] flex flex-col space-y-4'>
@@ -89,7 +87,7 @@ export default async function FloatingWidget() {
               <MenuItem
                 leftSection={<Image src={'/images/svg/icon-messager.svg'} alt='zalo' width={24} height={24} />}
                 component='a'
-                href={`https://m.me/${restaurant?.socials.find(item => item.key === 'facebook')?.url || 'anluu099'}`}
+                href={`https://m.me/${restaurant?.socials.find((item: any) => item.key === 'facebook')?.url || 'anluu099'}`}
                 target='_blank'
               >
                 Nhắn với chúng tôi qua Messenger
@@ -107,7 +105,7 @@ export default async function FloatingWidget() {
         </Menu>
 
         <Link
-          href={`https://m.me/${restaurant?.socials.find(item => item.key === 'facebook')?.url || 'anluu099'}`}
+          href={`https://m.me/${restaurant?.socials.find((item: any) => item.key === 'facebook')?.url || 'anluu099'}`}
           target='_blank'
           className='hidden sm:block'
         >

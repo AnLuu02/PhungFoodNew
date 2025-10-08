@@ -6,7 +6,7 @@ import { api } from '~/trpc/server';
 import { DashboardContent } from './components/DashboardContent';
 
 export const metadata: Metadata = {
-  title: 'Thông tin khách hàng - Phụng Food',
+  title: 'Thông tin cá nhân - Phụng Food',
   description: 'Xem và cập nhật thông tin cá nhân, đơn hàng và voucher của bạn tại Phụng Food.'
 };
 

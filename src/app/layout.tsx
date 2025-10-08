@@ -30,7 +30,7 @@ const quickSandFont = Quicksand({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Trang chủ | Phụng Food Restaurant',
+    default: 'Phụng Food Restaurant',
     template: '%s | Phụng Food Restaurant'
   },
   description: 'Phụng Food Restaurant chuyên món ăn miền Tây – giao hàng tận nơi tại Cà Mau.',
@@ -64,8 +64,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getServerSession(authOptions);
-  const theme = await api.Restaurant.getTheme();
+  const [session, theme] = await Promise.all([getServerSession(authOptions), api.Restaurant.getTheme()]);
   const defaultScheme =
     theme?.themeMode === 'dark' || theme?.themeMode === 'light' || theme?.themeMode === 'auto'
       ? theme.themeMode

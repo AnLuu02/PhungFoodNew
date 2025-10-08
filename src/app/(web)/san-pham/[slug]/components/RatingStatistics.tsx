@@ -1,9 +1,13 @@
 import { Group, Paper, Progress, Stack, Text } from '@mantine/core';
 import { IconStarFilled } from '@tabler/icons-react';
+import { useMemo } from 'react';
 
 export default function RatingStatistics({ ratings }: { ratings: number[] }) {
-  const totalRatings = ratings.reduce((sum, count) => sum + count, 0) || 0;
-  const averageRating = ratings.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings || 0;
+  const totalRatings = useMemo(() => ratings.reduce((sum, count) => sum + count, 0) || 0, [ratings]);
+  const averageRating = useMemo(
+    () => (totalRatings ? ratings.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings : 0),
+    [ratings, totalRatings]
+  );
   return (
     <Paper withBorder p='md'>
       <Stack gap={'xs'}>

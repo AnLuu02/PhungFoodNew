@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/func-handler/PrismaHelper';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { deliverySchema } from '~/lib/zod/zodShcemaForm';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const orderRouter = createTRPCRouter({
@@ -155,6 +155,7 @@ export const orderRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:order'))
     .input(
       z.object({
         originalTotal: z.number().default(0),
@@ -235,6 +236,7 @@ export const orderRouter = createTRPCRouter({
       };
     }),
   update: publicProcedure
+    .use(requirePermission('update:order'))
     .input(
       z.object({
         where: z.record(z.string(), z.any()),
@@ -267,6 +269,7 @@ export const orderRouter = createTRPCRouter({
       };
     }),
   delete: publicProcedure
+    .use(requirePermission('delete:order'))
     .input(
       z.object({
         id: z.string()

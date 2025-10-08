@@ -98,6 +98,9 @@ export default function UpdateVoucher({
   const updateMutation = api.Voucher.update.useMutation({
     onSuccess: () => {
       utils.Voucher.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

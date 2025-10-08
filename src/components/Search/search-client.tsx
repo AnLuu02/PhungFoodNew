@@ -55,6 +55,13 @@ export default function SearchComponentClient({ subCategories }: any) {
     return data && (data?.products.length > 0 || data?.categories.length > 0 || data?.subCategories.length > 0);
   }, [data]);
 
+  const historySearchRender = useMemo(() => {
+    if (historySearch.length > 0) {
+      const dataRender = Array.from(historySearch).reverse().slice(0, 5);
+      return dataRender;
+    }
+    return [];
+  }, [historySearch]);
   return (
     <Box w={'100%'} mx='auto' pos='relative'>
       <form onSubmit={handleSubmit}>
@@ -143,7 +150,7 @@ export default function SearchComponentClient({ subCategories }: any) {
           className='overflow-hidden bg-gray-100 text-black dark:bg-dark-card dark:text-dark-text'
         >
           <ScrollAreaAutosize mah={400} scrollbarSize={5}>
-            {searchQuery && searchQuery !== '' && !debounced && !isLoading ? (
+            {((searchQuery !== '' || !searchQuery) && searchQuery !== debounced) || isLoading ? (
               <>
                 <Box p='sm'>
                   <Skeleton height={20} width='80%' radius='xl' />
@@ -212,7 +219,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                   </Flex>
                 </Box>
               </>
-            ) : debounced && debounced !== '' && !isLoading && !isValue ? (
+            ) : debounced && debounced === searchQuery && !isLoading && !isValue ? (
               <Box px={'md'} pos={'relative'} className='overflow-hidden'>
                 <Flex align='center' gap={8} py={'sm'}>
                   <IconSearch size={24} className='text-gray-400 dark:text-dark-text' />
@@ -235,7 +242,7 @@ export default function SearchComponentClient({ subCategories }: any) {
               </Box>
             ) : (
               <>
-                {historySearch.length > 0 && (
+                {historySearchRender.length > 0 && (
                   <Box p='md'>
                     <Flex justify='space-between' align='center' mb={8}>
                       <Text size='sm' fw={700} className='text-black dark:text-white'>
@@ -254,7 +261,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       </Button>
                     </Flex>
                     <Stack gap={8}>
-                      {historySearch.map((item: any, index: number) => (
+                      {historySearchRender.map((item: any, index: number) => (
                         <Flex key={index} justify='space-between' align='center'>
                           <Button
                             variant='transparent'
@@ -290,7 +297,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                   </Box>
                 )}
 
-                {!debounced && (
+                {!searchQuery && (
                   <Box p='md' style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
                     <Text fw={700} className='text-black dark:text-white' mb={8}>
                       Tra cứu hàng đầu

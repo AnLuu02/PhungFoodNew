@@ -26,7 +26,7 @@ import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
 
-export default function TableUser({ s, data, allData, user }: { s: string; data: any; allData: any; user?: any }) {
+export default function TableUser({ s, data, allData }: { s: string; data: any; allData: any }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();

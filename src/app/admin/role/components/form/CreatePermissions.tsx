@@ -32,6 +32,9 @@ export default function CreatePermission({ setOpened }: { setOpened: Dispatch<Se
   const createPermissionMutation = api.RolePermission.createPermission.useMutation({
     onSuccess: () => {
       utils.RolePermission.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Đăng nhập',
+  title: 'Đăng nhập - Phụng Food',
   description: 'Đăng nhập vào tài khoản của bạn',
   robots: {
     index: false,

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Kết quả thanh toán',
+  title: 'Kết quả thanh toán - Phụng Food',
   description: 'Kết quả thanh toán'
 };
 

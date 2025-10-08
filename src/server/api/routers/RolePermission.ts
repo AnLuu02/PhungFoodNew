@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 type RoleWithPermissions = Prisma.RoleGetPayload<{
   include: { permissions: true };
@@ -112,6 +112,7 @@ export const rolePermissionRouter = createTRPCRouter({
     });
   }),
   createRole: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
         name: z.string(),
@@ -136,6 +137,7 @@ export const rolePermissionRouter = createTRPCRouter({
       };
     }),
   createManyRole: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
         data: z.array(
@@ -182,6 +184,7 @@ export const rolePermissionRouter = createTRPCRouter({
       };
     }),
   updateRole: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
         roleId: z.string(),
@@ -232,6 +235,7 @@ export const rolePermissionRouter = createTRPCRouter({
     }),
 
   deleteRole: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const role = await ctx.db.role.delete({
@@ -307,6 +311,7 @@ export const rolePermissionRouter = createTRPCRouter({
     }),
 
   createPermission: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(z.object({ name: z.string(), viName: z.string().optional(), description: z.string().optional() }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const permission = await ctx.db.permission.create({
@@ -323,6 +328,7 @@ export const rolePermissionRouter = createTRPCRouter({
       };
     }),
   createManyPermission: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
         data: z.array(
@@ -360,6 +366,7 @@ export const rolePermissionRouter = createTRPCRouter({
     }),
 
   updatePermission: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
         permissionId: z.string(),
@@ -387,6 +394,7 @@ export const rolePermissionRouter = createTRPCRouter({
       };
     }),
   deletePermission: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(z.object({ permisssionId: z.string() }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const permission = await ctx.db.permission.delete({
@@ -406,6 +414,7 @@ export const rolePermissionRouter = createTRPCRouter({
   }),
   //user permision
   updateUserPermissions: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(z.array(z.object({ userId: z.string(), permissionId: z.string(), granted: z.boolean() })))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const userPermissions = await ctx.db.$transaction(

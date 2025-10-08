@@ -10,7 +10,7 @@ import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
-  title: 'Tin tức - Món ngon miền Tây | Phụng Food',
+  title: 'Tin tức - Món ngon miền Tây',
   description: 'Chia sẻ kiến thức ẩm thực, mẹo nấu ăn và câu chuyện món ngon miền Tây tại blog Phụng Food.'
 };
 

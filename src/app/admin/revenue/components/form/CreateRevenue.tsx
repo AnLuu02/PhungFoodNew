@@ -41,6 +41,9 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
   const createRevenueMutation = api.Revenue.create.useMutation({
     onSuccess: () => {
       utils.Revenue.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

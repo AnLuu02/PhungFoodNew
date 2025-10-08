@@ -6,7 +6,7 @@ import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const restaurantRouter = createTRPCRouter({
@@ -64,6 +64,7 @@ export const restaurantRouter = createTRPCRouter({
   }),
 
   create: publicProcedure
+    .use(requirePermission('create:restaurant'))
     .input(
       z.object({
         name: z.string().min(1, 'Tên là bắt buộc'),
@@ -132,6 +133,7 @@ export const restaurantRouter = createTRPCRouter({
     }),
 
   update: publicProcedure
+    .use(requirePermission('update:restaurant'))
     .input(
       z.object({
         id: z.string().optional(),

@@ -11,6 +11,7 @@ const LayoutGridCarouselOnly = ({
   data,
   title,
   navigation,
+  minHeight,
   configs = {
     slideSize: { base: '100%', sm: '33.3333%', md: '25%', xl: '20%' },
     h: 320
@@ -23,14 +24,14 @@ const LayoutGridCarouselOnly = ({
     slideSize?: StyleProp<string | number> | undefined;
     h?: any;
   };
-  navigation: {
+  navigation?: {
     href: string;
     label: string;
   };
+  minHeight?: string | number;
   CardElement: JSX.Element;
 }) => {
   const dataRender = data || [];
-
   const [embla, setEmbla] = useState<Embla | null>(null);
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
@@ -52,7 +53,7 @@ const LayoutGridCarouselOnly = ({
   }, [embla, onSelect]);
 
   return (
-    <Card mih={500} h={'max-content'} radius={'lg'} className='bg-gray-100 dark:bg-dark-background' p={0}>
+    <Card mih={minHeight || 500} h={'max-content'} radius={'lg'} className='bg-gray-100 dark:bg-dark-background' p={0}>
       <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
         <Flex
           align={'center'}
@@ -117,6 +118,7 @@ const LayoutGridCarouselOnly = ({
               getEmblaApi={setEmbla}
               containScroll='trimSnaps'
               slidesToScroll={1}
+              pos={'relative'}
             >
               {dataRender?.map((item: any, index: number) => (
                 <Carousel.Slide key={index} className={`overflow-hidden`}>
@@ -127,11 +129,13 @@ const LayoutGridCarouselOnly = ({
                 </Carousel.Slide>
               ))}
             </Carousel>
-            <Flex align={'center'} justify={'center'} my={30}>
-              <Link href={navigation.href || `/thuc-don?loai=san-pham-moi`}>
-                <BButton title={navigation.label || 'Xem tất cả'} variant='outline' size='sm' />
-              </Link>
-            </Flex>
+            {navigation && (
+              <Flex align={'center'} justify={'center'} my={30}>
+                <Link href={navigation.href || `/thuc-don?loai=san-pham-moi`}>
+                  <BButton title={navigation.label || 'Xem tất cả'} variant='outline' size='sm' />
+                </Link>
+              </Flex>
+            )}
           </>
         )}
       </Flex>

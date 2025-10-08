@@ -88,6 +88,9 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
   const mutation = api.Product.create.useMutation({
     onSuccess: () => {
       utils.Product.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

@@ -27,24 +27,27 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
 
   const utils = api.useUtils();
   const mutation = api.Category.create.useMutation({
-    onSuccess: () => {
-      utils.Category.invalidate();
+    onSuccess: data => {
+      if (data.code === 'OK') {
+        utils.Category.invalidate();
+        NotifySuccess(data.message);
+        setOpened(false);
+        return;
+      }
+      NotifyError(data.message);
+    },
+    onError: err => {
+      NotifyError(err.message);
     }
   });
 
   const onSubmit: SubmitHandler<Category> = async formData => {
     try {
       if (formData) {
-        const result = await mutation.mutateAsync({
+        await mutation.mutateAsync({
           ...formData,
           tag: createTag(formData.name)
         });
-        setOpened(false);
-        if (result.code === 'OK') {
-          NotifySuccess(result.message);
-          return;
-        }
-        NotifyError(result.message);
       }
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

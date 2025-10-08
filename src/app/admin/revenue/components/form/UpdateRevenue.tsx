@@ -44,6 +44,9 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
   const createRevenueMutation = api.Revenue.update.useMutation({
     onSuccess: () => {
       utils.Revenue.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

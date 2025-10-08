@@ -184,7 +184,7 @@ export const recentActivityRouter = createTRPCRouter({
         }, []);
       }
 
-      return [...recentUsers, ...recentOrders, ...recentReviews];
+      return [...recentUsers.reverse(), ...recentOrders.reverse(), ...recentReviews.reverse()];
     }),
   getRecentActivityApp: publicProcedure
     .input(
@@ -351,6 +351,6 @@ export const recentActivityRouter = createTRPCRouter({
         }
       }
 
-      return [...recentProducts, ...recentRestaurants, ...recentRevenues];
+      return [...recentProducts.reverse(), ...recentRestaurants.reverse(), ...recentRevenues.reverse()];
     })
 });

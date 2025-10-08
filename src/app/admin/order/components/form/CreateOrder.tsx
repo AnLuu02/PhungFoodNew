@@ -95,6 +95,9 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
   const mutation = api.Order.create.useMutation({
     onSuccess: () => {
       utils.Order.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   const onSubmit: SubmitHandler<Order> = async formData => {

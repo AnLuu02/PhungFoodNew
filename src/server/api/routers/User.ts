@@ -11,7 +11,7 @@ import { getOtpEmail, sendEmail } from '~/lib/func-handler/sendEmail';
 import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/lib/zod/EnumType';
 import { baseAddressSchema } from '~/lib/zod/zodShcemaForm';
 
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const userRouter = createTRPCRouter({
@@ -116,6 +116,7 @@ export const userRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:user'))
     .input(
       z.object({
         name: z.string().min(1, 'Tên không được để trống'),
@@ -227,6 +228,7 @@ export const userRouter = createTRPCRouter({
       };
     }),
   update: publicProcedure
+    .use(requirePermission('update:user'))
     .input(
       z.object({
         id: z.string(),
@@ -345,6 +347,7 @@ export const userRouter = createTRPCRouter({
       };
     }),
   delete: publicProcedure
+    .use(requirePermission('delete:user'))
     .input(
       z.object({
         id: z.string()

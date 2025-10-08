@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 export const voucherRouter = createTRPCRouter({
   find: publicProcedure
@@ -60,6 +60,7 @@ export const voucherRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:voucher'))
     .input(
       z.object({
         name: z.string().min(1, 'Tên voucher không được để trống'),
@@ -106,6 +107,7 @@ export const voucherRouter = createTRPCRouter({
       };
     }),
   delete: publicProcedure
+    .use(requirePermission('delete:voucher'))
     .input(
       z.object({
         id: z.string()
@@ -272,6 +274,7 @@ export const voucherRouter = createTRPCRouter({
     }),
 
   update: publicProcedure
+    .use(requirePermission('update:voucher'))
     .input(
       z.object({
         where: z.record(z.any()),

@@ -62,6 +62,9 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
   const mutation = api.Voucher.create.useMutation({
     onSuccess: () => {
       utils.Voucher.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   const onSubmit: SubmitHandler<Voucher> = async formData => {

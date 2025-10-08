@@ -4,7 +4,8 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import ProductCardCarouselVertical from '~/components/Web/Card/product-card-carousel-vertical';
 
-export const MenuList = ({ products, responseData }: { products: any; responseData: any }) => {
+export const MenuList = ({ responseData }: { responseData: any }) => {
+  const products = responseData?.products || [];
   return (
     <Flex direction={'column'} align={'flex-start'}>
       <Grid w={'100%'} p={0}>

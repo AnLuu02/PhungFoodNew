@@ -38,6 +38,9 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
   const mutation = api.Review.create.useMutation({
     onSuccess: () => {
       utils.Review.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

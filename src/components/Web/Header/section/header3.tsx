@@ -79,6 +79,7 @@ const Header3 = ({ categories, subCategories }: any) => {
                             key={index}
                             leftSection={
                               <Image
+                                key={index}
                                 loading='lazy'
                                 src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                                 style={{ objectFit: 'cover' }}
@@ -88,7 +89,7 @@ const Header3 = ({ categories, subCategories }: any) => {
                               />
                             }
                           >
-                            <Text size='sm' fw={700} className='dark:text-white'>
+                            <Text size='sm' fw={700} className='dark:text-white' key={index}>
                               {item?.name}
                             </Text>
                           </Menu.Item>

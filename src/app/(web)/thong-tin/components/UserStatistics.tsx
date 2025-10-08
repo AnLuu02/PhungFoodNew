@@ -1,5 +1,6 @@
 'use client';
 
+import { LineChart } from '@mantine/charts';
 import {
   Box,
   Button,
@@ -16,21 +17,12 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useSession } from 'next-auth/react';
-import dynamic from 'next/dynamic';
 import { useMemo, useState } from 'react';
 import { getInfoLevelUser } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalUserLevel } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
 
-const UserSpendingChart = dynamic(() => import('./UserSpendingChart'), {
-  ssr: false
-});
-const mockYearlySpending = {
-  '2025': 3280,
-  '2024': 2800,
-  '2023': 2500
-};
 const months = [
   { month: 'Tháng 1', amount: 0 },
   { month: 'Tháng 2', amount: 0 },
@@ -46,18 +38,17 @@ const months = [
   { month: 'Tháng 12', amount: 0 }
 ];
 export const orderCompletionRate = 85;
-
-export const vipLevels = ['Đồng', 'Bạc', 'Vàng', 'Bạch kim', 'Kim cương'];
-export const userVIPLevel = 'Vàng';
-
 export function UserStatistics() {
   const [selectedYear, setSelectedYear] = useState('2025');
   const { data: user } = useSession();
-  const { data: userDb } = api.User.getOne.useQuery({ s: user?.user?.email || '' });
-  const { data: revenue } = api.Revenue.getTotalSpentInMonthByUser.useQuery({
-    userId: user?.user?.id || '',
-    year: Number(selectedYear) || 2025
-  });
+  const { data: userDb } = api.User.getOne.useQuery({ s: user?.user?.email || '' }, { enabled: !!user?.user?.email });
+  const { data: revenue } = api.Revenue.getTotalSpentInMonthByUser.useQuery(
+    {
+      userId: user?.user?.id || '',
+      year: Number(selectedYear) || 2025
+    },
+    { enabled: !!user?.user?.id }
+  );
 
   const { mockSpendingData, totalSpent } = useMemo(() => {
     return {
@@ -69,7 +60,9 @@ export function UserStatistics() {
     };
   }, [revenue]);
 
-  const levelInfo = getInfoLevelUser(userDb?.level as LocalUserLevel);
+  const levelInfo = useMemo(() => {
+    return getInfoLevelUser(userDb?.level as LocalUserLevel);
+  }, [userDb]);
 
   return (
     <Stack>
@@ -95,7 +88,11 @@ export function UserStatistics() {
               <Select
                 value={selectedYear}
                 onChange={value => setSelectedYear(value || '2023')}
-                data={Object.keys(mockYearlySpending).map(year => ({ value: year, label: year }))}
+                data={Object.keys({
+                  '2025': 3280,
+                  '2024': 2800,
+                  '2023': 2500
+                }).map(year => ({ value: year, label: year }))}
                 style={{ width: 120 }}
               />
               <Text size='xl' fw={700}>
@@ -106,7 +103,18 @@ export function UserStatistics() {
                 </Center>
               </Text>
             </Flex>
-            <UserSpendingChart data={mockSpendingData} />
+            <Box style={{ height: 200 }}>
+              <LineChart
+                data={mockSpendingData}
+                dataKey='month'
+                series={[{ name: 'amount', label: 'Chi tiêu', color: '#8884d8' }]}
+                curveType='linear'
+                gridAxis='xy'
+                tickLine='xy'
+                withTooltip
+                h={200}
+              />
+            </Box>
           </Box>
 
           <Flex

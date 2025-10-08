@@ -2,7 +2,6 @@ import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
-import { UserRole } from '~/constants';
 import { api } from '~/trpc/server';
 import { CreateUserButton } from './components/Button';
 import TableUser from './components/Table/TableUser';
@@ -49,10 +48,10 @@ export default async function UserManagementPage({
               Danh sách tất cả người dùng trong hệ thống PhungFood
             </Text>
           </Box>
-          {user?.user?.role === UserRole.ADMIN && <CreateUserButton />}
+          <CreateUserButton />
         </Flex>
 
-        <TableUser data={data} allData={allData} s={s} user={user} />
+        <TableUser data={data} allData={allData} s={s} />
       </Stack>
     </>
   );

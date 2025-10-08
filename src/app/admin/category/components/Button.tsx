@@ -230,7 +230,14 @@ export function UpdateCategoryButton({ id }: { id: string }) {
 
 export function DeleteCategoryButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.Category.delete.useMutation();
+  const mutationDelete = api.Category.delete.useMutation({
+    onSuccess: () => {
+      utils.Category.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   return (
     <>
       <ActionIcon

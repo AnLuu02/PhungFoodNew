@@ -60,6 +60,9 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
   const updateMutation = api.Restaurant.changeTheme.useMutation({
     onSuccess: () => {
       utils.Restaurant.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   const onSubmit: SubmitHandler<Theme> = async formData => {

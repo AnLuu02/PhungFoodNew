@@ -42,6 +42,9 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
   const mutation = api.Payment.create.useMutation({
     onSuccess: () => {
       utils.Payment.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   useEffect(() => {

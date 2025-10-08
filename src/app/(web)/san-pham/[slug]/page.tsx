@@ -6,10 +6,6 @@ import { withRedisCache } from '~/lib/cache/withRedisCache';
 import { api } from '~/trpc/server';
 import ProductDetailClient from './pageClient';
 
-type Props = {
-  params: { slug: string };
-};
-
 const getProduct = async (slug: string, userId: string) => {
   const redisKey = `product-detail:${slug}`;
   return withRedisCache(
@@ -21,13 +17,13 @@ const getProduct = async (slug: string, userId: string) => {
   );
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const user = await getServerSession(authOptions);
   const productData = await getProduct(params.slug, user?.user?.id || '');
 
   if (!productData?.product) {
     return {
-      title: 'Không tìm thấy sản phẩm | Phụng Food',
+      title: 'Không tìm thấy sản phẩm - Phụng Food',
       description: 'Sản phẩm bạn tìm kiếm hiện không tồn tại trên hệ thống.'
     };
   }
@@ -36,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const imageUrl = product.image?.url || 'https://phungfood.com/default-image.jpg';
 
   return {
-    title: `${product.name} | Phụng Food`,
+    title: `${product.name} - Phụng Food`,
     description: product.description || 'Đặc sản miền Tây chính gốc từ Phụng Food.',
     openGraph: {
       title: product.name,
@@ -46,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function ProductDetail({ params }: Props) {
+async function ProductDetail({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const user = await getServerSession(authOptions);
   const data = await api.Page.getInitProductDetail({ slug, userId: user?.user?.id || '' });

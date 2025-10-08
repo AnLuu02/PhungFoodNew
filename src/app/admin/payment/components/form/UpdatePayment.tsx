@@ -64,6 +64,9 @@ export default function UpdatePayment({
   const updateMutation = api.Payment.update.useMutation({
     onSuccess: () => {
       utils.Payment.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

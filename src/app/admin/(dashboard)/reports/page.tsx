@@ -26,13 +26,13 @@ export default async function ReportPage({
   } = await api.Page.getInitReport(queryOverview);
   return (
     <ReportPageClient
-      overview={overview.value}
-      topUsers={topUsers.value}
-      revenueByCategories={revenueByCategories.value}
-      topProducts={topProducts.value}
-      revenueByOrderStatus={revenueByOrderStatus.value}
-      distributionProducts={distributionProducts.value}
-      recentActivitiesApp={recentActivitiesApp.value}
+      overview={overview}
+      topUsers={topUsers}
+      revenueByCategories={revenueByCategories}
+      topProducts={topProducts}
+      revenueByOrderStatus={revenueByOrderStatus}
+      distributionProducts={distributionProducts}
+      recentActivitiesApp={recentActivitiesApp}
     />
   );
 }

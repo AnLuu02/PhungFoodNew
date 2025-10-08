@@ -1,7 +1,5 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateMaterialButton } from './components/Button';
 import TableMaterial from './components/Table/TableMaterial';
@@ -21,7 +19,6 @@ export default async function MaterialManagementPage({
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
   const allData = await api.Material.getAll();
-  const user = await getServerSession(authOptions);
   const data = await api.Material.find({ skip: +currentPage, take: +limit, s });
 
   return (
@@ -40,7 +37,7 @@ export default async function MaterialManagementPage({
           <CreateMaterialButton />
         </Flex>
 
-        <TableMaterial allData={allData} data={data} s={s} user={user} />
+        <TableMaterial allData={allData} data={data} s={s} />
       </Stack>
     </>
   );

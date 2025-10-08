@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const invoiceRouter = createTRPCRouter({
@@ -99,6 +99,7 @@ export const invoiceRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
+    .use(requirePermission('create:invoice'))
     .input(
       z.object({
         orderId: z.string(),
@@ -118,6 +119,7 @@ export const invoiceRouter = createTRPCRouter({
       };
     }),
   delete: publicProcedure
+    .use(requirePermission('delete:invoice'))
     .input(
       z.object({
         id: z.string()
@@ -168,6 +170,7 @@ export const invoiceRouter = createTRPCRouter({
   }),
 
   update: publicProcedure
+    .use(requirePermission('update:invoice'))
     .input(
       z.object({
         id: z.string(),

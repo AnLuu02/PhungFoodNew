@@ -84,6 +84,9 @@ export default function UpdateSubCategory({
   const updateMutation = api.SubCategory.update.useMutation({
     onSuccess: () => {
       utils.SubCategory.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

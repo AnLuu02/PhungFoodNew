@@ -46,6 +46,9 @@ export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<S
   const mutation = api.SubCategory.create.useMutation({
     onSuccess: () => {
       utils.SubCategory.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
-  title: 'Liên hệ Phụng Food',
+  title: 'Liên hệ - Phụng Food',
   description: 'Liên hệ chúng tôi để đặt món, tư vấn thực đơn, hợp tác hoặc phản hồi dịch vụ.'
 };
 const Contact = async () => {

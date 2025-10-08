@@ -77,6 +77,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
   const mutation = api.User.create.useMutation({
     onSuccess: () => {
       utils.User.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

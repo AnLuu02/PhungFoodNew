@@ -43,7 +43,7 @@ export default function ProductDetails({ product }: { product: any }) {
           </Text>
         </Spoiler>
         <Text size='sm' c='dimmed'>
-          Product ID: {product.id}
+          Mã sản phẩm: {product.id}
         </Text>
       </Stack>
     </Paper>

@@ -47,11 +47,17 @@ export default function BannerManagement({ data }: any) {
   const mutationCreate = api.Restaurant.createBanner.useMutation({
     onSuccess: () => {
       utils.Restaurant.getAllBanner.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   const mutationUpdate = api.Restaurant.updateBanner.useMutation({
     onSuccess: () => {
       utils.Restaurant.getAllBanner.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   useEffect(() => {
@@ -152,11 +158,17 @@ export default function BannerManagement({ data }: any) {
   const setDefaultBannerMutation = api.Restaurant.setDefaultBanner.useMutation({
     onSuccess: () => {
       utils.Restaurant.getAllBanner.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   const deleteBannerMutation = api.Restaurant.deleteBanner.useMutation({
     onSuccess: () => {
       utils.Restaurant.getAllBanner.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
   async function handleSetDefault(id: string) {

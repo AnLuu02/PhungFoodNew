@@ -22,7 +22,6 @@ export default async function CategoryManagementPage({
     api.Category.find({ skip: +currentPage, take: +limit, s }),
     api.SubCategory.find({ skip: +currentPage, take: +limit, s })
   ]);
-
   return (
     <>
       <Divider my={'md'} />

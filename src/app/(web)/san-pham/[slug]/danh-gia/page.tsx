@@ -12,7 +12,10 @@ import RatingStatistics from '../components/RatingStatistics';
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const productTag = params.slug;
-  const { data, isLoading } = api.Product.getOne.useQuery({ s: productTag, hasReview: true, hasUser: true });
+  const { data, isLoading } = api.Product.getOne.useQuery(
+    { s: productTag, hasReview: true, hasUser: true },
+    { enabled: !!productTag }
+  );
   let ratingCountsDefault = [0, 0, 0, 0, 0];
   const product: any = data ?? [];
   const ratingCounts = useMemo(() => {

@@ -3,9 +3,7 @@ import { IconPhone, IconTruck } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
-import { api } from '~/trpc/server';
-export default async function FooterWeb() {
-  const restaurant = await api.Restaurant.getOneActive();
+export default async function FooterWeb({ restaurant }: { restaurant: any }) {
   return (
     <>
       <Box
@@ -150,7 +148,7 @@ export default async function FooterWeb() {
                     />
                   </a>
                   <a
-                    href={`https://m.me/${restaurant?.socials.find(item => item.key === 'facebook')?.url || 'anluu099'}`}
+                    href={`https://m.me/${restaurant?.socials.find((item: any) => item.key === 'facebook')?.url || 'anluu099'}`}
                     target='_blank'
                     aria-label='Liên hệ Messenger'
                     className='rounded-sm hover:underline hover:opacity-80'

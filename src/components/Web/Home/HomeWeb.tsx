@@ -2,6 +2,7 @@ import { Container, Space } from '@mantine/core';
 import { recipes } from '~/lib/data-test/recipe';
 import { formatDateViVN } from '~/lib/func-handler/Format';
 import { ConsumerCard } from '../Card/card-consumer';
+import { PartnerCard } from '../Card/partner';
 import ProductCardCarouselVertical from '../Card/product-card-carousel-vertical';
 import BannerSection from './Section/Banner-section';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
@@ -200,6 +201,19 @@ const HomeWeb = ({
             />
           </>
         )}
+        <>
+          <Space h='xl' />
+          <LayoutGridCarouselOnly
+            title='Đối tác của chúng tôi'
+            data={Array.from({ length: 7 }, (_, i) => `/images/webp/img_brand_${i + 1}.webp`)}
+            configs={{
+              slideSize: { base: '100%', sm: '50%', md: '16.6666667%' },
+              h: 'max-content'
+            }}
+            minHeight={180}
+            CardElement={<PartnerCard />}
+          />
+        </>
       </Container>
     </>
   );

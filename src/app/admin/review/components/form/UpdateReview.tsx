@@ -53,6 +53,9 @@ export default function UpdateReview({
   const updateMutation = api.Review.update.useMutation({
     onSuccess: () => {
       utils.Review.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 

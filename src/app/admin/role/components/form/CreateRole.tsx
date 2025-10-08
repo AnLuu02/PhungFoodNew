@@ -87,6 +87,9 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
   const createRoleMutation = api.RolePermission.createRole.useMutation({
     onSuccess: () => {
       utils.RolePermission.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 
@@ -159,10 +162,10 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
                   size='sm'
                   radius={'md'}
                   data={[
-                    { value: 'view_', label: 'Quyền xem' },
-                    { value: 'create_', label: 'Quền tạo mới' },
-                    { value: 'update_', label: 'Quyền cập nhật' },
-                    { value: 'delete_', label: 'Quyền xóa' },
+                    { value: 'view:', label: 'Quyền xem' },
+                    { value: 'create:', label: 'Quền tạo mới' },
+                    { value: 'update:', label: 'Quyền cập nhật' },
+                    { value: 'delete:', label: 'Quyền xóa' },
                     { value: 'hideHasPermission', label: 'Ẩn quyền các quyền hiện có' },
                     { value: 'showHasPermission', label: 'Chỉ hiển thị quyền hiện có' }
                   ]}
