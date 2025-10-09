@@ -1,7 +1,5 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { SearchInput } from '~/components/Search/search-input';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/server';
@@ -29,7 +27,6 @@ export default async function OrderManagementPage({
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
   const allData = await api.Order.getAll();
-  const user = await getServerSession(authOptions);
   const data = await api.Order.find({ skip: +currentPage, take: +limit, s, filter, sort: sortArr });
   return (
     <>
@@ -53,7 +50,7 @@ export default async function OrderManagementPage({
             <SendMessageAllUserAdvanced />
           </Group>
         </Group>
-        <TableOrder data={data} s={s} user={user} allData={allData} />
+        <TableOrder data={data} s={s} allData={allData} />
       </Stack>
     </>
   );

@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 };
 
 export default async function CustomerProfile() {
-  const user = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   const [userInfor, orders, vouchers] = await Promise.allSettled([
-    api.User.getOne({ s: user?.user?.email || '', hasOrders: true }),
-    api.Order.getFilter({ s: user?.user?.email || '' }),
+    api.User.getOne({ s: session?.user?.email || '', hasOrders: true }),
+    api.Order.getFilter({ s: session?.user?.email || '' }),
     api.Voucher.getVoucherForUser({
-      userId: user?.user?.id || ''
+      userId: session?.user?.id || ''
     })
   ]);
   return (

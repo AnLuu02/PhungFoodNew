@@ -1,7 +1,5 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { UserRole } from '~/constants';
 import { api } from '~/trpc/server';
 import { CreateProductButton } from './components/Button';
@@ -22,9 +20,8 @@ export default async function ProductManagementPage({
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '3';
-  const [allData, user, data] = await Promise.all([
+  const [allData, data] = await Promise.all([
     api.Product.getAll({ userRole: UserRole.ADMIN }),
-    getServerSession(authOptions),
     api.Product.find({
       skip: +currentPage,
       take: +limit,
@@ -50,7 +47,7 @@ export default async function ProductManagementPage({
           <CreateProductButton />
         </Flex>
 
-        <TableProduct data={data} s={s} user={user} allData={allData} />
+        <TableProduct data={data} s={s} allData={allData} />
       </Stack>
     </>
   );

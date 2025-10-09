@@ -1,7 +1,6 @@
 'use client';
 import { ActionIcon, Box, Card, Divider, Flex, Group, Paper, Select, SimpleGrid, Tabs, Title } from '@mantine/core';
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { SearchInput } from '~/components/Search/search-input';
@@ -15,8 +14,6 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const sortArr = searchParams.getAll('sort');
-  const filter = searchParams.get('filter');
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '3';
   const [activeTab, setActiveTab] = useState<'role' | 'permission'>('role');
@@ -26,7 +23,6 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
       : api.RolePermission.findPermission.useQuery({ skip: +page, take: +limit, s }, { initialData: dataPermission });
 
   const { data: allDataClient } = api.RolePermission.getAllRole.useQuery(undefined, { initialData: allData });
-  const { data: user } = useSession();
 
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
@@ -112,16 +108,15 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
       <Paper radius={'md'} withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
-          {user?.user?.role === UserRole.ADMIN &&
-            (activeTab === 'role' ? (
-              <>
-                <CreateManyRoleButton />
-              </>
-            ) : (
-              <>
-                <CreateManyPermissionButton />
-              </>
-            ))}
+          {activeTab === 'role' ? (
+            <>
+              <CreateManyRoleButton />
+            </>
+          ) : (
+            <>
+              <CreateManyPermissionButton />
+            </>
+          )}
         </Group>
       </Paper>
 
@@ -192,26 +187,21 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
                 }
               ]}
             />
-            {user?.user?.role === UserRole.ADMIN &&
-              (activeTab === 'role' ? (
-                <>
-                  <CreateRoleButton />
-                </>
-              ) : (
-                <>
-                  <CreatePermissionButton />
-                </>
-              ))}
+            {activeTab === 'role' ? (
+              <>
+                <CreateRoleButton />
+              </>
+            ) : (
+              <>
+                <CreatePermissionButton />
+              </>
+            )}
           </Group>
         </Flex>
 
         <Divider my='sm' />
         <Tabs.Panel value={activeTab}>
-          {activeTab === 'role' ? (
-            <RoleSection data={dataClient} s={s} user={user} />
-          ) : (
-            <TablePermission data={dataClient} s={s} user={user} />
-          )}
+          {activeTab === 'role' ? <RoleSection data={dataClient} s={s} /> : <TablePermission data={dataClient} s={s} />}
         </Tabs.Panel>
       </Tabs>
     </>

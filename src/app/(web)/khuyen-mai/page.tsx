@@ -9,10 +9,10 @@ export const metadata: Metadata = {
   description: 'Cập nhật ưu đãi và giảm giá các món ăn miền Tây tại Phụng Food. Đặt hàng ngay để nhận ưu đãi.'
 };
 export default async function FoodPromotionPage() {
-  const user = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   const [userData, voucherData, productData] = await Promise.allSettled([
-    api.User.getOne({ s: user?.user.email || '', hasOrders: true }),
-    api.Voucher.getVoucherForUser({ userId: user?.user.id || '' }),
+    api.User.getOne({ s: session?.user.email || '', hasOrders: true }),
+    api.Voucher.getVoucherForUser({ userId: session?.user.id || '' }),
     api.Product.find({
       skip: 0,
       take: 10,

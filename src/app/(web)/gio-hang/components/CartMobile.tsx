@@ -1,10 +1,12 @@
 import { Badge, Box, Button, Divider, Grid, GridCol, Group, NumberInput, Paper, Stack, Text } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 
-export default function ShoppingCartMobile({ cart, setCart }: any) {
+export const ShoppingCartMobile = () => {
+  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const updateQuantity = (id: number, quantity: number) => {
     setCart((items: any) =>
       items.map((item: any) => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
@@ -84,4 +86,4 @@ export default function ShoppingCartMobile({ cart, setCart }: any) {
       </Grid>
     </Paper>
   ));
-}
+};

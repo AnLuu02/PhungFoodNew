@@ -51,16 +51,19 @@ export const authOptions: NextAuthOptions = {
       try {
         if (user.email) {
           const { email, name, image } = user;
-          await api.User.create({
-            email: email || '',
-            name: name || '',
-            password: 'default123',
-            image: { fileName: image || '', base64: '' }
-          });
+          const userFromDb = await api.User.getOne({ s: email || '' });
+          if (!userFromDb) {
+            await api.User.create({
+              email: email || '',
+              name: name || '',
+              password: 'default123',
+              image: { fileName: image || '', base64: '' }
+            });
+          }
         }
         return true;
-      } catch {
-        console.error('Error in signIn callback:');
+      } catch (error) {
+        console.error('Error in signIn callback: ', error);
         return false;
       }
     },

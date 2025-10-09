@@ -2,32 +2,12 @@
 import { Box, Button, Flex, Group, Paper, Select, SimpleGrid, Switch, Text, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconFilter, IconSearch } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
-const PERMISSIONS: Record<string, { name: string; description: string }> = {
-  dashboard: { name: 'Dashboard Access', description: 'View main dashboard' },
-  users: { name: 'User Management', description: 'Create, edit, delete users' },
-  roles: { name: 'Role Management', description: 'Manage roles and permissions' },
-  restaurant: { name: 'Restaurant Settings', description: 'Edit restaurant information' },
-  menu: { name: 'Menu Management', description: 'Create and edit menu items' },
-  orders: { name: 'Order Management', description: 'View and process orders' },
-  payments: { name: 'Payment Processing', description: 'Handle payments and refunds' },
-  reports: { name: 'Reports & Analytics', description: 'View financial and operational reports' },
-  content: { name: 'Content Management', description: 'Manage website content and pages' },
-  integrations: { name: 'Third-party Integrations', description: 'Configure external services' },
-  system: { name: 'System Settings', description: 'Modify system configuration' },
-  backup: { name: 'Backup & Recovery', description: 'Manage data backups' }
-};
-
-const DEFAULT_ROLE_PERMISSIONS = {
-  Admin: Object.keys(PERMISSIONS),
-  Manager: ['dashboard', 'menu', 'orders', 'payments', 'reports', 'content'],
-  Staff: ['dashboard', 'orders']
-};
-
 function syncPermissions(init: any[], dynamic: any[]): any[] {
   const initMap = new Map(init.map(p => [p.id, p]));
 
@@ -55,6 +35,7 @@ export default function UpdatePermissionUser({
   email: any;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
+  const { data: currentSession } = useSession();
   const { data: user, isLoading: isLoadingUser } = api.User.getOne.useQuery({ s: email }, { enabled: !!email });
   const { data: permissions = [], isLoading } = api.RolePermission.getAllPermission.useQuery(undefined, {
     enabled: !!email
@@ -62,7 +43,7 @@ export default function UpdatePermissionUser({
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<
-    'view' | 'update' | 'delete' | 'create' | 'hideHasPermission' | 'showHasPermission' | undefined
+    'view' | 'update' | 'delete' | 'create' | 'hasNotPermission' | 'hasPermission' | undefined
   >();
   const [permissionsRender, setPermissionsRender] = useState<any>([]);
   const [seletedPermissions, setSeletedPermissions] = useState<any>([]);
@@ -85,13 +66,13 @@ export default function UpdatePermissionUser({
     }
 
     if (filter) {
-      const permissionNames = permissions.map((item: any) => item.name);
+      const permissionNames = seletedPermissions.map((item: any) => item.name);
       switch (filter) {
-        case 'hideHasPermission':
+        case 'hasNotPermission':
           dataRender = dataRender.filter((item: any) => !permissionNames.includes(item.name));
           break;
-        case 'showHasPermission':
-          dataRender = dataRender.filter((item: any) => permissionNames.includes(item.name));
+        case 'hasPermission':
+          dataRender = [...seletedPermissions];
           break;
         default:
           dataRender = dataRender.filter((item: any) => item.name.includes(filter));
@@ -103,7 +84,6 @@ export default function UpdatePermissionUser({
   const hasChange = useMemo(() => {
     return syncPermissions(initPermissions, seletedPermissions).length > 0;
   }, [seletedPermissions, initPermissions]);
-  syncPermissions(initPermissions, seletedPermissions);
 
   const utils = api.useUtils();
   const mutationUpdate = api.RolePermission.updateUserPermissions.useMutation({
@@ -183,9 +163,12 @@ export default function UpdatePermissionUser({
 
           <Box className='space-y-4'>
             <Flex align={'center'} justify={'space-between'}>
-              <Text fw={700} size='md'>
-                Quyền người dùng
-              </Text>
+              <Group align='center' gap={4}>
+                <Text fw={700} size='md'>
+                  Quyền người dùng
+                </Text>
+                <Text size='sm'>(Có {seletedPermissions?.length} quyền)</Text>
+              </Group>
               <Group align='center' gap={'md'}>
                 <TextInput
                   leftSection={<IconSearch size={16} className='text-gray-300 dark:text-white' />}
@@ -203,8 +186,8 @@ export default function UpdatePermissionUser({
                     { value: 'create:', label: 'Quền tạo mới' },
                     { value: 'update:', label: 'Quyền cập nhật' },
                     { value: 'delete:', label: 'Quyền xóa' },
-                    { value: 'hideHasPermission', label: 'Ẩn quyền các quyền hiện có' },
-                    { value: 'showHasPermission', label: 'Chỉ hiển thị quyền hiện có' }
+                    { value: 'hasNotPermission', label: 'Quyền chưa có' },
+                    { value: 'hasPermission', label: 'Quyền hiện có' }
                   ]}
                   value={filter}
                   leftSection={<IconFilter size={16} className='text-gray-300 dark:text-white' />}
@@ -217,33 +200,37 @@ export default function UpdatePermissionUser({
             {isLoading ? (
               <LoadingSpiner />
             ) : permissionsRender?.length > 0 ? (
-              <SimpleGrid cols={3}>
+              <SimpleGrid cols={2}>
                 {permissionsRender.map((item: any) => {
                   return (
-                    <Paper
-                      p={'md'}
-                      withBorder
-                      radius={'md'}
-                      shadow='md'
-                      key={item.id}
-                      className='flex items-center justify-between'
-                    >
-                      <Box>
-                        <Text fw={600}>{item.name}</Text>
-                        <Text className='text-muted-foreground text-sm'>{item.description}</Text>
-                      </Box>
-                      <Switch
-                        disabled={user.role?.name !== UserRole.ADMIN}
-                        checked={seletedPermissions?.some((p: any) => p.name === item.name)}
-                        onChange={checked => {
-                          if (checked.target.checked) {
-                            setSeletedPermissions([...seletedPermissions, item]);
-                          } else {
-                            setSeletedPermissions(seletedPermissions.filter((p: any) => p?.name !== item.name));
-                          }
-                        }}
-                      />
-                    </Paper>
+                    <label htmlFor={`${item.id}`}>
+                      <Paper
+                        p={'md'}
+                        withBorder
+                        radius={'md'}
+                        shadow='md'
+                        key={item.id}
+                        className='flex items-center justify-between'
+                      >
+                        <Box>
+                          <Text fw={600}>{item.name}</Text>
+                          <Text className='text-muted-foreground text-sm'>{item.description}</Text>
+                        </Box>
+                        <Switch
+                          id={`${item.id}`}
+                          value={item?.id}
+                          disabled={currentSession?.user?.role !== UserRole.ADMIN}
+                          checked={seletedPermissions?.some((p: any) => p?.id === item?.id)}
+                          onChange={checked => {
+                            if (checked.target.checked) {
+                              setSeletedPermissions([...seletedPermissions, item]);
+                            } else {
+                              setSeletedPermissions(seletedPermissions.filter((p: any) => p?.id !== item?.id));
+                            }
+                          }}
+                        />
+                      </Paper>
+                    </label>
                   );
                 })}
               </SimpleGrid>

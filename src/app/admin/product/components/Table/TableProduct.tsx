@@ -15,7 +15,7 @@ import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/search-input';
 import { api } from '~/trpc/react';
 
-export default function TableProduct({ s, data, allData, user }: { s: string; data: any; allData: any; user?: any }) {
+export default function TableProduct({ s, data, allData }: { s: string; data: any; allData: any }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);

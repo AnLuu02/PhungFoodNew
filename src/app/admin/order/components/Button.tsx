@@ -187,7 +187,17 @@ export function DeleteOrderButton({ id }: { id: string }) {
 export function CopyOrderButton({ data }: { data: any }) {
   const [loading, setLoading] = useState(false);
   const utils = api.useUtils();
-  const mutationCreate = api.Order.create.useMutation();
+  const mutationCreate = api.Order.create.useMutation({
+    onSuccess: () => {
+      utils.Order.invalidate();
+      setLoading(false);
+      NotifySuccess('Copy hóa đơn thành công!');
+    },
+    onError: e => {
+      setLoading(false);
+      NotifyError(e.message);
+    }
+  });
   return (
     <>
       <Tooltip label='Nhân bản hóa đơn'>
@@ -224,9 +234,6 @@ export function CopyOrderButton({ data }: { data: any }) {
                 }
               } as any
             });
-            utils.Order.invalidate();
-            setLoading(false);
-            NotifySuccess('Copy hóa đơn thành công!');
           }}
         >
           <IconCopy size={24} />
@@ -521,7 +528,11 @@ export function SendMessageOrderButton({ userId, email }: any) {
 
 export function HandleStateOrderButton({ id, status, title }: { id: string; status: LocalOrderStatus; title: string }) {
   const utils = api.useUtils();
-  const mutation = api.Order.update.useMutation();
+  const mutation = api.Order.update.useMutation({
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   return (
     <>
       <Tooltip label={title || 'Giao hàng'}>
@@ -557,7 +568,11 @@ export function HandleStateOrderButton({ id, status, title }: { id: string; stat
 
 export function CancleOrderButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutation = api.Order.update.useMutation();
+  const mutation = api.Order.update.useMutation({
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
 
   return (
     <>

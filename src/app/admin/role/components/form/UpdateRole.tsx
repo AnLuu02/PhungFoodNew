@@ -21,7 +21,6 @@ export function syncPermissions(init: any[], dynamic: any[]): any[] {
       initMap.delete(d.id);
     }
   }
-
   for (const [, p] of initMap) {
     result.push({ ...p, granted: false });
   }
@@ -38,9 +37,8 @@ export default function UpdateRole({ id, setOpened }: { id: any; setOpened: Disp
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<
-    'view' | 'update' | 'delete' | 'create' | 'hideHasPermission' | 'showHasPermission' | undefined
+    'view' | 'update' | 'delete' | 'create' | 'hasNotPermission' | 'hasPermission' | undefined
   >();
-  const [permissionsRender, setPermissionsRender] = useState<any>([]);
   const [seletedPermissions, setSeletedPermissions] = useState<any>([]);
   const [initPermissions, setInitPermissions] = useState<any>([]);
 
@@ -52,34 +50,32 @@ export default function UpdateRole({ id, setOpened }: { id: any; setOpened: Disp
     setInitPermissions(rolePermission);
   }, [role]);
 
-  useEffect(() => {
+  const permissionsRender = useMemo(() => {
     let dataRender = [...permissions];
 
     if (searchDebouceValue) {
       const search = searchDebouceValue.toLowerCase();
       dataRender = dataRender.filter((item: any) => item.name.toLowerCase().includes(search));
     }
-
     if (filter) {
-      const permissionNames = permissions.map((item: any) => item.name);
+      const permissionNames = seletedPermissions.map((item: any) => item.name) ?? [];
       switch (filter) {
-        case 'hideHasPermission':
+        case 'hasNotPermission':
           dataRender = dataRender.filter((item: any) => !permissionNames.includes(item.name));
           break;
-        case 'showHasPermission':
-          dataRender = dataRender.filter((item: any) => permissionNames.includes(item.name));
+        case 'hasPermission':
+          dataRender = [...seletedPermissions];
           break;
         default:
           dataRender = dataRender.filter((item: any) => item.name.includes(filter));
       }
     }
-    setPermissionsRender(dataRender);
+    return dataRender;
   }, [searchDebouceValue, permissions?.length, filter]);
 
   const hasChange = useMemo(() => {
     return syncPermissions(initPermissions, seletedPermissions).length > 0;
   }, [seletedPermissions, initPermissions]);
-  syncPermissions(initPermissions, seletedPermissions);
 
   const utils = api.useUtils();
   const mutationUpdate = api.RolePermission.updateRole.useMutation({
@@ -163,9 +159,12 @@ export default function UpdateRole({ id, setOpened }: { id: any; setOpened: Disp
 
           <Box className='space-y-4'>
             <Flex align={'center'} justify={'space-between'}>
-              <Text fw={700} size='md'>
-                Quyền người dùng
-              </Text>
+              <Group align='center' gap={4}>
+                <Text fw={700} size='md'>
+                  Quyền người dùng
+                </Text>
+                <Text size='sm'>(Có {seletedPermissions?.length} quyền)</Text>
+              </Group>
               <Group align='center' gap={'md'}>
                 <TextInput
                   leftSection={<IconSearch size={16} className='text-gray-300 dark:text-white' />}
@@ -183,8 +182,8 @@ export default function UpdateRole({ id, setOpened }: { id: any; setOpened: Disp
                     { value: 'create:', label: 'Quền tạo mới' },
                     { value: 'update:', label: 'Quyền cập nhật' },
                     { value: 'delete:', label: 'Quyền xóa' },
-                    { value: 'hideHasPermission', label: 'Ẩn quyền các quyền hiện có' },
-                    { value: 'showHasPermission', label: 'Chỉ hiển thị quyền hiện có' }
+                    { value: 'hasNotPermission', label: 'Quyền chưa có' },
+                    { value: 'hasPermission', label: 'Quyền hiện có' }
                   ]}
                   value={filter}
                   leftSection={<IconFilter size={16} className='text-gray-300 dark:text-white' />}

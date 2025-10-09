@@ -31,7 +31,12 @@ import { PaymentForm } from './PaymentForm';
 export default function CheckoutClient({ order }: { order: any }) {
   const [loading, setLoading] = useState(false);
   const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
-  const mutationUpdateOrder = api.Order.update.useMutation();
+  const mutationUpdateOrder = api.Order.update.useMutation({
+    onError: e => {
+      setLoading(false);
+      NotifyError(e.message);
+    }
+  });
   const { discountAmountByVoucher, discount, originalTotal, tax, finalTotal } = useMemo(() => {
     const originalTotal = order?.orderItems?.reduce((sum: any, item: any) => sum + item.price * item.quantity, 0);
     const discountAmountByVoucher = (order?.vouchers ?? []).reduce((sum: any, item: any) => {
@@ -228,9 +233,9 @@ export default function CheckoutClient({ order }: { order: any }) {
                 Đơn hàng ({order?.orderItems?.length || 0} sản phẩm)
               </Title>
               <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
-                <Stack gap={'md'} py={'sm'} pr={20}>
+                <Stack gap={'md'} py={'sm'} pr={20} className='overflow-x-hidden'>
                   {order?.orderItems?.map((item: any, index: number) => (
-                    <CartItemPayment key={index} item={{ ...item.product, quantity: item.quantity }} />
+                    <CartItemPayment key={index} item={{ ...item.product, note: item.note, quantity: item.quantity }} />
                   ))}
                 </Stack>
               </ScrollAreaAutosize>

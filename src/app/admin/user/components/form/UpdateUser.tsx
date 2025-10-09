@@ -303,13 +303,8 @@ export default function UpdateUser({
                     data={
                       roles?.map(role => ({
                         value: role.id,
-                        label:
-                          role.name === UserRole.ADMIN
-                            ? 'Quản trị viên'
-                            : role.name === UserRole.STAFF
-                              ? 'Nhân viên'
-                              : 'Khách hàng',
-                        disabled: role.name === UserRole.ADMIN
+                        label: role.viName || 'Khách hàng',
+                        disabled: role.name === 'ADMIN'
                       })) || []
                     }
                     error={errors.roleId?.message}

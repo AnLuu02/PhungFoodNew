@@ -1,18 +1,23 @@
-import { Badge, Box, Button, Group, NumberInput, Stack, Table, Text } from '@mantine/core';
+import { Badge, Box, Button, Flex, Group, NumberInput, Popover, Stack, Table, Text, Tooltip } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
+import { IconCheck } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
-const CartTable = ({ cart, setCart, updateQuantity }: any) => {
+import { Note } from './Note';
+export const CartTable = ({ updateQuantity }: any) => {
+  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
+
   return (
     <Table className='mb-6'>
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Thông tin</Table.Th>
-          <Table.Th>Đơn giá</Table.Th>
-          <Table.Th>Số lượng</Table.Th>
-          <Table.Th>Giảm giá</Table.Th>
-          <Table.Th>Thành tiền</Table.Th>
+          <Table.Th w={100}>Đơn giá</Table.Th>
+          <Table.Th w={100}>Số lượng</Table.Th>
+          <Table.Th w={100}>Giảm giá</Table.Th>
+          <Table.Th w={100}>Thành tiền</Table.Th>
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
@@ -31,10 +36,12 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
                     alt={item.name}
                   />
                 </Box>
-                <Stack gap='xs' align='start'>
-                  <Text size='md' fw={700}>
-                    {item.name}
-                  </Text>
+                <Stack gap='xs' align='start' flex={1}>
+                  <Tooltip label={item.name}>
+                    <Text size='md' fw={700} lineClamp={1}>
+                      {item.name + ' asa sasas asasasa sasasedqw qweeqweqweq ưeqweqwe'}
+                    </Text>
+                  </Tooltip>
                   <Group>
                     <Button
                       h={'max-content'}
@@ -54,6 +61,32 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
                       </Badge>
                     )}
                   </Group>
+                  <Flex justify={'space-between'} w={'100%'} align={'center'}>
+                    <Box>
+                      {cart.find((cartItem: any) => cartItem.id === item.id && cartItem?.note) && (
+                        <Badge
+                          c={'dimmed'}
+                          variant='transparent'
+                          px={0}
+                          mx={0}
+                          leftSection={<IconCheck size={12} />}
+                          size='sm'
+                        >
+                          Đã thêm ghi chú
+                        </Badge>
+                      )}
+                    </Box>
+                    <Popover width={500} offset={0} trapFocus position='bottom' withArrow shadow='md'>
+                      <Popover.Target>
+                        <Button size='xs' variant='transparent'>
+                          Ghi chú
+                        </Button>
+                      </Popover.Target>
+                      <Popover.Dropdown>
+                        <Note productId={item.id} />
+                      </Popover.Dropdown>
+                    </Popover>
+                  </Flex>
                 </Stack>
               </Group>
             </Table.Td>
@@ -94,5 +127,3 @@ const CartTable = ({ cart, setCart, updateQuantity }: any) => {
     </Table>
   );
 };
-
-export default CartTable;

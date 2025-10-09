@@ -1,10 +1,10 @@
 'use client';
 
 import { Box, Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
@@ -14,10 +14,27 @@ import { ModalProps } from '~/types/modal';
 export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [note, setNote] = useState('');
+  const [noteDebounced] = useDebouncedValue(note, 800);
+  const dataCheckout = useMemo(() => {
+    if (noteDebounced) {
+      const cartFilter = cart.filter((item: any) => item.id !== data?.id);
+      return [...cartFilter, { ...data, note: noteDebounced }];
+    }
+    return cart;
+  }, [cart, noteDebounced]);
+  useEffect(() => {
+    const existNoteProduct = cart.find((item: any) => item.id === data?.id && item.note !== note);
+    if (existNoteProduct) {
+      setNote(existNoteProduct?.note);
+    }
+  }, [cart]);
   return (
     <Modal
       opened={opened && type === 'success'}
-      onClose={onClose}
+      onClose={() => {
+        onClose();
+        setNote('');
+      }}
       padding={0}
       radius='md'
       size='md'
@@ -59,9 +76,14 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
             </Box>
           </Group>
 
-          <Text size='sm' c='dimmed'>
-            Giỏ hàng của bạn hiện có {cart?.length || 0} sản phẩm
-          </Text>
+          <Box>
+            <Text size='sm' c='dimmed'>
+              Giỏ hàng của bạn hiện có <b>{cart?.length || 0}</b> sản phẩm
+            </Text>
+            <Text size='sm' c='dimmed'>
+              <b>{data?.name}</b> có <b>{cart?.find((item: any) => item.id === data?.id)?.quantity || 0} </b> sản phẩm
+            </Text>
+          </Box>
           <Group w={'100%'}>
             <Textarea
               value={note}
@@ -92,8 +114,13 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
               Tiếp tục mua hàng
             </Button>
             <ButtonCheckout
-              stylesButtonCheckout={{ fullWidth: true, title: 'Thanh toán ngay', radius: 'sm' }}
-              data={[...cart, { ...data, note }]}
+              stylesButtonCheckout={{
+                fullWidth: true,
+                title: 'Thanh toán ngay',
+                radius: 'sm',
+                disabled: !note ? false : note === noteDebounced ? false : true
+              }}
+              data={dataCheckout}
               finalTotal={data?.price || 0}
               originalTotal={data?.price || 0}
               discountAmount={0}

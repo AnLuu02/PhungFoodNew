@@ -24,7 +24,7 @@ import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/search-input';
 import { api } from '~/trpc/react';
 
-export default function TableOrder({ s, data, allData, user }: { s: string; data: any; allData?: any; user: any }) {
+export default function TableOrder({ s, data, allData }: { s: string; data: any; allData?: any }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -217,43 +217,41 @@ export default function TableOrder({ s, data, allData, user }: { s: string; data
                     </Table.Td>
                     <Table.Td className='text-sm'>
                       <Group className='text-center'>
-                        {user?.user && (
-                          <>
-                            <Group>
-                              {order.status === LocalOrderStatus.PENDING && (
-                                <HandleStateOrderButton
-                                  id={order.id}
-                                  status={LocalOrderStatus.CONFIRMED}
-                                  title='Xác nhận'
-                                />
-                              )}
-                              {order.status === LocalOrderStatus.CONFIRMED && (
-                                <HandleStateOrderButton
-                                  id={order.id}
-                                  status={LocalOrderStatus.SHIPPING}
-                                  title='Giao hàng'
-                                />
-                              )}
-                              {order.status === LocalOrderStatus.SHIPPING && (
-                                <HandleStateOrderButton
-                                  id={order.id}
-                                  status={LocalOrderStatus.COMPLETED}
-                                  title='Hoàn thành'
-                                />
-                              )}
-                              {order.status !== LocalOrderStatus.CANCELLED && <CancleOrderButton id={order.id} />}
-                              <UpdateOrderButton id={order.id} />
-                              <DeleteOrderButton id={order.id} />
-                              <CopyOrderButton data={order} />
-                            </Group>
-                            <Group>
-                              <SendOrderButton order={order} />
-                              {order.status !== LocalOrderStatus.COMPLETED && (
-                                <SendMessageOrderButton userId={order.user?.id} email={order.user?.email} />
-                              )}
-                            </Group>
-                          </>
-                        )}
+                        <>
+                          <Group>
+                            {order.status === LocalOrderStatus.PENDING && (
+                              <HandleStateOrderButton
+                                id={order.id}
+                                status={LocalOrderStatus.CONFIRMED}
+                                title='Xác nhận'
+                              />
+                            )}
+                            {order.status === LocalOrderStatus.CONFIRMED && (
+                              <HandleStateOrderButton
+                                id={order.id}
+                                status={LocalOrderStatus.SHIPPING}
+                                title='Giao hàng'
+                              />
+                            )}
+                            {order.status === LocalOrderStatus.SHIPPING && (
+                              <HandleStateOrderButton
+                                id={order.id}
+                                status={LocalOrderStatus.COMPLETED}
+                                title='Hoàn thành'
+                              />
+                            )}
+                            {order.status !== LocalOrderStatus.CANCELLED && <CancleOrderButton id={order.id} />}
+                            <UpdateOrderButton id={order.id} />
+                            <DeleteOrderButton id={order.id} />
+                            <CopyOrderButton data={order} />
+                          </Group>
+                          <Group>
+                            <SendOrderButton order={order} />
+                            {order.status !== LocalOrderStatus.COMPLETED && (
+                              <SendMessageOrderButton userId={order.user?.id} email={order.user?.email} />
+                            )}
+                          </Group>
+                        </>
                       </Group>
                     </Table.Td>
                   </Table.Tr>

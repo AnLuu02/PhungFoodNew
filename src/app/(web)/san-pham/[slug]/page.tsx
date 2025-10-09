@@ -18,8 +18,8 @@ const getProduct = async (slug: string, userId: string) => {
 };
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const user = await getServerSession(authOptions);
-  const productData = await getProduct(params.slug, user?.user?.id || '');
+  const session = await getServerSession(authOptions);
+  const productData = await getProduct(params.slug, session?.user?.id || '');
 
   if (!productData?.product) {
     return {

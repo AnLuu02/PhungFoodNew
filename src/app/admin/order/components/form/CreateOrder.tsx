@@ -93,8 +93,14 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
   const { data: payments } = api.Payment.getAll.useQuery();
   const utils = api.useUtils();
   const mutation = api.Order.create.useMutation({
-    onSuccess: () => {
-      utils.Order.invalidate();
+    onSuccess: result => {
+      if (result.code === 'OK') {
+        NotifySuccess(result.message);
+        utils.Order.invalidate();
+        setOpened(false);
+      } else {
+        NotifyError(result.message);
+      }
     },
     onError: e => {
       NotifyError(e.message);
@@ -115,7 +121,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
         const ward = wards?.results?.find((item: any) => item.ward_id === formData?.delivery?.address?.wardId);
         const fullAddress = `${formData?.delivery?.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
 
-        const result = await mutation.mutateAsync({
+        await mutation.mutateAsync({
           ...formData,
           delivery: {
             ...formData?.delivery,
@@ -132,12 +138,6 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
             }
           } as any
         });
-        if (result.code === 'OK') {
-          NotifySuccess(result.message);
-          setOpened(false);
-        } else {
-          NotifyError(result.message);
-        }
       }
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

@@ -3,6 +3,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
   Button,
+  Center,
+  Divider,
   Flex,
   Grid,
   Group,
@@ -17,7 +19,7 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconFilter, IconSearch } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
@@ -36,35 +38,31 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
   const { data: permissions = [], isLoading } = api.RolePermission.getAllPermission.useQuery();
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<
-    'view' | 'update' | 'delete' | 'create' | 'hideHasPermission' | 'showHasPermission' | undefined
+    'view' | 'update' | 'delete' | 'create' | 'hasNotPermission' | 'hasPermission' | undefined
   >();
-  const [permissionsRender, setPermissionsRender] = useState<any>([]);
   const [seletedPermissions, setSeletedPermissions] = useState<any>([]);
   const [searchDebouceValue] = useDebouncedValue(searchValue, 1000);
-
-  useEffect(() => {
+  const permissionsRender = useMemo(() => {
     let dataRender = [...permissions];
 
     if (searchDebouceValue) {
       const search = searchDebouceValue.toLowerCase();
       dataRender = dataRender.filter((item: any) => item.name.toLowerCase().includes(search));
     }
-
     if (filter) {
-      const permissionNames = permissions.map((item: any) => item.name);
       switch (filter) {
-        case 'hideHasPermission':
-          dataRender = dataRender.filter((item: any) => !permissionNames.includes(item.name));
+        case 'hasNotPermission':
+          dataRender = dataRender.filter((item: any) => !seletedPermissions.includes(item.id));
           break;
-        case 'showHasPermission':
-          dataRender = dataRender.filter((item: any) => permissionNames.includes(item.name));
+        case 'hasPermission':
+          dataRender = dataRender.filter((item: any) => seletedPermissions.includes(item.id));
           break;
         default:
           dataRender = dataRender.filter((item: any) => item.name.includes(filter));
       }
     }
-    setPermissionsRender(dataRender);
-  }, [searchDebouceValue, filter, permissions?.length]);
+    return dataRender;
+  }, [searchDebouceValue, permissions?.length, filter]);
 
   const hasChange = useMemo(() => {
     return seletedPermissions?.length > 0;
@@ -144,11 +142,20 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
           />
         </Grid.Col>
         <Grid.Col span={12}>
+          <Center>
+            <Divider w={'60%'} />
+          </Center>
+        </Grid.Col>
+
+        <Grid.Col span={12}>
           <Box className='space-y-4'>
             <Flex align={'center'} justify={'space-between'}>
-              <Text fw={700} size='md'>
-                Quyền người dùng
-              </Text>
+              <Group align='center' gap={4}>
+                <Text fw={700} size='md'>
+                  Quyền người dùng
+                </Text>
+                <Text size='sm'>(Có {seletedPermissions?.length} quyền)</Text>
+              </Group>
               <Group align='center' gap={'md'}>
                 <TextInput
                   leftSection={<IconSearch size={16} className='text-gray-300 dark:text-white' />}
@@ -166,8 +173,8 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
                     { value: 'create:', label: 'Quền tạo mới' },
                     { value: 'update:', label: 'Quyền cập nhật' },
                     { value: 'delete:', label: 'Quyền xóa' },
-                    { value: 'hideHasPermission', label: 'Ẩn quyền các quyền hiện có' },
-                    { value: 'showHasPermission', label: 'Chỉ hiển thị quyền hiện có' }
+                    { value: 'hasNotPermission', label: 'Quyền chưa chọn' },
+                    { value: 'hasPermission', label: 'Quyền đã chọn' }
                   ]}
                   value={filter}
                   leftSection={<IconFilter size={16} className='text-gray-300 dark:text-white' />}
@@ -243,6 +250,7 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
           size='xs'
           onClick={() => {
             setSeletedPermissions([]);
+            setSearchValue('');
           }}
           disabled={!hasChange}
           className='disabled:border-1 disabled:border-solid disabled:border-gray-400 disabled:text-gray-400'

@@ -34,34 +34,36 @@ export const PaymentForm = ({ control }: any) => {
                   className='mb-4'
                   error={fieldState.error?.message}
                 >
-                  <Paper withBorder p='md' radius='md'>
+                  <Stack>
                     {payment?.map((item: any, index: number) => (
-                      <Radio
-                        label={
-                          <Flex align='center' gap='md'>
-                            <Flex w={40} justify='center'>
-                              <Box
-                                component='img'
-                                src='/images/png/vnpay.png'
-                                alt='VNPAY'
-                                width={60}
-                                height={24}
-                                style={{ objectFit: 'contain' }}
-                              />
+                      <Paper withBorder p='md' radius='md'>
+                        <Radio
+                          label={
+                            <Flex align='center' gap='md'>
+                              <Flex w={40} justify='center'>
+                                <Box
+                                  component='img'
+                                  src='/images/png/vnpay.png'
+                                  alt='VNPAY'
+                                  width={60}
+                                  height={24}
+                                  style={{ objectFit: 'contain' }}
+                                />
+                              </Flex>
+                              <Text size='sm' fw={500}>
+                                {item.name || 'Thanh toán VNPAY'}
+                              </Text>
                             </Flex>
-                            <Text size='sm' fw={500}>
-                              Thanh toán VNPAY
-                            </Text>
-                          </Flex>
-                        }
-                        error={fieldState.error ? true : false}
-                        color='blue'
-                        size='sm'
-                        key={index}
-                        value={item.id}
-                      />
+                          }
+                          error={fieldState.error ? true : false}
+                          color='blue'
+                          size='sm'
+                          key={index}
+                          value={item.id}
+                        />
+                      </Paper>
                     ))}
-                  </Paper>
+                  </Stack>
                 </Radio.Group>
               )}
             />

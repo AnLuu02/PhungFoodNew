@@ -61,9 +61,9 @@ export default function CreatePermission({ setOpened }: { setOpened: Dispatch<Se
             render={({ field }) => (
               <TextInput
                 {...field}
-                label='Tên vai trò'
+                label='Tên quyền '
                 size='sm'
-                placeholder='Nhập tên vai trò'
+                placeholder='vd: create:user or update:user or delete:user or ...'
                 error={errors.name?.message}
               />
             )}
@@ -78,7 +78,7 @@ export default function CreatePermission({ setOpened }: { setOpened: Dispatch<Se
                 {...field}
                 label='Tên phiên âm vai trò'
                 size='sm'
-                placeholder='Nhập tên phiên âm vai trò'
+                placeholder='vd: Cập nhật sản phẩm'
                 error={errors.name?.message}
               />
             )}
@@ -89,7 +89,13 @@ export default function CreatePermission({ setOpened }: { setOpened: Dispatch<Se
             control={control}
             name='description'
             render={({ field }) => (
-              <Textarea {...field} label='Mô tả' size='sm' placeholder='Nhập mô tả' error={errors.name?.message} />
+              <Textarea
+                {...field}
+                label='Mô tả'
+                size='sm'
+                placeholder='vd: Quyền cho phép cập nhật sản phẩm'
+                error={errors.name?.message}
+              />
             )}
           />
         </Grid.Col>

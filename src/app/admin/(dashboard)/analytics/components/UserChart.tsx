@@ -11,9 +11,9 @@ export default function UserChart() {
         <Group justify='space-between'>
           <Flex direction='column' align='start' gap={4}>
             <Text size='lg' fw={600}>
-              Users
+              Người dùng
             </Text>
-            <Text size='xs'>In Last 30 Minutes</Text>
+            <Text size='xs'>Trong 30 phút qua</Text>
           </Flex>
 
           <Flex align='center' gap={6}>

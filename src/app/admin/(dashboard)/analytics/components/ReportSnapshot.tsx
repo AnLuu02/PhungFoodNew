@@ -5,22 +5,22 @@ import { DatePickerInput } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 const overview = [
   {
-    title: 'All User',
+    title: 'Tất cả người dùng',
     value: 10.234,
     color: '#DEE2E6'
   },
   {
-    title: 'Event Count',
+    title: 'Số sự kiện',
     value: 536,
     color: '#FD7E14'
   },
   {
-    title: 'Conversations',
+    title: 'Cuộc trò chuyện',
     value: 21,
     color: '#40C057'
   },
   {
-    title: 'New Users',
+    title: 'Người dùng mới',
     value: 3.321,
     color: '#228BE6'
   }
@@ -33,10 +33,10 @@ export default function ReportSnapshotChart() {
         <Flex align={'center'} justify={'space-between'}>
           <Box>
             <Title mb={4} className='font-quicksand' order={3}>
-              Reports Snapshot
+              Báo cáo nhanh
             </Title>
             <Text size='xs' c={'dimmed'}>
-              Demographic properties of your customer
+              Đặc điểm nhân khẩu học của khách hàng của bạn{' '}
             </Text>
           </Box>
           <DatePickerInput size='xs' leftSection={<IconCalendar size={20} />} placeholder='Select date' />

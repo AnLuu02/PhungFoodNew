@@ -1,4 +1,4 @@
-import { Badge, Box, Group, Text } from '@mantine/core';
+import { Badge, Box, Group, Spoiler, Text, Tooltip } from '@mantine/core';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
@@ -23,12 +23,21 @@ export function CartItemPayment({ item }: any) {
           </Badge>
         </Box>
         <Box className='flex-1'>
-          <Text size='sm' fw={700}>
-            {item.name}
-          </Text>
-          <Text size='xs' c='dimmed'>
-            Ghi chú: {item.note || 'Không có'}
-          </Text>
+          <Tooltip label={item.name}>
+            <Text size='sm' fw={700} lineClamp={1}>
+              {item.name}
+            </Text>
+          </Tooltip>
+          <Spoiler
+            maxHeight={20}
+            showLabel='Xem thêm'
+            hideLabel='Ẩn'
+            classNames={{ control: 'text-xs font-bold text-mainColor' }}
+          >
+            <Text size='xs' c='dimmed'>
+              Ghi chú: {item.note || 'Không có'}
+            </Text>
+          </Spoiler>
         </Box>
         <Text className='text-right' fw={700}>
           {formatPriceLocaleVi(item.price * item.quantity)}

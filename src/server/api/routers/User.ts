@@ -116,7 +116,6 @@ export const userRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
-    .use(requirePermission('create:user'))
     .input(
       z.object({
         name: z.string().min(1, 'Tên không được để trống'),

@@ -1,7 +1,5 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { CreateUserButton } from './components/Button';
 import TableUser from './components/Table/TableUser';
@@ -27,7 +25,6 @@ export default async function UserManagementPage({
   const sortArr = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
-  const user = await getServerSession(authOptions);
   const data = await api.User.find({
     skip: +currentPage,
     take: +limit,

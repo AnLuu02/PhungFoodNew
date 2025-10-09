@@ -4,7 +4,7 @@ import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { DeletePermissionButton, UpdatePermissionButton } from '../Button';
 
-export default function TablePermission({ s, data, user }: { s: string; data: any; user?: any }) {
+export default function TablePermission({ s, data }: { s: string; data: any }) {
   const currentItems = data?.permissions || [];
 
   return (

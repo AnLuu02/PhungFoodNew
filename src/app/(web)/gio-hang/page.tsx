@@ -6,9 +6,11 @@ import dynamic from 'next/dynamic';
 import Empty from '~/components/Empty';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { RecapCart } from '../thanh-toan/components/RecapCarted';
-import CartTable from './components/CartTable';
+import { CartTable } from './components/CartTable';
 
-const ShoppingCartMobile = dynamic(() => import('./components/CartMobile'), { ssr: false });
+const ShoppingCartMobile = dynamic(() => import('./components/CartMobile').then(mod => mod.ShoppingCartMobile), {
+  ssr: false
+});
 
 export default function ShoppingCart() {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -27,12 +29,10 @@ export default function ShoppingCart() {
     <Grid>
       <GridCol span={{ base: 12, md: 8 }} className='h-fit' order={{ base: 2, sm: 1, md: 1, lg: 1 }}>
         {isMobile ? (
-          <ShoppingCartMobile cart={cart} setCart={setCart} />
+          <ShoppingCartMobile />
         ) : (
           <Paper shadow='xs' radius='md' className='p-0 sm:p-6'>
             <CartTable
-              cart={cart}
-              setCart={setCart}
               updateQuantity={(id: number, quantity: number) => {
                 setCart(items =>
                   items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))

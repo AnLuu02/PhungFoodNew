@@ -17,7 +17,7 @@ export default function Ecommerce() {
         <Flex align={'center'} justify={'space-between'}>
           <Box>
             <Title mb={4} className='font-quicksand' order={2}>
-              Analytics dashboard
+              Trang tổng quan phân tích
             </Title>
             <Text size='sm' c={'dimmed'}>
               Phân tích hành vi trong hệ thống PhungFood

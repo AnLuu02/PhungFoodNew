@@ -8,7 +8,7 @@ import CustomPagination from '~/components/Pagination';
 import { UserRole } from '~/constants';
 import UpdateRole from '../form/UpdateRole';
 
-export const RoleSection = ({ data, s, user }: { data: any; s: string; user: any }) => {
+export const RoleSection = ({ data, s }: { data: any; s: string }) => {
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const currentItems = data?.roles || [];
   return (
