@@ -74,7 +74,7 @@ export const ModalForgotPassword = ({ opened, setOpened }: { opened: boolean; se
               </GridCol>
 
               <GridCol span={12}>
-                <BButton radius='sm' loading={loading} type='submit' fullWidth size='md' title={'Gửi mã OTP'} />
+                <BButton radius='md' loading={loading} type='submit' fullWidth size='md' label={'Gửi mã OTP'} />
               </GridCol>
             </Grid>
           </Center>

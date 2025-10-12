@@ -88,7 +88,7 @@ const CartButton = () => {
                 {cart?.length || 0} sản phẩm
               </Text>
               <Link href='/gio-hang' className='text-white'>
-                <BButton title={'Xem giỏ hàng'} radius='xl' size='sm' w={'max-content'} />
+                <BButton label={'Xem giỏ hàng'} radius='xl' size='sm' w={'max-content'} />
               </Link>
             </Group>
           </Stack>

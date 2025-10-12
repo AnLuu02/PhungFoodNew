@@ -45,24 +45,9 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
             containScroll='trimSnaps'
             withControls
             previousControlIcon={<IconChevronLeft size={30} />}
-            previousControlProps={{
-              style: {
-                color: 'white',
-                borderRadius: 10,
-                width: 40,
-                height: 40,
-                backgroundColor: '#00BFA6'
-              }
-            }}
             nextControlIcon={<IconChevronRight size={30} />}
-            nextControlProps={{
-              style: {
-                color: 'white',
-                borderRadius: 10,
-                width: 40,
-                height: 40,
-                backgroundColor: '#00BFA6'
-              }
+            classNames={{
+              control: 'h-[40px] w-[40px] rounded-full bg-mainColor text-white'
             }}
           >
             {subCategoriesData?.length === 0

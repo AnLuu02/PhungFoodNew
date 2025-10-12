@@ -47,12 +47,12 @@ export default function Empty({
           height={sizeImage[size]}
         />
       )}
-      <Text size={'lg'} mb={4} fw={700}>
+      <Text size={'lg'} mb={4} fw={700} className='text-center'>
         {title}
       </Text>
       <Text size={size}>{content}</Text>
       {hasButton && (
-        <Link href={url} className='text-white'>
+        <Link href={url} className='text-center text-white'>
           <Button
             color='red'
             size={size}

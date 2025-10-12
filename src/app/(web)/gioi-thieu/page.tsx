@@ -35,7 +35,7 @@ export default async function AboutPage() {
               Từ năm 2010, chúng tôi đã mang đến những món ăn nhanh chất lượng cao với hương vị đậm đà Việt Nam
             </Text>
             <Link href={'/thuc-don'}>
-              <BButton size='lg' w={'max-content'} title={'Xem thực đơn'} radius='sm' />
+              <BButton size='lg' w={'max-content'} label={'Xem thực đơn'} radius='md' />
             </Link>
           </Box>
         </Box>
@@ -431,11 +431,11 @@ export default async function AboutPage() {
           </Text>
           <Box className='flex flex-col justify-center gap-4 sm:flex-row'>
             <Link href={'/auth/register'}>
-              <BButton size='lg' w={'max-content'} title={' Đăng ký ngay'} radius='sm' />
+              <BButton size='lg' w={'max-content'} label={' Đăng ký ngay'} radius='md' />
             </Link>
 
             <Link href={'/thuc-don'}>
-              <BButton size='lg' w={'max-content'} variant='outline' title={'Xem thực đơn'} radius='sm' />
+              <BButton size='lg' w={'max-content'} variant='outline' label={'Xem thực đơn'} radius='md' />
             </Link>
           </Box>
         </Box>

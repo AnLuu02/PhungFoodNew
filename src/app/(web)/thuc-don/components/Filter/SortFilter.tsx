@@ -15,7 +15,7 @@ export function SortFilter() {
       <Popover.Target>
         <Button
           variant='outline'
-          className='border-1 border-mainColor text-mainColor'
+          className='border-1 border-mainColor text-mainColor hover:bg-mainColor/10 hover:text-mainColor'
           leftSection={<IconSort09 size={16} />}
           w={'max-content'}
         >
@@ -41,12 +41,12 @@ export function SortFilter() {
                       (category.tag === 'price-desc' && valueSort.includes('price-asc')) ||
                       (category.tag === 'name-asc' && valueSort.includes('name-desc')) ||
                       (category.tag === 'name-desc' && valueSort.includes('name-asc')) ||
-                      (category.tag === 'new' && valueSort.includes('old')) ||
-                      (category.tag === 'best-seller' && valueSort.includes('old')) ||
-                      (category.tag === 'old' && valueSort.includes('new')) ||
-                      (category.tag === 'best-seller' && valueSort.includes('new')) ||
-                      (category.tag === 'old' && valueSort.includes('best-seller')) ||
-                      (category.tag === 'new' && valueSort.includes('best-seller'))
+                      (category.tag === 'updatedAt-desc' && valueSort.includes('updatedAt-asc')) ||
+                      (category.tag === 'best-seller' && valueSort.includes('updatedAt-asc')) ||
+                      (category.tag === 'updatedAt-asc' && valueSort.includes('updatedAt-desc')) ||
+                      (category.tag === 'best-seller' && valueSort.includes('updatedAt-desc')) ||
+                      (category.tag === 'updatedAt-asc' && valueSort.includes('best-seller')) ||
+                      (category.tag === 'updatedAt-desc' && valueSort.includes('best-seller'))
                     }
                     key={category.tag}
                     label={category.name}

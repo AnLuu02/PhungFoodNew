@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Card, Center, Flex, Grid, GridCol, PasswordInput, Text, TextInput, Title } from '@mantine/core';
+import { Box, Card, Center, Flex, Grid, GridCol, PasswordInput, Text, TextInput, Title } from '@mantine/core';
 import { IconKey, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import BButton from '~/components/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import LoginServices from '../components/LoginServices';
 
@@ -24,7 +25,7 @@ export default function Page() {
     resolver: zodResolver(
       z.object({
         email: z.string().min(1, 'Email là bắt buộc'),
-        password: z.string().min(1, 'Password là bắt buộc')
+        password: z.string().min(1, 'Mật khẩu là bắt buộc')
       })
     ),
     mode: 'onChange',
@@ -62,7 +63,7 @@ export default function Page() {
           <Card
             w={{ base: '100%', sm: '50vw', md: '40vw', lg: '25vw' }}
             h={'max-content'}
-            py={'xs'}
+            py={'lg'}
             shadow='xl'
             radius={'md'}
           >
@@ -81,6 +82,7 @@ export default function Page() {
                       <TextInput
                         {...field}
                         placeholder='E-mail'
+                        radius='md'
                         type='email'
                         label='E-mail'
                         leftSection={<IconMail size={18} stroke={1.5} />}
@@ -101,6 +103,8 @@ export default function Page() {
                       <PasswordInput
                         {...field}
                         placeholder='Mật khẩu'
+                        label='Mật khẩu'
+                        radius='md'
                         leftSection={<IconKey size={18} stroke={1.5} />}
                         onChange={e => {
                           field.onChange(e.target.value);
@@ -118,34 +122,37 @@ export default function Page() {
                 </GridCol>
 
                 <GridCol span={12} className='flex justify-end'>
-                  <Link
-                    href={'/auth/password/forgot-password'}
-                    className='text-sm text-black hover:text-red-500 dark:text-white'
-                  >
-                    Bạn quên mật khẩu?
+                  <Link href={'/auth/password/forgot-password'}>
+                    <Text
+                      fw={700}
+                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-white'
+                      size='sm'
+                    >
+                      Bạn quên mật khẩu?
+                    </Text>
                   </Link>
                 </GridCol>
               </Grid>
 
               <Grid>
                 <GridCol span={12} className=''>
-                  <Button
+                  <BButton
+                    disabled={!isDirty}
+                    radius='md'
+                    loading={isSubmitting}
+                    type='submit'
                     fullWidth
                     size='md'
-                    className='bg-mainColor text-white transition-all duration-200 ease-in-out enabled:hover:bg-subColor enabled:hover:text-black'
-                    type='submit'
-                    disabled={!isDirty}
-                    loading={isSubmitting}
-                  >
-                    ĐĂNG NHẬP
-                  </Button>
+                    label={'Gửi mã'}
+                  />
                 </GridCol>
                 <GridCol span={12} className='flex justify-center'>
-                  <Flex align={'center'}>
+                  <Flex align={'center'} gap={4}>
                     <Text size='sm'>Bạn chưa có tài khoản?</Text>
-                    <Link href={'/auth/register'} className='text-white'>
+                    <Link href={'/auth/register'}>
                       <Text
-                        className='cursor-pointer text-black underline hover:text-red-500 dark:text-white'
+                        fw={700}
+                        className='cursor-pointer text-mainColor hover:text-subColor dark:text-white'
                         size='sm'
                       >
                         Đăng ký ngay

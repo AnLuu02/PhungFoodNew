@@ -132,7 +132,7 @@ const LayoutGridCarouselOnly = ({
             {navigation && (
               <Flex align={'center'} justify={'center'} my={30}>
                 <Link href={navigation.href || `/thuc-don?loai=san-pham-moi`}>
-                  <BButton title={navigation.label || 'Xem tất cả'} variant='outline' size='sm' />
+                  <BButton label={navigation.label || 'Xem tất cả'} variant='outline' size='sm' />
                 </Link>
               </Flex>
             )}

@@ -19,7 +19,7 @@ type FilterOptions = {
   newProduct?: boolean;
   hotProduct?: boolean;
   price?: { min?: number; max?: number };
-  sort?: string[];
+  rating?: number;
   'nguyen-lieu'?: string[];
   'danh-muc'?: string;
   'loai-san-pham'?: string;
@@ -33,7 +33,7 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
     bestSaler,
     newProduct,
     hotProduct,
-    sort,
+    rating,
     'nguyen-lieu': nguyenLieu,
     price,
     'danh-muc': danhMuc,
@@ -100,15 +100,9 @@ const buildFilter = (input: FilterOptions, userRole: any) => {
       : undefined,
     discount ? { discount: { gt: 0 } } : undefined,
     bestSaler ? { soldQuantity: { gt: 20 } } : undefined,
-    newProduct ? { createdAt: { gte: new Date(new Date().setDate(new Date().getDate() - 7)) } } : undefined,
+    newProduct ? { updatedAt: { gte: new Date(new Date().setDate(new Date().getDate() - 7)) } } : undefined,
     hotProduct ? { rating: { gte: 4 } } : undefined,
-    sort && sort?.length > 0 && sort?.includes('best-seller')
-      ? { soldQuantity: { gt: 20 } }
-      : sort?.includes('old')
-        ? { createdAt: { lte: new Date(new Date().setDate(new Date().getDate() - 7)) } }
-        : sort?.includes('new')
-          ? { createdAt: { gte: new Date(new Date().setDate(new Date().getDate() - 7)) } }
-          : undefined,
+    rating ? { rating: { gte: rating } } : undefined,
     nguyenLieu && nguyenLieu?.length > 0
       ? {
           materials: {
@@ -144,6 +138,7 @@ export const productRouter = createTRPCRouter({
         discount: z.boolean().optional(),
         bestSaler: z.boolean().optional(),
         newProduct: z.boolean().optional(),
+        rating: z.number().optional(),
         hotProduct: z.boolean().optional(),
         'danh-muc': z.string().optional(),
         'loai-san-pham': z.string().optional(),
@@ -167,6 +162,7 @@ export const productRouter = createTRPCRouter({
         discount,
         bestSaler,
         newProduct,
+        rating,
         hotProduct,
         'nguyen-lieu': nguyenLieu,
         'danh-muc': danhMuc,
@@ -181,9 +177,9 @@ export const productRouter = createTRPCRouter({
           discount,
           bestSaler,
           newProduct,
+          rating,
           hotProduct,
           price,
-          sort,
           'nguyen-lieu': nguyenLieu,
           'danh-muc': danhMuc,
           'loai-san-pham': loaiSanPham
@@ -218,7 +214,10 @@ export const productRouter = createTRPCRouter({
             review: true,
             favouriteFood: true
           },
-          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['price', 'name']) : undefined
+          orderBy:
+            sort && sort?.length > 0
+              ? buildSortFilter(sort, ['rating', 'updatedAt', 'soldQuantity', 'price', 'name'])
+              : undefined
         })
       ]);
       const totalPages = Math.ceil(
@@ -760,13 +759,13 @@ export const productRouter = createTRPCRouter({
           products = [];
           break;
         case 'week':
-          products = orders.filter((order: any) => order.createdAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+          products = orders.filter((order: any) => order.updatedAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
           break;
         case 'month':
-          products = orders.filter((order: any) => order.createdAt > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
+          products = orders.filter((order: any) => order.updatedAt > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
           break;
         case 'year':
-          products = orders.filter((order: any) => order.createdAt > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000));
+          products = orders.filter((order: any) => order.updatedAt > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000));
           break;
         default:
           products = orders;

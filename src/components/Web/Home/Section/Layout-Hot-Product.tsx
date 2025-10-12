@@ -49,7 +49,7 @@ const LayoutHotProduct = ({ data }: any) => {
             <TabsPanelCarousel data={data} />
           </TabsPanel>
           <Flex align={'center'} justify={'center'} mt={30}>
-            <BButton title={'Xem tất cả'} variant='outline' size='sm' />
+            <BButton label={'Xem tất cả'} variant='outline' size='sm' />
           </Flex>
         </Tabs>
 

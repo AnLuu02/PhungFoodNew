@@ -9,16 +9,16 @@ export default function ProductCardSkeleton() {
 
       <Card.Section h='50%' pos='relative'>
         <Flex direction='column' gap='sm' pt={10} align='center' className='w-full' h='100%'>
-          <Skeleton height={20} width='80%' radius='sm' />
+          <Skeleton height={20} width='80%' radius='md' />
           <Group>
-            <Skeleton height={14} width={50} radius='sm' />
-            <Skeleton height={18} width={70} radius='sm' />
+            <Skeleton height={14} width={50} radius='md' />
+            <Skeleton height={18} width={70} radius='md' />
           </Group>
           <Flex align='center' gap={10} justify='space-between' w='80%'>
-            <Skeleton height={14} width={80} radius='sm' />
-            <Skeleton height={14} width={60} radius='sm' />
+            <Skeleton height={14} width={80} radius='md' />
+            <Skeleton height={14} width={60} radius='md' />
           </Flex>
-          <Skeleton height={30} width={100} radius='sm' />
+          <Skeleton height={30} width={100} radius='md' />
         </Flex>
 
         <Badge color='red' pr={20} pos='absolute' top={-15} right={-10}>

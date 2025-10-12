@@ -126,18 +126,38 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
           </Box>
         </Flex>
 
-        <Badge color='red' pr={20} pos={'absolute'} top={-15} right={-10}>
-          <Text size='xs' className='text-white'>
+        <Badge
+          classNames={{
+            root: 'bg-subColor'
+          }}
+          pr={20}
+          pos={'absolute'}
+          top={-15}
+          right={-10}
+        >
+          <Text size='xs' fw={700} className='text-black'>
             Đã bán: {data?.soldQuantity}
           </Text>
         </Badge>
-      </Card.Section>
-
-      {data?.discount > 0 && (
-        <Badge color='red' pos={'absolute'} top={10} left={8}>
-          {data?.discount ? `-${formatPriceLocaleVi(data?.discount)} ` : `180.000đ`}
+        <Badge
+          classNames={{
+            root: 'bg-mainColor'
+          }}
+          pr={20}
+          pos={'absolute'}
+          top={'-100%'}
+          right={-10}
+        >
+          <Text size='xs' fw={700} className='text-white'>
+            {data?.subCategory.name || 'Đang cập nhật'}
+          </Text>
         </Badge>
-      )}
+        {data?.discount > 0 && (
+          <Badge color='red' pos={'absolute'} top={'-100%'} left={-10} pl={20}>
+            Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(2) + '%' : '20%'}
+          </Badge>
+        )}
+      </Card.Section>
     </Card>
   );
 };

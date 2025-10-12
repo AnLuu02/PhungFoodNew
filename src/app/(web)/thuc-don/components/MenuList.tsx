@@ -1,4 +1,3 @@
-'use client';
 import { Flex, Grid, GridCol } from '@mantine/core';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';

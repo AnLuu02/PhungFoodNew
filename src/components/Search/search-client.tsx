@@ -156,8 +156,8 @@ export default function SearchComponentClient({ subCategories }: any) {
                   <Skeleton height={20} width='80%' radius='xl' />
                   <Skeleton height={20} mt={6} width='60%' radius='xl' />
                 </Box>
-
-                <Box p='sm' style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
+                <Divider />
+                <Box p='sm'>
                   <Skeleton height={20} width='50%' radius='xl' />
                   <Skeleton height={20} mt={6} width='70%' radius='xl' />
                 </Box>
@@ -324,7 +324,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                 {categoryData.length > 0 && (
                   <Box my={8}>
                     {categoryData.map((category: any) => (
-                      <Link key={category.id} href={`/thuc-don?s=${category.tag}`} className='text-black'>
+                      <Link key={category.id} href={`/thuc-don?s=${category.tag}`}>
                         <Flex align={'center'} gap={8} px={'md'} py={5} className='hover:bg-mainColor/10'>
                           <IconSearch size={24} className='text-gray-400 dark:text-dark-text' />
                           <Group gap={4}>
@@ -344,7 +344,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                     <Divider />
                     <Box my={8}>
                       {subCategoryData.map((category: any) => (
-                        <Link key={category.id} href={`/thuc-don?s=${category.tag}`} className='text-black'>
+                        <Link key={category.id} href={`/thuc-don?s=${category.tag}`}>
                           <Flex align={'center'} gap={8} px={'md'} py={5} className='hover:bg-mainColor/10'>
                             <IconSearch size={24} className='text-gray-400 dark:text-dark-text' />
                             <Group gap={4}>
@@ -357,91 +357,89 @@ export default function SearchComponentClient({ subCategories }: any) {
                         </Link>
                       ))}
                     </Box>
-                    <Divider />
                   </>
                 )}
 
                 {productData.length > 0 && (
-                  <Box style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
-                    {productData.map((product: any) => (
-                      <Box>
-                        <Link key={product.id} href={`/san-pham/${product.tag}`} className='text-black'>
-                          <Flex
-                            align={'center'}
-                            className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
-                          >
-                            <Flex key={product.id} p='md' gap='md' align={'flex-start'} w={'70%'}>
-                              <Card
-                                radius={'lg'}
-                                withBorder
-                                w={80}
-                                h={80}
-                                pos={'relative'}
-                                className='flex items-center justify-center shadow-none'
-                              >
-                                <Image
-                                  loading='lazy'
-                                  src={
-                                    getImageProduct(product.images, LocalImageType.THUMBNAIL) || '/images/png/momo.png'
-                                  }
-                                  alt={product.name}
-                                  width={60}
-                                  height={60}
-                                  style={{ borderRadius: 8, objectFit: 'cover' }}
-                                />
-                              </Card>
-                              <Box>
-                                <Highlight
-                                  lineClamp={2}
-                                  className='text-black dark:text-white'
-                                  fw={700}
-                                  highlight={searchQuery}
+                  <>
+                    <Divider />
+                    <Box>
+                      {productData.map((product: any) => (
+                        <Box>
+                          <Link key={product.id} href={`/san-pham/${product.tag}`}>
+                            <Flex
+                              align={'center'}
+                              className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
+                            >
+                              <Flex key={product.id} p='md' gap='md' align={'flex-start'} w={'70%'}>
+                                <Card
+                                  radius={'lg'}
+                                  withBorder
+                                  w={80}
+                                  h={80}
+                                  pos={'relative'}
+                                  className='flex items-center justify-center shadow-none'
                                 >
-                                  {product.name}
-                                </Highlight>
-                                <Text size='sm'>
-                                  <b className='m-0 p-0 text-mainColor'>{formatPriceLocaleVi(product.price)}</b> /phần
+                                  <Image
+                                    loading='lazy'
+                                    src={
+                                      getImageProduct(product.images, LocalImageType.THUMBNAIL) ||
+                                      '/images/png/momo.png'
+                                    }
+                                    alt={product.name}
+                                    width={60}
+                                    height={60}
+                                    style={{ borderRadius: 8, objectFit: 'cover' }}
+                                  />
+                                </Card>
+                                <Box>
+                                  <Highlight lineClamp={2} fw={700} highlight={searchQuery}>
+                                    {product.name}
+                                  </Highlight>
+                                  <Text size='sm'>
+                                    <b className='m-0 p-0 text-mainColor'>{formatPriceLocaleVi(product.price)}</b> /phần
+                                  </Text>
+                                  {product.tags && product.tags.length > 0 && (
+                                    <Flex gap={4} mt={'xs'}>
+                                      {product.tags.slice(0, 3)?.map((tag: any, index: number) => (
+                                        <Tooltip key={index} label={tag}>
+                                          <Badge
+                                            key={index}
+                                            variant='outline'
+                                            color='gray'
+                                            size='sm'
+                                            radius='xl'
+                                            className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
+                                          >
+                                            {tag}
+                                          </Badge>
+                                        </Tooltip>
+                                      ))}
+                                    </Flex>
+                                  )}
+                                </Box>
+                              </Flex>
+                              <Stack gap={5}>
+                                <Text size='xs' className='text-mainColor'>
+                                  Danh mục: <b>{product.subCategory?.name || 'Đang cập nhật'}</b>
                                 </Text>
-                                {product.tags && product.tags.length > 0 && (
-                                  <Flex gap={4} mt={'xs'}>
-                                    {product.tags.slice(0, 3)?.map((tag: any, index: number) => (
-                                      <Tooltip key={index} label={tag}>
-                                        <Badge
-                                          key={index}
-                                          variant='outline'
-                                          color='gray'
-                                          size='sm'
-                                          radius='xl'
-                                          className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
-                                        >
-                                          {tag}
-                                        </Badge>
-                                      </Tooltip>
-                                    ))}
-                                  </Flex>
-                                )}
-                              </Box>
+                                <Text size='xs' className='text-mainColor'>
+                                  Đã bán: {product.soldQuantity || 0}
+                                </Text>
+                                <Text size='xs' className='text-mainColor'>
+                                  Còn lại: {product.availableQuantity || 0}
+                                </Text>
+                                <Text size='xs' className='text-mainColor'>
+                                  Mở bán: {formatDateViVN(product.updatedAt)}
+                                </Text>
+                              </Stack>
                             </Flex>
-                            <Stack gap={5}>
-                              <Text size='xs' className='text-mainColor'>
-                                Danh mục: <b>{product.subCategory?.name || 'Đang cập nhật'}</b>
-                              </Text>
-                              <Text size='xs' className='text-mainColor'>
-                                Đã bán: {product.soldQuantity || 0}
-                              </Text>
-                              <Text size='xs' className='text-mainColor'>
-                                Còn lại: {product.availableQuantity || 0}
-                              </Text>
-                              <Text size='xs' className='text-mainColor'>
-                                Mở bán: {formatDateViVN(product.updatedAt)}
-                              </Text>
-                            </Stack>
-                          </Flex>
-                        </Link>
-                        <Divider />
-                      </Box>
-                    ))}
-                  </Box>
+                          </Link>
+                          <Divider />
+                        </Box>
+                      ))}
+                    </Box>
+                  </>
                 )}
               </>
             )}

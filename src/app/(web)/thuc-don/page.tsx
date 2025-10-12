@@ -11,13 +11,15 @@ export default async function MenuSection({
     tag?: string;
     s?: string;
     sort?: any;
-    price?: string;
+    minPrice?: string;
+    maxPrice?: string;
     'nguyen-lieu'?: any;
     page?: string;
     limit?: string;
     'danh-muc'?: string;
     'loai-san-pham'?: string;
     loai?: string;
+    rating?: string;
   };
 }) {
   const responseData = await api.Product.find({
@@ -38,9 +40,10 @@ export default async function MenuSection({
     hotProduct: searchParams?.loai === 'san-pham-hot',
     bestSaler: searchParams?.loai === 'san-pham-ban-chay',
     price: {
-      min: Number(searchParams?.price?.split(',')[0]) || undefined,
-      max: Number(searchParams?.price?.split(',')[1]) || undefined
-    }
+      min: Number(searchParams?.minPrice) || undefined,
+      max: Number(searchParams?.maxPrice) || undefined
+    },
+    rating: searchParams?.rating ? Number(searchParams?.rating) : undefined
   });
   const data = responseData?.products || [];
 

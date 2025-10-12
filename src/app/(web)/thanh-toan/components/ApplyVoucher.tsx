@@ -138,9 +138,10 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
             <Button
               variant='outline'
               size='sm'
+              radius={'md'}
               onClick={() => handleApplyVoucher()}
               disabled={!voucherCode.trim()}
-              className='border-gray-200 bg-transparent px-3'
+              className='border-[#E7EAED] bg-transparent px-3 dark:border-[#383838]'
               loading={loading}
             >
               <IconPlus className='h-4 w-4' />

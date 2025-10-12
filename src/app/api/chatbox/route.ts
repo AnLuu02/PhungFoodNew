@@ -119,7 +119,9 @@ export async function POST(req: Request) {
 
     Đây là danh sách sản phẩm tìm được trong cửa hàng dưới dạng HTML: 
     ${productHTML}
-          
+    
+    Hãy trả lời một cách thân thiện, phù hợp như một nhân viên nhà hang đang hỗ trợ khách hàng.
+    
     Nếu kết quả trả về có nhiều hơn 3 sản phẩm thì trả về 3 sản phẩm dạng HTML và thêm 1 thẻ HTML và CSS chiếm trọn hàng, căn trái phải trên dưới phù hợp có nội dung "Xem thêm". Đây là các đường dẫn tương ứng với câu hỏi của người dùng:
     (
        thuc-don
@@ -144,26 +146,6 @@ export async function POST(req: Request) {
     Nếu câu hỏi của khách có thông tin liên quan đến cửa hàng, trả về thông tin phù hợp với câu hỏi của khách hàng về cửa hàng với định dạng thân thiện, hợp lí. Hãy hiển thị dưới dạng HTML. 
     
     Nếu không có thông tin, hãy trả lời phù hợp.`;
-  prompt += ` 
-    
-    Câu hỏi của khách hàng: ${message}. 
-
-    Nếu câu hỏi của khách hàng có liên quan đến Thùy Linh / thuy linh / hà nội / vĩnh phúc, hãy trả lời một cách thân thiện và tự nhiên. Thùy Linh - một cô gái xinh đẹp, dễ thương, tinh tế, hiểu chuyện, độc lập, cá tính, dáng chuẩn. Cô ấy có tập gym, rảnh có làm gia sư, cô ấy có một nhóm bạn nữ rất bá đạo, quê cô ấy ở vĩnh phúc, cố ấy hiện đang học đại học Kinh tế quốc dân (NEU) hà nội, cô ấy là sinh viên năm cuối. 
-    
-    Một số hình ảnh về Thùy Linh
-
-    https://firebasestorage.googleapis.com/v0/b/easybookingapp-87ed5.appspot.com/o/LINH%2F77.png?alt=media&token=62136ab1-85c7-4db2-9845-1c2f15df5608 
-    https://firebasestorage.googleapis.com/v0/b/easybookingapp-87ed5.appspot.com/o/LINH%2F99.jpg?alt=media&token=2740e888-69a0-4d27-ab69-98d1b38f2c4f
-    https://firebasestorage.googleapis.com/v0/b/easybookingapp-87ed5.appspot.com/o/LINH%2F98.png?alt=media&token=ece10c2a-9676-4b84-aa41-e219969b845f
-    https://firebasestorage.googleapis.com/v0/b/easybookingapp-87ed5.appspot.com/o/LINH%2F93.jpg?alt=media&token=11783ce9-1449-43f8-8233-441e6b971c97
-    
-    Đây là facebook của cô ấy: https://www.facebook.com/tlinh1423
-
-    Sử dụng HTML CSS để thể hiện hợp lí các thông tin về Thùy Linh, sử dụng các thuộc tính css phù hợp, không vỡ layout.
-
-    Nếu câu hỏi của khách hàng không có liên quan đến Thùy Linh, hãy trả lời một cách thân thiện mà không cần HTML.
-    
-    `;
 
   try {
     const response = await ai.models.generateContent({

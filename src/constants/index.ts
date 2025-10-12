@@ -45,11 +45,15 @@ export const categoriesMaterial = [
 
 export const dataSort = [
   {
-    name: 'Giá từ thấp đến cao',
+    name: 'Mới nhất',
+    tag: 'updatedAt-desc'
+  },
+  {
+    name: 'Giá từ thấp đến cao',
     tag: 'price-asc'
   },
   {
-    name: 'Giá từ cao đến thấp',
+    name: 'Giá từ cao đến thấp',
     tag: 'price-desc'
   },
   {
@@ -60,36 +64,35 @@ export const dataSort = [
     name: 'Tên Z-A',
     tag: 'name-desc'
   },
-
   {
-    name: 'Mới nhất',
-    tag: 'new'
-  },
-  {
-    name: 'Cũ nhất',
-    tag: 'old'
+    name: 'Đánh giá cao',
+    tag: 'rating-desc'
   },
   {
     name: 'Bán chạy',
-    tag: 'best-seller'
+    tag: 'soldQuantity-desc'
   }
 ];
 
 export const priceRanges = [
   {
-    value: [0, 50000],
+    minPrice: 0,
+    maxPrice: 50000,
     label: 'Dưới 50.000đ'
   },
   {
-    value: [50000, 100000],
+    minPrice: 50000,
+    maxPrice: 100000,
     label: 'Từ 50.000đ - 100.000đ'
   },
   {
-    value: [100000, 200000],
+    minPrice: 100000,
+    maxPrice: 200000,
     label: 'Từ 100.000đ - 200.000đ'
   },
   {
-    value: [200000, 500000],
+    minPrice: 200000,
+    maxPrice: 500000,
     label: 'Từ 300.000đ - 500.000đ'
   }
 ];

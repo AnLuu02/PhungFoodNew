@@ -193,6 +193,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                   </Group>
                   <Group gap='xs'>
                     <Select
+                      disabled
                       label={
                         <Text size='sm' fw={700}>
                           Kích cỡ:
@@ -206,7 +207,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                   <ButtonAddToCart
                     product={{ ...data, quantity }}
                     style={{
-                      title: 'Mua hàng',
+                      label: 'Mua hàng',
                       size: 'md',
                       fullWidth: true,
                       radius: 'sm'

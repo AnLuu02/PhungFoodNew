@@ -15,9 +15,9 @@ export const PaymentForm = ({ control }: any) => {
         <Stack>
           {isLoading ? (
             <Stack mt={5} gap={5}>
-              <Skeleton height={20} radius='sm' />
-              <Skeleton height={20} radius='sm' />
-              <Skeleton height={20} radius='sm' />
+              <Skeleton height={20} radius='md' />
+              <Skeleton height={20} radius='md' />
+              <Skeleton height={20} radius='md' />
             </Stack>
           ) : (
             <Controller

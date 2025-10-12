@@ -58,7 +58,7 @@ export default function ReusablePromoBanner({
                 {buttonText && (
                   <Box className='pt-4'>
                     <Link href={buttonLink}>
-                      <BButton size='lg' title={buttonText} />
+                      <BButton size='lg' label={buttonText} />
                     </Link>
                   </Box>
                 )}

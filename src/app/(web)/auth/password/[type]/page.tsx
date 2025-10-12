@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import BButton from '~/components/Button';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
+import PeriodControl from '../../components/PeriodControl';
 const OtpModal = dynamic(() => import('../../components/Modal/ModalOtp'), {
   ssr: false
 });
@@ -64,6 +65,9 @@ export default function ForgotPassword() {
                     Nhập địa chỉ email của bạn
                   </Title>
                 </GridCol>
+                <GridCol span={12} className='flex justify-center'>
+                  <PeriodControl period={'email'} />
+                </GridCol>
                 <GridCol span={12}>
                   <Text size='sm' className='text-center' mb={1}>
                     Chúng tôi sẽ gửi mã xác nhận đến địa chỉ email này.
@@ -73,6 +77,7 @@ export default function ForgotPassword() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
+                    radius={'md'}
                     placeholder='E-mail'
                     leftSection={<IconMail size={18} stroke={1.5} />}
                   />
@@ -86,7 +91,15 @@ export default function ForgotPassword() {
                   <Divider />
                 </GridCol>
                 <GridCol span={12}>
-                  <BButton radius='sm' loading={loading} type='submit' fullWidth size='md' title={'Gửi mã'} />
+                  <BButton
+                    disabled={!email}
+                    radius='md'
+                    loading={loading}
+                    type='submit'
+                    fullWidth
+                    size='md'
+                    label={'Gửi mã'}
+                  />
                 </GridCol>
               </Grid>
             </Card.Section>

@@ -31,15 +31,17 @@ export default function BannerSection({ banner }: any) {
       ))
     ) : (
       <Carousel.Slide className='rounded-md'>
-        <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
-          <Image
-            style={{ objectFit: 'cover' }}
-            src={'/images/jpg/empty-300x240.jpg'}
-            alt={'empty'}
-            fill
-            className='rounded-md'
-          />
-        </Box>
+        <Link href={'/thuc-don'}>
+          <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
+            <Image
+              style={{ objectFit: 'cover' }}
+              src={'/images/jpg/empty-300x240.jpg'}
+              alt={'empty'}
+              fill
+              className='rounded-md'
+            />
+          </Box>
+        </Link>
       </Carousel.Slide>
     );
 
@@ -75,21 +77,24 @@ export default function BannerSection({ banner }: any) {
           className='hidden lg:flex'
         >
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
-            <Image
-              style={{ objectFit: 'cover' }}
-              src={banners?.[0]?.url || '/images/jpg/empty-300x240.jpg'}
-              alt={''}
-              fill
-            />
+            <Link href={'/thuc-don'}>
+              <Image
+                style={{ objectFit: 'cover' }}
+                src={banners?.[0]?.url || '/images/jpg/empty-300x240.jpg'}
+                alt={''}
+                fill
+              />
+            </Link>
           </Paper>
-
           <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
-            <Image
-              style={{ objectFit: 'cover' }}
-              src={banners?.[1]?.url || '/images/jpg/empty-300x240.jpg'}
-              alt={''}
-              fill
-            />
+            <Link href={'/thuc-don'}>
+              <Image
+                style={{ objectFit: 'cover' }}
+                src={banners?.[1]?.url || '/images/jpg/empty-300x240.jpg'}
+                alt={''}
+                fill
+              />
+            </Link>
           </Paper>
         </Flex>
       </Flex>

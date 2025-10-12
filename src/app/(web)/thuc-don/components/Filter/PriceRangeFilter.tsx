@@ -1,29 +1,46 @@
-import { Button, Divider, Flex, Grid, GridCol, NumberInput, Popover, RangeSlider, Text } from '@mantine/core';
+import { Box, Button, Divider, Flex, Grid, GridCol, NumberInput, Popover, RangeSlider, Text } from '@mantine/core';
 import { IconMoneybag } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 
 export function PriceRangeFilter() {
-  const [valuePrice, setValuePrice] = useState<number[]>([20000, 200000]);
-  const params = useSearchParams();
+  const [message, setMessage] = useState('');
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const handleApply = () => {
-    const s = new URLSearchParams(params);
-    if (valuePrice?.length > 0 && (valuePrice[0] !== 20000 || valuePrice[1] !== 200000)) {
-      s.set('price', valuePrice?.join('-'));
-    } else {
-      s.delete('price');
+
+  const onHandleFilter = () => {
+    const params = new URLSearchParams(searchParams);
+
+    if (maxPrice === 0) {
+      setMessage('Giá tối đa không được bằng 0.');
+      return;
     }
-    router.push(`${pathname}?${s.toString()}`);
+
+    if (minPrice > maxPrice) {
+      setMessage('Giá tối thiểu không được lớn hơn giá tối đa.');
+      return;
+    }
+
+    if (maxPrice < 10000) {
+      setMessage('Giá phải từ 10.000 VNĐ trở lên.');
+      return;
+    }
+
+    setMessage('');
+    params.set('minPrice', String(minPrice));
+    params.set('maxPrice', String(maxPrice));
+    router.push(`${pathname}?${params.toString()}`);
   };
   return (
-    <Popover width={250} position='bottom' radius={'md'} arrowSize={10} withArrow shadow='lg'>
+    <Popover width={300} position='bottom' radius={'md'} arrowSize={10} withArrow shadow='lg'>
       <Popover.Target>
         <Button
           variant='subtle'
-          className='border-1 border-mainColor text-mainColor'
+          className='border-1 border-mainColor text-mainColor hover:bg-mainColor/10 hover:text-mainColor'
           leftSection={<IconMoneybag size={16} />}
           w={'max-content'}
         >
@@ -34,17 +51,17 @@ export function PriceRangeFilter() {
         <Grid>
           <GridCol span={12}>
             <Text size='lg' className='font-bold'>
-              Khoảng giá
+              Khoảng giá (từ <b className='text-subColor'>20k</b> đến <b className='text-subColor'>500k</b>)
             </Text>
           </GridCol>
           <GridCol span={12} pt={0} mt={0}>
             <Flex align={'center'}>
-              <Text size='lg' className='font-bold text-red-700'>
-                {formatPriceLocaleVi(valuePrice[0] || 0)}
+              <Text size='lg' className='font-bold text-mainColor'>
+                {formatPriceLocaleVi(minPrice || 0)}
               </Text>
-              <Divider orientation='horizontal' w={10} size={3} c={'red'} ml={10} mr={10} />
-              <Text size='lg' className='font-bold text-red-700'>
-                {formatPriceLocaleVi(valuePrice[1] || 0)}
+              <Divider orientation='horizontal' w={10} size={3} color={'green'} ml={10} mr={10} />
+              <Text size='lg' className='font-bold text-mainColor'>
+                {formatPriceLocaleVi(maxPrice || 0)}
               </Text>
             </Flex>
             <Text size='sm' c={'dimmed'}>
@@ -57,64 +74,60 @@ export function PriceRangeFilter() {
               min={0}
               max={500000}
               step={20000}
+              label={value => formatPriceLocaleVi(value)}
               defaultValue={[20000, 200000]}
-              value={valuePrice as [number, number]}
-              onChange={setValuePrice}
+              value={[minPrice, maxPrice]}
               classNames={{
-                root: 'mt-2',
-                thumb: 'bg-mainColor',
-                track: 'bg-mainColor',
-                bar: 'bg-mainColor',
-                label: 'bg-subColor font-bold text-black'
+                thumb: 'text-mainColor'
+              }}
+              onChange={v => {
+                setMinPrice(v[0]);
+                setMaxPrice(v[1]);
               }}
             />
           </GridCol>
           <GridCol span={12}>
-            <Flex align={'center'} justify={'space-between'}>
+            <Flex align={'center'} justify={'space-between'} gap={'md'}>
               <NumberInput
                 thousandSeparator=','
                 clampBehavior='strict'
-                defaultValue={valuePrice[0] || 0}
-                value={valuePrice[0]}
+                label='Giá từ'
+                value={minPrice}
                 onChange={v => {
                   const value = Number(v) || 0;
-                  if (value < 0) return;
-                  if (valuePrice[1] && value > valuePrice[1]) {
-                    setValuePrice([value, value]);
-                  } else {
-                    setValuePrice([value, valuePrice[1] || 0]);
-                  }
+                  setMinPrice(value);
                 }}
                 max={500000}
                 min={0}
-                w={'40%'}
-              ></NumberInput>
-              <Text>---</Text>
+                error={message !== ''}
+              />
               <NumberInput
+                label='Đến'
                 thousandSeparator=','
                 clampBehavior='strict'
-                value={valuePrice[1]}
+                value={maxPrice}
                 onChange={v => {
                   const value = Number(v) || 0;
-                  if (value < 0) return;
-                  if (valuePrice[0] && valuePrice[0] > value) {
-                    setValuePrice([value, value]);
-                  } else {
-                    setValuePrice([value, value]);
-                  }
+                  setMaxPrice(value);
                 }}
-                defaultValue={valuePrice[1] || 0}
                 max={500000}
                 min={0}
-                w={'40%'}
-              ></NumberInput>
+                error={message !== ''}
+              />
             </Flex>
+            <Box onClick={() => setMessage('')} className='animate-bounce cursor-pointer' mt={5}>
+              {message !== '' && (
+                <Text size='sm' c={'red'}>
+                  {message}
+                </Text>
+              )}
+            </Box>
           </GridCol>
           <GridCol span={12}>
             <Button
               radius={'xl'}
               size='sm'
-              onClick={handleApply}
+              onClick={onHandleFilter}
               fullWidth
               className='bg-mainColor text-white transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black'
             >

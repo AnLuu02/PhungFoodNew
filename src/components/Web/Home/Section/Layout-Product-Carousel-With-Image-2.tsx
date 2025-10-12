@@ -153,7 +153,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                       </Carousel>
                       <Flex align={'center'} justify={'center'} mt={30}>
                         <Link href={`/thuc-don?loai=${tab}`}>
-                          <BButton title={'Xem tất cả'} variant='outline' size='sm' />
+                          <BButton label={'Xem tất cả'} variant='outline' size='sm' />
                         </Link>
                       </Flex>
                     </Flex>

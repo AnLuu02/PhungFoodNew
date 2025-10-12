@@ -35,6 +35,34 @@ export default {
         quicksand: ['var(--font-quicksand)', ...fontFamily.sans]
       },
       keyframes: {
+        typing: {
+          '0%': {
+            width: '0ch'
+          },
+          '100%': {
+            width: '40ch'
+          }
+        },
+        showLeftTo: {
+          '0%': {
+            transform: 'translateX(-20%)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateX(0%)',
+            opacity: '1'
+          }
+        },
+        showRightTo: {
+          '0%': {
+            transform: 'translateX(20%)',
+            opacity: '0'
+          },
+          '100%': {
+            transform: 'translateX(0%)',
+            opacity: '1'
+          }
+        },
         wiggle: {
           '0%, 100%': { transform: 'rotate(0deg) scale(0.9) ' },
           '10%': { transform: 'rotate(0deg) scale(1)' },
@@ -74,7 +102,10 @@ export default {
         fadeTop: 'fadeTop 0.3s ease-in-out',
         fadeBottom: 'fadeBottom 0.3s ease-in-out',
         pulse: 'pulse 1.5s ease-in-out infinite',
-        'slide-right': 'slide-right 2s ease-in-out infinite'
+        'slide-right': 'slide-right 2s ease-in-out infinite',
+        typing: 'typing 2s steps(40) alternate infinite',
+        showLeftTo: 'showLeftTo 0.5s ease',
+        showRightTo: 'showRightTo 0.5s ease'
       }
     },
     screens: {

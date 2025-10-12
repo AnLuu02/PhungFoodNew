@@ -77,7 +77,7 @@ const LayoutProductCarouselWithImage = ({
             <Text size='md' className='text-white' fw={700}>
               Chỉ trong tuần này. Đừng bỏ lỡ...
             </Text>
-            <BButton title={'Mua ngay'} radius='xl' size='sm' w={'max-content'} />
+            <BButton label={'Mua ngay'} radius='xl' size='sm' w={'max-content'} />
           </Stack>
         </BackgroundImage>
         <Tabs
@@ -132,7 +132,7 @@ const LayoutProductCarouselWithImage = ({
 
           <Flex align={'center'} justify={'center'} mt={30}>
             <Link href={`/thuc-don?loai=${loai}`}>
-              <BButton title={'Xem tất cả'} variant='outline' size='sm' />
+              <BButton label={'Xem tất cả'} variant='outline' size='sm' />
             </Link>
           </Flex>
         </Tabs>

@@ -1,9 +1,10 @@
 'use client';
 
-import { Badge, Box, Button, Card, Text, Title, Tooltip } from '@mantine/core';
+import { Badge, Box, Card, Text, Title, Tooltip } from '@mantine/core';
 import { IconClock } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import BButton from '~/components/Button';
 import { formatDateViVN } from '~/lib/func-handler/Format';
 
 export function ConsumerCard({ data }: any) {
@@ -24,7 +25,9 @@ export function ConsumerCard({ data }: any) {
             className='object-cover transition-transform duration-300 group-hover:scale-105'
           />
           <Badge className='absolute left-3 top-3 bg-red-500 text-white hover:bg-red-600'>Nổi bật</Badge>
-          <Badge className='absolute right-3 top-3'>{data?.categories?.[0]}</Badge>
+          <Badge className='absolute right-3 top-3' classNames={{ root: 'bg-mainColor' }}>
+            {data?.categories?.[0]}
+          </Badge>
         </Box>
 
         <Box className='p-4'>
@@ -45,13 +48,7 @@ export function ConsumerCard({ data }: any) {
             </Tooltip>
           </Box>
 
-          <Button
-            variant='outline'
-            size='sm'
-            className='w-full border-mainColor/20 bg-transparent text-mainColor hover:border-mainColor/20 hover:bg-mainColor/10 hover:text-mainColor'
-          >
-            Đọc thêm
-          </Button>
+          <BButton label='Đọc thêm' variant='outline' fullWidth radius='md' size='sm' />
         </Box>
       </Card>
     </Link>

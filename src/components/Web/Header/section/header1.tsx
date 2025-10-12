@@ -28,8 +28,12 @@ export const Header1 = ({ restaurant }: any) => {
       className='z-[100] bg-mainColor text-white'
     >
       <Center py={{ base: 'md' }}>
-        <Text size='sm' lineClamp={2}>
-          <b>Phụng Food!</b> xin chào quý khách!
+        <Text
+          size='sm'
+          lineClamp={2}
+          className='white-space-nowrap line-clamp-1 overflow-hidden duration-1000 sm:animate-typing'
+        >
+          Phụng Food! xin chào quý khách!
         </Text>
       </Center>
 

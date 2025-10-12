@@ -1,5 +1,5 @@
 'use client';
-import { Button, CheckIcon, Flex, Radio, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
+import { CheckIcon, Flex, Radio, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { priceRanges } from '~/constants';
 
@@ -14,35 +14,23 @@ export const PriceCheckedFilter = () => {
         <Text size='md' fw={700}>
           CHỌN MỨC GIÁ
         </Text>
-        {params.get('price') && (
-          <Button
-            size='sm'
-            fw={700}
-            w={'max-content'}
-            color='red'
-            onClick={() => {
-              const s = new URLSearchParams(params);
-              s.delete('price');
-              router.push(`${pathname}?${s.toString()}`);
-            }}
-            variant='subtle'
-          >
-            Xóa
-          </Button>
-        )}
       </Flex>
       <ScrollAreaAutosize mah={260} scrollbarSize={6} type='auto'>
         <Stack gap='xs'>
           {priceRanges.map(range => (
             <Radio
               icon={CheckIcon}
-              checked={params.get('price') === range.value.toString()}
-              key={range.value + range.label}
-              value={range.value.toString()}
+              checked={
+                params.get('minPrice') === range.minPrice.toString() &&
+                params.get('maxPrice') === range.maxPrice.toString()
+              }
+              key={range.minPrice + range.label + range.maxPrice}
+              value={range.maxPrice + 'to' + range.minPrice}
               onChange={e => {
                 const s = new URLSearchParams(params);
                 if (e.target.checked) {
-                  s.set('price', e.target.value);
+                  s.set('minPrice', range.minPrice.toString());
+                  s.set('maxPrice', range.maxPrice.toString());
                 }
                 router.push(`${pathname}?${s.toString()}`);
               }}

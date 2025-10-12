@@ -7,6 +7,7 @@ import { useState } from 'react';
 import BButton from '~/components/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
+import PeriodControl from '../components/PeriodControl';
 
 export default function ResetPassword({
   searchParams
@@ -65,6 +66,9 @@ export default function ResetPassword({
                   Đặt lại mật khẩu
                 </Title>
               </GridCol>
+              <GridCol span={12}>
+                <PeriodControl period={'reset'} />
+              </GridCol>
 
               <GridCol span={12}>
                 <TextInput
@@ -83,6 +87,8 @@ export default function ResetPassword({
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
+                  label='Mật khẩu mới'
+                  radius={'md'}
                   placeholder='Mật khẩu mới'
                 />
               </GridCol>
@@ -90,6 +96,8 @@ export default function ResetPassword({
                 <PasswordInput
                   type='password'
                   value={confirmPassword}
+                  radius={'md'}
+                  label='Xác nhận mật khẩu'
                   onChange={e => setConfirmPassword(e.target.value)}
                   required
                   placeholder='Xác nhận mật khẩu mới'
@@ -98,7 +106,15 @@ export default function ResetPassword({
               </GridCol>
 
               <GridCol span={12}>
-                <BButton radius='sm' loading={loading} type='submit' fullWidth size='md' title={'Xác nhận'} />
+                <BButton
+                  radius='md'
+                  loading={loading}
+                  type='submit'
+                  fullWidth
+                  size='md'
+                  label={'Xác nhận'}
+                  disabled={!confirmPassword || password !== confirmPassword}
+                />
               </GridCol>
             </Grid>
           </Card.Section>

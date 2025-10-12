@@ -108,7 +108,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 }
                 onClose();
               }}
-              radius='sm'
+              radius='md'
               size='xs'
             >
               Tiếp tục mua hàng

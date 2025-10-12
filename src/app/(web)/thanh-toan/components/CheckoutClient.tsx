@@ -207,8 +207,6 @@ export default function CheckoutClient({ order }: { order: any }) {
           }
         } catch {
           NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
-        } finally {
-          setLoading(false);
         }
       } else {
         NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
@@ -290,13 +288,7 @@ export default function CheckoutClient({ order }: { order: any }) {
                 <Button variant='subtle' leftSection={<IconArrowLeft size={16} />} component='a' href='/gio-hang'>
                   Giỏ hàng
                 </Button>
-                <BButton
-                  radius={'sm'}
-                  size='md'
-                  type='submit'
-                  loading={loading || isSubmitting}
-                  title={' THANH TOÁN'}
-                />
+                <BButton radius={'sm'} size='md' type='submit' loading={loading} label={' THANH TOÁN'} />
               </Flex>
             </Stack>
           </Card>

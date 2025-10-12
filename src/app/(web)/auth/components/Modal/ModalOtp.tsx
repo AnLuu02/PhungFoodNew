@@ -1,12 +1,13 @@
 'use client';
 
-import { Alert, Button, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
+import { Alert, Box, Button, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
 import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button';
 import { hashPassword } from '~/lib/func-handler/hashPassword';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
+import PeriodControl from '../PeriodControl';
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;
@@ -99,6 +100,10 @@ export default function OtpModal({
           <Title order={2} fw={700} className='font-quicksand'>
             Xác thực OTP
           </Title>
+          <Box my={'sm'}>
+            <PeriodControl period={'verify'} />
+          </Box>
+
           <Text>Nhập mã xác minh được gửi đến</Text>
           <Text fw={700}>{email.slice(0, 3) + '***' + email.slice(email.length - 11)}</Text>
         </Stack>
@@ -107,13 +112,13 @@ export default function OtpModal({
         </Center>
 
         <BButton
-          radius='sm'
+          radius='md'
           fullWidth
           size='md'
           onClick={handleSubmit}
           disabled={timeLeft === 0}
           loading={loading?.type === 'submit' && loading.value}
-          title={' Xác nhận'}
+          label={' Xác nhận'}
         />
         <Group justify='center' gap={3} align='center'>
           <Text size='sm'>Không nhận được mã OTP?</Text>

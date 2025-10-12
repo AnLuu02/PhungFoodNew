@@ -19,7 +19,7 @@ import {
   Title
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconEye, IconPencil, IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
+import { IconPencil, IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import ButtonAddToCart from '~/components/ButtonAddToCart';
 import Comments from '~/components/Comments/Comments';
@@ -33,13 +33,16 @@ import ProductImage from './components/ProductImage';
 import RatingStatistics from './components/RatingStatistics';
 import RelatedProducts from './components/RelatedProducts';
 
+import { useSession } from 'next-auth/react';
 import ShareSocials from '~/components/ShareSocial';
 import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
+import ViewingUser from '~/components/viewingUser';
 import ProductCardCarouselVertical from '~/components/Web/Card/product-card-carousel-vertical';
 import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Carousel-Only';
 import GuideOrder from './components/GuideOrder';
 
 export default function ProductDetailClient(data: any) {
+  const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState('description');
   const [note, setNote] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -69,8 +72,9 @@ export default function ProductDetailClient(data: any) {
   }, [product?.review]);
 
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
+
   return (
-    <Box>
+    <>
       <Grid>
         <Grid.Col
           span={{ base: 12, sm: 6, md: 6 }}
@@ -152,10 +156,7 @@ export default function ProductDetailClient(data: any) {
               </Text>
             )}
 
-            <Group>
-              <IconEye size={16} />
-              <Text size='sm'>29 người đang xem sản phẩm này</Text>
-            </Group>
+            <ViewingUser productId={product?.id || ''} />
 
             <Card
               radius={'md'}
@@ -206,6 +207,7 @@ export default function ProductDetailClient(data: any) {
               </Group>
               <Group gap='xs'>
                 <Select
+                  disabled
                   label={
                     <Text size='sm' fw={700}>
                       Kích cỡ:
@@ -219,7 +221,7 @@ export default function ProductDetailClient(data: any) {
               <ButtonAddToCart
                 product={{ ...product, note, quantity }}
                 style={{
-                  title: 'Mua hàng',
+                  label: 'Mua hàng',
                   size: 'md',
                   fullWidth: true,
                   radius: 'sm'
@@ -363,6 +365,6 @@ export default function ProductDetailClient(data: any) {
           </Grid.Col>
         )}
       </Grid>
-    </Box>
+    </>
   );
 }

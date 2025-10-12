@@ -23,7 +23,7 @@ const LayoutGrid3Col = () => {
           </Title>
           <Box mt={'xs'}>
             <Link href={`/thuc-don`}>
-              <BButton title={'Xem ngay'} radius='md' size='sm' w={'max-content'} />
+              <BButton label={'Xem ngay'} radius='md' size='sm' w={'max-content'} />
             </Link>
           </Box>
         </Card>
@@ -47,7 +47,7 @@ const LayoutGrid3Col = () => {
 
           <Box mt={'xs'}>
             <Link href={`/thuc-don?danh-muc=do-uong`}>
-              <BButton title={'Xem ngay'} radius='md' size='sm' w={'max-content'} />
+              <BButton label={'Xem ngay'} radius='md' size='sm' w={'max-content'} />
             </Link>
           </Box>
         </Card>
@@ -71,7 +71,7 @@ const LayoutGrid3Col = () => {
 
           <Box mt={'xs'}>
             <Link href={`/thuc-don`}>
-              <BButton title={'Xem ngay'} radius='md' size='sm' w={'max-content'} />
+              <BButton label={'Xem ngay'} radius='md' size='sm' w={'max-content'} />
             </Link>
           </Box>
         </Card>

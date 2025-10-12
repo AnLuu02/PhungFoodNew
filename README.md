@@ -1,102 +1,134 @@
-# 🍽 Nhà Hàng Fast Food - Next.js 14
+# 🍔 Fast Food Restaurant App — Next.js 14 Full‑Stack Project
 
-## 📝 Giới Thiệu
-Đây là ứng dụng website nhà hàng fast food được xây dựng bằng **Next.js 14**, sử dụng **App Router**, **tRPC**, **Prisma**, **PostgreSQL** và các công nghệ hiện đại khác. Ứng dụng hỗ trợ:
-
-- Tìm kiếm bằng voice (chỉ hỗ trợ trình duyệt PC/Laptop)
-- 🛒 Đặt hàng trực tuyến.
-- 💳 Thanh toán qua VNPAY.
-- 📜 Xuất hóa đơn PDF.
-- 📧 Gửi hóa đơn qua email.
-- 📊 Dashboard quản trị viên.
-
-## 🚀 Công Nghệ Sử Dụng
-- **Next.js 14** với **App Router**
-- **tRPC** v11
-- **Prisma** ORM
-- **PostgreSQL**
-- **NextAuth** (Xác thực người dùng)
-- **Mantine** (UI Components)
-- **Tailwind CSS** (Styling)
-- **VNPAY API** (Thanh toán)
-- **PDFKit** (Xuất hóa đơn PDF)
-- **Nodemailer** (Gửi email hóa đơn)
-
-## 📂 Cấu Trúc Dự Án
-```
-📦 fastfood-app
-├── 📂 src
-│   ├── 📂 app (App Router)
-│   ├── 📂 components (UI Components)
-│   ├── 📂 lib (Helpers, config)
-│   ├── 📂 server (API tRPC, Prisma)
-│   ├── 📂 styles (Tailwind CSS)
-│   ├── 📂 utils (Hàm tiện ích)
-├── 📄 prisma/schema.prisma (Mô hình dữ liệu)
-├── 📄 .env (Biến môi trường)
-├── 📄 package.json (Dependencies)
-└── 📄 README.md
-```
-
-## 🛠 Cài Đặt
-### 1️⃣ Clone Repository
-```sh
-git clone https://github.com/yourusername/fastfood-app.git
-cd fastfood-app
-```
-
-### 2️⃣ Cài Đặt Dependencies
-```sh
-yarn install  # hoặc npm install
-```
-
-### 3️⃣ Cấu Hình Biến Môi Trường
-Tạo file `.env` và thêm các biến môi trường:
-```env
-DATABASE_URL=postgresql://user:password@localhost:5432/fastfood
-VNP_TMNCODE=...
-VNP_HASHSECRET=...
-VNP_URL=...
-NEXTAUTH_SECRET=...
-EMAIL_SERVER=...
-EMAIL_FROM=...
-```
-
-### 4️⃣ Chạy Prisma Db Push
-```sh
-npx prisma db push
-```
-
-### 5️⃣ Chạy Ứng Dụng
-```sh
-yarn dev  # hoặc npm run dev
-```
-Mở trình duyệt tại: [http://localhost:3000](http://localhost:3000)
-
-## ✅ Tính Năng
-- [x] Đăng nhập / Đăng ký với NextAuth.
-- [x] Quản lý danh mục sản phẩm (Category, Subcategory, Product).
-- [x] Giỏ hàng & Thanh toán VNPAY.
-- [x] Quản lý đơn hàng & Xuất hóa đơn PDF.
-- [x] Gửi email xác nhận đơn hàng.
-- [x] Dashboard quản trị viên.
-- [x] Hỗ trợ tìm kiếm và lọc sản phẩm.
-- [x] Responsive trên mọi thiết bị.
-- [x] Hệ thống đánh giá sản phẩm.
-- [x] Thống kê doanh thu và đơn hàng.
-- [x] Tìm kiếm bằng voice (chỉ hỗ trợ trình duyệt PC/Laptop)
-
-## 🎥 Demo
-Truy cập bản demo tại: [Phung Food](https://phung-food-new.vercel.app/)
-
-## 📌 Đóng Góp
-Mọi đóng góp đều được hoan nghênh! Hãy fork repo, tạo branch mới và gửi Pull Request.
-
-## 📝 Giấy Phép
-Dự án này được phát hành theo giấy phép **MIT License**.
+## 🌟 Introduction  
+**Fast Food Restaurant App** is a full-stack web application delivering a smooth, scalable, and production-ready online ordering experience.  
+Built with **Next.js 14 (App Router)**, the project demonstrates a command of frontend performance, strong API design, and real business workflows from product browsing to payment and invoice automation.
 
 ---
-✨ **Fast Food App - Next.js 14** 🚀
 
-Cảm ơn bạn đã quan tâm đến dự án này! Nếu bạn có bất kỳ ý tưởng nào để cải thiện hoặc gặp vấn đề khi sử dụng, đừng ngần ngại mở issue hoặc liên hệ trực tiếp.
+## 🖼️ Preview / Screenshots  
 
+![Home page](./screenshots/homepage.png)
+![Cart page](./screenshots/cartpage.png)
+![Menu page](./screenshots/menupage.png)
+![Admin dashboard](./screenshots/admindashboard.png)
+---
+
+## 🚀 Technical Highlights  
+- **Next.js 14 (App Router)** for modern routing, edge rendering, and server actions  
+- **NextAuth** for secure user authentication & session handling  
+- **tRPC + Prisma** for end-to-end type safety between client and server  
+- **PostgreSQL** as relational datastore  
+- **Mantine + Tailwind CSS** for component-driven design & utility styling  
+- **VNPAY API** integration for real-world payment processing  
+- **PDFKit & Nodemailer** for automated invoice generation and email delivery  
+- **Voice Search (desktop)** for intuitive product discovery  
+- **Admin Dashboard** with analytics, sales insights, and order management  
+
+---
+
+## 🧩 Architecture & Modules  
+
+```
+Frontend:   Next.js 14 (App Router + Server / Client components)
+Backend API: tRPC endpoints
+Database:   Prisma schema on PostgreSQL
+Auth:       NextAuth (session / JWT)
+UI:         Mantine components + Tailwind utilities
+Payments:   VNPAY integration
+PDF / Email: PDFKit + Nodemailer
+```
+
+**Principles:**
+- Maintainable modular architecture  
+- Type safety across boundaries  
+- Separation of concerns  
+- Realistic business logic & secure workflows  
+
+---
+
+## 🛠️ Installation & Run  
+
+1. **Clone the repo**  
+   ```bash
+   git clone https://github.com/AnLuu02/PhungFoodNew.git  
+   cd PhungFoodNew
+   ```
+
+2. **Install dependencies**  
+   ```bash
+   yarn install   # or npm install
+   ```
+
+3. **Set environment variables** in `.env`:  
+   ```env
+   DATABASE_URL=postgresql://user:password@localhost:5432/fastfood
+   VNP_TMNCODE=...
+   VNP_HASHSECRET=...
+   VNP_URL=...
+   NEXTAUTH_SECRET=...
+   EMAIL_SERVER=...
+   EMAIL_FROM=...
+   ```
+
+4. **Push database schema**  
+   ```bash
+   npx prisma db push
+   ```
+
+5. **Start dev server**  
+   ```bash
+   yarn dev   # or npm run dev
+   ```
+   Then open [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🧠 Key Features (User & Admin)
+
+| Category | Highlights |
+|---|---|
+| **Auth & Security** | Sign up, login, session protection |
+| **Product Management** | CRUD for categories, subcategories, products |
+| **Cart & Checkout** | Persistent cart, real-time updates |
+| **Payment Flow** | VNPAY integration with callback & validation |
+| **Invoice System** | Generate PDF invoices & auto-send email |
+| **Admin Analytics** | Dashboard with charts, revenue, order data |
+| **Voice Search** | Search products by voice input (on desktop) |
+| **Responsive Design** | Mobile / tablet / desktop support |
+| **Ratings & Reviews** | Users can leave feedback on products |
+
+---
+
+## 🎬 Live Demo  
+Check it live here: [Phung Food App](https://phung-food-new.vercel.app/)
+
+---
+
+## 🧩 Project Goals & Intentions  
+This project is intended to:
+- Showcase full-stack mastery (Next.js + tRPC + Prisma)  
+- Simulate a real-world product / business workflow  
+- Emphasize **UI polish**, **UX**, and **performance**  
+- Demonstrate integration with external services (payment, email, PDF)  
+- Serve as a portfolio piece that speaks technically and visually  
+
+---
+
+## 🧑‍💻 About the Developer  
+Hello! I’m **An Luu** — a frontend web developer with a strong eye for clean UI and smooth user experience.  
+I specialize in **Next.js**, **React**, and modern frontend technologies, with hands-on experience in **backend integration** using **tRPC**, **Prisma**, and **PostgreSQL**.
+
+
+📫 Contact me:  
+- **Email:** anluu099@gmail.com  
+- **LinkedIn:** [https://www.linkedin.com/in/l%C6%B0u-an-526510321/] 
+
+---
+
+## 📄 License  
+This project is released under the **MIT License**.
+
+---
+
+✨ *Refered, Designed & coded with care — by An Luu.*  

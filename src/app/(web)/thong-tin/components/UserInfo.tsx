@@ -79,7 +79,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                   <Image src={`/images/png/${levelInfo.thumbnail}`} width={120} height={40} alt='vip' />
                   <Badge
                     size='md'
-                    radius='sm'
+                    radius='md'
                     pos={'absolute'}
                     bottom={10}
                     bg={levelInfo.color}
@@ -89,7 +89,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                   </Badge>
                 </Box>
 
-                <Badge size='md' radius='sm' ml={5} variant='outline' color={levelInfo.color}>
+                <Badge size='md' radius='md' ml={5} variant='outline' color={levelInfo.color}>
                   {userInfor?.pointUser} điểm
                 </Badge>
               </Flex>

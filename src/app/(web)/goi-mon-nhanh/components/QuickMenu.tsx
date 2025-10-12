@@ -14,7 +14,7 @@ export const QuickMenu = ({ categories, products, searchParams }: any) => {
             <BButton
               active={item.tag === searchParams?.['danh-muc']}
               key={index}
-              title={item.name}
+              label={item.name}
               variant='outline'
               size='sm'
             />
@@ -36,7 +36,9 @@ export const QuickMenu = ({ categories, products, searchParams }: any) => {
 
         {products?.length > 0 && (
           <Flex align={'center'} justify={'center'} mt={30}>
-            <BButton title={'Xem tất cả'} variant='outline' size='sm' onClick={() => {}} />
+            <Link href={'/thuc-don'}>
+              <BButton label={'Xem tất cả'} variant='outline' size='sm' onClick={() => {}} />
+            </Link>
           </Flex>
         )}
       </Flex>

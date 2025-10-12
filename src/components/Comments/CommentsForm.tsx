@@ -81,12 +81,12 @@ export const CommentsForm = ({ product }: { product: any }) => {
       />
       <BButton
         type='submit'
-        radius='sm'
+        radius='md'
         size='sm'
         fullWidth
         loading={isSubmitting}
         disabled={isSubmitting || watch('comment') === '' || watch('rating') === 0 || !isDirty || !user?.user?.id}
-        title='Đánh giá'
+        label='Đánh giá'
       />
     </form>
   );

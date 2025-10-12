@@ -65,8 +65,6 @@ export const ButtonCheckout = ({
       }
     } catch (e) {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
-    } finally {
-      setLoading(false);
     }
   };
   return (

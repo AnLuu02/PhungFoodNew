@@ -4,6 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 export default async function FooterWeb({ restaurant }: { restaurant: any }) {
+  const timeOpen = () => {
+    const timeIndex = new Date().getDay();
+    const timeOpens = restaurant?.openingHours ?? [];
+    return timeOpens[timeIndex];
+  };
   return (
     <>
       <Box
@@ -44,7 +49,12 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                         {restaurant?.phone || '09180646181'}
                       </a>
                     </Box>
-                    <Box className='text-gray-400 dark:text-white'>Đặt món: 0942486950</Box>
+                    <Box className='text-gray-400 dark:text-white'>
+                      Đặt món:{' '}
+                      <a href={`tel:${restaurant?.phone || '09180646181'}`} className='hover:underline'>
+                        {restaurant?.phone || '09180646181'}
+                      </a>
+                    </Box>
                   </Box>
                 </Box>
                 <Box className='flex items-start gap-3'>
@@ -82,7 +92,9 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                 <Box className='flex items-center gap-3'>
                   <IconTruck className='h-4 w-4 text-blue-400' />
                   <Box>
-                    <Box className='font-medium'>Giao hàng: 9:00 - 21:30</Box>
+                    <Box className='font-medium'>
+                      Giao hàng: {timeOpen().openTime || '10:00'} - {timeOpen().closeTime || '22:00'}
+                    </Box>
                     <Box className='text-gray-400 dark:text-white'>Hàng ngày</Box>
                   </Box>
                 </Box>

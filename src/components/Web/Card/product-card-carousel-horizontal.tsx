@@ -138,7 +138,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
       </Flex>
       {data?.discount ? (
         <Badge color='red' pos={'absolute'} top={10} left={8}>
-          -{formatPriceLocaleVi(data?.discount)}
+          Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(2) + '%' : '20%'}
         </Badge>
       ) : (
         ''

@@ -1,12 +1,12 @@
 'use client';
-import { Button, Checkbox, CheckIcon, Flex, Group, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
+import { Checkbox, CheckIcon, Flex, Group, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
 
 export const MaterialFilter = ({ materials }: any) => {
   const params = useSearchParams();
-  const [valueMaterials, setValueMaterials] = useState<string[]>([...params.getAll('nguyen-lieu')]);
+  const [valueMaterials, setValueMaterials] = useState<string[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -22,15 +22,14 @@ export const MaterialFilter = ({ materials }: any) => {
         </Text>
         {valueMaterials?.length > 0 && (
           <>
-            <Button
+            <Text
               size='sm'
               fw={700}
-              w={'max-content'}
               onClick={() => {
                 const s = new URLSearchParams(params);
                 if (valueMaterials?.length > 0) {
                   s.delete('nguyen-lieu');
-                  valueMaterials.map((item, index) => {
+                  valueMaterials.map(item => {
                     s.append('nguyen-lieu', item);
                   });
                 } else {
@@ -38,25 +37,13 @@ export const MaterialFilter = ({ materials }: any) => {
                 }
                 router.push(`${pathname}?${s.toString()}`);
               }}
-              variant='subtle'
+              pr={20}
+              classNames={{
+                root: 'm-0 cursor-pointer p-0 text-mainColor hover:text-subColor'
+              }}
             >
               Tìm kiếm
-            </Button>
-            <Button
-              size='sm'
-              fw={700}
-              w={'max-content'}
-              color='red'
-              onClick={() => {
-                const s = new URLSearchParams(params);
-                setValueMaterials([]);
-                s.delete('nguyen-lieu');
-                router.push(`${pathname}?${s.toString()}`);
-              }}
-              variant='subtle'
-            >
-              Xóa
-            </Button>
+            </Text>
           </>
         )}
       </Flex>

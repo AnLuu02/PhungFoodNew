@@ -1,7 +1,7 @@
 import { Button } from '@mantine/core';
 
 export type IBButton = {
-  title?: String;
+  label?: String;
   radius?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   fullWidth?: boolean;
@@ -16,7 +16,7 @@ export type IBButton = {
   rest?: any;
 };
 const BButton = ({
-  title = 'Mua hàng',
+  label = 'Mua hàng',
   radius = 'xl',
   type = 'button',
   size = 'xs',
@@ -51,7 +51,7 @@ const BButton = ({
             : 'bg-mainColor text-white hover:bg-subColor hover:text-black'
       } ${active ? 'bg-mainColor text-white' : ''} `}
     >
-      {title}
+      {label}
     </Button>
   );
 };

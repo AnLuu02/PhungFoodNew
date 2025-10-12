@@ -66,7 +66,7 @@ function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' 
         </Text>
 
         {links.map(({ name, url, label, icon: Icon }) => (
-          <Tooltip label={label}>
+          <Tooltip label={label} key={name}>
             <a key={name} href={url} target='_blank' rel='noopener noreferrer' title={name}>
               <Icon size={16} className='cursor-pointer transition-transform hover:scale-150 hover:text-mainColor' />
             </a>
