@@ -42,13 +42,13 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
     return (
       <Group gap={'xs'} align={'center'} justify='center'>
         <IconUserCircle size={20} fontWeight={'bold'} />
-        <Link href='/auth/register' className={`${responsive ? 'text-white' : 'text-black dark:text-white'}`}>
+        <Link href='/auth/register' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng kí
           </Text>
         </Link>
         <Text>/</Text>
-        <Link href='/auth/login' className={`${responsive ? 'text-white' : 'text-black dark:text-white'}`}>
+        <Link href='/auth/login' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng nhập
           </Text>
@@ -85,7 +85,7 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
             <IconChevronDown
               style={{ width: 12, height: 12 }}
               stroke={1.5}
-              className={`mr-4 text-gray-500 dark:text-white ${responsive && 'mr-0 hidden sm:block'}`}
+              className={`mr-4 text-gray-500 dark:text-dark-text ${responsive && 'mr-0 hidden sm:block'}`}
             />
           </Flex>
         </UnstyledButton>
@@ -112,7 +112,7 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
               </Box>
               <Stack gap={2}>
                 <Text fw={700}> {user?.user?.name}</Text>
-                <Text size='sm' fw={600} className='text-gray-600 dark:text-white'>
+                <Text size='sm' fw={600} className='text-gray-600 dark:text-dark-text'>
                   {user?.user?.role === 'CUSTOMER'
                     ? 'Người dùng'
                     : user?.user?.role === 'ADMIN'
@@ -120,8 +120,8 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
                       : 'Nhân viên'}
                 </Text>
                 <Group align='center' gap={5}>
-                  <IconMail className='m-0 h-4 w-4 p-0 text-gray-600 dark:text-white' />
-                  <Text size='sm' className='text-gray-600 dark:text-white'>
+                  <IconMail className='m-0 h-4 w-4 p-0 text-gray-600 dark:text-dark-text' />
+                  <Text size='sm' className='text-gray-600 dark:text-dark-text'>
                     {user?.user?.email}
                   </Text>
                 </Group>

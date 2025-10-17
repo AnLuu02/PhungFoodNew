@@ -45,7 +45,7 @@ export function DashboardContent({ userInfor, orders, vouchers }: { userInfor: a
         }
       }}
       classNames={{
-        tab: `!border-[#e5e5e5] hover:bg-mainColor/10 data-[active=true]:bg-mainColor data-[active=true]:text-white dark:!border-dark-dimmed dark:text-white`,
+        tab: `!border-[#e5e5e5] hover:bg-mainColor/10 data-[active=true]:bg-mainColor data-[active=true]:text-white dark:!border-dark-dimmed dark:text-dark-text`,
         list: 'border-b border-mainColor'
       }}
     >

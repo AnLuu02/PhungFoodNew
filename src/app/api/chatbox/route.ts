@@ -11,25 +11,25 @@ export async function POST(req: Request) {
   const { message } = await req.json();
   const restaurant = await api.Restaurant.getOneActive();
   const subPrompt = `
-      Đây là câu hỏi của người dùng: ${message}
+      Đây là câu hỏi của khách hàng: ${message}
      
       Dưới đây là các thuộc tính để lọc sản phầm:
           
       - s kiểu string là key để tìm kiếm. giá trị s phải là tên món ăn (ví dụ: s="cơm tắm sườn bì chả") hoặc s phải là tên 1 danh mục của món ăn (ví dụ: s="kem", s="cơm", s="món chính")
 
-      - discount kiểu boolean bằng true nếu trong câu hỏi người dùng có liên quan đến khuyến mãi
+      - discount kiểu boolean bằng true nếu trong câu hỏi khách hàng có liên quan đến khuyến mãi
 
-      - bestSaler kiểu boolean bằng true nếu trong câu hỏi người dùng có liên quan đến sản phẩm bán chạy
+      - bestSaler kiểu boolean bằng true nếu trong câu hỏi khách hàng có liên quan đến sản phẩm bán chạy
       
-      - newProduct kiểu boolean bằng true nếu trong câu hỏi người dùng có liên quan đến sản phẩm mới
+      - newProduct kiểu boolean bằng true nếu trong câu hỏi khách hàng có liên quan đến sản phẩm mới
 
-      - hotProduct kiểu boolean bằng true nếu trong câu hỏi người dùng có liên quan đến sản phẩm hot
+      - hotProduct kiểu boolean bằng true nếu trong câu hỏi khách hàng có liên quan đến sản phẩm hot
 
-      - price kiểu object bằng {min kiểu number mặc định bằng 0, max kiểu number mặc định bẳng 0} nếu trong câu hỏi người dùng có liên quan đến giá (Ví dụ 10k, 10 ngàn, 10 nghìn, 10000 định dạng về kiểu number là 10000)
+      - price kiểu object bằng {min kiểu number mặc định bằng 0, max kiểu number mặc định bẳng 0} nếu trong câu hỏi khách hàng có liên quan đến giá (Ví dụ 10k, 10 ngàn, 10 nghìn, 10000 định dạng về kiểu number là 10000)
       
-      - sort kiểu string array nếu trong câu hỏi người dùng có liên quan đến sắp xếp. Sort thường có các giá trị sau name-acs, name-desc, price-asc, price-desc, price-asc, price-desc, old, new, best-seller. Ví dụ ["price-asc", "name-desc"]
+      - sort kiểu string array nếu trong câu hỏi khách hàng có liên quan đến sắp xếp. Sort thường có các giá trị sau name-acs, name-desc, price-asc, price-desc, price-asc, price-desc, old, new, best-seller. Ví dụ ["price-asc", "name-desc"]
       
-      - nguyen-lieu kiểu string array nếu trong câu hỏi người dùng có liên quan đến nguyên liệu. Ví dụ ["thịt", "rau", "trứng", "cá", "tôm", "mực", "hải sản", "thịt gà", "thịt bò", "thịt heo", "nguyên liệu tươi sống"]
+      - nguyen-lieu kiểu string array nếu trong câu hỏi khách hàng có liên quan đến nguyên liệu. Ví dụ ["thịt", "rau", "trứng", "cá", "tôm", "mực", "hải sản", "thịt gà", "thịt bò", "thịt heo", "nguyên liệu tươi sống"]
 
       CHỈ CẦN TRẢ VỀ JSON TRONG JS với các thuộc tính có giá trị khác null, không cần nói gì thêm. Các thuộc tính không bắt buộc có thể không có trong JSON. Nếu không có thuộc tính nào thì trả về JSON rỗng {}. Không cần nói gì thêm.
     `;
@@ -88,7 +88,11 @@ export async function POST(req: Request) {
         `
     )
     .join('');
-
+  const timeOpen = () => {
+    const timeIndex = new Date().getDay();
+    const timeOpens = restaurant?.openingHours ?? [];
+    return timeOpens[timeIndex];
+  };
   const restaurantHTML = `
         <div style="margin: 10px 0; max-width: 400px; padding: 16px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
         <h3 style="margin: 0; padding-bottom: 8px; color: #333; border-bottom: 2px solid #ddd;">An Luu</h3>
@@ -100,7 +104,7 @@ export async function POST(req: Request) {
              ${restaurant?.email}
           </a>
         </p>
-        <p style="margin: 8px 0; color: #555;"><strong>Thời gian mở cửa:</strong> ${'Đang cập nhật'} - ${'Đang cập nhật'}</p>
+        <p style="margin: 8px 0; color: #555;"><strong>Thời gian mở cửa:</strong> ${timeOpen()?.openTime || 'Đang cập nhật'} - ${timeOpen()?.closeTime || 'Đang cập nhật'}</p>
         ${
           restaurant && restaurant?.socials?.length > 0
             ? restaurant?.socials
@@ -122,7 +126,7 @@ export async function POST(req: Request) {
     
     Hãy trả lời một cách thân thiện, phù hợp như một nhân viên nhà hang đang hỗ trợ khách hàng.
     
-    Nếu kết quả trả về có nhiều hơn 3 sản phẩm thì trả về 3 sản phẩm dạng HTML và thêm 1 thẻ HTML và CSS chiếm trọn hàng, căn trái phải trên dưới phù hợp có nội dung "Xem thêm". Đây là các đường dẫn tương ứng với câu hỏi của người dùng:
+    Nếu kết quả trả về có nhiều hơn 3 sản phẩm thì trả về 3 sản phẩm dạng HTML và thêm 1 thẻ HTML và CSS chiếm trọn hàng, căn trái phải trên dưới phù hợp có nội dung "Xem thêm". Đây là các đường dẫn tương ứng với câu hỏi của khách hàng:
     (
        thuc-don
        thuc-don?loai=san-pham-ban-chay
@@ -141,7 +145,7 @@ export async function POST(req: Request) {
     Đây là thông tin cửa hàng (dưới dạng HTML):
     ${restaurantHTML}
     
-    Câu hỏi của khách: ${message}.
+    Câu hỏi của khách hàng: ${message}.
     
     Nếu câu hỏi của khách có thông tin liên quan đến cửa hàng, trả về thông tin phù hợp với câu hỏi của khách hàng về cửa hàng với định dạng thân thiện, hợp lí. Hãy hiển thị dưới dạng HTML. 
     

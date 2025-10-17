@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Flex, Rating, Text, Textarea } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -86,7 +86,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
         fullWidth
         loading={isSubmitting}
         disabled={isSubmitting || watch('comment') === '' || watch('rating') === 0 || !isDirty || !user?.user?.id}
-        label='Đánh giá'
+        children='Đánh giá'
       />
     </form>
   );

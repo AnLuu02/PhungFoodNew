@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import RatingStatistics from '~/app/(web)/san-pham/[slug]/components/RatingStatistics';
 import { ModalProps } from '~/types/modal';
 import Comments from '../Comments/Comments';
-import ProductCardCarouselVertical from '../Web/Card/product-card-carousel-vertical';
+import ProductCardCarouselVertical from '../Web/Card/CardProductCarouselVertical';
 
 function ModalProductComments({ type, opened, onClose, data }: ModalProps<any>) {
   let ratingCountsDefault = [0, 0, 0, 0, 0];

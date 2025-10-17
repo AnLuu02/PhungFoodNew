@@ -6,11 +6,11 @@ import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import PeriodControl from '../../components/PeriodControl';
-const OtpModal = dynamic(() => import('../../components/Modal/ModalOtp'), {
+const OtpModal = dynamic(() => import('../../../../../components/Modals/ModalOtp'), {
   ssr: false
 });
 
@@ -98,7 +98,7 @@ export default function ForgotPassword() {
                     type='submit'
                     fullWidth
                     size='md'
-                    label={'Gửi mã'}
+                    children={'Gửi mã'}
                   />
                 </GridCol>
               </Grid>

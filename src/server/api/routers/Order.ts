@@ -155,7 +155,7 @@ export const orderRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
-    .use(requirePermission('create:order'))
+    // .use(requirePermission('create:order'))
     .input(
       z.object({
         originalTotal: z.number().default(0),
@@ -290,25 +290,41 @@ export const orderRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        s: z.string(),
+        period: z.number().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const order = await ctx.db.order.findMany({
-        where: {
-          OR: [
-            {
-              id: input.s?.trim()
-            },
-            {
-              user: {
-                email: {
-                  equals: input.s?.trim()
+      const { s, period } = input;
+      const searchQuery = s?.trim();
+      const where = {
+        AND: [
+          period
+            ? {
+                createdAt: {
+                  gte: new Date(new Date().setDate(new Date().getDate() - period)),
+                  lte: new Date()
                 }
               }
-            }
-          ]
-        },
+            : undefined,
+          {
+            OR: [
+              {
+                id: searchQuery
+              },
+              {
+                user: {
+                  email: {
+                    equals: searchQuery
+                  }
+                }
+              }
+            ]
+          }
+        ].filter(Boolean)
+      };
+      const order = await ctx.db.order.findMany({
+        where: where as any,
         include: {
           orderItems: {
             include: {

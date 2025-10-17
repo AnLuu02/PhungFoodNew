@@ -3,7 +3,7 @@ import { ActionIcon, Box, Card, Divider, Flex, Group, Paper, Select, SimpleGrid,
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { UserRole } from '~/constants';
 import { api } from '~/trpc/react';
 import { CreateManyPermissionButton, CreateManyRoleButton, CreatePermissionButton, CreateRoleButton } from './Button';

@@ -71,26 +71,6 @@ export const MenuCategoryFilter = ({ categories }: any) => {
                   </Text>
                 )}
               </Box>
-
-              {/* <Stack gap='xs'>
-                {category.subCategory.map((item: any) => (
-                  <Link
-                    key={item?.id}
-                    className='h-full w-full'
-                    href={`/thuc-don?danh-muc=${category.tag}&loai-san-pham=${item.tag}`}
-                  >
-                    <Button
-                      fullWidth
-                      py={'xs'}
-                      key={item?.id}
-                      variant='subtle'
-                      className={`bg-mainColor transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black ${item.tag === params.get('loai-san-pham') ? 'bg-subColor text-black' : 'text-white'} `}
-                    >
-                      {item?.name} ({item?.product?.length || 0})
-                    </Button>
-                  </Link>
-                ))}
-              </Stack> */}
             </Accordion.Panel>
           </Accordion.Item>
         ))}

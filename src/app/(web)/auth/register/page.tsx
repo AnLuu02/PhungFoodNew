@@ -107,7 +107,7 @@ export default function Page() {
           <Card.Section p='md'>
             <Grid w={'100%'}>
               <GridCol span={12} className='flex justify-center'>
-                <Title className='font-quicksand text-black dark:text-white' order={2} size={28}>
+                <Title className='font-quicksand text-black dark:text-dark-text' order={2} size={28}>
                   ĐĂNG KÍ
                 </Title>
               </GridCol>
@@ -226,7 +226,10 @@ export default function Page() {
 
               <GridCol span={12} className='flex justify-end'>
                 <Link href={'/auth/login'} className='text-white'>
-                  <Text size='sm' className='cursor-pointer text-black underline hover:text-red-500 dark:text-white'>
+                  <Text
+                    size='sm'
+                    className='cursor-pointer text-black underline hover:text-red-500 dark:text-dark-text'
+                  >
                     Bạn đã có tài khoản?
                   </Text>
                 </Link>

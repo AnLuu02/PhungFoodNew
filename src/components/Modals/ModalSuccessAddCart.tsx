@@ -116,15 +116,15 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
             <ButtonCheckout
               stylesButtonCheckout={{
                 fullWidth: true,
-                title: 'Thanh toán ngay',
-                radius: 'sm',
+                children: 'Thanh toán ngay',
+                radius: 'md',
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
               data={dataCheckout}
               finalTotal={data?.price || 0}
               originalTotal={data?.price || 0}
               discountAmount={0}
-              onClick={onClose}
+              onClick={() => onClose()}
             />
           </Group>
         </Stack>

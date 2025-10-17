@@ -139,7 +139,7 @@ export function UserStatistics() {
                   Tiến độ lên hạng
                   <i> {getInfoLevelUser(levelInfo.nextLevel).viName}</i>
                 </Text>
-                <span className='font-medium text-gray-900 dark:text-white'>
+                <span className='font-medium text-gray-900 dark:text-dark-text'>
                   {userDb?.pointUser || 0 / levelInfo.maxPoint} điểm
                 </span>
               </Box>

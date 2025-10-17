@@ -4,7 +4,7 @@ import { Card, Center, Grid, GridCol, PasswordInput, TextInput, Title } from '@m
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import PeriodControl from '../components/PeriodControl';
@@ -112,7 +112,7 @@ export default function ResetPassword({
                   type='submit'
                   fullWidth
                   size='md'
-                  label={'Xác nhận'}
+                  children={'Xác nhận'}
                   disabled={!confirmPassword || password !== confirmPassword}
                 />
               </GridCol>

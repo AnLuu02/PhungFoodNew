@@ -510,7 +510,7 @@ export const userRouter = createTRPCRouter({
         data: { resetToken: otp, resetTokenExpiry: otpExpiry }
       });
 
-      const emailContent = getOtpEmail(otp);
+      const emailContent = getOtpEmail(otp, user, input.timeExpiredMinutes || 3);
       await sendEmail(input.email, 'Mã OTP đặt lại mật khẩu', emailContent);
 
       return { code: 'OK', message: 'Mã OTP đã được gửi qua email!', data: user };

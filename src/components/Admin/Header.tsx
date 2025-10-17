@@ -5,8 +5,8 @@ import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import ButtonControlModeTheme from '../ButtonControlModeTheme';
-import { GlobalSearch } from '../Search/global-search';
+import ButtonControlModeTheme from '../Button/ButtonControlModeTheme';
+import { GlobalSearch } from '../Search/GlobalSearch';
 
 export default function Header() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
@@ -69,7 +69,7 @@ export default function Header() {
                 <IconChevronDown
                   style={{ width: 12, height: 12 }}
                   stroke={1.5}
-                  className='hidden text-gray-500 dark:text-white sm:block'
+                  className='hidden text-gray-500 dark:text-dark-text sm:block'
                 />
               </Group>
             </UnstyledButton>

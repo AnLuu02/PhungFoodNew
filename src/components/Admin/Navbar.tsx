@@ -19,8 +19,8 @@ import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { breakpoints } from '~/constants';
-import ButtonControlModeTheme from '../ButtonControlModeTheme';
-import { GlobalSearch } from '../Search/global-search';
+import ButtonControlModeTheme from '../Button/ButtonControlModeTheme';
+import { GlobalSearch } from '../Search/GlobalSearch';
 
 const navItems = [
   { label: 'Tổng quan', icon: IconLayoutDashboard, href: '/admin' },

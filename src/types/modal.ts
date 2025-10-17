@@ -14,6 +14,4 @@ export type ModalContextType = {
   modalType: ModalType;
   modalContent: ReactNode | null;
   modalData: any;
-  openModal: (type: ModalType, content?: ReactNode, data?: any) => void;
-  closeModal: () => void;
 };

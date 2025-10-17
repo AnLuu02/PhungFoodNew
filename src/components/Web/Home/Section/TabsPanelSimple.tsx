@@ -87,14 +87,13 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                 radius={'md'}
                 padding='lg'
                 component='a'
-                shadow='sm'
                 withBorder
                 h={200}
                 href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
-                className='hover:border-10 cursor-pointer bg-gray-100 hover:border-mainColor hover:shadow-lg dark:bg-dark-card dark:hover:border-mainColor/50 dark:hover:shadow-lg'
+                className='hover:border-10 cursor-pointer bg-gray-100 duration-150 hover:border-mainColor hover:shadow-lg dark:bg-dark-card dark:hover:border-mainColor/50 dark:hover:shadow-lg'
               >
                 <CardSection>
-                  <Box style={{ position: 'relative', width: '100%', height: '120px' }}>
+                  <Box w={'100%'} h={120} pos={'relative'}>
                     <Image
                       style={{ objectFit: 'cover' }}
                       loading='lazy'

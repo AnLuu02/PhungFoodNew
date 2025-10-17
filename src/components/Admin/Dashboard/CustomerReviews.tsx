@@ -10,7 +10,7 @@ export default function CustomerReviews({ rating, totalReviews }: CustomerReview
 
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder className='h-full'>
-      <Title order={4} mb='md' className='font-quicksand text-gray-800 dark:text-white'>
+      <Title order={4} mb='md' className='font-quicksand text-gray-800 dark:text-dark-text'>
         Đánh giá khách hàng
       </Title>
 
@@ -26,7 +26,7 @@ export default function CustomerReviews({ rating, totalReviews }: CustomerReview
           ]}
           label={
             <Box className='text-center'>
-              <Text size='xl' fw={700} className='text-gray-800 dark:text-white'>
+              <Text size='xl' fw={700} className='text-gray-800 dark:text-dark-text'>
                 {displayRating.toFixed(1)}%
               </Text>
               <Text size='sm' c='dimmed'>
@@ -37,7 +37,7 @@ export default function CustomerReviews({ rating, totalReviews }: CustomerReview
         />
       </Center>
 
-      <Text ta='center' mt='sm' size='sm' c='dimmed' className='text-gray-600 dark:text-white'>
+      <Text ta='center' mt='sm' size='sm' c='dimmed' className='text-gray-600 dark:text-dark-text'>
         Thống kê theo tỉ lệ đánh giá từ 4 sao trở lên.
         <br />
         Dựa trên {totalReviews} đánh giá

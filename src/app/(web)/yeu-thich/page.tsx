@@ -4,7 +4,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '~/components/Web/Card/product-card-carousel-vertical';
+import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { api } from '~/trpc/react';
 
 export default function FavouritePage() {

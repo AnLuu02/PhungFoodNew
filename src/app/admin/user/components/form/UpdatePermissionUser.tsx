@@ -171,7 +171,7 @@ export default function UpdatePermissionUser({
               </Group>
               <Group align='center' gap={'md'}>
                 <TextInput
-                  leftSection={<IconSearch size={16} className='text-gray-300 dark:text-white' />}
+                  leftSection={<IconSearch size={16} className='text-gray-300 dark:text-dark-text' />}
                   size='sm'
                   radius={'md'}
                   value={searchValue}
@@ -190,7 +190,7 @@ export default function UpdatePermissionUser({
                     { value: 'hasPermission', label: 'Quyền hiện có' }
                   ]}
                   value={filter}
-                  leftSection={<IconFilter size={16} className='text-gray-300 dark:text-white' />}
+                  leftSection={<IconFilter size={16} className='text-gray-300 dark:text-dark-text' />}
                   placeholder='Lọc theo quyền'
                   onChange={value => setFilter(value as any)}
                 />

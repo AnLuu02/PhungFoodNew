@@ -39,7 +39,7 @@ export const CartTable = ({ updateQuantity }: any) => {
                 <Stack gap='xs' align='start' flex={1}>
                   <Tooltip label={item.name}>
                     <Text size='md' fw={700} lineClamp={1}>
-                      {item.name + ' asa sasas asasasa sasasedqw qweeqweqweq ưeqweqwe'}
+                      {item.name || 'Đang cập nhật'}
                     </Text>
                   </Tooltip>
                   <Group>

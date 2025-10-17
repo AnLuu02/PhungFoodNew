@@ -45,7 +45,7 @@ export default function RelatedProducts({ data }: any) {
                       lineClamp={1}
                       size='md'
                       fw={700}
-                      className='cursor-pointer text-black hover:text-mainColor dark:text-white'
+                      className='cursor-pointer text-black hover:text-mainColor dark:text-dark-text'
                     >
                       {product?.name || 'Cá thu'}
                     </Text>

@@ -26,7 +26,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { TOP_POSITION_STICKY } from '~/constants';
-import { useModal } from '~/contexts/ModalContext';
+import { useModalActions } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getStatusInfo } from '~/lib/func-handler/status-order';
@@ -36,11 +36,11 @@ import { api } from '~/trpc/react';
 const InvoiceToPrint = dynamic(() => import('~/components/InvoceToPrint'), {
   ssr: false
 });
-const SearchLocal = dynamic(() => import('~/components/Search/search-local'), {
+const SearchLocal = dynamic(() => import('~/components/Search/SearchLocal'), {
   ssr: false
 });
 export default function MyOrderPageClient({ data }: any) {
-  const { openModal } = useModal();
+  const { openModal } = useModalActions();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [valueSearch, setValueSearch] = useState<string | null>(null);

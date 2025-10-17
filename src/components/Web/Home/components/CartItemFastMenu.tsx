@@ -32,7 +32,7 @@ export default function CartItemFastMenu({ image, name, price, quantity, onQuant
         <Group justify='space-between' wrap='nowrap'>
           <Tooltip label={name}>
             <Text size='sm' fw={700} lineClamp={1}>
-              {name}
+              {name || 'Đang cập nhật'}
             </Text>
           </Tooltip>
           <ActionIcon variant='subtle' color='red' onClick={onDelete} className='hover:bg-red-50'>
@@ -54,6 +54,7 @@ export default function CartItemFastMenu({ image, name, price, quantity, onQuant
             max={99}
             className='w-[100px]'
             rightSection={null}
+            size='xs'
             styles={{ input: { textAlign: 'center' } }}
           />
           <Text className='ml-auto' fw={700} size='sm'>

@@ -6,12 +6,12 @@ import { IconCircleDashedCheck, IconLock, IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { NotifyError } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import ResetPasswordSection from '../../components/ResetPasswordSection';
 import VerifySection from '../../components/VerifySection';
-const OtpModal = dynamic(() => import('../../components/Modal/ModalOtp'), {
+const OtpModal = dynamic(() => import('../../../../../components/Modals/ModalOtp'), {
   ssr: false
 });
 
@@ -150,7 +150,7 @@ export default function ForgotPassword() {
                       <Divider />
                     </GridCol>
                     <GridCol span={12}>
-                      <BButton radius='md' loading={loading} type='submit' fullWidth size='md' label={'Gửi mã'} />
+                      <BButton radius='md' loading={loading} type='submit' fullWidth size='md' children={'Gửi mã'} />
                     </GridCol>
                   </>
                 )}

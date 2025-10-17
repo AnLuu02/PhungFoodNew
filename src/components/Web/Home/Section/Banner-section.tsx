@@ -11,39 +11,19 @@ import { LocalImageType } from '~/lib/zod/EnumType';
 
 export default function BannerSection({ banner }: any) {
   const autoplay = useMemo(() => Autoplay({ delay: 5000 }), []);
-  const gallery = banner?.images?.filter((image: any) => image?.type === LocalImageType.GALLERY) || [];
-  const banners = banner?.images?.filter((image: any) => image?.type === LocalImageType.BANNER) || [];
-
-  const slides =
-    gallery.length > 0 ? (
-      gallery.map((slide: any) => (
-        <Carousel.Slide key={slide.id} className='rounded-md'>
-          <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
-            <Image
-              style={{ objectFit: 'cover' }}
-              src={slide.url || '/images/jpg/empty-300x240.jpg'}
-              alt={slide.altText}
-              fill
-              className='rounded-md'
-            />
-          </Box>
-        </Carousel.Slide>
-      ))
-    ) : (
-      <Carousel.Slide className='rounded-md'>
-        <Link href={'/thuc-don'}>
-          <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
-            <Image
-              style={{ objectFit: 'cover' }}
-              src={'/images/jpg/empty-300x240.jpg'}
-              alt={'empty'}
-              fill
-              className='rounded-md'
-            />
-          </Box>
-        </Link>
-      </Carousel.Slide>
+  const [gallery, banners] = useMemo(() => {
+    return banner?.images?.reduce(
+      (acc: any, image: any) => {
+        if (image?.type === LocalImageType.GALLERY) {
+          acc[0].push(image);
+        } else if (image?.type === LocalImageType.BANNER) {
+          acc[1].push(image);
+        }
+        return acc;
+      },
+      [[], []]
     );
+  }, [banner]);
 
   return (
     <Box>
@@ -64,10 +44,23 @@ export default function BannerSection({ banner }: any) {
               indicator: 'mx-[6px] h-[8px] w-[20px] rounded-full bg-mainColor transition'
             }}
           >
-            {slides}
+            {(gallery?.length > 0 ? gallery : [{ url: '/images/jpg/empty-300x240.jpg', altText: 'empty' }])?.map(
+              (slide: any) => (
+                <Carousel.Slide key={slide.id} className='rounded-md'>
+                  <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
+                    <Image
+                      style={{ objectFit: 'cover' }}
+                      src={slide.url || '/images/jpg/empty-300x240.jpg'}
+                      alt={slide.altText}
+                      fill
+                      className='rounded-md'
+                    />
+                  </Box>
+                </Carousel.Slide>
+              )
+            )}
           </Carousel>
         </Box>
-
         <Flex
           direction={{ base: 'column', sm: 'row', md: 'row', lg: 'column' }}
           align='center'
@@ -76,26 +69,24 @@ export default function BannerSection({ banner }: any) {
           gap={'md'}
           className='hidden lg:flex'
         >
-          <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
-            <Link href={'/thuc-don'}>
-              <Image
-                style={{ objectFit: 'cover' }}
-                src={banners?.[0]?.url || '/images/jpg/empty-300x240.jpg'}
-                alt={''}
-                fill
-              />
-            </Link>
-          </Paper>
-          <Paper w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
-            <Link href={'/thuc-don'}>
-              <Image
-                style={{ objectFit: 'cover' }}
-                src={banners?.[1]?.url || '/images/jpg/empty-300x240.jpg'}
-                alt={''}
-                fill
-              />
-            </Link>
-          </Paper>
+          {[
+            ...banners,
+            { url: '/images/jpg/empty-300x240.jpg', altText: 'empty_banner1' },
+            { url: '/images/jpg/empty-300x240.jpg', altText: 'empty_banner2' }
+          ]
+            ?.slice(0, 2)
+            ?.map((banner: any, index: number) => (
+              <Paper key={index} w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
+                <Link href={'/thuc-don'}>
+                  <Image
+                    style={{ objectFit: 'cover' }}
+                    src={banner?.url || '/images/jpg/empty-300x240.jpg'}
+                    alt={''}
+                    fill
+                  />
+                </Link>
+              </Paper>
+            ))}
         </Flex>
       </Flex>
 
@@ -112,7 +103,7 @@ export default function BannerSection({ banner }: any) {
             <Link href={service.href || ''} key={index}>
               <Paper
                 key={index}
-                className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-white'
+                className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-dark-text'
                 radius={'md'}
                 p={'sm'}
                 h={'100%'}

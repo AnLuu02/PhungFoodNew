@@ -145,7 +145,7 @@ export const voucherRouter = createTRPCRouter({
   getVoucherForUser: publicProcedure
     .input(
       z.object({
-        userId: z.string()
+        userId: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {

@@ -89,8 +89,8 @@ export const getStatusColor = (status: string) => {
     case 'EXPIRED':
       return 'bg-red-100 text-red-800';
     case 'INACTIVE':
-      return 'bg-gray-200 text-gray-800 dark:text-white';
+      return 'bg-gray-200 text-gray-800 dark:text-dark-text';
     default:
-      return 'bg-gray-200 text-gray-800 dark:text-white';
+      return 'bg-gray-200 text-gray-800 dark:text-dark-text';
   }
 };

@@ -4,9 +4,9 @@ import { Box, Card, Flex, Grid, GridCol, Tabs, TabsList, TabsPanel, TabsTab, Tex
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '../../Card/product-card-carousel-vertical';
+import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
 
 type ITypeProduct = {
   title?: string;
@@ -53,7 +53,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
             >
               <Title
                 order={1}
-                className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-white'
+                className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-dark-text'
               >
                 {title || 'Thịt nhập khẩu'}
               </Title>
@@ -153,7 +153,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                       </Carousel>
                       <Flex align={'center'} justify={'center'} mt={30}>
                         <Link href={`/thuc-don?loai=${tab}`}>
-                          <BButton label={'Xem tất cả'} variant='outline' size='sm' />
+                          <BButton children={'Xem tất cả'} variant='outline' size='sm' />
                         </Link>
                       </Flex>
                     </Flex>

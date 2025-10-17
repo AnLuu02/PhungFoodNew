@@ -3,7 +3,7 @@
 import { Alert, Button, Divider, Group, PinInput, Stack, Text } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { hashPassword } from '~/lib/func-handler/hashPassword';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
@@ -87,7 +87,7 @@ export default function VerifySection({
         onClick={handleSubmit}
         disabled={timeLeft === 0}
         loading={loading?.type === 'submit' && loading.value}
-        label={' Xác thục'}
+        children={' Xác thục'}
       />
       <Group justify='center' gap={3} align='center'>
         <Text size='sm'>Không nhận được mã OTP?</Text>

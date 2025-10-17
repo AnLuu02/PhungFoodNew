@@ -5,7 +5,7 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 
 const LayoutGridCarouselOnly = ({
   data,
@@ -64,7 +64,7 @@ const LayoutGridCarouselOnly = ({
         >
           <Title
             order={2}
-            className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-white'
+            className='cursor-pointer font-quicksand font-bold text-black hover:text-mainColor dark:text-dark-text'
           >
             {title || 'Sản phẩm mới'}
           </Title>
@@ -132,7 +132,7 @@ const LayoutGridCarouselOnly = ({
             {navigation && (
               <Flex align={'center'} justify={'center'} my={30}>
                 <Link href={navigation.href || `/thuc-don?loai=san-pham-moi`}>
-                  <BButton label={navigation.label || 'Xem tất cả'} variant='outline' size='sm' />
+                  <BButton children={navigation.label || 'Xem tất cả'} variant='outline' size='sm' />
                 </Link>
               </Flex>
             )}

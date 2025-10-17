@@ -246,7 +246,7 @@ export default function NotificationDialog({ data, user }: any) {
                             onClick={() => markAsRead(notification.id)}
                             pos={'relative'}
                             p={'md'}
-                            className='hover:bg-[rgba(0,0,0,0.2)] dark:bg-dark-card dark:text-white dark:hover:bg-[rgba(255,255,255,0.2)]'
+                            className='hover:bg-[rgba(0,0,0,0.2)] dark:bg-dark-card dark:text-dark-text dark:hover:bg-[rgba(255,255,255,0.2)]'
                           >
                             <Group align='flex-start' gap='md'>
                               <Checkbox

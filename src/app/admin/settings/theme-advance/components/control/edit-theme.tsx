@@ -64,7 +64,7 @@ export const EditTheme = ({
           body: 'max-h-[90vh] overflow-y-auto'
         }}
       >
-        <Text size='sm' className='mb-4 text-gray-500 dark:text-white'>
+        <Text size='sm' className='mb-4 text-gray-500 dark:text-dark-text'>
           Sửa đổi cài đặt mẫu và cấu hình chủ đề
         </Text>
 

@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
 import CardVoucher from './card-voucher';
 import { UpdateVoucherModal } from './Modal/UpdateVoucherModal';

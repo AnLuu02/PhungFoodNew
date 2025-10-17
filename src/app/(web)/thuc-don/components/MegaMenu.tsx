@@ -2,6 +2,7 @@
 
 import {
   Box,
+  Card,
   Center,
   Divider,
   Grid,
@@ -11,13 +12,15 @@ import {
   Stack,
   Tabs,
   Text,
-  Title
+  Title,
+  Tooltip
 } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
 
@@ -35,7 +38,7 @@ export default function MegaMenu({ categories }: any) {
       value={hoveredTab}
       onChange={setHoveredTab}
       classNames={{
-        tab: 'w-full justify-start rounded-md p-3 data-[active=true]:bg-blue-50 data-[active=true]:text-blue-600 dark:data-[active=true]:bg-dark-card dark:data-[active=true]:text-white'
+        tab: 'data-[active=true]:text-maincolor w-full justify-start rounded-md p-3 data-[active=true]:bg-mainColor/10 dark:data-[active=true]:bg-dark-card dark:data-[active=true]:text-white'
       }}
     >
       <Box h={'70vh'} className='flex bg-gray-100 dark:bg-dark-background'>
@@ -43,9 +46,9 @@ export default function MegaMenu({ categories }: any) {
           <Box className='mb-5'>
             <Title
               order={1}
-              className='flex items-center gap-2 font-quicksand text-xl font-bold text-blue-600 dark:text-white'
+              className='flex items-center gap-2 font-quicksand text-xl font-bold text-mainColor dark:text-dark-text'
             >
-              <Box className='flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:text-white'>
+              <Box className='flex h-10 w-10 items-center justify-center rounded-full bg-mainColor/10 text-mainColor dark:text-dark-text'>
                 <Box className='text-2xl'>🍕</Box>
               </Box>
               Danh mục nổi bât
@@ -71,7 +74,7 @@ export default function MegaMenu({ categories }: any) {
                     }
                   >
                     <Link key={item.title} href={`/thuc-don?danh-muc=${item.tag}`}>
-                      <Text size='md' className='text-gray-700 dark:text-white' fw={600}>
+                      <Text size='md' className='text-gray-700 dark:text-dark-text' fw={600}>
                         {item.name}
                       </Text>
                     </Link>
@@ -92,22 +95,30 @@ export default function MegaMenu({ categories }: any) {
                         <Link
                           key={category.id}
                           href={`/thuc-don?danh-muc=${item.tag}&loai-san-pham=${category.tag}`}
-                          className='flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:shadow-md dark:bg-dark-card'
+                          className='dark:hover:shadow-md/80 flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:scale-105 hover:shadow-md dark:bg-dark-card'
                         >
-                          <Image
-                            loading='lazy'
-                            src={category.image?.url}
-                            alt={category.name}
-                            width={60}
-                            height={60}
-                            style={{ objectFit: 'cover' }}
-                            className='h-16 w-16'
-                          />
+                          <Card
+                            radius={'lg'}
+                            withBorder
+                            w={60}
+                            h={60}
+                            pos={'relative'}
+                            className='flex items-center justify-center shadow-none'
+                          >
+                            <Image
+                              loading='lazy'
+                              src={category.image?.url || '/images/png/momo.png'}
+                              alt={category.name}
+                              width={50}
+                              height={50}
+                              style={{ borderRadius: 8, objectFit: 'cover' }}
+                            />
+                          </Card>
                           <Stack gap={2}>
-                            <Text size='sm' fw={700} className='text-gray-800 dark:text-white'>
+                            <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
                               {category.name}
                             </Text>
-                            <Text size='xs' className='flex items-center text-blue-600 dark:text-white'>
+                            <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
                               Số lượng: {category.product.length || 0}
                             </Text>
                           </Stack>
@@ -123,7 +134,7 @@ export default function MegaMenu({ categories }: any) {
                       </Title>
                       <Link
                         href='/thuc-don?loai=san-pham-ban-chay'
-                        className='flex items-center text-blue-600 hover:underline'
+                        className='flex items-center text-mainColor hover:underline'
                       >
                         <Text size='sm' fw={700}>
                           <Center>
@@ -143,7 +154,7 @@ export default function MegaMenu({ categories }: any) {
                                   withBorder
                                   w={'100%'}
                                   h={120}
-                                  radius={'md'}
+                                  radius={'lg'}
                                   pos={'relative'}
                                   className='overflow-hidden border border-transparent p-1 transition-all hover:border-red-500'
                                 >
@@ -158,9 +169,16 @@ export default function MegaMenu({ categories }: any) {
                                     style={{ objectFit: 'cover' }}
                                   />
                                 </Paper>
-                                <Text size='sm' className='line-clamp-2 text-gray-800 dark:text-white'>
-                                  {product.description}
-                                </Text>
+                                <Stack gap={2} ml={4}>
+                                  <Tooltip label={product.name}>
+                                    <Text fw={700} size='sm' lineClamp={1}>
+                                      {product.name}
+                                    </Text>
+                                  </Tooltip>
+                                  <Text fw={700} size='sm' className='text-mainColor'>
+                                    {formatPriceLocaleVi(product?.price || 0)}
+                                  </Text>
+                                </Stack>
                               </Stack>
                             </Link>
                           </GridCol>

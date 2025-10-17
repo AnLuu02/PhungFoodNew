@@ -19,7 +19,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
       align={'center'}
       justify={'space-between'}
       py={'md'}
-      className='bg-gray-100 text-black dark:bg-dark-card dark:text-white'
+      className='bg-gray-100 text-black dark:bg-dark-card dark:text-dark-text'
     >
       <BreadcrumbsBase />
     </Flex>

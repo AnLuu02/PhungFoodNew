@@ -210,7 +210,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
 
           <Box className='mt-4 space-y-3'>
             <Box className='flex items-center justify-between text-sm'>
-              <span className='text-gray-600 dark:text-white'>
+              <span className='text-gray-600 dark:text-dark-text'>
                 Tiến độ lên hạng<b> {getInfoLevelUser(levelInfo.nextLevel).viName}</b>
               </span>
               <span className='font-medium text-gray-900'>{userInfor?.pointUser || 0 / levelInfo.maxPoint} điểm</span>

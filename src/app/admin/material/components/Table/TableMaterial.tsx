@@ -19,7 +19,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { categoriesMaterial } from '~/constants';
 import { formatDateViVN } from '~/lib/func-handler/Format';
 import { api } from '~/trpc/react';

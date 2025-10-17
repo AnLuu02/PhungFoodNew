@@ -2,7 +2,7 @@
 
 import { Button, Center, Text } from '@mantine/core';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -14,7 +14,8 @@ export default function Empty({
   content = 'Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.',
   url = '/thuc-don',
   size = 'md',
-  hasButton = true
+  hasButton = true,
+  onClick
 }: {
   noLogo?: boolean;
   logoUrl?: string;
@@ -23,9 +24,10 @@ export default function Empty({
   url?: string;
   size?: Size;
   hasButton?: boolean;
+  onClick?: () => void;
 }) {
-  const [loadingEmptyCart, setLoadingEmptyCart] = useState(false);
-
+  const [loadingEmpty, setLoadingEmpty] = useState(false);
+  const router = useRouter();
   const sizeImage = {
     xs: 100,
     sm: 150,
@@ -52,17 +54,23 @@ export default function Empty({
       </Text>
       <Text size={size}>{content}</Text>
       {hasButton && (
-        <Link href={url} className='text-center text-white'>
-          <Button
-            color='red'
-            size={size}
-            className='mt-4 text-center'
-            loading={loadingEmptyCart}
-            onClick={() => setLoadingEmptyCart(true)}
-          >
-            Quay lại
-          </Button>
-        </Link>
+        <Button
+          color='red'
+          size={size}
+          className='mt-4 text-center'
+          loading={loadingEmpty}
+          onClick={() => {
+            onClick?.();
+            if (onClick) {
+              onClick();
+            } else {
+              setLoadingEmpty(true);
+              router.push(url);
+            }
+          }}
+        >
+          Quay lại
+        </Button>
       )}
     </Center>
   );

@@ -1,30 +1,62 @@
 'use client';
 import { Flex, Grid, GridCol } from '@mantine/core';
 import Link from 'next/link';
-import BButton from '~/components/Button';
+import { useEffect, useMemo, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '~/components/Web/Card/product-card-carousel-vertical';
+import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
+import { api } from '~/trpc/react';
 
-export const QuickMenu = ({ categories, products, searchParams }: any) => {
+export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }: any) => {
+  const [pageNumber, setPageNumber] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [dataRender, setDataRender] = useState<any>([...initProducts]);
+  const utils = api.useUtils();
+  useEffect(() => {
+    setDataRender([...initProducts]);
+    setPageNumber(1);
+  }, [initProducts]);
+
+  async function loadMore() {
+    setLoading(true);
+    const newProducts = await utils.Product.find.fetch({
+      skip: pageNumber + 1,
+      take: 8,
+      'danh-muc': searchParams?.['danh-muc']
+    });
+    setDataRender([...dataRender, ...(newProducts.products || [])]);
+    setPageNumber(pageNumber + 1);
+    setLoading(false);
+  }
+
+  const dataMemorize = useMemo(() => {
+    return dataRender;
+  }, [dataRender]);
+
   return (
     <>
-      <Flex align={'center'} gap={'xs'} mb={20} wrap={{ base: 'wrap', md: 'wrap', lg: 'nowrap' }}>
+      <Flex align={'center'} gap={'xs'} mb={20}>
+        <Link href={`/goi-mon-nhanh`}>
+          <BButton active={!searchParams?.['danh-muc']} children={'Tất cả'} variant='outline' size='sm' />
+        </Link>
         {categories?.map((item: any, index: number) => (
-          <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`}>
-            <BButton
-              active={item.tag === searchParams?.['danh-muc']}
-              key={index}
-              label={item.name}
-              variant='outline'
-              size='sm'
-            />
-          </Link>
+          <>
+            <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`}>
+              <BButton
+                active={item.tag === searchParams?.['danh-muc']}
+                key={index}
+                children={item.name}
+                variant='outline'
+                size='sm'
+              />
+            </Link>
+          </>
         ))}
       </Flex>
       <Flex direction={'column'} w={'100%'} pr={{ base: 0, md: 20 }}>
         <Grid>
-          {products?.length > 0 ? (
-            products.map((item: any, index: number) => (
+          {dataMemorize?.length > 0 ? (
+            dataMemorize.map((item: any, index: number) => (
               <GridCol span={{ base: 12, md: 6, lg: 3 }} key={`${item.id}+${index}`}>
                 <ProductCardCarouselVertical data={item} key={index} />
               </GridCol>
@@ -34,13 +66,16 @@ export const QuickMenu = ({ categories, products, searchParams }: any) => {
           )}
         </Grid>
 
-        {products?.length > 0 && (
-          <Flex align={'center'} justify={'center'} mt={30}>
-            <Link href={'/thuc-don'}>
-              <BButton label={'Xem tất cả'} variant='outline' size='sm' onClick={() => {}} />
-            </Link>
-          </Flex>
-        )}
+        <Flex align={'center'} justify={'center'} mt={30}>
+          <BButton
+            children={'Xem tất cả'}
+            variant='outline'
+            size='sm'
+            loading={loading}
+            onClick={loadMore}
+            disabled={pageNumber >= totalPages}
+          />
+        </Flex>
       </Flex>
     </>
   );

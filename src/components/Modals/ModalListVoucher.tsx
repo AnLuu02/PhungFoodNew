@@ -6,7 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { allowedVoucher } from '~/lib/func-handler/vouchers-calculate';
 import { ModalProps } from '~/types/modal';
 import LoadingSpiner from '../Loading/LoadingSpiner';
-import VoucherTemplate from '../Template/voucher-template';
+import VoucherTemplate from '../Template/VoucherTemplate';
 type ModalListVoucherProps<T = any> = ModalProps<T> & {
   loading?: boolean;
 };

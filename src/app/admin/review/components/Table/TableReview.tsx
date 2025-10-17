@@ -11,7 +11,7 @@ import { IconStar } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { CommentsList } from '~/components/Comments/CommentsList';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
 
 export default function TableReview({ s, data, allData }: { s: string; data: any; allData?: any }) {

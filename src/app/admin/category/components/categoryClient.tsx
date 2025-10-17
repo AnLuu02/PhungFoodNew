@@ -4,7 +4,7 @@ import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-r
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
 import { CreateCategoryButton, CreateSubCategoryButton } from './Button';
 import TableCategory from './Table/TableCategory';
@@ -120,7 +120,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
           }
         }}
         classNames={{
-          tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+          tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
         }}
       >
         <Paper radius={'md'} withBorder shadow='md' p={'md'}>

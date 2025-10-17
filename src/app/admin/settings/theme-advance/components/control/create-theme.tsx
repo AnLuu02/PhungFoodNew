@@ -56,13 +56,13 @@ export const CreateTheme = ({
           content: 'max-w-lg'
         }}
       >
-        <Text size='sm' className='mb-4 text-gray-500 dark:text-white'>
+        <Text size='sm' className='mb-4 text-gray-500 dark:text-dark-text'>
           Lưu cài đặt chủ đề hiện tại của bạn dưới dạng mẫu mới
         </Text>
 
         <Box className='space-y-4'>
           <Box className='space-y-2'>
-            <label htmlFor='template-name' className='text-sm font-medium text-gray-700 dark:text-white'>
+            <label htmlFor='template-name' className='text-sm font-medium text-gray-700 dark:text-dark-text'>
               Tên mẫu
             </label>
             <TextInput
@@ -74,7 +74,7 @@ export const CreateTheme = ({
           </Box>
 
           <Box className='space-y-2'>
-            <label htmlFor='template-description' className='text-sm font-medium text-gray-700 dark:text-white'>
+            <label htmlFor='template-description' className='text-sm font-medium text-gray-700 dark:text-dark-text'>
               Mô tả (Tùy chọn)
             </label>
             <TextInput
@@ -86,7 +86,7 @@ export const CreateTheme = ({
           </Box>
 
           <Box className='space-y-2'>
-            <label htmlFor='template-category' className='text-sm font-medium text-gray-700 dark:text-white'>
+            <label htmlFor='template-category' className='text-sm font-medium text-gray-700 dark:text-dark-text'>
               Loại
             </label>
             <Select

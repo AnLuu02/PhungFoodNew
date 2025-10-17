@@ -130,7 +130,10 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                       </Box>
                       {data?.vouchers?.length > 0 && (
                         <Box className='space-y-2'>
-                          <Text size='xs' className='flex items-center gap-2 font-medium text-gray-700 dark:text-white'>
+                          <Text
+                            size='xs'
+                            className='flex items-center gap-2 font-medium text-gray-700 dark:text-dark-text'
+                          >
                             <IconTag className='h-4 w-4' />
                             Voucher áp dụng
                           </Text>
@@ -145,7 +148,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                                   >
                                     {voucher.name}
                                   </Badge>
-                                  <span className='text-sm text-gray-600 dark:text-white'>
+                                  <span className='text-sm text-gray-600 dark:text-dark-text'>
                                     (
                                     {voucher.type === LocalVoucherType.PERCENTAGE
                                       ? `${voucher.discountValue}%`

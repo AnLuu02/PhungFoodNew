@@ -21,7 +21,7 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import { IconPencil, IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
-import ButtonAddToCart from '~/components/ButtonAddToCart';
+import { ButtonAddToCart } from '~/components/Button/ButtonAddToCart';
 import Comments from '~/components/Comments/Comments';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
@@ -34,10 +34,10 @@ import RatingStatistics from './components/RatingStatistics';
 import RelatedProducts from './components/RelatedProducts';
 
 import { useSession } from 'next-auth/react';
-import ShareSocials from '~/components/ShareSocial';
+import { ShareSocials } from '~/components/ShareSocial';
 import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
-import ViewingUser from '~/components/viewingUser';
-import ProductCardCarouselVertical from '~/components/Web/Card/product-card-carousel-vertical';
+import ViewingUser from '~/components/UserViewing';
+import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Carousel-Only';
 import GuideOrder from './components/GuideOrder';
 
@@ -110,7 +110,7 @@ export default function ProductDetailClient(data: any) {
               </Badge>
               <Rating value={product?.rating?.toFixed(1)} readOnly size='md' color={'#FFC522'} />
               <Text size='xs' className='text-mainColor'>
-                Có {product?.totalRating || 0} đánh giá
+                {product?.totalRating || 0} đánh giá
               </Text>
             </Flex>
 
@@ -139,7 +139,7 @@ export default function ProductDetailClient(data: any) {
             <Divider />
             <Group align='center'>
               <Title order={2} className='font-quicksand text-subColor' fw={700}>
-                <b className='text-black dark:text-white'>Giá:</b>{' '}
+                <b className='text-black dark:text-dark-text'>Giá:</b>{' '}
                 {formatPriceLocaleVi((product?.price || 0) - discount || 0)}
               </Title>
               {discount > 0 && (
@@ -221,10 +221,10 @@ export default function ProductDetailClient(data: any) {
               <ButtonAddToCart
                 product={{ ...product, note, quantity }}
                 style={{
-                  label: 'Mua hàng',
+                  children: 'Mua hàng',
                   size: 'md',
                   fullWidth: true,
-                  radius: 'sm'
+                  radius: 'md'
                 }}
                 handleAfterAdd={() => {}}
                 notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}

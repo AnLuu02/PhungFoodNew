@@ -28,8 +28,8 @@ import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalImageType } from '~/lib/zod/EnumType';
 import { ModalProps } from '~/types/modal';
-import ButtonAddToCart from '../ButtonAddToCart';
-import ShareSocials from '../ShareSocial';
+import { ButtonAddToCart } from '../Button/ButtonAddToCart';
+import { ShareSocials } from '../ShareSocial';
 import { ImageZoomModal } from './ModalZoomImage';
 
 function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
@@ -127,7 +127,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                   </Badge>
                   <Rating value={data?.rating?.toFixed(1)} readOnly size='sm' color={'#FFC522'} />
                   <Text size='xs' c='dimmed'>
-                    Có {data?.totalRating} đánh giá
+                    {data?.totalRating} đánh giá
                   </Text>
                 </Flex>
                 <Link href={`/san-pham/${data?.tag}`} onClick={onClose}>
@@ -207,10 +207,10 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                   <ButtonAddToCart
                     product={{ ...data, quantity }}
                     style={{
-                      label: 'Mua hàng',
+                      children: 'Mua hàng',
                       size: 'md',
                       fullWidth: true,
-                      radius: 'sm'
+                      radius: 'md'
                     }}
                     handleAfterAdd={onClose}
                     notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}

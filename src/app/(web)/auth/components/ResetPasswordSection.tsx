@@ -3,7 +3,7 @@
 import { Divider, PasswordInput, Stack, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 
@@ -71,7 +71,7 @@ export default function ResetPasswordSection({ email, token }: { email: string |
           type='submit'
           fullWidth
           size='md'
-          label={'Xác nhận'}
+          children={'Xác nhận'}
         />
       </Stack>
     </form>

@@ -4,7 +4,7 @@ import { ActionIcon, Center, Flex, Group, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
-import ProductCardCarouselVertical from '../../Card/product-card-carousel-vertical';
+import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
 
 const TabsPanelCarousel = ({ data }: any) => {
   const [embla, setEmbla] = useState<Embla | null>(null);

@@ -47,10 +47,10 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
     <Card withBorder padding='md' radius='md' className='h-full'>
       <CardSection withBorder inheritPadding py='xs' className='bg-gray-50'>
         <Group justify='space-between'>
-          <Text fw={700} className='text-gray-800 dark:text-white'>
+          <Text fw={700} className='text-gray-800 dark:text-dark-text'>
             Đơn đặt hàng gần đây
           </Text>
-          <Text size='sm' c='dimmed' className='text-gray-600 dark:text-white'>
+          <Text size='sm' c='dimmed' className='text-gray-600 dark:text-dark-text'>
             Hôm nay
           </Text>
         </Group>
@@ -60,12 +60,12 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
         <Table striped highlightOnHover withTableBorder withColumnBorders className='min-w-full'>
           <TableThead>
             <TableTr className='bg-gray-50'>
-              <TableTh className='font-semibold text-gray-700 dark:text-white'>Mã đơn</TableTh>
-              <TableTh className='font-semibold text-gray-700 dark:text-white'>Khách hàng</TableTh>
-              <TableTh className='font-semibold text-gray-700 dark:text-white'>Ngày đặt</TableTh>
-              <TableTh className='font-semibold text-gray-700 dark:text-white'>Tổng tiền</TableTh>
-              <TableTh className='font-semibold text-gray-700 dark:text-white'>Trạng thái</TableTh>
-              <TableTh className='font-semibold text-gray-700 dark:text-white'>Thao tác</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-dark-text'>Mã đơn</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-dark-text'>Khách hàng</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-dark-text'>Ngày đặt</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-dark-text'>Tổng tiền</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-dark-text'>Trạng thái</TableTh>
+              <TableTh className='font-semibold text-gray-700 dark:text-dark-text'>Thao tác</TableTh>
             </TableTr>
           </TableThead>
           <TableTbody>
@@ -78,8 +78,8 @@ export default function RecentOrders({ orders }: RecentOrdersProps) {
                       <span className='block cursor-help truncate font-medium text-blue-600'>{order.id}</span>
                     </Tooltip>
                   </TableTd>
-                  <TableTd className='text-gray-800 dark:text-white'>{order.user?.name}</TableTd>
-                  <TableTd className='text-gray-600 dark:text-white'>{formatDateViVN(order.createdAt)}</TableTd>
+                  <TableTd className='text-gray-800 dark:text-dark-text'>{order.user?.name}</TableTd>
+                  <TableTd className='text-gray-600 dark:text-dark-text'>{formatDateViVN(order.createdAt)}</TableTd>
                   <TableTd className='font-medium text-mainColor'>{formatPriceLocaleVi(order.total)}</TableTd>
                   <TableTd>
                     <Badge color={statusInfo.color} variant='light' className='font-medium'>

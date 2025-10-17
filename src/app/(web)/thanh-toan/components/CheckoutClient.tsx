@@ -18,7 +18,7 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { NotifyError } from '~/lib/func-handler/toast';
@@ -56,13 +56,7 @@ export default function CheckoutClient({ order }: { order: any }) {
     return { discountAmountByVoucher, discount, originalTotal, tax, finalTotal };
   }, [order]);
 
-  const {
-    control,
-    watch,
-    handleSubmit,
-    reset,
-    formState: { isSubmitting }
-  } = useForm<z.infer<typeof deliverySchema> & { paymentId: string }>({
+  const { control, watch, handleSubmit, reset } = useForm<z.infer<typeof deliverySchema> & { paymentId: string }>({
     resolver: zodResolver(
       deliverySchema.extend({
         paymentId: z.string({ required_error: 'Chọn phương thức thanh toán.' }).min(1, 'Chọn phương thức thanh toán.')
@@ -288,7 +282,7 @@ export default function CheckoutClient({ order }: { order: any }) {
                 <Button variant='subtle' leftSection={<IconArrowLeft size={16} />} component='a' href='/gio-hang'>
                   Giỏ hàng
                 </Button>
-                <BButton radius={'sm'} size='md' type='submit' loading={loading} label={' THANH TOÁN'} />
+                <BButton radius={'sm'} size='md' type='submit' loading={loading} children={'THANH TOÁN'} />
               </Flex>
             </Stack>
           </Card>

@@ -19,35 +19,71 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
   });
 };
 
-export const getOtpEmail = (otp: string) => `
-  <div style="font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; color: #333;">
-    <h2 style="color: #2e86de; margin-bottom: 16px;">Xác nhận đặt lại mật khẩu</h2>
-    
-    <p>Xin chào,</p>
-    <p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình trên <strong>Fast Food App</strong>.</p>
-    <p>Vui lòng sử dụng mã OTP dưới đây để hoàn tất quá trình xác nhận:</p>
-    
-    <p style="
-      font-size: 28px; 
-      font-weight: bold; 
-      letter-spacing: 6px; 
-      padding: 14px 28px; 
-      background-color: #f5f7fa; 
-      display: inline-block; 
-      border-radius: 8px;
-      border: 1px solid #dcdfe3;
-      margin: 16px 0;
-    ">
-      ${otp}
-    </p>
-    
-    <p>Mã OTP này có hiệu lực trong vòng <strong>15 phút</strong>.</p>
-    <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email hoặc liên hệ ngay với bộ phận hỗ trợ để được giúp đỡ.</p>
-    
-    <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
-    <p style="font-size: 12px; color: #888; text-align: center;">
-      Fast Food App © 2025<br/>
-      Đây là email tự động, vui lòng không trả lời trực tiếp.
-    </p>
+export const getOtpEmail = (otp: string, user: any, timeExpiredMinutes: number) => `
+  <div style="font-family: Arial, sans-serif; background-color: #f6f6f6; padding: 40px 0;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden;">
+            
+            <tr>
+              <td align="center" style="padding: 30px 20px; border-bottom: 1px solid #e5e5e5;">
+                <img src="${process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/logo/logo_phungfood_1.png" alt="Company Logo" width="120" style="margin-bottom: 10px;" />
+                <h1 style="margin: 0; font-size: 22px; color: #1a1a1a;">Xác minh địa chỉ email của bạn</h1>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding: 30px 40px;">
+                ${
+                  user?.name
+                    ? `<p style="margin: 0 0 16px; font-size: 16px; color: #333;">Xin chào <strong>${user.name}</strong>,</p>`
+                    : ''
+                }
+                <p style="margin: 0 0 24px; font-size: 16px; color: #4a4a4a; line-height: 1.6;">
+                  Cảm ơn bạn đã đăng ký! Vui lòng sử dụng mã xác minh bên dưới để hoàn tất quá trình đăng ký tài khoản:
+                </p>
+
+                <div style="text-align: center; margin: 30px 0;">
+                  <p style="
+                    display: inline-block;
+                    background-color: #f5f7fa;
+                    border: 1px solid #dcdfe3;
+                    border-radius: 8px;
+                    padding: 16px 40px;
+                    font-size: 28px;
+                    font-weight: bold;
+                    letter-spacing: 6px;
+                    color: #1a1a1a;
+                  ">
+                    ${otp}
+                  </p>
+                </div>
+
+                <p style="margin: 24px 0 0; font-size: 14px; color: #737373; line-height: 1.6;">
+                  Mã này sẽ hết hạn sau <strong>${timeExpiredMinutes} phút</strong>. Nếu bạn không yêu cầu, vui lòng bỏ qua email này.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding: 20px 40px; border-top: 1px solid #e5e5e5; text-align: center;">
+                <p style="margin: 0; font-size: 13px; color: #a3a3a3;">
+                  Đây là email tự động, vui lòng không trả lời lại.
+                </p>
+              </td>
+            </tr>
+          </table>
+
+          <table width="600" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+            <tr>
+              <td style="text-align: center; font-size: 12px; color: #a3a3a3;">
+                © ${new Date().getFullYear()} Your Company. Mọi quyền được bảo lưu.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </div>
 `;

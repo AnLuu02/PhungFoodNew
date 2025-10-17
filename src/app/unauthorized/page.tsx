@@ -20,7 +20,7 @@ export default function UnauthorizedPage() {
       <Title order={1} className='font-quicksand text-4xl font-bold text-red-500'>
         403 - Không có quyền truy cập
       </Title>
-      <Text className='mt-2 text-gray-600 dark:text-white'>Bạn không có quyền truy cập vào trang này.</Text>
+      <Text className='mt-2 text-gray-600 dark:text-dark-text'>Bạn không có quyền truy cập vào trang này.</Text>
       <Link href='/' className='mt-4 rounded-sm text-black hover:underline'>
         <Button>Quay lại trang chủ</Button>
       </Link>

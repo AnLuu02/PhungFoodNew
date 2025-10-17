@@ -2,11 +2,10 @@
 
 import { Card, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
-import React, { useEffect } from 'react';
-import ProductCardCarouselHorizontal from '../../Card/product-card-carousel-horizontal';
+import React, { useEffect, useMemo } from 'react';
+import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 
 const LayoutPromotion = ({ data }: any) => {
-  const productDiscount = data ?? [];
   const [timeExpire, setTimeExpire] = React.useState({
     day: 0,
     hour: 0,
@@ -28,6 +27,10 @@ const LayoutPromotion = ({ data }: any) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  const dataMemorize = useMemo(() => {
+    return data;
+  }, [data]);
 
   return (
     <Card
@@ -130,8 +133,8 @@ const LayoutPromotion = ({ data }: any) => {
         </Flex>
 
         <Grid p={'sm'}>
-          {productDiscount.map((item: any, index: number) => (
-            <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={index} mih={162}>
+          {data?.map((item: any, index: number) => (
+            <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={item.id} mih={162}>
               <ProductCardCarouselHorizontal data={item} key={item.id} />
             </GridCol>
           ))}

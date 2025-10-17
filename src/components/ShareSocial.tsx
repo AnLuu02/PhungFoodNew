@@ -10,7 +10,7 @@ import {
 } from '@tabler/icons-react';
 import { NotifySuccess } from '~/lib/func-handler/toast';
 
-function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' | 'detail' }) {
+export function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' | 'detail' }) {
   const DOMAIN = process.env.NEXT_PUBLIC_BASE_URL_DEPLOY || 'http://localhost:3000';
   const currentUrl = `${DOMAIN}/san-pham/${data?.tag || ''}`;
   const links = [
@@ -88,7 +88,7 @@ function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' 
             }
           }}
           classNames={{
-            root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+            root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
           }}
         >
           Sao chép
@@ -127,5 +127,3 @@ function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' 
     </Group>
   );
 }
-
-export default ShareSocials;

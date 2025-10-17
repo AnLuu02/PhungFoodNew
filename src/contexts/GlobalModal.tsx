@@ -2,22 +2,23 @@
 
 import dynamic from 'next/dynamic';
 import React from 'react';
-import { useModal } from './ModalContext';
+import { useModalActions, useModalState } from './ModalContext';
 
-const ModalProductComments = dynamic(() => import('~/components/Modals/ModalProductComments'));
+const ModalProductComments = dynamic(() => import('~/components/Modals/ModalProductComments'), { ssr: false });
 
-const ModalProductDetails = dynamic(() => import('~/components/Modals/ModalProductDetails'));
+const ModalProductDetails = dynamic(() => import('~/components/Modals/ModalProductDetails'), { ssr: false });
 
-const ModalOrderDetails = dynamic(() => import('~/components/Modals/ModalOrderDetails'));
+const ModalOrderDetails = dynamic(() => import('~/components/Modals/ModalOrderDetails'), { ssr: false });
 
-const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'));
+const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'), { ssr: false });
 
-const ModalRecipe = dynamic(() => import('~/components/Modals/ModalRecipe'));
+const ModalRecipe = dynamic(() => import('~/components/Modals/ModalRecipe'), { ssr: false });
 
-const ModalDetailVoucher = dynamic(() => import('~/components/Modals/ModalVoucherDetail'));
+const ModalDetailVoucher = dynamic(() => import('~/components/Modals/ModalVoucherDetail'), { ssr: false });
 
 export const GlobalModal: React.FC = () => {
-  const { opened, modalType, modalData, closeModal } = useModal();
+  const { closeModal } = useModalActions();
+  const { opened, modalType, modalData } = useModalState();
 
   return (
     <>

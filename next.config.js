@@ -22,6 +22,11 @@ const config = {
       },
       {
         protocol: 'https',
+        hostname: 'vcdn1-dulich.vnecdn.net',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
         hostname: 'i1-ngoisao.vnecdn.net',
         pathname: '/**'
       },

@@ -2,7 +2,7 @@
 import { Box, Button } from '@mantine/core';
 import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-import InvoicePrintTemplate from '~/components/Template/invoice-print-template';
+import InvoicePrintTemplate from '~/components/Template/InvoicePrintTemplate';
 import { api } from '~/trpc/react';
 
 export default function InvoiceToPrint({ id }: any) {
@@ -24,7 +24,7 @@ export default function InvoiceToPrint({ id }: any) {
         size='sm'
         variant='subtle'
         loading={isLoading}
-        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-white`}
+        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-dark-text`}
       >
         In hóa đơn
       </Button>

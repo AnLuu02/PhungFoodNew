@@ -4,7 +4,7 @@ import { Box, Button, Card } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 
 type ReusablePromoBannerProps = {
   title: string;
@@ -35,7 +35,7 @@ export default function ReusablePromoBanner({
   image,
   reverse = false,
   bgColor = '#f8f9fa',
-  textColor = 'text-gray-900 dark:text-white'
+  textColor = 'text-gray-900 dark:text-dark-text'
 }: ReusablePromoBannerProps) {
   if (backgroundImage) {
     return (
@@ -58,7 +58,7 @@ export default function ReusablePromoBanner({
                 {buttonText && (
                   <Box className='pt-4'>
                     <Link href={buttonLink}>
-                      <BButton size='lg' label={buttonText} />
+                      <BButton size='lg' children={buttonText} />
                     </Link>
                   </Box>
                 )}
@@ -111,7 +111,7 @@ export default function ReusablePromoBanner({
 
             {subtitle && (
               <p
-                className={`text-lg sm:text-xl md:text-2xl ${variant === 'bold' ? 'text-white/90' : 'text-gray-600 dark:text-white'} `}
+                className={`text-lg sm:text-xl md:text-2xl ${variant === 'bold' ? 'text-white/90' : 'text-gray-600 dark:text-dark-text'} `}
               >
                 {subtitle}
               </p>

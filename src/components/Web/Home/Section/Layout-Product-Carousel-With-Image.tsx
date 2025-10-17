@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import TabsPanelCarousel from './TabsPanel';
 const LayoutProductCarouselWithImage = ({
   title,
@@ -77,7 +77,7 @@ const LayoutProductCarouselWithImage = ({
             <Text size='md' className='text-white' fw={700}>
               Chỉ trong tuần này. Đừng bỏ lỡ...
             </Text>
-            <BButton label={'Mua ngay'} radius='xl' size='sm' w={'max-content'} />
+            <BButton children={'Mua ngay'} radius='xl' size='sm' w={'max-content'} />
           </Stack>
         </BackgroundImage>
         <Tabs
@@ -132,7 +132,7 @@ const LayoutProductCarouselWithImage = ({
 
           <Flex align={'center'} justify={'center'} mt={30}>
             <Link href={`/thuc-don?loai=${loai}`}>
-              <BButton label={'Xem tất cả'} variant='outline' size='sm' />
+              <BButton children={'Xem tất cả'} variant='outline' size='sm' />
             </Link>
           </Flex>
         </Tabs>

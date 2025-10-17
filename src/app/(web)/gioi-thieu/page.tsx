@@ -3,7 +3,7 @@ import { IconChefHat, IconMail, IconMapPin, IconPhone, IconStar } from '@tabler/
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {
@@ -35,7 +35,7 @@ export default async function AboutPage() {
               Từ năm 2010, chúng tôi đã mang đến những món ăn nhanh chất lượng cao với hương vị đậm đà Việt Nam
             </Text>
             <Link href={'/thuc-don'}>
-              <BButton size='lg' w={'max-content'} label={'Xem thực đơn'} radius='md' />
+              <BButton size='lg' w={'max-content'} children={'Xem thực đơn'} radius='md' />
             </Link>
           </Box>
         </Box>
@@ -98,7 +98,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -163,7 +163,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -249,7 +249,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-white'>
+              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -431,11 +431,11 @@ export default async function AboutPage() {
           </Text>
           <Box className='flex flex-col justify-center gap-4 sm:flex-row'>
             <Link href={'/auth/register'}>
-              <BButton size='lg' w={'max-content'} label={' Đăng ký ngay'} radius='md' />
+              <BButton size='lg' w={'max-content'} children={' Đăng ký ngay'} radius='md' />
             </Link>
 
             <Link href={'/thuc-don'}>
-              <BButton size='lg' w={'max-content'} variant='outline' label={'Xem thực đơn'} radius='md' />
+              <BButton size='lg' w={'max-content'} variant='outline' children={'Xem thực đơn'} radius='md' />
             </Link>
           </Box>
         </Box>

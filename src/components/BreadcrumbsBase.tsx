@@ -12,10 +12,10 @@ const BreadcrumbsBase = () => {
     return path.charAt(0).toUpperCase() + path.slice(1).replace(/-/g, ' ');
   };
   return (
-    <Breadcrumbs separator='>' classNames={{ separator: 'mx-2 text-gray-500 dark:text-white' }}>
+    <Breadcrumbs separator='>' classNames={{ separator: 'mx-2 text-gray-500 dark:text-dark-text' }}>
       <Link
         href='/'
-        className={`hover:text-subColor hover:underline ${pathname !== '/' ? 'text-subColor hover:text-subColor hover:underline' : 'text-gray-500 dark:text-white'}`}
+        className={`hover:text-subColor hover:underline ${pathname !== '/' ? 'text-subColor hover:text-subColor hover:underline' : 'text-gray-500 dark:text-dark-text'}`}
       >
         <Text size='sm' fw={700}>
           Trang chủ
@@ -28,7 +28,7 @@ const BreadcrumbsBase = () => {
           <Link
             key={href}
             href={href}
-            className={` ${!isActive ? 'text-subColor hover:text-subColor hover:underline' : 'text-gray-500 dark:text-white'} `}
+            className={` ${!isActive ? 'text-subColor hover:text-subColor hover:underline' : 'text-gray-500 dark:text-dark-text'} `}
             style={{ pointerEvents: isActive ? 'none' : 'auto', textDecoration: 'none' }}
           >
             <Text size='sm' fw={700}>

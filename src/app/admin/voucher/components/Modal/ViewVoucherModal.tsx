@@ -79,7 +79,7 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
 
           <Box>
             <Text fw={700}>Mô tả</Text>
-            <Text size='sm' className='text-gray-600 dark:text-white'>
+            <Text size='sm' className='text-gray-600 dark:text-dark-text'>
               {selectedPromotion?.data?.description}
             </Text>
           </Box>
@@ -99,7 +99,7 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
                     }
                   }}
                   classNames={{
-                    root: `!rounded-sm !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+                    root: `!rounded-sm !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   Tất cả khách hàng
@@ -115,7 +115,7 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
                     }
                   }}
                   classNames={{
-                    root: `!rounded-sm !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+                    root: `!rounded-sm !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   Khách hàng từ {selectedPromotion?.data?.pointUser}

@@ -3,7 +3,7 @@
 import { Group, InputBase, Pill, Text } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 const FILTER_LABELS: Record<string, string> = {
   tag: 'Thẻ',
   s: 'Tìm kiếm',
@@ -50,7 +50,7 @@ export default function ActiveFilters() {
             ))}
           </Pill.Group>
           {activeFilters?.length > 1 && (
-            <BButton active label='Xóa tất cả' size='xs' onClick={() => router.push('/thuc-don')} radius={'lg'} />
+            <BButton active children='Xóa tất cả' size='xs' onClick={() => router.push('/thuc-don')} radius={'lg'} />
           )}
         </Group>
       </InputBase>

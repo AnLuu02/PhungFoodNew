@@ -20,7 +20,7 @@ export const getStatusIcon = (status: string) => {
     case 'failed':
       return <IconX className='h-4 w-4 text-red-500' />;
     default:
-      return <IconClock className='h-4 w-4 text-gray-500 dark:text-white' />;
+      return <IconClock className='h-4 w-4 text-gray-500 dark:text-dark-text' />;
   }
 };
 
@@ -48,6 +48,6 @@ export const getPriorityColor = (priority: string) => {
     case 'medium':
       return 'bg-blue-100 text-blue-800 border-blue-200';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200 dark:text-white';
+      return 'bg-gray-100 text-gray-800 border-gray-200 dark:text-dark-text';
   }
 };

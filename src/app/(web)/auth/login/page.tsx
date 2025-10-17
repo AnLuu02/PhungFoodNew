@@ -9,7 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import BButton from '~/components/Button';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import LoginServices from '../components/LoginServices';
 
@@ -125,7 +125,7 @@ export default function Page() {
                   <Link href={'/auth/password/forgot-password'}>
                     <Text
                       fw={700}
-                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-white'
+                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'
                       size='sm'
                     >
                       Bạn quên mật khẩu?
@@ -143,7 +143,7 @@ export default function Page() {
                     type='submit'
                     fullWidth
                     size='md'
-                    label={'Gửi mã'}
+                    children={'Gửi mã'}
                   />
                 </GridCol>
                 <GridCol span={12} className='flex justify-center'>
@@ -152,7 +152,7 @@ export default function Page() {
                     <Link href={'/auth/register'}>
                       <Text
                         fw={700}
-                        className='cursor-pointer text-mainColor hover:text-subColor dark:text-white'
+                        className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'
                         size='sm'
                       >
                         Đăng ký ngay
@@ -163,7 +163,7 @@ export default function Page() {
                 <GridCol span={12} className='flex justify-center' mt={10}>
                   <Flex align={'center'} gap={10}>
                     <Box w={100} h={1} className='bg-black opacity-20 dark:bg-dark-text'></Box>
-                    <Text size='xs' className='text-black dark:text-white' opacity={0.5}>
+                    <Text size='xs' className='text-black dark:text-dark-text' opacity={0.5}>
                       / HOẶC /
                     </Text>
                     <Box w={100} h={1} className='bg-black opacity-20 dark:bg-dark-text'></Box>

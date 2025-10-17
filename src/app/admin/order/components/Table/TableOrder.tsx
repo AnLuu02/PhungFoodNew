@@ -21,7 +21,7 @@ import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@manti
 import { OrderStatus } from '@prisma/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
 
 export default function TableOrder({ s, data, allData }: { s: string; data: any; allData?: any }) {

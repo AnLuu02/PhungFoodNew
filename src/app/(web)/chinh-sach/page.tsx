@@ -80,7 +80,7 @@ export default function StorePolicyPage() {
                   className={`${
                     activeSection === sec.id
                       ? 'bg-mainColor/10 font-bold text-mainColor'
-                      : 'transparent bg-transparent font-medium text-black dark:text-white'
+                      : 'transparent bg-transparent font-medium text-black dark:text-dark-text'
                   } flex cursor-pointer items-center gap-2.5 rounded-md py-3 transition-colors`}
                 >
                   {sec.icon}

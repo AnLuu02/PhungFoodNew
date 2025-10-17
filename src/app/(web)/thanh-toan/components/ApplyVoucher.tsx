@@ -77,17 +77,13 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
             className='h-auto p-1 text-xs'
             leftSection={<IconGift className='mr-1 h-3 w-3' />}
             onClick={async () => {
-              if (user?.user.id) {
-                setShowVoucher(true);
-                setLoading(true);
-                const data = await utils.Voucher.getVoucherForUser.fetch({
-                  userId: user.user.id
-                });
-                setLoading(false);
-                setVoucherData(data);
-              } else {
-                NotifyError('Cảnh báo!', 'Vui lớng đăng nhập để xem.');
-              }
+              setShowVoucher(true);
+              setLoading(true);
+              const data = await utils.Voucher.getVoucherForUser.fetch({
+                userId: user?.user?.id
+              });
+              setLoading(false);
+              setVoucherData(data);
             }}
           >
             Chọn mã có sẵn

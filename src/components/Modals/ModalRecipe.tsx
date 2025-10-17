@@ -124,7 +124,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                     }
                   }}
                   classNames={{
-                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   <IconHeart className='mr-2 h-4 w-4' />
@@ -138,7 +138,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                     }
                   }}
                   classNames={{
-                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   <IconShare2 className='mr-2 h-4 w-4' />
@@ -152,7 +152,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                     }
                   }}
                   classNames={{
-                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   <IconShoppingCart className='mr-2 h-4 w-4' />
@@ -172,7 +172,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                   }
                 }}
                 classNames={{
-                  tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-white`
+                  tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                 }}
               >
                 <TabsList className='mb-8 grid w-full grid-cols-5'>

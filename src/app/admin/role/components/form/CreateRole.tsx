@@ -158,7 +158,7 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
               </Group>
               <Group align='center' gap={'md'}>
                 <TextInput
-                  leftSection={<IconSearch size={16} className='text-gray-300 dark:text-white' />}
+                  leftSection={<IconSearch size={16} className='text-gray-300 dark:text-dark-text' />}
                   size='sm'
                   radius={'md'}
                   value={searchValue}
@@ -177,7 +177,7 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
                     { value: 'hasPermission', label: 'Quyền đã chọn' }
                   ]}
                   value={filter}
-                  leftSection={<IconFilter size={16} className='text-gray-300 dark:text-white' />}
+                  leftSection={<IconFilter size={16} className='text-gray-300 dark:text-dark-text' />}
                   placeholder='Lọc theo quyền'
                   onChange={value => setFilter(value as any)}
                 />

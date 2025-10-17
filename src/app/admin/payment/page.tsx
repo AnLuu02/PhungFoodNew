@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/server';
 import { CreatePaymentButton } from './components/Button';
 import TablePayment from './components/Table/TablePayment';

@@ -1,13 +1,20 @@
+'use client';
 import { Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { useMemo } from 'react';
+import { IconPercentage30 } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
+import { useMemo, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { ModalRecentOrder } from '../../../../components/Modals/ModalRecentOrder';
 import { ApplyVoucher } from './ApplyVoucher';
 import { ButtonCheckout } from './ButtonCheckout';
 import { CartItemPayment } from './CartItemPayment';
 
-export const RecapCart = ({ order, loading }: any) => {
+export const RecapCart = () => {
+  const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);
+  const { data: session } = useSession();
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [appliedVouchers] = useLocalStorage<any[]>({
     key: 'applied-vouchers',
@@ -29,77 +36,93 @@ export const RecapCart = ({ order, loading }: any) => {
   }, [cart, appliedVouchers]);
 
   return (
-    <Card shadow='sm' radius='md' withBorder>
-      <Stack gap={'md'}>
-        <Title order={2} className='font-quicksand text-xl'>
-          Đơn hàng ({order?.orderItems?.length || order?.length || 0} sản phẩm)
-        </Title>
+    <>
+      <Card shadow='sm' radius='md' withBorder>
+        <Stack gap={'md'}>
+          <Flex align={'center'} justify={'space-between'}>
+            <Title order={2} className='font-quicksand text-xl'>
+              Đơn hàng ({cart?.length || 0} món)
+            </Title>
+            {session?.user?.id && (
+              <BButton
+                leftSection={<IconPercentage30 size={16} />}
+                variant='outline'
+                size='sm'
+                children='Đơn gần đây'
+                onClick={() => setShowRecentOrdersModal(true)}
+                radius='md'
+              />
+            )}
+          </Flex>
 
-        <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
-          <Stack gap={'md'} py={'sm'} pr={20}>
-            {order.map((item: any, index: number) => (
-              <CartItemPayment key={index} item={item} />
-            ))}
+          <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5} className='bg-gray-100 dark:bg-dark-card' mx={'-16px'}>
+            <Stack gap={'md'} py={'sm'} px={16}>
+              {cart?.map((item: any, index: number) => (
+                <CartItemPayment key={index} item={item} />
+              ))}
+            </Stack>
+          </ScrollAreaAutosize>
+
+          <ApplyVoucher totalOrderPrice={originalTotal} />
+          <Stack gap='xs'>
+            <Group justify='space-between'>
+              <Text size='md' fw={700}>
+                Tạm tính
+              </Text>
+              <Text size='md' fw={700}>
+                {formatPriceLocaleVi(originalTotal)}
+              </Text>
+            </Group>
+            <Group justify='space-between'>
+              <Text size='md' fw={700}>
+                Giảm giá sản phẩm:
+              </Text>
+              <Text size='md' fw={700}>
+                -{formatPriceLocaleVi(discount)}
+              </Text>
+            </Group>
+
+            <Group justify='space-between'>
+              <Text size='md' fw={700}>
+                Khuyến mãi:
+              </Text>
+              <Text size='md' fw={700}>
+                -{formatPriceLocaleVi(discountAmountByVoucher)}
+              </Text>
+            </Group>
+            <Group justify='space-between' className='mb-2'>
+              <Text size='md' fw={700}>
+                Thuế (10%):
+              </Text>
+              <Text size='md' fw={700}>
+                {formatPriceLocaleVi(tax)}
+              </Text>
+            </Group>
+            <Divider />
+
+            <Group justify='space-between'>
+              <Text size='md' fw={700}>
+                Tổng cộng
+              </Text>
+              <Text size='xl' fw={700} className='text-red-500'>
+                {formatPriceLocaleVi(finalTotal)}
+              </Text>
+            </Group>
           </Stack>
-        </ScrollAreaAutosize>
 
-        <ApplyVoucher totalOrderPrice={originalTotal} />
-        <Stack gap='xs'>
-          <Group justify='space-between'>
-            <Text size='md' fw={700}>
-              Tạm tính
-            </Text>
-            <Text size='md' fw={700}>
-              {formatPriceLocaleVi(originalTotal)}
-            </Text>
-          </Group>
-          <Group justify='space-between'>
-            <Text size='md' fw={700}>
-              Giảm giá sản phẩm:
-            </Text>
-            <Text size='md' fw={700}>
-              -{formatPriceLocaleVi(discount)}
-            </Text>
-          </Group>
-
-          <Group justify='space-between'>
-            <Text size='md' fw={700}>
-              Khuyến mãi:
-            </Text>
-            <Text size='md' fw={700}>
-              -{formatPriceLocaleVi(discountAmountByVoucher)}
-            </Text>
-          </Group>
-          <Group justify='space-between' className='mb-2'>
-            <Text size='md' fw={700}>
-              Thuế (10%):
-            </Text>
-            <Text size='md' fw={700}>
-              {formatPriceLocaleVi(tax)}
-            </Text>
-          </Group>
-          <Divider />
-
-          <Group justify='space-between'>
-            <Text size='md' fw={700}>
-              Tổng cộng
-            </Text>
-            <Text size='xl' fw={700} className='text-red-500'>
-              {formatPriceLocaleVi(finalTotal)}
-            </Text>
-          </Group>
+          <Flex gap={0} justify='space-between' wrap={'nowrap'}>
+            <ButtonCheckout
+              finalTotal={finalTotal}
+              originalTotal={originalTotal}
+              discountAmount={discountAmountByVoucher + discount}
+              data={cart}
+              stylesButtonCheckout={{ children: 'Thanh toán', fullWidth: true, size: 'md', radius: 'md' }}
+            />
+          </Flex>
         </Stack>
+      </Card>
 
-        <Flex gap={0} justify='space-between' wrap={'nowrap'}>
-          <ButtonCheckout
-            finalTotal={finalTotal}
-            originalTotal={originalTotal}
-            discountAmount={discountAmountByVoucher}
-            data={cart}
-            stylesButtonCheckout={{ title: 'Thanh toán', fullWidth: true, size: 'md', radius: 'sm' }}
-          />
-        </Flex>
-      </Stack>
-    </Card>
+      <ModalRecentOrder opened={showRecentOrdersModal} onClose={() => setShowRecentOrdersModal(false)} />
+    </>
   );
 };

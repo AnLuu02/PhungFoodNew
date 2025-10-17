@@ -1,11 +1,11 @@
 import { useLocalStorage } from '@mantine/hooks';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import BButton from '~/components/Button';
-import { NotifyError, NotifyWarning } from '~/lib/func-handler/toast';
+import BButton, { IBButton } from '~/components/Button/Button';
+import { generateGuestCredentials } from '~/lib/func-handler/generateGuestCredentials';
+import { NotifyError } from '~/lib/func-handler/toast';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
-import { IStylesButtonCheckout } from '~/types/other';
 
 export const ButtonCheckout = ({
   stylesButtonCheckout,
@@ -15,12 +15,12 @@ export const ButtonCheckout = ({
   discountAmount,
   onClick
 }: {
-  stylesButtonCheckout: IStylesButtonCheckout;
+  stylesButtonCheckout: IBButton;
   data: any;
   finalTotal: number;
   originalTotal: number;
   discountAmount: number;
-  onClick?: any;
+  onClick?: () => void;
 }) => {
   const [appliedVouchers] = useLocalStorage<any[]>({
     key: 'applied-vouchers',
@@ -42,8 +42,20 @@ export const ButtonCheckout = ({
     }
   });
   const orderItems: any = data ?? [];
+  const guestCreateMutation = api.User.create.useMutation();
   const handleCreateOrder = async () => {
+    let userId = user?.user?.id;
     setLoading(true);
+    if (!userId) {
+      const guest = generateGuestCredentials();
+      const responseGuest = await guestCreateMutation.mutateAsync({
+        email: guest.email || '',
+        name: guest.email || '',
+        password: guest.password || '',
+        image: { fileName: '', base64: '' }
+      });
+      userId = responseGuest.data.id;
+    }
     try {
       if (orderItems?.length > 0) {
         await mutationOrder.mutateAsync({
@@ -51,7 +63,7 @@ export const ButtonCheckout = ({
           originalTotal: originalTotal,
           discountAmount: discountAmount,
           status: LocalOrderStatus.UNPAID,
-          userId: user?.user?.id || '',
+          userId: userId || '',
           orderItems: orderItems?.map((item: any) => ({
             productId: item.id,
             quantity: item.quantity,
@@ -67,17 +79,19 @@ export const ButtonCheckout = ({
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
+
   return (
     <BButton
       loading={loading}
       disabled={loading || orderItems?.length === 0}
       {...stylesButtonCheckout}
       onClick={() => {
-        if (user?.user?.email) {
-          handleCreateOrder();
-        } else {
-          NotifyWarning('Chưa đăng nhập', 'Vui lòng đăng nhập để tiến hành thanh toán.');
-        }
+        // if (user?.user?.email) {
+        //   handleCreateOrder();
+        // } else {
+        //   NotifyWarning('Chưa đăng nhập', 'Vui lòng đăng nhập để tiến hành thanh toán.');
+        // }
+        handleCreateOrder();
       }}
     />
   );

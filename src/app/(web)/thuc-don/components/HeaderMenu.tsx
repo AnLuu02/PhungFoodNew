@@ -2,7 +2,7 @@
 import { Box, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
-import { SearchInput } from '~/components/Search/search-input';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { breakpoints } from '~/constants';
 import { getTagFromQuery } from '~/lib/func-handler/generateTag';
 import ActiveFilters from './ActiveFilters';

@@ -26,8 +26,8 @@ import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
-import SearchLocal from '~/components/Search/search-local';
-import { useModal } from '~/contexts/ModalContext';
+import SearchLocal from '~/components/Search/SearchLocal';
+import { useModalActions } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/status-order';
@@ -41,7 +41,7 @@ export function OrderList({ orders }: { orders: any }) {
   const [valueSearch, setValueSearch] = useState<string>('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');
   const mutationDelete = api.Order.delete.useMutation();
-  const { openModal } = useModal();
+  const { openModal } = useModalActions();
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(valueSearch), 300);

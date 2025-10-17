@@ -1,11 +1,10 @@
 import { Box } from '@mantine/core';
 import FloatingWidget from '~/components/FloatingWidget';
-import FooterWeb from '~/components/Web/Footer/footer-web';
+import FooterWeb from '~/components/Web/Footer/FooterWeb';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import ServiceComponent from '~/components/Web/Home/components/ServiceComponent';
 import { GlobalModal } from '~/contexts/GlobalModal';
 import { api } from '~/trpc/server';
-export const revalidate = 60 * 60 * 24;
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const restaurant = await api.Restaurant.getOneActive();
   return (

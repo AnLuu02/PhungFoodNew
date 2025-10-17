@@ -98,7 +98,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
                           lineClamp={1}
                           size='sm'
                           fw={700}
-                          className='cursor-pointer text-center text-black hover:text-mainColor dark:text-white'
+                          className='cursor-pointer text-center text-black hover:text-mainColor dark:text-dark-text'
                         >
                           {voucher?.name || 'Cá thu'}
                         </Text>

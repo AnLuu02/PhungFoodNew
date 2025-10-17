@@ -50,7 +50,7 @@ export default function ShoppingCart() {
         top={isMobile ? 0 : TOP_POSITION_STICKY}
         order={{ base: 1, sm: 2, md: 2, lg: 2 }}
       >
-        <RecapCart order={cart} loading={false} />
+        <RecapCart />
       </GridCol>
     </Grid>
   );

@@ -40,13 +40,13 @@ export const requirePermission = (
     const session = await getServerSession(authOptions);
     const user = session?.user ?? null;
 
-    if (!user) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Bạn chưa đăng nhập.' });
+    // if (!user) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Bạn chưa đăng nhập.' });
 
-    if (options?.requiredAdmin && user.role === 'ADMIN') {
+    if (options?.requiredAdmin && user?.role === 'ADMIN') {
       return next({ ctx: { ...ctx, user } });
     }
 
-    const userPerms = user.permissions ?? [];
+    const userPerms = user && user?.permissions ? user?.permissions : [];
     const reqList = Array.isArray(required) ? required : [required];
 
     const hasAll = reqList.every(p => userPerms.includes(p));
