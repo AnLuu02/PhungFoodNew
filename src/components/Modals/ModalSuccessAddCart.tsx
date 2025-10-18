@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
+import { Box, Button, Group, Modal, Paper, Stack, Text, Textarea } from '@mantine/core';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
@@ -57,20 +57,26 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
 
         <Stack p='md' gap='md'>
           <Group>
-            <Box className='relative h-16 w-16'>
+            <Paper
+              withBorder
+              w={60}
+              h={60}
+              className='flex items-center justify-center overflow-hidden rounded-lg border-mainColor/70'
+              pos={'relative'}
+            >
               <Image
                 loading='lazy'
                 src={getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                 alt={data?.name || 'Hành tây'}
-                height={60}
-                width={60}
+                fill
                 style={{ objectFit: 'cover' }}
-                className='rounded object-cover'
+                className='object-cover'
               />
-            </Box>
+            </Paper>
+
             <Box>
               <Text fw={700}>{data?.name || 'Hành tây'}</Text>
-              <Text className='text-mainColor' fw={600}>
+              <Text className='text-mainColor' fw={700}>
                 {formatPriceLocaleVi(data?.price || 0)}
               </Text>
             </Box>

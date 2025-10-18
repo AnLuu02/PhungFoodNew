@@ -2,7 +2,7 @@ import { Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { api } from '~/trpc/server';
-import { RecapCart } from '../thanh-toan/components/RecapCarted';
+import { RecapCart } from '../thanh-toan/components/RecapCart';
 import { QuickMenu } from './components/QuickMenu';
 
 export const metadata: Metadata = {
@@ -45,7 +45,7 @@ const FastMenu = async ({
         top={TOP_POSITION_STICKY}
         pt={'xs'}
       >
-        <RecapCart />
+        <RecapCart quickOrder={true} />
       </GridCol>
     </Grid>
   );

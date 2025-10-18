@@ -1,4 +1,4 @@
-import { Badge, Box, Group, Spoiler, Text, Tooltip } from '@mantine/core';
+import { Badge, Box, Group, Paper, Spoiler, Text, Tooltip } from '@mantine/core';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
@@ -8,20 +8,27 @@ export function CartItemPayment({ item }: any) {
   return (
     <>
       <Group key={item.id} wrap='nowrap'>
-        <Box pos='relative'>
+        <Paper
+          withBorder
+          w={60}
+          h={60}
+          className='flex items-center justify-center rounded-lg border-mainColor/70'
+          pos={'relative'}
+        >
           <Image
             loading='lazy'
             src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            width={60}
+            width={40}
             style={{ objectFit: 'cover' }}
-            height={60}
+            height={40}
             className='rounded-md'
             alt={item.name}
           />
-          <Badge className='absolute -right-2 -top-2 bg-blue-500' radius='xl' size='sm'>
+          <Badge className='absolute -right-2 -top-2 bg-mainColor' radius='xl' size='sm'>
             {item.quantity}
           </Badge>
-        </Box>
+        </Paper>
+
         <Box className='flex-1'>
           <Tooltip label={item.name}>
             <Text size='sm' fw={700} lineClamp={1}>

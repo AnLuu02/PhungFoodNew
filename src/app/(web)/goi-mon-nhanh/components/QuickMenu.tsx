@@ -35,7 +35,7 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
 
   return (
     <>
-      <Flex align={'center'} gap={'xs'} mb={20}>
+      <Flex align={'center'} gap={'xs'} mb={20} className='w-full overflow-x-auto pb-3'>
         <Link href={`/goi-mon-nhanh`}>
           <BButton active={!searchParams?.['danh-muc']} children={'Tất cả'} variant='outline' size='sm' />
         </Link>
@@ -53,11 +53,11 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
           </>
         ))}
       </Flex>
-      <Flex direction={'column'} w={'100%'} pr={{ base: 0, md: 20 }}>
+      <Flex direction={'column'} w={'100%'}>
         <Grid>
           {dataMemorize?.length > 0 ? (
             dataMemorize.map((item: any, index: number) => (
-              <GridCol span={{ base: 12, md: 6, lg: 3 }} key={`${item.id}+${index}`}>
+              <GridCol span={{ base: 12, sm: 6, md: 6, lg: 3 }} key={`${item.id}+${index}`}>
                 <ProductCardCarouselVertical data={item} key={index} />
               </GridCol>
             ))
@@ -68,7 +68,7 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
 
         <Flex align={'center'} justify={'center'} mt={30}>
           <BButton
-            children={'Xem tất cả'}
+            children={'Xem thêm'}
             variant='outline'
             size='sm'
             loading={loading}

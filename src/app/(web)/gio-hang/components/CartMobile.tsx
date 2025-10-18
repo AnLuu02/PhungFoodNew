@@ -1,9 +1,11 @@
-import { Badge, Box, Button, Divider, Grid, GridCol, Group, NumberInput, Paper, Stack, Text } from '@mantine/core';
+import { Badge, Box, Button, Flex, Group, NumberInput, Paper, Popover, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { IconAlertSquareRounded, IconCheck, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
+import { Note } from './Note';
 
 export const ShoppingCartMobile = () => {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
@@ -14,76 +16,103 @@ export const ShoppingCartMobile = () => {
   };
   return cart.map((item: any) => (
     <Paper shadow='xs' radius='md' p={'xs'} mb={'xs'} withBorder key={item.id}>
-      <Grid>
-        <GridCol span={6}>
-          <Group>
-            <Box w={80} h={80} className='overflow-hidden rounded-md' pos={'relative'}>
-              <Image
-                loading='lazy'
-                src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-                fill
-                className='object-cover'
-                alt={item.name}
-              />
-            </Box>
-            <Stack gap='xs' align='start'>
-              <Text size='md' fw={700}>
-                {item.name}
-              </Text>
-              <Group>
-                <Button
-                  h={'max-content'}
-                  className='text-red-500'
-                  variant='transparent'
-                  w={'max-content'}
-                  size='xs'
-                  p={0}
-                  m={0}
-                  onClick={() => setCart(cart.filter((cartItem: any) => cartItem.id !== item.id))}
-                >
-                  Xóa
-                </Button>
-                {item?.discount > 0 && (
-                  <Badge color='red'>{item?.discount ? `-${formatPriceLocaleVi(item?.discount)} ` : `180.000đ`}</Badge>
-                )}
-              </Group>
-            </Stack>
-          </Group>
-        </GridCol>
-        <GridCol span={6}>
-          <Stack>
-            <NumberInput
-              thousandSeparator=','
-              clampBehavior='strict'
-              value={item.quantity}
-              label='Số lượng'
-              onChange={quantity => {
-                if (Number(quantity) === 0) {
-                  setCart(cart.filter((cartItem: any) => cartItem.id !== item.id));
-                }
-                updateQuantity(item.id, Number(quantity));
-              }}
-              min={0}
-              max={Number(item?.availableQuantity) || 100}
-              className='w-[80px]'
+      <Stack gap={'4'}>
+        <Group>
+          <Paper
+            withBorder
+            w={80}
+            h={80}
+            className='flex items-center justify-center overflow-hidden rounded-lg border-mainColor/70'
+            pos={'relative'}
+          >
+            <Image
+              loading='lazy'
+              src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+              width={60}
+              height={60}
+              className='object-cover'
+              alt={item.name}
             />
-            <Divider />
-
+          </Paper>
+          <Stack gap='2' align='start'>
             <Text size='md' fw={700}>
-              Giá:<b className='text-mainColor'> {formatPriceLocaleVi(item.price)}</b>
+              {item.name}
             </Text>
-            <Divider />
-            <Text size='md' fw={700}>
-              Giảm: <b className='text-subColor'>-{formatPriceLocaleVi(item.discount * item.quantity)}</b>
-            </Text>
-            <Divider />
-
-            <Text size='md' fw={700}>
-              Tổng: <b className='text-red-500'>{formatPriceLocaleVi((item.price - item.discount) * item.quantity)}</b>
-            </Text>
+            <Group m={0} p={0}>
+              {item?.discount > 0 && (
+                <Text size='sm' c={'dimmed'} fw={700} td='line-through'>
+                  {item?.discount ? `${formatPriceLocaleVi(item?.price)}` : `180.000đ`}
+                </Text>
+              )}
+              <Text size='md' fw={700} className='text-mainColor'>
+                {item?.price ? `${formatPriceLocaleVi(item?.price - item?.discount)} ` : `180.000đ`}
+              </Text>
+            </Group>
+            <Group m={0} p={0}>
+              <NumberInput
+                thousandSeparator=','
+                clampBehavior='strict'
+                size='xs'
+                value={item.quantity}
+                onChange={quantity => {
+                  if (Number(quantity) === 0) {
+                    setCart(cart.filter((cartItem: any) => cartItem.id !== item.id));
+                  }
+                  updateQuantity(item.id, Number(quantity));
+                }}
+                min={0}
+                max={Number(item?.availableQuantity) || 100}
+                className='w-[80px]'
+              />
+              <Button
+                h={'max-content'}
+                className='text-red-500'
+                variant='transparent'
+                w={'max-content'}
+                size='xs'
+                p={0}
+                m={0}
+                onClick={() => setCart(cart.filter((cartItem: any) => cartItem.id !== item.id))}
+              >
+                <IconTrash size={16} />
+              </Button>
+            </Group>
           </Stack>
-        </GridCol>
-      </Grid>
+        </Group>
+        <Flex justify={'space-between'} w={'100%'} align={'center'}>
+          <Text className='text-red-500' size='md' fw={700}>
+            {formatPriceLocaleVi((item.price - item.discount) * item.quantity)}
+          </Text>
+          <Box>
+            {cart.find((cartItem: any) => cartItem.id === item.id && cartItem?.note) ? (
+              <Badge c={'dimmed'} variant='transparent' px={0} mx={0} leftSection={<IconCheck size={12} />} size='sm'>
+                Đã thêm ghi chú
+              </Badge>
+            ) : (
+              <Badge
+                c={'dimmed'}
+                variant='transparent'
+                px={0}
+                mx={0}
+                leftSection={<IconAlertSquareRounded size={12} />}
+                size='sm'
+              >
+                Khuyến khích nên ghi chú
+              </Badge>
+            )}
+          </Box>
+          <Popover width={350} offset={0} trapFocus position='bottom' withArrow shadow='md'>
+            <Popover.Target>
+              <Button size='xs' variant='transparent'>
+                Ghi chú
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Note productId={item.id} />
+            </Popover.Dropdown>
+          </Popover>
+        </Flex>
+      </Stack>
     </Paper>
   ));
 };

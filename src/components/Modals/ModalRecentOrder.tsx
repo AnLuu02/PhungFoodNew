@@ -1,5 +1,5 @@
 'use client';
-import { Box, Modal, SimpleGrid, Title } from '@mantine/core';
+import { Box, Drawer, Title } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import Empty from '~/components/Empty';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
@@ -16,11 +16,9 @@ export const ModalRecentOrder = ({ opened, onClose }: any) => {
   const orderData = orders || [];
 
   return (
-    <Modal
+    <Drawer
       opened={opened}
       onClose={onClose}
-      size={'80%'}
-      radius={'md'}
       title={
         <Title order={2} className='font-quicksand'>
           Đơn đặt hàng gần đây
@@ -32,11 +30,11 @@ export const ModalRecentOrder = ({ opened, onClose }: any) => {
       ) : (
         <Box className='space-y-4'>
           {orderData?.length > 0 ? (
-            <SimpleGrid cols={3}>
-              {orderData.map(order => (
+            orderData.map(order => (
+              <>
                 <CardRecentOrder key={order.id} order={order} />
-              ))}
-            </SimpleGrid>
+              </>
+            ))
           ) : (
             <Empty
               title={'Không có đơn hàng phù hợp'}
@@ -46,6 +44,6 @@ export const ModalRecentOrder = ({ opened, onClose }: any) => {
           )}
         </Box>
       )}
-    </Modal>
+    </Drawer>
   );
 };

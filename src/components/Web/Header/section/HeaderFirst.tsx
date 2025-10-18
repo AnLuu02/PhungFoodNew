@@ -31,7 +31,7 @@ export const Header1 = ({ restaurant }: any) => {
         <Text
           size='sm'
           lineClamp={2}
-          className='white-space-nowrap line-clamp-1 overflow-hidden duration-1000 sm:animate-typing'
+          className='white-space-nowrap line-clamp-1 animate-bounce overflow-hidden duration-1000'
         >
           Phụng Food! xin chào quý khách!
         </Text>

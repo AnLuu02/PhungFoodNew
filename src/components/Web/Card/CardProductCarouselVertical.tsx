@@ -155,7 +155,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
         </Badge>
         {data?.discount > 0 && (
           <Badge color='red' pos={'absolute'} top={'-100%'} left={-10} pl={20}>
-            Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(2) + '%' : '20%'}
+            Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(0) + '%' : '20%'}
           </Badge>
         )}
       </Card.Section>

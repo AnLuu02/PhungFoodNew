@@ -5,6 +5,7 @@ import { IconPercentage30 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
+import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { ModalRecentOrder } from '../../../../components/Modals/ModalRecentOrder';
@@ -12,7 +13,7 @@ import { ApplyVoucher } from './ApplyVoucher';
 import { ButtonCheckout } from './ButtonCheckout';
 import { CartItemPayment } from './CartItemPayment';
 
-export const RecapCart = () => {
+export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
   const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);
   const { data: session } = useSession();
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -39,31 +40,48 @@ export const RecapCart = () => {
     <>
       <Card shadow='sm' radius='md' withBorder>
         <Stack gap={'md'}>
-          <Flex align={'center'} justify={'space-between'}>
+          <Flex
+            align={{ base: 'flex-start', md: 'center' }}
+            justify={'space-between'}
+            direction={{ base: 'column-reverse', md: 'row' }}
+          >
             <Title order={2} className='font-quicksand text-xl'>
               Đơn hàng ({cart?.length || 0} món)
             </Title>
-            {session?.user?.id && (
+            {quickOrder && session?.user?.id && (
               <BButton
                 leftSection={<IconPercentage30 size={16} />}
                 variant='outline'
                 size='sm'
+                className='mb-2 md:mb-0'
+                w={{ base: '100%', md: 'max-content' }}
                 children='Đơn gần đây'
                 onClick={() => setShowRecentOrdersModal(true)}
                 radius='md'
               />
             )}
           </Flex>
+          {cart?.length === 0 ? (
+            <Empty size='sm' title='Giỏ hàng trống' hasButton={false} content='' />
+          ) : (
+            <>
+              <ScrollAreaAutosize
+                mah={220}
+                px='0'
+                scrollbarSize={5}
+                className='bg-gray-100 dark:bg-dark-card'
+                mx={'-16px'}
+              >
+                <Stack gap={'md'} py={'sm'} px={16}>
+                  {cart?.map((item: any, index: number) => (
+                    <CartItemPayment key={index} item={item} />
+                  ))}
+                </Stack>
+              </ScrollAreaAutosize>
 
-          <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5} className='bg-gray-100 dark:bg-dark-card' mx={'-16px'}>
-            <Stack gap={'md'} py={'sm'} px={16}>
-              {cart?.map((item: any, index: number) => (
-                <CartItemPayment key={index} item={item} />
-              ))}
-            </Stack>
-          </ScrollAreaAutosize>
-
-          <ApplyVoucher totalOrderPrice={originalTotal} />
+              <ApplyVoucher totalOrderPrice={originalTotal} />
+            </>
+          )}
           <Stack gap='xs'>
             <Group justify='space-between'>
               <Text size='md' fw={700}>
