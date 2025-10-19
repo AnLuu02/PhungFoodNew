@@ -23,8 +23,7 @@ export default function CartItemFastMenu({ image, name, price, quantity, onQuant
           alt={name}
           width={80}
           height={80}
-          className='rounded-md'
-          style={{ objectFit: 'cover' }}
+          className='rounded-md object-cover'
         />
       </Paper>
 

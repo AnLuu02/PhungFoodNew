@@ -389,7 +389,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                                     alt={product.name}
                                     width={60}
                                     height={60}
-                                    style={{ borderRadius: 8, objectFit: 'cover' }}
+                                    className='rounded-md object-cover'
                                   />
                                 </Card>
                                 <Box>

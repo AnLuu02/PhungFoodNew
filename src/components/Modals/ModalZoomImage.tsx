@@ -265,7 +265,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
                     w={60}
                     h={60}
                     alt={item.alt}
-                    className='object-cover'
+                    className='rounded-md object-cover'
                   />
                 </UnstyledButton>
               );
@@ -292,7 +292,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
                     src={totalImages[index]?.src || '/images/jpg/empty-300x240.jpg'}
                     width={60}
                     height={60}
-                    className='object-cover'
+                    className='rounded-md object-cover'
                     alt='Thumbnail'
                   />
                   <Box

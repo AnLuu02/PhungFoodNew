@@ -111,7 +111,7 @@ export default function MegaMenu({ categories }: any) {
                               alt={category.name}
                               width={50}
                               height={50}
-                              style={{ borderRadius: 8, objectFit: 'cover' }}
+                              className='rounded-md object-cover'
                             />
                           </Card>
                           <Stack gap={2}>

@@ -33,9 +33,8 @@ export default function RelatedProducts({ data }: any) {
                     getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                   }
                   fill
-                  style={{ objectFit: 'cover' }}
                   alt='Hình ảnh sản phẩm'
-                  className='rounded-md'
+                  className='rounded-md object-cover'
                 />
               </Box>
               <Box>

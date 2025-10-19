@@ -70,7 +70,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 alt={data?.name || 'Hành tây'}
                 fill
                 style={{ objectFit: 'cover' }}
-                className='object-cover'
+                className='rounded-md object-cover'
               />
             </Paper>
 

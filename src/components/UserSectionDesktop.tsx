@@ -107,7 +107,7 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
                   src={user?.user?.image || '/images/png/403.png'}
                   alt='User avatar'
                   fill
-                  style={{ objectFit: 'cover' }}
+                  className='rounded-md object-cover'
                 />
               </Box>
               <Stack gap={2}>

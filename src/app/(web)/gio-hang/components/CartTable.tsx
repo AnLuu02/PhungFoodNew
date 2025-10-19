@@ -54,7 +54,7 @@ export const CartTable = ({ updateQuantity }: any) => {
                     }
                     width={60}
                     height={60}
-                    className='object-cover'
+                    className='rounded-md object-cover'
                     alt={item.name}
                   />
                 </Paper>

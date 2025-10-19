@@ -18,10 +18,9 @@ export function CartItemPayment({ item }: any) {
           <Image
             loading='lazy'
             src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            width={40}
-            style={{ objectFit: 'cover' }}
-            height={40}
-            className='rounded-md'
+            width={50}
+            height={50}
+            className='rounded-md object-cover'
             alt={item.name}
           />
           <Badge className='absolute -right-2 -top-2 bg-mainColor' radius='xl' size='sm'>
