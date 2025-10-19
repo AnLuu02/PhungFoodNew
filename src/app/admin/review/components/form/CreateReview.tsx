@@ -69,6 +69,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
               <Select
                 searchable
                 label='Product'
+                radius='md'
                 placeholder=' Chọn sản phẩm'
                 data={products?.map((product: any) => ({ value: product.id, label: product.name })) || []}
                 value={field.value}
@@ -87,6 +88,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
               <Select
                 searchable
                 label='user'
+                radius='md'
                 placeholder=' Chọn khách hàng'
                 data={users?.map((user: any) => ({ value: user.id, label: user.name })) || []}
                 value={field.value}
@@ -108,6 +110,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
             render={({ field }) => (
               <Flex align={'center'} justify={'space-between'}>
                 <NumberInput
+                  radius={'md'}
                   label='Đánh giá'
                   {...field}
                   min={0}

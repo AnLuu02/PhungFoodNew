@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 export const ButtonToggleLike = ({ data }: any) => {
-  const { data: user } = useSession();
+  const { data: session } = useSession();
   const [localFavouriteFood, setLocalFavouriteFood] = useLocalStorage<any>({
     key: 'favouriteFood',
     defaultValue: []
@@ -17,8 +17,8 @@ export const ButtonToggleLike = ({ data }: any) => {
   const utils = api.useUtils();
 
   useEffect(() => {
-    if (user) {
-      const favourite = data?.favouriteFood?.find((item: any) => item.userId === user?.user?.id);
+    if (session) {
+      const favourite = data?.favouriteFood?.find((item: any) => item.userId === session?.user?.id);
       if (favourite) {
         setLike(true);
       }
@@ -28,10 +28,18 @@ export const ButtonToggleLike = ({ data }: any) => {
         setLike(true);
       }
     }
-  }, [data, user]);
+  }, [data, session, localFavouriteFood]);
 
-  const mutationAddFavourite = api.FavouriteFood.create.useMutation();
-  const mutationCancleFavourite = api.FavouriteFood.delete.useMutation();
+  const mutationAddFavourite = api.FavouriteFood.create.useMutation({
+    onSuccess: () => {
+      utils.FavouriteFood.invalidate();
+    }
+  });
+  const mutationCancleFavourite = api.FavouriteFood.delete.useMutation({
+    onSuccess: () => {
+      utils.FavouriteFood.invalidate();
+    }
+  });
 
   return (
     <Button
@@ -47,12 +55,11 @@ export const ButtonToggleLike = ({ data }: any) => {
         <Tooltip label='Xóa khỏi yêu thích'>
           <IconHeartFilled
             onClick={async () => {
-              if (user) {
+              if (session) {
                 setLoading(true);
-                await mutationCancleFavourite.mutateAsync({ userId: user?.user?.id, productId: data.id });
+                await mutationCancleFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
                 setLike(false);
                 setLoading(false);
-                utils.FavouriteFood.invalidate();
                 NotifySuccess('Thành công!', 'Xoá yêu thích thành công.');
               } else {
                 setLike(false);
@@ -66,12 +73,11 @@ export const ButtonToggleLike = ({ data }: any) => {
         <Tooltip label='Thêm vào yêu thích'>
           <IconHeart
             onClick={async () => {
-              if (user) {
+              if (session) {
                 setLoading(true);
-                await mutationAddFavourite.mutateAsync({ userId: user?.user?.id, productId: data.id });
+                await mutationAddFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
                 setLike(true);
                 setLoading(false);
-                utils.FavouriteFood.invalidate();
                 NotifySuccess('Thành công!', 'Xóa yêu thích thành công.');
               } else {
                 setLike(true);

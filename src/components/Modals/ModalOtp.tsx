@@ -3,11 +3,11 @@
 import { Alert, Box, Button, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
 import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import PeriodControl from '~/app/(web)/(auth)/components/PeriodControl';
 import BButton from '~/components/Button/Button';
 import { hashPassword } from '~/lib/func-handler/hashPassword';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
-import PeriodControl from '../../app/(web)/auth/components/PeriodControl';
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;

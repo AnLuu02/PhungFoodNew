@@ -110,6 +110,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
             <Select
               allowDeselect={false}
               value={searchParams.get('filter') || 'all'}
+              radius='md'
               onChange={value => {
                 if (value === 'all') params.delete('filter');
                 else {
@@ -127,6 +128,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
             />
             <Select
               allowDeselect={false}
+              radius='md'
               value={searchParams.get('s') || 'all'}
               disabled={isLoading}
               onChange={value => {

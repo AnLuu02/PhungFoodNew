@@ -124,6 +124,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<S
                 render={({ field }) => (
                   <Select
                     disabled={isLoading}
+                    radius='md'
                     searchable
                     label='Danh mục'
                     placeholder='Chọn danh mục'

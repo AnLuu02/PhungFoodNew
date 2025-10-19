@@ -52,6 +52,7 @@ export default function CartItemFastMenu({ image, name, price, quantity, onQuant
             onChange={value => onQuantityChange(Number(value))}
             min={1}
             max={99}
+            radius={'md'}
             className='w-[100px]'
             rightSection={null}
             size='xs'

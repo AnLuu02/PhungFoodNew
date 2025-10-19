@@ -430,7 +430,7 @@ export default async function AboutPage() {
             Tham gia cộng đồng khách hàng thân thiết và nhận những ưu đãi hấp dẫn ngay hôm nay
           </Text>
           <Box className='flex flex-col justify-center gap-4 sm:flex-row'>
-            <Link href={'/auth/register'}>
+            <Link href={'/dang-ky'}>
               <BButton size='lg' w={'max-content'} children={' Đăng ký ngay'} radius='md' />
             </Link>
 

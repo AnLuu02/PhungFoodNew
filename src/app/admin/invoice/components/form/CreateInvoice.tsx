@@ -64,6 +64,7 @@ export default function CreateInvoice({
                 label='Đơn hàng'
                 placeholder='Chọn Đơn hàng'
                 searchable
+                radius='md'
                 data={orders?.map(order => ({
                   value: order.id,
                   label: `DH-${order.id}`,
@@ -86,6 +87,7 @@ export default function CreateInvoice({
                 label='Saler'
                 placeholder='Chọn Saler'
                 searchable
+                radius='md'
                 data={salers?.map(sale => ({
                   value: sale.id,
                   label: sale.name + `  (${sale?.role?.name})`
@@ -122,6 +124,7 @@ export default function CreateInvoice({
                 label='Trạng thái'
                 placeholder='Chọn Trạng thái'
                 searchable
+                radius='md'
                 data={[
                   {
                     value: 'PAID',
@@ -154,6 +157,7 @@ export default function CreateInvoice({
                 label='Tiền tệ'
                 placeholder='Chọn Tiền tệ'
                 searchable
+                radius='md'
                 data={[
                   {
                     value: 'VND',

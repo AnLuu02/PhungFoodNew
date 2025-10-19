@@ -29,7 +29,7 @@ const BButton: React.FC<IBButton> = ({
       disabled={disabled}
       loading={loading}
       onClick={onClick}
-      className={`transition-all duration-200 ease-in-out ${
+      className={`relative transition-all duration-200 ease-in-out ${
         variant === 'outline' && !disabled && !loading
           ? 'border-mainColor text-mainColor hover:border-mainColor hover:bg-mainColor hover:text-white'
           : variant === 'filled' && !disabled && !loading

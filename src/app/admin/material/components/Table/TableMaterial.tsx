@@ -115,6 +115,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
           <Group>
             <Select
               allowDeselect={false}
+              radius='md'
               value={searchParams.get('s') || 'all'}
               onChange={value => {
                 if (value === 'all') params.delete('s');

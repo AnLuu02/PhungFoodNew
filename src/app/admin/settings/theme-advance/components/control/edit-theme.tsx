@@ -79,6 +79,7 @@ export const EditTheme = ({
               </label>
               <TextInput
                 id='edit-template-name'
+                radius='md'
                 value={editTemplateName}
                 onChange={e => setEditTemplateName(e.currentTarget.value)}
                 placeholder='Template name'
@@ -91,6 +92,7 @@ export const EditTheme = ({
               </label>
               <TextInput
                 id='edit-template-description'
+                radius='md'
                 value={editTemplateDescription}
                 onChange={e => setEditTemplateDescription(e.currentTarget.value)}
                 placeholder='Template description'
@@ -103,6 +105,7 @@ export const EditTheme = ({
               </label>
               <Select
                 id='edit-template-category'
+                radius='md'
                 value={editTemplateCategory}
                 onChange={e => setEditTemplateCategory(e || '')}
                 data={[
@@ -134,6 +137,7 @@ export const EditTheme = ({
                   <TextInput
                     value={theme.primaryColor}
                     onChange={e => setTheme({ ...theme, primaryColor: e.currentTarget.value })}
+                    radius='md'
                     placeholder='#059669'
                     className='flex-1'
                   />
@@ -153,6 +157,7 @@ export const EditTheme = ({
                     value={theme.secondaryColor}
                     onChange={e => setTheme({ ...theme, secondaryColor: e.currentTarget.value })}
                     placeholder='#10b981'
+                    radius='md'
                     className='flex-1'
                   />
                 </Box>
@@ -161,6 +166,7 @@ export const EditTheme = ({
               <Box className='space-y-2'>
                 <Select
                   label='Font Family'
+                  radius='md'
                   value={theme.fontFamily}
                   w={200}
                   onChange={value => setTheme({ ...theme, fontFamily: value! })}
@@ -179,6 +185,7 @@ export const EditTheme = ({
                 <label className='text-sm font-medium'>Kiểu bố cục</label>
                 <Select
                   value={theme.layout}
+                  radius='md'
                   onChange={value => setTheme({ ...theme, layout: value! })}
                   data={[
                     { value: 'modern', label: 'Modern' },

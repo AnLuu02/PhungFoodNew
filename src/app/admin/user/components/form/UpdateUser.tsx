@@ -245,6 +245,7 @@ export default function UpdateUser({
                 name='name'
                 render={({ field }) => (
                   <TextInput
+                    radius='md'
                     {...field}
                     required
                     label='Tên'
@@ -263,6 +264,7 @@ export default function UpdateUser({
                   <TextInput
                     {...field}
                     type='email'
+                    radius='md'
                     required
                     leftSection={<IconMail size={18} stroke={1.5} />}
                     label='Email'
@@ -279,6 +281,7 @@ export default function UpdateUser({
                 name='phone'
                 render={({ field }) => (
                   <TextInput
+                    radius='md'
                     {...field}
                     label='Số điện thoại'
                     leftSection={<IconPhone size={18} stroke={1.5} />}
@@ -297,6 +300,7 @@ export default function UpdateUser({
                 render={({ field }) => (
                   <Select
                     label='Vai trò'
+                    radius='md'
                     searchable
                     placeholder='Chọn vai trò'
                     {...field}
@@ -342,6 +346,7 @@ export default function UpdateUser({
                   <Select
                     {...field}
                     searchable
+                    radius='md'
                     label='Chọn tỉnh thành'
                     placeholder='Chọn tỉnh thành'
                     data={provinces?.results?.map((item: any) => ({
@@ -362,6 +367,7 @@ export default function UpdateUser({
                 render={({ field }) => (
                   <Select
                     {...field}
+                    radius='md'
                     searchable
                     label='Chọn quận huyện'
                     placeholder='Chọn quận huyện'
@@ -385,6 +391,7 @@ export default function UpdateUser({
                     {...field}
                     label='Chọn phường xã'
                     searchable
+                    radius='md'
                     placeholder='Chọn phường xã'
                     data={wards?.results?.map((item: any) => ({
                       value: item.ward_id,
@@ -402,6 +409,7 @@ export default function UpdateUser({
                 name='gender'
                 render={({ field }) => (
                   <Select
+                    radius='md'
                     placeholder='Giới tính'
                     searchable
                     label='Giới tính'
@@ -423,6 +431,7 @@ export default function UpdateUser({
                 disabled={session?.user.role !== UserRole.ADMIN}
                 render={({ field }) => (
                   <NumberInput
+                    radius={'md'}
                     {...field}
                     defaultValue={0}
                     min={0}
@@ -440,6 +449,7 @@ export default function UpdateUser({
                 name={`level`}
                 render={({ field }) => (
                   <Select
+                    radius='md'
                     {...field}
                     data={
                       infoUserLevel.map(level => ({ value: level.key, label: level.viName })) || [

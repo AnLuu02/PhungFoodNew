@@ -1,5 +1,5 @@
 'use client';
-import { Box, Center, Divider, Paper, ScrollArea, Stack, Text } from '@mantine/core';
+import { Box, Card, Center, Divider, ScrollArea, Stack, Text } from '@mantine/core';
 import { MaterialFilter } from './Filter/MaterialFilter';
 import { MenuCategoryFilter } from './Filter/MenuCategoryFilter';
 import { PriceCheckedFilter } from './Filter/PriceCheckedFilter';
@@ -9,13 +9,13 @@ export function SidebarFilterContent({ categories, materials }: any) {
   return (
     <>
       <MenuCategoryFilter categories={categories} materials={materials} />
-      <Paper shadow='md' className='border-1 rounded-md border-mainColor' pb={'md'}>
-        <ScrollArea className='flex-grow'>
-          <Box className='rounded-t-md bg-mainColor p-2 text-white'>
-            <Text size='sm' fw={700}>
-              BỘ LỌC SẢN PHẨM
-            </Text>
-          </Box>
+      <Card p={0} className='rounded-md bg-gray-100 dark:bg-dark-card'>
+        <Box className='rounded-t-md bg-mainColor p-2 text-white'>
+          <Text size='sm' fw={700}>
+            BỘ LỌC SẢN PHẨM
+          </Text>
+        </Box>
+        <ScrollArea className='flex-grow' px={'sm'}>
           <Stack className='mt-4' gap={'md'} px={'xs'}>
             <PriceCheckedFilter />
             <Divider p={0} m={0} />
@@ -24,12 +24,12 @@ export function SidebarFilterContent({ categories, materials }: any) {
             <FilterRating />
           </Stack>
         </ScrollArea>
-        <Center mt={'xl'}>
+        <Center mb={'sm'} mt={'xl'}>
           <Text size='xs' c={'dimmed'}>
             © 2025 PhungFood. All rights reserved.
           </Text>
         </Center>
-      </Paper>
+      </Card>
     </>
   );
 }

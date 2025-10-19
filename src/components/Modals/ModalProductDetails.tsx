@@ -183,6 +183,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                         </Text>
                       }
                       clampBehavior='strict'
+                      radius={'md'}
                       value={quantity}
                       onChange={(value: any) => setQuantity(value)}
                       thousandSeparator=','
@@ -193,6 +194,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                   </Group>
                   <Group gap='xs'>
                     <Select
+                      radius='md'
                       disabled
                       label={
                         <Text size='sm' fw={700}>

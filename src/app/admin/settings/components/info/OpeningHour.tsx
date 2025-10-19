@@ -52,7 +52,7 @@ export default function OpeningHour({ restaurant, control, watch }: { restaurant
                   control={control}
                   name={`openingHours.${index}.openTime`}
                   render={({ field, fieldState }) => (
-                    <TextInput {...field} type='time' className='w-32' error={fieldState.error?.message} />
+                    <TextInput {...field} type='time' className='w-32' error={fieldState.error?.message} radius='md' />
                   )}
                 />
                 <span className='text-muted-foreground'>đến</span>
@@ -60,7 +60,7 @@ export default function OpeningHour({ restaurant, control, watch }: { restaurant
                   control={control}
                   name={`openingHours.${index}.closeTime`}
                   render={({ field, fieldState }) => (
-                    <TextInput type='time' {...field} className='w-32' error={fieldState.error?.message} />
+                    <TextInput type='time' {...field} className='w-32' error={fieldState.error?.message} radius='md' />
                   )}
                 />
               </Box>

@@ -348,6 +348,7 @@ export function SendMessageAllUserAdvanced() {
       >
         <Select
           label='Chọn chế độ gửi'
+          radius='md'
           placeholder='Chọn cách gửi'
           data={[
             { value: 'ALL', label: 'Gửi tất cả người dùng' },
@@ -397,6 +398,7 @@ export function SendMessageAllUserAdvanced() {
           label='Chọn mẫu thông báo (tùy chọn)'
           placeholder='Chọn mẫu hoặc để trống để nhập tay'
           data={messageTemplates}
+          radius='md'
           value={selectedTemplate}
           onChange={value => {
             setSelectedTemplate(value);
@@ -498,6 +500,7 @@ export function SendMessageOrderButton({ userId, email }: any) {
           placeholder='Chọn mẫu hoặc để trống để nhập tay'
           data={messageTemplates}
           value={selectedTemplate}
+          radius='md'
           onChange={value => {
             setSelectedTemplate(value);
             setCustomMessage('');

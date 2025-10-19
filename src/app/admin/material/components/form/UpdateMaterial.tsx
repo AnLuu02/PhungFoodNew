@@ -99,6 +99,7 @@ export default function UpdateMaterial({
             render={({ field }) => (
               <Select
                 label='Loại nguyên liệu'
+                radius='md'
                 placeholder='Chọn loại nguyên liệu'
                 searchable
                 data={categoriesMaterial?.map(category => ({

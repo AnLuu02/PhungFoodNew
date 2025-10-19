@@ -26,6 +26,7 @@ export default function ContactTab({ control }: { restaurant: any; control: any 
                   {...field}
                   type='email'
                   label='Email'
+                  radius='md'
                   placeholder='restaurant@example.com'
                   error={fieldState.error?.message}
                 />
@@ -40,6 +41,7 @@ export default function ContactTab({ control }: { restaurant: any; control: any 
                 <TextInput
                   {...field}
                   label='Số điện thoại'
+                  radius='md'
                   placeholder='+1 (555) 123-4567'
                   error={fieldState.error?.message}
                 />
@@ -54,6 +56,7 @@ export default function ContactTab({ control }: { restaurant: any; control: any 
                 <TextInput
                   {...field}
                   label='Địa chỉ'
+                  radius='md'
                   placeholder='123 Main Street, City, State 12345'
                   error={fieldState.error?.message}
                 />
@@ -68,6 +71,7 @@ export default function ContactTab({ control }: { restaurant: any; control: any 
                 <TextInput
                   {...field}
                   label='Website'
+                  radius='md'
                   placeholder='https://yourrestaurant.com'
                   error={fieldState.error?.message}
                 />

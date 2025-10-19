@@ -141,6 +141,7 @@ export default function UpdateSubCategory({
                 render={({ field }) => (
                   <Select
                     disabled={isLoading}
+                    radius='md'
                     label='Danh mục chính'
                     placeholder='Danh mục chính không được để trống'
                     data={categoryData?.map(category => ({ value: category.id, label: category.name }))}

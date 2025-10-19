@@ -223,6 +223,7 @@ export default function RestaurantInfoSettings({ data }: any) {
                           Facebook
                         </Flex>
                       }
+                      radius='md'
                       value={restaurantData.facebook}
                       onChange={e => setRestaurantData({ ...restaurantData, facebook: e.target.value })}
                       placeholder='https://facebook.com/yourrestaurant'
@@ -237,6 +238,7 @@ export default function RestaurantInfoSettings({ data }: any) {
                           Instagram
                         </Flex>
                       }
+                      radius='md'
                       value={restaurantData.instagram}
                       onChange={e => setRestaurantData({ ...restaurantData, instagram: e.target.value })}
                       placeholder='https://instagram.com/yourrestaurant'
@@ -251,6 +253,7 @@ export default function RestaurantInfoSettings({ data }: any) {
                           Twitter
                         </Flex>
                       }
+                      radius='md'
                       value={restaurantData.twitter}
                       onChange={e => setRestaurantData({ ...restaurantData, twitter: e.target.value })}
                       placeholder='https://twitter.com/yourrestaurant'

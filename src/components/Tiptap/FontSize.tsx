@@ -37,6 +37,7 @@ function FontSizeControl({ editor }: { editor: any }) {
     <Group gap='xs' align='center'>
       <Select
         size='xs'
+        radius='md'
         data={Object.keys(MANTINE_FONT_SIZES).map(key => ({
           value: key,
           label: `${key} (${MANTINE_FONT_SIZES[key]})`

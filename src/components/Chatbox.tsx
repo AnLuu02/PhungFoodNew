@@ -8,7 +8,6 @@ import {
   Center,
   Flex,
   Group,
-  Loader,
   Menu,
   Paper,
   ScrollArea,
@@ -204,7 +203,7 @@ export default function Chatbox() {
       h={{ base: 400, sm: size.height }}
       className='overflow-hidden bg-gray-100 duration-300 ease-in-out dark:bg-dark-card'
     >
-      <UnstyledButton p={'xs'} className='bg-gradient-to-br from-[#228be6] to-[#7048e8]'>
+      <UnstyledButton p={'xs'} className='bg-gradient-to-br from-mainColor to-subColor'>
         <Flex align={'center'} gap={'xs'} justify={'space-between'}>
           <Group>
             <Avatar src={`/images/jpg/bot.jpg`} radius='xl' />
@@ -220,6 +219,7 @@ export default function Chatbox() {
             <Box className='hidden sm:block'>
               {size.width <= 400 && size.height <= 500 ? (
                 <ActionIcon
+                  variant='light'
                   onClick={() => {
                     setSize({ width: 450, height: 540 });
                   }}
@@ -228,6 +228,7 @@ export default function Chatbox() {
                 </ActionIcon>
               ) : (
                 <ActionIcon
+                  variant='light'
                   onClick={() => {
                     setSize({ width: 400, height: 500 });
                   }}
@@ -265,14 +266,15 @@ export default function Chatbox() {
                 <Avatar
                   size='sm'
                   radius='xl'
-                  color={message.sender === 'Bot' ? 'blue' : 'violet'}
-                  variant='filled'
                   src={(message.sender === 'User' && user?.user?.image) || ''}
+                  classNames={{
+                    root: `${message.sender === 'Bot' ? 'bg-mainColor' : 'bg-subColor'}`
+                  }}
                 >
                   {message.sender === 'Bot' ? (
-                    <IconRobot size='1rem' />
+                    <IconRobot size='1rem' className='text-white' />
                   ) : user?.user?.image ? null : (
-                    <IconUser size='1rem' />
+                    <IconUser size='1rem' className='text-black' />
                   )}
                 </Avatar>
 
@@ -280,19 +282,11 @@ export default function Chatbox() {
                   <Paper
                     p='sm'
                     radius='lg'
-                    style={{
-                      background:
-                        message.sender === 'Bot' ? 'white' : 'linear-gradient(135deg, #4dabf7 0%, #9775fa 100%)',
-                      color: message.sender === 'Bot' ? '#000' : '#fff',
-                      borderRadius: message.sender === 'Bot' ? '1rem 1rem 1rem 0.25rem' : '1rem 1rem 0.25rem 1rem'
+                    classNames={{
+                      root: `${message.sender === 'Bot' ? 'rounded-[16px] rounded-bl-[4px] bg-mainColor text-white' : 'rounded-[16px] rounded-br-[4px] bg-subColor text-black'}`
                     }}
                   >
-                    <Text
-                      dangerouslySetInnerHTML={{ __html: message.text }}
-                      size='sm'
-                      c={message.sender === 'Bot' ? 'dark' : 'white'}
-                      style={{ wordBreak: 'break-word' }}
-                    />
+                    <Text dangerouslySetInnerHTML={{ __html: message.text }} size='sm' />
                   </Paper>
                   <Text size='xs' c='dimmed' ta={message.sender === 'User' ? 'right' : 'left'} mt={4} px='sm'>
                     {formatDateViVN(message.timestamp)}
@@ -332,7 +326,15 @@ export default function Chatbox() {
         <Flex align={'center'} gap={'xs'} justify={'space-between'}>
           {(stateRecord.searchState === 'initial' || stateRecord.searchState === 'completed') && (
             <>
-              <Button variant='transparent' onClick={startRecording} disabled={loading} p={0}>
+              <Button
+                variant='transparent'
+                onClick={startRecording}
+                disabled={loading}
+                p={0}
+                classNames={{
+                  label: 'text-mainColor duration-150 hover:text-subColor'
+                }}
+              >
                 <IconMicrophone size={20} />
               </Button>
             </>
@@ -356,13 +358,13 @@ export default function Chatbox() {
               <ActionIcon
                 onClick={sendMessage}
                 disabled={loading || !inputRef.current}
-                variant='gradient'
-                gradient={{ from: 'blue', to: 'violet', deg: 45 }}
                 size='sm'
                 radius='xl'
+                loading={loading}
                 mr={4}
+                className='duration-150 enabled:bg-mainColor enabled:hover:bg-subColor enabled:hover:text-black'
               >
-                {loading ? <Loader size='xs' color='white' /> : <IconSend size='1rem' />}
+                <IconSend size='1rem' />
               </ActionIcon>
             }
             onChange={e => {

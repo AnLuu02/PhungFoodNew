@@ -142,6 +142,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
                 <>
                   <Select
                     allowDeselect={false}
+                    radius='md'
                     value={searchParams.get('s') || 'all'}
                     onChange={value => {
                       if (value === 'all') params.delete('s');

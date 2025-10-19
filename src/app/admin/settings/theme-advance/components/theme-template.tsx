@@ -130,6 +130,7 @@ export const ThemeTemplateSection = ({
         <Group gap='xs'>
           <Text size='sm'>Category:</Text>
           <Select
+            radius='md'
             value={filterCategory}
             onChange={value => setFilterCategory(value || '')}
             data={categories.map(c => ({ value: c, label: c }))}

@@ -301,6 +301,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => (
               <Select
                 label='Danh mục'
+                radius='md'
                 placeholder=' Chọn danh mục'
                 searchable
                 data={categories?.map(category => ({
@@ -344,6 +345,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             name='price'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 hideControls
                 label='Giá tiền'
@@ -360,6 +362,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             name='discount'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 hideControls
                 label='Giảm giá'
@@ -377,6 +380,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => (
               <Select
                 label='Vùng miền'
+                radius='md'
                 placeholder='Chọn vùng miền'
                 searchable
                 data={regions?.map(region => ({
@@ -397,6 +401,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             name='availableQuantity'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 hideControls
                 label='Số lượng khả dụng'
@@ -416,6 +421,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => (
               <NumberInput
                 {...field}
+                radius={'md'}
                 thousandSeparator=','
                 hideControls
                 value={field.value ?? 0}

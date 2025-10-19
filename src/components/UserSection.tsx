@@ -9,7 +9,7 @@ import Link from 'next/link';
 const menuUser = [
   { label: 'Thông tin cá nhân', href: '/thong-tin', icon: IconUser },
   { label: 'Đơn hàng của tôi', href: '/don-hang-cua-toi', icon: IconShoppingBag },
-  { label: 'Đổi mật khẩu', href: '/auth/password/change-password', icon: IconLock }
+  { label: 'Đổi mật khẩu', href: '/password/change-password', icon: IconLock }
 ];
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
@@ -23,13 +23,13 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
     return (
       <Group gap={'xs'} align={'center'} justify='center'>
         <IconUserCircle size={20} fontWeight={'bold'} />
-        <Link href='/auth/register' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
+        <Link href='/dang-ky' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng kí
           </Text>
         </Link>
         <Text>/</Text>
-        <Link href='/auth/login' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
+        <Link href='/dang-nhap' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng nhập
           </Text>

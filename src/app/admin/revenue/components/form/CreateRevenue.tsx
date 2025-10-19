@@ -69,6 +69,7 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => (
               <Select
                 label='Khách hàng'
+                radius='md'
                 onClick={async () => {
                   const usersData = await utils.User.getAll.fetch();
                   setUsers(usersData);
@@ -88,6 +89,7 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='totalSpent'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Tổng chi'
                 required
@@ -104,6 +106,7 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='totalOrders'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Tổng đơn hàng'
                 required
@@ -120,6 +123,7 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='day'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Ngày'
                 required
@@ -136,6 +140,7 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='month'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Tháng'
                 required
@@ -152,6 +157,7 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='year'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Năm'
                 required

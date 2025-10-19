@@ -335,7 +335,13 @@ export default function UpdateProduct({
             control={control}
             name='name'
             render={({ field }) => (
-              <TextInput {...field} label='Tên sản phẩm' placeholder='Nhập tên sản phẩm' error={errors.name?.message} />
+              <TextInput
+                {...field}
+                radius='md'
+                label='Tên sản phẩm'
+                placeholder='Nhập tên sản phẩm'
+                error={errors.name?.message}
+              />
             )}
           />
         </Grid.Col>
@@ -347,6 +353,7 @@ export default function UpdateProduct({
             render={({ field }) => (
               <Select
                 label='Danh mục'
+                radius='md'
                 placeholder=' Chọn danh mục'
                 searchable
                 data={categories?.map(category => ({
@@ -390,6 +397,7 @@ export default function UpdateProduct({
             name='price'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 hideControls
                 label='Giá tiền'
@@ -406,6 +414,7 @@ export default function UpdateProduct({
             name='discount'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 hideControls
                 label='Giảm giá'
@@ -423,6 +432,7 @@ export default function UpdateProduct({
             render={({ field }) => (
               <Select
                 label='Vùng miền'
+                radius='md'
                 placeholder='Chọn vùng miền'
                 searchable
                 data={regions?.map(region => ({
@@ -444,6 +454,7 @@ export default function UpdateProduct({
             name='availableQuantity'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 hideControls
                 label='Số lượng khả dụng'
@@ -462,6 +473,7 @@ export default function UpdateProduct({
             defaultValue={0}
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 thousandSeparator=','
                 hideControls

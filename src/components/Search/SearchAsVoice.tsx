@@ -1,10 +1,11 @@
 'use client';
 
-import { ActionIcon, Box, Button, Flex, Group, List, Modal, Stack, Text, Title } from '@mantine/core';
+import { ActionIcon, Box, Flex, Group, List, Modal, Stack, Text, Title } from '@mantine/core';
 import { IconDots, IconLighter, IconMicrophone, IconSquare, IconTrash, IconVolume } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { NotifyError } from '~/lib/func-handler/toast';
+import BButton from '../Button/Button';
 
 const initialState: any = {
   searchState: 'initial',
@@ -22,7 +23,7 @@ function reducer(state: any, action: any) {
     case 'RESET':
       return initialState;
     case 'SET_TRANSCRIPT':
-      return { ...state, transcript: action.payload };
+      return { ...state, transcript: action.payload?.split('.')?.[0] };
     case 'SET_AUDIO_URL':
       return { ...state, audioUrl: action.payload };
     case 'INCREMENT_TIME':
@@ -145,7 +146,7 @@ export default function VoiceSearchModal() {
         padding='lg'
       >
         <Stack>
-          <Box className='space-y-2 rounded-lg bg-amber-50 p-2'>
+          <Box className='space-y-2 rounded-lg bg-amber-50 p-2 dark:bg-dark-background'>
             <Group>
               <IconLighter size={24} className='text-amber-500' />
               <Text fw={500}>Mẹo để tìm kiếm chính xác hơn</Text>
@@ -159,8 +160,13 @@ export default function VoiceSearchModal() {
           <Stack align='center' gap='lg' py={'md'}>
             {state.searchState === 'initial' && (
               <>
-                <Text c='dimmed'>Ví dụ: "Vitamin C"</Text>
-                <ActionIcon size='xl' radius='xl' variant='light' color='blue' onClick={startRecording}>
+                <Text c='dimmed'>Ví dụ: "Cơm chiên"</Text>
+                <ActionIcon
+                  size='xl'
+                  radius='xl'
+                  onClick={startRecording}
+                  className='bg-mainColor/15 text-mainColor duration-150 hover:bg-mainColor hover:text-white'
+                >
                   <IconMicrophone size={28} />
                 </ActionIcon>
                 <Text c='dimmed' size='sm'>
@@ -192,7 +198,14 @@ export default function VoiceSearchModal() {
                     ))}
                   </Flex>
 
-                  <ActionIcon size='xl' radius='xl' color='gray' variant='light' onClick={resetRecording}>
+                  <ActionIcon
+                    size='xl'
+                    radius='xl'
+                    color='gray'
+                    variant='light'
+                    onClick={resetRecording}
+                    className='duration-150 hover:bg-red-400 hover:text-white'
+                  >
                     <IconTrash size={20} />
                   </ActionIcon>
                 </Flex>
@@ -203,7 +216,7 @@ export default function VoiceSearchModal() {
             {state.searchState === 'completed' && (
               <>
                 <Text c='dimmed'>Bạn đã nói:</Text>
-                <Text fw={600} size='lg' color='blue'>
+                <Text fw={600} size='lg' className='text-mainColor'>
                   "{state.transcript}"
                 </Text>
                 <Text c='dimmed'>Nghe lại</Text>
@@ -211,13 +224,12 @@ export default function VoiceSearchModal() {
                   <ActionIcon
                     size='xl'
                     radius='xl'
-                    color='blue'
-                    variant='light'
                     onClick={() => {
                       if (state.audioUrl) {
                         new Audio(state.audioUrl).play();
                       }
                     }}
+                    className='bg-mainColor/15 text-mainColor duration-150 hover:bg-mainColor hover:text-white'
                   >
                     <IconVolume size={20} />
                   </ActionIcon>
@@ -230,7 +242,14 @@ export default function VoiceSearchModal() {
 
                   <IconDots size={24} color='var(--mantine-color-blue-6)' />
 
-                  <ActionIcon size='xl' radius='xl' color='gray' variant='light' onClick={resetRecording}>
+                  <ActionIcon
+                    size='xl'
+                    radius='xl'
+                    color='gray'
+                    variant='light'
+                    onClick={resetRecording}
+                    className='duration-150 hover:bg-red-400 hover:text-white'
+                  >
                     <IconTrash size={20} />
                   </ActionIcon>
                 </Flex>
@@ -240,7 +259,7 @@ export default function VoiceSearchModal() {
           </Stack>
 
           <Link href={`/thuc-don?s=${state.transcript}`}>
-            <Button
+            {/* <Button
               fullWidth
               size='md'
               color={state.searchState === 'completed' ? 'blue' : 'gray'}
@@ -251,7 +270,18 @@ export default function VoiceSearchModal() {
               }}
             >
               Tìm kiếm
-            </Button>
+            </Button> */}
+            <BButton
+              fullWidth
+              size='md'
+              radius={'md'}
+              disabled={state.searchState !== 'completed'}
+              onClick={() => {
+                setOpened(false);
+                resetRecording();
+              }}
+              children='Tìm kiếm'
+            />
           </Link>
         </Stack>
 

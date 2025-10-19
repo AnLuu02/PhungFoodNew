@@ -119,6 +119,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
             <Select
               allowDeselect={false}
               placeholder='Sắp xếp'
+              radius='md'
               value={searchParams.get('sort') || 'all'}
               onChange={value => {
                 if (value === 'all') params.delete('sort');
@@ -139,6 +140,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
             <Select
               allowDeselect={false}
               placeholder='Bộ lọc'
+              radius='md'
               value={searchParams.get('s') || 'all'}
               onChange={value => {
                 if (value === 'all') params.delete('s');

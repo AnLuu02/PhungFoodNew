@@ -1,12 +1,13 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
+import { Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
@@ -90,7 +91,7 @@ export default function Page() {
         });
         if (result.code === 'OK') {
           NotifySuccess('Thành công!', `${result.message}`);
-          router.push('/auth/login');
+          router.push('/dang-nhap');
         } else {
           NotifyError('Cảnh báo!', `${result.message}`);
         }
@@ -117,6 +118,7 @@ export default function Page() {
                   name='name'
                   render={({ field }) => (
                     <TextInput
+                      radius={'md'}
                       withAsterisk
                       label='Họ tên'
                       placeholder='Họ tên'
@@ -133,6 +135,7 @@ export default function Page() {
                   name='email'
                   render={({ field }) => (
                     <TextInput
+                      radius={'md'}
                       withAsterisk
                       leftSection={<IconMail size={18} stroke={1.5} />}
                       placeholder='E-mail'
@@ -150,6 +153,7 @@ export default function Page() {
                   name='phone'
                   render={({ field }) => (
                     <TextInput
+                      radius={'md'}
                       {...field}
                       withAsterisk
                       label='Số điện thoại'
@@ -166,6 +170,7 @@ export default function Page() {
                   name='password'
                   render={({ field }) => (
                     <PasswordInput
+                      radius={'md'}
                       label='Mật khẩu'
                       withAsterisk
                       leftSection={<IconKey size={18} stroke={1.5} />}
@@ -184,6 +189,7 @@ export default function Page() {
                     const dateValue = field.value ? new Date(field.value) : null;
                     return (
                       <DateTimePicker
+                        radius={'md'}
                         valueFormat='DD-MM-YYYY'
                         leftSection={<IconCalendar size={18} stroke={1.5} />}
                         dropdownType='modal'
@@ -204,6 +210,7 @@ export default function Page() {
                     <Select
                       label='Giới tính'
                       searchable
+                      radius={'md'}
                       placeholder='Giới tính'
                       {...field}
                       data={[
@@ -225,26 +232,26 @@ export default function Page() {
               />
 
               <GridCol span={12} className='flex justify-end'>
-                <Link href={'/auth/login'} className='text-white'>
+                <Link href={'/dang-nhap'}>
                   <Text
+                    fw={700}
+                    className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'
                     size='sm'
-                    className='cursor-pointer text-black underline hover:text-red-500 dark:text-dark-text'
                   >
                     Bạn đã có tài khoản?
                   </Text>
                 </Link>
               </GridCol>
               <GridCol span={12}>
-                <Button
+                <BButton
+                  disabled={!isDirty}
+                  radius='md'
+                  loading={isSubmitting}
+                  type='submit'
                   fullWidth
                   size='md'
-                  className='bg-mainColor text-white transition-all duration-200 ease-in-out hover:bg-subColor hover:text-black'
-                  type='submit'
-                  loading={isSubmitting}
-                  disabled={!isDirty}
-                >
-                  ĐĂNG KÍ
-                </Button>
+                  children={'ĐĂNG KÍ'}
+                />
               </GridCol>
             </Grid>
           </Card.Section>

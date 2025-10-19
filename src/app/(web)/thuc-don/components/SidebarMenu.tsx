@@ -1,5 +1,5 @@
 'use client';
-import { Box, Button, Drawer, Flex, Title } from '@mantine/core';
+import { Button, Drawer, Flex, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconFilter } from '@tabler/icons-react';
 import { useState } from 'react';
@@ -47,9 +47,5 @@ export function SidebarMenu({ categories, materials }: any) {
     );
   }
 
-  return (
-    <Box className='h-full w-72 border-r bg-white dark:bg-dark-background'>
-      <SidebarFilterContent categories={categories} materials={materials} />
-    </Box>
-  );
+  return <SidebarFilterContent categories={categories} materials={materials} />;
 }

@@ -30,3 +30,9 @@ export function getTagFromQuery(queryString: any) {
 
   return 'Tất cả';
 }
+export function getViTag(tag: any) {
+  if (tags?.[tag]) {
+    return tags?.[tag];
+  }
+  return tag;
+}

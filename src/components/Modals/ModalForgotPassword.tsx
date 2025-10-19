@@ -64,6 +64,7 @@ export const ModalForgotPassword = ({ opened, setOpened }: { opened: boolean; se
               <GridCol span={12}>
                 <TextInput
                   type='email'
+                  radius='md'
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required

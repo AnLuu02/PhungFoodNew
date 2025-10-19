@@ -69,6 +69,7 @@ const OrderItemForm = ({
               <Select
                 label='Chọn món'
                 searchable
+                radius='md'
                 {...field}
                 placeholder='Select products'
                 data={products?.map((product: any) => ({
@@ -89,6 +90,7 @@ const OrderItemForm = ({
             defaultValue={1}
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 thousandSeparator=','
                 label={`Số lượng (còn: ${Number(productOrderItem?.availableQuantity) || 100})`}
@@ -106,6 +108,7 @@ const OrderItemForm = ({
             control={control}
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 label={`Giá (chỉ đọc)`}
                 readOnly

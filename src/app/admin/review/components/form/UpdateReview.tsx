@@ -84,6 +84,7 @@ export default function UpdateReview({
             render={({ field }) => (
               <Select
                 searchable
+                radius='md'
                 label='Product'
                 placeholder=' Chọn sản phẩm'
                 data={products?.map((product: any) => ({ value: product.id, label: product.name })) || []}
@@ -103,6 +104,7 @@ export default function UpdateReview({
               <Select
                 searchable
                 label='user'
+                radius='md'
                 placeholder=' Chọn khách hàng'
                 data={users?.map((user: any) => ({ value: user.id, label: user.name })) || []}
                 value={field.value}
@@ -123,7 +125,7 @@ export default function UpdateReview({
             }}
             render={({ field }) => (
               <Flex align={'center'} justify={'space-between'}>
-                <NumberInput label='Đánh giá' {...field} min={0} max={5} error={errors.rating?.message} />
+                <NumberInput label='Đánh giá' {...field} min={0} max={5} error={errors.rating?.message} radius={'md'} />
                 <Rating size={'lg'} {...field} fractions={4} color={'#FFC522'} />
               </Flex>
             )}

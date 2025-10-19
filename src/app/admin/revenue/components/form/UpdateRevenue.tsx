@@ -81,7 +81,9 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
         <Controller
           name='id'
           control={control}
-          render={({ field }) => <TextInput hidden {...field} error={errors.id?.message} className='hidden' />}
+          render={({ field }) => (
+            <TextInput hidden {...field} error={errors.id?.message} className='hidden' radius='md' />
+          )}
         />
         <Grid.Col span={6}>
           <Controller
@@ -91,6 +93,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
               <Select
                 label='Khách hàng'
                 searchable
+                radius='md'
                 placeholder='Chọn khách hàng'
                 data={users?.map((user: any) => ({ value: user.id, label: user.name }))}
                 {...field}
@@ -105,6 +108,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='totalSpent'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Tổng chi'
                 required
@@ -121,6 +125,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='totalOrders'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Tổng đơn hàng'
                 required
@@ -137,6 +142,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='day'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Ngày'
                 required
@@ -155,6 +161,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='month'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Tháng'
                 min={1}
@@ -173,6 +180,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='year'
             render={({ field }) => (
               <NumberInput
+                radius={'md'}
                 {...field}
                 label='Năm'
                 required

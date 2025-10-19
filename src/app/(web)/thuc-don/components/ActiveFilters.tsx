@@ -4,24 +4,31 @@ import { Group, InputBase, Pill, Text } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import BButton from '~/components/Button/Button';
-const FILTER_LABELS: Record<string, string> = {
-  tag: 'Thẻ',
-  s: 'Tìm kiếm',
-  sort: 'Sắp xếp',
-  minPrice: 'Giá từ',
-  maxPrice: 'Giá đến',
-  'nguyen-lieu': 'Nguyên liệu',
-  'danh-muc': 'Danh mục',
-  'loai-san-pham': 'Loại sản phẩm',
-  loai: 'Loại'
-};
+import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { getViTag } from '~/lib/func-handler/generateTag';
+
 export default function ActiveFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
-  const ignored = ['page', 'limit'];
+  const ignored = ['page', 'limit', 'maxPrice', 'minPrice', 's'];
   const activeFilters = useMemo(() => {
-    return Array.from(params.entries()).filter(([key, value]) => value && !ignored.includes(key));
+    let price = '';
+    const dataFormat = Array.from(params.entries()).filter(([key, value]) => {
+      if (key === 'minPrice') {
+        price += 'Giá từ ' + formatPriceLocaleVi(value) + ' - ';
+      }
+      if (key === 'maxPrice') {
+        price += formatPriceLocaleVi(value);
+      }
+      return value && !ignored.includes(key);
+    });
+
+    if (price) {
+      dataFormat.push(['price', price]);
+    }
+
+    return dataFormat;
   }, [params]);
 
   if (activeFilters.length === 0) return null;
@@ -35,9 +42,16 @@ export default function ActiveFilters() {
     router.push(`?${newParams.toString()}`);
   };
 
+  const renderTag = (key: string, value: string) => {
+    if (key === 'minPrice' || key === 'maxPrice') {
+      return formatPriceLocaleVi(value);
+    }
+    return getViTag(value).toLowerCase();
+  };
+
   return (
     <>
-      <InputBase component='div' multiline radius={'lg'} w={'100%'}>
+      <InputBase component='div' multiline radius={'lg'} w={'100%'} px={'xs'}>
         <Group gap={4}>
           <Text fw={700} size='sm'>
             Lọc:
@@ -45,7 +59,7 @@ export default function ActiveFilters() {
           <Pill.Group>
             {activeFilters.map(([key, value]) => (
               <Pill key={key} withRemoveButton onRemove={() => removeFilter(key, value)} className='bg-mainColor/10'>
-                {FILTER_LABELS[key] ?? key}: {decodeURIComponent(value)}
+                {renderTag(key, value)}
               </Pill>
             ))}
           </Pill.Group>

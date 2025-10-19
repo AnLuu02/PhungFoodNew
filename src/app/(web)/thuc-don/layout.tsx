@@ -13,7 +13,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <Box className='relative' w={'100%'}>
       <Grid gutter={30} columns={24}>
-        <GridCol span={{ base: 24, sm: 24, md: 8, lg: 6 }} className='h-fit overflow-hidden dark:bg-dark-background'>
+        <GridCol p={0} pt={'md'} pr={'xs'} span={{ base: 24, sm: 24, md: 8, lg: 6 }} className='h-fit overflow-hidden'>
           <SidebarMenu
             materials={materials.status === 'fulfilled' ? materials.value : []}
             categories={categories.status === 'fulfilled' ? categories.value : []}

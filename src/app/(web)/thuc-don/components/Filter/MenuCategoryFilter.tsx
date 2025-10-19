@@ -1,12 +1,12 @@
 'use client';
-import { Accordion, Box, Button, Paper, Text } from '@mantine/core';
+import { Accordion, Box, Button, Card, Text } from '@mantine/core';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 export const MenuCategoryFilter = ({ categories }: any) => {
   const params = useSearchParams();
   return (
-    <Paper shadow='md' className='rounded-md border-mainColor' mt={{ base: 'xs', md: 0 }} mb={20}>
+    <Card p={0} className='rounded-md bg-gray-100 dark:bg-dark-card' mt={{ base: 'xs', md: 0 }} mb={20}>
       <Box className='rounded-t-md bg-mainColor p-2 text-white'>
         <Text size='sm' fw={700}>
           DANH MỤC SẢN PHẨM
@@ -75,6 +75,6 @@ export const MenuCategoryFilter = ({ categories }: any) => {
           </Accordion.Item>
         ))}
       </Accordion>
-    </Paper>
+    </Card>
   );
 };

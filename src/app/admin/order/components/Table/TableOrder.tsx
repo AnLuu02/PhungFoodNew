@@ -129,6 +129,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
           <Group>
             <Select
               allowDeselect={false}
+              radius='md'
               placeholder='Status'
               value={searchParams.get('filter') || 'all'}
               onChange={value => {
@@ -151,6 +152,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
 
             <Select
               allowDeselect={false}
+              radius='md'
               placeholder='Sắp xếp'
               value={searchParams.get('sort') || 'all'}
               onChange={value => {

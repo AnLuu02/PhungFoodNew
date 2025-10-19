@@ -134,6 +134,7 @@ export const CartTable = ({ updateQuantity }: any) => {
             </Table.Td>
             <Table.Td className='text-sm'>
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 clampBehavior='strict'
                 value={item.quantity}

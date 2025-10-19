@@ -109,6 +109,7 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                     <Select
                       defaultValue='medium'
                       label='Chính sách mật khẩu'
+                      radius='md'
                       data={[
                         { value: 'low', label: 'Thấp (8+ ký tự)' },
                         { value: 'medium', label: 'Trung bình (8+ ký tự, số)' },
@@ -161,6 +162,7 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                     <Select
                       label='Tần suất dự phòng'
                       defaultValue='daily'
+                      radius='md'
                       data={[
                         { value: 'hourly', label: 'Hourly' },
                         { value: 'daily', label: 'Daily' },

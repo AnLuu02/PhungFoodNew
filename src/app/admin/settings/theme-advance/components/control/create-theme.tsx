@@ -67,6 +67,7 @@ export const CreateTheme = ({
             </label>
             <TextInput
               id='template-name'
+              radius='md'
               value={newTemplateName}
               onChange={e => setNewTemplateName(e.currentTarget.value)}
               placeholder='My Custom Theme'
@@ -78,6 +79,7 @@ export const CreateTheme = ({
               Mô tả (Tùy chọn)
             </label>
             <TextInput
+              radius='md'
               id='template-description'
               value={newTemplateDescription}
               onChange={e => setNewTemplateDescription(e.currentTarget.value)}
@@ -91,6 +93,7 @@ export const CreateTheme = ({
             </label>
             <Select
               id='template-category'
+              radius='md'
               value={newTemplateCategory}
               onChange={e => setNewTemplateCategory(e as string)}
               placeholder='Select category'

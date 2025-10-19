@@ -87,6 +87,7 @@ export function UserStatistics() {
             <Flex align={'center'} justify={'space-between'} mb='xl'>
               <Select
                 value={selectedYear}
+                radius='md'
                 onChange={value => setSelectedYear(value || '2023')}
                 data={Object.keys({
                   '2025': 3280,

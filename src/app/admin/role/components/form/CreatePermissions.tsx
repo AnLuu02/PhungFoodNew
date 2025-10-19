@@ -63,6 +63,7 @@ export default function CreatePermission({ setOpened }: { setOpened: Dispatch<Se
                 {...field}
                 label='Tên quyền '
                 size='sm'
+                radius='md'
                 placeholder='vd: create:user or update:user or delete:user or ...'
                 error={errors.name?.message}
               />
@@ -78,6 +79,7 @@ export default function CreatePermission({ setOpened }: { setOpened: Dispatch<Se
                 {...field}
                 label='Tên phiên âm vai trò'
                 size='sm'
+                radius='md'
                 placeholder='vd: Cập nhật sản phẩm'
                 error={errors.name?.message}
               />

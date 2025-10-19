@@ -124,6 +124,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
           <SearchInput width={500} />
           <Group>
             <Select
+              radius='md'
               allowDeselect={false}
               value={statusFilter}
               onChange={value => setStatusFilter(value as string)}
@@ -136,6 +137,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
             />
 
             <Select
+              radius='md'
               value={typeFilter}
               allowDeselect={false}
               onChange={value => setTypeFilter(value as string)}

@@ -27,14 +27,14 @@ export default function ResetPassword({
     onSuccess: data => {
       NotifySuccess(data.message);
       setLoading(false);
-      !user ? (window.location.href = '/auth/login') : (window.location.href = '/');
+      !user ? (window.location.href = '/dang-nhap') : (window.location.href = '/');
     },
     onError: error => {
       NotifyError(error.message);
       setLoading(false);
       !user
-        ? (window.location.href = '/auth/password/forgot-password')
-        : (window.location.href = '/auth/password/change-password');
+        ? (window.location.href = '/password/forgot-password')
+        : (window.location.href = '/password/change-password');
     }
   });
 

@@ -123,6 +123,7 @@ export const GlobalSearch = ({ width }: any) => {
         leftSection={<IconSearch size={24} className='text-gray-300 dark:text-dark-text' />}
         rightSectionWidth={80}
         pointer
+        radius='md'
         w={width}
         rightSection={
           <Box
@@ -140,7 +141,6 @@ export const GlobalSearch = ({ width }: any) => {
             Ctrl + K
           </Box>
         }
-        radius='md'
         readOnly
         onClick={open}
       />
@@ -170,6 +170,7 @@ export const GlobalSearch = ({ width }: any) => {
           style={{ width: '100%' }}
           onClick={open}
           m={0}
+          radius='md'
           size='lg'
           variant='unstyled'
         />

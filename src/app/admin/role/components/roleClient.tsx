@@ -157,6 +157,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
             <Select
               allowDeselect={false}
               placeholder='Bộ lọc'
+              radius='md'
               value={searchParams.get('s') || 'all'}
               onChange={value => {
                 if (value === 'all') params.delete('s');

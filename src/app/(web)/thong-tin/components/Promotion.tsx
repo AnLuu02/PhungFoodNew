@@ -146,6 +146,7 @@ export function Promotions({ vouchers }: { vouchers: any }) {
               <Select
                 value={String(perPage)}
                 w={100}
+                radius='md'
                 onChange={value => {
                   setPerPage(Number(value));
                   setPage(1);

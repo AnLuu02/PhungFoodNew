@@ -122,7 +122,7 @@ export default function Page() {
                 </GridCol>
 
                 <GridCol span={12} className='flex justify-end'>
-                  <Link href={'/auth/password/forgot-password'}>
+                  <Link href={'/password/forgot-password'}>
                     <Text
                       fw={700}
                       className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'
@@ -143,13 +143,13 @@ export default function Page() {
                     type='submit'
                     fullWidth
                     size='md'
-                    children={'Gửi mã'}
+                    children={'Đăng nhập'}
                   />
                 </GridCol>
                 <GridCol span={12} className='flex justify-center'>
                   <Flex align={'center'} gap={4}>
                     <Text size='sm'>Bạn chưa có tài khoản?</Text>
-                    <Link href={'/auth/register'}>
+                    <Link href={'/dang-ky'}>
                       <Text
                         fw={700}
                         className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'

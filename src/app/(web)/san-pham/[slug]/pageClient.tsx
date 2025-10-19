@@ -191,6 +191,7 @@ export default function ProductDetailClient(data: any) {
             <Flex align='flex-end' gap={'md'} wrap={{ base: 'wrap', md: 'nowrap' }}>
               <Group gap='xs'>
                 <NumberInput
+                  radius={'md'}
                   label={
                     <Text size='sm' fw={700}>
                       Số lượng:
@@ -208,6 +209,7 @@ export default function ProductDetailClient(data: any) {
               <Group gap='xs'>
                 <Select
                   disabled
+                  radius='md'
                   label={
                     <Text size='sm' fw={700}>
                       Kích cỡ:

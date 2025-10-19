@@ -254,6 +254,7 @@ export default function UpdateOrder({
                     name={`delivery.address.provinceId`}
                     render={({ field, fieldState }) => (
                       <Select
+                        radius='md'
                         {...field}
                         searchable
                         placeholder='Chọn tỉnh thành'
@@ -276,6 +277,7 @@ export default function UpdateOrder({
                       <Select
                         {...field}
                         searchable
+                        radius='md'
                         placeholder='Chọn quận huyện'
                         data={districts?.results?.map((item: any) => ({
                           value: item.district_id,
@@ -296,6 +298,7 @@ export default function UpdateOrder({
                       <Select
                         {...field}
                         searchable
+                        radius='md'
                         placeholder='Chọn phường xã'
                         data={wards?.results?.map((item: any) => ({
                           value: item.ward_id,
@@ -345,6 +348,7 @@ export default function UpdateOrder({
                   <Select
                     label='Khách hàng'
                     searchable
+                    radius='md'
                     placeholder=' Chọn khách hàng'
                     data={users?.map(user => ({ value: user.id, label: user.name }))}
                     {...field}
@@ -362,6 +366,7 @@ export default function UpdateOrder({
                     {...field}
                     label='Phương thức thanh toán'
                     searchable
+                    radius='md'
                     placeholder=' Chọn phương thức thanh toán'
                     data={payments?.data?.map(payment => ({ value: payment.id, label: payment.name }))}
                     error={errors.paymentId?.message}
@@ -375,6 +380,7 @@ export default function UpdateOrder({
                 name='finalTotal'
                 render={({ field: { onChange, onBlur, value, name } }) => (
                   <NumberInput
+                    radius={'md'}
                     thousandSeparator=','
                     hideControls
                     clampBehavior='strict'
@@ -397,6 +403,7 @@ export default function UpdateOrder({
                 render={({ field }) => (
                   <Select
                     label='Trạng thái (chỉ đọc)'
+                    radius='md'
                     placeholder=' Chọn trạng thái'
                     data={Object.values(OrderStatus).map(status => ({
                       value: status,

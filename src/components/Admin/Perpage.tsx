@@ -22,6 +22,7 @@ const PageSizeSelector = () => {
         Hiển thị:
       </Title>
       <Select
+        radius='md'
         size={'xs'}
         defaultValue={limit}
         w={120}

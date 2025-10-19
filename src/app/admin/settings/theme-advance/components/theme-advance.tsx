@@ -85,6 +85,7 @@ export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme
             <Select
               label='Card Shadow'
               value={theme.cardShadow}
+              radius='md'
               onChange={value => setTheme({ ...theme, cardShadow: value! })}
               data={shadowOptions.map((option: any) => ({
                 value: option.value,
@@ -96,6 +97,7 @@ export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme
           <Box className='space-y-2'>
             <Select
               value={theme.buttonStyle}
+              radius='md'
               label='Button Style'
               onChange={value => setTheme({ ...theme, buttonStyle: value! })}
               data={buttonStyleOptions.map((option: any) => ({

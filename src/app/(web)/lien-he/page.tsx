@@ -1,4 +1,4 @@
-import { Button, Flex, Grid, GridCol, Input, Text, Textarea, ThemeIcon } from '@mantine/core';
+import { Button, Flex, Grid, GridCol, Text, Textarea, TextInput, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api } from '~/trpc/server';
@@ -53,13 +53,17 @@ const Contact = async () => {
 
               <Grid>
                 <GridCol span={12}>
-                  <Input styles={{ input: { borderRadius: 8, height: 30 } }} placeholder='Tên *' />
+                  <TextInput radius='md' styles={{ input: { borderRadius: 8, height: 30 } }} placeholder='Tên *' />
                 </GridCol>
                 <GridCol span={12}>
-                  <Input styles={{ input: { borderRadius: 8, height: 30 } }} placeholder='Số điện thoại *' />
+                  <TextInput
+                    radius='md'
+                    styles={{ input: { borderRadius: 8, height: 30 } }}
+                    placeholder='Số điện thoại *'
+                  />
                 </GridCol>
                 <GridCol span={12}>
-                  <Input styles={{ input: { borderRadius: 8, height: 30 } }} placeholder='E-mail *' />
+                  <TextInput radius='md' styles={{ input: { borderRadius: 8, height: 30 } }} placeholder='E-mail *' />
                 </GridCol>
                 <GridCol span={12}>
                   <Textarea resize='vertical' placeholder='Tin nhắn *' styles={{ input: { borderRadius: 8 } }} />

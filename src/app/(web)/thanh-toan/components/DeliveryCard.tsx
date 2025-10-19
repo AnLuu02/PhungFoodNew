@@ -83,6 +83,7 @@ export function DeliveryCard({
                 <Select
                   {...field}
                   searchable
+                  radius='md'
                   label='Tỉnh thành'
                   placeholder='Chọn tỉnh thành'
                   data={provinces?.results?.map((item: any) => ({
@@ -104,6 +105,7 @@ export function DeliveryCard({
                 <Select
                   {...field}
                   searchable
+                  radius='md'
                   label='Quận huyện'
                   placeholder='Chọn quận huyện'
                   data={districts?.results?.map((item: any) => ({
@@ -125,6 +127,7 @@ export function DeliveryCard({
                 <Select
                   {...field}
                   searchable
+                  radius='md'
                   label='Phường xã'
                   placeholder='Chọn phường xã'
                   data={wards?.results?.map((item: any) => ({

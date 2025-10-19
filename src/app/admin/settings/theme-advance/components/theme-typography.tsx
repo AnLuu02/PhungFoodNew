@@ -33,6 +33,7 @@ export const ThemeTypography = ({
       <Box className='space-y-6'>
         <Box className='space-y-2'>
           <Select
+            radius='md'
             value={theme.fontFamily}
             label='Font Family'
             onChange={value => setTheme({ ...theme, fontFamily: value! })}

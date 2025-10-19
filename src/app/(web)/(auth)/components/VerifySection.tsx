@@ -28,7 +28,7 @@ export default function VerifySection({
   const verifyOtp = api.User.verifyOtp.useMutation({
     onSuccess: async () => {
       const hashToken = await hashPassword(otp);
-      //   window.location.href = `/auth/reset-password?email=${encodeURIComponent(email)}&token=${hashToken}`;
+      //   window.location.href = `/reset-password?email=${encodeURIComponent(email)}&token=${hashToken}`;
 
       NotifySuccess('Xác thực OTP thành công!');
       setPeriod({ type: 'reset', email: email, token: hashToken });

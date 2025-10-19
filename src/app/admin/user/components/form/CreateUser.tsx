@@ -176,6 +176,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                   <TextInput
                     {...field}
                     required
+                    radius='md'
                     label='Tên'
                     placeholder='Nhập tên người dùng'
                     error={errors.name?.message}
@@ -191,6 +192,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                 render={({ field }) => (
                   <TextInput
                     {...field}
+                    radius='md'
                     type='email'
                     required
                     leftSection={<IconMail size={18} stroke={1.5} />}
@@ -227,6 +229,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     label='Số điện thoại'
                     leftSection={<IconPhone size={18} stroke={1.5} />}
                     placeholder='Nhập số điện thoại người dùng'
+                    radius='md'
                     error={errors.phone?.message}
                   />
                 )}
@@ -240,6 +243,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                 render={({ field }) => (
                   <Select
                     label='Vai trò'
+                    radius='md'
                     searchable
                     placeholder='Chọn vai trò'
                     {...field}
@@ -279,6 +283,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                   <Select
                     {...field}
                     searchable
+                    radius='md'
                     label='Chọn tỉnh thành'
                     placeholder='Chọn tỉnh thành'
                     data={provinces?.results?.map((item: any) => ({
@@ -300,6 +305,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                   <Select
                     {...field}
                     searchable
+                    radius='md'
                     label='Chọn quận huyện'
                     placeholder='Chọn quận huyện'
                     data={districts?.results?.map((item: any) => ({
@@ -322,6 +328,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     {...field}
                     label='Chọn phường xã'
                     searchable
+                    radius='md'
                     placeholder='Chọn phường xã'
                     data={wards?.results?.map((item: any) => ({
                       value: item.ward_id,
@@ -342,6 +349,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     placeholder='Giới tính'
                     searchable
                     label='Giới tính'
+                    radius='md'
                     {...field}
                     data={[
                       { value: LocalGender.MALE, label: 'Nam' },

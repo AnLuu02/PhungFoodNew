@@ -119,6 +119,7 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
                 label='Tên vai trò'
                 required
                 size='sm'
+                radius='md'
                 placeholder='Nhập tên vai trò'
                 error={errors.name?.message}
               />
@@ -135,6 +136,7 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
                 label='Tên phiên âm vai trò'
                 required
                 size='sm'
+                radius='md'
                 placeholder='Nhập tên phiên âm vai trò'
                 error={errors.viName?.message}
               />

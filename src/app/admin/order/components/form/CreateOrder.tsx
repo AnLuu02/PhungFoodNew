@@ -203,6 +203,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                       <Select
                         {...field}
                         searchable
+                        radius='md'
                         placeholder='Chọn tỉnh thành'
                         data={provinces?.results?.map((item: any) => ({
                           value: item.province_id,
@@ -223,6 +224,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                       <Select
                         {...field}
                         searchable
+                        radius='md'
                         placeholder='Chọn quận huyện'
                         data={districts?.results?.map((item: any) => ({
                           value: item.district_id,
@@ -243,6 +245,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                       <Select
                         {...field}
                         searchable
+                        radius='md'
                         placeholder='Chọn phường xã'
                         data={wards?.results?.map((item: any) => ({
                           value: item.ward_id,
@@ -296,6 +299,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                       setUsers(usersData);
                     }}
                     searchable
+                    radius='md'
                     placeholder='Chọn khách hàng'
                     data={users?.map((user: any) => ({ value: user.id, label: user.name }))}
                     {...field}
@@ -313,6 +317,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                     {...field}
                     label='Phương thức thanh toán'
                     searchable
+                    radius='md'
                     placeholder='Chọn phương thức thanh toán'
                     data={payments?.data?.map(payment => ({ value: payment.id, label: payment.name }))}
                     error={errors.paymentId?.message}
@@ -326,6 +331,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                 name='finalTotal'
                 render={({ field: { onChange, onBlur, value, name } }) => (
                   <NumberInput
+                    radius={'md'}
                     thousandSeparator=','
                     hideControls
                     clampBehavior='strict'

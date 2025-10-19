@@ -50,6 +50,7 @@ export const ShoppingCartMobile = () => {
             </Group>
             <Group m={0} p={0}>
               <NumberInput
+                radius={'md'}
                 thousandSeparator=','
                 clampBehavior='strict'
                 size='xs'

@@ -80,6 +80,7 @@ export default function UpdatePermission({
                 {...field}
                 label='Tên quyền'
                 size='sm'
+                radius='md'
                 placeholder='Nhập tên quyền'
                 error={errors.name?.message}
               />
@@ -95,6 +96,7 @@ export default function UpdatePermission({
                 {...field}
                 label='Tên phiên âm quyền'
                 size='sm'
+                radius='md'
                 placeholder='Nhập tên phiên âm quyền'
                 error={errors.name?.message}
               />
