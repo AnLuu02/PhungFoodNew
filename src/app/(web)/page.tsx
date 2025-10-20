@@ -18,7 +18,7 @@ const HomePage = async () => {
   const data = await getInit();
   return (
     <HydrateClient>
-      <HomeWeb data={data} />;
+      <HomeWeb data={data} />
     </HydrateClient>
   );
 };

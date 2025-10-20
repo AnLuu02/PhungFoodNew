@@ -123,7 +123,7 @@ export default function StorePolicyPage() {
                 <List.Item>Thực đơn thay đổi theo mùa, cập nhật món mới thường xuyên</List.Item>
                 <List.Item>Hỗ trợ khách hàng có nhu cầu ăn kiêng, dị ứng thực phẩm</List.Item>
               </List>
-              <Alert icon={<IconInfoCircle size={18} />} color='yellow' mt={16}>
+              <Alert icon={<IconInfoCircle size={18} />} color='yellow' mt={16} radius={'md'}>
                 <Text size='sm'>
                   <strong>Lưu ý:</strong> Vui lòng kiểm tra kỹ đơn hàng trước khi xác nhận. Mọi khiếu nại về chất lượng
                   cần được gửi trong vòng 24h sau khi nhận hàng. Đối với các trường hợp dị ứng thực phẩm, hãy thông báo
@@ -156,7 +156,7 @@ export default function StorePolicyPage() {
                 <List.Item>Thanh toán qua QR code tại cửa hàng</List.Item>
                 <List.Item>Hóa đơn VAT xuất theo yêu cầu</List.Item>
               </List>
-              <Alert icon={<IconInfoCircle size={18} />} color='green' mt={16}>
+              <Alert icon={<IconInfoCircle size={18} />} color='green' mt={16} radius={'md'}>
                 <Text size='sm'>
                   Tất cả giao dịch đều được mã hóa SSL 256-bit. Chúng tôi không lưu trữ thông tin thẻ của bạn. Nếu có
                   vấn đề về thanh toán, vui lòng liên hệ hotline để được hỗ trợ ngay.
@@ -194,7 +194,7 @@ export default function StorePolicyPage() {
                 <List.Item>Hỗ trợ đổi/trả món nếu phát hiện lỗi hoặc không đúng đơn hàng</List.Item>
                 <List.Item>Đơn hàng tối thiểu cho giao hàng: 350.000đ</List.Item>
               </List>
-              <Alert icon={<IconAlertTriangle size={18} />} color='red' mt={16}>
+              <Alert icon={<IconAlertTriangle size={18} />} color='red' mt={16} radius={'md'}>
                 <Text size='sm'>
                   <strong>Cảnh báo:</strong> Nếu phát hiện món ăn không đảm bảo chất lượng, vui lòng liên hệ ngay để
                   được hỗ trợ đổi/trả hoặc hoàn tiền. Đối với các trường hợp giao hàng trễ do thời tiết hoặc sự cố,
@@ -230,7 +230,7 @@ export default function StorePolicyPage() {
                 <List.Item>Xác nhận và thanh toán, nhận thông báo trạng thái đơn hàng qua website/app/SMS</List.Item>
                 <List.Item>Liên hệ hotline nếu cần hỗ trợ hoặc thay đổi đơn hàng trong vòng 5 phút</List.Item>
               </List>
-              <Alert icon={<IconInfoCircle size={18} />} color='yellow' mt={16}>
+              <Alert icon={<IconInfoCircle size={18} />} color='yellow' mt={16} radius={'md'}>
                 <Text size='sm'>
                   <strong>Nhắc nhở:</strong> Đơn hàng có thể thay đổi hoặc hủy trong vòng 5 phút sau khi đặt. Sau đó,
                   món sẽ được chuẩn bị ngay. Vui lòng kiểm tra kỹ thông tin trước khi xác nhận.
@@ -277,7 +277,7 @@ export default function StorePolicyPage() {
                   </Anchor>
                 </List.Item>
               </List>
-              <Alert icon={<IconInfoCircle size={18} />} color='green' mt={16}>
+              <Alert icon={<IconInfoCircle size={18} />} color='green' mt={16} radius={'md'}>
                 <Text size='sm'>
                   <strong>Lưu ý:</strong> Mọi khiếu nại về chất lượng món ăn sẽ được xử lý trong vòng 24h. Đối với các
                   trường hợp khẩn cấp về an toàn thực phẩm, hãy liên hệ ngay để được hỗ trợ kịp thời.
@@ -310,7 +310,7 @@ export default function StorePolicyPage() {
                 <List.Item>Chương trình tích điểm, đổi quà cho khách hàng thân thiết</List.Item>
                 <List.Item>Khuyến mãi đặc biệt vào các dịp lễ, sinh nhật, ngày hội</List.Item>
               </List>
-              <Alert icon={<IconGift size={18} />} color='yellow' mt={16}>
+              <Alert icon={<IconGift size={18} />} color='yellow' mt={16} radius={'md'}>
                 <Text size='sm'>
                   <strong>Nhắc nhở:</strong> Vui lòng kiểm tra điều kiện áp dụng trước khi sử dụng mã khuyến mãi. Một số
                   ưu đãi có giới hạn số lượng hoặc thời gian.
@@ -349,7 +349,7 @@ export default function StorePolicyPage() {
                 hoặc các tình huống ngoài kiểm soát. Dị ứng thực phẩm cần được thông báo rõ khi đặt hàng. Khách hàng nên
                 kiểm tra kỹ thông tin trước khi xác nhận.
               </Text>
-              <Alert icon={<IconAlertTriangle size={18} />} color='red' mt={16}>
+              <Alert icon={<IconAlertTriangle size={18} />} color='red' mt={16} radius={'md'}>
                 <Text size='sm'>
                   <strong>Cảnh báo:</strong> Vui lòng đọc kỹ chính sách bảo mật và điều khoản trước khi sử dụng dịch vụ.
                   Nếu có thắc mắc, hãy liên hệ bộ phận hỗ trợ để được giải đáp.
