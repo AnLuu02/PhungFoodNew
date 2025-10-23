@@ -30,7 +30,7 @@ export const restaurantRouter = createTRPCRouter({
           ];
           await ctx.db.restaurant.create({
             data: {
-              name: 'PhungFoodRes',
+              name: 'PhungFood',
               isActive: true,
               description: 'Chuyên cung cấp các món ăn đặc sản vùng miền nói chung và miền Tây sông nước nói riêng.',
               address: '123 Đường Lê Lợi, Quận 1, TP.HCM',

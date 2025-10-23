@@ -61,6 +61,7 @@ const navItems = [
     children: [
       { label: 'Đơn bán hàng', icon: IconMenuOrder, href: '/admin/order' },
       { label: 'Hóa đơn', icon: IconMenuOrder, href: '/admin/invoice' },
+      { label: 'Liên hệ', icon: IconMenuOrder, href: '/admin/contact' },
       { label: 'Thanh toán', icon: IconCreditCardPay, href: '/admin/payment' }
     ]
   },

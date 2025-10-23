@@ -43,8 +43,8 @@ export async function GET(req: NextRequest) {
   });
   const redirectUrl =
     responseCode === '00'
-      ? `${process.env.NEXT_PUBLIC_BASE_URL}/vnpay-payment-result?${qs.stringify(vnp_Params)}`
-      : `${process.env.NEXT_PUBLIC_BASE_URL}/vnpay-payment-result?${qs.stringify(vnp_Params)}`;
+      ? `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/vnpay-payment-result?${qs.stringify(vnp_Params)}`
+      : `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/vnpay-payment-result?${qs.stringify(vnp_Params)}`;
 
   return NextResponse.redirect(redirectUrl);
 }

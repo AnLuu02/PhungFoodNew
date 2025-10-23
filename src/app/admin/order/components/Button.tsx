@@ -20,6 +20,7 @@ import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { UserRole } from '~/constants';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { handleConfirm } from '~/lib/button-handle/ButtonHandleConfirm';
+import { formatTransDate } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalOrderStatus } from '~/lib/zod/EnumType';
 import { api } from '~/trpc/react';
@@ -54,21 +55,28 @@ export function SendOrderButton({ order }: any) {
   const [loading, setLoading] = useState(false);
   const sendTestEmail = async () => {
     setLoading(true);
+    const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
     const res = await fetch('/api/send-invoice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        to: order?.user?.email || 'anluu0099@gmail.com',
-        invoiceData: order
+        to: order?.delivery?.email,
+        subject: 'Hóa đơn mua hàng',
+        data: order,
+        orderTrackingUrl:
+          `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/vnpay-payment-result?orderId=${encodeURIComponent(order?.id?.trim())}` +
+          `&transDate=${encodeURIComponent(transDate?.trim())}` +
+          `&statusOrder=${encodeURIComponent(order?.status?.trim())}` +
+          `&useLocal=1`
       })
     });
 
     const data = await res.json();
     if (data?.success) {
-      NotifySuccess('Thành công!', 'Gửi hóa đơn thành công! ');
+      NotifySuccess('Thao tác thành công!', 'Gửi hóa đơn thành công! ');
       setLoading(false);
     } else {
-      NotifyError('Lỗi!', 'Đã có lỗi xảy ra.');
+      NotifyError('Đã có lỗi không mong muốn!', data?.error);
       setLoading(false);
     }
   };
@@ -88,44 +96,7 @@ export function SendOrderButton({ order }: any) {
     </>
   );
 }
-export function PrintOrderButton({ order }: any) {
-  const [loading, setLoading] = useState(false);
-  const sendTestEmail = async () => {
-    setLoading(true);
-    const res = await fetch('/api/send-invoice', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: order?.user?.email || 'anluu0099@gmail.com',
-        invoiceData: order
-      })
-    });
 
-    const data = await res.json();
-    if (data?.success) {
-      NotifySuccess('Thành công!', 'Gửi hóa đơn thành công! ');
-      setLoading(false);
-    } else {
-      NotifyError('Lỗi!', 'Đã có lỗi xảy ra.');
-      setLoading(false);
-    }
-  };
-  return (
-    <>
-      <Button
-        leftSection={<IconPrinter size={16} />}
-        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-dark-text`}
-        variant='subtle'
-        loading={loading}
-        onClick={() => {
-          sendTestEmail();
-        }}
-      >
-        Gửi hóa đơn
-      </Button>
-    </>
-  );
-}
 export function UpdateOrderButton({ id }: { id: string }) {
   const [opened, setOpened] = useState(false);
   return (

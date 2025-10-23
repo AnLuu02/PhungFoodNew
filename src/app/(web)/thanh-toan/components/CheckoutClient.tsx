@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconArrowLeft } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -30,6 +31,7 @@ import { DeliveryCard } from './DeliveryCard';
 import { PaymentForm } from './PaymentForm';
 export default function CheckoutClient({ order }: { order: any }) {
   const [loading, setLoading] = useState(false);
+  const { data: session } = useSession();
   const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
   const mutationUpdateOrder = api.Order.update.useMutation({
     onError: e => {
@@ -95,8 +97,8 @@ export default function CheckoutClient({ order }: { order: any }) {
   useEffect(() => {
     if (order?.id) {
       reset({
-        name: order?.delivery?.name,
-        email: order?.delivery?.email,
+        name: order?.delivery?.name || session?.user?.name || '',
+        email: order?.delivery?.email || session?.user?.email || '',
         phone: order?.delivery?.phone,
         paymentId: order?.payment?.id,
         address: {
@@ -200,10 +202,10 @@ export default function CheckoutClient({ order }: { order: any }) {
             window.location.href = paymentUrl;
           }
         } catch {
-          NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
+          NotifyError('Đã có lỗi không mong muốn!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
         }
       } else {
-        NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
+        NotifyError('Đã có lỗi không mong muốn!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
       }
     }
   };

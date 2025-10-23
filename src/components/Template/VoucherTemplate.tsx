@@ -47,7 +47,7 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
           {
             onSuccess: () => {
               utils.Voucher.invalidate();
-              NotifySuccess('Thành công!', 'Nhận voucher thành công.');
+              NotifySuccess('Thao tác thành công!', 'Nhận voucher thành công.');
             },
             onError: () => {
               NotifyError('Thất bại!', 'Không thể nhận voucher vào lúc này.');

@@ -1,16 +1,20 @@
+import { Group } from '@mantine/core';
 import { Link, RichTextEditor } from '@mantine/tiptap';
 import Highlight from '@tiptap/extension-highlight';
-import Image from '@tiptap/extension-image';
 import SubScript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
 import TextAlign from '@tiptap/extension-text-align';
 import { FontSize, TextStyle } from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import Youtube from '@tiptap/extension-youtube';
-import { useEditor } from '@tiptap/react';
+import { Editor, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import FontSizeControl from './FontSize';
+import { EmojiPickerButton } from './EmojiPickerButton';
+import { FontFamily } from './extensions/FontFamilyExtension';
+import { ResizableImageExtension } from './extensions/ResizableImageView';
+import { Video } from './extensions/VideoExtension';
 import { MediaButtons } from './MediaButtons';
+import { TiptapControl } from './TiptapControl';
 interface RichTextEditorProps {
   value: any;
   onChange: ({ json, html }: { json: any; html: any }) => void;
@@ -19,9 +23,20 @@ const content =
   '<h2 style="text-align: center;">Welcome to Mantine rich text editor</h2><p><code>RichTextEditor</code> component focuses on usability and is designed to be as simple as possible to bring a familiar editing experience to regular users. <code>RichTextEditor</code> is based on <a href="https://tiptap.dev/" rel="noopener noreferrer" target="_blank">Tiptap.dev</a> and supports all of its features:</p><ul><li>General text formatting: <strong>bold</strong>, <em>italic</em>, <u>underline</u>, <s>strike-through</s> </li><li>Headings (h1-h6)</li><li>Sub and super scripts (<sup>&lt;sup /&gt;</sup> and <sub>&lt;sub /&gt;</sub> tags)</li><li>Ordered and bullet lists</li><li>Text align&nbsp;</li><li>And all <a href="https://tiptap.dev/extensions" target="_blank" rel="noopener noreferrer">other extensions</a></li></ul>';
 
 export const TiptapEditor = ({ value, onChange }: RichTextEditorProps) => {
-  const editor = useEditor({
+  const editor: Editor | null = useEditor({
     extensions: [
       StarterKit,
+      ResizableImageExtension.configure({
+        defaultWidth: 200,
+        defaultHeight: 200,
+        allowBase64: true
+      }),
+      Youtube.configure({
+        width: 640,
+        height: 360,
+        autoplay: false
+      }),
+      Video,
       Underline,
       Link,
       Superscript,
@@ -30,15 +45,7 @@ export const TiptapEditor = ({ value, onChange }: RichTextEditorProps) => {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       TextStyle,
       FontSize,
-      Image.configure({
-        inline: false,
-        allowBase64: true
-      }),
-      Youtube.configure({
-        width: 640,
-        height: 360,
-        autoplay: false
-      })
+      FontFamily
     ],
     content: value || content,
     onUpdate: ({ editor }) => {
@@ -54,45 +61,12 @@ export const TiptapEditor = ({ value, onChange }: RichTextEditorProps) => {
   return (
     <RichTextEditor editor={editor}>
       <RichTextEditor.Toolbar sticky stickyOffset={60}>
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Bold />
-          <RichTextEditor.Italic />
-          <RichTextEditor.Underline />
-          <RichTextEditor.Strikethrough />
-          <RichTextEditor.ClearFormatting />
-          <RichTextEditor.Highlight />
-          <RichTextEditor.Code />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Blockquote />
-          <RichTextEditor.Hr />
-          <RichTextEditor.BulletList />
-          <RichTextEditor.OrderedList />
-          <RichTextEditor.Subscript />
-          <RichTextEditor.Superscript />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Link />
-          <RichTextEditor.Unlink />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.AlignLeft />
-          <RichTextEditor.AlignCenter />
-          <RichTextEditor.AlignJustify />
-          <RichTextEditor.AlignRight />
-        </RichTextEditor.ControlsGroup>
-
-        <RichTextEditor.ControlsGroup>
-          <RichTextEditor.Undo />
-          <RichTextEditor.Redo />
-        </RichTextEditor.ControlsGroup>
-        <FontSizeControl editor={editor} />
-        <MediaButtons editor={editor} />
+        <TiptapControl editor={editor} />
+        <Group gap='xs'>
+          <MediaButtons editor={editor} />
+          <EmojiPickerButton editor={editor} />
+        </Group>
       </RichTextEditor.Toolbar>
-
       <RichTextEditor.Content />
     </RichTextEditor>
   );

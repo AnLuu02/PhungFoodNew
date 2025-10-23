@@ -39,12 +39,10 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;
 };
 
-// --- Hooks chọn lọc ---
 export const useModalSelector = <T,>(selector: (v: ModalContextValue) => T): T => {
   return useContextSelector(ModalContext as any, selector);
 };
 
-// --- Helpers tiện dùng ---
 export const useModalActions = () => {
   const openModal = useModalSelector(v => v.openModal);
   const closeModal = useModalSelector(v => v.closeModal);

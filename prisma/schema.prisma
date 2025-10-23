@@ -214,6 +214,7 @@ model User {
   email            String           @unique
   password         String
   isActive         Boolean          @default(true)
+  isVerified       Boolean          @default(false)
   phone            String?          @db.VarChar(10)
   dateOfBirth      DateTime?        @default(now())
   gender           Gender?
@@ -335,6 +336,26 @@ model Banner {
   endDate   DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
+}
+
+model Contact {
+  id        String      @id @default(cuid())
+  fullName  String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  type      TypeContact @default(COLLABORATION)
+  responded Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+enum TypeContact {
+  COLLABORATION
+  SUPPORT
+  FEEDBACK
+  OTHER
 }
 
 model Role {

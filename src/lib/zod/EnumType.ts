@@ -49,3 +49,10 @@ export enum LocalAddressType {
   USER = 'USER',
   DELIVERY = 'DELIVERY'
 }
+
+export enum TypeContact {
+  COLLABORATION = 'COLLABORATION',
+  SUPPORT = 'SUPPORT',
+  FEEDBACK = 'FEEDBACK',
+  OTHER = 'OTHER'
+}

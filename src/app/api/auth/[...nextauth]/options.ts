@@ -32,6 +32,9 @@ export const authOptions: NextAuthOptions = {
         if (!isValid) {
           throw new Error('Mật khẩu không đúng.');
         }
+        if (user && (!user?.isActive || !user?.isVerified)) {
+          throw new Error('Tài khoản của bạn hiện đang bị vô hiệu hóa.');
+        }
         return {
           id: user?.id,
           name: user?.name,

@@ -78,7 +78,7 @@ export function ShareSocials({ data, type = 'default' }: { data: any; type?: 'de
           variant='subtle'
           onClick={() => {
             navigator.clipboard.writeText(currentUrl);
-            NotifySuccess('Thành công!', 'Sao chép link thành công.');
+            NotifySuccess('Thao tác thành công!', 'Sao chép link thành công.');
           }}
           title='Copy link'
           className='transition-transform hover:scale-105 hover:text-mainColor'

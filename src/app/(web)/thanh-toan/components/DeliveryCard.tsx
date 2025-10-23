@@ -1,6 +1,5 @@
 import { Card, Grid, GridCol, Select, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
 import { Controller } from 'react-hook-form';
 import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
 
@@ -17,8 +16,6 @@ export function DeliveryCard({
   districts?: DistrictResponse;
   wards?: WardResponse;
 }) {
-  const { data: user } = useSession();
-
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
       <Title order={2} className='mb-4 font-quicksand text-xl'>
@@ -30,7 +27,6 @@ export function DeliveryCard({
             <Controller
               name='email'
               control={control}
-              defaultValue={user?.user?.email}
               render={({ field, fieldState }) => (
                 <TextInput
                   label='Email'
@@ -38,6 +34,7 @@ export function DeliveryCard({
                   type='email'
                   leftSection={<IconMail size={18} stroke={1.5} />}
                   {...field}
+                  withAsterisk
                   error={fieldState.error?.message}
                 />
               )}
@@ -47,13 +44,13 @@ export function DeliveryCard({
             <Controller
               name='name'
               control={control}
-              defaultValue={user?.user?.name}
               render={({ field, fieldState }) => (
                 <TextInput
                   leftSection={<IconUser size={18} stroke={1.5} />}
                   label='Họ và tên'
                   placeholder='Họ và tên'
                   {...field}
+                  withAsterisk
                   error={fieldState.error?.message}
                 />
               )}
@@ -69,7 +66,8 @@ export function DeliveryCard({
                   {...field}
                   label='Số điện thoại'
                   leftSection={<IconPhone size={18} stroke={1.5} />}
-                  placeholder='Số điện thoại (tùy chọn)'
+                  placeholder='Số điện thoại'
+                  withAsterisk
                   error={fieldState.error?.message}
                 />
               )}
@@ -90,6 +88,7 @@ export function DeliveryCard({
                     value: item.province_id,
                     label: item.province_name
                   }))}
+                  withAsterisk
                   nothingFoundMessage='Nothing found...'
                   error={fieldState.error?.message}
                 />
@@ -112,6 +111,7 @@ export function DeliveryCard({
                     value: item.district_id,
                     label: item.district_name
                   }))}
+                  withAsterisk
                   nothingFoundMessage='Nothing found...'
                   error={fieldState.error?.message}
                 />
@@ -134,6 +134,7 @@ export function DeliveryCard({
                     value: item.ward_id,
                     label: item.ward_name
                   }))}
+                  withAsterisk
                   nothingFoundMessage='Nothing found...'
                   error={fieldState.error?.message}
                 />
@@ -150,6 +151,7 @@ export function DeliveryCard({
                   label='Địa chỉ'
                   placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
                   resize='block'
+                  withAsterisk
                   error={fieldState.error?.message}
                 />
               )}

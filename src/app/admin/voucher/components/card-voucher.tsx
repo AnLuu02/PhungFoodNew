@@ -87,7 +87,7 @@ export default function CardVoucher({
                   }
                 });
                 if (newPromotion.code === 'OK') {
-                  NotifySuccess('Thành công!', 'Cập nhật thành công.');
+                  NotifySuccess('Thao tác thành công!', 'Cập nhật thành công.');
                   setLoading({ copy: false });
                   utils.Voucher.invalidate();
                 }
@@ -116,7 +116,7 @@ export default function CardVoucher({
                   id: ''
                 });
                 if (newPromotion.code === 'OK') {
-                  NotifySuccess('Thành công!', 'Nhân bản thành công.');
+                  NotifySuccess('Thao tác thành công!', 'Nhân bản thành công.');
                   setLoading({ copy: false });
                   utils.Voucher.invalidate();
                 }

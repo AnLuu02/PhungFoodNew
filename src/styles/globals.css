@@ -79,3 +79,19 @@ a {
 .tableAdmin::-webkit-scrollbar-track {
   background-color: #edf2f7;
 }
+
+/* --- Fix cho tiptap-extension-resizable-image --- */
+.tiptap-resizable-image {
+  display: inline-flex !important;
+  justify-content: center;
+  align-items: center;
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+.tiptap-resizable-image img {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+}

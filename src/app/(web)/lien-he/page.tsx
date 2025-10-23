@@ -1,19 +1,27 @@
-import { Button, Flex, Grid, GridCol, Text, Textarea, TextInput, ThemeIcon } from '@mantine/core';
+import { Flex, Grid, GridCol, Text, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
 import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
+import { FormContact } from './components/FormContact';
 
 export const metadata: Metadata = {
   title: 'Liên hệ - Phụng Food',
   description: 'Liên hệ chúng tôi để đặt món, tư vấn thực đơn, hợp tác hoặc phản hồi dịch vụ.'
 };
 const Contact = async () => {
-  const restaurant = await api.Restaurant.getOneActive();
+  const [restaurantRes, session] = await Promise.allSettled([
+    api.Restaurant.getOneActive(),
+    getServerSession(authOptions)
+  ]);
+  const restaurant = restaurantRes.status === 'fulfilled' ? restaurantRes.value : null;
+  const user = session.status === 'fulfilled' ? session.value?.user : null;
   return (
     <Grid w={'100%'}>
       <GridCol className='flex justify-between' span={12}>
         <Grid>
-          <GridCol span={{ base: 12, md: 6 }}>
+          <GridCol span={{ base: 12, md: 6 }} className='h-fit'>
             <Flex direction='column' w={'100%'}>
               <Text size='md' fw={900} mb={10}>
                 NƠI GIẢI ĐÁP TOÀN BỘ MỌI THẮC MẮC CỦA BẠN?
@@ -50,37 +58,10 @@ const Contact = async () => {
                 Nếu bạn có thắc mắc gì, có thể gửi yêu cầu cho chúng tôi, và chúng tôi sẽ liên lạc lại với bạn sớm nhất
                 có thể .
               </Text>
-
-              <Grid>
-                <GridCol span={12}>
-                  <TextInput radius='md' styles={{ input: { borderRadius: 8, height: 30 } }} placeholder='Tên *' />
-                </GridCol>
-                <GridCol span={12}>
-                  <TextInput
-                    radius='md'
-                    styles={{ input: { borderRadius: 8, height: 30 } }}
-                    placeholder='Số điện thoại *'
-                  />
-                </GridCol>
-                <GridCol span={12}>
-                  <TextInput radius='md' styles={{ input: { borderRadius: 8, height: 30 } }} placeholder='E-mail *' />
-                </GridCol>
-                <GridCol span={12}>
-                  <Textarea resize='vertical' placeholder='Tin nhắn *' styles={{ input: { borderRadius: 8 } }} />
-                </GridCol>
-                <GridCol span={12}>
-                  <Button
-                    size='sm'
-                    radius={'xl'}
-                    className='border-mainColor bg-mainColor text-white transition-all duration-200 ease-in-out hover:border-subColor hover:bg-subColor hover:text-black'
-                  >
-                    Gửi thông tin
-                  </Button>
-                </GridCol>
-              </Grid>
+              <FormContact user={user} />
             </Flex>
           </GridCol>
-          <GridCol span={{ base: 12, md: 6 }}>
+          <GridCol span={{ base: 12, md: 6 }} className='h-fit'>
             <Flex
               direction='column'
               w={'100%'}

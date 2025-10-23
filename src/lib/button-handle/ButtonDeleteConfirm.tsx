@@ -44,7 +44,7 @@ export const confirmDelete = ({
         const result = await mutationDelete.mutateAsync({ ...id });
         if (result?.code == 'OK' || result?.id) {
           await callback?.();
-          NotifySuccess('Thành công!', success);
+          NotifySuccess('Thao tác thành công!', success);
         } else {
           NotifyError('Thất bại!', error);
         }

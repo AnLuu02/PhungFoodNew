@@ -34,7 +34,7 @@ export default function ForgotPassword() {
     }
   }, [user]);
 
-  const requestPasswordReset = api.User.requestPasswordReset.useMutation({
+  const requestPasswordReset = api.User.verifyEmail.useMutation({
     onSuccess: () => {
       setLoading(false);
       setPeriod({
@@ -159,7 +159,6 @@ export default function ForgotPassword() {
           </Card>
         </Center>
       </form>
-      {/* <OtpModal opened={opened} onClose={close} email={email} timeExpiredMinutes={TIME_EXPIRED_MINUTES} /> */}
     </>
   );
 }

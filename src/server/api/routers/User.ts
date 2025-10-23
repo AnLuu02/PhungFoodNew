@@ -1,9 +1,10 @@
-import { Gender, UserLevel } from '@prisma/client';
+import { Gender, Prisma, UserLevel } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { compare } from 'bcryptjs';
 import { randomInt } from 'crypto';
 import { z } from 'zod';
 import { UserRole } from '~/constants';
+import { regexCheckGuest } from '~/lib/func-handler/generateGuestCredentials';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
 import { hashPassword } from '~/lib/func-handler/hashPassword';
 import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
@@ -159,10 +160,18 @@ export const userRouter = createTRPCRouter({
           defaultRole = roles.find(role => role.name === UserRole.CUSTOMER);
         }
       }
-      if (existed) {
+      if (existed && existed.isVerified) {
         return {
           code: 'CONFLICT',
           message: 'Người dùng đã tồn tại. Hãy thử lại.',
+          data: existed
+        };
+      }
+
+      if (existed && !existed.isActive) {
+        return {
+          code: 'FORBIDDEN',
+          message: 'Email này đã bị vô hiệu hóa.',
           data: existed
         };
       }
@@ -178,14 +187,22 @@ export const userRouter = createTRPCRouter({
           imgURL = input.image.fileName;
         }
       }
+      const otp = randomInt(100000, 999999).toString();
+      const now = new Date();
+      const otpExpiry = new Date(now.getTime() + 3 * 60 * 1000);
+      const emailContent = getOtpEmail(otp, input, 3);
+      await sendEmail(input.email, 'Mã OTP kích hoạt tài khoản', emailContent);
       const passwordHash = await hashPassword(input.password);
       const user = await ctx.db.user.create({
         data: {
+          resetToken: otp,
+          resetTokenExpiry: otpExpiry,
           name: input.name,
           email: input.email,
           gender: input.gender,
           dateOfBirth: input.dateOfBirth,
           isActive: input.isActive,
+          isVerified: regexCheckGuest.test(input.email) ? true : false,
           password: passwordHash,
           phone: input.phone,
           address: input.address
@@ -485,13 +502,31 @@ export const userRouter = createTRPCRouter({
         }
       };
     }),
-
+  updateAny: publicProcedure
+    .input(
+      z.object({
+        where: z.record(z.any()),
+        data: z.record(z.any())
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { where, data } = input;
+      const user = await ctx.db.user.update({
+        where: where as Prisma.UserWhereUniqueInput,
+        data: data as Prisma.UserUpdateInput
+      });
+      return {
+        code: 'OK',
+        message: 'Cập nhật người dùng.',
+        data: user
+      };
+    }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.user.findMany({ include: { role: true } });
     return user;
   }),
 
-  requestPasswordReset: publicProcedure
+  verifyEmail: publicProcedure
     .input(z.object({ email: z.string().email(), timeExpiredMinutes: z.number().default(3) }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const user = await ctx.db.user.findUnique({

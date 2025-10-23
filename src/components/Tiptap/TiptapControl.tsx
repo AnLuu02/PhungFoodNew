@@ -1,0 +1,50 @@
+import { Group } from '@mantine/core';
+import { RichTextEditor } from '@mantine/tiptap';
+import { Editor } from '@tiptap/react';
+import { FontFamilyControl } from './FontFamilyControl';
+import FontSizeControl from './FontSize';
+export const TiptapControl = ({ editor }: { editor: Editor | null }) => {
+  return (
+    <RichTextEditor.Toolbar sticky stickyOffset={60}>
+      <RichTextEditor.ControlsGroup>
+        <RichTextEditor.Undo />
+        <RichTextEditor.Redo />
+      </RichTextEditor.ControlsGroup>
+
+      <RichTextEditor.ControlsGroup>
+        <RichTextEditor.Bold />
+        <RichTextEditor.Italic />
+        <RichTextEditor.Underline />
+        <RichTextEditor.Strikethrough />
+        <RichTextEditor.ClearFormatting />
+        <RichTextEditor.Highlight />
+        <RichTextEditor.Code />
+      </RichTextEditor.ControlsGroup>
+
+      <RichTextEditor.ControlsGroup>
+        <RichTextEditor.Blockquote />
+        <RichTextEditor.Hr />
+        <RichTextEditor.BulletList />
+        <RichTextEditor.OrderedList />
+        <RichTextEditor.Subscript />
+        <RichTextEditor.Superscript />
+      </RichTextEditor.ControlsGroup>
+
+      <RichTextEditor.ControlsGroup>
+        <RichTextEditor.Link />
+        <RichTextEditor.Unlink />
+      </RichTextEditor.ControlsGroup>
+
+      <RichTextEditor.ControlsGroup>
+        <RichTextEditor.AlignLeft />
+        <RichTextEditor.AlignCenter />
+        <RichTextEditor.AlignJustify />
+        <RichTextEditor.AlignRight />
+      </RichTextEditor.ControlsGroup>
+      <Group gap={'xs'}>
+        <FontSizeControl editor={editor} />
+        <FontFamilyControl editor={editor} />
+      </Group>
+    </RichTextEditor.Toolbar>
+  );
+};

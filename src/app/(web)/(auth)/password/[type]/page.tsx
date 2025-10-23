@@ -28,7 +28,7 @@ export default function ForgotPassword() {
     }
   }, [user]);
 
-  const requestPasswordReset = api.User.requestPasswordReset.useMutation({
+  const requestPasswordReset = api.User.verifyEmail.useMutation({
     onSuccess: () => {
       setLoading(false);
       open();
@@ -106,7 +106,15 @@ export default function ForgotPassword() {
           </Card>
         </Center>
       </form>
-      <OtpModal opened={opened} onClose={close} email={email} timeExpiredMinutes={TIME_EXPIRED_MINUTES} />
+      <OtpModal
+        opened={opened}
+        onClose={close}
+        email={email}
+        timeExpiredMinutes={TIME_EXPIRED_MINUTES}
+        onAfterVerify={token =>
+          (window.location.href = `/auth/reset-password?email=${encodeURIComponent(email)}&token=${token}`)
+        }
+      />
     </>
   );
 }

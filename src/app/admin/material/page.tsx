@@ -31,7 +31,7 @@ export default async function MaterialManagementPage({
               Quản lý nguyên liệu
             </Title>
             <Text size='sm' c={'dimmed'}>
-              Danh sách tất cả người dùng trong hệ thống PhungFood
+              Danh sách tất cả nguyên liệu trong hệ thống PhungFood
             </Text>
           </Box>
           <CreateMaterialButton />

@@ -214,7 +214,7 @@ export const orderRouter = createTRPCRouter({
       if (!order) {
         return {
           code: 'ERROR',
-          message: 'Tạo đơn hàng không thành cong.',
+          message: 'Tạo đơn hàng không thành công.',
           data: order
         };
       }

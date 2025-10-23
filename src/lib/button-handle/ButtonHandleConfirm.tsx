@@ -27,9 +27,9 @@ export const handleConfirm = (
           : await mutation.mutateAsync(formData);
         if (result?.code === 'OK' || result?.id) {
           callback();
-          NotifySuccess('Thành công!', `${title}`);
+          NotifySuccess('Thao tác thành công!', `${title}`);
         } else {
-          NotifyError('Lỗi!', 'Đã có lỗi xảy ra.');
+          NotifyError('Đã có lỗi không mong muốn!', 'Đã có lỗi xảy ra.');
         }
       } catch (e) {
         NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

@@ -4,7 +4,7 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/tiptap/styles.css';
-
+import 'tiptap-extension-resizable-image/styles.css';
 import '~/styles/globals.css';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';

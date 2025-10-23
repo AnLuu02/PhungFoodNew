@@ -46,7 +46,7 @@ export default function NotificationDialog({ data, user }: any) {
 
   const deleteMutation = api.Notification.deleteFilter.useMutation({
     onSuccess: result => {
-      NotifySuccess('Thành công!', result.message);
+      NotifySuccess('Thao tác thành công!', result.message);
     },
     onError: error => {
       NotifyError('Thất bại!', error.message);
@@ -61,12 +61,12 @@ export default function NotificationDialog({ data, user }: any) {
       if (res.code === 'OK') {
         setNotifications(notifications.filter(n => n.id !== id));
         setSelectedIds(selectedIds.filter(selectedId => selectedId !== id));
-        NotifySuccess('Thành công!', res.message);
+        NotifySuccess('Thao tác thành công!', res.message);
       } else {
         NotifyError('Thất bại!', res.message || 'Không thể xóa thông báo.');
       }
     } catch {
-      NotifyError('Lỗi!', 'Đã xảy ra lỗi khi xóa thông báo.');
+      NotifyError('Đã có lỗi không mong muốn!', 'Đã xảy ra lỗi khi xóa thông báo.');
     }
   };
 
@@ -81,12 +81,12 @@ export default function NotificationDialog({ data, user }: any) {
       if (res.code === 'OK') {
         setNotifications(notifications.filter(n => !selectedIds.includes(n.id)));
         setSelectedIds([]);
-        NotifySuccess('Thành công!', res.message);
+        NotifySuccess('Thao tác thành công!', res.message);
       } else {
         NotifyError('Thất bại!', res.message || 'Không thể xóa các thông báo.');
       }
     } catch {
-      NotifyError('Lỗi!', 'Đã xảy ra lỗi khi xóa các thông báo.');
+      NotifyError('Đã có lỗi không mong muốn!', 'Đã xảy ra lỗi khi xóa các thông báo.');
     }
   };
 
@@ -103,12 +103,12 @@ export default function NotificationDialog({ data, user }: any) {
       if (res.code === 'OK') {
         setNotifications([]);
         setSelectedIds([]);
-        NotifySuccess('Thành công!', res.message);
+        NotifySuccess('Thao tác thành công!', res.message);
       } else {
         NotifyError('Thất bại!', res.message || 'Không thể xóa tất cả thông báo.');
       }
     } catch {
-      NotifyError('Lỗi!', 'Đã xảy ra lỗi khi xóa tất cả thông báo.');
+      NotifyError('Đã có lỗi không mong muốn!', 'Đã xảy ra lỗi khi xóa tất cả thông báo.');
     }
   };
 

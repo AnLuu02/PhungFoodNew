@@ -26,7 +26,7 @@ export const ModalChangePassword = ({ opened, setOpened }: { opened: boolean; se
     }
   }, [user]);
 
-  const requestPasswordReset = api.User.requestPasswordReset.useMutation({
+  const requestPasswordReset = api.User.verifyEmail.useMutation({
     onSuccess: () => {
       setLoading(false);
       setOpenedOtp(true);
@@ -87,6 +87,9 @@ export const ModalChangePassword = ({ opened, setOpened }: { opened: boolean; se
         onClose={() => setOpenedOtp(false)}
         email={email}
         timeExpiredMinutes={TIME_EXPIRED_MINUTES}
+        onAfterVerify={token =>
+          (window.location.href = `/auth/reset-password?email=${encodeURIComponent(email)}&token=${token}`)
+        }
       />
     </>
   );

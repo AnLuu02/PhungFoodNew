@@ -36,7 +36,7 @@ const showNotification = ({
   });
 };
 
-export const NotifySuccess = (title = 'Thành công!', message = 'Thao tác thành công./') => {
+export const NotifySuccess = (title = 'Thao tác thành công!', message = 'Thao tác thành công./') => {
   showNotification({
     id: 'toast-success',
     title: title,

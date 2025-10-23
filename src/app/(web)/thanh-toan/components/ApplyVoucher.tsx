@@ -43,7 +43,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
             }
             return [...prev, voucher];
           });
-          NotifySuccess('Thành công!', 'Voucher đã được thêm vào.');
+          NotifySuccess('Thao tác thành công!', 'Voucher đã được thêm vào.');
           setVoucherCode('');
         } else {
           NotifyError('Thông báo!', 'Voucher này đã áp dụng rồi.');
@@ -57,7 +57,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
   };
   const removeVoucher = (code: string) => {
     setAppliedVouchers(prev => prev.filter(item => item.code !== code));
-    NotifySuccess('Thành công!', 'Voucher đã được xóa.');
+    NotifySuccess('Thao tác thành công!', 'Voucher đã được xóa.');
   };
 
   return (

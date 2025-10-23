@@ -3,7 +3,9 @@ import { Controller } from 'react-hook-form';
 import { api } from '~/trpc/react';
 
 export const PaymentForm = ({ control }: any) => {
-  const { data: paymentData, isLoading } = api.Payment.getAll.useQuery();
+  const { data: paymentData, isLoading } = api.Payment.getAll.useQuery(undefined, {
+    enabled: !!control
+  });
   const payment = paymentData?.data ?? [];
   return (
     <Paper withBorder p='md' radius='md' mb='md'>
@@ -14,10 +16,10 @@ export const PaymentForm = ({ control }: any) => {
 
         <Stack>
           {isLoading ? (
-            <Stack mt={5} gap={5}>
-              <Skeleton height={20} radius='md' />
-              <Skeleton height={20} radius='md' />
-              <Skeleton height={20} radius='md' />
+            <Stack mt='sm' className='mb-4'>
+              <Skeleton height={57} radius='md' />
+              <Skeleton height={57} radius='md' />
+              <Skeleton height={57} radius='md' />
             </Stack>
           ) : (
             <Controller
@@ -43,7 +45,7 @@ export const PaymentForm = ({ control }: any) => {
                               <Flex w={40} justify='center'>
                                 <Box
                                   component='img'
-                                  src='/images/png/vnpay.png'
+                                  src={`/images/png/${item?.provider || 'vnpay'}.png`}
                                   alt='VNPAY'
                                   width={60}
                                   height={24}
@@ -55,6 +57,7 @@ export const PaymentForm = ({ control }: any) => {
                               </Text>
                             </Flex>
                           }
+                          disabled={!item.isActive}
                           error={fieldState.error ? true : false}
                           color='blue'
                           size='sm'

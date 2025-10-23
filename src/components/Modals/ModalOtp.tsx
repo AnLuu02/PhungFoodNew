@@ -18,12 +18,14 @@ export default function OtpModal({
   opened,
   onClose,
   email,
-  timeExpiredMinutes
+  timeExpiredMinutes,
+  onAfterVerify
 }: {
   opened: boolean;
   onClose: () => void;
   email: string;
   timeExpiredMinutes?: number;
+  onAfterVerify?: (params: any) => void;
 }) {
   const [otp, setOtp] = useState('');
   const [timeLeft, setTimeLeft] = useState((timeExpiredMinutes || 3) * 60);
@@ -31,7 +33,7 @@ export default function OtpModal({
   const verifyOtp = api.User.verifyOtp.useMutation({
     onSuccess: async () => {
       const hashToken = await hashPassword(otp);
-      window.location.href = `/auth/reset-password?email=${encodeURIComponent(email)}&token=${hashToken}`;
+      onAfterVerify?.(hashToken);
       onClose();
       NotifySuccess('Xác thực OTP thành công!');
       setLoading({ type: 'submit', value: false });
@@ -61,7 +63,7 @@ export default function OtpModal({
     verifyOtp.mutate({ email, otp });
   };
 
-  const requestPasswordReset = api.User.requestPasswordReset.useMutation({
+  const requestPasswordReset = api.User.verifyEmail.useMutation({
     onSuccess: () => {
       setLoading({ type: 'resend', value: false });
       NotifySuccess('Mã OTP đã được gửi lại!');

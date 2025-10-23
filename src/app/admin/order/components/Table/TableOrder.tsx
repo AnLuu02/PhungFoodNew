@@ -37,7 +37,6 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
     { initialData: data }
   );
   const { data: allDataClient } = api.Order.getAll.useQuery(undefined, { initialData: allData });
-
   const currentItems = dataClient.orders || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];

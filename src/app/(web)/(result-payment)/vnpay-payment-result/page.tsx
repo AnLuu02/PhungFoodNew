@@ -2,6 +2,7 @@
 import { useLocalStorage } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { formatTransDate } from '~/lib/func-handler/Format';
 import { getVietnameseStatusMessage, mapOrderStatusToUIStatus } from '~/lib/func-handler/Payment';
 import { api } from '~/trpc/react';
 import OrderStatusPage from './components/OrderStatusPage';
@@ -10,13 +11,17 @@ import { PaymentStatusCardSkeleton } from './components/SkeletonLoading';
 export default function PaymentResult() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('vnp_TxnRef') || searchParams.get('orderId');
-  const { data: order, isLoading: loadingOrder } = api.Order.getOne.useQuery({ s: orderId || '' });
-  const amount = order?.finalTotal || 0;
+  const { data: order, isLoading: loadingOrder } = api.Order.getOne.useQuery(
+    { s: orderId || '' },
+    {
+      enabled: !!orderId
+    }
+  );
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [queryParams, setQueryParams] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);
-
+  const hasSent = useRef(false);
   useEffect(() => {
     resetCart();
     if (searchParams && !hasFetched.current) {
@@ -31,6 +36,29 @@ export default function PaymentResult() {
         statusOrder: searchParams.get('statusOrder'),
         useLocal: searchParams.get('useLocal') || '1'
       };
+      if (
+        searchParams.get('vnp_ResponseCode') === '00' &&
+        searchParams.get('vnp_TransactionStatus') === '00' &&
+        order &&
+        !hasSent.current
+      ) {
+        hasSent.current = true;
+        const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
+        fetch('/api/send-invoice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: order?.delivery?.email,
+            subject: 'Hóa đơn mua hàng',
+            data: order,
+            orderTrackingUrl:
+              `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/vnpay-payment-result?orderId=${encodeURIComponent(order?.id?.trim())}` +
+              `&transDate=${encodeURIComponent(transDate?.trim())}` +
+              `&statusOrder=${encodeURIComponent(order?.status?.trim())}` +
+              `&useLocal=1`
+          })
+        });
+      }
       if (params.orderId && params.transDate && !params.useLocal) {
         hasFetched.current = true;
         fetch('/api/vnpay/querydr', {
@@ -78,7 +106,7 @@ export default function PaymentResult() {
         status={uiStatus}
         customerName={order?.user?.name || 'Khách hàng'}
         orderId={queryParams.orderId}
-        amount={queryParams.amount || amount}
+        amount={queryParams.amount || order?.finalTotal || 0}
         customTitle={title}
         customMessage={message}
         onRetryPayment={() => {

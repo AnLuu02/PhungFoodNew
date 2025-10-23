@@ -259,18 +259,6 @@ export default function VoiceSearchModal() {
           </Stack>
 
           <Link href={`/thuc-don?s=${state.transcript}`}>
-            {/* <Button
-              fullWidth
-              size='md'
-              color={state.searchState === 'completed' ? 'blue' : 'gray'}
-              disabled={state.searchState !== 'completed'}
-              onClick={() => {
-                setOpened(false);
-                resetRecording();
-              }}
-            >
-              Tìm kiếm
-            </Button> */}
             <BButton
               fullWidth
               size='md'

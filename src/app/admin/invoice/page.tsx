@@ -32,7 +32,7 @@ export default async function InvoiceManagementPage({
               Quản lý hóa đơn
             </Title>
             <Text size='sm' c={'dimmed'}>
-              Danh sách tất cả người dùng trong hệ thống PhungFood
+              Danh sách tất cả hóa đơn trong hệ thống PhungFood
             </Text>
           </Box>
           <CreateInvoiceButton allData={allData?.data || []} />

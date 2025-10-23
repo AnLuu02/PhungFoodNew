@@ -60,11 +60,11 @@ export const ButtonToggleLike = ({ data }: any) => {
                 await mutationCancleFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
                 setLike(false);
                 setLoading(false);
-                NotifySuccess('Thành công!', 'Xoá yêu thích thành công.');
+                NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
               } else {
                 setLike(false);
                 setLocalFavouriteFood(localFavouriteFood.filter((item: any) => item.id !== data.id));
-                NotifySuccess('Thành công!', 'Xoá yêu thích thành công.');
+                NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
               }
             }}
           />
@@ -78,11 +78,11 @@ export const ButtonToggleLike = ({ data }: any) => {
                 await mutationAddFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
                 setLike(true);
                 setLoading(false);
-                NotifySuccess('Thành công!', 'Xóa yêu thích thành công.');
+                NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');
               } else {
                 setLike(true);
                 setLocalFavouriteFood([...localFavouriteFood, data]);
-                NotifySuccess('Thành công!', 'Xóa yêu thích thành công.');
+                NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');
               }
             }}
           />

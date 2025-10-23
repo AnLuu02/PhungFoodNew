@@ -34,7 +34,7 @@ export const ButtonCheckout = ({
         onClick?.();
         window.location.href = `/thanh-toan/${resp.data.id}`;
       } else {
-        NotifyError('Lỗi!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
+        NotifyError(resp.message, 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
       }
     },
     onError: e => {
@@ -86,11 +86,6 @@ export const ButtonCheckout = ({
       disabled={loading || orderItems?.length === 0}
       {...stylesButtonCheckout}
       onClick={() => {
-        // if (user?.user?.email) {
-        //   handleCreateOrder();
-        // } else {
-        //   NotifyWarning('Chưa đăng nhập', 'Vui lòng đăng nhập để tiến hành thanh toán.');
-        // }
         handleCreateOrder();
       }}
     />

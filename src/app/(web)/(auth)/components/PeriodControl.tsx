@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Divider, Flex } from '@mantine/core';
-import { IconCircleDashedCheck, IconLock, IconMail } from '@tabler/icons-react';
+import { IconCircleDashedCheck, IconMail, IconShield } from '@tabler/icons-react';
 
 export default function PeriodControl({ period }: any) {
   return (
@@ -22,7 +22,7 @@ export default function PeriodControl({ period }: any) {
           variant='transparent'
           className={`text-black ${period === 'reset' || period === 'verify' ? 'font-bold text-mainColor' : ''}`}
           size='sm'
-          leftSection={<IconCircleDashedCheck size={24} stroke={1.5} />}
+          leftSection={<IconShield size={24} stroke={1.5} />}
           p={0}
           m={0}
         >
@@ -36,9 +36,9 @@ export default function PeriodControl({ period }: any) {
           size='sm'
           p={0}
           m={0}
-          leftSection={<IconLock size={24} stroke={1.5} />}
+          leftSection={<IconCircleDashedCheck size={24} stroke={1.5} />}
         >
-          Mật khẩu mới
+          Kích hoạt
         </Button>
       </Flex>
     </>

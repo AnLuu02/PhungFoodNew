@@ -36,7 +36,7 @@ export default async function ReviewManagementPage({
               Quản lý đánh giá
             </Title>
             <Text size='sm' c={'dimmed'}>
-              Danh sách tất cả người dùng trong hệ thống PhungFood
+              Danh sách tất cả đánh giá trong hệ thống PhungFood
             </Text>
           </Box>
           <CreateReviewButton />
