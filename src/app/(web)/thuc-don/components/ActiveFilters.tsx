@@ -64,7 +64,7 @@ export default function ActiveFilters() {
             ))}
           </Pill.Group>
           {activeFilters?.length > 1 && (
-            <BButton active children='Xóa tất cả' size='xs' onClick={() => router.push('/thuc-don')} radius={'lg'} />
+            <BButton children='Xóa tất cả' size='xs' onClick={() => router.push('/thuc-don')} radius={'xl'} />
           )}
         </Group>
       </InputBase>

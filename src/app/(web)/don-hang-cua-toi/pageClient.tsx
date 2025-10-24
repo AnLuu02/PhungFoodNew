@@ -3,7 +3,6 @@ import {
   ActionIcon,
   Badge,
   Box,
-  Button,
   Card,
   Center,
   Flex,
@@ -24,6 +23,7 @@ import { IconTrash } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
@@ -275,21 +275,21 @@ export default function MyOrderPageClient({ data }: any) {
                               {order.status === LocalOrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Tiếp tục thanh toán'>
-                                    <Button size='xs'>Thanh toán</Button>
+                                    <BButton size='xs'>Thanh toán</BButton>
                                   </Tooltip>
                                 </Link>
                               )}
                               {order.status === LocalOrderStatus.CANCELLED && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Đặt lại đơn hàng'>
-                                    <Button size='xs'>Đặt lại</Button>
+                                    <BButton size='xs'>Đặt lại</BButton>
                                   </Tooltip>
                                 </Link>
                               )}
                               <Tooltip label='Chi tiết'>
-                                <Button size='xs' onClick={() => openModal('orders', null, order)}>
+                                <BButton size='xs' onClick={() => openModal('orders', null, order)}>
                                   Chi tiết
-                                </Button>
+                                </BButton>
                               </Tooltip>
                             </Group>
                           </Table.Td>

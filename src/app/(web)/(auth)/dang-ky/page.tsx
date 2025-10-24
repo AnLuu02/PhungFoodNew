@@ -250,7 +250,7 @@ export default function Page() {
                   <Link href={'/dang-nhap'}>
                     <Text
                       fw={700}
-                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'
+                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text dark:hover:text-mainColor'
                       size='sm'
                     >
                       Bạn đã có tài khoản?
@@ -260,7 +260,6 @@ export default function Page() {
                 <GridCol span={12}>
                   <BButton
                     disabled={!isDirty}
-                    radius='md'
                     loading={isSubmitting}
                     type='submit'
                     fullWidth

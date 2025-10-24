@@ -22,6 +22,7 @@ import {
   IconSpacingVertical,
   IconUpload
 } from '@tabler/icons-react';
+import BButton from '~/components/Button/Button';
 
 export default function SecuritySettingsManagement({ data }: { data: any }) {
   return (
@@ -39,14 +40,9 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                   Quản lý cài đặt bảo mật
                 </Text>
               </Box>
-              <Button
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
 
             <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
@@ -199,14 +195,9 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
             </Paper>
 
             <Group justify='flex-start'>
-              <Button
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
           </Stack>
         </form>

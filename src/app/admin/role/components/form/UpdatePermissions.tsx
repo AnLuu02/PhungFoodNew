@@ -1,9 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Textarea, TextInput } from '@mantine/core';
+import { Grid, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 
@@ -113,9 +114,9 @@ export default function UpdatePermission({
           />
         </Grid.Col>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

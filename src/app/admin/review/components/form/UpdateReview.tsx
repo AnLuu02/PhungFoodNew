@@ -1,8 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
+import { Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { reviewSchema } from '~/lib/zod/zodShcemaForm';
@@ -139,9 +140,9 @@ export default function UpdateReview({
           />
         </Grid.Col>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

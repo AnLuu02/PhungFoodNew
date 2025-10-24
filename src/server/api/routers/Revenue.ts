@@ -328,7 +328,7 @@ export const revenueRouter = createTRPCRouter({
         endTimeToDate = endTime ? new Date(endTime) : undefined;
       } else {
         firstRevenue = await ctx.db.restaurant.findFirst();
-        startTimeToDate = firstRevenue?.updatedAt;
+        startTimeToDate = firstRevenue?.createdAt;
         endTimeToDate = new Date();
       }
       const where = startTimeToDate &&

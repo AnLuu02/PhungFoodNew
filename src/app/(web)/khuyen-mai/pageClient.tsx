@@ -77,7 +77,8 @@ const levels = [
     icon: IconCrown,
     range: '3,000 - 7,999 điểm',
     features: ['15% giảm giá', 'Miễn phí vận chuyển', 'Hỗ trợ trực tiếp', 'Monthly free meal', 'Exclusive events'],
-    className: 'md:w-[30%] w-[80vw] sm:w-[45%] lg:w-[19%] flex-shrink-0 lg:scale-105 bg-yellow-50',
+    className:
+      'md:w-[30%] w-[80vw] sm:w-[45%] lg:w-[19%] flex-shrink-0 lg:scale-105 bg-yellow-50 dark:bg-yellow-900 hover:bg-yellow-100 dark:hover:bg-yellow-800',
     badge: { text: 'Phổ biến', className: 'bg-yellow-100 text-yellow-500' }
   },
   {
@@ -448,7 +449,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
 
           <Box className='grid items-center gap-16 lg:grid-cols-2'>
             <Box className='space-y-8'>
-              <Card padding={'lg'} shadow='xl' radius={'lg'} className='border-0 bg-white'>
+              <Card padding={'lg'} shadow='xl' radius={'lg'} className='border-0 bg-white dark:bg-dark-card'>
                 <Title className='flex items-center font-quicksand text-2xl'>
                   <Box className='mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 shadow-lg'>
                     <IconCurrencyDollar className='h-6 w-6 text-white' />
@@ -469,7 +470,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                 </Box>
               </Card>
 
-              <Card padding={'lg'} shadow='xl' radius={'lg'} className='border-0 bg-white'>
+              <Card padding={'lg'} shadow='xl' radius={'lg'} className='border-0 bg-white dark:bg-dark-card'>
                 <Box mb={'md'}>
                   <Title className='flex items-center font-quicksand text-2xl'>
                     <Box className='mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500 shadow-lg'>
@@ -505,7 +506,12 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
 
             <Box className='space-y-8'>
               {userData?.id ? (
-                <Card padding={'lg'} shadow='xl' radius={'lg'} className='border-0 bg-white shadow-2xl'>
+                <Card
+                  padding={'lg'}
+                  shadow='xl'
+                  radius={'lg'}
+                  className='border-0 bg-white shadow-2xl dark:bg-dark-card'
+                >
                   <Stack>
                     <Title className='flex items-center justify-between font-quicksand text-2xl'>
                       Tiến độ
@@ -584,7 +590,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                   padding={'lg'}
                   shadow='xl'
                   radius={'lg'}
-                  className='relative overflow-hidden border-0 bg-white shadow-2xl'
+                  className='relative overflow-hidden border-0 bg-white shadow-2xl dark:bg-dark-card'
                 >
                   <Box className='absolute left-0 right-0 top-0 h-2 bg-orange-400'></Box>
                   <Box mb={'md'}>
@@ -665,7 +671,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                 </Card>
               )}
 
-              <Card padding={'lg'} shadow='xl' radius={'lg'} className='border-0 bg-white'>
+              <Card padding={'lg'} shadow='xl' radius={'lg'} className='border-0 bg-white dark:bg-dark-card'>
                 <Box mb={'md'}>
                   <Title className='font-quicksand text-2xl'>🎯 Cách kiếm điểm</Title>
                   <Text>Tối đa hóa điểm của bạn bằng những chiến lược này!</Text>
@@ -737,7 +743,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                 shadow='xl'
                 padding={'lg'}
                 radius={'lg'}
-                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
+                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
                   <Box className='flex flex-col items-center space-x-4 sm:flex-row'>
@@ -772,7 +778,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                 shadow='xl'
                 padding={'lg'}
                 radius={'lg'}
-                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
+                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
                   <Box className='flex flex-col items-center space-x-4 sm:flex-row'>
@@ -806,7 +812,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
                 shadow='xl'
                 padding={'lg'}
                 radius={'lg'}
-                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
+                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
                   <Box className='flex flex-col items-center space-x-4 sm:flex-row'>

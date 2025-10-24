@@ -2,7 +2,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ActionIcon,
-  Button,
   FileInput,
   Flex,
   Grid,
@@ -21,6 +20,7 @@ import {
 import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
 import { UserRole } from '~/constants';
@@ -606,9 +606,9 @@ export default function UpdateProduct({
             )}
           />
         </Grid.Col>
-        <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth>
+        <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth>
           Cập nhật
-        </Button>
+        </BButton>
       </Grid>
     </form>
   );

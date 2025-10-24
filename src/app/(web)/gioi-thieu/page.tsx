@@ -35,7 +35,7 @@ export default async function AboutPage() {
               Từ năm 2010, chúng tôi đã mang đến những món ăn nhanh chất lượng cao với hương vị đậm đà Việt Nam
             </Text>
             <Link href={'/thuc-don'}>
-              <BButton size='lg' w={'max-content'} children={'Xem thực đơn'} radius='md' />
+              <BButton size='lg' w={'max-content'} children={'Xem thực đơn'} />
             </Link>
           </Box>
         </Box>
@@ -223,7 +223,7 @@ export default async function AboutPage() {
             <Image loading='lazy' src='/images/jpg/cooking-2.jpg' alt='Chef portrait' fill className='object-cover' />
           </Box>
           <Stack gap='md'>
-            <Title className='font-quicksand text-3xl text-mainColor sm:text-5xl'>Gặp gỡ đầu bếp của chúng tôi</Title>
+            <Title className='font-quicksand text-3xl text-mainColor sm:text-3xl'>Gặp gỡ đầu bếp của chúng tôi</Title>
             <Text>
               Tâm điểm của SaiGon Flavours là đầu bếp và chủ sở hữu tài năng của chúng tôi, Chef Phụng - một người mẹ
               với hơn 30 năm kinh nghiệm ẩm thực. Hành trình của cô bắt đầu tại những khu chợ sầm uất ở đồng bằng sông
@@ -243,7 +243,7 @@ export default async function AboutPage() {
         </SimpleGrid>
 
         <Box className='py-4 md:py-8'>
-          <Title className='font-quicksand text-3xl text-mainColor sm:text-5xl' mb={'md'}>
+          <Title className='font-quicksand text-3xl text-mainColor sm:text-3xl' mb={'md'}>
             Khách hàng của chúng tôi nói gì?
           </Title>
 
@@ -268,7 +268,7 @@ export default async function AboutPage() {
                 shadow='xl'
                 padding={'lg'}
                 radius={'lg'}
-                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
+                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
                   <Box className='flex flex-col items-center space-x-4 sm:flex-row'>
@@ -302,7 +302,7 @@ export default async function AboutPage() {
                 shadow='xl'
                 padding={'lg'}
                 radius={'lg'}
-                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
+                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
                   <Box className='flex flex-col items-center space-x-4 sm:flex-row'>
@@ -336,7 +336,7 @@ export default async function AboutPage() {
                 shadow='xl'
                 padding={'lg'}
                 radius={'lg'}
-                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
+                className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
                   <Box className='flex flex-col items-center space-x-4 sm:flex-row'>
@@ -431,11 +431,11 @@ export default async function AboutPage() {
           </Text>
           <Box className='flex flex-col justify-center gap-4 sm:flex-row'>
             <Link href={'/dang-ky'}>
-              <BButton size='lg' w={'max-content'} children={' Đăng ký ngay'} radius='md' />
+              <BButton size='lg' w={'max-content'} children={' Đăng ký ngay'} />
             </Link>
 
             <Link href={'/thuc-don'}>
-              <BButton size='lg' w={'max-content'} variant='outline' children={'Xem thực đơn'} radius='md' />
+              <BButton size='lg' w={'max-content'} variant='outline' children={'Xem thực đơn'} />
             </Link>
           </Box>
         </Box>

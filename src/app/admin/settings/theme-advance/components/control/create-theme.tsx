@@ -3,6 +3,7 @@
 import { Box, Button, Modal, Select, Text, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { ThemeConfig, ThemeTemplate } from '~/types/theme';
 
@@ -45,9 +46,9 @@ export const CreateTheme = ({
   };
   return (
     <>
-      <Button variant='outline' leftSection={<IconPlus size={16} />} onClick={() => setIsCreateDialogOpen(true)}>
+      <BButton variant='outline' leftSection={<IconPlus size={16} />} onClick={() => setIsCreateDialogOpen(true)}>
         Tạo mẫu
-      </Button>
+      </BButton>
       <Modal
         opened={isCreateDialogOpen}
         onClose={() => setIsCreateDialogOpen(false)}

@@ -21,7 +21,7 @@ export default async function OrderManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const filter = searchParams?.filter as LocalOrderStatus;
   const sortArr = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]

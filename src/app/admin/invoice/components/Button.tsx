@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Button, Group, Modal, Paper, Title } from '@mantine/core';
+import { ActionIcon, Group, Modal, Paper, Title } from '@mantine/core';
 import { IconEdit, IconEye, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
@@ -10,6 +10,7 @@ import UpdateInvoice from './form/UpdateInvoice';
 
 import { Box, Card, Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
+import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { getImageProduct } from '~/lib/func-handler/getImageProduct';
 import { LocalImageType } from '~/lib/zod/EnumType';
@@ -21,9 +22,9 @@ export function CreateInvoiceButton({ allData }: any) {
   }, [allData]);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         opened={opened}
         closeOnClickOutside={false}

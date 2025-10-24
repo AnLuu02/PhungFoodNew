@@ -107,7 +107,6 @@ export default function ResetPassword({
 
               <GridCol span={12}>
                 <BButton
-                  radius='md'
                   loading={loading}
                   type='submit'
                   fullWidth

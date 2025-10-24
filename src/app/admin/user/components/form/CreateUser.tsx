@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ActionIcon,
   Avatar,
-  Button,
   Center,
   FileInput,
   Grid,
@@ -19,6 +18,7 @@ import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
+import BButton from '~/components/Button/Button';
 import fetcher from '~/lib/func-handler/fetcher';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -377,9 +377,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
             </GridCol>
 
             <GridCol span={12}>
-              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
+              <BButton type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
                 Tạo mới
-              </Button>
+              </BButton>
             </GridCol>
           </Grid>
         </GridCol>

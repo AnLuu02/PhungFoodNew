@@ -18,7 +18,7 @@ export default async function VoucherManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const [allData, data] = await Promise.all([
     api.Voucher.getAll(),
     api.Voucher.find({ skip: +currentPage, take: +limit, s })

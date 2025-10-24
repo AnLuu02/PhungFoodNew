@@ -44,7 +44,7 @@ export function UsersDashboard({ dataClient, period, startTimeToNum, endTimeToNu
   return (
     <>
       <Stack>
-        <Card withBorder shadow='sm' radius={'md'}>
+        <Card withBorder shadow='sm' radius={'lg'}>
           <Flex align={'center'} justify={'space-between'} mb={'xl'}>
             <Box>
               <Title order={5} className='font-quicksand'>

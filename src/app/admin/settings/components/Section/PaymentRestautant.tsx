@@ -3,7 +3,6 @@
 import {
   ActionIcon,
   Box,
-  Button,
   Grid,
   GridCol,
   Group,
@@ -17,6 +16,7 @@ import {
 } from '@mantine/core';
 import { IconCreditCard, IconSettings, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { api } from '~/trpc/react';
 
 export default function PaymentSettingsManagement() {
@@ -38,14 +38,9 @@ export default function PaymentSettingsManagement() {
                   Quản lý cài đặt thanh toán
                 </Text>
               </Box>
-              <Button
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
 
             <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
@@ -134,14 +129,9 @@ export default function PaymentSettingsManagement() {
             </Paper>
 
             <Group justify='flex-start'>
-              <Button
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
           </Stack>
         </form>

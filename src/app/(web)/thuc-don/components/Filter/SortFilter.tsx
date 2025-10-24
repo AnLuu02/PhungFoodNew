@@ -70,8 +70,6 @@ export function SortFilter() {
           <GridCol span={12}>
             <BButton
               children={'Hủy lọc'}
-              size='sm'
-              radius={'md'}
               fullWidth
               onClick={() => {
                 s.delete('sort');

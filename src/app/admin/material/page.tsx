@@ -17,7 +17,7 @@ export default async function MaterialManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const allData = await api.Material.getAll();
   const data = await api.Material.find({ skip: +currentPage, take: +limit, s });
 

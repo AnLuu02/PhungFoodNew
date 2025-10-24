@@ -50,7 +50,7 @@ export default function TablePermission({ s, data }: { s: string; data: any }) {
                     <Flex align={'center'} gap={5}>
                       {row?.roles?.map((item: any) => {
                         return (
-                          <Badge bg={item.name === 'ADMIN' ? 'red' : item.name === 'CUSTOMER' ? 'green' : 'blue'}>
+                          <Badge bg={item.name === 'ADMIN' ? 'red' : item.name === 'CUSTOMER' ? 'green' : '#195EFE'}>
                             {item.viName}
                           </Badge>
                         );
@@ -79,7 +79,7 @@ export default function TablePermission({ s, data }: { s: string; data: any }) {
           </Table.Tbody>
         </Table>
       </Box>
-      <Group justify='space-between' mt='md'>
+      <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>

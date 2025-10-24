@@ -80,7 +80,6 @@ a {
   background-color: #edf2f7;
 }
 
-/* --- Fix cho tiptap-extension-resizable-image --- */
 .tiptap-resizable-image {
   display: inline-flex !important;
   justify-content: center;

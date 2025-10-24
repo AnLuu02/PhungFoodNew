@@ -73,8 +73,6 @@ export default function CardRecentOrder({ order }: { order: any }) {
               Tùy chỉnh
             </Button>
             <BButton
-              size='sm'
-              radius='md'
               children='Đặt lại đơn hàng'
               loading={loading}
               onClick={() => {

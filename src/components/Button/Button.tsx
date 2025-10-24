@@ -7,9 +7,9 @@ export interface IBButton extends ButtonProps, ElementProps<'button', keyof Butt
 
 const BButton: React.FC<IBButton> = ({
   children = 'Mua hàng',
-  radius = 'xl',
+  radius = 'md',
+  size = 'sm',
   type = 'button',
-  size = 'xs',
   fullWidth = false,
   variant = 'filled',
   disabled,

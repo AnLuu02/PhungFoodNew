@@ -14,6 +14,7 @@ import {
   IconSettings
 } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
+import { api } from '~/trpc/react';
 import BannerManagement from './components/Section/BannerRestautant';
 import EmailSettingsManagement from './components/Section/EmailRestautant';
 import RestaurantInfoSettings from './components/Section/InfoRestautant';
@@ -22,7 +23,7 @@ import PerformanceSettingsManagement from './components/Section/PerformanceResta
 import SecuritySettingsManagement from './components/Section/SecurityRestautant';
 import ThemeSettingsManagement from './components/Section/ThemeRestautant';
 const tabs = [
-  { value: 'info', label: 'Cài đặt hệ thống', icon: IconHome },
+  { value: 'general', label: 'Cài đặt hệ thống', icon: IconHome },
   { value: 'banner', label: 'Banner', icon: IconBuildingStore },
   { value: 'email', label: 'Email', icon: IconMail },
   { value: 'payment', label: 'Thanh toán', icon: IconCreditCard },
@@ -31,27 +32,30 @@ const tabs = [
   { value: 'performance', label: 'Hiệu suất', icon: IconActivity }
 ];
 export default function SettingPageClient({ data }: { data: { restaurant: any; banner: any } }) {
+  const { data: restaurant } = api.Restaurant.getOneActive.useQuery(undefined, {
+    initialData: data?.restaurant
+  });
   const [activeTab, setActiveTab] = useState<string>('general');
   const renderTabItem = useCallback(
     (activeTab: string) => {
       switch (activeTab) {
-        case 'info':
-          return <RestaurantInfoSettings data={data?.restaurant} />;
+        case 'general':
+          return <RestaurantInfoSettings data={restaurant} />;
         case 'banner':
           return <BannerManagement data={data?.banner} />;
         case 'email':
-          return <EmailSettingsManagement data={data?.restaurant} />;
+          return <EmailSettingsManagement data={restaurant} />;
         case 'payment':
           return <PaymentSettingsManagement />;
         case 'security':
-          return <SecuritySettingsManagement data={data?.restaurant} />;
+          return <SecuritySettingsManagement data={restaurant} />;
         case 'theme':
-          return <ThemeSettingsManagement restaurantId={data?.restaurant?.id} data={data?.restaurant?.theme} />;
+          return <ThemeSettingsManagement restaurantId={restaurant?.id || ''} data={restaurant?.theme} />;
         case 'performance':
-          return <PerformanceSettingsManagement data={data?.restaurant} />;
+          return <PerformanceSettingsManagement data={restaurant} />;
 
         default:
-          return <RestaurantInfoSettings data={data?.restaurant} />;
+          return <RestaurantInfoSettings data={restaurant} />;
       }
     },
     [activeTab]

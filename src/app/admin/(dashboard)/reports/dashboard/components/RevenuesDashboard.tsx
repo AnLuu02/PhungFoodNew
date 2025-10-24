@@ -8,7 +8,7 @@ export const RevenuesDashboard = ({ dataRevenue, period, startTimeToNum, endTime
   return (
     <>
       <Stack>
-        <Card radius={'md'} withBorder shadow='md'>
+        <Card radius={'lg'} withBorder shadow='md'>
           <Flex align={'center'} justify={'space-between'} mb={'xl'}>
             <Box>
               <Title order={5} className='font-quicksand'>

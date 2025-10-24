@@ -1,10 +1,11 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Group, NumberInput, Select } from '@mantine/core';
+import { Grid, Group, NumberInput, Select } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 
@@ -171,9 +172,9 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
       </Grid>
 
       <Group align='center' justify='flex-end' className='mt-4'>
-        <Button type='submit' loading={isSubmitting} disabled={!isDirty}>
+        <BButton type='submit' loading={isSubmitting} disabled={!isDirty}>
           Tạo mới
-        </Button>
+        </BButton>
       </Group>
     </form>
   );

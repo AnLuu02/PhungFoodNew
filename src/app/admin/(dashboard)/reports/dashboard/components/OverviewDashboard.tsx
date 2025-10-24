@@ -53,7 +53,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
           })}
         </SimpleGrid>
         <SimpleGrid cols={2}>
-          <Card radius={'md'} withBorder shadow='md'>
+          <Card radius={'lg'} withBorder shadow='md'>
             <Flex align={'center'} justify={'space-between'} mb={'xl'}>
               <Box>
                 <Title order={5} className='font-quicksand'>
@@ -89,7 +89,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
               valueFormatter={value => formatPriceLocaleVi(value)}
             />
           </Card>
-          <Card withBorder shadow='sm' radius={'md'}>
+          <Card withBorder shadow='sm' radius={'lg'}>
             <Flex align={'center'} justify={'space-between'} mb={'xl'}>
               <Box>
                 <Title order={5} className='font-quicksand'>

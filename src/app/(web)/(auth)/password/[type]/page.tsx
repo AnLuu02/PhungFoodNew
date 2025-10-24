@@ -91,15 +91,7 @@ export default function ForgotPassword() {
                   <Divider />
                 </GridCol>
                 <GridCol span={12}>
-                  <BButton
-                    disabled={!email}
-                    radius='md'
-                    loading={loading}
-                    type='submit'
-                    fullWidth
-                    size='md'
-                    children={'Gửi mã'}
-                  />
+                  <BButton disabled={!email} loading={loading} type='submit' fullWidth size='md' children={'Gửi mã'} />
                 </GridCol>
               </Grid>
             </Card.Section>

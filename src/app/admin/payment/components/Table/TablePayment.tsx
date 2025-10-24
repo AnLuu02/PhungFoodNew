@@ -11,7 +11,7 @@ import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 export default function TablePayment({ s, data, allData }: { s: string; data: any; allData?: any }) {
   const searchParams = useSearchParams();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Payment.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
   const currentItems = dataClient?.payments || [];
 
@@ -53,7 +53,7 @@ export default function TablePayment({ s, data, allData }: { s: string; data: an
                     <Badge color={row.isSandbox ? 'yellow' : 'blue'}>{row.isSandbox ? 'Sandbox' : 'Live'}</Badge>
                   </Table.Td>
                   <Table.Td>
-                    <Badge color={row.isActive ? 'green' : 'red'}>{row.isActive ? 'Active' : 'Inactive'}</Badge>
+                    <Badge color={row.isActive ? '#195EFE' : 'red'}>{row.isActive ? 'Active' : 'Inactive'}</Badge>
                   </Table.Td>
                   <Table.Td>{formatDateViVN(row.createdAt)}</Table.Td>
                   <Table.Td className='text-sm'>
@@ -77,7 +77,7 @@ export default function TablePayment({ s, data, allData }: { s: string; data: an
         </Table>
       </Box>
 
-      <Group justify='space-between' mt='md'>
+      <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>

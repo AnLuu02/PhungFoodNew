@@ -75,7 +75,7 @@ export const ModalChangePassword = ({ opened, setOpened }: { opened: boolean; se
               </GridCol>
 
               <GridCol span={12}>
-                <BButton radius='md' loading={loading} type='submit' fullWidth size='md' children={'Gửi mã OTP'} />
+                <BButton loading={loading} type='submit' fullWidth size='md' children={'Gửi mã OTP'} />
               </GridCol>
             </Grid>
           </Center>

@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
-  Button,
   ColorInput,
   Grid,
   GridCol,
@@ -19,6 +18,7 @@ import {
 import { IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { themeSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -92,16 +92,14 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
                   Quản lý cài đặt giao diện
                 </Text>
               </Box>
-              <Button
-                className='bg-mainColor duration-100 enabled:hover:bg-subColor enabled:hover:text-black'
-                radius={'md'}
+              <BButton
                 type='submit'
                 loading={isSubmitting}
                 disabled={!isDirty}
                 leftSection={<IconSpacingVertical size={16} />}
               >
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
 
             <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
@@ -207,16 +205,14 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
             </Paper>
 
             <Group justify='flex-start'>
-              <Button
+              <BButton
                 type='submit'
                 leftSection={<IconSpacingVertical size={16} />}
                 loading={isSubmitting}
                 disabled={!isDirty}
-                className='bg-mainColor duration-100 enabled:hover:bg-subColor enabled:hover:text-black'
-                radius={'md'}
               >
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
           </Stack>
         </form>

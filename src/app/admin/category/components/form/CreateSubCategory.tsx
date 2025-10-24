@@ -1,20 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  ActionIcon,
-  Button,
-  FileInput,
-  Grid,
-  GridCol,
-  Image,
-  Select,
-  Switch,
-  Textarea,
-  TextInput
-} from '@mantine/core';
+import { ActionIcon, FileInput, Grid, GridCol, Image, Select, Switch, Textarea, TextInput } from '@mantine/core';
 import { IconFile } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -184,9 +174,9 @@ export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<S
               />
             </Grid.Col>
             <Grid.Col span={12}>
-              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+              <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
                 Tạo mới
-              </Button>
+              </BButton>
             </Grid.Col>
           </Grid>
         </GridCol>

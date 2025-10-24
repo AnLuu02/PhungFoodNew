@@ -120,7 +120,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
   }, [recentActivitiesApp]);
   return (
     <Stack>
-      <Card withBorder shadow='sm' radius={'md'}>
+      <Card withBorder shadow='sm' radius={'lg'}>
         <Flex align={'center'} justify={'space-between'} mb={'md'}>
           <Box>
             <Title order={4} className='font-quicksand'>
@@ -134,7 +134,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
         <SimpleGrid cols={5}>
           {navReportDetails?.map((item, index) => (
             <Card
-              radius={'md'}
+              radius={'lg'}
               px={'md'}
               py={'xs'}
               className='cursor-pointer duration-200 hover:scale-105 hover:shadow-xl'
@@ -156,7 +156,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
                   component={Link}
                   href={item.href}
                 >
-                  Xem chi tiế<table></table>
+                  Xem chi tiết
                 </Button>
               </Flex>
             </Card>
@@ -165,7 +165,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
       </Card>
 
       <SimpleGrid cols={2}>
-        <Card withBorder shadow='sm' radius={'md'}>
+        <Card withBorder shadow='sm' radius={'lg'}>
           <Flex align={'center'} justify={'space-between'} mb={'md'}>
             <Box>
               <Title order={5} className='font-quicksand'>
@@ -217,7 +217,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
             )}
           </Box>
         </Card>
-        <Card withBorder shadow='sm' radius={'md'}>
+        <Card withBorder shadow='sm' radius={'lg'}>
           <Flex align={'center'} justify={'space-between'} mb={'md'}>
             <Box>
               <Title order={5} className='font-quicksand'>

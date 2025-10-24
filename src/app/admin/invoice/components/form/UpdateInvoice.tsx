@@ -1,8 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, GridCol, Select, TextInput } from '@mantine/core';
+import { Grid, GridCol, Select, TextInput } from '@mantine/core';
 import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { invoiceSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -37,7 +38,20 @@ export default function UpdateInvoice({
   });
 
   const utils = api.useUtils();
-  const mutation = api.Invoice.update.useMutation();
+  const mutation = api.Invoice.update.useMutation({
+    onSuccess: result => {
+      if (result.code !== 'OK') {
+        NotifyError(result.message);
+        utils.Invoice.invalidate();
+        return;
+      }
+      setOpened(false);
+      NotifySuccess(result.message);
+    },
+    onError: e => {
+      NotifyError(e?.message || 'Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    }
+  });
 
   useEffect(() => {
     if (!invoice) return;
@@ -54,14 +68,7 @@ export default function UpdateInvoice({
   }, [invoice]);
   const onSubmit: SubmitHandler<Invoice> = async formData => {
     try {
-      const result = await mutation.mutateAsync(formData);
-      if (result.code !== 'OK') {
-        NotifyError(result.message);
-        utils.Invoice.invalidate();
-        return;
-      }
-      setOpened(false);
-      NotifySuccess(result.message);
+      await mutation.mutateAsync(formData);
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
@@ -204,9 +211,9 @@ export default function UpdateInvoice({
           />
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

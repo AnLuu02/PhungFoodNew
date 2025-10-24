@@ -1,6 +1,6 @@
 'use client';
 
-import { Alert, Box, Button, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
+import { Alert, Box, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
 import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import PeriodControl from '~/app/(web)/(auth)/components/PeriodControl';
@@ -79,7 +79,7 @@ export default function OtpModal({
     <Modal
       opened={opened}
       title={
-        <Text fw={500} style={{ color: timeLeft === 0 ? 'red' : '' }}>
+        <Text fw={700} style={{ color: timeLeft === 0 ? 'red' : '' }}>
           Còn lại: {formatTime(timeLeft)}
         </Text>
       }
@@ -90,8 +90,10 @@ export default function OtpModal({
         <Alert
           variant='light'
           color='yellow'
+          radius={'md'}
           title='Mã OTP đã hết hạn. Vui lòng thử lại.'
           icon={<IconInfoCircle />}
+          mb={'md'}
         ></Alert>
       )}
       <Stack className='text-center' px={'md'} gap={'lg'} pb={'lg'}>
@@ -114,7 +116,6 @@ export default function OtpModal({
         </Center>
 
         <BButton
-          radius='md'
           fullWidth
           size='md'
           onClick={handleSubmit}
@@ -122,11 +123,11 @@ export default function OtpModal({
           loading={loading?.type === 'submit' && loading.value}
           children={' Xác nhận'}
         />
-        <Group justify='center' gap={3} align='center'>
+        <Group justify='center' gap={'xs'} align='center'>
           <Text size='sm'>Không nhận được mã OTP?</Text>
-          <Button
+          <BButton
             w={'max-content'}
-            variant='subtle'
+            size='xs'
             disabled={timeLeft !== 0}
             loading={loading?.type === 'resend' && loading.value}
             onClick={() => {
@@ -135,7 +136,7 @@ export default function OtpModal({
             }}
           >
             Gửi lại
-          </Button>
+          </BButton>
         </Group>
       </Stack>
     </Modal>

@@ -70,13 +70,13 @@ export default function ReportRevenuePageClient({
   return (
     <>
       <Stack>
-        <Paper radius={'md'} withBorder shadow='md' py={'xl'} px={'xl'}>
+        <Paper radius={'lg'} withBorder shadow='md' py={'xl'} px={'xl'}>
           <Title order={4} mb={'lg'} className='font-quicksand'>
             Biểu đồ doanh thu
           </Title>
           <Grid>
             <GridCol span={12} className='h-fit'>
-              <Card withBorder shadow='sm' radius={'md'}>
+              <Card withBorder shadow='sm' radius={'lg'}>
                 <Title order={5} mb={'md'} className='font-quicksand'>
                   Top khách hàng
                 </Title>
@@ -112,7 +112,7 @@ export default function ReportRevenuePageClient({
                 </Table>
               </Card>
               <Divider my={'md'} />
-              <Card withBorder shadow='sm' radius={'md'}>
+              <Card withBorder shadow='sm' radius={'lg'}>
                 <Title order={5} mb={'md'} className='font-quicksand'>
                   Top sản phẩm
                 </Title>
@@ -154,7 +154,7 @@ export default function ReportRevenuePageClient({
             </GridCol>
             <GridCol span={12} className='h-fit'>
               <SimpleGrid cols={2}>
-                <Card withBorder shadow='sm' radius={'md'}>
+                <Card withBorder shadow='sm' radius={'lg'}>
                   <Title order={5} mb={'md'} className='font-quicksand'>
                     Doanh thu theo danh mục
                   </Title>
@@ -178,7 +178,7 @@ export default function ReportRevenuePageClient({
                     </Stack>
                   </Group>
                 </Card>
-                <Card withBorder shadow='sm' radius={'md'}>
+                <Card withBorder shadow='sm' radius={'lg'}>
                   <Title order={5} mb={'md'} className='font-quicksand'>
                     Doanh thu theo trang thái đơn hàng
                   </Title>
@@ -206,7 +206,7 @@ export default function ReportRevenuePageClient({
             </GridCol>
             <GridCol span={12} className='h-fit'>
               <SimpleGrid cols={2}>
-                <Card withBorder shadow='sm' radius={'md'}>
+                <Card withBorder shadow='sm' radius={'lg'}>
                   <Box>
                     <Title order={5} className='font-quicksand'>
                       Phân bổ sản phẩm
@@ -229,7 +229,7 @@ export default function ReportRevenuePageClient({
                     </Stack>
                   </Flex>
                 </Card>
-                <Card withBorder shadow='sm' radius={'md'}>
+                <Card withBorder shadow='sm' radius={'lg'}>
                   <Title order={5} mb={'md'} className='font-quicksand'>
                     Top sản phẩm
                   </Title>

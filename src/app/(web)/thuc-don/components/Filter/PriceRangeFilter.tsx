@@ -129,7 +129,7 @@ export function PriceRangeFilter() {
             </Box>
           </GridCol>
           <GridCol span={12}>
-            <BButton children={'Áp dụng'} radius={'md'} size='sm' onClick={onHandleFilter} fullWidth />
+            <BButton children={'Áp dụng'} onClick={onHandleFilter} fullWidth />
           </GridCol>
         </Grid>
       </Popover.Dropdown>

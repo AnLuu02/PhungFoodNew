@@ -2,7 +2,6 @@
 
 import {
   Box,
-  Button,
   Card,
   Divider,
   Flex,
@@ -18,7 +17,9 @@ import {
   Title
 } from '@mantine/core';
 import { IconGift } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
@@ -49,7 +50,9 @@ export function Promotions({ vouchers }: { vouchers: any }) {
             Tất cả các voucher đã và đang khả dụng. Có thể sử dụng ngay.
           </Text>
         </Box>
-        <Button className='rounded-md bg-mainColor hover:bg-mainColor/90'>Mua hàng ngay</Button>
+        <Link href={'/thuc-don'}>
+          <BButton>Mua hàng ngay</BButton>
+        </Link>
       </Flex>
       <Card withBorder shadow='sm' padding='lg' radius='md'>
         <Tabs

@@ -2,7 +2,6 @@
 
 import {
   Box,
-  Button,
   Divider,
   Grid,
   GridCol,
@@ -17,6 +16,7 @@ import {
 } from '@mantine/core';
 import { IconMail, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 
 export default function EmailSettingsManagement({ data }: { data: any }) {
   const [subject, setSubject] = useState('Chào mừng bạn đến với PhungFood');
@@ -40,14 +40,9 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
                   Quản lý cài đặt email
                 </Text>
               </Box>
-              <Button
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
 
             <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
@@ -141,7 +136,7 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
 
               <Divider my='md' />
 
-              <Box className='rounded-lg bg-white p-4 shadow'>
+              <Box className='rounded-lg bg-white p-4 shadow dark:bg-dark-background'>
                 <Text fw={700} mb='xs'>
                   Xem trước email
                 </Text>
@@ -157,14 +152,9 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
             </Paper>
 
             <Group justify='flex-start'>
-              <Button
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
           </Stack>
         </form>

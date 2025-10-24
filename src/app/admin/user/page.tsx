@@ -20,7 +20,7 @@ export default async function UserManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const allData = await api.User.getAll();
   const sortArr = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]

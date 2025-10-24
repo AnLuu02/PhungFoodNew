@@ -1,10 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ActionIcon, Badge, Box, Button, Card, FileInput, Group, Image, Paper, Stack, Switch } from '@mantine/core';
+import { ActionIcon, Badge, Box, Card, FileInput, Group, Paper, Stack, Switch } from '@mantine/core';
 import { IconEye, IconFile, IconPlus, IconTrash } from '@tabler/icons-react';
+import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { formatDateViVN } from '~/lib/func-handler/Format';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -190,10 +192,10 @@ export default function BannerManagement({ data }: any) {
       <ModalViewBanner viewBanner={viewBanner} setViewBanner={setViewBanner} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Group justify='flex-end' mb='md'>
-          <Button leftSection={<IconPlus size={16} />} onClick={() => setActiveBanner(null)} radius='md' bg='#195EFE'>
+          <BButton leftSection={<IconPlus size={16} />} onClick={() => setActiveBanner(null)}>
             Tạo mới
-          </Button>
-          <Paper withBorder radius='md' p='md'>
+          </BButton>
+          <Paper withBorder radius='md' p='md' miw={154}>
             <Controller
               name='isActive'
               control={control}
@@ -201,7 +203,7 @@ export default function BannerManagement({ data }: any) {
                 <Switch
                   label={
                     <Group>
-                      <Badge color={field.value ? 'green' : 'red'}>{field.value ? 'Hiển thị' : 'Ẩn'}</Badge>
+                      <Badge color={field.value ? '#195EFE' : 'red'}>{field.value ? 'Hiển thị' : 'Ẩn'}</Badge>
                     </Group>
                   }
                   className='text-mainColor duration-100'
@@ -212,14 +214,9 @@ export default function BannerManagement({ data }: any) {
               )}
             />
           </Paper>
-          <Button
-            loading={isSubmitting}
-            type='submit'
-            disabled={!isDirty}
-            className='bg-mainColor duration-100 enabled:hover:bg-subColor enabled:hover:text-black'
-          >
-            Lưu
-          </Button>
+          <BButton loading={isSubmitting} type='submit' disabled={!isDirty}>
+            Lưu thay đổi
+          </BButton>
         </Group>
         <Box>
           {dataClient?.length > 0 && (
@@ -233,23 +230,22 @@ export default function BannerManagement({ data }: any) {
                   withBorder
                   className='overflow-hidden border border-gray-200 shadow-sm dark:border-dark-dimmed'
                 >
-                  <Image src={banner.images?.[0]?.url} alt='Banner' fit='cover' h={200} className='rounded-t-md' />
-
+                  <Box h={200} pos={'relative'}>
+                    <Image src={banner.images?.[0]?.url} alt='Banner' fill className='rounded-t-md' />
+                  </Box>
                   <Box pos='absolute' top={12} right={12}>
                     {banner.isActive ? (
                       <Badge size='md' color='red' variant='filled'>
                         Mặc định
                       </Badge>
                     ) : (
-                      <Button
+                      <BButton
                         size='xs'
-                        color='blue'
-                        radius='md'
                         loading={loading?.type === 'set-default' && loading.value}
                         onClick={() => handleSetDefault(banner.id)}
                       >
                         Đặt mặc định
-                      </Button>
+                      </BButton>
                     )}
                   </Box>
 
@@ -271,16 +267,9 @@ export default function BannerManagement({ data }: any) {
                     </Badge>
 
                     <Group justify='space-between' gap='xs'>
-                      <Button
-                        leftSection={<IconEye size={16} />}
-                        variant='light'
-                        color='gray'
-                        radius='md'
-                        onClick={() => setViewBanner(banner)}
-                        className='flex-1 font-semibold hover:bg-blue-50 dark:hover:bg-dark-dimmed'
-                      >
+                      <BButton leftSection={<IconEye size={16} />} onClick={() => setViewBanner(banner)} flex={1}>
                         Xem
-                      </Button>
+                      </BButton>
 
                       <ActionIcon
                         variant='light'

@@ -21,7 +21,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
   const params = new URLSearchParams(searchParams);
   const { data: categories, isLoading } = api.Category.getAll.useQuery();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Product.find.useQuery(
     { skip: +page, take: +limit, s, userRole: UserRole.ADMIN, filter: searchParams?.get('filter') + '@#@$@@' },
     { initialData: data }
@@ -81,7 +81,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
             <Card
               style={{ backgroundColor: item.color + 10 }}
               shadow='md'
-              radius={'md'}
+              radius={'lg'}
               pos={'relative'}
               key={index}
               p={'md'}
@@ -103,7 +103,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
           );
         })}
       </SimpleGrid>
-      <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>
@@ -186,7 +186,14 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
 
                   <Table.Td className='text-sm'>
-                    <Spoiler maxHeight={60} showLabel='Xem thêm' hideLabel='Ẩn'>
+                    <Spoiler
+                      maxHeight={60}
+                      showLabel='Xem thêm'
+                      hideLabel='Ẩn'
+                      classNames={{
+                        control: 'text-sm'
+                      }}
+                    >
                       <Highlight size='sm' highlight={s}>
                         {item.description || 'Đang cập nhật.'}
                       </Highlight>
@@ -228,7 +235,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
         </Table>
       </Box>
 
-      <Group justify='space-between' mt='md'>
+      <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>

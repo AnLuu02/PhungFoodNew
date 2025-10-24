@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { IconCopy, IconEdit, IconPlus, IconPrinter, IconTrash, IconXboxX } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { UserRole } from '~/constants';
@@ -31,9 +32,9 @@ export function CreateOrderButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         closeOnClickOutside={false}
         size={'100%'}
@@ -101,7 +102,7 @@ export function UpdateOrderButton({ id }: { id: string }) {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Tooltip label='Cập nhật hóa đơn'>
+      <Tooltip label='Cập nhật đơn hàng'>
         <ActionIcon variant='subtle' color='blue' onClick={() => setOpened(true)}>
           <IconEdit size={24} />
         </ActionIcon>
@@ -114,7 +115,7 @@ export function UpdateOrderButton({ id }: { id: string }) {
         title={
           <Group gap={'xs'}>
             <Title order={2} className='font-quicksand'>
-              Cập nhật hóa đơn
+              Cập nhật đơn hàng
             </Title>
 
             <InvoiceToPrint id={id} />
@@ -301,9 +302,9 @@ export function SendMessageAllUserAdvanced() {
   return (
     <>
       <Tooltip label={<Text size='sm'>Gửi thông báo hàng loạt</Text>}>
-        <Button variant='outline' onClick={() => setOpened(true)}>
+        <BButton variant='outline' onClick={() => setOpened(true)}>
           Gửi thông báo hàng loạt
-        </Button>
+        </BButton>
       </Tooltip>
 
       <Drawer

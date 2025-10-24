@@ -3,6 +3,7 @@
 import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -114,12 +115,18 @@ export function CreateManyCategoryButton() {
       <Group>
         <FileButton disabled={opened} onChange={file => file && handleFileUpload(file)} accept='xlsx,xls'>
           {props => (
-            <Button disabled={opened} variant='outline' {...props}>
+            <BButton disabled={opened} variant='outline' {...props}>
               Import dữ liệu
-            </Button>
+            </BButton>
           )}
         </FileButton>
-        <Button bg={'red'} onClick={handleExport} disabled={fetchCategories?.data?.length === 0}>
+        <Button
+          bg={'red'}
+          radius={'md'}
+          size='sm'
+          onClick={handleExport}
+          disabled={fetchCategories?.data?.length === 0}
+        >
           Export Excel
         </Button>
       </Group>
@@ -187,9 +194,9 @@ export function CreateCategoryButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         closeOnClickOutside={false}
         opened={opened}
@@ -265,9 +272,9 @@ export function CreateSubCategoryButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         closeOnClickOutside={false}
         size={'xl'}

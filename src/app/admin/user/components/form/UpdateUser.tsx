@@ -26,6 +26,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import { z } from 'zod';
+import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { infoUserLevel, UserRole } from '~/constants';
 import fetcher from '~/lib/func-handler/fetcher';
@@ -118,7 +119,20 @@ export default function UpdateUser({
     });
   }, [user, reset]);
   const utils = api.useUtils();
-  const updateMutation = api.User.update.useMutation();
+  const updateMutation = api.User.update.useMutation({
+    onSuccess: result => {
+      if (result.code === 'OK') {
+        NotifySuccess(result.message);
+        setOpened(false);
+        utils.User.invalidate();
+      } else {
+        NotifyError(result.message);
+      }
+    },
+    onError: e => {
+      NotifyError(e?.message || 'Lỗi hệ thống');
+    }
+  });
 
   const onSubmit: SubmitHandler<User> = async formData => {
     if (email) {
@@ -149,14 +163,7 @@ export default function UpdateUser({
           base64: base64 as string
         }
       };
-      const result = await updateMutation.mutateAsync(formDataWithImageUrlAsString);
-      if (result.code === 'OK') {
-        NotifySuccess(result.message);
-        setOpened(false);
-        utils.User.invalidate();
-      } else {
-        NotifyError(result.message);
-      }
+      await updateMutation.mutateAsync(formDataWithImageUrlAsString);
     }
   };
 
@@ -518,9 +525,9 @@ export default function UpdateUser({
             </GridCol>
 
             <GridCol span={12}>
-              <Button type='submit' className='mt-4 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
+              <BButton w-full type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
                 Cập nhật
-              </Button>
+              </BButton>
             </GridCol>
           </Grid>
         </GridCol>

@@ -16,7 +16,7 @@ export default async function ContactManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const allData = await api.Contact.getAll();
   const data = await api.Contact.find({ skip: +currentPage, take: +limit, s });
 

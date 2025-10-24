@@ -30,7 +30,7 @@ export default function TableContact({ s, data, allData }: { s: string; data: an
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Contact.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
 
   const { data: allDataClient } = api.Contact.getAll.useQuery(undefined, { initialData: allData });
@@ -84,7 +84,7 @@ export default function TableContact({ s, data, allData }: { s: string; data: an
             <Card
               style={{ backgroundColor: item.color + 10 }}
               shadow='md'
-              radius={'md'}
+              radius={'lg'}
               pos={'relative'}
               key={index}
               p={'md'}
@@ -106,7 +106,7 @@ export default function TableContact({ s, data, allData }: { s: string; data: an
           );
         })}
       </SimpleGrid>
-      <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={400} />
           <Group>
@@ -205,7 +205,7 @@ export default function TableContact({ s, data, allData }: { s: string; data: an
         </Table>
       </Box>
 
-      <Group justify='space-between' mt='md'>
+      <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>

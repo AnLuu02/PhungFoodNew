@@ -7,7 +7,6 @@ export default function NotFound() {
   return (
     <main className='flex min-h-screen items-center justify-center px-4'>
       <Box className='w-full max-w-2xl space-y-8 text-center'>
-        {/* 404 Error Code */}
         <Box className='space-y-4'>
           <Group gap={2} justify='center' align='center'>
             <Box className='animate-shake text-9xl font-bold text-mainColor opacity-30'>4</Box>
@@ -20,14 +19,12 @@ export default function NotFound() {
           </p>
         </Box>
 
-        {/* Decorative Element */}
         <Box className='flex justify-center gap-2 py-4 sm:py-8'>
           <Box className='h-2 w-2 rounded-full bg-mainColor opacity-60'></Box>
           <Box className='h-2 w-2 rounded-full bg-mainColor opacity-40'></Box>
           <Box className='h-2 w-2 rounded-full bg-mainColor opacity-20'></Box>
         </Box>
 
-        {/* Action Buttons */}
         <Box className='flex flex-col justify-center gap-4 sm:flex-row sm:pt-4'>
           <Link href='/'>
             <BButton leftSection={<IconArrowLeft className='h-5 w-5' />} radius={'lg'} size='lg'>
@@ -42,7 +39,6 @@ export default function NotFound() {
           </Link>
         </Box>
 
-        {/* Additional Help Text */}
         <Box className='border-border border-t sm:pt-8'>
           <p className='text-sm'>
             Need help? Try searching or{' '}

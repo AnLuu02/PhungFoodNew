@@ -19,7 +19,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const sortArr = searchParams.getAll('sort');
 
   const { data: dataClient } = api.Review.find.useQuery(
@@ -89,7 +89,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
           return (
             <Card
               shadow='md'
-              radius={'md'}
+              radius={'lg'}
               pos={'relative'}
               key={index}
               p={'md'}
@@ -112,7 +112,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
           );
         })}
       </SimpleGrid>
-      <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>
@@ -237,7 +237,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
         </Table>
       </Box>
 
-      <Group justify='space-between' mt='md'>
+      <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>

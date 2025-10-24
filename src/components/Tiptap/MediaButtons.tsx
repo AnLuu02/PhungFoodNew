@@ -12,7 +12,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
 
   if (!editor) return null;
 
-  // 🖼️ Thêm ảnh từ URL hoặc file
   const handleInsertImage = (url: string) => {
     if (!url) return;
     editor.commands.setResizableImage({
@@ -25,15 +24,12 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
     setOpened(false);
   };
 
-  // 🎥 Thêm video từ URL hoặc file
   const handleInsertVideo = (url: string) => {
     if (!url) return;
 
-    // Nếu là YouTube link
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
       editor.chain().focus().setYoutubeVideo({ src: url }).run();
     } else {
-      // Nếu là file mp4 hoặc link trực tiếp
       editor.chain().focus().setVideo({ src: url }).run();
     }
 
@@ -56,7 +52,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
           🖼️ Ảnh
         </Button>
 
-        {/* 🎥 Video */}
         <Button
           size='xs'
           variant='subtle'
@@ -70,7 +65,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         </Button>
       </Group>
 
-      {/* Modal chọn ảnh */}
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
@@ -105,7 +99,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         </Stack>
       </Modal>
 
-      {/* Modal chọn video */}
       <Modal
         opened={videoOpened}
         onClose={() => setVideoOpened(false)}

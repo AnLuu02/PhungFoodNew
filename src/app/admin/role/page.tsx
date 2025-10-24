@@ -16,7 +16,7 @@ export default async function RoleManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const [allData, dataRole, dataPermissions] = await Promise.all([
     api.RolePermission.getAllRole(),
     api.RolePermission.find({ skip: +currentPage, take: +limit, s }),

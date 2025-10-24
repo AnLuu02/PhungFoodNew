@@ -1,5 +1,5 @@
 'use client';
-import { ActionIcon, Box, Card, Divider, Flex, Group, Paper, Select, SimpleGrid, Tabs, Title } from '@mantine/core';
+import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Tabs, Title } from '@mantine/core';
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -15,7 +15,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const [activeTab, setActiveTab] = useState<'category' | 'subCategory'>('category');
   const { data: dataClient } =
     activeTab === 'category'
@@ -80,7 +80,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
           return (
             <Card
               shadow='md'
-              radius={'md'}
+              radius={'lg'}
               pos={'relative'}
               key={index}
               p={'md'}
@@ -123,7 +123,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
           tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
         }}
       >
-        <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+        <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
           <Tabs.List className='flex items-center justify-between sm:items-start md:items-center'>
             <Group gap={0}>
               <Tabs.Tab size={'md'} fw={700} value={'category'}>
@@ -169,8 +169,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
           </Tabs.List>
         </Paper>
 
-        <Divider my='sm' />
-        <Tabs.Panel value={activeTab}>
+        <Tabs.Panel value={activeTab} mt={'md'}>
           {activeTab === 'category' ? (
             <TableCategory data={dataClient} s={s} user={user} />
           ) : (

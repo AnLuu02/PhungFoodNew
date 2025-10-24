@@ -1,23 +1,11 @@
 'use client';
 
 import { LineChart } from '@mantine/charts';
-import {
-  Box,
-  Button,
-  Card,
-  Center,
-  Divider,
-  Flex,
-  Progress,
-  Select,
-  Space,
-  Stack,
-  Text,
-  Title,
-  Tooltip
-} from '@mantine/core';
+import { Box, Card, Center, Divider, Flex, Progress, Select, Space, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { getInfoLevelUser } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
 import { LocalUserLevel } from '~/lib/zod/EnumType';
@@ -75,7 +63,9 @@ export function UserStatistics() {
             Theo dõi và phân tích các khoản chi tiêu của bạn theo thời gian
           </Text>
         </Box>
-        <Button className='rounded-md bg-mainColor hover:bg-mainColor/90'>Chi tiết các đơn hàng</Button>
+        <Link href={'/don-hang-cua-toi'}>
+          <BButton>Chi tiết các đơn hàng</BButton>
+        </Link>
       </Flex>
 
       <Card shadow='sm' padding='lg' radius='md' withBorder>
@@ -157,8 +147,7 @@ export function UserStatistics() {
                   {levelInfo.viName} - ({userDb?.pointUser || 0} điểm)
                 </Text>
                 <Text size='xs' c={'dimmed'}>
-                  Cần thêm {levelInfo.maxPoint + 1 - (userDb?.pointUser || 0)} điểm để lên{' '}
-                  {getInfoLevelUser(levelInfo.nextLevel as LocalUserLevel).viName}
+                  Cần thêm {levelInfo.maxPoint + 1 - (userDb?.pointUser || 0)} điểm để thăng hạn
                 </Text>
               </Box>
             </Box>

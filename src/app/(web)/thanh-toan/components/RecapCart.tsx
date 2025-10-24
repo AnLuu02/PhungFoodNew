@@ -52,12 +52,10 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
               <BButton
                 leftSection={<IconPercentage30 size={16} />}
                 variant='outline'
-                size='sm'
                 className='mb-2 md:mb-0'
                 w={{ base: '100%', md: 'max-content' }}
                 children='Đơn gần đây'
                 onClick={() => setShowRecentOrdersModal(true)}
-                radius='md'
               />
             )}
           </Flex>

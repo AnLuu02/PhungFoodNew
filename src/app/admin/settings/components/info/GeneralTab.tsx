@@ -18,7 +18,8 @@ import {
 } from '@mantine/core';
 import { IconBuildingStore, IconRestore, IconSettings, IconSpacingVertical, IconUpload } from '@tabler/icons-react';
 import { Controller } from 'react-hook-form';
-export default function GeneralTab({ control }: any) {
+import BButton from '~/components/Button/Button';
+export default function GeneralTab({ control, isDirty }: any) {
   const handleLogoUpload = () => {
     //notify
   };
@@ -289,14 +290,9 @@ export default function GeneralTab({ control }: any) {
       </Paper>
 
       <Group justify='flex-start'>
-        <Button
-          type='submit'
-          leftSection={<IconSpacingVertical size={16} />}
-          className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-          radius={'md'}
-        >
+        <BButton type='submit' leftSection={<IconSpacingVertical size={16} />} disabled={!isDirty}>
           Lưu thay đổi
-        </Button>
+        </BButton>
       </Group>
     </>
   );

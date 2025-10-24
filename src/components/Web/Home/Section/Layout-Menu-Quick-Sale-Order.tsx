@@ -39,10 +39,9 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
-                    radius={'xl'}
                     size='md'
                     variant='transparent'
-                    className='text-mainColor transition-all duration-200 ease-in-out hover:text-subColor'
+                    className='text-mainColor duration-200 hover:text-subColor'
                   >
                     Xem thêm
                   </Button>
@@ -83,10 +82,9 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                 <Link href='/thuc-don?danh-muc=thuc-uong'>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
-                    radius={'xl'}
                     size='md'
                     variant='transparent'
-                    className='text-mainColor transition-all duration-200 ease-in-out hover:text-subColor'
+                    className='text-mainColor duration-200 hover:text-subColor'
                   >
                     Xem thêm
                   </Button>
@@ -128,10 +126,9 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                 <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
-                    radius={'xl'}
                     size='md'
                     variant='transparent'
-                    className='text-mainColor transition-all duration-200 ease-in-out hover:text-subColor'
+                    className='text-mainColor duration-200 hover:text-subColor'
                   >
                     Xem thêm
                   </Button>

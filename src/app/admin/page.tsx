@@ -72,7 +72,6 @@ export default async function Dashboard() {
   const data = await api.Page.getInitAdmin();
   const recentActivities = data.recentActivities || [];
   const revenue = data.revenue || [];
-
   const dataRevenue = [
     {
       label: 'Tổng doanh thu',
@@ -123,7 +122,7 @@ export default async function Dashboard() {
           {dataRevenue.map((item, index) => {
             const IconR = item.icon;
             return (
-              <Card key={index} radius={'md'} withBorder shadow='md'>
+              <Card key={index} radius={'lg'} withBorder shadow='md'>
                 <Stack gap={'xs'}>
                   <Text size='sm' fw={700} c={'dimmed'}>
                     {item.label}
@@ -159,7 +158,7 @@ export default async function Dashboard() {
 
         <Grid>
           <GridCol span={8}>
-            <Paper radius={'md'} withBorder shadow='md'>
+            <Paper radius={'lg'} withBorder shadow='md'>
               <Box px={'xl'} py={'md'}>
                 <Title order={4} className='font-quicksand'>
                   Thao tác nhanh
@@ -175,7 +174,7 @@ export default async function Dashboard() {
                   return (
                     <Link href={item.href} key={index}>
                       <Card
-                        radius={'md'}
+                        radius={'lg'}
                         pos={'relative'}
                         key={index}
                         px={'xl'}
@@ -203,7 +202,7 @@ export default async function Dashboard() {
             </Paper>
           </GridCol>
           <GridCol span={4}>
-            <Paper radius={'md'} withBorder shadow='md' pb={'md'}>
+            <Paper radius={'lg'} withBorder shadow='md' pb={'md'}>
               <Box px={'xl'} py={'md'}>
                 <Title order={4} className='font-quicksand'>
                   Hoạt động gần đây

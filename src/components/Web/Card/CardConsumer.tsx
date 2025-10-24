@@ -48,7 +48,7 @@ export function ConsumerCard({ data }: any) {
             </Tooltip>
           </Box>
 
-          <BButton children='Đọc thêm' variant='outline' fullWidth radius='md' size='sm' />
+          <BButton children='Đọc thêm' variant='outline' fullWidth />
         </Box>
       </Card>
     </Link>

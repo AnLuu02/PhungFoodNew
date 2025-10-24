@@ -73,7 +73,7 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
               <UpdateRole id={selectedRole?.id} setOpened={setSelectedRole} />
             </Modal>
           </Box>
-          <Group justify='space-between' mt='md'>
+          <Group justify='space-between' align='center' my={'md'}>
             <PageSizeSelector />
             <CustomPagination totalPages={data?.pagination.totalPages || 1} />
           </Group>

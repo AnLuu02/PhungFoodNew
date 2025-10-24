@@ -1,8 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
+import { Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { categorySchema } from '~/lib/zod/zodShcemaForm';
@@ -104,9 +105,9 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
           />
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới
-      </Button>
+      </BButton>
     </form>
   );
 }

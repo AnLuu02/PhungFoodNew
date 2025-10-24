@@ -4,7 +4,7 @@ import { Card, Text } from '@mantine/core';
 
 export default function ReturningUserChart() {
   return (
-    <Card w='100%' h='100%' shadow='sm' p='xl' radius={'md'} withBorder>
+    <Card w='100%' h='100%' shadow='sm' p='xl' radius={'lg'} withBorder>
       <Card.Section>
         <Text fz={16} fw={600}>
           New vs Returning Visitors

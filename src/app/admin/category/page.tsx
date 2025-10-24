@@ -16,7 +16,7 @@ export default async function CategoryManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const [allData, dataCategory, dataSubCategory] = await Promise.all([
     api.Category.getAll(),
     api.Category.find({ skip: +currentPage, take: +limit, s }),

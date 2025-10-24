@@ -21,6 +21,7 @@ import { DateTimePicker } from '@mantine/dates';
 import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { LocalVoucherType } from '~/lib/zod/EnumType';
 import { voucherSchema } from '~/lib/zod/zodShcemaForm';
@@ -436,9 +437,9 @@ export default function UpdateVoucher({
         </Grid.Col>
       </Grid>
 
-      <Button type='submit' className='mt-8 w-full' loading={isSubmitting} disabled={!isDirty} fullWidth>
+      <BButton type='submit' className='mt-8' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

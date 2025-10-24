@@ -18,7 +18,12 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
   const { openModal } = useModalActions();
   const [loading, setLoading] = useState(false);
   const { data: user } = useSession();
-  const mutationRecivedVoucher = api.Voucher.update.useMutation();
+  const mutationRecivedVoucher = api.Voucher.update.useMutation({
+    onSuccess: () => {},
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   const isReceived = voucher?.voucherForUser?.length > 0;
   const utils = api.useUtils();
 

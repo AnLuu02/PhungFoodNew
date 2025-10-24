@@ -1,8 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, GridCol, Select, TextInput } from '@mantine/core';
+import { Grid, GridCol, Select, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { invoiceSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -35,11 +36,8 @@ export default function CreateInvoice({
   });
 
   const utils = api.useUtils();
-  const mutation = api.Invoice.create.useMutation();
-
-  const onSubmit: SubmitHandler<Invoice> = async formData => {
-    try {
-      const result = await mutation.mutateAsync(formData);
+  const mutation = api.Invoice.create.useMutation({
+    onSuccess: result => {
       if (result.code !== 'OK') {
         NotifyError(result.message);
         utils.Invoice.invalidate();
@@ -47,6 +45,15 @@ export default function CreateInvoice({
       }
       setOpened(false);
       NotifySuccess(result.message);
+    },
+    onError: e => {
+      NotifyError(e?.message || 'Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    }
+  });
+
+  const onSubmit: SubmitHandler<Invoice> = async formData => {
+    try {
+      await mutation.mutateAsync(formData);
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
@@ -191,9 +198,9 @@ export default function CreateInvoice({
           />
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

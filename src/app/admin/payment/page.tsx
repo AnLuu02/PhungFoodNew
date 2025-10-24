@@ -18,7 +18,7 @@ export default async function PaymentManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const allData = await api.Payment.getAll();
   const data = await api.Payment.find({ skip: +currentPage, take: +limit, s });
 

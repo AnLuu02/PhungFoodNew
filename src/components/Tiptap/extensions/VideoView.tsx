@@ -1,4 +1,3 @@
-// src/components/Tiptap/extensions/VideoView.tsx
 import { Accordion } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { NodeViewWrapper } from '@tiptap/react';

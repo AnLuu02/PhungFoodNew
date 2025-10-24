@@ -28,7 +28,7 @@ const overview = [
 
 export default function ReportSnapshotChart() {
   return (
-    <Card radius={'md'} withBorder h='100%'>
+    <Card radius={'lg'} withBorder h='100%'>
       <Stack gap={'lg'}>
         <Flex align={'center'} justify={'space-between'}>
           <Box>

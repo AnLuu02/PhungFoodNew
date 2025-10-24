@@ -18,7 +18,7 @@ export default async function InvoiceManagementPage({
 }) {
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '3';
+  const limit = searchParams?.limit ?? '5';
   const allData = await api.Invoice.getAll();
   const data = await api.Invoice.find({ skip: +currentPage, take: +limit, s });
 
@@ -35,7 +35,6 @@ export default async function InvoiceManagementPage({
               Danh sách tất cả hóa đơn trong hệ thống PhungFood
             </Text>
           </Box>
-          <CreateInvoiceButton allData={allData?.data || []} />
         </Flex>
 
         <Group justify='space-between'>
@@ -44,6 +43,7 @@ export default async function InvoiceManagementPage({
           </Text>
           <Group>
             <SearchInput />
+            <CreateInvoiceButton allData={allData?.data || []} />
           </Group>
         </Group>
 

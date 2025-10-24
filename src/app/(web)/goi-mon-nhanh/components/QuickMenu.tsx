@@ -37,7 +37,7 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
     <>
       <Flex align={'center'} gap={'xs'} mb={20} className='w-full overflow-x-auto pb-3'>
         <Link href={`/goi-mon-nhanh`}>
-          <BButton active={!searchParams?.['danh-muc']} children={'Tất cả'} variant='outline' size='sm' />
+          <BButton active={!searchParams?.['danh-muc']} children={'Tất cả'} variant='outline' radius={'xl'} />
         </Link>
         {categories?.map((item: any, index: number) => (
           <>
@@ -47,7 +47,7 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
                 key={index}
                 children={item.name}
                 variant='outline'
-                size='sm'
+                radius={'xl'}
               />
             </Link>
           </>
@@ -68,9 +68,9 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
 
         <Flex align={'center'} justify={'center'} mt={30}>
           <BButton
+            radius={'xl'}
             children={'Xem thêm'}
             variant='outline'
-            size='sm'
             loading={loading}
             onClick={loadMore}
             disabled={pageNumber >= totalPages}

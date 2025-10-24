@@ -2,7 +2,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ActionIcon,
-  Button,
   FileInput,
   Flex,
   Grid,
@@ -21,6 +20,7 @@ import {
 import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
@@ -548,9 +548,9 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             )}
           />
         </Grid.Col>
-        <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+        <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
           Tạo sản phẩm
-        </Button>
+        </BButton>
       </Grid>
     </form>
   );

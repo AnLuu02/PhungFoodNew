@@ -1,8 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
+import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { categoriesMaterial } from '~/constants';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -130,9 +131,9 @@ export default function UpdateMaterial({
           />
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới
-      </Button>
+      </BButton>
     </form>
   );
 }

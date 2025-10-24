@@ -231,13 +231,7 @@ export default function MailResponse({
             <AttachmentButton files={files} setFiles={setFiles} />
             <EmojiPickerButton editor={editor} />
 
-            <BButton
-              children={'Trả lời tự động'}
-              radius={'md'}
-              loading={loading}
-              size='sm'
-              onClick={() => handleSendEmail({ type: 'auto' })}
-            />
+            <BButton children={'Trả lời tự động'} loading={loading} onClick={() => handleSendEmail({ type: 'auto' })} />
           </Group>
           <ActionIcon color='red' variant='subtle' radius='xl' size={'lg'} onClick={() => setOpenedModal(false)}>
             <IconTrash size={20} />

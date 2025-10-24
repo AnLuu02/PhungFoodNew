@@ -156,7 +156,7 @@ export default function StorePolicyPage() {
                 <List.Item>Thanh toán qua QR code tại cửa hàng</List.Item>
                 <List.Item>Hóa đơn VAT xuất theo yêu cầu</List.Item>
               </List>
-              <Alert icon={<IconInfoCircle size={18} />} color='green' mt={16} radius={'md'}>
+              <Alert icon={<IconInfoCircle size={18} />} color='#195EFE' mt={16} radius={'md'}>
                 <Text size='sm'>
                   Tất cả giao dịch đều được mã hóa SSL 256-bit. Chúng tôi không lưu trữ thông tin thẻ của bạn. Nếu có
                   vấn đề về thanh toán, vui lòng liên hệ hotline để được hỗ trợ ngay.
@@ -277,7 +277,7 @@ export default function StorePolicyPage() {
                   </Anchor>
                 </List.Item>
               </List>
-              <Alert icon={<IconInfoCircle size={18} />} color='green' mt={16} radius={'md'}>
+              <Alert icon={<IconInfoCircle size={18} />} color='#195EFE' mt={16} radius={'md'}>
                 <Text size='sm'>
                   <strong>Lưu ý:</strong> Mọi khiếu nại về chất lượng món ăn sẽ được xử lý trong vòng 24h. Đối với các
                   trường hợp khẩn cấp về an toàn thực phẩm, hãy liên hệ ngay để được hỗ trợ kịp thời.

@@ -2,6 +2,7 @@
 
 import { Box, Button, Modal, Select, Switch, Text, TextInput, Title } from '@mantine/core';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { ThemeConfig, ThemeTemplate } from '~/types/theme';
 
@@ -213,7 +214,7 @@ export const EditTheme = ({
           <Button variant='default' onClick={() => setIsEditDialogOpen(false)}>
             Hủy
           </Button>
-          <Button onClick={handleSaveTemplateEdit}>Lưu thay đổi</Button>
+          <BButton onClick={handleSaveTemplateEdit}>Lưu thay đổi</BButton>
         </Box>
       </Modal>
     </>

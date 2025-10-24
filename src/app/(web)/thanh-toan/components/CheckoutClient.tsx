@@ -284,7 +284,7 @@ export default function CheckoutClient({ order }: { order: any }) {
                 <Button variant='subtle' leftSection={<IconArrowLeft size={16} />} component='a' href='/gio-hang'>
                   Giỏ hàng
                 </Button>
-                <BButton radius={'sm'} size='md' type='submit' loading={loading} children={'THANH TOÁN'} />
+                <BButton size='md' type='submit' loading={loading} children={'THANH TOÁN'} />
               </Flex>
             </Stack>
           </Card>

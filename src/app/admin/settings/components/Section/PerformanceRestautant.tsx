@@ -1,8 +1,9 @@
 'use client';
 
-import { Box, Button, Grid, GridCol, Group, NumberInput, Paper, Stack, Switch, Text, Title } from '@mantine/core';
+import { Box, Grid, GridCol, Group, NumberInput, Paper, Stack, Switch, Text, Title } from '@mantine/core';
 import { IconBell, IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 
 export default function PerformanceSettingsManagement({ data }: { data: any }) {
   const [notifications, setNotifications] = useState({
@@ -28,14 +29,9 @@ export default function PerformanceSettingsManagement({ data }: { data: any }) {
                   Quản lý cài đặt hiệu suất
                 </Text>
               </Box>
-              <Button
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
 
             <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
@@ -171,14 +167,9 @@ export default function PerformanceSettingsManagement({ data }: { data: any }) {
             </Paper>
 
             <Group justify='flex-start'>
-              <Button
-                type='submit'
-                leftSection={<IconSpacingVertical size={16} />}
-                className='bg-mainColor duration-100 hover:bg-subColor hover:text-black'
-                radius={'md'}
-              >
+              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
             </Group>
           </Stack>
         </form>

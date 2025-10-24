@@ -64,7 +64,7 @@ export const restaurantRouter = createTRPCRouter({
   }),
 
   create: publicProcedure
-    .use(requirePermission('create:restaurant'))
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
         name: z.string().min(1, 'Tên là bắt buộc'),
@@ -133,7 +133,7 @@ export const restaurantRouter = createTRPCRouter({
     }),
 
   update: publicProcedure
-    .use(requirePermission('update:restaurant'))
+    .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
         id: z.string().optional(),

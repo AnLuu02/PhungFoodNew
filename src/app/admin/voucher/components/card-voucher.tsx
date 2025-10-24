@@ -6,7 +6,7 @@ import { IconCopy, IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { formatDateViVN } from '~/lib/func-handler/Format';
-import { NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { getPromotionStatus, getStatusColor } from '~/lib/func-handler/vouchers-calculate';
 import { api } from '~/trpc/react';
 
@@ -21,8 +21,30 @@ export default function CardVoucher({
 }) {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const mutationDelete = api.Voucher.delete.useMutation();
-  const mutationCreate = api.Voucher.create.useMutation();
-  const mutationUpdate = api.Voucher.update.useMutation();
+  const mutationCreate = api.Voucher.create.useMutation({
+    onSuccess: newPromotion => {
+      if (newPromotion.code === 'OK') {
+        NotifySuccess('Thao tác thành công!', 'Nhân bản thành công.');
+        setLoading({ copy: false });
+        utils.Voucher.invalidate();
+      }
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
+  const mutationUpdate = api.Voucher.update.useMutation({
+    onSuccess: newPromotion => {
+      if (newPromotion.code === 'OK') {
+        NotifySuccess('Thao tác thành công!', 'Cập nhật thành công.');
+        setLoading({ copy: false });
+        utils.Voucher.invalidate();
+      }
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   const status = getPromotionStatus(promotion);
   const utils = api.useUtils();
 
@@ -78,7 +100,7 @@ export default function CardVoucher({
               loading={loading['toggle']}
               onClick={async () => {
                 setLoading({ toggle: true });
-                const newPromotion = await mutationUpdate.mutateAsync({
+                await mutationUpdate.mutateAsync({
                   where: {
                     id: promotion.id
                   },
@@ -86,11 +108,6 @@ export default function CardVoucher({
                     isActive: !promotion.isActive
                   }
                 });
-                if (newPromotion.code === 'OK') {
-                  NotifySuccess('Thao tác thành công!', 'Cập nhật thành công.');
-                  setLoading({ copy: false });
-                  utils.Voucher.invalidate();
-                }
               }}
               styles={{
                 root: {
@@ -109,17 +126,12 @@ export default function CardVoucher({
               loading={loading['copy']}
               onClick={async () => {
                 setLoading({ copy: true });
-                const newPromotion = await mutationCreate.mutateAsync({
+                await mutationCreate.mutateAsync({
                   ...promotion,
                   name: promotion.name + '-' + new Date().getTime(),
                   isActive: false,
                   id: ''
                 });
-                if (newPromotion.code === 'OK') {
-                  NotifySuccess('Thao tác thành công!', 'Nhân bản thành công.');
-                  setLoading({ copy: false });
-                  utils.Voucher.invalidate();
-                }
               }}
               styles={{
                 root: {

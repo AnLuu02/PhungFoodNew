@@ -1,8 +1,9 @@
 'use client';
 
-import { ActionIcon, Button, Modal, Title } from '@mantine/core';
+import { ActionIcon, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateReview from './form/CreateReview';
@@ -12,9 +13,9 @@ export function CreateReviewButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         closeOnClickOutside={false}
         opened={opened}

@@ -1,9 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, Switch, TextInput } from '@mantine/core';
+import { Grid, Switch, TextInput } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { paymentSchema } from '~/lib/zod/zodShcemaForm';
 import { api } from '~/trpc/react';
@@ -235,9 +236,9 @@ export default function UpdatePayment({
           />
         </Grid.Col>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

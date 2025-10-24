@@ -1,20 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  ActionIcon,
-  Button,
-  FileInput,
-  Grid,
-  GridCol,
-  Image,
-  Select,
-  Switch,
-  Textarea,
-  TextInput
-} from '@mantine/core';
+import { ActionIcon, FileInput, Grid, GridCol, Image, Select, Switch, Textarea, TextInput } from '@mantine/core';
 import { IconFile } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
@@ -227,9 +217,9 @@ export default function UpdateSubCategory({
           </Grid>
         </GridCol>
         <GridCol>
-          <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+          <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
             Cập nhật
-          </Button>
+          </BButton>
         </GridCol>
       </Grid>
     </form>

@@ -124,6 +124,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 fullWidth: true,
                 children: 'Thanh toán ngay',
                 radius: 'md',
+                size: 'xs',
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
               data={dataCheckout}

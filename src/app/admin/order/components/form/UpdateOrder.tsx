@@ -19,6 +19,7 @@ import { IconMail, IconPhone } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import useSWR from 'swr';
+import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import fetcher from '~/lib/func-handler/fetcher';
 import { getStatusInfo } from '~/lib/func-handler/status-order';
@@ -452,9 +453,9 @@ export default function UpdateOrder({
           </Grid>
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

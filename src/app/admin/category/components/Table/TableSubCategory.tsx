@@ -48,7 +48,7 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Badge p='sm' radius='md' color={item.isActive ? 'green' : 'red'}>
+                    <Badge p='sm' radius='md' color={item.isActive ? '#195EFE' : 'red'}>
                       {item.isActive ? 'Hoạt động' : 'Bị cấm'}
                     </Badge>
                   </Table.Td>
@@ -76,7 +76,7 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
         </Table>
       </Box>
 
-      <Group justify='space-between' mt='md'>
+      <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>

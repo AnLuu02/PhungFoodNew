@@ -220,8 +220,9 @@ export const restaurantSchema = z.object({
     .array(
       z.object({
         id: z.string(),
-        dayOfWeek: z.number(),
+        dayOfWeek: z.string(),
         openTime: z.string().optional(),
+        viNameDay: z.string(),
         closeTIme: z.string().optional(),
         isClosed: z.boolean()
       })

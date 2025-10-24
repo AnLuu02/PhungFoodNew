@@ -125,7 +125,7 @@ export default function Page() {
                   <Link href={'/password/forgot-password'}>
                     <Text
                       fw={700}
-                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'
+                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text dark:hover:text-mainColor'
                       size='sm'
                     >
                       Bạn quên mật khẩu?
@@ -138,7 +138,6 @@ export default function Page() {
                 <GridCol span={12} className=''>
                   <BButton
                     disabled={!isDirty}
-                    radius='md'
                     loading={isSubmitting}
                     type='submit'
                     fullWidth
@@ -152,7 +151,7 @@ export default function Page() {
                     <Link href={'/dang-ky'}>
                       <Text
                         fw={700}
-                        className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text'
+                        className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text dark:hover:text-mainColor'
                         size='sm'
                       >
                         Đăng ký ngay

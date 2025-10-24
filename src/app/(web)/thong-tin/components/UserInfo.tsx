@@ -3,7 +3,6 @@ import {
   Avatar,
   Badge,
   Box,
-  Button,
   Card,
   Center,
   Divider,
@@ -23,6 +22,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
+import BButton from '~/components/Button/Button';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/func-handler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/status-order';
@@ -45,8 +45,15 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
 
   return (
     <Grid p={0}>
-      <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
-        <Card shadow='lg' radius='lg' withBorder pos='relative' bg={`${levelInfo.color}22`} className='pt-10 sm:p-7'>
+      <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }} className='h-fit'>
+        <Card
+          shadow='lg'
+          radius='lg'
+          withBorder
+          pos='relative'
+          bg={`${levelInfo.color}22`}
+          className='h-fit pt-10 sm:p-7'
+        >
           <Box pos='absolute' top={10} right={4}>
             <UpdateUserButton
               email={userInfor?.email || ''}
@@ -163,9 +170,9 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                 Tổng quan các đơn hàng
               </Text>
               <Link href='/don-hang-cua-toi'>
-                <Button size='xs' variant='subtle'>
+                <BButton size='xs' variant='subtle'>
                   Chi tiết
-                </Button>
+                </BButton>
               </Link>
             </Flex>
             <SimpleGrid cols={2}>
@@ -213,7 +220,9 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
               <span className='text-gray-600 dark:text-dark-text'>
                 Tiến độ lên hạng<b> {getInfoLevelUser(levelInfo.nextLevel).viName}</b>
               </span>
-              <span className='font-medium text-gray-900'>{userInfor?.pointUser || 0 / levelInfo.maxPoint} điểm</span>
+              <span className='font-medium text-gray-900 dark:text-dark-text'>
+                {userInfor?.pointUser || 0 / levelInfo.maxPoint} điểm
+              </span>
             </Box>
             <Progress
               value={((userInfor?.pointUser || 0) / (levelInfo.maxPoint + 1)) * 100}
@@ -222,12 +231,11 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
               radius='xl'
             />
             <Box className='flex items-center justify-between'>
-              <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[30%]'>
+              <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[35%]'>
                 {levelInfo.viName} - ({userInfor?.pointUser || 0} điểm)
               </Text>
-              <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[60%]'>
-                Cần thêm {levelInfo.maxPoint + 1 - (userInfor?.pointUser || 0)} điểm để lên{' '}
-                {getInfoLevelUser(levelInfo.nextLevel as LocalUserLevel).viName}
+              <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[55%]'>
+                Cần thêm {levelInfo.maxPoint + 1 - (userInfor?.pointUser || 0)} điểm để thăng hạn
               </Text>
             </Box>
           </Box>

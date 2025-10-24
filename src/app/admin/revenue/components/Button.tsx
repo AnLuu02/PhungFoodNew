@@ -1,9 +1,10 @@
 'use client';
 
-import { ActionIcon, Button, Modal, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Modal, Title, Tooltip } from '@mantine/core';
 import { IconCopy, IconEdit, IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import { NotifySuccess } from '~/lib/func-handler/toast';
+import BButton from '~/components/Button/Button';
+import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
 import CreateRevenue from './form/CreateRevenue';
 import UpdateRevenue from './form/UpdateRevenue';
@@ -12,9 +13,9 @@ export function CreateRevenueButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         closeOnClickOutside={false}
         opened={opened}
@@ -57,7 +58,15 @@ export function UpdateRevenueButton({ id }: { id: string }) {
 export function CopyRevenueButton({ data }: { data: any }) {
   const [loading, setLoading] = useState(false);
   const utils = api.useUtils();
-  const mutationCreate = api.Revenue.create.useMutation();
+  const mutationCreate = api.Revenue.create.useMutation({
+    onSuccess: () => {
+      utils.Revenue.invalidate();
+      NotifySuccess('Copy doanh thu mẫu thành công!');
+    },
+    onError: e => {
+      NotifyError(e?.message || 'Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    }
+  });
   return (
     <>
       <Tooltip label='Nhân bản doanh thu mẫu'>
@@ -72,9 +81,7 @@ export function CopyRevenueButton({ data }: { data: any }) {
               totalSpent: Number(data.totalSpent) || 0,
               id: undefined
             });
-            utils.Revenue.invalidate();
             setLoading(false);
-            NotifySuccess('Copy doanh thu mẫu thành công!');
           }}
         >
           <IconCopy size={24} />

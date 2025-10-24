@@ -3,7 +3,7 @@
 import { Box, Grid, GridCol, Paper, Text, TextInput, Title } from '@mantine/core';
 import { IconPhone } from '@tabler/icons-react';
 import { Controller } from 'react-hook-form';
-export default function ContactTab({ control }: { restaurant: any; control: any }) {
+export default function ContactTab({ control }: { control: any }) {
   return (
     <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Box mb={'md'}>

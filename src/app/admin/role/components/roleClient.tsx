@@ -15,7 +15,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const [activeTab, setActiveTab] = useState<'role' | 'permission'>('role');
   const { data: dataClient } =
     activeTab === 'role'
@@ -79,7 +79,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
           return (
             <Card
               shadow='md'
-              radius={'md'}
+              radius={'lg'}
               pos={'relative'}
               key={index}
               p={'md'}
@@ -105,7 +105,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
         })}
       </SimpleGrid>
 
-      <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
           {activeTab === 'role' ? (

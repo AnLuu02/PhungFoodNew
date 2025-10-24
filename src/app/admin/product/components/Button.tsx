@@ -1,8 +1,9 @@
 'use client';
 
-import { ActionIcon, Button, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
+import { ActionIcon, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateProduct from './form/CreateProduct';
@@ -12,9 +13,9 @@ export function CreateProductButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
@@ -48,7 +49,7 @@ export function UpdateProductButton({ id }: { id: string }) {
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
-            Cập nhật danh mục
+            Cập nhật mặc hàng
           </Title>
         }
       >

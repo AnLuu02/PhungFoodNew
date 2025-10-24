@@ -31,7 +31,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const sortArr = searchParams.getAll('sort');
   const filter = searchParams.get('filter');
 
@@ -98,7 +98,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
             <Card
               style={{ backgroundColor: item.color + 10 }}
               shadow='md'
-              radius={'md'}
+              radius={'lg'}
               pos={'relative'}
               key={index}
               p={'md'}
@@ -120,7 +120,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
           );
         })}
       </SimpleGrid>
-      <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>
@@ -184,7 +184,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
           </Group>
         </Group>
       </Paper>
-      <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
         <Box className={`tableAdmin w-full overflow-x-auto`}>
           <Table striped highlightOnHover withTableBorder withColumnBorders>
             <Table.Thead>
@@ -216,12 +216,12 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
                       </Highlight>
                     </Table.Td>
                     <Table.Td className='text-sm'>
-                      <Badge p='sm' radius='md' color={item.role?.name !== UserRole.ADMIN ? 'green' : 'red'}>
+                      <Badge p='sm' radius='md' color={item.role?.name !== UserRole.ADMIN ? '#195EFE' : 'red'}>
                         {item.role?.viName || 'Đang cập nhật...'}
                       </Badge>
                     </Table.Td>
                     <Table.Td className='text-sm'>
-                      <Badge p='sm' radius='md' color={item.isActive ? 'green' : 'red'}>
+                      <Badge p='sm' radius='md' color={item.isActive ? '#195EFE' : 'red'}>
                         {item.isActive ? 'Hoạt động' : 'Bị cấm'}
                       </Badge>
                     </Table.Td>
@@ -268,7 +268,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
           </Table>
         </Box>
 
-        <Group justify='space-between' mt='md'>
+        <Group justify='space-between' align='center' my={'md'}>
           <PageSizeSelector />
           <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
         </Group>

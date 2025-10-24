@@ -1,8 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
+import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { categoriesMaterial } from '~/constants';
 import { createTag } from '~/lib/func-handler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -27,14 +28,8 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
   });
 
   const utils = api.useUtils();
-  const mutation = api.Material.create.useMutation();
-
-  const onSubmit: SubmitHandler<Material> = async formData => {
-    try {
-      const result = await mutation.mutateAsync({
-        ...formData,
-        tag: createTag(formData.name)
-      });
+  const mutation = api.Material.create.useMutation({
+    onSuccess: result => {
       if (result.code !== 'OK') {
         NotifyError(result.message);
         utils.Material.invalidate();
@@ -42,6 +37,19 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
       }
       setOpened(false);
       NotifySuccess(result.message);
+      setOpened(false);
+    },
+    onError: e => {
+      NotifyError(e?.message || 'Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    }
+  });
+
+  const onSubmit: SubmitHandler<Material> = async formData => {
+    try {
+      await mutation.mutateAsync({
+        ...formData,
+        tag: createTag(formData.name)
+      });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
@@ -104,9 +112,9 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
           />
         </GridCol>
       </Grid>
-      <Button type='submit' className='mt-4 w-full' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
-      </Button>
+      </BButton>
     </form>
   );
 }

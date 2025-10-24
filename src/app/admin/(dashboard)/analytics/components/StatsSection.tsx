@@ -111,7 +111,7 @@ interface StatsCardProps {
 
 const StatsCard = ({ title, badge, value, rate, type }: StatsCardProps) => {
   return (
-    <Card pos='relative' w='100%' h='100%' shadow='sm' p='xl' radius={'md'} withBorder>
+    <Card pos='relative' w='100%' h='100%' shadow='sm' p='xl' radius={'lg'} withBorder>
       <Card.Section>
         <Text fw={600}>{title}</Text>
       </Card.Section>

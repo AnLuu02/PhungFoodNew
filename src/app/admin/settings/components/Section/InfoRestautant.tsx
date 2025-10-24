@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
-  Button,
   Flex,
   Group,
   Paper,
@@ -25,8 +24,9 @@ import {
   IconHome,
   IconSpacingVertical
 } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import BButton from '~/components/Button/Button';
 import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { restaurantSchema } from '~/lib/zod/zodShcemaForm';
@@ -56,7 +56,7 @@ export default function RestaurantInfoSettings({ data }: any) {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, isDirty },
+    formState: { errors, isSubmitting, isDirty },
     reset,
     watch,
     setValue
@@ -76,6 +76,12 @@ export default function RestaurantInfoSettings({ data }: any) {
       openingHours: undefined
     }
   });
+
+  const timeOpen = useMemo(() => {
+    const timeIndex = new Date().getDay();
+    const timeOpens = data?.openingHours ?? [];
+    return timeOpens[timeIndex];
+  }, [restaurantData]);
   useEffect(() => {
     if (data?.id) {
       if (data?.logo?.url && data?.logo?.url !== '') {
@@ -105,7 +111,19 @@ export default function RestaurantInfoSettings({ data }: any) {
     }
   }, [data, reset]);
 
-  const updateMutation = api.Restaurant.update.useMutation();
+  const updateMutation = api.Restaurant.update.useMutation({
+    onSuccess: result => {
+      if (result?.code === 'OK') {
+        NotifySuccess(result.message);
+        utils.Restaurant.invalidate();
+        return;
+      }
+      NotifyError(result?.message);
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   const utils = api.useUtils();
   const onSubmit: SubmitHandler<Restaurant> = async formData => {
     const file = (formData?.logo?.url as File) ?? undefined;
@@ -118,7 +136,7 @@ export default function RestaurantInfoSettings({ data }: any) {
         base64: base64 as string
       }
     };
-    let result = await updateMutation.mutateAsync({
+    await updateMutation.mutateAsync({
       ...formDataWithImageUrlAsString,
       theme: {
         ...formData?.theme,
@@ -130,12 +148,6 @@ export default function RestaurantInfoSettings({ data }: any) {
       },
       openingHours: formData?.openingHours
     });
-    if (result?.code === 'OK') {
-      NotifySuccess(result.message);
-      utils.Restaurant.invalidate();
-    } else {
-      NotifyError(result?.message);
-    }
   };
 
   return (
@@ -153,19 +165,32 @@ export default function RestaurantInfoSettings({ data }: any) {
           </Box>
 
           <Group gap='sm'>
-            <Button variant='outline' className='border-mainColor text-mainColor' radius={'xl'} leftSection='Đóng cửa'>
-              <Switch checked={restaurantData.isOpen} />
-            </Button>
-            <Button
+            <Switch
+              defaultChecked={!timeOpen.isClosed}
+              classNames={{
+                root: 'data-[checked="true"]:bg-mainColor'
+              }}
+              label={
+                !timeOpen.isClosed ? (
+                  <Text size='sm' fw={700}>
+                    Mở cửa
+                  </Text>
+                ) : (
+                  <Text size='sm' fw={700}>
+                    Đóng cửa
+                  </Text>
+                )
+              }
+              className='rounded-md border-[0.5px] border-solid border-mainColor p-2'
+            />
+            <BButton
               type='submit'
               disabled={!isDirty}
               loading={isSubmitting}
               leftSection={<IconSpacingVertical size={16} />}
-              className='bg-mainColor duration-100 enabled:hover:bg-subColor enabled:hover:text-black'
-              radius={'md'}
             >
               Lưu thay đổi
-            </Button>
+            </BButton>
           </Group>
         </Group>
         <Stack gap={'xl'}>
@@ -192,11 +217,11 @@ export default function RestaurantInfoSettings({ data }: any) {
             </TabsList>
 
             <TabsPanel value='basic' className='space-y-6'>
-              <GeneralTab control={control} />
+              <GeneralTab control={control} isDirty={isDirty} />
             </TabsPanel>
 
             <TabsPanel value='contact' className='space-y-6'>
-              <ContactTab restaurant={data} control={control} />
+              <ContactTab control={control} />
             </TabsPanel>
 
             <TabsPanel value='hours' className='space-y-6'>

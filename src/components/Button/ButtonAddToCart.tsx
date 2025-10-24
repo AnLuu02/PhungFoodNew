@@ -20,6 +20,8 @@ export function ButtonAddToCart({
   return (
     <BButton
       {...style}
+      radius={'xl'}
+      size={'xs'}
       onClick={() => {
         const to = getVisibleToEl('.cart-btn');
         const from = document.getElementById(`productImage-${product?.id}`);

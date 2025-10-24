@@ -4,6 +4,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { IconFilter, IconSearch } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -144,9 +145,9 @@ export default function UpdatePermissionUser({
               </Text>
             </Box>
             <Group>
-              <Button type='submit' disabled={!hasChange} loading={loading}>
+              <BButton type='submit' disabled={!hasChange} loading={loading}>
                 Lưu thay đổi
-              </Button>
+              </BButton>
               <Button
                 variant='outline'
                 size='xs'

@@ -6,7 +6,7 @@ import { IconTrendingUp } from '@tabler/icons-react';
 export default function UserChart() {
   const { colorScheme } = useMantineColorScheme();
   return (
-    <Card w='100%' h='100%' shadow='sm' p='xl' radius={'md'} withBorder>
+    <Card w='100%' h='100%' shadow='sm' p='xl' radius={'lg'} withBorder>
       <Card.Section>
         <Group justify='space-between'>
           <Flex direction='column' align='start' gap={4}>

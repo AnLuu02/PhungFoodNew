@@ -1,7 +1,8 @@
 'use client';
-import { ActionIcon, Button, Modal, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Modal, Title, Tooltip } from '@mantine/core';
 import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateUser from './form/CreateUser';
@@ -12,9 +13,9 @@ export function CreateUserButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button radius={'md'} leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} bg={'#195EFE'}>
-        Tạo người dùng
-      </Button>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+        Tạo mới
+      </BButton>
       <Modal
         closeOnClickOutside={false}
         size='100%'

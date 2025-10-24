@@ -24,7 +24,7 @@ export default function CustomPagination({ totalPages }: { totalPages: number })
     router.push(`${pathname}?${params.toString()}`);
   };
   return (
-    <Group justify='center' mt='xl'>
+    <Group justify='center'>
       <Pagination.Root
         classNames={{
           control:

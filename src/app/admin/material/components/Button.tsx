@@ -14,6 +14,7 @@ import {
 } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/func-handler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
@@ -126,9 +127,9 @@ export function CreateManyMaterialButton() {
       <Group>
         <FileButton disabled={opened} onChange={file => file && handleFileUpload(file)} accept='xlsx,xls'>
           {props => (
-            <Button disabled={opened} variant='outline' {...props}>
+            <BButton disabled={opened} variant='outline' {...props}>
               Import dữ liệu
-            </Button>
+            </BButton>
           )}
         </FileButton>
         <Button bg={'red'} onClick={handleExport} disabled={fetchMaterials?.data?.length === 0}>
@@ -204,9 +205,9 @@ export function CreateMaterialButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)} radius='md' bg='#195EFE'>
+      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </Button>
+      </BButton>
       <Modal
         opened={opened}
         closeOnClickOutside={false}
@@ -236,7 +237,7 @@ export function UpdateMaterialButton({ id }: { id: string }) {
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
-            Cập nhật danh mục
+            Cập nhật nguyên liệu
           </Title>
         }
       >

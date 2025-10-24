@@ -131,14 +131,7 @@ export const FormContact = ({ user }: any) => {
           />
         </GridCol>
         <GridCol span={12}>
-          <BButton
-            size='sm'
-            type='submit'
-            radius={'xl'}
-            children={' Gửi thông tin'}
-            loading={isSubmitting}
-            disabled={!isDirty}
-          />
+          <BButton type='submit' radius={'xl'} children={' Gửi thông tin'} loading={isSubmitting} disabled={!isDirty} />
         </GridCol>
       </Grid>
     </form>

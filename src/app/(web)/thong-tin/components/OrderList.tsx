@@ -4,7 +4,6 @@ import {
   ActionIcon,
   Badge,
   Box,
-  Button,
   Card,
   Center,
   Divider,
@@ -25,6 +24,7 @@ import {
 import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import BButton from '~/components/Button/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { useModalActions } from '~/contexts/ModalContext';
@@ -115,7 +115,9 @@ export function OrderList({ orders }: { orders: any }) {
             Theo dõi và quản lý tất cả đơn hàng của bạn
           </Text>
         </Box>
-        <Button className='rounded-md bg-mainColor hover:bg-mainColor/90'>Tạo đơn hàng mới</Button>
+        <Link href={'/gio-hang'}>
+          <BButton>Tạo đơn hàng mới</BButton>
+        </Link>
       </Flex>
       <Card shadow='sm' padding='lg' radius='md' withBorder>
         <SimpleGrid cols={{ base: 2, sm: 2, md: 3, xl: 5 }} mb={'lg'}>
@@ -276,7 +278,7 @@ export function OrderList({ orders }: { orders: any }) {
                               {order?.status === LocalOrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Tiếp tục thanh toán'>
-                                    <Button size='xs'>Thanh toán</Button>
+                                    <BButton size='xs'>Thanh toán</BButton>
                                   </Tooltip>
                                 </Link>
                               )}
@@ -284,19 +286,19 @@ export function OrderList({ orders }: { orders: any }) {
                               {order?.status === LocalOrderStatus.CANCELLED && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Đặt lại đơn hàng'>
-                                    <Button size='xs'>Đặt lại</Button>
+                                    <BButton size='xs'>Đặt lại</BButton>
                                   </Tooltip>
                                 </Link>
                               )}
                               <Tooltip label='Chi tiết'>
-                                <Button
+                                <BButton
                                   size='xs'
                                   onClick={() => {
                                     openModal('orders', null, order);
                                   }}
                                 >
                                   Chi tiết
-                                </Button>
+                                </BButton>
                               </Tooltip>
                             </Group>
                           </Table.Td>

@@ -262,7 +262,6 @@ export default function VoiceSearchModal() {
             <BButton
               fullWidth
               size='md'
-              radius={'md'}
               disabled={state.searchState !== 'completed'}
               onClick={() => {
                 setOpened(false);

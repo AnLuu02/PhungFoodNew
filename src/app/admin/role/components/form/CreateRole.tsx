@@ -22,6 +22,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
 import { api } from '~/trpc/react';
@@ -259,9 +260,9 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
         >
           Đặt lại
         </Button>
-        <Button type='submit' loading={isSubmitting} disabled={!isDirty}>
+        <BButton type='submit' loading={isSubmitting} disabled={!isDirty}>
           Tạo mới
-        </Button>
+        </BButton>
       </Group>
     </form>
   );

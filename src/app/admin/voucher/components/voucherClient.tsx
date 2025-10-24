@@ -16,7 +16,7 @@ import { ViewVoucherModal } from './Modal/ViewVoucherModal';
 export default function VoucherClient({ s, data, allData }: { s: string; data: any; allData?: any }) {
   const searchParams = useSearchParams();
   const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '3';
+  const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Voucher.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
   const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined, { initialData: allData });
   const [selectedPromotion, setSelectedPromotion] = useState<{ type: 'edit' | 'view'; data: any } | null>(null);
@@ -96,7 +96,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
           return (
             <Card
               shadow='md'
-              radius={'md'}
+              radius={'lg'}
               pos={'relative'}
               key={index}
               p={'md'}
@@ -119,7 +119,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
           );
         })}
       </SimpleGrid>
-      <Paper radius={'md'} withBorder shadow='md' p={'md'}>
+      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>
@@ -168,7 +168,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
           })}
         </SimpleGrid>
       )}
-      <Group justify='space-between' mt='md'>
+      <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
         <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
