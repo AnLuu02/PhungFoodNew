@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateReportPDF } from '~/lib/func-handler/generateReportPDF';
+import { generateReportPDF } from '~/lib/FuncHandler/MailHelpers/generateReportPDF';
 import { api } from '~/trpc/server';
 
 export async function POST(req: NextRequest) {

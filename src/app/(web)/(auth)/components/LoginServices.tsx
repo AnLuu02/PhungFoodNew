@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { NotifyError } from '~/lib/func-handler/toast';
+import { NotifyError } from '~/lib/FuncHandler/toast';
 
 const providers = [
   { name: 'google', icon: '/images/png/google.png' },

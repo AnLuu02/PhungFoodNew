@@ -1,8 +1,8 @@
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
-import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
-import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
+import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
+import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';

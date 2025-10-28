@@ -1,4 +1,4 @@
-import { LocalOrderStatus } from '../zod/EnumType';
+import { LocalOrderStatus } from '../ZodSchema/enum';
 
 export const sampleOrders = Array.from({ length: 20 }, (_, i) => ({
   id: `order_${i + 1}`,

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import fetcher from '~/lib/func-handler/fetcher';
+import fetcher from '~/lib/FuncHandler/fetcher';
 import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
 
 export const useProvinces = () => {

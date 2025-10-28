@@ -15,8 +15,8 @@ import {
   Tooltip
 } from '@mantine/core';
 import { IconEye, IconPencil } from '@tabler/icons-react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getStatusInfo } from '~/lib/func-handler/status-order';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 
 interface Order {
   id: string;

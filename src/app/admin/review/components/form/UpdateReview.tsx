@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { UserRole } from '~/constants';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { reviewSchema } from '~/lib/zod/zodShcemaForm';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Review } from '~/types/review';
 

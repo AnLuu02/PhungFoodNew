@@ -4,8 +4,8 @@ import { Grid, GridCol, Select, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { invoiceSchema } from '~/lib/zod/zodShcemaForm';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { invoiceSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Invoice } from '~/types/invoice';
 
@@ -115,6 +115,7 @@ export default function CreateInvoice({
               <TextInput
                 label='Số hóa đơn'
                 withAsterisk
+                radius={'md'}
                 placeholder='Số hóa đơn'
                 {...field}
                 error={errors.invoiceNumber?.message}
@@ -193,7 +194,13 @@ export default function CreateInvoice({
             control={control}
             name='taxCode'
             render={({ field }) => (
-              <TextInput label='Mã số thuế' placeholder='Mã số thuế' {...field} error={errors.taxCode?.message} />
+              <TextInput
+                radius={'md'}
+                label='Mã số thuế'
+                placeholder='Mã số thuế'
+                {...field}
+                error={errors.taxCode?.message}
+              />
             )}
           />
         </GridCol>

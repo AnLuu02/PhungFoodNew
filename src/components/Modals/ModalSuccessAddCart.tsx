@@ -6,9 +6,9 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { ModalProps } from '~/types/modal';
 
 export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {

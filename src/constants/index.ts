@@ -1,4 +1,4 @@
-import { LocalUserLevel } from '~/lib/zod/EnumType';
+import { LocalUserLevel } from '~/lib/ZodSchema/enum';
 
 export const EMPTY_STRING = '';
 export const VND_SYMBOL = '₫';

@@ -94,6 +94,7 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                 <Stack gap='md'>
                   <Stack gap='xs'>
                     <NumberInput
+                      radius={'md'}
                       label={'Thời gian chờ của phiên (phút)'}
                       id='sessionTimeout'
                       defaultValue={30}
@@ -169,7 +170,13 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                   </Stack>
 
                   <Stack gap={4}>
-                    <NumberInput label='Thời gian lưu giữ (ngày)' id='retention' defaultValue={30} min={1} />
+                    <NumberInput
+                      radius={'md'}
+                      label='Thời gian lưu giữ (ngày)'
+                      id='retention'
+                      defaultValue={30}
+                      min={1}
+                    />
                   </Stack>
 
                   <Group>

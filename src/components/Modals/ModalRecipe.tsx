@@ -68,7 +68,6 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
             <Box className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20' />
 
             <Button
-              variant='ghost'
               size='icon'
               className='absolute right-4 top-4 bg-black/20 text-white hover:bg-black/40'
               onClick={onClose}

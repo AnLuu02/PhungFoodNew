@@ -13,12 +13,12 @@ const HeaderWeb = async ({ restaurant }: { restaurant: any }) => {
   const [categories, subCategories, notifications] = await Promise.all([
     api.Category.getAll(),
     api.SubCategory.getAll(),
-    user?.email ? api.Notification.getFilter({ s: user?.email || '' }) : undefined
+    user?.id ? api.Notification.getFilter({ s: user?.id || '' }) : undefined
   ]);
 
   return (
     <>
-      {user?.email && <NotificationDialog data={notifications} user={user} />}
+      {user?.id && <NotificationDialog data={notifications} userId={user?.id} />}
       <Header1 restaurant={restaurant} />
       <Header2 subCategories={subCategories} />
       <Header3 categories={categories} subCategories={subCategories} />

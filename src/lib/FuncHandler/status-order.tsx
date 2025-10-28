@@ -11,7 +11,7 @@ import {
   IconX
 } from '@tabler/icons-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
-import { LocalOrderStatus } from '../zod/EnumType';
+import { LocalOrderStatus } from '../ZodSchema/enum';
 
 export const ORDER_STATUS_MAP: Record<
   LocalOrderStatus,

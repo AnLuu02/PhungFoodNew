@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { pusherServer } from '~/lib/pusher/server';
+import { pusherServer } from '~/lib/PusherConfig/server';
 
 const viewers = new Map<string, Set<string>>();
 

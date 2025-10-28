@@ -22,7 +22,7 @@ import { ResizableImageExtension } from '~/components/Tiptap/extensions/Resizabl
 import { Video } from '~/components/Tiptap/extensions/VideoExtension';
 import { MediaButtons } from '~/components/Tiptap/MediaButtons';
 import { TiptapControl } from '~/components/Tiptap/TiptapControl';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
 export default function MailResponse({
@@ -95,7 +95,7 @@ export default function MailResponse({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           from: 'Phụng Food Restaurant',
-          to: userContactInfo.email || 'anluu0099@gmail.com',
+          to_n: [userContactInfo.email],
           idRecord: userContactInfo.id,
           subject: subject || 'Phản hồi từ Phụng Food Restaurant',
           data: html
@@ -141,7 +141,6 @@ export default function MailResponse({
           <TextInput
             flex={1}
             placeholder='Người nhận'
-            radius='xs'
             value={userContactInfo.email}
             variant='unstyled'
             styles={{
@@ -160,7 +159,6 @@ export default function MailResponse({
           </Text>
           <TextInput
             placeholder='Tiêu đề'
-            radius='xs'
             flex={1}
             variant='unstyled'
             value={subject}

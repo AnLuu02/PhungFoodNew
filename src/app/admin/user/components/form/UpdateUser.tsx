@@ -29,11 +29,11 @@ import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { infoUserLevel, UserRole } from '~/constants';
-import fetcher from '~/lib/func-handler/fetcher';
-import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
-import { userSchema } from '~/lib/zod/zodShcemaForm';
+import fetcher from '~/lib/FuncHandler/fetcher';
+import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
+import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
 

@@ -2,8 +2,8 @@
 
 import { Modal, Text } from '@mantine/core';
 import { useEffect, useMemo, useState } from 'react';
-import { vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { CarouselBanner } from '../CarouselBanner';
 
 export default function ModalViewBanner({ viewBanner, setViewBanner }: any) {

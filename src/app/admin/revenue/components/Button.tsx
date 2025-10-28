@@ -4,7 +4,7 @@ import { ActionIcon, Modal, Title, Tooltip } from '@mantine/core';
 import { IconCopy, IconEdit, IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import CreateRevenue from './form/CreateRevenue';
 import UpdateRevenue from './form/UpdateRevenue';

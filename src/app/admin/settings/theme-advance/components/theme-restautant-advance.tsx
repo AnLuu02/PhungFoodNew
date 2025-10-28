@@ -3,7 +3,7 @@
 import { Box, Group, Paper, Stack, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import { IconPalette } from '@tabler/icons-react';
 import { useState } from 'react';
-import { dataThemes } from '~/lib/data-test/theme';
+import { dataThemes } from '~/lib/DataTest/theme';
 import { ThemeConfig, ThemeTemplate } from '~/types/theme';
 import { CreateTheme } from './control/create-theme';
 import { EditTheme } from './control/edit-theme';

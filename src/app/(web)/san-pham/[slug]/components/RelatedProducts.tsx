@@ -2,9 +2,9 @@ import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } f
 import Image from 'next/image';
 import Link from 'next/link';
 import { TOP_POSITION_STICKY } from '~/constants';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 export default function RelatedProducts({ data }: any) {
   return (
     <Paper

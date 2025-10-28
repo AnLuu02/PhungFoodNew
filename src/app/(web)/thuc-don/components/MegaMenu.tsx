@@ -20,9 +20,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export default function MegaMenu({ categories }: any) {
   const [hoveredTab, setHoveredTab] = useState<string | null>(categories?.[0]?.tag as string);

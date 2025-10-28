@@ -2,7 +2,7 @@
 
 import { useLocalStorage } from '@mantine/hooks';
 import BButton, { IBButton } from '~/components/Button/Button';
-import { flyToCart, getVisibleToEl } from '~/lib/button-handle/FlyToCart';
+import { flyToCart, getVisibleToEl } from '~/lib/ButtonHandler/FlyToCart';
 
 export function ButtonAddToCart({
   product,

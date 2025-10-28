@@ -1,6 +1,6 @@
 import { AddressType, EntityType, ImageType, OrderStatus } from '@prisma/client';
 import { z } from 'zod';
-import { LocalAddressType, LocalGender, LocalUserLevel } from './EnumType';
+import { LocalAddressType, LocalGender, LocalUserLevel } from './enum';
 export const imageSchema = z.object({
   id: z.string().optional(),
   url: z.instanceof(File).optional(),

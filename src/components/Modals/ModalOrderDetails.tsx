@@ -21,10 +21,10 @@ import {
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { getStatusInfo } from '~/lib/func-handler/status-order';
-import { LocalImageType, LocalOrderStatus, LocalVoucherType } from '~/lib/zod/EnumType';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { LocalImageType, LocalOrderStatus, LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { ModalProps } from '~/types/modal';
 import InvoiceToPrint from '../InvoceToPrint';
 

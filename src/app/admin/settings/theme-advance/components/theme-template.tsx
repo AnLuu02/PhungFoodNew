@@ -3,7 +3,7 @@
 import { Badge, Box, Button, Card, Group, Modal, Paper, Select, Switch, Text, Title } from '@mantine/core';
 import { IconCopy, IconEdit, IconPalette, IconStar, IconStarOff, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ThemeConfig, ThemeTemplate } from '~/types/theme';
 
 export const ThemeTemplateSection = ({

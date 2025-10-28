@@ -3,7 +3,7 @@
 import { Box, Button, Modal, Select, Switch, Text, TextInput, Title } from '@mantine/core';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ThemeConfig, ThemeTemplate } from '~/types/theme';
 
 export const EditTheme = ({

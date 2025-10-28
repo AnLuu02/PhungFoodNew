@@ -26,7 +26,7 @@ import {
   IconTextDirectionRtl
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { hexToRgb } from '~/lib/func-handler/hexToRgb';
+import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 const colors = ['#5D87FF', '#0074BA', '#763EBD', '#0A7EA4', '#7DDFE3', '#FA896B'];
 export const SettingClient = () => {
   const [mainColor, setMainColor] = useState<string | null>(null);

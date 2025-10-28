@@ -4,9 +4,9 @@ import { Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { createTag } from '~/lib/func-handler/generateTag';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { categorySchema } from '~/lib/zod/zodShcemaForm';
+import { createTag } from '~/lib/FuncHandler/generateTag';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { categorySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Category } from '~/types/category';
 
@@ -67,6 +67,7 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
                 {...field}
                 label='Tên danh mục'
                 size='sm'
+                radius={'md'}
                 placeholder='Nhập tên danh mục'
                 error={errors.name?.message}
               />

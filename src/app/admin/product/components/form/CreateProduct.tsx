@@ -22,10 +22,10 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
-import { createTag } from '~/lib/func-handler/generateTag';
-import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { productSchema } from '~/lib/zod/zodShcemaForm';
+import { createTag } from '~/lib/FuncHandler/generateTag';
+import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { productSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Product } from '~/types/product';
 
@@ -289,7 +289,13 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             control={control}
             name='name'
             render={({ field }) => (
-              <TextInput {...field} label='Tên sản phẩm' placeholder='Nhập tên sản phẩm' error={errors.name?.message} />
+              <TextInput
+                radius='md'
+                {...field}
+                label='Tên sản phẩm'
+                placeholder='Nhập tên sản phẩm'
+                error={errors.name?.message}
+              />
             )}
           />
         </Grid.Col>

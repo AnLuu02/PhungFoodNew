@@ -4,10 +4,10 @@ import { IconGift, IconPlus, IconTag, IconX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import ModalListVoucher from '~/components/Modals/ModalListVoucher';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { allowedVoucher } from '~/lib/func-handler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 export const ApplyVoucher = ({ totalOrderPrice }: any) => {

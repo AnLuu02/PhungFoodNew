@@ -1,11 +1,11 @@
 import { Prisma } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
-import { redis } from '~/lib/cache/redis';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
-import { NotifyError } from '~/lib/func-handler/toast';
-import { LocalEntityType, LocalImageType } from '~/lib/zod/EnumType';
+import { redis } from '~/lib/CacheConfig/redis';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
+import { NotifyError } from '~/lib/FuncHandler/toast';
+import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 

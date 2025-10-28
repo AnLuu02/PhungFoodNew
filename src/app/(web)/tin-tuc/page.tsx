@@ -6,7 +6,7 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { TOP_POSITION_STICKY } from '~/constants';
-import { formatDateViVN } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/server';
 
 export const metadata: Metadata = {

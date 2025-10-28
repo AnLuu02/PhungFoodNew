@@ -7,7 +7,7 @@ import { SendOrderButton } from '~/app/admin/order/components/Button';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import CustomPagination from '~/components/Pagination';
-import { formatDateViVN } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '../Button';
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generatePDF } from '~/lib/func-handler/generatePDF';
-import { getComfirmEmail, transporter } from '~/lib/func-handler/sendEmail';
+import { generatePDF } from '~/lib/FuncHandler/MailHelpers/generatePDF';
+import { getComfirmEmail, transporter } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 
 export async function POST(req: NextRequest) {
   try {

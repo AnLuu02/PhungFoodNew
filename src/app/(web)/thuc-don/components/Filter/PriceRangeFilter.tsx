@@ -3,7 +3,7 @@ import { IconMoneybag } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 export function PriceRangeFilter() {
   const [message, setMessage] = useState('');

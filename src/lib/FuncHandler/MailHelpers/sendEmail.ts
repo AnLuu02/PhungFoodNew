@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { formatPriceLocaleVi } from './Format';
+import { formatPriceLocaleVi } from '../Format';
 
 export const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,

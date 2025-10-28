@@ -4,10 +4,10 @@ import { Badge, Box, Button, Card, Highlight, Stack, Text } from '@mantine/core'
 import { VoucherType } from '@prisma/client';
 import { IconCopy, IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDateViVN } from '~/lib/func-handler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { getPromotionStatus, getStatusColor } from '~/lib/func-handler/vouchers-calculate';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { getPromotionStatus, getStatusColor } from '~/lib/FuncHandler/vouchers-calculate';
 import { api } from '~/trpc/react';
 
 export default function CardVoucher({

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { deliveryAddressSchema } from '~/lib/zod/zodShcemaForm';
+import { deliveryAddressSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';

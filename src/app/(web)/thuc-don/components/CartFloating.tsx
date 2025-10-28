@@ -4,7 +4,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconBell, IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 export function CartFloating() {
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });

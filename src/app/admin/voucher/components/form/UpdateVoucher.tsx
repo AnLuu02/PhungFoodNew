@@ -22,9 +22,9 @@ import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalVoucherType } from '~/lib/zod/EnumType';
-import { voucherSchema } from '~/lib/zod/zodShcemaForm';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { LocalVoucherType } from '~/lib/ZodSchema/enum';
+import { voucherSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Voucher } from '~/types/voucher';
 

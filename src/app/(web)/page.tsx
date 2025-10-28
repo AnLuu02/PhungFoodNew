@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import HomeWeb from '~/components/Web/Home/HomeWeb';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api, HydrateClient } from '~/trpc/server';
 
 export const revalidate = 60 * 60 * 24;

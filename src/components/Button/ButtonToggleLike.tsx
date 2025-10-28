@@ -4,7 +4,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 export const ButtonToggleLike = ({ data }: any) => {
   const { data: session } = useSession();

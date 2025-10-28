@@ -1,5 +1,5 @@
 import { OrderStatus } from '@prisma/client';
-import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 
 export const buildSortFilter = (sort: any, sortValue: any[]) => {
   const orderBy: any[] = [];

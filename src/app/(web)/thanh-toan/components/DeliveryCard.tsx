@@ -31,6 +31,7 @@ export function DeliveryCard({
                 <TextInput
                   label='Email'
                   placeholder='Email'
+                  radius={'md'}
                   type='email'
                   leftSection={<IconMail size={18} stroke={1.5} />}
                   {...field}
@@ -49,6 +50,7 @@ export function DeliveryCard({
                   leftSection={<IconUser size={18} stroke={1.5} />}
                   label='Họ và tên'
                   placeholder='Họ và tên'
+                  radius={'md'}
                   {...field}
                   withAsterisk
                   error={fieldState.error?.message}
@@ -65,6 +67,7 @@ export function DeliveryCard({
                 <TextInput
                   {...field}
                   label='Số điện thoại'
+                  radius={'md'}
                   leftSection={<IconPhone size={18} stroke={1.5} />}
                   placeholder='Số điện thoại'
                   withAsterisk

@@ -3,7 +3,7 @@
 import { RadarChart } from '@mantine/charts';
 import { ActionIcon, Box, Card, Flex, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconUserPlus } from '@tabler/icons-react';
-import { formatDateViVN, formatMoneyShort } from '~/lib/func-handler/Format';
+import { formatDateViVN, formatMoneyShort } from '~/lib/FuncHandler/Format';
 import { ChangeRate } from '../../components/ChangeRate';
 export function PerformanceDashboard({ dataRevenue, period, startTimeToNum, endTimeToNum }: any) {
   return (

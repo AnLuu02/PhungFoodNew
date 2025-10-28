@@ -2,9 +2,9 @@ import { useLocalStorage } from '@mantine/hooks';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import BButton, { IBButton } from '~/components/Button/Button';
-import { generateGuestCredentials } from '~/lib/func-handler/generateGuestCredentials';
-import { NotifyError } from '~/lib/func-handler/toast';
-import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredentials';
+import { NotifyError } from '~/lib/FuncHandler/toast';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 export const ButtonCheckout = ({

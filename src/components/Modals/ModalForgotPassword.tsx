@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { NotifyError } from '~/lib/func-handler/toast';
+import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 const OtpModal = dynamic(() => import('./ModalOtp'), {
   ssr: false

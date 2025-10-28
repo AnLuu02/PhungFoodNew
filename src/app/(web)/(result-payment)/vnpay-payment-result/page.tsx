@@ -2,8 +2,8 @@
 import { useLocalStorage } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { formatTransDate } from '~/lib/func-handler/Format';
-import { getVietnameseStatusMessage, mapOrderStatusToUIStatus } from '~/lib/func-handler/Payment';
+import { formatTransDate } from '~/lib/FuncHandler/Format';
+import { getVietnameseStatusMessage, mapOrderStatusToUIStatus } from '~/lib/FuncHandler/Payment';
 import { api } from '~/trpc/react';
 import OrderStatusPage from './components/OrderStatusPage';
 import { PaymentStatusCardSkeleton } from './components/SkeletonLoading';

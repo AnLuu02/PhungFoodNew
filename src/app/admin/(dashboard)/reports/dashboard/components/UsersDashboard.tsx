@@ -3,7 +3,7 @@ import { BarChart } from '@mantine/charts';
 import { ActionIcon, Box, Card, Flex, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconBrandCashapp, IconCheese, IconShoppingCart, IconUser, IconUserPlus } from '@tabler/icons-react';
 import { useMemo } from 'react';
-import { formatDateViVN, formatMoneyShort } from '~/lib/func-handler/Format';
+import { formatDateViVN, formatMoneyShort } from '~/lib/FuncHandler/Format';
 export function UsersDashboard({ dataClient, period, startTimeToNum, endTimeToNum, dataOverviewChart }: any) {
   const dataRevenue = useMemo(() => {
     return [

@@ -20,8 +20,8 @@ import { useMemo } from 'react';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { formatDateViVN } from '~/lib/func-handler/Format';
-import { TypeContact } from '~/lib/zod/EnumType';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { TypeContact } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import { CallPhoneButton, DeleteContactButton, SendMailButton } from '../Button';
 

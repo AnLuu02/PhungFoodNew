@@ -5,7 +5,7 @@ import { IconClock } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import BButton from '~/components/Button/Button';
-import { formatDateViVN } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
 
 export function ConsumerCard({ data }: any) {
   return (

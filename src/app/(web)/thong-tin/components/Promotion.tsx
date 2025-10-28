@@ -22,7 +22,7 @@ import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
-import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 
 export function Promotions({ vouchers }: { vouchers: any }) {
   const [page, setPage] = useState(1);

@@ -24,9 +24,9 @@ import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import BButton from '~/components/Button/Button';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
-import { formatDateViVN } from '~/lib/func-handler/Format';
-import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/status-order';
-import { LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
+import { LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
 
 export function UserInfo({ userInfor }: { userInfor: any }) {
   const [opened, setOpened] = useState(false);

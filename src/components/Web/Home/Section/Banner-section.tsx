@@ -7,7 +7,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export default function BannerSection({ banner }: any) {
   const autoplay = useMemo(() => Autoplay({ delay: 5000 }), []);

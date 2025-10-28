@@ -3,7 +3,7 @@
 import { ActionIcon, Modal } from '@mantine/core';
 import { IconMail, IconPhone, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import MailResponse from './form/MailResponse';
 
@@ -24,7 +24,7 @@ export function SendMailButton({
         size={'90%'}
         onClose={() => setOpened(false)}
         classNames={{
-          header: 'bg-blue-50',
+          header: 'bg-blue-50 dark:bg-dark-background',
           title: 'text-sm font-bold',
           close: 'font-bold'
         }}

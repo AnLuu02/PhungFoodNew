@@ -28,10 +28,10 @@ import BButton from '~/components/Button/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { useModalActions } from '~/contexts/ModalContext';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/func-handler/status-order';
-import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 export function OrderList({ orders }: { orders: any }) {

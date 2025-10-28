@@ -2,7 +2,7 @@ import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import path from 'path';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { formatPriceLocaleVi } from './Format';
+import { formatPriceLocaleVi } from '../Format';
 
 export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   try {

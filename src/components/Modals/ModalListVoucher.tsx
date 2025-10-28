@@ -3,7 +3,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconHelp } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { allowedVoucher } from '~/lib/func-handler/vouchers-calculate';
+import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
 import { ModalProps } from '~/types/modal';
 import LoadingSpiner from '../Loading/LoadingSpiner';
 import VoucherTemplate from '../Template/VoucherTemplate';

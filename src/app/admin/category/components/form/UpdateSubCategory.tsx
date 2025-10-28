@@ -6,10 +6,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { createTag } from '~/lib/func-handler/generateTag';
-import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { subCategorySchema } from '~/lib/zod/zodShcemaForm';
+import { createTag } from '~/lib/FuncHandler/generateTag';
+import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { subCategorySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { SubCategory } from '~/types/category';
 
@@ -150,6 +150,7 @@ export default function UpdateSubCategory({
                     {...field}
                     size='sm'
                     required
+                    radius={'md'}
                     label='Tên danh mục'
                     placeholder='Nhập tên danh mục'
                     error={errors.name?.message}

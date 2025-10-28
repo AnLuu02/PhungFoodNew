@@ -15,9 +15,9 @@ import {
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDataExcel } from '~/lib/func-handler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { formatDataExcel } from '~/lib/FuncHandler/Format';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import CreateMaterial from './form/CreateMaterial';
 import UpdateMaterial from './form/UpdateMaterial';

@@ -4,10 +4,10 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useModalActions } from '~/contexts/ModalContext';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/toast';
-import { allowedVoucher, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
+import { allowedVoucher, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import { DateVoucher } from '../DateVoucher';
 type VoucherTemplateProps = {

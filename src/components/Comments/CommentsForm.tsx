@@ -5,8 +5,8 @@ import { Flex, Rating, Text, Textarea } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/func-handler/toast';
-import { reviewSchema } from '~/lib/zod/zodShcemaForm';
+import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
+import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Review } from '~/types/review';
 
@@ -71,6 +71,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
         disabled={isSubmitting || !user?.user?.id}
         render={({ field }) => (
           <Textarea
+            radius={'md'}
             placeholder='Chúng tôi hoan nghênh mọi góp ý của bạn.'
             flex={1}
             disabled={isSubmitting || !user?.user?.id}

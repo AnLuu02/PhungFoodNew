@@ -5,7 +5,7 @@ import { DatePickerInput } from '@mantine/dates';
 import { IconBrandCashapp, IconCheese, IconReport, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { formatMoneyShort } from '~/lib/func-handler/Format';
+import { formatMoneyShort } from '~/lib/FuncHandler/Format';
 import { ChangeRate } from './components/ChangeRate';
 import { ExportReports } from './components/ExportReportsBtn';
 import ReportDetailPageClient from './components/ReportDetail';

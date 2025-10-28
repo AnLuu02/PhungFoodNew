@@ -4,8 +4,8 @@ import { Avatar, Badge, Box, Group, Highlight, Spoiler, Table, Text, Tooltip } f
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { UserRole } from '~/constants';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
 import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';

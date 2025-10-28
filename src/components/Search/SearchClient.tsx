@@ -26,9 +26,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
 

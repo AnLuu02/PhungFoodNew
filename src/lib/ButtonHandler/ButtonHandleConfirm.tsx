@@ -1,6 +1,6 @@
 import { Text, Title } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { NotifyError, NotifySuccess } from '../func-handler/toast';
+import { NotifyError, NotifySuccess } from '../FuncHandler/toast';
 
 export const handleConfirm = (
   id?: String,

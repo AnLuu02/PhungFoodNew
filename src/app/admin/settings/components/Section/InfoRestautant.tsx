@@ -27,9 +27,9 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { fileToBase64, vercelBlobToFile } from '~/lib/func-handler/handle-file-base64';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { restaurantSchema } from '~/lib/zod/zodShcemaForm';
+import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { restaurantSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Restaurant } from '~/types/restaurant';
 import ContactTab from '../info/ContactTab';

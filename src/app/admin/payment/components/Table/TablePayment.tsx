@@ -4,7 +4,7 @@ import { Badge, Box, Group, Table, Text } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { formatDateViVN } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 

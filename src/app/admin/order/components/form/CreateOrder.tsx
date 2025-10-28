@@ -20,11 +20,11 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import BButton from '~/components/Button/Button';
-import fetcher from '~/lib/func-handler/fetcher';
-import { getStatusInfo } from '~/lib/func-handler/status-order';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalAddressType, LocalOrderStatus } from '~/lib/zod/EnumType';
-import { orderSchema } from '~/lib/zod/zodShcemaForm';
+import fetcher from '~/lib/FuncHandler/fetcher';
+import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { LocalAddressType, LocalOrderStatus } from '~/lib/ZodSchema/enum';
+import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
 import OrderItemForm from './OrderItemForm';
@@ -161,6 +161,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                   render={({ field, fieldState }) => (
                     <TextInput
                       label='Email'
+                      radius={'md'}
                       placeholder='Email'
                       type='email'
                       leftSection={<IconMail size={18} stroke={1.5} />}
@@ -173,7 +174,13 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                   name='delivery.name'
                   control={control}
                   render={({ field, fieldState }) => (
-                    <TextInput label='Họ và tên' placeholder='Họ và tên' {...field} error={fieldState.error?.message} />
+                    <TextInput
+                      radius={'md'}
+                      label='Họ và tên'
+                      placeholder='Họ và tên'
+                      {...field}
+                      error={fieldState.error?.message}
+                    />
                   )}
                 />
               </Group>
@@ -185,6 +192,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                   defaultValue=''
                   render={({ field, fieldState }) => (
                     <TextInput
+                      radius={'md'}
                       {...field}
                       label='Số điện thoại'
                       leftSection={<IconPhone size={18} stroke={1.5} />}
@@ -355,6 +363,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                 render={({ field }) => (
                   <Select
                     label='Trạng thái (chỉ đọc)'
+                    radius={'md'}
                     placeholder='Chọn trạng thái'
                     data={Object.values(OrderStatus).map(status => ({
                       value: status,

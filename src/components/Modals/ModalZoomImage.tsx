@@ -198,7 +198,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
         </ActionIcon>
 
         <Button
-          variant='ghost'
           size='icon'
           className='absolute right-4 top-4 z-50 border border-white/20 bg-black/50 text-white hover:bg-black/70'
           onClick={onClose}
@@ -208,7 +207,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
 
         <Box className='absolute left-4 top-4 z-50 flex flex-col gap-2'>
           <Button
-            variant='ghost'
             size='icon'
             className='border border-white/20 bg-black/50 text-white hover:bg-black/70'
             onClick={handleZoomIn}
@@ -217,7 +215,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
             <IconZoomIn className='h-5 w-5' />
           </Button>
           <Button
-            variant='ghost'
             size='icon'
             className='border border-white/20 bg-black/50 text-white hover:bg-black/70'
             onClick={handleZoomOut}
@@ -226,7 +223,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
             <IconZoomOut className='h-5 w-5' />
           </Button>
           <Button
-            variant='ghost'
             size='icon'
             className='border border-white/20 bg-black/50 text-white hover:bg-black/70'
             onClick={handleReset}

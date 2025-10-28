@@ -26,7 +26,7 @@ import {
   IconUserPlus
 } from '@tabler/icons-react';
 import Link from 'next/link';
-import { formatMoneyShort, formatTimeAgo } from '~/lib/func-handler/Format';
+import { formatMoneyShort, formatTimeAgo } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/server';
 import { ChangeRate } from './(dashboard)/reports/components/ChangeRate';
 

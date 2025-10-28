@@ -3,7 +3,7 @@ import { ActionIcon, Modal, Title, Tooltip } from '@mantine/core';
 import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateUser from './form/CreateUser';
 import UpdatePermissionUser from './form/UpdatePermissionUser';

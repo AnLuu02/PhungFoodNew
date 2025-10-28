@@ -18,7 +18,7 @@ import {
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { formatTimeAgo } from '~/lib/func-handler/Format';
+import { formatTimeAgo } from '~/lib/FuncHandler/Format';
 
 const navReportDetails = [
   {

@@ -45,7 +45,7 @@ import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
 import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
 import { getInfoLevelUser } from '~/constants';
-import { LocalUserLevel, LocalVoucherType } from '~/lib/zod/EnumType';
+import { LocalUserLevel, LocalVoucherType } from '~/lib/ZodSchema/enum';
 const levels = [
   {
     name: 'Đồng',

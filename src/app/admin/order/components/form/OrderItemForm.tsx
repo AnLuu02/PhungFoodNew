@@ -2,8 +2,8 @@
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Control, Controller, FieldErrors, UseFormGetValues, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { NotifyError } from '~/lib/func-handler/toast';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
 

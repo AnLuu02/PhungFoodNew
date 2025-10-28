@@ -5,7 +5,7 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { getTagFromQuery } from '~/lib/func-handler/generateTag';
+import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
 import BreadcrumbsBase from './BreadcrumbsBase';
 const BreadcrumbsComponent = ({ subCategories }: any) => {
   const pathname = usePathname();

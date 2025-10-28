@@ -5,8 +5,8 @@ import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import PeriodControl from '~/app/(web)/(auth)/components/PeriodControl';
 import BButton from '~/components/Button/Button';
-import { hashPassword } from '~/lib/func-handler/hashPassword';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { hashPassword } from '~/lib/FuncHandler/hashPassword';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);

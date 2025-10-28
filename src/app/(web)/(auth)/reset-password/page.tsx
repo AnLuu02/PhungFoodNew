@@ -5,7 +5,7 @@ import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import PeriodControl from '../components/PeriodControl';
 
@@ -74,6 +74,7 @@ export default function ResetPassword({
                 <TextInput
                   type='email'
                   value={email}
+                  radius={'md'}
                   readOnly
                   placeholder='E-mail'
                   label='E-mail'

@@ -4,7 +4,7 @@ import { LineChart, PieChart } from '@mantine/charts';
 import { Card, Grid, GridCol, Paper, Title } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 const orderStatusData = [
   { name: 'Hoàn thành', value: 850, color: 'green.6' },

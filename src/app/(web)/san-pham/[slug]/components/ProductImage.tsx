@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 import { ImageZoomModal } from '~/components/Modals/ModalZoomImage';
 import { ShareSocials } from '~/components/ShareSocial';
 import { breakpoints } from '~/constants';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 export default function ProductImage({
   thumbnail,
   gallery,

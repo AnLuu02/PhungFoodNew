@@ -4,8 +4,8 @@ import { Group, InputBase, Pill, Text } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import BButton from '~/components/Button/Button';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getViTag } from '~/lib/func-handler/generateTag';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getViTag } from '~/lib/FuncHandler/generateTag';
 
 export default function ActiveFilters() {
   const router = useRouter();

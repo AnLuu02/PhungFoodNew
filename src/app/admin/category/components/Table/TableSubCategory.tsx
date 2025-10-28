@@ -3,7 +3,7 @@
 import { Avatar, Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { formatDateViVN } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
 export default function TableSubCategory({ s, data, user }: { s: string; data: any; user?: any }) {

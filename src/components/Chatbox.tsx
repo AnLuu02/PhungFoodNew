@@ -30,8 +30,8 @@ import {
 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { formatDateViVN } from '~/lib/func-handler/Format';
-import { NotifyError } from '~/lib/func-handler/toast';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { NotifyError } from '~/lib/FuncHandler/toast';
 interface Message {
   sender: 'Bot' | 'User';
   text: string;

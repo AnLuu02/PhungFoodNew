@@ -1,9 +1,9 @@
 'use client';
 
 import { Badge, Box, Modal, Text } from '@mantine/core';
-import { formatDateViVN } from '~/lib/func-handler/Format';
-import { getPromotionStatus } from '~/lib/func-handler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { getPromotionStatus } from '~/lib/FuncHandler/vouchers-calculate';
+import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 
 export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: any) => {
   return (

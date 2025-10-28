@@ -4,13 +4,13 @@ import { compare } from 'bcryptjs';
 import { randomInt } from 'crypto';
 import { z } from 'zod';
 import { UserRole } from '~/constants';
-import { regexCheckGuest } from '~/lib/func-handler/generateGuestCredentials';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/func-handler/handle-file-base64';
-import { hashPassword } from '~/lib/func-handler/hashPassword';
-import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
-import { getOtpEmail, sendEmail } from '~/lib/func-handler/sendEmail';
-import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/lib/zod/EnumType';
-import { baseAddressSchema } from '~/lib/zod/zodShcemaForm';
+import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
+import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
+import { hashPassword } from '~/lib/FuncHandler/hashPassword';
+import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
+import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
+import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/lib/ZodSchema/enum';
+import { baseAddressSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -187,11 +187,15 @@ export const userRouter = createTRPCRouter({
           imgURL = input.image.fileName;
         }
       }
-      const otp = randomInt(100000, 999999).toString();
-      const now = new Date();
-      const otpExpiry = new Date(now.getTime() + 3 * 60 * 1000);
-      const emailContent = getOtpEmail(otp, input, 3);
-      await sendEmail(input.email, 'Mã OTP kích hoạt tài khoản', emailContent);
+      let otp = null,
+        otpExpiry = null;
+      if (!regexCheckGuest.test(input.email)) {
+        const now = new Date();
+        otp = randomInt(100000, 999999).toString();
+        otpExpiry = new Date(now.getTime() + 3 * 60 * 1000);
+        const emailContent = getOtpEmail(otp, input, 3);
+        await sendEmail(input.email, 'Mã OTP kích hoạt tài khoản', emailContent);
+      }
       const passwordHash = await hashPassword(input.password);
       const user = await ctx.db.user.create({
         data: {

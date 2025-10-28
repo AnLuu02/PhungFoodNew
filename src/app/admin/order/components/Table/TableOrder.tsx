@@ -4,9 +4,9 @@ import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import { IconBellPause, IconCircleCheck, IconSum, IconTruckDelivery, IconXboxX } from '@tabler/icons-react';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/func-handler/status-order';
-import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import {
   CancleOrderButton,
   CopyOrderButton,

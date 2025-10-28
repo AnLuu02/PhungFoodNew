@@ -8,7 +8,7 @@ import {
   IconBrandWhatsapp,
   IconMail
 } from '@tabler/icons-react';
-import { NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifySuccess } from '~/lib/FuncHandler/toast';
 
 export function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' | 'detail' }) {
   const DOMAIN = process.env.NEXT_PUBLIC_BASE_URL_DEPLOY || 'http://localhost:3000';

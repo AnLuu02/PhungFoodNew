@@ -21,10 +21,10 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { NotifyError } from '~/lib/func-handler/toast';
-import { LocalAddressType, LocalVoucherType } from '~/lib/zod/EnumType';
-import { deliverySchema } from '~/lib/zod/zodShcemaForm';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { NotifyError } from '~/lib/FuncHandler/toast';
+import { LocalAddressType, LocalVoucherType } from '~/lib/ZodSchema/enum';
+import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
@@ -227,7 +227,7 @@ export default function CheckoutClient({ order }: { order: any }) {
                 Đơn hàng ({order?.orderItems?.length || 0} sản phẩm)
               </Title>
               <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
-                <Stack gap={'md'} py={'sm'} pr={20} className='overflow-x-hidden'>
+                <Stack gap={'md'} py={'sm'} className='overflow-x-hidden'>
                   {order?.orderItems?.map((item: any, index: number) => (
                     <CartItemPayment key={index} item={{ ...item.product, note: item.note, quantity: item.quantity }} />
                   ))}

@@ -19,11 +19,11 @@ import BButton from '~/components/Button/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { UserRole } from '~/constants';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { handleConfirm } from '~/lib/button-handle/ButtonHandleConfirm';
-import { formatTransDate } from '~/lib/func-handler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { handleConfirm } from '~/lib/ButtonHandler/ButtonHandleConfirm';
+import { formatTransDate } from '~/lib/FuncHandler/Format';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import CreateOrder from './form/CreateOrder';
 import UpdateOrder from './form/UpdateOrder';
@@ -274,7 +274,6 @@ export function SendMessageAllUserAdvanced() {
 
     setLoading(true);
     const userIds = targetUsers.map(u => u.id);
-    const emails = targetUsers.map(u => u.email);
 
     const data = await createNotifyMutation.mutateAsync({
       userId: userIds,
@@ -286,7 +285,7 @@ export function SendMessageAllUserAdvanced() {
 
     await fetch('/api/notify', {
       method: 'POST',
-      body: JSON.stringify({ email: emails, data: data?.data || [] }),
+      body: JSON.stringify({ userIds: userIds, data: data?.data || [] }),
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -385,6 +384,7 @@ export function SendMessageAllUserAdvanced() {
             label='Tự nhập nội dung thông báo'
             placeholder='Nhập nội dung...'
             value={customMessage}
+            radius={'md'}
             onChange={e => setCustomMessage(e.currentTarget.value)}
             mt='md'
           />
@@ -437,7 +437,7 @@ export function SendMessageOrderButton({ userId, email }: any) {
 
     await fetch('/api/notify', {
       method: 'POST',
-      body: JSON.stringify({ email, data: data?.data || [] }),
+      body: JSON.stringify({ userIds: [userId], data: data?.data || [] }),
       headers: { 'Content-Type': 'application/json' }
     });
 
@@ -465,7 +465,7 @@ export function SendMessageOrderButton({ userId, email }: any) {
         position='right'
         size='md'
       >
-        <TextInput label='Email' value={email} disabled />
+        <TextInput label='Email' value={email} disabled radius={'md'} />
 
         <Select
           label='Chọn mẫu thông báo (tùy chọn)'
@@ -485,6 +485,7 @@ export function SendMessageOrderButton({ userId, email }: any) {
           <TextInput
             label='Tự nhập thông báo'
             placeholder='Nhập nội dung...'
+            radius={'md'}
             value={customMessage}
             onChange={e => setCustomMessage(e.currentTarget.value)}
             mt='md'

@@ -4,8 +4,8 @@ import { Box, Button, Card, Stack, Text } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getStatusInfo } from '~/lib/func-handler/status-order';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 
 export default function CardRecentOrder({ order }: { order: any }) {
   const [selectedOrder, setSelectedOrder] = useState<{ type: 'edit' | 'reorder'; data: any } | null>(null);

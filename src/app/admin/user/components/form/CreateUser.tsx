@@ -19,11 +19,11 @@ import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import BButton from '~/components/Button/Button';
-import fetcher from '~/lib/func-handler/fetcher';
-import { fileToBase64 } from '~/lib/func-handler/handle-file-base64';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/zod/EnumType';
-import { userSchema } from '~/lib/zod/zodShcemaForm';
+import fetcher from '~/lib/FuncHandler/fetcher';
+import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
+import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
 

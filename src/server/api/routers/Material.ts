@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
+import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 

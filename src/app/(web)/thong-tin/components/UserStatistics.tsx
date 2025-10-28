@@ -7,8 +7,8 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { getInfoLevelUser } from '~/constants';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { LocalUserLevel } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { LocalUserLevel } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 const months = [

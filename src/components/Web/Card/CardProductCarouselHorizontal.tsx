@@ -9,9 +9,9 @@ import { memo, useMemo } from 'react';
 import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const router = useRouter();

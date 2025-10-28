@@ -3,7 +3,7 @@
 import { BarChart, LineChart } from '@mantine/charts';
 import { ActionIcon, Box, Card, Flex, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconRotateClockwise, IconUserPlus } from '@tabler/icons-react';
-import { formatDateViVN, formatMoneyShort, formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatDateViVN, formatMoneyShort, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTimeToNum, dataOverviewChart }: any) {
   return (
     <>

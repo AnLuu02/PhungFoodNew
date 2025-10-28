@@ -1,4 +1,4 @@
-import { TypeContact } from '~/lib/zod/EnumType';
+import { TypeContact } from '~/lib/ZodSchema/enum';
 
 export type Contact = {
   id: string;

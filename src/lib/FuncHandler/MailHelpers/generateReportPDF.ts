@@ -2,7 +2,7 @@ import fontkit from '@pdf-lib/fontkit';
 import fs from 'fs';
 import path from 'path';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { formatDateViVN, formatPriceLocaleVi } from './Format';
+import { formatDateViVN, formatPriceLocaleVi } from '../Format';
 
 interface ReportData {
   revenuePeriod: any;

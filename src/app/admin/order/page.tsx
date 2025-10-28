@@ -1,7 +1,7 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserAdvanced } from './components/Button';
 import TableOrder from './components/Table/TableOrder';

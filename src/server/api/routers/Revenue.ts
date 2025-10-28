@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { getCompare } from '~/lib/func-handler/PrismaHelper';
+import { getCompare } from '~/lib/FuncHandler/PrismaHelper';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 

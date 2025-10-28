@@ -4,7 +4,7 @@ import { ActionIcon, Box, Flex, Group, List, Modal, Stack, Text, Title } from '@
 import { IconDots, IconLighter, IconMicrophone, IconSquare, IconTrash, IconVolume } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { NotifyError } from '~/lib/func-handler/toast';
+import { NotifyError } from '~/lib/FuncHandler/toast';
 import BButton from '../Button/Button';
 
 const initialState: any = {

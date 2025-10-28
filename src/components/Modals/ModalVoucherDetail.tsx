@@ -2,9 +2,9 @@ import { Box, Button, Center, Flex, Group, Modal, Paper, Progress, ScrollArea, T
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/lib/func-handler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/zod/EnumType';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { ModalProps } from '~/types/modal';
 
 export default function ModalDetailVoucher({ type, data, opened, onClose }: ModalProps<any>) {

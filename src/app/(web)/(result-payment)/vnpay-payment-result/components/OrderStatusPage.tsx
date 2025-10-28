@@ -5,8 +5,8 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconArrowBack, IconCreditCard } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { statusConfig } from '~/lib/func-handler/status-order';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { statusConfig } from '~/lib/FuncHandler/status-order';
 
 interface OrderStatusPageProps {
   customerName: string;

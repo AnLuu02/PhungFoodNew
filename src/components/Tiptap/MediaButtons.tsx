@@ -77,6 +77,7 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         <Stack>
           <TextInput
             label='URL ảnh online'
+            radius='md'
             placeholder='https://example.com/image.jpg'
             value={imageUrl}
             onChange={e => setImageUrl(e.currentTarget.value)}
@@ -111,6 +112,7 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         <Stack>
           <TextInput
             label='URL video online (YouTube hoặc MP4)'
+            radius='md'
             placeholder='https://example.com/video.mp4 hoặc https://youtu.be/...'
             value={videoUrl}
             onChange={e => setVideoUrl(e.currentTarget.value)}

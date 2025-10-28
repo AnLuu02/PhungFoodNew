@@ -2,9 +2,6 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
-const findExistingContact = async (ctx: any, tag: string) => {
-  return await ctx.db.contact.findFirst({ where: { tag } });
-};
 export const contactRouter = createTRPCRouter({
   find: publicProcedure
     .input(

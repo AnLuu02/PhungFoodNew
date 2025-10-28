@@ -1,7 +1,7 @@
 'use client';
 import { Box, Group, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Text } from '@mantine/core';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { formatDateViVN } from '~/lib/func-handler/Format';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 import { CopyRevenueButton, CreateRevenueButton, UpdateRevenueButton } from '../Button';
 

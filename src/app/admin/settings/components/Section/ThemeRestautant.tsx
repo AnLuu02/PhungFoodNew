@@ -19,8 +19,8 @@ import { IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { themeSchema } from '~/lib/zod/zodShcemaForm';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { themeSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Theme } from '~/types/restaurant';
 

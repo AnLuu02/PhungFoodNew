@@ -4,9 +4,9 @@ import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { TypeContact } from '~/lib/zod/EnumType';
-import { contactSchema } from '~/lib/zod/zodShcemaForm';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { TypeContact } from '~/lib/ZodSchema/enum';
+import { contactSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Contact } from '~/types/contact';
 

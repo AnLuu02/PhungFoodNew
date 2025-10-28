@@ -16,9 +16,9 @@ import {
 } from '@mantine/core';
 import { IconBell, IconCheck, IconInfoCircle, IconTrash, IconTrashX, IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { formatTimeAgo } from '~/lib/func-handler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { pusherClient } from '~/lib/pusher/client';
+import { formatTimeAgo } from '~/lib/FuncHandler/Format';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { pusherClient } from '~/lib/PusherConfig/client';
 import { api } from '~/trpc/react';
 
 declare global {
@@ -27,7 +27,7 @@ declare global {
   }
 }
 
-export default function NotificationDialog({ data, user }: any) {
+export default function NotificationDialog({ data, userId }: any) {
   const notificationsData = data ?? [];
   const [notifications, setNotifications] = useState<any[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -131,7 +131,7 @@ export default function NotificationDialog({ data, user }: any) {
   useEffect(() => {
     window.pusherClient = pusherClient;
 
-    const channel = pusherClient.subscribe(`user-${user?.email}`);
+    const channel = pusherClient.subscribe(`user-${userId}`);
     channel.bind('new-notify', (data: any) => {
       setIsNotify(true);
       setNotifications(prev => [...prev, data]);
@@ -141,7 +141,7 @@ export default function NotificationDialog({ data, user }: any) {
       channel.unbind_all();
       channel.unsubscribe();
     };
-  }, [user?.email]);
+  }, [userId]);
 
   useEffect(() => {
     if (isNotify) {
@@ -205,7 +205,7 @@ export default function NotificationDialog({ data, user }: any) {
                   <Button
                     variant='subtle'
                     size='xs'
-                    onClick={() => deleteAll(user?.id || '')}
+                    onClick={() => deleteAll(userId || '')}
                     disabled={notifications.length === 0}
                     leftSection={<IconTrashX size={16} />}
                   >
@@ -320,20 +320,10 @@ export default function NotificationDialog({ data, user }: any) {
           onClick={() => setIsNotify(false)}
           p='sm'
           withBorder
-          style={{
-            position: 'fixed',
-            top: '6%',
-            right: 0,
-            zIndex: 10000,
-            backgroundColor: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            maxWidth: 520
-          }}
+          className='fixed right-0 top-[6%] z-[10000] flex max-w-[520px] items-center gap-2 bg-white dark:bg-dark-card'
         >
-          <IconInfoCircle size={20} color='blue' />
-          <Text size='sm' style={{ flex: 1 }}>
+          <IconInfoCircle size={20} className='text-blue dark:text-dark-text' />
+          <Text size='sm' flex={1}>
             Bạn có thông báo mới!
           </Text>
           <ActionIcon variant='light' size='sm'>

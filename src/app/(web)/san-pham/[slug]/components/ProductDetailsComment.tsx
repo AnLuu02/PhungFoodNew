@@ -1,8 +1,8 @@
 import { Badge, Group, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/func-handler/Format';
-import { getImageProduct } from '~/lib/func-handler/getImageProduct';
-import { LocalImageType } from '~/lib/zod/EnumType';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export default function ProductDetails({ product }: { product: any }) {
   return (

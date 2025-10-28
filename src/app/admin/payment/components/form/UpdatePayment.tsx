@@ -5,8 +5,8 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { paymentSchema } from '~/lib/zod/zodShcemaForm';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { paymentSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Payment } from '~/types/payment';
 
@@ -92,7 +92,14 @@ export default function UpdatePayment({
           control={control}
           name='id'
           render={({ field }) => (
-            <TextInput {...field} label='id' placeholder='Nhập id' error={errors.name?.message} className='hidden' />
+            <TextInput
+              radius='md'
+              {...field}
+              label='id'
+              placeholder='Nhập id'
+              error={errors.name?.message}
+              className='hidden'
+            />
           )}
         />
         <Grid.Col span={6}>
@@ -102,6 +109,7 @@ export default function UpdatePayment({
             render={({ field }) => (
               <TextInput
                 {...field}
+                radius='md'
                 label='Tên phương thức'
                 placeholder='Nhập Tên phương thức'
                 error={errors.name?.message}
@@ -116,6 +124,7 @@ export default function UpdatePayment({
             render={({ field }) => (
               <TextInput
                 {...field}
+                radius='md'
                 label='Tên phương thức'
                 placeholder='Nhập Tên phương thức'
                 error={errors.name?.message}
@@ -128,7 +137,13 @@ export default function UpdatePayment({
             control={control}
             name='apiKey'
             render={({ field }) => (
-              <TextInput {...field} label='API Key' placeholder='Nhập API Key' error={errors.name?.message} />
+              <TextInput
+                radius='md'
+                {...field}
+                label='API Key'
+                placeholder='Nhập API Key'
+                error={errors.name?.message}
+              />
             )}
           />
         </Grid.Col>
@@ -137,7 +152,13 @@ export default function UpdatePayment({
             control={control}
             name='secretKey'
             render={({ field }) => (
-              <TextInput {...field} label='Secret Key' placeholder='Nhập Secret Key' error={errors.name?.message} />
+              <TextInput
+                radius='md'
+                {...field}
+                label='Secret Key'
+                placeholder='Nhập Secret Key'
+                error={errors.name?.message}
+              />
             )}
           />
         </Grid.Col>
@@ -146,7 +167,13 @@ export default function UpdatePayment({
             control={control}
             name='clientId'
             render={({ field }) => (
-              <TextInput {...field} label='Client ID' placeholder='Nhập Client ID' error={errors.name?.message} />
+              <TextInput
+                radius='md'
+                {...field}
+                label='Client ID'
+                placeholder='Nhập Client ID'
+                error={errors.name?.message}
+              />
             )}
           />
         </Grid.Col>
@@ -156,6 +183,7 @@ export default function UpdatePayment({
             name='clientSecret'
             render={({ field }) => (
               <TextInput
+                radius='md'
                 {...field}
                 label=' Client Secret'
                 placeholder='Nhập   Client Secret'
@@ -169,7 +197,13 @@ export default function UpdatePayment({
             control={control}
             name='webhookUrl'
             render={({ field }) => (
-              <TextInput {...field} label='Webhook Url' placeholder='Nhập  Webhook Url' error={errors.name?.message} />
+              <TextInput
+                radius='md'
+                {...field}
+                label='Webhook Url'
+                placeholder='Nhập  Webhook Url'
+                error={errors.name?.message}
+              />
             )}
           />
         </Grid.Col>
@@ -179,6 +213,7 @@ export default function UpdatePayment({
             name='webhookSecret'
             render={({ field }) => (
               <TextInput
+                radius='md'
                 {...field}
                 label='Webhook Secret'
                 placeholder='Nhập  Webhook Secret'

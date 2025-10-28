@@ -5,9 +5,9 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { categoriesMaterial } from '~/constants';
-import { createTag } from '~/lib/func-handler/generateTag';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
-import { materialSchema } from '~/lib/zod/zodShcemaForm';
+import { createTag } from '~/lib/FuncHandler/generateTag';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { materialSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Material } from '~/types/material';
 
@@ -86,6 +86,7 @@ export default function UpdateMaterial({
                 {...field}
                 label='Tên nguyên liệu'
                 size='sm'
+                radius={'md'}
                 placeholder='Nhập tên nguyên liệu'
                 error={errors.name?.message}
               />

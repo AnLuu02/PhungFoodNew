@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { formatTransDate } from '~/lib/func-handler/Format';
-import { LocalOrderStatus } from '~/lib/zod/EnumType';
+import { formatTransDate } from '~/lib/FuncHandler/Format';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/server';
 import CheckoutClient from '../components/CheckoutClient';
 

@@ -4,7 +4,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { breakpoints } from '~/constants';
-import { getTagFromQuery } from '~/lib/func-handler/generateTag';
+import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
 import ActiveFilters from './ActiveFilters';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';

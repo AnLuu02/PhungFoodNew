@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { notFound } from 'next/navigation';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
-import { withRedisCache } from '~/lib/cache/withRedisCache';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
 import ProductDetailClient from './pageClient';
 

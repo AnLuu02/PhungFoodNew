@@ -7,7 +7,7 @@ import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { UserRole } from '~/constants';
-import { NotifyError, NotifySuccess } from '~/lib/func-handler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 function syncPermissions(init: any[], dynamic: any[]): any[] {
   const initMap = new Map(init.map(p => [p.id, p]));

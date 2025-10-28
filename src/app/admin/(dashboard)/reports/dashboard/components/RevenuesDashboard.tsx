@@ -2,7 +2,7 @@
 import { LineChart } from '@mantine/charts';
 import { ActionIcon, Box, Card, Flex, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconRotateClockwise } from '@tabler/icons-react';
-import { formatDateViVN, formatMoneyShort, formatPriceLocaleVi } from '~/lib/func-handler/Format';
+import { formatDateViVN, formatMoneyShort, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { ChangeRate } from '../../components/ChangeRate';
 export const RevenuesDashboard = ({ dataRevenue, period, startTimeToNum, endTimeToNum, dataOverviewChart }: any) => {
   return (

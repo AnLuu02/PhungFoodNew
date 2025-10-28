@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { seedCategory } from '~/lib/data-test/seed';
-import { CreateTagVi } from '~/lib/func-handler/CreateTag-vi';
+import { seedCategory } from '~/lib/DataTest/seed';
+import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingCategory = async (ctx: any, tag: string) => {

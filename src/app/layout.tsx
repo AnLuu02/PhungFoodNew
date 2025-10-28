@@ -18,7 +18,7 @@ import { TRPCReactProvider } from '~/trpc/react';
 
 import ScrollToTop from '~/components/ScrollToTop';
 import { ModalProvider } from '~/contexts/ModalContext';
-import { hexToRgb } from '~/lib/func-handler/hexToRgb';
+import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 import { api } from '~/trpc/server';
 import { authOptions } from './api/auth/[...nextauth]/options';
 

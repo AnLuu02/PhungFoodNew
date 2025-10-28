@@ -2,8 +2,8 @@
 
 import { Avatar, Box, Button, Center, Flex, Group, Paper, Rating, Space, Spoiler, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
-import { formatDateViVN } from '~/lib/func-handler/Format';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 
 export const CommentsList = ({ data }: { data: any[] }) => {

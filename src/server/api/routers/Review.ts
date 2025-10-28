@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { buildSortFilter } from '~/lib/func-handler/PrismaHelper';
+import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';

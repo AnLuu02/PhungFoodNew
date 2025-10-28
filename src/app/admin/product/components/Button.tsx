@@ -4,7 +4,7 @@ import { ActionIcon, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
-import { confirmDelete } from '~/lib/button-handle/ButtonDeleteConfirm';
+import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 import CreateProduct from './form/CreateProduct';
 import UpdateProduct from './form/UpdateProduct';
