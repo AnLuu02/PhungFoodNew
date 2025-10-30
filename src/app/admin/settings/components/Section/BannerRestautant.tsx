@@ -19,7 +19,6 @@ import ModalViewBanner from './ModalViewBanner';
 
 export default function BannerManagement({ data }: any) {
   const [viewBanner, setViewBanner] = useState<any>(null);
-
   const [activeBanner, setActiveBanner] = useState<any>({});
   const [loading, setLoading] = useState<{ type: 'set-default' | 'delete'; value: boolean } | null>(null);
   const { data: dataClient } = api.Restaurant.getAllBanner.useQuery(undefined, {

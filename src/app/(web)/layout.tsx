@@ -6,7 +6,7 @@ import ServiceComponent from '~/components/Web/Home/components/ServiceComponent'
 import { GlobalModal } from '~/contexts/GlobalModal';
 import { api } from '~/trpc/server';
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const restaurant = await api.Restaurant.getOneActive();
+  const restaurant = await api.Restaurant.getOneActiveClient();
   return (
     <>
       <Box p={0} m={0}>

@@ -37,7 +37,7 @@ export function ButtonAddToCart({
         } else {
           setCart([...cart, { ...product, quantity: product.quantity }]);
         }
-        notify('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.');
+        notify('Đã thêm vào giỏ hàng', 'Sản phẩm đã có trong giỏ hàng. Thanh toán ngay!');
         handleAfterAdd();
       }}
     />

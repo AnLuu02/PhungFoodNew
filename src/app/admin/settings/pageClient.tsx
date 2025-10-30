@@ -31,9 +31,9 @@ const tabs = [
   { value: 'theme', label: 'Giao diện', icon: IconPalette },
   { value: 'performance', label: 'Hiệu suất', icon: IconActivity }
 ];
-export default function SettingPageClient({ data }: { data: { restaurant: any; banner: any } }) {
+export default function SettingPageClient({ initData }: { initData: any }) {
   const { data: restaurant } = api.Restaurant.getOneActive.useQuery(undefined, {
-    initialData: data?.restaurant
+    initialData: initData
   });
   const [activeTab, setActiveTab] = useState<string>('general');
   const renderTabItem = useCallback(
@@ -42,23 +42,22 @@ export default function SettingPageClient({ data }: { data: { restaurant: any; b
         case 'general':
           return <RestaurantInfoSettings data={restaurant} />;
         case 'banner':
-          return <BannerManagement data={data?.banner} />;
+          return <BannerManagement data={restaurant?.banners} />;
+        case 'theme':
+          return <ThemeSettingsManagement restaurantId={restaurant?.id || ''} data={restaurant?.theme} />;
         case 'email':
           return <EmailSettingsManagement data={restaurant} />;
         case 'payment':
           return <PaymentSettingsManagement />;
         case 'security':
           return <SecuritySettingsManagement data={restaurant} />;
-        case 'theme':
-          return <ThemeSettingsManagement restaurantId={restaurant?.id || ''} data={restaurant?.theme} />;
         case 'performance':
           return <PerformanceSettingsManagement data={restaurant} />;
-
         default:
           return <RestaurantInfoSettings data={restaurant} />;
       }
     },
-    [activeTab]
+    [activeTab, restaurant, initData]
   );
   return (
     <Stack>
@@ -132,7 +131,7 @@ export default function SettingPageClient({ data }: { data: { restaurant: any; b
               {tabs.map(tab => {
                 const Icon = tab.icon;
                 return (
-                  <Tabs.Tab m={0} value={tab.value} leftSection={<Icon size={16} />}>
+                  <Tabs.Tab key={tab.value} m={0} value={tab.value} leftSection={<Icon size={16} />}>
                     {tab.label}
                   </Tabs.Tab>
                 );

@@ -1,14 +1,19 @@
-import { Badge, Box, Divider, Flex, Grid, GridCol, Text, Title } from '@mantine/core';
-import { IconPhone, IconTruck } from '@tabler/icons-react';
-import Image from 'next/image';
+import { Badge, Box, Divider, Flex, Grid, GridCol, SimpleGrid, Text, Title, Tooltip } from '@mantine/core';
+import { IconLink, IconPhone, IconTruck } from '@tabler/icons-react';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
+import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
 export default async function FooterWeb({ restaurant }: { restaurant: any }) {
   const timeOpen = () => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurant?.openingHours ?? [];
-    return timeOpens[timeIndex];
+    const timeOpen = timeOpens?.find((item: any) => item?.dayOfWeek === timeIndex?.toString());
+    return {
+      ...timeOpen,
+      timeIndex
+    };
   };
+
   return (
     <>
       <Box
@@ -116,7 +121,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
             </Box>
           </GridCol>
 
-          <GridCol span={{ base: 24, sm: 12, md: 5 }} className='mb-4 sm:mb-0'>
+          <GridCol span={{ base: 24, sm: 12, md: 5 }} className='mb-0'>
             <Box className='space-y-4'>
               <Title order={3} className='mb-4 font-quicksand font-semibold'>
                 Chính sách & Hỗ trợ
@@ -143,53 +148,35 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                 <Title order={4} className='mb-3 font-quicksand font-medium'>
                   Theo Dõi Chúng Tôi
                 </Title>
-                <Flex align={'center'} gap={'md'}>
-                  <a
-                    href={`https://zalo.me/${restaurant?.phone || '0918064618'}`}
-                    target='_blank'
-                    aria-label='Liên hệ Zalo'
-                    className='rounded-sm hover:underline hover:opacity-80'
-                  >
-                    <Image
-                      loading='lazy'
-                      width={40}
-                      height={40}
-                      alt='zalo'
-                      src={'/images/svg/icon-zalo.svg'}
-                      style={{ objectFit: 'cover' }}
-                    />
-                  </a>
-                  <a
-                    href={`https://m.me/${restaurant?.socials.find((item: any) => item.key === 'facebook')?.url || 'anluu099'}`}
-                    target='_blank'
-                    aria-label='Liên hệ Messenger'
-                    className='rounded-sm hover:underline hover:opacity-80'
-                  >
-                    <Image
-                      loading='lazy'
-                      width={40}
-                      height={40}
-                      alt='facebook'
-                      src={'/images/svg/icon-facebook.svg'}
-                      style={{ objectFit: 'cover' }}
-                    />
-                  </a>
-
-                  <a
-                    href={`tel:${restaurant?.phone || '0911862581'}`}
-                    aria-label='Gọi điện thoại'
-                    className='rounded-sm hover:underline hover:opacity-80'
-                  >
-                    <Image
-                      loading='lazy'
-                      width={40}
-                      height={40}
-                      alt='phone'
-                      src={'/images/svg/icon-phone.svg'}
-                      style={{ objectFit: 'cover' }}
-                    />
-                  </a>
-                </Flex>
+                <SimpleGrid cols={{ base: 7, md: 4, lg: 5 }}>
+                  {restaurant?.socials &&
+                    restaurant?.socials?.map((item: any) => {
+                      const { icon: IconComponent, color } = iconMap[item?.platform] || {
+                        icon: IconLink,
+                        color: 'black'
+                      };
+                      return (
+                        <a
+                          key={item.platform}
+                          href={generateSocialUrl(item.pattern, item.value)}
+                          target='_blank'
+                          aria-label={item.key}
+                          className='cursor-pointer rounded-sm hover:underline hover:opacity-80'
+                        >
+                          <Tooltip label={item.label}>
+                            <Box
+                              w={40}
+                              h={40}
+                              bg={color}
+                              className='flex items-center justify-center overflow-hidden rounded-full'
+                            >
+                              {IconComponent && <IconComponent size={24} stroke={1.5} />}
+                            </Box>
+                          </Tooltip>
+                        </a>
+                      );
+                    })}
+                </SimpleGrid>
               </Box>
             </Box>
           </GridCol>

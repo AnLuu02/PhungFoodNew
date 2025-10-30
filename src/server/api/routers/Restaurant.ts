@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { redis } from '~/lib/CacheConfig/redis';
@@ -6,6 +5,7 @@ import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
+import { openingHourSchema, socialSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
@@ -15,18 +15,24 @@ export const restaurantRouter = createTRPCRouter({
       'getOneActive',
       async () => {
         const result = await ctx.db.restaurant.findFirst({
-          where: { email: 'anluu099@gmail.com' },
-          include: { logo: true, socials: true, theme: true, openingHours: true }
+          where: { isActive: true },
+          include: {
+            logo: { select: { url: true } },
+            socials: true,
+            theme: true,
+            openingHours: true,
+            banners: { include: { images: true } }
+          }
         });
         if (!result) {
           const openingHoursData = [
-            { dayOfWeek: 'Sunday', viNameDay: 'Chủ nhật', openTime: '08:00', closeTime: '22:00' },
-            { dayOfWeek: 'Monday', viNameDay: 'Thứ hai', openTime: '08:00', closeTime: '22:00' },
-            { dayOfWeek: 'Tuesday', viNameDay: 'Thứ ba', openTime: '08:00', closeTime: '22:00' },
-            { dayOfWeek: 'Wednesday', viNameDay: 'Thứ tư', openTime: '08:00', closeTime: '22:00' },
-            { dayOfWeek: 'Thursday', viNameDay: 'Thứ năm', openTime: '08:00', closeTime: '23:00' },
-            { dayOfWeek: 'Friday', viNameDay: 'Thứ sáu', openTime: '09:00', closeTime: '23:00' },
-            { dayOfWeek: 'Saturday', viNameDay: 'Thứ bảy', openTime: '09:00', closeTime: '21:00' }
+            { dayOfWeek: '0', viNameDay: 'Chủ nhật', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: '1', viNameDay: 'Thứ hai', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: '2', viNameDay: 'Thứ ba', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: '3', viNameDay: 'Thứ tư', openTime: '08:00', closeTime: '22:00' },
+            { dayOfWeek: '4', viNameDay: 'Thứ năm', openTime: '08:00', closeTime: '23:00' },
+            { dayOfWeek: '5', viNameDay: 'Thứ sáu', openTime: '09:00', closeTime: '23:00' },
+            { dayOfWeek: '6', viNameDay: 'Thứ bảy', openTime: '09:00', closeTime: '21:00' }
           ];
           await ctx.db.restaurant.create({
             data: {
@@ -48,12 +54,52 @@ export const restaurantRouter = createTRPCRouter({
                 createMany: {
                   data: openingHoursData
                 }
+              },
+              socials: {
+                createMany: {
+                  data: [
+                    {
+                      platform: 'phone',
+                      value: '0918064618',
+                      label: 'Số điện thoại',
+                      pattern: 'tel:{value}',
+                      icon: 'icon-phone'
+                    },
+                    {
+                      platform: 'email',
+                      label: 'Email',
+                      pattern: 'mailto:{value}',
+                      icon: 'icon-mail',
+                      value: 'anluu099@gmail.com'
+                    },
+                    {
+                      platform: 'messenger',
+                      label: 'Facebook Messenger',
+                      pattern: 'https://m.me/{value}',
+                      icon: 'icon-brand-messenger',
+                      value: 'anluu099'
+                    },
+                    {
+                      platform: 'zalo',
+                      label: 'Zalo Chat',
+                      pattern: 'https://zalo.me/{value}',
+                      icon: 'icon-message-circle-2',
+                      value: '0918064618'
+                    }
+                  ]
+                }
               }
             }
           });
           const result = await ctx.db.restaurant.findFirst({
             where: { isActive: true },
-            include: { logo: true, socials: true, theme: true, openingHours: true }
+            include: {
+              logo: { select: { url: true } },
+              socials: true,
+              theme: true,
+              openingHours: true,
+              banners: { include: { images: true } }
+            }
           });
           return result;
         }
@@ -62,7 +108,30 @@ export const restaurantRouter = createTRPCRouter({
       60 * 60 * 24
     );
   }),
-
+  getOneActiveClient: publicProcedure.query(async ({ ctx }) => {
+    return await withRedisCache(
+      'getOneActiveClient',
+      async () => {
+        const result = await ctx.db.restaurant.findFirst({
+          where: { isActive: true },
+          include: {
+            logo: { select: { url: true } },
+            socials: { where: { isActive: true } },
+            theme: true,
+            openingHours: true,
+            banners: {
+              where: { isActive: true },
+              include: {
+                images: true
+              }
+            }
+          }
+        });
+        return result;
+      },
+      60 * 60 * 24
+    );
+  }),
   create: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
@@ -78,12 +147,7 @@ export const restaurantRouter = createTRPCRouter({
         address: z.string().min(1, 'Địa chỉ là bắt buộc'),
         phone: z.string().min(1, 'Phải có ít nhất một số điện thoại'),
         website: z.string().optional(),
-        socials: z.array(
-          z.object({
-            key: z.string(),
-            url: z.string()
-          })
-        ),
+        socials: z.array(socialSchema),
         email: z.string().email().optional(),
         theme: z
           .object({
@@ -148,12 +212,7 @@ export const restaurantRouter = createTRPCRouter({
         address: z.string().min(1, 'Địa chỉ là bắt buộc'),
         phone: z.string().min(1, 'Phải có ít nhất một số điện thoại'),
         website: z.string().optional(),
-        socials: z.array(
-          z.object({
-            key: z.string(),
-            url: z.string()
-          })
-        ),
+        socials: z.array(socialSchema),
         email: z.string().email().optional(),
         theme: z
           .object({
@@ -209,7 +268,7 @@ export const restaurantRouter = createTRPCRouter({
             ...input,
             socials: {
               upsert: input.socials.map(social => ({
-                where: { key: social.key },
+                where: { id: social.id },
                 update: social,
                 create: social
               }))
@@ -255,7 +314,7 @@ export const restaurantRouter = createTRPCRouter({
             }
           }
         });
-        await Promise.all([redis.del('theme-default'), redis.del('getOneActive')]);
+        await Promise.all([redis.del('theme-default'), redis.del('getOneActive'), redis.del('getOneActiveClient')]);
         return { code: 'OK', message: 'Cập nhật nhà hàng thành công.', data: updatedRestaurant };
       } else {
         return {
@@ -265,21 +324,7 @@ export const restaurantRouter = createTRPCRouter({
         };
       }
     }),
-  updateRestaurant: publicProcedure
-    .input(
-      z.object({
-        where: z.record(z.string(), z.any()),
-        data: z.record(z.string(), z.any())
-      })
-    )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const { where, data } = input;
-      const updatedRestaurant = await ctx.db.restaurant.update({
-        where: where as Prisma.RestaurantWhereUniqueInput,
-        data: data
-      });
-      return { code: 'OK', message: 'Cập nhật nhà hàng thành công.', data: updatedRestaurant };
-    }),
+
   changeTheme: publicProcedure
     .input(
       z.object({
@@ -297,6 +342,7 @@ export const restaurantRouter = createTRPCRouter({
         const [, theme] = await Promise.all([
           redis.del('theme-default'),
           redis.del('getOneActive'),
+          redis.del('getOneActiveClient'),
           ctx.db.theme.upsert({
             where: { restaurantId: input.restaurantId },
             update: {
@@ -329,18 +375,7 @@ export const restaurantRouter = createTRPCRouter({
       60 * 60 * 24
     );
   }),
-  getOneBanner: publicProcedure
-    .input(
-      z.object({
-        isActive: z.boolean().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await ctx.db.banner.findFirst({
-        where: input.isActive ? { isActive: input.isActive } : undefined,
-        include: { images: true }
-      });
-    }),
+
   getAllBanner: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.banner.findMany({
       include: { images: true }
@@ -424,6 +459,18 @@ export const restaurantRouter = createTRPCRouter({
         message: 'Tạo banner thành công.',
         data: banner
       };
+    }),
+  getOneBanner: publicProcedure
+    .input(
+      z.object({
+        isActive: z.boolean().optional()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.banner.findFirst({
+        where: input.isActive ? { isActive: input.isActive } : undefined,
+        include: { images: true }
+      });
     }),
   updateBanner: publicProcedure
     .input(
@@ -582,5 +629,144 @@ export const restaurantRouter = createTRPCRouter({
           data: null
         };
       }
+    }),
+  // social
+  createSocial: publicProcedure
+    .input(socialSchema.extend({ restaurantId: z.string() }))
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      try {
+        const [, , notification] = await Promise.all([
+          redis.del('getOneActive'),
+          redis.del('getOneActiveClient'),
+          ctx.db.social.create({
+            data: input
+          })
+        ]);
+
+        return {
+          code: 'OK',
+          message: 'Tạo liên kết xã hội thành công.',
+          data: notification
+        };
+      } catch (err: any) {
+        console.error('❌ createSocial error:', err);
+
+        if (err.code === 'P2002') {
+          return { code: 'CONFLICT', message: 'Liên kết đã tồn tại.', data: null };
+        }
+
+        return { code: 'ERROR', message: 'Không thể tạo liên kết xã hội.', data: null };
+      }
+    }),
+
+  updateSocial: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        data: socialSchema.partial()
+      })
+    )
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      try {
+        const { data, id } = input;
+
+        const oldSocial = await ctx.db.social.findUnique({ where: { id } });
+
+        if (
+          data.platform &&
+          data.platform !== oldSocial?.platform &&
+          ['messenger', 'zalo', 'phone', 'email'].includes(data.platform)
+        ) {
+          return {
+            code: 'ERROR',
+            message: 'Đây là liên kết tiêu chuẩn. Không thể thay đổi liên kết xã hội này.',
+            data: null
+          };
+        }
+
+        const [, , updated] = await Promise.all([
+          redis.del('getOneActive'),
+          redis.del('getOneActiveClient'),
+          ctx.db.social.update({
+            where: { id },
+            data
+          })
+        ]);
+
+        return {
+          code: 'OK',
+          message: 'Cập nhật thành công.',
+          data: updated
+        };
+      } catch (err: any) {
+        console.error('❌ updateSocial error:', err);
+
+        if (err.code === 'P2025') {
+          return { code: 'NOT_FOUND', message: 'Không tìm thấy bản ghi để cập nhật.', data: null };
+        }
+
+        return { code: 'ERROR', message: 'Lỗi khi cập nhật liên kết xã hội.', data: null };
+      }
+    }),
+
+  deleteSocial: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        platform: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      try {
+        if (['messenger', 'zalo', 'phone', 'email'].includes(input.platform)) {
+          return {
+            code: 'ERROR',
+            message: 'Đây là liên kết tiêu chuẩn. Không thể xóa liên kết xã hội này.',
+            data: null
+          };
+        }
+
+        await Promise.all([
+          await ctx.db.social.delete({
+            where: { id: input.id }
+          }),
+          redis.del('getOneActive'),
+          redis.del('getOneActiveClient')
+        ]);
+
+        return {
+          code: 'OK',
+          message: 'Xóa thành công.',
+          data: null
+        };
+      } catch (err: any) {
+        console.error('❌ deleteSocial error:', err);
+
+        if (err.code === 'P2025') {
+          return { code: 'NOT_FOUND', message: 'Không tìm thấy bản ghi để xóa.', data: null };
+        }
+
+        return { code: 'ERROR', message: 'Lỗi khi xóa liên kết xã hội.', data: null };
+      }
+    }),
+  //opening hour
+  updateOpeningHours: publicProcedure
+    .input(
+      z.object({
+        data: z.array(openingHourSchema.partial())
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { data: openingHours } = input;
+      const updated = await ctx.db.$transaction(
+        openingHours.map(openingHour =>
+          ctx.db.openingHour.update({
+            where: { id: openingHour.id },
+            data: openingHour
+          })
+        )
+      );
+      await Promise.all([redis.del('getOneActive'), redis.del('getOneActiveClient')]);
+      return { code: 'OK', message: 'Cập nhật thành công.', data: updated };
     })
 });

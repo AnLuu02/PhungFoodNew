@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 const Contact = async () => {
   const [restaurantRes, session] = await Promise.allSettled([
-    api.Restaurant.getOneActive(),
+    api.Restaurant.getOneActiveClient(),
     getServerSession(authOptions)
   ]);
   const restaurant = restaurantRes.status === 'fulfilled' ? restaurantRes.value : null;

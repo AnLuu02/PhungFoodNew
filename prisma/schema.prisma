@@ -282,6 +282,7 @@ model Restaurant {
   phone        String
   website      String?
   socials      Social[]
+  banners      Banner[]
   address      String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -320,8 +321,12 @@ model Theme {
 
 model Social {
   id           String      @id @default(cuid())
-  key          String      @unique
-  url          String
+  platform     String      @unique
+  label        String
+  value        String
+  pattern      String
+  isActive     Boolean     @default(true)
+  icon         String?
   restaurant   Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   restaurantId String?
   createdAt    DateTime?   @default(now())
@@ -329,13 +334,15 @@ model Social {
 }
 
 model Banner {
-  id        String    @id @default(cuid())
-  images    Image[]
-  isActive  Boolean
-  startDate DateTime?
-  endDate   DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  id           String      @id @default(cuid())
+  images       Image[]
+  isActive     Boolean
+  startDate    DateTime?
+  endDate      DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime?   @updatedAt
+  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
+  restaurantId String?
 }
 
 model Contact {

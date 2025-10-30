@@ -5,13 +5,6 @@ export const metadata: Metadata = {
   title: 'Quản lý cài đặt '
 };
 export default async function SettingPage() {
-  const [banner, restaurant] = await Promise.allSettled([api.Restaurant.getAllBanner(), api.Restaurant.getOneActive()]);
-  return (
-    <SettingPageClient
-      data={{
-        banner: banner.status === 'fulfilled' ? banner.value : [],
-        restaurant: restaurant.status === 'fulfilled' ? restaurant.value : {}
-      }}
-    />
-  );
+  const restaurant = await api.Restaurant.getOneActive();
+  return <SettingPageClient initData={restaurant} />;
 }

@@ -1,10 +1,14 @@
 import { Box, Button, Center, Menu, MenuDropdown, MenuItem, MenuTarget } from '@mantine/core';
-import { IconChevronCompactLeft, IconMessageCircle } from '@tabler/icons-react';
+import { IconChevronCompactLeft, IconLink, IconMessageCircle } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
 import Chatbox from './Chatbox';
 
 export default async function FloatingWidget({ restaurant }: { restaurant: any }) {
+  const messager = restaurant?.socials?.find((social: any) => {
+    return social?.platform === 'messenger';
+  });
   return (
     <>
       <Box pos={'fixed'} bottom={100} left={20} className='z-[200] flex flex-col space-y-4'>
@@ -66,33 +70,21 @@ export default async function FloatingWidget({ restaurant }: { restaurant: any }
           </MenuTarget>
 
           <MenuDropdown className='rounded-lg bg-white shadow-md dark:bg-dark-background' py={5}>
-            <MenuItem
-              leftSection={<Image src={'/images/svg/icon-phone.svg'} alt='phone' width={24} height={24} />}
-              component='a'
-              href={`tel:${restaurant?.phone || '0911862581'}`}
-            >
-              Gọi ngay cho chúng tôi
-            </MenuItem>
-
-            <MenuItem
-              leftSection={<Image src={'/images/svg/icon-zalo.svg'} alt='zalo' width={24} height={24} />}
-              component='a'
-              href={`https://zalo.me/${restaurant?.phone || '0918064618'}`}
-              target='_blank'
-            >
-              Nhắn với chúng tôi qua Zalo
-            </MenuItem>
-
-            {restaurant?.socials && (
-              <MenuItem
-                leftSection={<Image src={'/images/svg/icon-messager.svg'} alt='zalo' width={24} height={24} />}
-                component='a'
-                href={`https://m.me/${restaurant?.socials.find((item: any) => item.key === 'facebook')?.url || 'anluu099'}`}
-                target='_blank'
-              >
-                Nhắn với chúng tôi qua Messenger
-              </MenuItem>
-            )}
+            {restaurant?.socials &&
+              restaurant.socials?.map((item: any, index: number) => {
+                const { icon: IconComponent, color } = iconMap[item?.platform] || { icon: IconLink, color: '#000000' };
+                return (
+                  <MenuItem
+                    key={index}
+                    leftSection={IconComponent && <IconComponent size={24} stroke={1.5} color={color} />}
+                    component='a'
+                    href={`${generateSocialUrl(item?.pattern, item?.value)}`}
+                    target='_blank'
+                  >
+                    {item?.label || 'Kết nối với chúng tôi '}
+                  </MenuItem>
+                );
+              })}
             <MenuItem
               leftSection={<Image src={'/images/svg/icon-location.svg'} alt='location' width={24} height={24} />}
               component='a'
@@ -104,21 +96,23 @@ export default async function FloatingWidget({ restaurant }: { restaurant: any }
           </MenuDropdown>
         </Menu>
 
-        <Link
-          href={`https://m.me/${restaurant?.socials.find((item: any) => item.key === 'facebook')?.url || 'anluu099'}`}
-          target='_blank'
-          className='hidden sm:block'
-        >
-          <Image
-            loading='lazy'
-            src={'/images/svg/icon-messager.svg'}
-            width={50}
-            height={50}
-            style={{ objectFit: 'cover' }}
-            alt='messager'
-            className='animate-wiggle'
-          />
-        </Link>
+        {messager && (
+          <Link
+            href={`${generateSocialUrl(messager?.pattern, messager?.value)}`}
+            target='_blank'
+            className='hidden sm:block'
+          >
+            <Image
+              loading='lazy'
+              src={'/images/svg/icon-messager.svg'}
+              width={50}
+              height={50}
+              style={{ objectFit: 'cover' }}
+              alt='messager'
+              className='animate-wiggle'
+            />
+          </Link>
+        )}
       </Box>
     </>
   );

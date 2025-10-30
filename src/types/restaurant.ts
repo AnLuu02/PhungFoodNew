@@ -36,13 +36,17 @@ export type OpeningHour = {
 
   closeTime?: string;
 
-  restaurantId: number;
+  restaurantId: string;
 };
 
 type Social = {
   id: string;
-  key: string;
-  url: string;
+  platform: string;
+  label: string;
+  value: string;
+  pattern: string;
+  isActive: boolean;
+  icon?: string;
 };
 
 export type Banner = {

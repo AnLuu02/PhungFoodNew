@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { seedPayments } from '~/lib/DataTest/seed';
+import { seedPayments } from '~/lib/HardData/seed';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';

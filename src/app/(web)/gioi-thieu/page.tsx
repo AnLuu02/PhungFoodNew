@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-  const restaurant = await api.Restaurant.getOneActive();
+  const restaurant = await api.Restaurant.getOneActiveClient();
   return (
     <>
       <Box pos={'relative'} mx={{ base: -10, sm: -30, md: -30, lg: -130 }} mt={-16}>

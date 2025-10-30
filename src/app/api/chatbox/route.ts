@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { generateSocialUrl } from '~/lib/FuncHandler/generateSocial';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/server';
@@ -9,7 +10,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 export async function POST(req: Request) {
   const { message } = await req.json();
-  const restaurant = await api.Restaurant.getOneActive();
+  const restaurant = await api.Restaurant.getOneActiveClient();
   const subPrompt = `
       Đây là câu hỏi của khách hàng: ${message}
      
@@ -91,8 +92,13 @@ export async function POST(req: Request) {
   const timeOpen = () => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurant?.openingHours ?? [];
-    return timeOpens[timeIndex];
+    const timeOpen = timeOpens?.find((item: any) => item?.dayOfWeek === timeIndex?.toString());
+    return {
+      ...timeOpen,
+      timeIndex
+    };
   };
+
   const restaurantHTML = `
         <div style="margin: 10px 0; max-width: 400px; padding: 16px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
         <h3 style="margin: 0; padding-bottom: 8px; color: #333; border-bottom: 2px solid #ddd;">An Luu</h3>
@@ -110,7 +116,7 @@ export async function POST(req: Request) {
             ? restaurant?.socials
                 ?.map(
                   (social: any) =>
-                    `<p style="margin: 8px 0; color: #555;"><strong style="text-transform:capitalize;">${social.key}:</strong> <a href="${social.url}" style="color: #007bff; text-decoration: none;">${social.url}</a></p>`
+                    `<p style="margin: 8px 0; color: #555;"><strong style="text-transform:capitalize;">${social?.platform || 'website'}:</strong> <a href="${generateSocialUrl(social?.platform, social?.value)}" style="color: #007bff; text-decoration: none;">${generateSocialUrl(social?.platform, social?.value)}</a></p>`
                 )
                 .join('')
             : ''

@@ -1,6 +1,6 @@
 import { Container, Space } from '@mantine/core';
-import { recipes } from '~/lib/DataTest/recipe';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { recipes } from '~/lib/HardData/recipe';
 import { ConsumerCard } from '../Card/CardConsumer';
 import { PartnerCard } from '../Card/CardPartner';
 import ProductCardCarouselVertical from '../Card/CardProductCarouselVertical';

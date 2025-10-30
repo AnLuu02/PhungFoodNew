@@ -2,8 +2,9 @@
 
 import { Box, Grid, GridCol, Paper, Text, TextInput, Title } from '@mantine/core';
 import { IconPhone } from '@tabler/icons-react';
-import { Controller } from 'react-hook-form';
-export default function ContactTab({ control }: { control: any }) {
+import { Controller, useFormContext } from 'react-hook-form';
+export default function ContactTab() {
+  const { control } = useFormContext();
   return (
     <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Box mb={'md'}>

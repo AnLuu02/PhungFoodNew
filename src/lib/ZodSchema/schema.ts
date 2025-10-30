@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { LocalAddressType, LocalGender, LocalUserLevel } from './enum';
 export const imageSchema = z.object({
   id: z.string().optional(),
-  url: z.instanceof(File).optional(),
+  url: z.any().optional(),
   altText: z.string().optional(),
   type: z.nativeEnum(ImageType).default(ImageType.THUMBNAIL),
   entityId: z.string().optional(),
@@ -197,6 +197,24 @@ export const themeSchema = z.object({
   borderRadius: z.string().optional().nullable(),
   faviconUrl: z.string().optional().nullable()
 });
+export const socialSchema = z.object({
+  id: z.string().optional(),
+  platform: z.string().min(1, 'Platform không được để trống'),
+  label: z.string().min(1, 'Label không được để trống'),
+  value: z.string().min(1, 'Value không được để trống'),
+  pattern: z.string().min(1, 'Pattern không được để trống'),
+  icon: z.string().optional(),
+  isActive: z.boolean().default(true)
+});
+export const openingHourSchema = z.object({
+  id: z.string(),
+  dayOfWeek: z.string(),
+  openTime: z.string().optional(),
+  viNameDay: z.string(),
+  closeTIme: z.string().optional(),
+  isClosed: z.boolean()
+});
+
 export const restaurantSchema = z.object({
   id: z.string().optional(),
   address: z.string({ required_error: 'Địa chỉ là bắt buộc' }).min(1, 'Địa chỉ là bắt buộc'),
@@ -209,25 +227,9 @@ export const restaurantSchema = z.object({
   description: z.string().optional(),
   logo: imageSchema.optional(),
   website: z.string().optional(),
-  socials: z.array(
-    z.object({
-      key: z.string(),
-      url: z.string()
-    })
-  ),
+  socials: z.array(socialSchema),
   theme: themeSchema.optional(),
-  openingHours: z
-    .array(
-      z.object({
-        id: z.string(),
-        dayOfWeek: z.string(),
-        openTime: z.string().optional(),
-        viNameDay: z.string(),
-        closeTIme: z.string().optional(),
-        isClosed: z.boolean()
-      })
-    )
-    .optional()
+  openingHours: z.array(openingHourSchema).optional()
 });
 
 export const bannerSchema = z.object({

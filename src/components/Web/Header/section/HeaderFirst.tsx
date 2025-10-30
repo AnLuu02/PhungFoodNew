@@ -14,8 +14,13 @@ export const Header1 = ({ restaurant }: any) => {
   const timeOpen = useMemo(() => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurantData?.openingHours ?? [];
-    return timeOpens[timeIndex];
+    const timeOpen = timeOpens?.find((item: any) => item?.dayOfWeek === timeIndex?.toString());
+    return {
+      ...timeOpen,
+      timeIndex
+    };
   }, [restaurantData]);
+
   return (
     <Flex
       direction={{ base: 'column', sm: 'row', md: 'row' }}

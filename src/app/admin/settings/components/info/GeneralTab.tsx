@@ -4,9 +4,11 @@ import {
   Box,
   Button,
   Divider,
+  FileInput,
   Grid,
   GridCol,
   Group,
+  Image,
   Paper,
   Select,
   Stack,
@@ -17,12 +19,14 @@ import {
   Title
 } from '@mantine/core';
 import { IconBuildingStore, IconRestore, IconSettings, IconSpacingVertical, IconUpload } from '@tabler/icons-react';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-export default function GeneralTab({ control, isDirty }: any) {
-  const handleLogoUpload = () => {
-    //notify
-  };
+export default function GeneralTab() {
+  const {
+    control,
+    watch,
+    formState: { isDirty }
+  } = useFormContext();
 
   return (
     <>
@@ -73,14 +77,31 @@ export default function GeneralTab({ control, isDirty }: any) {
             <Box className='space-y-4'>
               <Text fw={600}>Logo nhà hàng</Text>
               <Box className='flex items-center gap-4'>
-                <Box className='bg-muted flex h-20 w-20 items-center justify-center rounded-lg'>
-                  <IconBuildingStore className='text-muted-foreground h-8 w-8' />
-                </Box>
+                {watch('logo.url') ? (
+                  <Box className='relative flex w-[300px] items-center justify-center overflow-hidden rounded-lg'>
+                    <Image
+                      loading='lazy'
+                      src={
+                        watch('logo.url') instanceof File
+                          ? URL.createObjectURL(watch('logo.url') as File)
+                          : watch('logo.url') || '/images/jpg/empty-300x240.jpg'
+                      }
+                      alt='Product Image'
+                      className='mb-4 object-contain'
+                    />
+                  </Box>
+                ) : (
+                  <Box className='relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg'>
+                    <IconBuildingStore className='text-muted-foreground h-8 w-8' />
+                  </Box>
+                )}
                 <Box className='space-y-2'>
                   <Button
                     variant='subtle'
                     size='sm'
-                    onClick={handleLogoUpload}
+                    component='label'
+                    htmlFor='logo.url'
+                    leftSection={<IconUpload size={16} />}
                     styles={{
                       root: {
                         border: '1px solid '
@@ -90,9 +111,27 @@ export default function GeneralTab({ control, isDirty }: any) {
                       root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                     }}
                   >
-                    <IconUpload className='mr-2 h-4 w-4' />
                     Upload logo
                   </Button>
+                  <Controller
+                    name='logo.url'
+                    control={control}
+                    rules={{
+                      validate: file =>
+                        file && file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
+                          ? true
+                          : 'Only PNG, JPEG, or JPG files are allowed'
+                    }}
+                    render={({ field, fieldState }) => (
+                      <FileInput
+                        className='hidden'
+                        id={`logo.url`}
+                        {...field}
+                        error={fieldState.error?.message}
+                        accept='image/png,image/jpeg,image/jpg'
+                      />
+                    )}
+                  />
                   <p className='text-muted-foreground text-xs'>Khuyến khích: 200x200px, PNG or JPG</p>
                 </Box>
               </Box>
