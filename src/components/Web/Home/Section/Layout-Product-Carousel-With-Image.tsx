@@ -33,17 +33,16 @@ const LayoutProductCarouselWithImage = ({
   reverseGrid?: boolean;
 }) => {
   const [active, setActive] = useState<'an-vat-trang-mieng' | 'mon-chinh' | 'mon-chay'>('an-vat-trang-mieng');
+
+  const activeMap: Record<string, string> = {
+    'an-vat-trang-mieng': 'an-vat-trang-mieng',
+    'mon-chinh': 'mon-chinh',
+    'mon-chay': 'mon-chay'
+  };
   const dataProps = useMemo(() => {
-    switch (active) {
-      case 'an-vat-trang-mieng':
-        return data?.filter((i: any) => i.subCategory.category.tag === 'an-vat-trang-mieng') || [];
-      case 'mon-chinh':
-        return data?.filter((i: any) => i.subCategory.category.tag === 'mon-chinh') || [];
-      case 'mon-chay':
-        return data?.filter((i: any) => i.subCategory.category.tag === 'mon-chay') || [];
-      default:
-        return data?.filter((i: any) => i.subCategory.category.tag === 'an-vat-trang-mieng') || [];
-    }
+    if (!data) return [];
+    const tag = activeMap[active] || 'an-vat-trang-mieng';
+    return data.filter((i: any) => i.subCategory.category.tag === tag);
   }, [active]);
   return (
     <Card

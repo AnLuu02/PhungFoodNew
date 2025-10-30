@@ -67,7 +67,7 @@ export const CartTable = ({ updateQuantity }: any) => {
                   <Group>
                     <Button
                       h={'max-content'}
-                      className='text-red-500 hover:text-mainColor'
+                      className='text-red-500 hover:text-subColor'
                       variant='transparent'
                       w={'max-content'}
                       size='xs'

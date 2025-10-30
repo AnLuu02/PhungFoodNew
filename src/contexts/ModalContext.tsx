@@ -1,18 +1,13 @@
 'use client';
 
-import { ReactNode, useCallback, useMemo, useState } from 'react';
-import { createContext, useContextSelector } from 'use-context-selector';
-import { ModalContextType, ModalType } from '~/types/modal';
+import React, { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { ModalActions, ModalState, ModalType } from '~/types/modal';
 
-type ModalContextValue = ModalContextType & {
-  openModal: (type: ModalType, content?: ReactNode, data?: any) => void;
-  closeModal: () => void;
-};
-
-const ModalContext = createContext<ModalContextValue | null>(null);
+const ModalStateContext = createContext<ModalState | null>(null);
+const ModalActionsContext = createContext<ModalActions | null>(null);
 
 export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [modalState, setModalState] = useState<ModalContextType>({
+  const [modalState, setModalState] = useState<ModalState>({
     opened: false,
     modalType: null,
     modalContent: null,
@@ -27,32 +22,28 @@ export const ModalProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setModalState({ opened: false, modalType: null, modalContent: null, modalData: null });
   }, []);
 
-  const value = useMemo(
-    () => ({
-      ...modalState,
-      openModal,
-      closeModal
-    }),
-    [modalState, openModal, closeModal]
+  const actionsValue = useMemo(() => ({ openModal, closeModal }), [openModal, closeModal]);
+
+  const stateValue = modalState;
+
+  return (
+    <ModalActionsContext.Provider value={actionsValue}>
+      <ModalStateContext.Provider value={stateValue}>{children}</ModalStateContext.Provider>
+    </ModalActionsContext.Provider>
   );
-
-  return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>;
 };
 
-export const useModalSelector = <T,>(selector: (v: ModalContextValue) => T): T => {
-  return useContextSelector(ModalContext as any, selector);
+export const useModalActions = (): ModalActions => {
+  const context = useContext(ModalActionsContext);
+  if (context === null) {
+    throw new Error('useModalActions must be used within a ModalProvider');
+  }
+  return context;
 };
-
-export const useModalActions = () => {
-  const openModal = useModalSelector(v => v.openModal);
-  const closeModal = useModalSelector(v => v.closeModal);
-  return { openModal, closeModal };
-};
-
-export const useModalState = () => {
-  const opened = useModalSelector(v => v.opened);
-  const modalType = useModalSelector(v => v.modalType);
-  const modalContent = useModalSelector(v => v.modalContent);
-  const modalData = useModalSelector(v => v.modalData);
-  return { opened, modalType, modalContent, modalData };
+export const useModalState = (): ModalState => {
+  const context = useContext(ModalStateContext);
+  if (context === null) {
+    throw new Error('useModalState must be used within a ModalProvider');
+  }
+  return context;
 };

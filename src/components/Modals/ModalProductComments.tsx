@@ -22,6 +22,7 @@ function ModalProductComments({ type, opened, onClose, data }: ModalProps<any>) 
       transitionProps={{ transition: 'fade-down', duration: 200 }}
       opened={opened && type === 'comments'}
       onClose={onClose}
+      radius={'md'}
       pos={'relative'}
       title={
         <Group align='center'>

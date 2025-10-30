@@ -9,9 +9,13 @@ export type ModalProps<T> = {
   data: T;
 };
 
-export type ModalContextType = {
+export type ModalState = {
   opened: boolean;
   modalType: ModalType;
   modalContent: ReactNode | null;
   modalData: any;
+};
+export type ModalActions = {
+  openModal: (type: ModalType, content?: ReactNode, data?: any) => void;
+  closeModal: () => void;
 };

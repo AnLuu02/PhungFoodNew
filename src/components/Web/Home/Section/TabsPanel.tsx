@@ -3,7 +3,7 @@ import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
 import { ActionIcon, Center, Flex, Group, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
 
 const TabsPanelCarousel = ({ data }: any) => {
@@ -26,7 +26,6 @@ const TabsPanelCarousel = ({ data }: any) => {
       onSelect();
     }
   }, [embla, onSelect]);
-
   return (
     <>
       <Center mb={{ base: 20, md: 0 }}>
@@ -94,4 +93,4 @@ const TabsPanelCarousel = ({ data }: any) => {
   );
 };
 
-export default TabsPanelCarousel;
+export default memo(TabsPanelCarousel);

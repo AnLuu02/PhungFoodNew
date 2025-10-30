@@ -22,6 +22,7 @@ export function ConsumerCard({ data }: any) {
             src={data?.image || `/images/png/403.png`}
             alt={data?.title}
             fill
+            onError={e => (e.currentTarget.src = '/images/png/delicious-burger-fries.png')}
             className='object-cover transition-transform duration-300 group-hover:scale-105'
           />
           <Badge className='absolute left-3 top-3 bg-red-500 text-white hover:bg-red-600'>Nổi bật</Badge>

@@ -1,10 +1,13 @@
-import { Badge, Box, Group, Paper, Spoiler, Text, Tooltip } from '@mantine/core';
+import { Badge, Box, Button, Group, Paper, Spoiler, Text, Tooltip } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
+import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export function CartItemPayment({ item }: any) {
+  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   return (
     <>
       <Group key={item.id} wrap='nowrap'>
@@ -44,6 +47,18 @@ export function CartItemPayment({ item }: any) {
               Ghi chú: {item.note || 'Không có'}
             </Text>
           </Spoiler>
+          <Button
+            h={'max-content'}
+            className='text-red-500 hover:text-subColor'
+            variant='transparent'
+            w={'max-content'}
+            size='xs'
+            p={0}
+            m={0}
+            onClick={() => setCart(cart.filter((cartItem: any) => cartItem.id !== item.id))}
+          >
+            <IconTrash size={20} />
+          </Button>
         </Box>
         <Text className='text-right' fw={700}>
           {formatPriceLocaleVi(item.price * item.quantity)}

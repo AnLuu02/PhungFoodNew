@@ -3,7 +3,7 @@ import { Carousel } from '@mantine/carousel';
 import { Box, Card, Flex, Grid, GridCol, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
@@ -20,7 +20,7 @@ type ITypeProduct = {
 
 const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', navbar }: ITypeProduct) => {
   const [tab, setTab] = useState<string>(navbar?.[0]?.key || 'rau-cu');
-  const products = data[tab]?.products || [];
+  const products = useMemo(() => data?.[tab], [data, tab]);
 
   return (
     <Card

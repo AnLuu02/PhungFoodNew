@@ -191,7 +191,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                       showLabel='Xem thêm'
                       hideLabel='Ẩn'
                       classNames={{
-                        control: 'text-sm'
+                        control: 'text-sm font-bold text-mainColor'
                       }}
                     >
                       <Highlight size='sm' highlight={s}>

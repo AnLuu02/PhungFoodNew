@@ -83,7 +83,6 @@
     "superjson": "^2.2.1",
     "swr": "^2.3.0",
     "tiptap-extension-resizable-image": "^2.0.0",
-    "use-context-selector": "^2.0.0",
     "xlsx": "^0.18.5",
     "zod": "^3.23.8"
   },

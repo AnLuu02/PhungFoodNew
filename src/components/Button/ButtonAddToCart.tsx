@@ -19,7 +19,6 @@ export function ButtonAddToCart({
 
   return (
     <BButton
-      {...style}
       radius={'xl'}
       size={'xs'}
       onClick={() => {
@@ -40,6 +39,7 @@ export function ButtonAddToCart({
         notify('Đã thêm vào giỏ hàng', 'Sản phẩm đã có trong giỏ hàng. Thanh toán ngay!');
         handleAfterAdd();
       }}
+      {...style}
     />
   );
 }

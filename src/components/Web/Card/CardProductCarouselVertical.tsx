@@ -5,7 +5,7 @@ import { IconEye } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import { memo } from 'react';
 import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
@@ -162,4 +162,4 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
     </Card>
   );
 };
-export default React.memo(ProductCardCarouselVertical);
+export default memo(ProductCardCarouselVertical);

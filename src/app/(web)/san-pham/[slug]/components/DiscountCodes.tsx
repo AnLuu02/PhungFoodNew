@@ -1,26 +1,37 @@
 'use client';
 
-import { Center, Grid, GridCol, Paper, Spoiler, Title } from '@mantine/core';
+import { Grid, GridCol, Group, Paper, Spoiler, Stack, Text, ThemeIcon, Title } from '@mantine/core';
+import { IconGift } from '@tabler/icons-react';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
 
 export default function DiscountCodes({ data }: any) {
   return (
-    <Paper p='md' radius='md' className='bg-green-50 dark:bg-dark-card'>
-      <Title order={2} className='font-quicksand text-mainColor' size='xl' fw={700} mb='md'>
-        MÃ GIẢM GIÁ
-      </Title>
+    <Paper p='md' radius='md' className='bg-green-50 dark:bg-dark-background'>
+      <Group align='center' mb={'xs'}>
+        <ThemeIcon
+          size='xl'
+          classNames={{
+            root: 'bg-subColor text-white'
+          }}
+        >
+          <IconGift />
+        </ThemeIcon>
+        <Stack gap={1}>
+          <Title order={3} className='font-quicksand'>
+            Danh sách voucher
+          </Title>
+          <Text size='xs' c={'dimmed'}>
+            Có {data.length || 0} voucher
+          </Text>
+        </Stack>
+      </Group>
       <Spoiler
         maxHeight={150}
-        showLabel={
-          <Center>
-            <span className='text-green-9 cursor-pointer text-sm font-semibold'>Xem tất cả</span>
-          </Center>
-        }
-        hideLabel={
-          <Center>
-            <span className='text-green-9 cursor-pointer text-sm font-semibold'>Thu gọn</span>
-          </Center>
-        }
+        showLabel={'Xem tất cả'}
+        hideLabel={'Thu gọn'}
+        classNames={{
+          control: 'text-sm font-bold text-mainColor'
+        }}
       >
         <Grid mt='md'>
           {data?.length > 0 &&

@@ -96,10 +96,16 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
                 ? '/images/png/voucher_bg_green.png'
                 : '/images/png/voucher_bg_red.png'
             }
-            alt=''
+            alt='voucher image'
             className='hidden md:block'
           />
-          <Flex direction='column' align='center' justify='center' pos={'absolute'} className='z-[10] hidden sm:flex'>
+          <Flex
+            direction='column'
+            align='center'
+            justify='center'
+            pos={'absolute'}
+            className='hidden md:z-[10] md:flex'
+          >
             <Text size='xs' className='text-center' c='#fff' fw={700}>
               {voucher?.code || 'Mama Voucher'}
             </Text>

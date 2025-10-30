@@ -133,14 +133,14 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                 <Link href={`/san-pham/${data?.tag}`} onClick={onClose}>
                   <Text
                     fw={700}
-                    className='cursor-pointer text-3xl text-black transition-all duration-200 ease-in-out hover:text-mainColor'
+                    className='cursor-pointer text-3xl text-black transition-all duration-200 ease-in-out hover:text-mainColor dark:text-dark-text'
                   >
                     {data?.name || 'Súp bông tuyết'}
                   </Text>
                 </Link>
 
                 <Group gap={5}>
-                  <Text c='black' fw={700} size='sm'>
+                  <Text className='text-black dark:text-dark-text' fw={700} size='sm'>
                     Mã sản phẩm:
                   </Text>
                   <Text className='text-mainColor' fw={700} size='sm'>
@@ -165,11 +165,18 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                 <Card
                   radius={'md'}
                   withBorder
-                  className='border-0 border-l-2 border-mainColor bg-gray-100'
+                  className='border-0 border-l-2 border-mainColor bg-gray-100 dark:bg-dark-background'
                   p={'xs'}
                   my={'xs'}
                 >
-                  <Spoiler maxHeight={60} showLabel='Xem thêm' hideLabel='Ẩn'>
+                  <Spoiler
+                    maxHeight={60}
+                    showLabel='Xem thêm'
+                    hideLabel='Ẩn'
+                    classNames={{
+                      control: 'text-sm font-bold text-mainColor'
+                    }}
+                  >
                     <Text size='sm'>{data?.description || `Không có nội dung.`}</Text>
                   </Spoiler>
                 </Card>
