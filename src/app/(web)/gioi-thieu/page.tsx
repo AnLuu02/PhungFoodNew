@@ -56,19 +56,34 @@ export default async function AboutPage() {
               đại để tạo ra những trải nghiệm ăn uống khó quên.
             </Text>
             <Group wrap='nowrap'>
-              <ThemeIcon size='lg' color='green'>
+              <ThemeIcon
+                size='lg'
+                classNames={{
+                  root: 'bg-mainColor'
+                }}
+              >
                 <IconChefHat />
               </ThemeIcon>
               <Text>Công thức nấu ăn đích thực được truyền qua nhiều thế hệ</Text>
             </Group>
             <Group wrap='nowrap'>
-              <ThemeIcon size='lg' color='yellow'>
+              <ThemeIcon
+                size='lg'
+                classNames={{
+                  root: 'bg-mainColor'
+                }}
+              >
                 <IconMapPin />
               </ThemeIcon>
               <Text>Hương vị từ miền Tây Việt Nam và hơn thế nữa</Text>
             </Group>
             <Group wrap='nowrap'>
-              <ThemeIcon size='lg' color='green'>
+              <ThemeIcon
+                size='lg'
+                classNames={{
+                  root: 'bg-mainColor'
+                }}
+              >
                 <IconStar />
               </ThemeIcon>
               <Text>Gia đình sở hữu và điều hành bằng tình yêu</Text>
@@ -387,7 +402,12 @@ export default async function AboutPage() {
                 <Text>Thứ 2 - Chủ Nhật: 10:00 - 22:00</Text>
               )}
               <Group mt='md'>
-                <ThemeIcon size='lg' color='green'>
+                <ThemeIcon
+                  size='lg'
+                  classNames={{
+                    root: 'bg-mainColor'
+                  }}
+                >
                   <IconPhone />
                 </ThemeIcon>
                 <Flex gap={'sm'} align={'center'}>
@@ -401,7 +421,12 @@ export default async function AboutPage() {
                 </Flex>
               </Group>
               <Group mt='md'>
-                <ThemeIcon size='lg' color='yellow'>
+                <ThemeIcon
+                  size='lg'
+                  classNames={{
+                    root: 'bg-mainColor'
+                  }}
+                >
                   <IconMail />
                 </ThemeIcon>
                 <Text fw={700} className='text-mainColor hover:underline'>

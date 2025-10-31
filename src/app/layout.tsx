@@ -18,6 +18,7 @@ import { TRPCReactProvider } from '~/trpc/react';
 
 import ScrollToTop from '~/components/ScrollToTop';
 import { ModalProvider } from '~/contexts/ModalContext';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 import { api } from '~/trpc/server';
 import { authOptions } from './api/auth/[...nextauth]/options';
@@ -62,8 +63,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://phung-food-new.vercel.app')
 };
 
+const getInitTheme = async () => {
+  return await withRedisCache('theme-default', () => api.Restaurant.getTheme(), 60 * 60 * 24);
+};
+
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [session, theme] = await Promise.all([getServerSession(authOptions), api.Restaurant.getTheme()]);
+  const [session, theme] = await Promise.all([getServerSession(authOptions), getInitTheme()]);
   const defaultScheme =
     theme?.themeMode === 'dark' || theme?.themeMode === 'light' || theme?.themeMode === 'auto'
       ? theme.themeMode

@@ -4,7 +4,9 @@ import {
   Center,
   Divider,
   Drawer,
+  Flex,
   Group,
+  Paper,
   SimpleGrid,
   Stack,
   Text,
@@ -12,7 +14,7 @@ import {
   useComputedColorScheme,
   useMantineColorScheme
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useLocalStorage } from '@mantine/hooks';
 import {
   IconBorderNone,
   IconBorderOuter,
@@ -25,11 +27,34 @@ import {
   IconTextDirectionLtr,
   IconTextDirectionRtl
 } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
-const colors = ['#5D87FF', '#0074BA', '#763EBD', '#0A7EA4', '#7DDFE3', '#FA896B'];
+export const COLOR_PALETTES = [
+  { name: 'Ocean Blue', mainColor: '#5D87FF', subColor: '#A2B8FF' },
+  { name: 'Sky Teal', mainColor: '#0074BA', subColor: '#56B5E5' },
+  { name: 'Royal Purple', mainColor: '#763EBD', subColor: '#B18BEF' },
+  { name: 'Deep Cyan', mainColor: '#0A7EA4', subColor: '#4FBFD3' },
+  { name: 'Mint Breeze', mainColor: '#7DDFE3', subColor: '#A9F0F3' },
+  { name: 'Coral Sunset', mainColor: '#FA896B', subColor: '#FFC3AE' }
+];
+interface ThemeClient {
+  direction: 'ltr' | 'rtl' | 'auto';
+  theme: 'light' | 'dark' | 'auto';
+  color: {
+    name: string;
+    mainColor: string;
+    subColor: string;
+  };
+  card: {
+    withBorder: boolean;
+    withShadow: boolean;
+  };
+}
 export const SettingClient = () => {
-  const [mainColor, setMainColor] = useState<string | null>(null);
+  const [themeClient, setThemeClient] = useLocalStorage<ThemeClient | null>({
+    key: 'theme-client',
+    defaultValue: null
+  });
   const [opened, { open, close }] = useDisclosure(false);
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', {
@@ -38,10 +63,11 @@ export const SettingClient = () => {
 
   const isDark = computedColorScheme === 'dark';
   useEffect(() => {
-    if (mainColor) {
-      document.documentElement.style.setProperty('--mainColor', hexToRgb(mainColor));
+    if (themeClient?.color) {
+      document.documentElement.style.setProperty('--color-mainColor', hexToRgb(themeClient.color?.mainColor));
+      document.documentElement.style.setProperty('--color-subColor', hexToRgb(themeClient.color?.subColor));
     }
-  }, [mainColor]);
+  }, [themeClient?.color]);
   return (
     <>
       <Drawer
@@ -67,24 +93,26 @@ export const SettingClient = () => {
               Theme
             </Text>
             <Group align='center' gap={'md'}>
-              <Box
+              <Paper
+                withBorder
                 onClick={() => setColorScheme('light')}
-                className={`flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${!isDark && 'text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${!isDark && 'border-mainColor text-mainColor'}`}
               >
                 <IconBrightnessUp className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   Sáng
                 </Text>
-              </Box>
-              <Box
+              </Paper>
+              <Paper
+                withBorder
                 onClick={() => setColorScheme('dark')}
-                className={`flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${isDark && 'text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${isDark && 'border-mainColor text-mainColor'}`}
               >
                 <IconMoon className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   Tối
                 </Text>
-              </Box>
+              </Paper>
             </Group>
           </Stack>
 
@@ -93,18 +121,26 @@ export const SettingClient = () => {
               Theme direction
             </Text>
             <Group align='center' gap={'md'}>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'>
+              <Paper
+                withBorder
+                onClick={() => setThemeClient({ ...(themeClient as ThemeClient), direction: 'ltr' })}
+                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.direction === 'ltr' && 'border-mainColor text-mainColor'}`}
+              >
                 <IconTextDirectionLtr className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   LTR
                 </Text>
-              </Box>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'>
+              </Paper>
+              <Paper
+                withBorder
+                onClick={() => setThemeClient({ ...(themeClient as ThemeClient), direction: 'rtl' })}
+                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.direction === 'rtl' && 'border-mainColor text-mainColor'}`}
+              >
                 <IconTextDirectionRtl className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   RTL
                 </Text>
-              </Box>
+              </Paper>
             </Group>
           </Stack>
 
@@ -113,22 +149,56 @@ export const SettingClient = () => {
               Theme color
             </Text>
 
-            <SimpleGrid cols={3} spacing={'md'}>
-              {colors.map((color, index) => (
-                <Box
-                  key={index}
-                  onClick={() => {
-                    setMainColor(color);
-                  }}
-                  className='group relative flex h-[58px] w-[80px] cursor-pointer items-center justify-center rounded-md border border-solid border-gray-200 duration-200 hover:scale-105 hover:text-mainColor'
-                >
-                  <Box w={25} h={25} className={`flex items-center justify-center rounded-full bg-[${color?.trim()}]`}>
-                    <IconCheck
-                      className={`hidden h-5 w-5 font-bold text-white group-hover:block ${mainColor === color && '!block'}`}
-                    />
-                  </Box>
-                </Box>
-              ))}
+            <SimpleGrid cols={3}>
+              {COLOR_PALETTES.map((color, index) => {
+                const isSelected = themeClient?.color?.mainColor === color.mainColor;
+
+                return (
+                  <Flex
+                    justify={'center'}
+                    align={'center'}
+                    direction={'column'}
+                    pos={'relative'}
+                    gap={'md'}
+                    key={index}
+                    onClick={() => setThemeClient({ ...(themeClient as ThemeClient), color })}
+                    className={`group h-[max-content] w-full cursor-pointer rounded-md py-4 duration-200 hover:scale-105 ${
+                      isSelected ? 'border border-solid border-mainColor' : 'border-gray-200'
+                    }`}
+                  >
+                    <Box className='relative flex items-center justify-center'>
+                      <Box
+                        className='absolute inset-0 rounded-full'
+                        style={{
+                          backgroundColor: color.subColor,
+                          width: 38,
+                          height: 38
+                        }}
+                      />
+                      <Box
+                        className='relative flex items-center justify-center rounded-full'
+                        style={{
+                          backgroundColor: color.mainColor,
+                          width: 26,
+                          height: 26,
+                          boxShadow: isSelected ? `0 0 0 3px ${color.subColor}80` : 'none'
+                        }}
+                      >
+                        <IconCheck
+                          size={16}
+                          className={`text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
+                            isSelected ? 'opacity-100' : ''
+                          }`}
+                        />
+                      </Box>
+                    </Box>
+
+                    <Text size='xs' className='text-center font-medium text-gray-600'>
+                      {color.name}
+                    </Text>
+                  </Flex>
+                );
+              })}
             </SimpleGrid>
           </Stack>
 
@@ -137,18 +207,24 @@ export const SettingClient = () => {
               Layout Type
             </Text>
             <Group align='center' gap={'md'} wrap='nowrap'>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'>
+              <Paper
+                withBorder
+                className='flex cursor-pointer items-center gap-2 rounded-md px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'
+              >
                 <IconLayoutSidebar className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   Vertical
                 </Text>
-              </Box>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'>
+              </Paper>
+              <Paper
+                withBorder
+                className='flex cursor-pointer items-center gap-2 rounded-md px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'
+              >
                 <IconLayoutNavbar className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   Horizontal
                 </Text>
-              </Box>
+              </Paper>
             </Group>
           </Stack>
 
@@ -157,17 +233,23 @@ export const SettingClient = () => {
               Sidebar Type
             </Text>
             <Group align='center' gap={'md'}>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'>
+              <Paper
+                withBorder
+                className='flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'
+              >
                 <IconLayoutSidebar className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   Full
                 </Text>
-              </Box>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'>
+              </Paper>
+              <Paper
+                withBorder
+                className='flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'
+              >
                 <Text size='md' fw={700}>
                   Collapse
                 </Text>
-              </Box>
+              </Paper>
             </Group>
           </Stack>
 
@@ -176,29 +258,58 @@ export const SettingClient = () => {
               Card With
             </Text>
             <Group align='center' gap={'md'} wrap='nowrap'>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'>
+              <Paper
+                withBorder
+                onClick={() =>
+                  setThemeClient({
+                    ...(themeClient as ThemeClient),
+                    card: {
+                      withBorder: !themeClient?.card?.withBorder,
+                      withShadow: Boolean(themeClient?.card?.withShadow)
+                    }
+                  })
+                }
+                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.card?.withBorder && 'border-mainColor text-mainColor'}`}
+              >
                 <IconBorderOuter className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   Border
                 </Text>
-              </Box>
-              <Box className='flex cursor-pointer items-center gap-2 rounded-md border border-solid border-gray-200 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'>
+              </Paper>
+              <Paper
+                withBorder
+                onClick={() =>
+                  setThemeClient({
+                    ...(themeClient as ThemeClient),
+                    card: {
+                      withBorder: Boolean(themeClient?.card?.withBorder),
+                      withShadow: !themeClient?.card?.withBorder
+                    }
+                  })
+                }
+                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.card?.withShadow && 'border-mainColor text-mainColor'}`}
+              >
                 <IconBorderNone className='h-5 w-5' />
                 <Text size='md' fw={700}>
                   Shadow
                 </Text>
-              </Box>
+              </Paper>
             </Group>
           </Stack>
         </Stack>
       </Drawer>
-      <Box pos={'fixed'} bottom={40} right={{ base: -15, sm: 20 }} className='z-[200] flex flex-col space-y-4'>
+      <Box
+        pos={'fixed'}
+        bottom={230}
+        right={{ base: -15, sm: 20 }}
+        className='animate-bounceSlow z-[200] flex flex-col space-y-4'
+      >
         <Center
-          className='relative hidden h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-mainColor text-white duration-200 ease-in-out hover:opacity-80 sm:flex'
+          className='relative hidden cursor-pointer items-center justify-center text-mainColor duration-200 ease-in-out hover:opacity-80 sm:flex'
           w={50}
           h={50}
         >
-          <IconSettings size={24} onClick={open} />
+          <IconSettings size={32} onClick={open} />
         </Center>
       </Box>
     </>
