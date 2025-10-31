@@ -4,7 +4,7 @@ import { Box, Button, Group, Modal, Paper, Stack, Text, Textarea } from '@mantin
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
@@ -15,25 +15,40 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [note, setNote] = useState('');
   const [noteDebounced] = useDebouncedValue(note, 800);
-  const dataCheckout = useMemo(() => {
-    if (noteDebounced) {
-      const cartFilter = cart.filter((item: any) => item.id !== data?.id);
-      return [...cartFilter, { ...data, note: noteDebounced }];
-    }
-    return cart;
-  }, [cart, noteDebounced]);
   useEffect(() => {
-    const existNoteProduct = cart.find((item: any) => item.id === data?.id && item.note !== note);
-    if (existNoteProduct) {
-      setNote(existNoteProduct?.note);
+    if (opened) {
+      const existNoteProduct = cart.find((item: any) => item.id === data?.id && item.note !== note);
+      if (existNoteProduct) {
+        setNote(existNoteProduct?.note);
+      }
     }
-  }, [cart]);
+  }, [opened]);
+
+  useEffect(() => {
+    if (noteDebounced) {
+      const { cartFilter, existNoteProduct } = cart?.reduce(
+        (acc: any, item: any) => {
+          if (item.id === data?.id) {
+            acc.existNoteProduct = item;
+          } else {
+            acc.cartFilter.push(item);
+          }
+          return acc;
+        },
+        { cartFilter: [], existNoteProduct: null }
+      );
+      if (!existNoteProduct) return;
+      setCart([...cartFilter, { ...existNoteProduct, note: noteDebounced }]);
+    }
+  }, [noteDebounced]);
   return (
     <Modal
       opened={opened && type === 'success'}
       onClose={() => {
-        onClose();
-        setNote('');
+        if (noteDebounced) {
+          onClose();
+          setNote('');
+        }
       }}
       padding={0}
       radius='md'
@@ -127,7 +142,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 size: 'xs',
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
-              data={dataCheckout}
+              data={cart}
               finalTotal={data?.price || 0}
               originalTotal={data?.price || 0}
               discountAmount={0}

@@ -10,7 +10,7 @@ export function CartItemPayment({ item }: any) {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   return (
     <>
-      <Group key={item.id} wrap='nowrap'>
+      <Group key={item.id} wrap='nowrap' align='flex-start'>
         <Paper
           withBorder
           w={60}
@@ -38,7 +38,7 @@ export function CartItemPayment({ item }: any) {
             </Text>
           </Tooltip>
           <Spoiler
-            maxHeight={20}
+            maxHeight={17}
             showLabel='Xem thêm'
             hideLabel='Ẩn'
             classNames={{ control: 'text-xs font-bold text-mainColor' }}
@@ -47,6 +47,11 @@ export function CartItemPayment({ item }: any) {
               Ghi chú: {item.note || 'Không có'}
             </Text>
           </Spoiler>
+        </Box>
+        <Group align='center' gap={'md'} p={0} m={0}>
+          <Text className='text-right' fw={700}>
+            {formatPriceLocaleVi(item.price * item.quantity)}
+          </Text>
           <Button
             h={'max-content'}
             className='text-red-500 hover:text-subColor'
@@ -59,10 +64,7 @@ export function CartItemPayment({ item }: any) {
           >
             <IconTrash size={20} />
           </Button>
-        </Box>
-        <Text className='text-right' fw={700}>
-          {formatPriceLocaleVi(item.price * item.quantity)}
-        </Text>
+        </Group>
       </Group>
     </>
   );
