@@ -630,7 +630,6 @@ export const restaurantRouter = createTRPCRouter({
         };
       }
     }),
-  // social
   createSocial: publicProcedure
     .input(socialSchema.extend({ restaurantId: z.string() }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {

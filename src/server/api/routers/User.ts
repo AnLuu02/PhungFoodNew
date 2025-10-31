@@ -366,6 +366,77 @@ export const userRouter = createTRPCRouter({
         data: existed
       };
     }),
+  updateCustom: publicProcedure
+    .input(
+      z.object({
+        where: z.record(z.any()),
+        data: z.record(z.any())
+      })
+    )
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const { where, data } = input;
+      const existed = await ctx.db.user.findFirst({
+        where: where as Prisma.UserWhereUniqueInput,
+        include: { image: true }
+      });
+
+      let imgURL: string | undefined;
+      const oldImage = existed?.image;
+
+      if (data?.image?.fileName) {
+        const filenameImgFromDb = oldImage ? getFileNameFromVercelBlob(oldImage.url) : null;
+
+        if (!filenameImgFromDb || filenameImgFromDb !== data.image.fileName) {
+          if (oldImage) await del(oldImage.url, { token: tokenBlobVercel });
+          const buffer = Buffer.from(data.image.base64, 'base64');
+          const blob = await put(data.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+          imgURL = blob.url;
+        } else {
+          imgURL = oldImage?.url;
+        }
+      }
+
+      if (oldImage && oldImage.url && data.image?.fileName === '') {
+        await del(oldImage.url, { token: tokenBlobVercel });
+      }
+
+      const user = await ctx.db.user.update({
+        where: where as Prisma.UserWhereUniqueInput,
+        data: {
+          ...data,
+          image: imgURL
+            ? {
+                upsert: {
+                  where: { id: oldImage?.id || '' },
+                  update: {
+                    entityType: LocalEntityType.USER,
+                    altText: `Ảnh ${data.name}`,
+                    url: imgURL,
+                    type: LocalImageType.THUMBNAIL
+                  },
+                  create: {
+                    entityType: LocalEntityType.USER,
+                    altText: `Ảnh ${data.name}`,
+                    url: imgURL,
+                    type: LocalImageType.THUMBNAIL
+                  }
+                }
+              }
+            : oldImage?.url && data.image?.fileName === ''
+              ? {
+                  delete: {
+                    id: oldImage?.id || ''
+                  }
+                }
+              : undefined
+        }
+      });
+      return {
+        code: 'OK',
+        message: 'Cập nhật Người dùng thành công.',
+        data: user
+      };
+    }),
   delete: publicProcedure
     .use(requirePermission('delete:user'))
     .input(

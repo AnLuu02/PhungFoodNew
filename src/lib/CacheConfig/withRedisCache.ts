@@ -16,14 +16,16 @@ async function revalidateCache<T>(key: string, fetcher: () => Promise<T>, ttlSec
 }
 
 export async function withRedisCache<T>(key: string, fetcher: () => Promise<T>, ttlSeconds = 60): Promise<T> {
-  const cached = await redis.get<T>(key);
+  const ENV = process.env.NODE_ENV || 'development';
+  const key_with_env = key + ':' + ENV;
+  const cached = await redis.get<T>(key_with_env);
 
   if (cached) {
-    revalidateCache(key, fetcher, ttlSeconds);
+    revalidateCache(key_with_env, fetcher, ttlSeconds);
     return cached;
   }
 
   const data = await fetcher();
-  await redis.set(key, data, { ex: ttlSeconds });
+  await redis.set(key_with_env, data, { ex: ttlSeconds });
   return data;
 }

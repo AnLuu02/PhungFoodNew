@@ -267,8 +267,8 @@ export const TEMPLATE_OPTIONS = [
   }
 ];
 export const iconMap: Record<string, { icon: React.ElementType; color: string }> = {
-  phone: { icon: IconPhone, color: '#34A853' }, // xanh Google phone
-  email: { icon: IconMail, color: '#EA4335' }, // đỏ Gmail
+  phone: { icon: IconPhone, color: '#34A853' },
+  email: { icon: IconMail, color: '#EA4335' },
   facebook: { icon: IconBrandFacebook, color: '#1877F2' },
   messenger: { icon: IconBrandMessenger, color: '#00B2FF' },
   zalo: { icon: IconMessageCircle2, color: '#0068FF' },

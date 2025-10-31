@@ -45,7 +45,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
     <>
       <Modal
         scrollAreaComponent={ScrollAreaAutosize}
-        className='animate-fadeBottom overflow-hidden'
+        className='animate-fadeUp overflow-hidden'
         opened={opened && type === 'details'}
         radius={'md'}
         onClose={onClose}

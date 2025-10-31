@@ -6,15 +6,18 @@ import { IconKey, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { checkLoginCooldown, setLoginCooldown } from '~/lib/Utils/loginLimiter';
 import LoginServices from '../components/LoginServices';
 
 export default function Page() {
   const [error, setError] = useState('');
+  const [cooldown, setCooldown] = useState(0);
+
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const {
@@ -34,9 +37,21 @@ export default function Page() {
       password: ''
     }
   });
-
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
   const onSubmit: SubmitHandler<{ email: string; password: string }> = async formData => {
     setError('');
+    const { blocked, remaining } = checkLoginCooldown();
+    if (blocked) {
+      setCooldown(remaining);
+      NotifyError(`Vui lòng chờ ${remaining}s trước khi thử lại.`);
+      return;
+    }
+    setLoginCooldown();
     try {
       const result = await signIn('credentials', {
         redirect: false,
@@ -137,7 +152,7 @@ export default function Page() {
               <Grid>
                 <GridCol span={12} className=''>
                   <BButton
-                    disabled={!isDirty}
+                    disabled={!isDirty || cooldown > 0}
                     loading={isSubmitting}
                     type='submit'
                     fullWidth

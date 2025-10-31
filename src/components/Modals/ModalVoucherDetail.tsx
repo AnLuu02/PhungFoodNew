@@ -18,7 +18,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
       withCloseButton={false}
       zIndex={99999}
       size={400}
-      className='animate-fadeBottom'
+      className='animate-fadeUp'
       radius={'md'}
       h={'max-content'}
       transitionProps={{ transition: 'fade-down', duration: 200 }}

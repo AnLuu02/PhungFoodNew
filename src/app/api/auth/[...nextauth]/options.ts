@@ -1,7 +1,9 @@
 import { compare } from 'bcryptjs';
+import { randomBytes } from 'crypto';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+import { checkIfLocked, handleFailedLogin, unlockIfExpired } from '~/lib/FuncHandler/HandleLockedUser/userLockService';
 import { api } from '~/trpc/server';
 
 export const authOptions: NextAuthOptions = {
@@ -20,21 +22,26 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Vui lòng nhập đầy đủ email và mật khẩu.');
-        }
-
-        const user = await api.User.getOne({ s: credentials?.email || '' });
+        const { email, password } = credentials as { email: string; password: string };
+        const user = await api.User.getOne({ s: email || '' });
         if (!user) {
           throw new Error('Tài khoản không tồn tại.');
         }
-        const isValid = await compare(credentials.password, user.password);
-        if (!isValid) {
-          throw new Error('Mật khẩu không đúng.');
-        }
-        if (user && (!user?.isActive || !user?.isVerified)) {
+        await unlockIfExpired(user);
+        const refreshed = await api.User.getOne({ s: email });
+        checkIfLocked(refreshed);
+
+        const isValid = await compare(password, refreshed.password);
+        if (!isValid) await handleFailedLogin(refreshed);
+
+        if (!refreshed.isActive || !refreshed.isVerified)
           throw new Error('Tài khoản của bạn hiện đang bị vô hiệu hóa.');
-        }
+
+        await api.User.updateCustom({
+          where: { email },
+          data: { isLocked: false, failedAttempts: 0, lockedUntil: null }
+        });
+
         return {
           id: user?.id,
           name: user?.name,
@@ -52,24 +59,28 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ user }) {
       try {
-        if (user.email) {
-          const { email, name, image } = user;
-          const userFromDb = await api.User.getOne({ s: email || '' });
-          if (!userFromDb) {
-            await api.User.create({
-              email: email || '',
-              name: name || '',
-              password: 'default123',
-              image: { fileName: image || '', base64: '' }
-            });
-          }
+        if (!user?.email) return false;
+        const { email } = user;
+        let userFromDb = await api.User.getOne({ s: email });
+
+        if (userFromDb?.isLocked && !(await unlockIfExpired(userFromDb))) return '/error?reason=locked';
+
+        if (!userFromDb) {
+          const randomPass = randomBytes(8).toString('hex');
+          await api.User.create({
+            email: user.email,
+            name: user.name ?? '',
+            password: randomPass,
+            image: user.image ? { fileName: user.image, base64: '' } : undefined
+          });
         }
         return true;
       } catch (error) {
-        console.error('Error in signIn callback: ', error);
-        return false;
+        console.error('Error in signIn callback:', error);
+        return '/error?reason=locked';
       }
     },
+
     async jwt({ token }) {
       try {
         const userFromDb = await api.User.getOne({ s: token?.email || '' });
@@ -94,6 +105,7 @@ export const authOptions: NextAuthOptions = {
     }
   },
   pages: {
-    signIn: '/dang-nhap'
+    signIn: '/dang-nhap',
+    error: '/error'
   }
 };

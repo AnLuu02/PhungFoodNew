@@ -12,7 +12,7 @@ export default function DynamicCartButton({ heightShow }: { heightShow?: number 
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   return (
     scroll >= (heightShow || HEIGHT_HEADER) && (
-      <Box className={`animate-fadeTop`}>
+      <Box className={`animate-fadeDown`}>
         <Box className='md:hidden lg:block'>
           <CartButton />
         </Box>

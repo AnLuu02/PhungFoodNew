@@ -35,34 +35,6 @@ export default {
         quicksand: ['var(--font-quicksand)', ...fontFamily.sans]
       },
       keyframes: {
-        typing: {
-          '0%': {
-            width: '0ch'
-          },
-          '100%': {
-            width: '40ch'
-          }
-        },
-        showLeftTo: {
-          '0%': {
-            transform: 'translateX(-20%)',
-            opacity: '0'
-          },
-          '100%': {
-            transform: 'translateX(0%)',
-            opacity: '1'
-          }
-        },
-        showRightTo: {
-          '0%': {
-            transform: 'translateX(20%)',
-            opacity: '0'
-          },
-          '100%': {
-            transform: 'translateX(0%)',
-            opacity: '1'
-          }
-        },
         wiggle: {
           '0%, 100%': { transform: 'rotate(0deg) scale(0.9) ' },
           '10%': { transform: 'rotate(0deg) scale(1)' },
@@ -71,7 +43,7 @@ export default {
           '40%': { transform: 'rotate(-3deg) scale(1)' },
           '50%': { transform: 'rotate(3deg) scale(1)' }
         },
-        'slide-right': {
+        slideRightPulse: {
           '0%': { transform: 'translateX(0)', opacity: '0.3' },
           '50%': { transform: 'translateX(20px)', opacity: '1' },
           '100%': { transform: 'translateX(0)', opacity: '0.3' }
@@ -82,11 +54,11 @@ export default {
           '30%': { transform: 'rotate(15deg)' },
           '50%': { transform: 'rotate(0deg)' }
         },
-        fadeTop: {
+        fadeDown: {
           '0%': { opacity: '0', transform: 'translateY(-10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' }
         },
-        fadeBottom: {
+        fadeUp: {
           '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' }
         },
@@ -94,18 +66,30 @@ export default {
           '0%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.2)' },
           '100%': { transform: 'scale(1)' }
+        },
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' }
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
+          '100%': { opacity: '1', transform: 'scale(1)' }
+        },
+        bounceSlow: {
+          '0%, 100%': { transform: 'translateY(-25%)', animationTimingFunction: 'cubic-bezier(0.8,0,1,1)' },
+          '50%': { transform: 'translateY(0)', animationTimingFunction: 'cubic-bezier(0,0,0.2,1)' }
         }
       },
       animation: {
         wiggle: 'wiggle 1s ease infinite',
         shake: 'shake 1s ease-in-out infinite',
-        fadeTop: 'fadeTop 0.3s ease-in-out',
-        fadeBottom: 'fadeBottom 0.3s ease-in-out',
+        fadeDown: 'fadeDown 0.3s ease-in-out',
+        fadeUp: 'fadeUp 0.3s ease-in-out',
         pulse: 'pulse 1.5s ease-in-out infinite',
-        'slide-right': 'slide-right 2s ease-in-out infinite',
-        typing: 'typing 2s steps(40) alternate infinite',
-        showLeftTo: 'showLeftTo 0.5s ease',
-        showRightTo: 'showRightTo 0.5s ease'
+        slideRightPulse: 'slideRightPulse 2s ease-in-out infinite',
+        fadeIn: 'fadeIn 0.5s ease-out forwards',
+        scaleIn: 'scaleIn 0.3s ease-out forwards',
+        bounceSlow: 'bounceSlow 2s infinite ease-in-out'
       }
     },
     screens: {

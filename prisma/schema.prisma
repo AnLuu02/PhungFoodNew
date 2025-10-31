@@ -222,6 +222,9 @@ model User {
   level            UserLevel
   resetToken       String?
   resetTokenExpiry DateTime?
+  failedAttempts   Int              @default(0)
+  lockedUntil      DateTime?
+  isLocked         Boolean          @default(false)
   order            Order[]
   review           Review[]
   favouriteFood    FavouriteFood[]

@@ -98,7 +98,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
+              <Box className='animate-slideRightPulse flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -163,7 +163,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
+              <Box className='animate-slideRightPulse flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -249,7 +249,7 @@ export default async function AboutPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slide-right items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
+              <Box className='animate-slideRightPulse flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'

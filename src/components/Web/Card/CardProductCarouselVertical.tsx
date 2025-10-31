@@ -46,7 +46,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
             'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover:visible lg:invisible'
           }
         >
-          <Button.Group className='group-hover:animate-fadeBottom'>
+          <Button.Group className='group-hover:animate-fadeUp'>
             <Tooltip label='Xem nhanh'>
               {isMobile ? (
                 <Button
