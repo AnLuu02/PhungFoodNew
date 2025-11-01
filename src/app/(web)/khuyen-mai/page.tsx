@@ -4,6 +4,8 @@ import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import FoodPromotionPageClient from './pageClient';
 
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Khuyến mãi hấp dẫn - Phụng Food',
   description: 'Cập nhật ưu đãi và giảm giá các món ăn miền Tây tại Phụng Food. Đặt hàng ngay để nhận ưu đãi.'

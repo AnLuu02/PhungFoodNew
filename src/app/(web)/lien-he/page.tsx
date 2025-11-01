@@ -6,6 +6,8 @@ import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import { FormContact } from './components/FormContact';
 
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Liên hệ - Phụng Food',
   description: 'Liên hệ chúng tôi để đặt món, tư vấn thực đơn, hợp tác hoặc phản hồi dịch vụ.'

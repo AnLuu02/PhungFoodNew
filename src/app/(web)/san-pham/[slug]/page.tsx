@@ -6,6 +6,9 @@ import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
 import ProductDetailClient from './pageClient';
 
+export const dynamic = 'force-static';
+export const revalidate = 60;
+
 const getProduct = async (slug: string, userId: string) => {
   const redisKey = `product-detail:${slug}`;
   return withRedisCache(

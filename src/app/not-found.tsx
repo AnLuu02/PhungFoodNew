@@ -3,6 +3,8 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import Link from 'next/link';
 import BButton from '~/components/Button/Button';
 
+export const dynamic = 'force-static';
+
 export default function NotFound() {
   return (
     <main className='flex min-h-screen items-center justify-center px-4'>

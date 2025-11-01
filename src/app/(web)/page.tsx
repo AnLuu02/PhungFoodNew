@@ -3,7 +3,8 @@ import HomeWeb from '~/components/Web/Home/HomeWeb';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api, HydrateClient } from '~/trpc/server';
 
-export const revalidate = 60 * 60 * 24;
+export const revalidate = 60;
+export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title: 'Trang chủ - Phụng Food',
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const getInit = async () => {
-  return await withRedisCache('home-web', () => api.Page.getInit(), 60 * 60 * 24);
+  return await withRedisCache('home-web', () => api.Page.getInit(), 60);
 };
 
 const HomePage = async () => {

@@ -2,6 +2,9 @@ import { Button, Center, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Không có quyền',
   description: 'Không có quyền truy cập'

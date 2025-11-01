@@ -9,6 +9,8 @@ import { TOP_POSITION_STICKY } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/server';
 
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Tin tức - Món ngon miền Tây',
   description: 'Chia sẻ kiến thức ẩm thực, mẹo nấu ăn và câu chuyện món ngon miền Tây tại blog Phụng Food.'

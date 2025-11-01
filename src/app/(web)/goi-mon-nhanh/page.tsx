@@ -5,6 +5,9 @@ import { api } from '~/trpc/server';
 import { RecapCart } from '../thanh-toan/components/RecapCart';
 import { QuickMenu } from './components/QuickMenu';
 
+export const dynamic = 'force-static';
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Gọi món nhanh - Phụng Food',
   description: 'Gọi món nhanh các món ăn miền Tây tại Phụng Food. Đặt hàng tiện lợi và nhanh chóng.'
