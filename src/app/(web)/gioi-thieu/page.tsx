@@ -28,15 +28,23 @@ export default async function AboutPage() {
             className='absolute inset-0 z-[-1] object-cover'
           />
           <Box className='relative z-10 mx-auto max-w-4xl px-4 text-center text-white'>
-            <Badge className='mb-4 bg-subColor/90 p-3'>🍔 Câu chuyện của chúng tôi</Badge>
-            <Title className='text mb-6 text-balance font-quicksand text-3xl font-bold md:text-6xl'>
+            <Badge size='xl' className='mb-4 animate-fadeUp bg-subColor/90 p-3' style={{ animationDuration: '0.5s' }}>
+              🍔 Câu chuyện của chúng tôi
+            </Badge>
+            <Title
+              className='text mb-6 animate-fadeUp text-balance font-quicksand text-3xl font-bold md:text-6xl'
+              style={{ animationDuration: '0.75s' }}
+            >
               Hương Vị Truyền Thống,
               <span className='text-subColor'> Phong Cách Hiện Đại</span>
             </Title>
-            <Text className='mx-auto mb-8 max-w-2xl text-pretty text-lg md:text-xl'>
+            <Text
+              className='mx-auto mb-8 max-w-2xl animate-fadeUp text-pretty text-lg md:text-xl'
+              style={{ animationDuration: '1s' }}
+            >
               Từ năm 2010, chúng tôi đã mang đến những món ăn nhanh chất lượng cao với hương vị đậm đà Việt Nam
             </Text>
-            <Link href={'/thuc-don'}>
+            <Link href={'/thuc-don'} className='animate-fadeUp' style={{ animationDuration: '1.25s' }}>
               <BButton size='lg' w={'max-content'} children={'Xem thực đơn'} />
             </Link>
           </Box>

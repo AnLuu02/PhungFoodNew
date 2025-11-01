@@ -37,7 +37,11 @@ const News = async ({
   } = data || {};
   return (
     <Grid>
-      <GridCol span={{ base: 12, sm: 12, md: 8, lg: 9 }} order={{ base: 2, sm: 2, md: 1, lg: 1 }} className='h-fit'>
+      <GridCol
+        span={{ base: 12, sm: 12, md: 8, lg: 9 }}
+        order={{ base: 2, sm: 2, md: 1, lg: 1 }}
+        className='h-fit animate-fadeUp'
+      >
         <Stack gap={'xl'}>
           {news && news?.length > 0 ? (
             news?.map((item: any) => (
@@ -108,7 +112,8 @@ const News = async ({
       <GridCol
         span={{ base: 12, sm: 12, md: 4, lg: 3 }}
         order={{ base: 1, sm: 1, md: 2, lg: 2 }}
-        className='h-fit'
+        className='h-fit animate-fadeUp'
+        style={{ animationDuration: '1s' }}
         pos={{ base: 'static', sm: 'static', md: 'sticky', lg: 'sticky' }}
         top={{ base: 0, sm: TOP_POSITION_STICKY, md: TOP_POSITION_STICKY, lg: TOP_POSITION_STICKY }}
       >

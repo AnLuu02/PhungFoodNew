@@ -53,7 +53,9 @@ export default function Empty({
       <Text size={'lg'} mb={4} fw={700} className='text-center'>
         {title}
       </Text>
-      <Text size={size}>{content}</Text>
+      <Text size={size} className='text-center'>
+        {content}
+      </Text>
       {hasButton && (
         <BButton
           size={size}

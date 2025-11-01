@@ -43,7 +43,7 @@ const FastMenu = async ({
       </GridCol>
       <GridCol
         span={{ base: 12, sm: 5, md: 5, lg: 4 }}
-        className='h-fit'
+        className='h-fit animate-fadeUp'
         pos={'sticky'}
         top={TOP_POSITION_STICKY}
         pt={'xs'}

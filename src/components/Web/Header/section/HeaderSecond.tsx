@@ -31,14 +31,18 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
           <SearchComponentClient subCategories={dataSubCategories} />
         </Box>
         <Group>
-          <Box className='hidden lg:block' pos={'relative'}>
+          <Box className='hidden animate-fadeUp lg:block' pos={'relative'} style={{ animationDuration: '0.5s' }}>
             <PromotionButton />
             <Badge color='red' size='sm' className='absolute right-[-6px] top-[-8px] animate-wiggle'>
               Hot
             </Badge>
           </Box>
-          <LikeButton />
-          <CartButton />
+          <Box className='animate-fadeUp' style={{ animationDuration: '0.75s' }}>
+            <LikeButton />
+          </Box>
+          <Box className='animate-fadeUp' style={{ animationDuration: '1s' }}>
+            <CartButton />
+          </Box>
         </Group>
       </Flex>
     </>

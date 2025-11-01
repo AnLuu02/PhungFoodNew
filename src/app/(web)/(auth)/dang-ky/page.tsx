@@ -119,7 +119,14 @@ export default function Page() {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Center my={'md'}>
-          <Card w={{ base: '100%', sm: '50vw', md: '40vw' }} h={'max-content'} py={'xs'} shadow='xl' radius={'md'}>
+          <Card
+            className='animate-fadeUp'
+            w={{ base: '100%', sm: '50vw', md: '40vw' }}
+            h={'max-content'}
+            py={'xs'}
+            shadow='xl'
+            radius={'md'}
+          >
             <Card.Section p='md'>
               <Grid w={'100%'}>
                 <GridCol span={12} className='flex justify-center'>

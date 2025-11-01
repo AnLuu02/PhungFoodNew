@@ -90,8 +90,13 @@ export default function MegaMenu({ categories }: any) {
               <Tabs.Panel value={item.tag} key={item.id}>
                 <Box p={'lg'}>
                   <Grid mb={'xs'}>
-                    {item?.subCategory?.map((category: any) => (
-                      <GridCol span={4} key={category.id}>
+                    {item?.subCategory?.map((category: any, index: number) => (
+                      <GridCol
+                        span={4}
+                        key={category.id}
+                        className={`animate-fadeUp`}
+                        style={{ animationDuration: `${index * 0.25 + 0.5}s` }}
+                      >
                         <Link
                           key={category.id}
                           href={`/thuc-don?danh-muc=${item.tag}&loai-san-pham=${category.tag}`}
@@ -146,8 +151,13 @@ export default function MegaMenu({ categories }: any) {
 
                     <Grid>
                       {bestSellerProducts?.length > 0 ? (
-                        bestSellerProducts?.map((product: any) => (
-                          <GridCol span={3} key={product.id}>
+                        bestSellerProducts?.map((product: any, index: number) => (
+                          <GridCol
+                            span={3}
+                            key={product.id}
+                            className={`animate-fadeUp`}
+                            style={{ animationDuration: `${index * 0.25 + 0.5}s` }}
+                          >
                             <Link key={product.id} href='#'>
                               <Stack gap={0}>
                                 <Paper
