@@ -237,7 +237,7 @@ export default function Chatbox() {
                 </ActionIcon>
               )}
             </Box>
-            <Menu width={200} shadow='md' zIndex={1000000} position='bottom-end'>
+            <Menu width={200} shadow='md' zIndex={1000000} position='bottom-end' radius={'md'}>
               <Menu.Target>
                 <ActionIcon variant='transparent' size={30} color='white'>
                   <IconDotsVertical color='white' size={20} />

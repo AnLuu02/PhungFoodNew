@@ -143,25 +143,32 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
         <Box className='relative z-10 mx-auto max-w-6xl text-center'>
           <Box className='mb-8'>
             <Badge
-              variant='secondary'
               leftSection={<IconSparkles className='h-5 w-5' />}
               size='xl'
-              className='border-white/30 bg-white/20 text-xs text-white backdrop-blur-sm md:text-lg'
+              className='animate-fadeUp border-white/30 bg-white/20 text-xs text-white backdrop-blur-sm md:text-lg'
+              style={{ animationDuration: '0.5s' }}
             >
               Ưu đãi đặc biệt cho thành viên mới
             </Badge>
           </Box>
-          <Title className='mb-6 text-balance font-quicksand text-4xl font-black text-white md:mb-8 md:text-6xl'>
+          <Title
+            className='mb-6 animate-fadeUp text-balance font-quicksand text-4xl font-black text-white md:mb-8 md:text-6xl'
+            style={{ animationDuration: '1s' }}
+          >
             Thưởng Thức & Nhận Thưởng!
           </Title>
-          <Text className='text-md mx-auto mb-6 max-w-4xl text-pretty leading-relaxed text-white/90 md:mb-10 md:text-2xl'>
+          <Text
+            className='text-md mx-auto mb-6 max-w-4xl animate-fadeUp text-pretty leading-relaxed text-white/90 md:mb-10 md:text-2xl'
+            style={{ animationDuration: '1.5s' }}
+          >
             Tham gia ngay chương trình khách hàng thân thiết của chúng tôi để mở khóa <b>ưu đãi hấp dẫn</b>, tích điểm
             với mỗi món ăn yêu thích và tận hưởng <b>đặc quyền VIP</b> chỉ dành riêng cho bạn.
           </Text>
           <Box className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
             <Button
               size='lg'
-              className='h-auto bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
+              className='h-auto animate-fadeUp bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
+              style={{ animationDuration: '2s' }}
             >
               <Link href={'/thuc-don'}> 🛒 Đặt món ngay</Link>
             </Button>
@@ -169,7 +176,8 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
             <Button
               size='lg'
               variant='outline'
-              className='h-auto border-subColor px-6 py-3 text-lg text-white shadow-xl duration-300 hover:scale-105 hover:border-mainColor hover:text-subColor'
+              style={{ animationDuration: '2.5s' }}
+              className='h-auto animate-fadeUp border-subColor px-6 py-3 text-lg text-white shadow-xl duration-300 hover:scale-105 hover:border-mainColor hover:text-subColor'
             >
               <Link href={'/thuc-don'}> Xem thực đơn</Link>
             </Button>
@@ -365,7 +373,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end lg:hidden'>
-              <Box className='animate-slideRightPulse flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
+              <Box className='flex animate-slideRightPulse items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -724,7 +732,7 @@ export default function FoodPromotionPageClient({ userData, voucherData, product
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='animate-slideRightPulse flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
+              <Box className='flex animate-slideRightPulse items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'

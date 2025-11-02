@@ -25,6 +25,7 @@ function NavigationHeader({ categories }: { categories?: any }) {
       {navigationItem.map((item, index) =>
         item.href === '/thuc-don' ? (
           <Menu
+            radius={'md'}
             key={index}
             trigger={'hover'}
             withOverlay

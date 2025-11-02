@@ -6,11 +6,11 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export default function BannerSection({ banner }: any) {
-  const autoplay = useMemo(() => Autoplay({ delay: 5000 }), []);
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
   const [gallery, banners] = useMemo(() => {
     return banner?.images?.reduce(
       (acc: any, image: any) => {
@@ -28,12 +28,16 @@ export default function BannerSection({ banner }: any) {
   return (
     <Box>
       <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
-        <Box w={{ base: '100%', lg: '66.666667%' }} className='h-fit'>
+        <Box
+          w={{ base: '100%', lg: '66.666667%' }}
+          className='h-fit animate-fadeUp'
+          style={{ animationDuration: '0.5s' }}
+        >
           <Carousel
             withControls
             withIndicators
             loop
-            plugins={[autoplay]}
+            plugins={[autoplay.current]}
             nextControlIcon={<IconChevronRight size={24} />}
             previousControlIcon={<IconChevronLeft size={24} />}
             controlSize={40}
@@ -76,7 +80,14 @@ export default function BannerSection({ banner }: any) {
           ]
             ?.slice(0, 2)
             ?.map((banner: any, index: number) => (
-              <Paper key={index} w={'100%'} h={190} className='relative overflow-hidden' radius={'md'}>
+              <Paper
+                key={index}
+                w={'100%'}
+                h={190}
+                className='relative animate-fadeUp overflow-hidden'
+                radius={'md'}
+                style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+              >
                 <Link href={'/thuc-don'}>
                   <Image
                     style={{ objectFit: 'cover' }}
@@ -100,7 +111,12 @@ export default function BannerSection({ banner }: any) {
             { icon: '📜', title: 'Chính sách', href: '/chinh-sach' },
             { icon: '⭐', title: 'Đánh giá' }
           ].map((service, index) => (
-            <Link href={service.href || ''} key={index}>
+            <Link
+              href={service.href || ''}
+              key={index}
+              className='animate-fadeUp'
+              style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+            >
               <Paper
                 key={index}
                 className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-dark-text'

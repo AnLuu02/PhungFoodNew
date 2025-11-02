@@ -98,9 +98,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
                 className='flex items-center justify-between rounded-md border border-green-200 bg-green-50 p-2'
               >
                 <Box className='flex items-center gap-2'>
-                  <Badge variant='secondary' className='bg-green-100 text-xs text-green-700'>
-                    {voucher.code}
-                  </Badge>
+                  <Badge className='bg-green-100 text-xs text-green-700'>{voucher.code}</Badge>
                   <span className='text-xs text-green-700'>
                     -
                     {voucher.type === LocalVoucherType.FIXED

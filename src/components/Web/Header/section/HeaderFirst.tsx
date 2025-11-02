@@ -36,7 +36,7 @@ export const Header1 = ({ restaurant }: any) => {
         <Text
           size='sm'
           lineClamp={2}
-          className='white-space-nowrap animate-bounceSlow line-clamp-1 overflow-hidden duration-1000'
+          className='white-space-nowrap line-clamp-1 animate-bounceSlow overflow-hidden duration-1000'
         >
           Phụng Food! xin chào quý khách!
         </Text>
@@ -61,7 +61,7 @@ export const Header1 = ({ restaurant }: any) => {
             ''
           )}
 
-          <Menu position='bottom-end' shadow='md'>
+          <Menu radius={'md'} position='bottom-end' shadow='md'>
             <Menu.Target>
               <ActionIcon variant='subtle' color='gray.0' radius='xl' className='hidden md:block'>
                 <IconWorld size={18} />

@@ -81,6 +81,7 @@ export default function Page() {
             py={'lg'}
             shadow='xl'
             radius={'md'}
+            className='animate-fadeUp'
           >
             <Card.Section p={'md'}>
               <Grid>

@@ -12,7 +12,7 @@ export default async function FloatingWidget({ restaurant }: { restaurant: any }
   return (
     <>
       <Box pos={'fixed'} bottom={100} left={20} className='z-[200] flex flex-col space-y-4'>
-        <Menu shadow='md' width={'max-content'} position='top-start' offset={0} zIndex={10000}>
+        <Menu shadow='md' width={'max-content'} position='top-start' offset={0} zIndex={10000} radius={'md'}>
           <MenuTarget>
             <Center
               className='relative hidden h-16 w-16 cursor-pointer items-center justify-center rounded-full bg-mainColor text-white duration-200 ease-in-out hover:opacity-80 sm:flex'

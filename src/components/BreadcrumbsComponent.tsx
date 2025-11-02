@@ -35,17 +35,17 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
           </Box>
 
           <Carousel
-            slideSize={{ base: '33.333333%', sm: '25%', md: '20%', lg: '16.666667%' }}
+            slideSize={{ base: '33.333333%', sm: '25%', md: '20%', lg: '14%' }}
             slideGap={{ base: 8, sm: 16 }}
             align='start'
-            w={{ base: '72%', sm: '60%', md: '100%', lg: '60%' }}
+            w={{ base: '72%', sm: '85%', lg: '70%' }}
             slidesToScroll={1}
-            className='w-full'
             controlsOffset='xs'
             containScroll='trimSnaps'
             withControls
             previousControlIcon={<IconChevronLeft size={30} />}
             nextControlIcon={<IconChevronRight size={30} />}
+            className='w-full'
             classNames={{
               control: 'h-[40px] w-[40px] rounded-full bg-mainColor text-white'
             }}
@@ -61,8 +61,12 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
                     </Card>
                   </Carousel.Slide>
                 ))
-              : subCategoriesData.map((item: any) => (
-                  <Carousel.Slide key={item.id}>
+              : subCategoriesData.map((item: any, index: number) => (
+                  <Carousel.Slide
+                    key={item.id}
+                    className='animate-fadeUp'
+                    style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+                  >
                     <Link href={`/thuc-don?danh-muc=${item.category?.tag}&loai-san-pham=${item.tag}`}>
                       <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>
                         <Card.Section>

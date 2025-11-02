@@ -24,7 +24,7 @@ export default function RecipeCard({ data }: any) {
     >
       <Box className='relative overflow-hidden rounded-t-md'>
         <Image
-          src={data.image || '/placeholder.svg'}
+          src={data.image || '/images/png/403.png'}
           alt={data.title}
           width={320}
           height={200}

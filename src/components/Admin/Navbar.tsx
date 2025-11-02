@@ -83,7 +83,14 @@ export default function Navbar() {
   return (
     <>
       <Group px={'md'} mt={'md'} align='flex-end' className='lg:hidden'>
-        <Menu width={200} position='bottom-end' transitionProps={{ transition: 'fade-down' }} offset={0} withinPortal>
+        <Menu
+          radius={'md'}
+          width={200}
+          position='bottom-end'
+          transitionProps={{ transition: 'fade-down' }}
+          offset={0}
+          withinPortal
+        >
           <Menu.Target>
             <UnstyledButton
               className={`flex items-center rounded-full p-1 transition-colors duration-200 hover:opacity-95`}

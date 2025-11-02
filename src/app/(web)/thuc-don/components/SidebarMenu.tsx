@@ -1,8 +1,9 @@
 'use client';
-import { Button, Drawer, Flex, Title } from '@mantine/core';
+import { Drawer, Flex, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconFilter } from '@tabler/icons-react';
 import { useState } from 'react';
+import BButton from '~/components/Button/Button';
 import { breakpoints } from '~/constants';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';
@@ -15,15 +16,9 @@ export function SidebarMenu({ categories, materials }: any) {
     return (
       <>
         <Flex align='center' justify='space-between' mt={'md'}>
-          <Button
-            leftSection={<IconFilter size={16} />}
-            onClick={() => setDrawerOpened(true)}
-            variant='outline'
-            className='border-mainColor text-mainColor'
-          >
+          <BButton leftSection={<IconFilter size={16} />} onClick={() => setDrawerOpened(true)} variant='outline'>
             Lọc sản phẩm
-          </Button>
-
+          </BButton>
           <PriceRangeFilter />
           <SortFilter />
         </Flex>

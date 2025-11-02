@@ -315,7 +315,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
         >
           <Image
             ref={imageRef}
-            src={currentImage?.src || '/placeholder.svg'}
+            src={currentImage?.src || '/images/png/403.png'}
             alt={currentImage?.alt || 'zoom image'}
             className='max-h-none max-w-none select-none object-contain transition-transform duration-200 ease-out'
             style={{

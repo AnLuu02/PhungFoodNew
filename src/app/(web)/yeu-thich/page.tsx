@@ -33,7 +33,12 @@ export default function FavouritePage() {
   return (
     <Grid w='100%' mt='md' columns={12}>
       {dataRender.map((item, index) => (
-        <GridCol span={{ base: 12, sm: 6, md: 3, lg: 2 }} key={index}>
+        <GridCol
+          span={{ base: 12, sm: 6, md: 3, lg: 2 }}
+          key={index}
+          className={`animate-fadeUp`}
+          style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+        >
           <ProductCardCarouselVertical data={item} />
         </GridCol>
       ))}

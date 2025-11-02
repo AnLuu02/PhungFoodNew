@@ -1,5 +1,5 @@
 'use client';
-import { Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
+import { Box, Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconPercentage30 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
@@ -72,7 +72,9 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
               >
                 <Stack gap={'md'} py={'sm'} px={16}>
                   {cart?.map((item: any, index: number) => (
-                    <CartItemPayment key={index} item={item} />
+                    <Box className={`animate-fadeUp`} style={{ animationDuration: `${index * 0.05 + 0.5}s` }}>
+                      <CartItemPayment key={index} item={item} />
+                    </Box>
                   ))}
                 </Stack>
               </ScrollAreaAutosize>

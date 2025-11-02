@@ -36,8 +36,8 @@ export const CartTable = ({ updateQuantity }: any) => {
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {cart.map((item: any) => (
-          <Table.Tr key={item.id}>
+        {cart.map((item: any, index: number) => (
+          <Table.Tr key={item.id} className={`animate-fadeUp`} style={{ animationDuration: `${index * 0.05 + 0.5}s` }}>
             <Table.Td className='text-sm'>
               <Group wrap='nowrap' align='center'>
                 <Paper

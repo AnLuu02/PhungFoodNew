@@ -23,7 +23,7 @@ const Contact = async () => {
     <Grid w={'100%'}>
       <GridCol className='flex justify-between' span={12}>
         <Grid>
-          <GridCol span={{ base: 12, md: 6 }} className='h-fit'>
+          <GridCol span={{ base: 12, md: 6 }} className='h-fit animate-fadeUp'>
             <Flex direction='column' w={'100%'}>
               <Text size='md' fw={900} mb={10}>
                 NƠI GIẢI ĐÁP TOÀN BỘ MỌI THẮC MẮC CỦA BẠN?
@@ -63,7 +63,7 @@ const Contact = async () => {
               <FormContact user={user} />
             </Flex>
           </GridCol>
-          <GridCol span={{ base: 12, md: 6 }} className='h-fit'>
+          <GridCol span={{ base: 12, md: 6 }} className='h-fit animate-fadeUp' style={{ animationDuration: '1s' }}>
             <Flex
               direction='column'
               w={'100%'}

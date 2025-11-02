@@ -32,6 +32,9 @@ const CartButton = () => {
       shadow='md'
       width={350}
       trigger='hover'
+      offset={16}
+      withArrow
+      radius={'md'}
       disabled={!isDesktop}
       transitionProps={{ transition: 'fade-down', duration: 300, exitDelay: 300, enterDelay: 300 }}
     >

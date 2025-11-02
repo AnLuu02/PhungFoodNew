@@ -64,7 +64,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
       {type === 'recipe' && (
         <Box className='flex h-full flex-col'>
           <Box className='relative h-[70vh] overflow-hidden'>
-            <Image src={data.image || '/placeholder.svg'} alt={data.title} className='h-full w-full object-cover' />
+            <Image src={data.image || '/images/png/403.png'} alt={data.title} className='h-full w-full object-cover' />
             <Box className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20' />
 
             <Button
@@ -310,7 +310,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                                 </Box>
                                 <Box>
                                   <Image
-                                    src={instruction.image || '/placeholder.svg'}
+                                    src={instruction.image || '/images/png/403.png'}
                                     alt={instruction.title}
                                     className='h-40 w-full rounded-lg object-cover'
                                   />

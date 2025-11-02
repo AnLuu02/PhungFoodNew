@@ -10,7 +10,7 @@ export const MenuList = ({ responseData }: { responseData: any }) => {
       <Grid w={'100%'} p={0}>
         {products?.length > 0 ? (
           products.map((item: any) => (
-            <GridCol key={item.id} span={{ base: 12, sm: 4, md: 4, lg: 3 }}>
+            <GridCol key={item.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
               <ProductCardCarouselVertical key={item.id} data={item} />
             </GridCol>
           ))

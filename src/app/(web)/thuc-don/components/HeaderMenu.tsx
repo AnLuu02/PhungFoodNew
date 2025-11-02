@@ -19,7 +19,7 @@ export default function HeaderMenu({ products }: { products: any[] }) {
       <Grid mb={{ base: 20, md: 30 }}>
         <GridCol span={12}>
           <Grid>
-            <GridCol span={{ base: 12, md: 5 }}>
+            <GridCol span={{ base: 12, lg: 5 }}>
               <Flex direction={'column'}>
                 <>
                   <Text c={'dimmed'} size='sm'>
@@ -35,10 +35,10 @@ export default function HeaderMenu({ products }: { products: any[] }) {
               </Flex>
             </GridCol>
             {!isMobile && (
-              <GridCol span={{ base: 12, md: 7 }} className='flex flex-wrap justify-end gap-2'>
+              <GridCol span={{ base: 12, lg: 7 }} className='flex flex-wrap justify-end gap-2'>
                 <PriceRangeFilter />
                 <SortFilter />
-                <Box w={{ base: '100%', md: '40%' }}>
+                <Box flex={1}>
                   <SearchInput />
                 </Box>
               </GridCol>

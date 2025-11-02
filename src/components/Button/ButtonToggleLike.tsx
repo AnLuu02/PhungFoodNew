@@ -63,6 +63,10 @@ export const ButtonToggleLike = ({ data }: any) => {
                 NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
               } else {
                 setLike(false);
+                setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                }, 1000);
                 setLocalFavouriteFood(localFavouriteFood.filter((item: any) => item.id !== data.id));
                 NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
               }
@@ -81,6 +85,10 @@ export const ButtonToggleLike = ({ data }: any) => {
                 NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');
               } else {
                 setLike(true);
+                setLoading(true);
+                setTimeout(() => {
+                  setLoading(false);
+                }, 1000);
                 setLocalFavouriteFood([...localFavouriteFood, data]);
                 NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');
               }

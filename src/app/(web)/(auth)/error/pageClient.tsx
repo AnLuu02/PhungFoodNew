@@ -40,7 +40,7 @@ export default function AuthErrorPageClient() {
 
   return (
     <Center>
-      <div className='animate-fadeIn'>
+      <div className='animate-fadeUp'>
         <Paper shadow='xl' radius='lg' p='xl' withBorder className='animate-scaleIn'>
           <Stack align='center' gap='md' maw={400}>
             <div className='animate-bounceSlow'>{icon}</div>

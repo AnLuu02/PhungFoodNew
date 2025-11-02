@@ -45,7 +45,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
     <Modal
       opened={opened && type === 'success'}
       onClose={() => {
-        if (noteDebounced) {
+        if ((note && noteDebounced) || (!note && !noteDebounced)) {
           onClose();
           setNote('');
         }

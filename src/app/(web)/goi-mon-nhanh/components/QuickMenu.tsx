@@ -57,7 +57,12 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
         <Grid>
           {dataMemorize?.length > 0 ? (
             dataMemorize.map((item: any, index: number) => (
-              <GridCol span={{ base: 12, sm: 6, md: 6, lg: 3 }} key={`${item.id}+${index}`}>
+              <GridCol
+                span={{ base: 12, sm: 6, md: 6, lg: 3 }}
+                key={`${item.id}+${index}`}
+                className='animate-fadeUp'
+                style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+              >
                 <ProductCardCarouselVertical data={item} key={index} />
               </GridCol>
             ))

@@ -157,6 +157,7 @@ export default function NotificationDialog({ data, userId }: any) {
     <Box pos={'fixed'} top={6} right={12} className='z-[200] rounded-full' w={30} h={30} bg={'white'}>
       <Box style={{ position: 'relative' }}>
         <Menu
+          radius={'md'}
           opened={isOpen}
           offset={-6}
           withArrow

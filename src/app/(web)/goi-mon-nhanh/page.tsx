@@ -6,7 +6,7 @@ import { RecapCart } from '../thanh-toan/components/RecapCart';
 import { QuickMenu } from './components/QuickMenu';
 
 export const dynamic = 'force-static';
-export const revalidate = 60;
+export const revalidate = 60 * 60;
 
 export const metadata: Metadata = {
   title: 'Gọi món nhanh - Phụng Food',
@@ -43,7 +43,7 @@ const FastMenu = async ({
       </GridCol>
       <GridCol
         span={{ base: 12, sm: 5, md: 5, lg: 4 }}
-        className='h-fit'
+        className='h-fit animate-fadeUp'
         pos={'sticky'}
         top={TOP_POSITION_STICKY}
         pt={'xs'}

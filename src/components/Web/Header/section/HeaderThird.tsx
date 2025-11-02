@@ -43,6 +43,7 @@ const Header3 = ({ categories, subCategories }: any) => {
         </Box>
         <Box className='sm:order-1' p={0} m={0}>
           <Menu
+            radius={'md'}
             shadow='md'
             classNames={{
               dropdown: 'border-mainColor bg-white',

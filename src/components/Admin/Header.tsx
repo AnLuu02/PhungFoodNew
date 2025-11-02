@@ -45,6 +45,7 @@ export default function Header() {
         <GlobalSearch width={{ base: '100%', sm: 350, md: 300, lg: 400 }} />
         <ButtonControlModeTheme />
         <Menu
+          radius={'md'}
           width={260}
           position='bottom-end'
           transitionProps={{ transition: 'pop-top-right' }}
