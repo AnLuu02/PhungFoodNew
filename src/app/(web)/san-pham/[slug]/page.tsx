@@ -1,7 +1,5 @@
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
 import { notFound } from 'next/navigation';
-import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
 import ProductDetailClient from './pageClient';
@@ -9,20 +7,19 @@ import ProductDetailClient from './pageClient';
 export const dynamic = 'force-static';
 export const revalidate = 60 * 60;
 
-const getProduct = async (slug: string, userId: string) => {
+const getProduct = async (slug: string) => {
   const redisKey = `product-detail:${slug}`;
   return withRedisCache(
     redisKey,
     async () => {
-      return await api.Page.getInitProductDetail({ slug, userId });
+      return await api.Page.getInitProductDetail({ slug });
     },
     60 * 60 * 24
   );
 };
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const session = await getServerSession(authOptions);
-  const productData = await getProduct(params.slug, session?.user?.id || '');
+  const productData = await getProduct(params.slug);
 
   if (!productData?.product) {
     return {
@@ -47,8 +44,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 async function ProductDetail({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const user = await getServerSession(authOptions);
-  const data = await api.Page.getInitProductDetail({ slug, userId: user?.user?.id || '' });
+  const data = await api.Page.getInitProductDetail({ slug });
 
   if (!data?.product) {
     return notFound();

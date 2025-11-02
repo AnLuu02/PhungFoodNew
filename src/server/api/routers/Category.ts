@@ -1,7 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
-import { seedCategory } from '~/lib/HardData/seed';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingCategory = async (ctx: any, tag: string) => {
@@ -157,28 +156,28 @@ export const categoryRouter = createTRPCRouter({
       }
     });
 
-    if (!category?.length) {
-      await ctx.db.category.createMany({
-        data: seedCategory
-      });
-      category = await ctx.db.category.findMany({
-        include: {
-          subCategory: {
-            include: {
-              image: true,
-              product: {
-                where: {
-                  isActive: true
-                },
-                include: {
-                  images: true
-                }
-              }
-            }
-          }
-        }
-      });
-    }
+    // if (!category?.length) {
+    //   await ctx.db.category.createMany({
+    //     data: seedCategory
+    //   });
+    //   category = await ctx.db.category.findMany({
+    //     include: {
+    //       subCategory: {
+    //         include: {
+    //           image: true,
+    //           product: {
+    //             where: {
+    //               isActive: true
+    //             },
+    //             include: {
+    //               images: true
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   });
+    // }
 
     return category;
   }),

@@ -7,17 +7,12 @@ import { api } from '~/trpc/server';
 import { Header1 } from './section/HeaderFirst';
 import Header2 from './section/HeaderSecond';
 import Header3 from './section/HeaderThird';
-
-const getInit = async (user: any) => {
+const getStaticData = async () => {
   return await withRedisCache(
-    'header-web',
+    'header-web-static',
     async () => {
-      const [categories, subCategories, notifications] = await Promise.all([
-        api.Category.getAll(),
-        api.SubCategory.getAll(),
-        user?.id ? api.Notification.getFilter({ s: user?.id || '' }) : undefined
-      ]);
-      return [categories, subCategories, notifications];
+      const [categories, subCategories] = await Promise.all([api.Category.getAll(), api.SubCategory.getAll()]);
+      return [categories, subCategories];
     },
     60 * 60 * 24
   );
@@ -25,8 +20,10 @@ const getInit = async (user: any) => {
 const HeaderWeb = async ({ restaurant }: { restaurant: any }) => {
   const session = await getServerSession(authOptions);
   const user = session?.user;
-  const [categories, subCategories, notifications] = await getInit(user);
-
+  const [[categories, subCategories], notifications] = await Promise.all([
+    getStaticData(),
+    user?.id ? await api.Notification.getFilter({ s: user.id }) : undefined
+  ]);
   return (
     <>
       {user?.id && <NotificationDialog data={notifications} userId={user?.id} />}

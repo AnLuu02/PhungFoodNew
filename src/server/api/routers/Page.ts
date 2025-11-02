@@ -63,32 +63,30 @@ export const pageRouter = createTRPCRouter({
       news
     };
   }),
-  getInitProductDetail: publicProcedure
-    .input(z.object({ slug: z.string(), userId: z.string().optional() }))
-    .query(async ({ ctx, input }) => {
-      const caller = createCaller(ctx);
-      const product = await caller.Product.getOne({
-        s: input?.slug || '',
-        hasCategory: true,
-        hasCategoryChild: true
-      });
+  getInitProductDetail: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
+    const caller = createCaller(ctx);
+    const product = await caller.Product.getOne({
+      s: input?.slug || '',
+      hasCategory: true,
+      hasCategoryChild: true
+    });
 
-      if (!product) return null;
+    if (!product) return null;
 
-      const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
-        caller.Product.getFilter({ s: product?.subCategory?.tag || '' }),
-        caller.Product.getFilter({ s: product?.subCategory?.category?.tag || '' }),
-        caller.Voucher.getVoucherForUser({ userId: input.userId || '' })
-      ]);
+    const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
+      caller.Product.getFilter({ s: product?.subCategory?.tag || '' }),
+      caller.Product.getFilter({ s: product?.subCategory?.category?.tag || '' }),
+      caller.Voucher.getVoucherAppliedAll()
+    ]);
 
-      const results: any = {
-        product,
-        dataRelatedProducts: dataRelatedProducts?.status === 'fulfilled' ? dataRelatedProducts.value : [],
-        dataHintProducts: dataHintProducts?.status === 'fulfilled' ? dataHintProducts.value : [],
-        dataVouchers: dataVouchers?.status === 'fulfilled' ? dataVouchers.value : []
-      };
-      return results;
-    }),
+    const results: any = {
+      product,
+      dataRelatedProducts: dataRelatedProducts?.status === 'fulfilled' ? dataRelatedProducts.value : [],
+      dataHintProducts: dataHintProducts?.status === 'fulfilled' ? dataHintProducts.value : [],
+      dataVouchers: dataVouchers?.status === 'fulfilled' ? dataVouchers.value : []
+    };
+    return results;
+  }),
   getInitAdmin: publicProcedure.query(async ({ ctx }) => {
     const caller = createCaller(ctx);
     const results: any = await Promise.allSettled([

@@ -66,7 +66,7 @@ export const ButtonToggleLike = ({ data }: any) => {
                 setLoading(true);
                 setTimeout(() => {
                   setLoading(false);
-                }, 1000);
+                }, 500);
                 setLocalFavouriteFood(localFavouriteFood.filter((item: any) => item.id !== data.id));
                 NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
               }
@@ -88,7 +88,7 @@ export const ButtonToggleLike = ({ data }: any) => {
                 setLoading(true);
                 setTimeout(() => {
                   setLoading(false);
-                }, 1000);
+                }, 500);
                 setLocalFavouriteFood([...localFavouriteFood, data]);
                 NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');
               }

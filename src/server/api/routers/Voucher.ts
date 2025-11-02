@@ -128,6 +128,9 @@ export const voucherRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.voucher.findMany({});
   }),
+  getVoucherAppliedAll: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.voucher.findMany({ where: { applyAll: true } });
+  }),
   getOne: publicProcedure
     .input(
       z.object({
