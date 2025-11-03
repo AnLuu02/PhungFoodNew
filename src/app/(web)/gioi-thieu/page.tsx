@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import BButton from '~/components/Button/Button';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
 
 export const dynamic = 'force-static';
@@ -14,8 +15,12 @@ export const metadata: Metadata = {
     'Phụng Food ra đời nhằm mang đặc sản miền Tây đến với mọi người. Cùng tìm hiểu hành trình và giá trị của chúng tôi.'
 };
 
+const getInitRestaurant = async () => {
+  return await withRedisCache('get-one-active-client', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+};
+
 export default async function AboutPage() {
-  const restaurant = await api.Restaurant.getOneActiveClient();
+  const restaurant = await getInitRestaurant();
   return (
     <>
       <Box pos={'relative'} mx={{ base: -10, sm: -30, md: -30, lg: -130 }} mt={-16}>

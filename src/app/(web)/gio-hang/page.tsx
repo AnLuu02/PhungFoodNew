@@ -2,15 +2,11 @@
 
 import { Divider, Grid, GridCol, Paper } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
-import dynamic from 'next/dynamic';
 import Empty from '~/components/Empty';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { RecapCart } from '../thanh-toan/components/RecapCart';
+import { ShoppingCartMobile } from './components/CartMobile';
 import { CartTable } from './components/CartTable';
-
-const ShoppingCartMobile = dynamic(() => import('./components/CartMobile').then(mod => mod.ShoppingCartMobile), {
-  ssr: false
-});
 
 export default function ShoppingCart() {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });

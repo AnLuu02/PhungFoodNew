@@ -109,28 +109,22 @@ export const restaurantRouter = createTRPCRouter({
     );
   }),
   getOneActiveClient: publicProcedure.query(async ({ ctx }) => {
-    return await withRedisCache(
-      'getOneActiveClient',
-      async () => {
-        const result = await ctx.db.restaurant.findFirst({
+    const result = await ctx.db.restaurant.findFirst({
+      where: { isActive: true },
+      include: {
+        logo: { select: { url: true } },
+        socials: { where: { isActive: true } },
+        theme: true,
+        openingHours: true,
+        banners: {
           where: { isActive: true },
           include: {
-            logo: { select: { url: true } },
-            socials: { where: { isActive: true } },
-            theme: true,
-            openingHours: true,
-            banners: {
-              where: { isActive: true },
-              include: {
-                images: true
-              }
-            }
+            images: true
           }
-        });
-        return result;
-      },
-      60 * 60 * 24
-    );
+        }
+      }
+    });
+    return result;
   }),
   create: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
@@ -314,7 +308,7 @@ export const restaurantRouter = createTRPCRouter({
             }
           }
         });
-        await Promise.all([redis.del('theme-default'), redis.del('getOneActive'), redis.del('getOneActiveClient')]);
+        await Promise.all([redis.del('theme-default'), redis.del('getOneActive'), redis.del('get-one-active-client')]);
         return { code: 'OK', message: 'Cập nhật nhà hàng thành công.', data: updatedRestaurant };
       } else {
         return {
@@ -342,7 +336,7 @@ export const restaurantRouter = createTRPCRouter({
         const [, theme] = await Promise.all([
           redis.del('theme-default'),
           redis.del('getOneActive'),
-          redis.del('getOneActiveClient'),
+          redis.del('get-one-active-client'),
           ctx.db.theme.upsert({
             where: { restaurantId: input.restaurantId },
             update: {
@@ -367,13 +361,7 @@ export const restaurantRouter = createTRPCRouter({
       }
     }),
   getTheme: publicProcedure.query(async ({ ctx }) => {
-    return withRedisCache(
-      'theme-default',
-      async () => {
-        return await ctx.db.theme.findFirst({});
-      },
-      60 * 60 * 24
-    );
+    return await ctx.db.theme.findFirst({});
   }),
 
   getAllBanner: publicProcedure.query(async ({ ctx }) => {
@@ -636,7 +624,7 @@ export const restaurantRouter = createTRPCRouter({
       try {
         const [, , notification] = await Promise.all([
           redis.del('getOneActive'),
-          redis.del('getOneActiveClient'),
+          redis.del('get-one-active-client'),
           ctx.db.social.create({
             data: input
           })
@@ -685,7 +673,7 @@ export const restaurantRouter = createTRPCRouter({
 
         const [, , updated] = await Promise.all([
           redis.del('getOneActive'),
-          redis.del('getOneActiveClient'),
+          redis.del('get-one-active-client'),
           ctx.db.social.update({
             where: { id },
             data
@@ -730,7 +718,7 @@ export const restaurantRouter = createTRPCRouter({
             where: { id: input.id }
           }),
           redis.del('getOneActive'),
-          redis.del('getOneActiveClient')
+          redis.del('get-one-active-client')
         ]);
 
         return {
@@ -765,7 +753,7 @@ export const restaurantRouter = createTRPCRouter({
           })
         )
       );
-      await Promise.all([redis.del('getOneActive'), redis.del('getOneActiveClient')]);
+      await Promise.all([redis.del('getOneActive'), redis.del('get-one-active-client')]);
       return { code: 'OK', message: 'Cập nhật thành công.', data: updated };
     })
 });

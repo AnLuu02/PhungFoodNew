@@ -3,6 +3,7 @@ import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
 import { FormContact } from './components/FormContact';
 
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
   title: 'Liên hệ - Phụng Food',
   description: 'Liên hệ chúng tôi để đặt món, tư vấn thực đơn, hợp tác hoặc phản hồi dịch vụ.'
 };
+
+const getInitRestaurant = async () => {
+  return await withRedisCache('get-one-active-client', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+};
+
 const Contact = async () => {
-  const [restaurantRes, session] = await Promise.allSettled([
-    api.Restaurant.getOneActiveClient(),
-    getServerSession(authOptions)
-  ]);
+  const [restaurantRes, session] = await Promise.allSettled([getInitRestaurant(), getServerSession(authOptions)]);
   const restaurant = restaurantRes.status === 'fulfilled' ? restaurantRes.value : null;
   const user = session.status === 'fulfilled' ? session.value?.user : null;
   return (

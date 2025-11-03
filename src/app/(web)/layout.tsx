@@ -4,9 +4,15 @@ import FooterWeb from '~/components/Web/Footer/FooterWeb';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import ServiceComponent from '~/components/Web/Home/components/ServiceComponent';
 import { GlobalModal } from '~/contexts/GlobalModal';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
+
+const getInitRestaurant = async () => {
+  return await withRedisCache('get-one-active-client', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+};
+
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const restaurant = await api.Restaurant.getOneActiveClient();
+  const restaurant = await getInitRestaurant();
   return (
     <>
       <Box p={0} m={0}>
