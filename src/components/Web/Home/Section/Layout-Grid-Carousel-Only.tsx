@@ -29,7 +29,7 @@ const LayoutGridCarouselOnly = ({
     label: string;
   };
   minHeight?: string | number;
-  CardElement: JSX.Element;
+  CardElement: React.ComponentType<{ data: any }>;
 }) => {
   const dataRender = data || [];
   const [embla, setEmbla] = useState<Embla | null>(null);
@@ -122,10 +122,7 @@ const LayoutGridCarouselOnly = ({
             >
               {dataRender?.map((item: any, index: number) => (
                 <Carousel.Slide key={index} className={`overflow-hidden`}>
-                  {React.cloneElement(CardElement, {
-                    data: item,
-                    key: index
-                  })}
+                  <CardElement data={item} />
                 </Carousel.Slide>
               ))}
             </Carousel>

@@ -362,7 +362,7 @@ export default function ProductDetailClient(data: any) {
                 href: '/thuc-don?loai=san-pham-hot',
                 label: 'Xem tất cả'
               }}
-              CardElement={<ProductCardCarouselVertical />}
+              CardElement={ProductCardCarouselVertical}
             />
           </Grid.Col>
         )}

@@ -1,7 +1,6 @@
 import { Container, Space } from '@mantine/core';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { recipes } from '~/lib/HardData/recipe';
-import { ConsumerCard } from '../Card/CardConsumer';
 import { PartnerCard } from '../Card/CardPartner';
 import ProductCardCarouselVertical from '../Card/CardProductCarouselVertical';
 import RecipeCard from './components/RecipeCard';
@@ -26,7 +25,6 @@ const HomeWeb = ({
     productBestSaler: any;
     productNew: any;
     productHot: any;
-    news: any;
   };
 }) => {
   return (
@@ -106,7 +104,7 @@ const HomeWeb = ({
                 href: '/thuc-don?loai=san-pham-hot',
                 label: 'Xem tất cả'
               }}
-              CardElement={<ProductCardCarouselVertical />}
+              CardElement={ProductCardCarouselVertical}
             />
             <Space h='xl' />
           </>
@@ -121,7 +119,7 @@ const HomeWeb = ({
                 href: '/thuc-don?loai=san-pham-moi',
                 label: 'Xem tất cả'
               }}
-              CardElement={<ProductCardCarouselVertical />}
+              CardElement={ProductCardCarouselVertical}
             />
             <Space h='xl' />
           </>
@@ -168,12 +166,11 @@ const HomeWeb = ({
               href: '/huong-dan',
               label: 'Xem tất cả'
             }}
-            CardElement={<RecipeCard />}
+            CardElement={RecipeCard}
           />
           <Space h='xl' />
         </>
-
-        <>
+        {/* <>
           <LayoutGridCarouselOnly
             title='Tin tức tiêu dùng'
             data={data.news?.news}
@@ -185,10 +182,10 @@ const HomeWeb = ({
               href: '/tin-tuc',
               label: 'Xem tất cả'
             }}
-            CardElement={<ConsumerCard />}
+            CardElement={ConsumerCard}
           />
           <Space h='xl' />
-        </>
+        </> */}
 
         {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (
           <>
@@ -211,7 +208,7 @@ const HomeWeb = ({
               h: 'max-content'
             }}
             minHeight={180}
-            CardElement={<PartnerCard />}
+            CardElement={PartnerCard}
           />
         </>
       </Container>

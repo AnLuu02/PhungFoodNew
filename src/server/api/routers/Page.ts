@@ -19,8 +19,8 @@ export const pageRouter = createTRPCRouter({
       caller.Restaurant.getOneBanner({ isActive: true }),
       ...categories.map(category => caller.SubCategory.find({ skip: 0, take: 10, s: category })),
       ...productFilters.map(filter => caller.Product.find({ skip: 0, take: 10, [filter.key]: filter.value })),
-      ...materials.map(material => caller.Product.find({ skip: 0, take: 10, s: material })),
-      caller.News.fetchNews({ skip: 0, take: 10 })
+      ...materials.map(material => caller.Product.find({ skip: 0, take: 10, s: material }))
+      // caller.News.fetchNews({ skip: 0, take: 10 })
     ];
 
     const results: any = await Promise.allSettled(promises);
@@ -40,7 +40,7 @@ export const pageRouter = createTRPCRouter({
     const haiSan = getValue(10);
     const rauCu = getValue(11);
     const cacLoaiNam = getValue(12);
-    const news = getValue(13);
+    // const news = getValue(13);
 
     return {
       banner: banner || {},
@@ -59,8 +59,8 @@ export const pageRouter = createTRPCRouter({
       productDiscount: productDiscount || [],
       productBestSaler: productBestSaler || [],
       productNew: productNew || [],
-      productHot: productHot || [],
-      news
+      productHot: productHot || []
+      // news
     };
   }),
   getInitProductDetail: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {

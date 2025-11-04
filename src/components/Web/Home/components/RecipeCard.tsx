@@ -9,7 +9,7 @@ const difficultyColors = {
   'Trung bình': 'bg-yellow-100 text-yellow-800',
   Khó: 'bg-red-100 text-red-800'
 };
-export default function RecipeCard({ data }: any) {
+export default function RecipeCard({ data }: { data: any }) {
   const { openModal } = useModalActions();
   return (
     <Card

@@ -4,9 +4,6 @@ import { CartFloating } from './components/CartFloating';
 import HeaderMenu from './components/HeaderMenu';
 import { MenuList } from './components/MenuList';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export default async function MenuSection({
   searchParams
 }: {

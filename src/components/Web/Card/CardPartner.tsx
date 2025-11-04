@@ -1,9 +1,8 @@
 'use client';
-
 import { Card } from '@mantine/core';
 import Image from 'next/image';
 
-export function PartnerCard({ data }: any) {
+export function PartnerCard({ data }: { data: string }) {
   return (
     <Card
       padding={0}

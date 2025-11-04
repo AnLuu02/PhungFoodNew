@@ -1,5 +1,4 @@
 'use client';
-
 import { Badge, Box, Card, Text, Title, Tooltip } from '@mantine/core';
 import { IconClock } from '@tabler/icons-react';
 import Image from 'next/image';
@@ -7,7 +6,7 @@ import Link from 'next/link';
 import BButton from '~/components/Button/Button';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 
-export function ConsumerCard({ data }: any) {
+export function ConsumerCard({ data }: { data: any }) {
   return (
     <Link href={data?.link} target='_blank'>
       <Card

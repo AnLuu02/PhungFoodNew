@@ -4,7 +4,7 @@ import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
 import FoodPromotionPageClient from './pageClient';
 
-export const dynamic = 'force-static';
+export const revalidate = 60 * 60;
 
 export const metadata: Metadata = {
   title: 'Khuyến mãi hấp dẫn - Phụng Food',
