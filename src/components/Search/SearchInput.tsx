@@ -3,7 +3,7 @@ import { Box, TextInput } from '@mantine/core';
 import { useDebouncedCallback, useWindowEvent } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export function SearchInput({ width }: { width?: string | number | undefined }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -17,6 +17,12 @@ export function SearchInput({ width }: { width?: string | number | undefined }) 
       searchInputRef.current?.focus();
     }
   });
+
+  useEffect(() => {
+    if (!searchParams.get('s') && searchInputRef.current) {
+      searchInputRef.current.value = '';
+    }
+  }, [searchParams.get('s')]);
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);

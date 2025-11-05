@@ -11,7 +11,6 @@ import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { type Metadata } from 'next';
-import { getServerSession, Session } from 'next-auth';
 import { Quicksand } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import { TRPCReactProvider } from '~/trpc/react';
@@ -21,7 +20,6 @@ import { ModalProvider } from '~/contexts/ModalContext';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 import { api } from '~/trpc/server';
-import { authOptions } from './api/auth/[...nextauth]/options';
 
 const quickSandFont = Quicksand({
   subsets: ['latin'],
@@ -68,7 +66,7 @@ const getInitTheme = async () => {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [session, theme] = await Promise.all([getServerSession(authOptions), getInitTheme()]);
+  const theme = await getInitTheme();
   const defaultScheme =
     theme?.themeMode === 'dark' || theme?.themeMode === 'light' || theme?.themeMode === 'auto'
       ? theme.themeMode
@@ -105,7 +103,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <meta name='theme-color' content='#ffffff' />
       </head>
       <body className={`${quickSandFont.className}`}>
-        <TRPCReactProvider session={session as Session}>
+        <TRPCReactProvider>
           <MantineProvider defaultColorScheme={defaultScheme}>
             <Notifications />
             <NextTopLoader />

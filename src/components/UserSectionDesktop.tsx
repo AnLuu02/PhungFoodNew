@@ -9,6 +9,7 @@ import {
   Group,
   Menu,
   Paper,
+  Skeleton,
   Stack,
   Text,
   Title,
@@ -37,17 +38,32 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
     key: 'applied-vouchers',
     defaultValue: []
   });
-  const { data: user } = useSession();
-  if (!user)
+  const { data: user, status } = useSession();
+  if (status === 'loading') {
     return (
-      <Group gap={'xs'} align={'center'} justify='center'>
+      <>
+        <Group gap={'xs'} align={'center'} justify='flex-end' className='sm:min-w-[222px]'>
+          <Skeleton circle w={20} h={20} />
+          <Skeleton width={52} height={20} radius={'xl'} className='hidden sm:block' />
+          <Text className='hidden sm:block'>/</Text>
+          <Skeleton width={74} height={20} radius={'xl'} />
+        </Group>
+      </>
+    );
+  }
+  if (status === 'unauthenticated' || !user)
+    return (
+      <Group gap={'xs'} align={'center'} justify='flex-end' className='sm:min-w-[222px]'>
         <IconUserCircle size={20} fontWeight={'bold'} />
-        <Link href='/dang-ky' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
+        <Link
+          href='/dang-ky'
+          className={`hidden sm:block ${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}
+        >
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng kí
           </Text>
         </Link>
-        <Text>/</Text>
+        <Text className='hidden sm:block'>/</Text>
         <Link href='/dang-nhap' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng nhập
@@ -67,10 +83,11 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
       <Menu.Target>
         <UnstyledButton
           className={`flex items-center rounded-full bg-subColor p-1 transition-colors duration-200 hover:opacity-95`}
-          w={width}
+          w={{ base: 105, sm: width || 222 }}
+          pr={{ sm: 40, md: 0 }}
         >
           <Flex justify={'space-between'} align={'center'} gap={7} w={'100%'}>
-            <Group gap={7}>
+            <Flex align={'center'} wrap={'nowrap'} gap={7} flex={1}>
               <Box pos={'relative'} w={30} h={30} className='overflow-hidden rounded-full'>
                 <Avatar
                   radius={'xl'}
@@ -80,15 +97,20 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
                   style={{ objectFit: 'cover' }}
                 />
               </Box>
-              <Box className={`text-left ${responsive && 'hidden sm:block'}`}>
-                <Text fw={700} size='sm' lh={1} className='text-black'>
+              <Box className={`text-left ${responsive && 'hidden sm:block'}`} flex={1} pos={'relative'}>
+                <Text fw={700} size='sm' lh={1} className='text-black' lineClamp={1}>
                   {user?.user?.name}
                 </Text>
-                <Text size='xs' fw={700} c={'dimmed'}>
+                <Text size='xs' fw={700} c={'dimmed'} lineClamp={1}>
                   {user?.user?.email}
                 </Text>
               </Box>
-            </Group>
+              <Box flex={1} pos={'relative'} className='sm:hidden'>
+                <Text size='xs' fw={700} c={'dimmed'} lineClamp={1} w={'100%'}>
+                  {user?.user?.name}
+                </Text>
+              </Box>
+            </Flex>
             <IconChevronDown
               style={{ width: 12, height: 12 }}
               stroke={1.5}

@@ -7,7 +7,6 @@ import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server';
 import { useState } from 'react';
 import SuperJSON from 'superjson';
 
-import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { type AppRouter } from '~/server/api/root';
 import { createQueryClient } from './query-client';
@@ -26,7 +25,7 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
 
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
 
-export function TRPCReactProvider(props: { session: Session; children: React.ReactNode }) {
+export function TRPCReactProvider(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
   const [trpcClient] = useState(() =>
@@ -50,7 +49,7 @@ export function TRPCReactProvider(props: { session: Session; children: React.Rea
   );
 
   return (
-    <SessionProvider session={props.session}>
+    <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <api.Provider client={trpcClient} queryClient={queryClient}>
           {props.children}

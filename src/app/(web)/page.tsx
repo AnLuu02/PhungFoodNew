@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import HomeWeb from '~/components/Web/Home/HomeWeb';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
-import { api, HydrateClient } from '~/trpc/server';
+import { api } from '~/trpc/server';
 
 export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title: 'Trang chủ - Phụng Food',
@@ -16,11 +17,7 @@ const getInit = async () => {
 
 const HomePage = async () => {
   const data = await getInit();
-  return (
-    <HydrateClient>
-      <HomeWeb data={data} />
-    </HydrateClient>
-  );
+  return <HomeWeb data={data} />;
 };
 
 export default HomePage;
