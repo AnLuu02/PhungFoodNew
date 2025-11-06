@@ -83,7 +83,7 @@ export default function UserSectionDesktop({ responsive, width }: { responsive?:
       <Menu.Target>
         <UnstyledButton
           className={`flex items-center rounded-full bg-subColor p-1 transition-colors duration-200 hover:opacity-95`}
-          w={{ base: 105, sm: width || 222 }}
+          w={{ base: 110, sm: width || 222 }}
           pr={{ sm: 40, md: 0 }}
         >
           <Flex justify={'space-between'} align={'center'} gap={7} w={'100%'}>

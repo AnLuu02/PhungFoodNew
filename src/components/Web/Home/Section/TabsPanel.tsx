@@ -42,7 +42,7 @@ const TabsPanelCarousel = ({ data }: any) => {
             className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
             disabled={!prevBtnEnabled}
           >
-            <IconChevronLeft size={'xs'} />
+            <IconChevronLeft size={30} />
           </ActionIcon>
           <ActionIcon
             radius={'50%'}
@@ -51,7 +51,7 @@ const TabsPanelCarousel = ({ data }: any) => {
             className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
             disabled={!nextBtnEnabled}
           >
-            <IconChevronRight size={'xs'} />
+            <IconChevronRight size={30} />
           </ActionIcon>
         </Group>
       </Center>

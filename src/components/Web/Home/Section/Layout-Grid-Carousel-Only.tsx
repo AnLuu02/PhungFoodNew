@@ -77,7 +77,7 @@ const LayoutGridCarouselOnly = ({
               className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
               disabled={!prevBtnEnabled}
             >
-              <IconChevronLeft size={'xs'} />
+              <IconChevronLeft size={30} />
             </ActionIcon>
             <Space w={'xs'} />
             <ActionIcon
@@ -87,7 +87,7 @@ const LayoutGridCarouselOnly = ({
               onClick={scrollNext}
               disabled={!nextBtnEnabled}
             >
-              <IconChevronRight size={'xs'} />
+              <IconChevronRight size={30} />
             </ActionIcon>
           </Flex>
         </Flex>

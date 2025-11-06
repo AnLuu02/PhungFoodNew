@@ -21,7 +21,7 @@ export const MenuList = ({ responseData }: { responseData: any }) => {
         )}
       </Grid>
 
-      <Flex w={'100%'} align={'center'} justify={'center'}>
+      <Flex w={'100%'} align={'center'} justify={'center'} mt={'md'}>
         <CustomPagination totalPages={responseData?.pagination?.totalPages || 1} />
       </Flex>
     </Flex>

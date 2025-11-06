@@ -1,6 +1,5 @@
 import { Box } from '@mantine/core';
 import { api } from '~/trpc/server';
-import { CartFloating } from './components/CartFloating';
 import HeaderMenu from './components/HeaderMenu';
 import { MenuList } from './components/MenuList';
 
@@ -51,7 +50,6 @@ export default async function MenuSection({
     <Box pos={'relative'}>
       <HeaderMenu products={data} />
       <MenuList responseData={responseData} />
-      <CartFloating />
     </Box>
   );
 }

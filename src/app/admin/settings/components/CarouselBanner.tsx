@@ -15,8 +15,8 @@ export const CarouselBanner = ({ previewUrls, setValue, galleries, banner1, bann
                 withControls
                 withIndicators
                 loop
-                nextControlIcon={<IconChevronRight size={24} />}
-                previousControlIcon={<IconChevronLeft size={24} />}
+                nextControlIcon={<IconChevronRight size={30} />}
+                previousControlIcon={<IconChevronLeft size={30} />}
                 controlSize={40}
                 color='black'
                 classNames={{

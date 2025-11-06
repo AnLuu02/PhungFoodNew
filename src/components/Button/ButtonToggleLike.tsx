@@ -1,9 +1,10 @@
 'use client';
 import { Button, Tooltip } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { breakpoints } from '~/constants';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 export const ButtonToggleLike = ({ data }: any) => {
@@ -15,6 +16,8 @@ export const ButtonToggleLike = ({ data }: any) => {
   const [like, setLike] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const utils = api.useUtils();
+
+  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
 
   useEffect(() => {
     if (session) {
@@ -52,7 +55,7 @@ export const ButtonToggleLike = ({ data }: any) => {
       disabled={loading}
     >
       {like ? (
-        <Tooltip label='Xóa khỏi yêu thích'>
+        <Tooltip label='Xóa khỏi yêu thích' disabled={isMobile}>
           <IconHeartFilled
             onClick={async () => {
               if (session) {
@@ -74,7 +77,7 @@ export const ButtonToggleLike = ({ data }: any) => {
           />
         </Tooltip>
       ) : (
-        <Tooltip label='Thêm vào yêu thích'>
+        <Tooltip label='Thêm vào yêu thích' disabled={isMobile}>
           <IconHeart
             onClick={async () => {
               if (session) {

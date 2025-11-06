@@ -18,7 +18,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
     <>
       <Box p={0} m={0}>
         <>
-          <HeaderClient restaurant={restaurant} />
+          <HeaderClient />
           <HeaderWeb />
         </>
         <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>

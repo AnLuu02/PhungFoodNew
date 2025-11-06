@@ -1,8 +1,6 @@
 import { Flex, Grid, GridCol, Text, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
 import { FormContact } from './components/FormContact';
@@ -19,9 +17,7 @@ const getInitRestaurant = async () => {
 };
 
 const Contact = async () => {
-  const [restaurantRes, session] = await Promise.allSettled([getInitRestaurant(), getServerSession(authOptions)]);
-  const restaurant = restaurantRes.status === 'fulfilled' ? restaurantRes.value : null;
-  const user = session.status === 'fulfilled' ? session.value?.user : null;
+  const restaurant = await getInitRestaurant();
   return (
     <Grid w={'100%'}>
       <GridCol className='flex justify-between' span={12}>
@@ -29,7 +25,7 @@ const Contact = async () => {
           <GridCol span={{ base: 12, md: 6 }} className='h-fit animate-fadeUp'>
             <Flex direction='column' w={'100%'}>
               <Text size='md' fw={900} mb={10}>
-                NƠI GIẢI ĐÁP TOÀN BỘ MỌI THẮC MẮC CỦA BẠN?
+                NƠI GIẢI ĐÁP MỌI THẮC MẮC CỦA BẠN?
               </Text>
               <Text size='sm'>{restaurant?.name} - Nhà hàng trực tuyến dành cho bạn.</Text>
               <Text size='sm' fw={900} className='text-mainColor' mb={20}>
@@ -63,7 +59,7 @@ const Contact = async () => {
                 Nếu bạn có thắc mắc gì, có thể gửi yêu cầu cho chúng tôi, và chúng tôi sẽ liên lạc lại với bạn sớm nhất
                 có thể .
               </Text>
-              <FormContact user={user} />
+              <FormContact />
             </Flex>
           </GridCol>
           <GridCol span={{ base: 12, md: 6 }} className='h-fit animate-fadeUp' style={{ animationDuration: '1s' }}>

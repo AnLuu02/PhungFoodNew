@@ -43,10 +43,10 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
           h='100%'
           w='100%'
           className={
-            'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out group-hover:visible lg:invisible'
+            'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out sm:group-hover:visible lg:invisible'
           }
         >
-          <Button.Group className='group-hover:animate-fadeUp'>
+          <Button.Group className='sm:group-hover:animate-fadeDown'>
             <Tooltip label='Xem nhanh'>
               {isMobile ? (
                 <Button
@@ -54,7 +54,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
                   p={5}
                   w={'max-content'}
                   variant='default'
-                  className={`border-t-r-0 text-mainColor hover:text-subColor`}
+                  className={`border-t-r-0 text-mainColor sm:hover:text-subColor`}
                 >
                   <Link href={`/san-pham/${data?.tag}`}>
                     <IconEye />
@@ -75,7 +75,6 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
                 </Button>
               )}
             </Tooltip>
-
             <ButtonToggleLike data={data} />
           </Button.Group>
         </Box>

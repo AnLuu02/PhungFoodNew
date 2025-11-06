@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
 
   if (!token && protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
     const loginUrl = new URL('/dang-nhap', request.url);
-    loginUrl.searchParams.set('callbackUrl', currentUrl);
+    loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
 
     return NextResponse.redirect(loginUrl);
   }

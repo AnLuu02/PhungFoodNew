@@ -40,6 +40,7 @@ export const Note = ({ productId }: any) => {
           w={'100%'}
           bg={'red'}
           size='xs'
+          className='text-white'
           onClick={() => {
             const productExist = cart.find((item: any) => item.id === productId);
             if (productExist) {

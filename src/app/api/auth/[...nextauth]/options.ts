@@ -55,7 +55,9 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl;
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      if (url.startsWith(baseUrl)) return url;
+      return baseUrl;
     },
     async signIn({ user }) {
       try {
@@ -103,9 +105,5 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     }
-  },
-  pages: {
-    signIn: '/dang-nhap',
-    error: '/error'
   }
 };

@@ -11,8 +11,9 @@ import UserSectionDesktop from '~/components/UserSectionDesktop';
 import { api } from '~/trpc/react';
 import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 
-export const HeaderClient = ({ restaurant }: any) => {
-  const restaurantData = restaurant ?? {};
+export const HeaderClient = () => {
+  const { data: restaurant, isLoading } = api.Restaurant.getOneActiveClient.useQuery();
+  const restaurantData: any = restaurant ?? {};
   const [language, setLanguage] = useLocalStorage<any>({ key: 'language', defaultValue: 'vn' });
   const timeOpen = useMemo(() => {
     const timeIndex = new Date().getDay();
@@ -58,7 +59,9 @@ export const HeaderClient = ({ restaurant }: any) => {
 
         <Group align={'center'} justify='center' gap={0}>
           <Group gap='md' align={'center'} justify='center' h={{ base: 40, sm: 'max-content' }}>
-            {timeOpen?.openTime && timeOpen?.closeTime ? (
+            {isLoading ? (
+              <Skeleton width={200} height={20} radius={'xl'} />
+            ) : (
               <Button
                 size='xs'
                 radius='xl'
@@ -69,10 +72,10 @@ export const HeaderClient = ({ restaurant }: any) => {
                   root: `font-quicksand hover:text-subColor ${!timeOpen?.isClosed ? 'text-white' : 'text-subColor'}`
                 }}
               >
-                {!timeOpen?.isClosed ? `MỞ CỬA: ${timeOpen?.openTime} ĐẾN ${timeOpen?.closeTime}` : `ĐÃ ĐÓNG CỬA`}
+                {!timeOpen?.isClosed && timeOpen?.openTime && timeOpen?.closeTime
+                  ? `MỞ CỬA: ${timeOpen?.openTime} ĐẾN ${timeOpen?.closeTime}`
+                  : `ĐÃ ĐÓNG CỬA`}
               </Button>
-            ) : (
-              <Skeleton width={200} height={20} />
             )}
 
             <Menu radius={'md'} position='bottom-end' shadow='md'>

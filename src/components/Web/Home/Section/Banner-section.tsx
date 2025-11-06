@@ -38,8 +38,8 @@ export default function BannerSection({ banner }: any) {
             withIndicators
             loop
             plugins={[autoplay.current]}
-            nextControlIcon={<IconChevronRight size={24} />}
-            previousControlIcon={<IconChevronLeft size={24} />}
+            nextControlIcon={<IconChevronRight size={30} />}
+            previousControlIcon={<IconChevronLeft size={30} />}
             controlSize={40}
             color='black'
             classNames={{

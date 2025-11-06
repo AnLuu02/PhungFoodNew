@@ -1,7 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -10,7 +9,7 @@ import { contactSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Contact } from '~/types/contact';
 
-export const FormContact = ({ user }: any) => {
+export const FormContact = () => {
   const {
     control,
     handleSubmit,
@@ -52,15 +51,6 @@ export const FormContact = ({ user }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      reset({
-        fullName: user.name,
-        email: user.email
-      });
-    }
-  }, [user]);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
@@ -73,7 +63,7 @@ export const FormContact = ({ user }: any) => {
             )}
           />
         </GridCol>
-        <GridCol span={8}>
+        <GridCol span={{ base: 12, sm: 8 }}>
           <Controller
             control={control}
             name='phone'
@@ -88,7 +78,7 @@ export const FormContact = ({ user }: any) => {
             )}
           />
         </GridCol>
-        <GridCol span={4}>
+        <GridCol span={{ base: 12, sm: 4 }}>
           <Controller
             control={control}
             name='type'
