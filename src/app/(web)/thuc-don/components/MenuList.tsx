@@ -2,13 +2,20 @@ import { Flex, Grid, GridCol } from '@mantine/core';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
+import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 
-export const MenuList = ({ responseData }: { responseData: any }) => {
+export const MenuList = ({ responseData, isLoading }: { responseData: any; isLoading: boolean }) => {
   const products = responseData?.products || [];
   return (
     <Flex direction={'column'} align={'flex-start'}>
       <Grid w={'100%'} p={0}>
-        {products?.length > 0 ? (
+        {isLoading ? (
+          [...Array(12)].map((_, index) => (
+            <GridCol key={index} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+              <CardSkeleton />
+            </GridCol>
+          ))
+        ) : products?.length > 0 ? (
           products.map((item: any) => (
             <GridCol key={item.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
               <ProductCardCarouselVertical key={item.id} data={item} />

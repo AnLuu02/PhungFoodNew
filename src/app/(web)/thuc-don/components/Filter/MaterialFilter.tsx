@@ -52,20 +52,18 @@ export const MaterialFilter = ({ materials }: any) => {
           <Checkbox.Group value={valueMaterials} onChange={setValueMaterials}>
             <Group mt='xs'>
               {materials.map((type: any) => (
-                <>
-                  <Checkbox
-                    icon={CheckIcon}
-                    name='type'
-                    value={type?.tag}
-                    key={type?.id}
-                    label={type?.name}
-                    classNames={{
-                      label: 'cursor-pointer font-medium hover:text-mainColor',
-                      input:
-                        'border-gray-300 text-mainColor data-[checked=true]:border-mainColor data-[checked=true]:bg-mainColor'
-                    }}
-                  />
-                </>
+                <Checkbox
+                  icon={CheckIcon}
+                  name='type'
+                  value={type?.tag}
+                  key={type?.id}
+                  label={type?.name}
+                  classNames={{
+                    label: 'cursor-pointer font-medium hover:text-mainColor',
+                    input:
+                      'border-gray-300 text-mainColor data-[checked=true]:border-mainColor data-[checked=true]:bg-mainColor'
+                  }}
+                />
               ))}
             </Group>
           </Checkbox.Group>

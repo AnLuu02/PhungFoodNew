@@ -233,7 +233,8 @@ export const productRouter = createTRPCRouter({
         products,
         pagination: {
           currentPage,
-          totalPages
+          totalPages,
+          totalProducts
         }
       };
     }),
