@@ -25,16 +25,27 @@ export const recentActivityRouter = createTRPCRouter({
       const [users, orders, reviews] = await Promise.allSettled([
         ctx.db.user.findMany({
           where: {
-            OR: [
+            AND: [
               {
-                createdAt: {
-                  gte: startTimeToDate
+                email: {
+                  not: {
+                    startsWith: 'guest_'
+                  }
                 }
               },
               {
-                updatedAt: {
-                  gte: startTimeToDate
-                }
+                OR: [
+                  {
+                    createdAt: {
+                      gte: startTimeToDate
+                    }
+                  },
+                  {
+                    updatedAt: {
+                      gte: startTimeToDate
+                    }
+                  }
+                ]
               }
             ]
           },

@@ -93,7 +93,7 @@ export default function ReportRevenuePageClient({
                       topUsers.map((customer: any, index: number) => (
                         <Table.Tr key={index}>
                           <Table.Td>{customer?.user?.name || 'Đang cập nhật'}</Table.Td>
-                          <Table.Td>{formatPriceLocaleVi(customer?.totalSpent || 0)}</Table.Td>
+                          <Table.Td>{formatPriceLocaleVi(Number(customer?.totalSpent || 0))}</Table.Td>
                           <Table.Td>{customer?.totalOrders || 0}</Table.Td>
                         </Table.Tr>
                       ))

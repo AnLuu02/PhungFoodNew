@@ -1,7 +1,7 @@
 'use client';
 import { Box, Group, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Text } from '@mantine/core';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 import { CopyRevenueButton, CreateRevenueButton, UpdateRevenueButton } from '../Button';
 
@@ -42,7 +42,7 @@ export default function TableRevenue({ revenues }: { revenues: any }) {
                 return (
                   <TableTr key={revenue.id}>
                     <TableTd className='text-sm'>{revenue.id}</TableTd>
-                    <TableTd className='text-sm'>{revenue.totalSpent || 0}</TableTd>
+                    <TableTd className='text-sm'>{formatPriceLocaleVi(Number(revenue.totalSpent || 0))}</TableTd>
                     <TableTd className='text-sm'>{revenue.totalOrders || 0}</TableTd>
                     <TableTd className='text-sm'>{revenue?.day}</TableTd>
                     <TableTd className='text-sm'>{revenue?.month} </TableTd>
