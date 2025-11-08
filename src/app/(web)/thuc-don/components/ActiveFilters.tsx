@@ -37,7 +37,12 @@ export default function ActiveFilters() {
     const newParams = new URLSearchParams(searchParams.toString());
     const allValues = newParams.getAll(key);
     const updatedValues = allValues.filter(v => v !== value);
-    newParams.delete(key);
+    if (key === 'price') {
+      newParams.delete('minPrice');
+      newParams.delete('maxPrice');
+    } else {
+      newParams.delete(key);
+    }
     updatedValues.forEach(v => newParams.append(key, v));
     router.push(`?${newParams.toString()}`);
   };
