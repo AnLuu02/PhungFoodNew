@@ -8,6 +8,12 @@ import { TypeContact } from '~/lib/ZodSchema/enum';
 import { contactSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Contact } from '~/types/contact';
+const ContactTypeOptions = {
+  [TypeContact.COLLABORATION]: { viName: 'Hợp tác' },
+  [TypeContact.FEEDBACK]: { viName: 'Phản hồi' },
+  [TypeContact.SUPPORT]: { viName: 'Hỗ trợ' },
+  [TypeContact.OTHER]: { viName: 'Khác' }
+};
 
 export const FormContact = () => {
   const {
@@ -87,7 +93,7 @@ export const FormContact = () => {
               <Select
                 {...field}
                 radius={'md'}
-                data={Object.entries(TypeContact).map(([key, value]) => ({ value: key, label: value }))}
+                data={Object.entries(ContactTypeOptions).map(([key, value]) => ({ value: key, label: value.viName }))}
                 placeholder='Loại'
                 withAsterisk
                 error={fieldState.error?.message}
