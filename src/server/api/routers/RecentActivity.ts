@@ -18,7 +18,7 @@ export const recentActivityRouter = createTRPCRouter({
         startTimeToDate = startTime ? new Date(startTime) : undefined;
         endTimeToDate = endTime ? new Date(endTime) : undefined;
       } else {
-        firstRevenue = await ctx.db.restaurant.findFirst();
+        firstRevenue = await ctx.db.restaurant.findFirst({ select: { createdAt: true } });
         startTimeToDate = firstRevenue?.createdAt;
         endTimeToDate = new Date();
       }
@@ -37,12 +37,14 @@ export const recentActivityRouter = createTRPCRouter({
                 OR: [
                   {
                     createdAt: {
-                      gte: startTimeToDate
+                      gte: startTimeToDate,
+                      lte: endTimeToDate
                     }
                   },
                   {
                     updatedAt: {
-                      gte: startTimeToDate
+                      gte: startTimeToDate,
+                      lte: endTimeToDate
                     }
                   }
                 ]
@@ -204,7 +206,7 @@ export const recentActivityRouter = createTRPCRouter({
         startTimeToDate = startTime ? new Date(startTime) : undefined;
         endTimeToDate = endTime ? new Date(endTime) : undefined;
       } else {
-        firstRevenue = await ctx.db.restaurant.findFirst();
+        firstRevenue = await ctx.db.restaurant.findFirst({ select: { createdAt: true } });
         startTimeToDate = firstRevenue?.createdAt;
         endTimeToDate = new Date();
       }

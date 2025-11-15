@@ -25,8 +25,6 @@ export default function MenuSection() {
     },
     rating: searchParams?.get('rating') ? Number(searchParams?.get('rating')) : undefined
   });
-  console.log(data);
-
   return (
     <Box pos={'relative'}>
       <HeaderMenu responseData={data} isLoading={isLoading} />

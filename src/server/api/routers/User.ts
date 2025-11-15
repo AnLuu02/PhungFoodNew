@@ -600,7 +600,19 @@ export const userRouter = createTRPCRouter({
     const user = await ctx.db.user.findMany({ include: { role: true } });
     return user;
   }),
-
+  getNotGuest: publicProcedure.query(async ({ ctx }) => {
+    const user = await ctx.db.user.findMany({
+      where: {
+        email: {
+          not: {
+            startsWith: 'guest_'
+          }
+        }
+      },
+      include: { role: true }
+    });
+    return user;
+  }),
   verifyEmail: publicProcedure
     .input(z.object({ email: z.string().email(), timeExpiredMinutes: z.number().default(3) }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -649,6 +661,11 @@ export const userRouter = createTRPCRouter({
 
       if (!isTokenValid) {
         throw new Error('OTP không hợp lệ hoặc đã hết hạn.');
+      }
+
+      const isSameAsCurrent = await compare(input.password, user.password);
+      if (isSameAsCurrent) {
+        throw new Error('Gần đây bạn đã sử dụng mật khẩu này. Vui lòng sử dụng mật khẩu khác.');
       }
 
       const hashedPassword = await hashPassword(input.password);

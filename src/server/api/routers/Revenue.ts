@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { getCompare } from '~/lib/FuncHandler/PrismaHelper';
 
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const revenueRouter = createTRPCRouter({
   getTotalSpentInMonthByUser: publicProcedure
@@ -252,7 +252,6 @@ export const revenueRouter = createTRPCRouter({
     }),
 
   create: publicProcedure
-    .use(requirePermission('create:revenue'))
     .input(
       z.object({
         userId: z.string(),
@@ -276,7 +275,6 @@ export const revenueRouter = createTRPCRouter({
       });
     }),
   update: publicProcedure
-    .use(requirePermission('update:revenue'))
     .input(
       z.object({
         id: z.string(),

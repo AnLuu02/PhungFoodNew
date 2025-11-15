@@ -112,7 +112,7 @@ export function OrderStatusPage({
         </Box>
 
         {orderId || amount ? (
-          <Box className='space-y-2 rounded-lg bg-gray-50 p-3'>
+          <Box className='space-y-2 rounded-lg bg-gray-50 p-3 dark:bg-dark-card'>
             {orderId ? (
               <Box>
                 <Text size='sm' c={'dimmed'}>

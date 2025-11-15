@@ -366,7 +366,8 @@ export const restaurantRouter = createTRPCRouter({
 
   getAllBanner: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.banner.findMany({
-      include: { images: true }
+      include: { images: true },
+      orderBy: { createdAt: 'desc' }
     });
   }),
   createBanner: publicProcedure
@@ -622,7 +623,7 @@ export const restaurantRouter = createTRPCRouter({
     .input(socialSchema.extend({ restaurantId: z.string() }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       try {
-        const [, , notification] = await Promise.all([
+        const [, , social] = await Promise.all([
           redis.del('getOneActive'),
           redis.del('get-one-active-client'),
           ctx.db.social.create({
@@ -633,7 +634,7 @@ export const restaurantRouter = createTRPCRouter({
         return {
           code: 'OK',
           message: 'Tạo liên kết xã hội thành công.',
-          data: notification
+          data: social
         };
       } catch (err: any) {
         console.error('❌ createSocial error:', err);

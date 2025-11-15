@@ -155,30 +155,6 @@ export const categoryRouter = createTRPCRouter({
         }
       }
     });
-
-    // if (!category?.length) {
-    //   await ctx.db.category.createMany({
-    //     data: seedCategory
-    //   });
-    //   category = await ctx.db.category.findMany({
-    //     include: {
-    //       subCategory: {
-    //         include: {
-    //           image: true,
-    //           product: {
-    //             where: {
-    //               isActive: true
-    //             },
-    //             include: {
-    //               images: true
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   });
-    // }
-
     return category;
   }),
   create: publicProcedure

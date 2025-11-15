@@ -92,7 +92,7 @@ export const pageRouter = createTRPCRouter({
     const results: any = await Promise.allSettled([
       caller.Product.getAll({ userRole: UserRole.ADMIN }),
       caller.Revenue.getOverview({}),
-      caller.RecentActivity.getRecentActivity({})
+      caller.RecentActivity.getRecentActivityApp({})
     ]);
 
     const [products, revenue, recentActivities] = results.map((item: any) =>

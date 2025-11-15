@@ -28,8 +28,8 @@ export default function HeaderMenu({ responseData, isLoading }: { responseData: 
                   </Text>
                   {isLoading ? (
                     <Group gap='xs' align='center' mih={45}>
-                      <Skeleton height={28} width='120px' radius='sm' /> {/* tên tag */}
-                      <Skeleton height={24} width='40px' radius='sm' /> {/* số lượng */}
+                      <Skeleton height={28} width='120px' radius='sm' />
+                      <Skeleton height={24} width='40px' radius='sm' />
                     </Group>
                   ) : (
                     <Group gap={'xs'}>
