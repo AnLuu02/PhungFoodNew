@@ -1,7 +1,7 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 import { UserRole } from './constants';
-import { formatDateViVN } from './lib/FuncHandler/Format';
+import { safeLog } from './lib/FuncHandler/safeLog';
 
 const protectedRoutes = ['/admin', '/thong-tin', '/don-hang-cua-toi'];
 const authPages = ['/dang-nhap', '/dang-ky'];
@@ -11,8 +11,13 @@ export async function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || request.ip;
   const currentUrl = request.nextUrl.pathname + request.nextUrl.search;
 
-  console.log(`|->->->-> IP User| ${token?.email} | --//-- ${ip} --//-- ${formatDateViVN(new Date())} <-<-<-<-|`);
-
+  safeLog({
+    email: token?.email ?? 'guest',
+    role: token?.role?.toString() ?? 'none',
+    ip: ip?.toString() ?? '',
+    path: request.nextUrl.pathname,
+    time: new Date().toISOString()
+  });
   if (token && authPages.some(route => request.nextUrl.pathname.startsWith(route))) {
     return NextResponse.redirect(new URL('/', request.url));
   }
