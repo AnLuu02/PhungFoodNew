@@ -170,7 +170,7 @@ export default function ProductDetailClient(data: any) {
                 showLabel='Xem thêm'
                 hideLabel='Ẩn'
                 classNames={{
-                  control: 'text-sm font-bold text-mainColor'
+                  control: 'text-lg font-bold text-mainColor'
                 }}
               >
                 <Text size='sm'>{product?.description || 'Đang cập nhật'}</Text>
@@ -320,7 +320,7 @@ export default function ProductDetailClient(data: any) {
                   showLabel='Xem thêm'
                   hideLabel='Ẩn'
                   classNames={{
-                    control: 'text-sm font-bold text-mainColor'
+                    control: 'text-lg font-bold text-mainColor'
                   }}
                 >
                   <Stack gap='md'>

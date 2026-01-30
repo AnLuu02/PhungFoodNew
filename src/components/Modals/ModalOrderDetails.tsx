@@ -35,7 +35,6 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
     <>
       <Modal
         scrollAreaComponent={ScrollAreaAutosize}
-        className='animate-fadeUp'
         opened={opened && type === 'orders'}
         radius={'md'}
         onClose={onClose}

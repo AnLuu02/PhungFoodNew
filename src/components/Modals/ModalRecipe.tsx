@@ -57,7 +57,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
       padding={0}
       centered
       scrollAreaComponent={ScrollAreaAutosize}
-      className='animate-fadeUp overflow-y-hidden'
+      className='overflow-y-hidden'
       transitionProps={{ transition: 'fade-down', duration: 200 }}
       pos={'relative'}
     >
