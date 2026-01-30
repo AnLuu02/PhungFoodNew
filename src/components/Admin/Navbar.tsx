@@ -70,6 +70,7 @@ const navItems = [
     icon: IconSettings,
     children: [
       { label: 'Hệ thống', icon: IconSettings, href: '/admin/settings' },
+      { label: 'Thông báo', icon: IconSettings, href: '/admin/settings/notification' },
       { label: 'Giao diện nâng cao', icon: IconSettings, href: '/admin/settings/theme-advance' }
     ]
   }

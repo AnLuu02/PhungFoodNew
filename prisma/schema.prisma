@@ -88,8 +88,6 @@ model Order {
   createdAt      DateTime?   @default(now())
   updatedAt      DateTime?   @updatedAt
   invoice        Invoice?
-  revenue        Revenue?    @relation(fields: [revenueId], references: [id])
-  revenueId      String?
 
   @@index([userId], map: "Order_usersId_fkey_unique")
 }
@@ -209,50 +207,39 @@ model Review {
 }
 
 model User {
-  id               String           @id @default(cuid())
+  id               String                  @id @default(cuid())
   name             String
-  email            String           @unique
+  email            String                  @unique
   password         String
-  isActive         Boolean          @default(true)
-  isVerified       Boolean          @default(false)
-  phone            String?          @db.VarChar(10)
-  dateOfBirth      DateTime?        @default(now())
+  isActive         Boolean                 @default(true)
+  isVerified       Boolean                 @default(false)
+  phone            String?                 @db.VarChar(10)
+  dateOfBirth      DateTime?               @default(now())
   gender           Gender?
-  pointUser        Int              @default(0)
+  pointUser        Int                     @default(0)
   level            UserLevel
   resetToken       String?
   resetTokenExpiry DateTime?
-  failedAttempts   Int              @default(0)
+  failedAttempts   Int                     @default(0)
   lockedUntil      DateTime?
-  isLocked         Boolean          @default(false)
+  isLocked         Boolean                 @default(false)
   order            Order[]
   review           Review[]
   favouriteFood    FavouriteFood[]
   revenue          Revenue[]
   image            Image?
   roleId           String?
-  role             Role?            @relation(fields: [roleId], references: [id])
+  role             Role?                   @relation(fields: [roleId], references: [id])
   address          Address?
-  notifications    Notification[]
-  createdAt        DateTime?        @default(now())
-  updatedAt        DateTime?        @updatedAt
+  createdAt        DateTime?               @default(now())
+  updatedAt        DateTime?               @updatedAt
   voucherForUser   VoucherForUser[]
-  Voucher          Voucher?         @relation(fields: [voucherId], references: [id])
+  Voucher          Voucher?                @relation(fields: [voucherId], references: [id])
   voucherId        String?
   voucherForUserId String?
   userPermissions  UserPermission[]
   invoice          Invoice[]
-}
-
-model Notification {
-  id          String    @id @default(cuid())
-  user        User[]
-  title       String
-  message     String
-  isRead      Boolean   @default(false)
-  isSendToAll Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
+  recipients       NotificationRecipient[]
 }
 
 model Address {
@@ -409,7 +396,6 @@ model Revenue {
   day         Int
   year        Int
   month       Int
-  orders      Order[]
   totalSpent  Decimal   @default(0)
   totalOrders Int       @default(0)
   createdAt   DateTime  @default(now())
@@ -509,4 +495,96 @@ enum UserLevel {
 enum AddressType {
   USER
   DELIVERY
+}
+
+enum NotificationType {
+  SYSTEM
+  ORDER
+  PROMOTION
+  USER_ACTIVITY
+  SECURITY
+  SUPPORT
+  REMINDER
+}
+
+enum RecipientType {
+  individual
+  all
+}
+
+enum NotificationStatus {
+  draft
+  scheduled
+  sent
+  delivered
+  read
+  failed
+}
+
+enum NotificationPriority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum NotificationChannel {
+  push
+  email
+  sms
+  in_app
+}
+
+enum NotificationRecipientStatus {
+  PENDING
+  SENT
+  DELIVERED
+  READ
+  CLICKED
+}
+
+model Notification {
+  id                     String                  @id @default(cuid())
+  title                  String
+  message                String
+  type                   NotificationType
+  recipient              RecipientType
+  status                 NotificationStatus
+  variables              Json?
+  priority               NotificationPriority
+  channels               NotificationChannel[]
+  createdAt              DateTime                @default(now())
+  scheduledAt            DateTime?
+  tags                   String[]
+  analytics              Json // { sent, delivered, read, clicked }
+  recipients             NotificationRecipient[]
+  template               NotificationTemplate?   @relation(fields: [notificationTemplateId], references: [id])
+  notificationTemplateId String?
+}
+
+model NotificationRecipient {
+  id             String                      @id @default(cuid())
+  notification   Notification                @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notificationId String
+  user           User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  sentAt         DateTime?
+  readAt         DateTime?
+  deliveredAt    DateTime?
+  clickedAt      DateTime?
+  status         NotificationRecipientStatus @default(PENDING)
+
+  @@unique([notificationId, userId])
+}
+
+model NotificationTemplate {
+  id            String           @id @default(cuid())
+  name          String           @unique
+  title         String
+  message       String
+  type          NotificationType
+  category      String
+  variables     String[]
+  createdAt     DateTime         @default(now())
+  notifications Notification[]
 }

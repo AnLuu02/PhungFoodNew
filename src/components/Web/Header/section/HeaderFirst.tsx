@@ -25,17 +25,10 @@ export const HeaderClient = () => {
     };
   }, [restaurantData]);
   const { data: session } = useSession();
-  const { data: notifications = [] } = api.Notification.getFilter.useQuery(
-    {
-      s: session?.user?.email || ''
-    },
-    {
-      enabled: !!session?.user?.id
-    }
-  );
+
   return (
     <>
-      {session?.user?.id && <NotificationDialog data={notifications} userId={session?.user?.id} />}
+      {session?.user?.id && <NotificationDialog />}
       <Flex
         direction={{ base: 'column', sm: 'row', md: 'row' }}
         h={{ base: 'max-content', md: 40 }}

@@ -1,121 +1,221 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { getOnlineUserIds } from '~/lib/PusherConfig/handler';
+import { pusherServer } from '~/lib/PusherConfig/server';
+import { notificationSchema } from '~/lib/ZodSchema/schema';
+import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
-const findExistingnotification = async (ctx: any, tag: string) => {
-  return await ctx.db.notification.findFirst({ where: { tag } });
-};
 export const notificationRouter = createTRPCRouter({
-  find: publicProcedure
-    .input(
-      z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
-        s: z.string().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const { skip, take, s } = input;
+  create: publicProcedure.input(notificationSchema).mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+    const notification = await ctx.db.notification.create({
+      data: {
+        title: input.title,
+        message: input.message,
+        type: input.type,
+        recipient: input.recipient,
+        status: input.status,
+        priority: input.priority,
+        channels: input.channels,
+        createdAt: new Date(),
+        template: input.templateId
+          ? {
+              connect: { id: input.templateId }
+            }
+          : undefined,
+        scheduledAt: input.scheduledAt,
+        tags: input.tags,
+        analytics: input.analytics,
+        recipients:
+          input.recipient !== 'all' ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) } : undefined
+      }
+    });
+    return { code: 'OK', message: 'Tạo thông báo thành công.', data: notification };
+  }),
 
-      const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-      const [totalNotifications, totalNotificationsQuery, notifications] = await ctx.db.$transaction([
-        ctx.db.notification.count(),
-        ctx.db.notification.count({
-          where: {
-            OR: [
-              {
-                title: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                message: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                user: {
-                  some: {
-                    OR: [
-                      {
-                        name: { contains: s?.trim(), mode: 'insensitive' }
-                      },
-                      {
-                        email: { contains: s?.trim(), mode: 'insensitive' }
-                      }
-                    ]
-                  }
-                }
-              }
-            ]
-          }
-        }),
-        ctx.db.notification.findMany({
-          skip: startPageItem,
-          take,
-          where: {
-            OR: [
-              {
-                title: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                message: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                user: {
-                  some: {
-                    OR: [
-                      {
-                        name: { contains: s?.trim(), mode: 'insensitive' }
-                      },
-                      {
-                        email: { contains: s?.trim(), mode: 'insensitive' }
-                      }
-                    ]
-                  }
-                }
-              }
-            ]
-          },
+  getAll: publicProcedure.query(async ({ ctx }): Promise<ResponseTRPC> => {
+    const data = await ctx.db.notification.findMany({
+      include: {
+        recipients: {
           include: {
             user: {
               select: {
                 id: true,
-                name: true,
                 email: true
               }
             }
           }
-        })
-      ]);
-      const totalPages = Math.ceil(
-        s?.trim() ? (totalNotificationsQuery == 0 ? 1 : totalNotificationsQuery / take) : totalNotifications / take
-      );
-      const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-
-      return {
-        notifications,
-        pagination: {
-          currentPage,
-          totalPages
         }
-      };
-    }),
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    // if (data.length === 0) {
+    //   const sample = await ctx.db.notification.create({
+    //     data: {
+    //       title: 'Chào mừng đến với hệ thống!',
+    //       message: 'Đây là thông báo mẫu đầu tiên của bạn.',
+    //       type: 'SYSTEM',
+    //       recipient: 'all',
+    //       status: 'sent',
+    //       priority: 'medium',
+    //       channels: ['email', 'in_app'],
+    //       createdAt: new Date(),
+    //       tags: ['sample'],
+    //       analytics: { sent: 1, delivered: 1, read: 1, clicked: 0 }
+    //     }
+    //   });
+    //   return { code: 'OK', message: 'Đã tạo dữ liệu mẫu.', data: [sample] };
+    // }
+    return { code: 'OK', message: 'Lấy danh sách thông báo thành công.', data };
+  }),
+  pushOnline: publicProcedure
+    // .use(requirePermission('create:notification', { requiredAdmin: true }))
+    .input(z.object({ notificationId: z.string(), userIds: z.array(z.string()).default([]) }))
+    .mutation(async ({ ctx, input }) => {
+      const notification = await ctx.db.notification.findUnique({
+        where: { id: input.notificationId },
+        include: {
+          template: {
+            select: {
+              category: true,
+              variables: true
+            }
+          }
+        }
+      });
+      if (!notification) throw new Error('Notification not found');
+      const onlineUsers = await getOnlineUserIds(input.userIds);
+      await Promise.all(
+        onlineUsers.map(async userId => {
+          await ctx.db.notificationRecipient.upsert({
+            where: {
+              notificationId_userId: {
+                notificationId: notification.id,
+                userId
+              }
+            },
+            update: {},
+            create: {
+              notificationId: notification.id,
+              userId,
+              sentAt: new Date()
+            }
+          });
+          await pusherServer.trigger(`user-${userId}`, 'in-app-notify', notification);
+        })
+      );
 
-  delete: publicProcedure
-    .use(requirePermission('delete:notification'))
+      return { count: onlineUsers.length };
+    }),
+  syncOffline: publicProcedure.input(z.object({ userId: z.string() })).mutation(async ({ ctx, input }) => {
+    const missed = await ctx.db.notification.findMany({
+      where: {
+        recipient: 'all',
+        recipients: { none: { userId: input.userId } }
+      },
+      include: {
+        recipients: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true
+              }
+            }
+          }
+        }
+      }
+    });
+
+    await Promise.all(
+      missed.map(n =>
+        ctx.db.notificationRecipient.create({
+          data: {
+            notificationId: n.id,
+            userId: input.userId,
+            deliveredAt: new Date(),
+            sentAt: missed?.[0]?.createdAt || null
+          }
+        })
+      )
+    );
+
+    return missed;
+  }),
+  markAsRead: publicProcedure
+    .input(z.object({ notificationId: z.string(), userId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      return ctx.db.notificationRecipient.updateMany({
+        where: {
+          notificationId: input.notificationId,
+          userId: input.userId
+        },
+        data: { readAt: new Date() }
+      });
+    }),
+  getById: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    const item = await ctx.db.notification.findUnique({ where: { id: input } });
+    return item
+      ? { code: 'OK', message: 'Thành công.', data: item }
+      : { code: 'NOT_FOUND', message: 'Không tìm thấy thông báo.' };
+  }),
+  getByUser: publicProcedure.input(z.string()).query(async ({ ctx, input }) => {
+    const items = await ctx.db.notification.findMany({
+      where: {
+        recipients: {
+          some: {
+            userId: input
+          }
+        }
+      },
+      include: {
+        recipients: {
+          where: {
+            userId: input
+          }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    return items?.length > 0
+      ? { code: 'OK', message: 'Thành công.', data: items }
+      : { code: 'NOT_FOUND', message: 'Không tìm thấy thông báo.', data: [] };
+  }),
+
+  update: publicProcedure
+    .input(z.object({ id: z.string(), data: notificationSchema.partial() }))
+    .mutation(async ({ ctx, input }) => {
+      const updated = await ctx.db.notification.update({
+        where: { id: input.id },
+        data: {
+          ...input.data,
+          template: input?.data?.templateId
+            ? {
+                connect: { id: input?.data?.templateId }
+              }
+            : undefined
+        }
+      });
+      return { code: 'OK', message: 'Cập nhật thành công.', data: updated };
+    }),
+  updateActionUser: publicProcedure
     .input(
       z.object({
-        id: z.string()
+        where: z.record(z.any()),
+        data: z.record(z.any())
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const notification = await ctx.db.notification.delete({
-        where: { id: input.id }
+    .mutation(async ({ ctx, input }) => {
+      const updated = await ctx.db.notification.update({
+        where: input.where as Prisma.NotificationWhereUniqueInput,
+        data: input.data
       });
-
-      return {
-        code: 'OK',
-        message: 'Xóa thông báo thành công.',
-        data: notification
-      };
+      return { code: 'OK', message: 'Cập nhật thành công.', data: updated };
     }),
+  delete: publicProcedure.input(z.array(z.string())).mutation(async ({ ctx, input }) => {
+    await ctx.db.notification.deleteMany({ where: { id: { in: input } } });
+    return { code: 'OK', message: 'Xóa thành công.' };
+  }),
+
   deleteFilter: publicProcedure
     .input(
       z.object({
@@ -124,8 +224,8 @@ export const notificationRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       try {
-        const deleted = await ctx.db.notification.deleteMany({
-          where: input.where as Prisma.NotificationWhereInput
+        const deleted = await ctx.db.notificationRecipient.deleteMany({
+          where: input.where as Prisma.NotificationRecipientWhereInput
         });
 
         return {
@@ -141,131 +241,22 @@ export const notificationRouter = createTRPCRouter({
         };
       }
     }),
-
   getFilter: publicProcedure
     .input(
       z.object({
-        s: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      if (!input.s?.trim()) return [];
-
-      const notification = await ctx.db.notification.findMany({
-        where: {
-          OR: [
-            { id: input.s?.trim() },
-            {
-              user: {
-                some: {
-                  OR: [
-                    {
-                      id: input.s?.trim()
-                    },
-                    {
-                      email: input.s?.trim()
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true
-            }
-          }
-        }
-      });
-
-      return notification;
-    }),
-  getOne: publicProcedure
-    .input(
-      z.object({
-        s: z.string(),
-        isRead: z.boolean().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const notification = await ctx.db.notification.findFirst({
-        where: {
-          OR: [{ id: { equals: input.s?.trim() } }, { ...(input.isRead ? { isRead: input.isRead } : undefined) }]
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true
-            }
-          }
-        }
-      });
-
-      return notification;
-    }),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    let notification = await ctx.db.notification.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        }
-      }
-    });
-
-    return notification;
-  }),
-  create: publicProcedure
-    .use(requirePermission('create:notification'))
-    .input(
-      z.object({
-        userId: z.array(z.string()),
-        title: z.string(),
-        message: z.string(),
-        isRead: z.boolean(),
-        isSendToAll: z.boolean()
-      })
-    )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const notification = await ctx.db.notification.create({
-        data: {
-          title: input.title,
-          message: input.message,
-          isRead: input.isRead,
-          isSendToAll: input.isSendToAll,
-          user: { connect: input.userId.map(id => ({ id })) }
-        }
-      });
-      return { code: 'OK', message: 'Tạo thông báo thành công.', data: notification };
-    }),
-
-  update: publicProcedure
-    .use(requirePermission('update:notification'))
-    .input(
-      z.object({
         where: z.record(z.any()),
-        data: z.record(z.any())
+        take: z.number().optional(),
+        skip: z.number().optional(),
+        include: z.record(z.any()).optional()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const existingNotification = await findExistingnotification(ctx, input.data.id);
-
-      if (existingNotification && existingNotification.id !== input.where.id) {
-        return { code: 'CONFLICT', message: 'Thông báo đã tồn tại.', data: existingNotification };
-      }
-      const notification = await ctx.db.notification.update({
-        where: input.where as Prisma.NotificationWhereUniqueInput,
-        data: input.data as Prisma.NotificationUpdateInput
+    .query(async ({ ctx, input }) => {
+      const { skip, take, include } = input;
+      return await ctx.db.notification.findMany({
+        where: input.where as Prisma.NotificationWhereInput,
+        skip,
+        take,
+        include
       });
-      return { code: 'OK', message: 'Cập nhật thông báo thành công.', data: notification };
     })
 });

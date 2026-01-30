@@ -56,3 +56,14 @@ export enum TypeContact {
   FEEDBACK = 'FEEDBACK',
   OTHER = 'OTHER'
 }
+
+export enum NotificationType {
+  SYSTEM = 'SYSTEM',
+  USER_ACTIVITY = 'USER_ACTIVITY',
+  ORDER = 'ORDER',
+  PROMOTION = 'PROMOTION',
+  SECURITY = 'SECURITY',
+  ADMIN = 'ADMIN',
+  SUPPORT = 'SUPPORT',
+  REMINDER = 'REMINDER'
+}

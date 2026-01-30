@@ -7,6 +7,7 @@ import { invoiceRouter } from './routers/Invoice';
 import { materialRouter } from './routers/Material';
 import { newsRouter } from './routers/news';
 import { notificationRouter } from './routers/Notification';
+import { notificationTemplateRouter } from './routers/NotificationTemplate';
 import { orderRouter } from './routers/Order';
 import { pageRouter } from './routers/Page';
 import { paymentRouter } from './routers/Payment';
@@ -42,7 +43,8 @@ export const appRouter = createTRPCRouter({
   Material: materialRouter,
   RolePermission: rolePermissionRouter,
   Restaurant: restaurantRouter,
-  Notification: notificationRouter
+  Notification: notificationRouter,
+  NotificationTemplate: notificationTemplateRouter
 });
 
 export type AppRouter = typeof appRouter;

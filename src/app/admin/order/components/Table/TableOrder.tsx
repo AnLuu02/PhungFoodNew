@@ -8,7 +8,6 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import {
-  CancleOrderButton,
   CopyOrderButton,
   DeleteOrderButton,
   HandleStateOrderButton,
@@ -241,15 +240,21 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
                                 title='Hoàn thành'
                               />
                             )}
-                            {order.status !== LocalOrderStatus.CANCELLED && <CancleOrderButton id={order.id} />}
+                            {order.status !== LocalOrderStatus.CANCELLED && (
+                              <HandleStateOrderButton
+                                id={order.id}
+                                status={LocalOrderStatus.CANCELLED}
+                                title='Hủy đơn'
+                              />
+                            )}
                             <UpdateOrderButton id={order.id} />
                             <DeleteOrderButton id={order.id} />
                             <CopyOrderButton data={order} />
                           </Group>
                           <Group>
-                            <SendOrderButton order={order} />
-                            {order.status !== LocalOrderStatus.COMPLETED && (
-                              <SendMessageOrderButton userId={order.user?.id} email={order.user?.email} />
+                            {order?.user && <SendOrderButton order={order} />}
+                            {order.status !== LocalOrderStatus.COMPLETED && order?.user && (
+                              <SendMessageOrderButton user={order.user} />
                             )}
                           </Group>
                         </>
