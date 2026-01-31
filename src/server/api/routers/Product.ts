@@ -229,12 +229,14 @@ export const productRouter = createTRPCRouter({
       );
 
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
+      console.log('___totalProductsQuery', totalProductsQuery);
+
       return {
         products,
         pagination: {
           currentPage,
           totalPages,
-          totalProducts
+          totalProducts: totalProductsQuery
         }
       };
     }),
