@@ -427,7 +427,7 @@ export default async function AboutPage() {
                 </ThemeIcon>
                 <Flex gap={'sm'} align={'center'}>
                   <Text fw={700} className='text-mainColor hover:underline'>
-                    <a href={`tel:${restaurant?.phone}`}>{restaurant?.phone}</a>{' '}
+                    <a href={`tel:${restaurant?.hotPhone}`}>{restaurant?.hotPhone}</a>{' '}
                   </Text>
                   -/-
                   <Text fw={700} className='text-mainColor hover:underline'>

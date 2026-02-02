@@ -26,7 +26,7 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { voucherSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Voucher } from '~/types/voucher';
+import { VoucherClientType } from '~/types';
 
 export default function UpdateVoucher({
   data,
@@ -45,7 +45,7 @@ export default function UpdateVoucher({
     reset,
     watch,
     setValue
-  } = useForm<Voucher>({
+  } = useForm<VoucherClientType>({
     resolver: zodResolver(voucherSchema),
     defaultValues: {
       id: '',
@@ -105,7 +105,7 @@ export default function UpdateVoucher({
     }
   });
 
-  const onSubmit: SubmitHandler<Voucher> = async formData => {
+  const onSubmit: SubmitHandler<VoucherClientType> = async formData => {
     if (queryResult?.id) {
       const result = await updateMutation.mutateAsync({
         where: { id: queryResult?.id },

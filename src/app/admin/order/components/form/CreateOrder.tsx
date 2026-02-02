@@ -26,7 +26,7 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalAddressType, LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Order } from '~/types/order';
+import { OrderClientType } from '~/types';
 import OrderItemForm from './OrderItemForm';
 
 export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
@@ -38,7 +38,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
     setValue,
     getValues,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Order>({
+  } = useForm<OrderClientType>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
       id: '',
@@ -107,7 +107,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<Order> = async formData => {
+  const onSubmit: SubmitHandler<OrderClientType> = async formData => {
     try {
       if (!formData) return;
       if (formData.orderItems.length === 0) {
@@ -399,8 +399,8 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                   id: '',
                   productId: '',
                   quantity: 1,
-                  price: 0,
-                  orderId: ''
+                  price: 0
+                  // orderId: ''
                 })
               }
               variant='outline'

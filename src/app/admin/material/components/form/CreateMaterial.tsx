@@ -9,14 +9,14 @@ import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { materialSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Material } from '~/types/material';
+import { MaterialClientType } from '~/types';
 
 export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Material>({
+  } = useForm<MaterialClientType>({
     resolver: zodResolver(materialSchema),
     defaultValues: {
       id: '',
@@ -44,7 +44,7 @@ export default function CreateMaterial({ setOpened }: { setOpened: Dispatch<SetS
     }
   });
 
-  const onSubmit: SubmitHandler<Material> = async formData => {
+  const onSubmit: SubmitHandler<MaterialClientType> = async formData => {
     try {
       await mutation.mutateAsync({
         ...formData,

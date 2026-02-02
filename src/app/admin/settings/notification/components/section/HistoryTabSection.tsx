@@ -22,9 +22,9 @@ import Empty from '~/components/Empty';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
+import { NotificationClientHasUser } from '~/types';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
-import { NotificationClient } from '../../types';
 
 export const HistoryTabSection = ({
   notifications,
@@ -32,7 +32,7 @@ export const HistoryTabSection = ({
   setShowSendDialog
 }: {
   notifications: any[];
-  setShowViewDialog: Dispatch<SetStateAction<{ open: boolean; notification?: NotificationClient }>>;
+  setShowViewDialog: Dispatch<SetStateAction<{ open: boolean; notification?: NotificationClientHasUser }>>;
   setShowSendDialog: Dispatch<SetStateAction<SendNotificationStateProps>>;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');

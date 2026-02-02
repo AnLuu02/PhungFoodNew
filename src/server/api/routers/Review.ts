@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
+import { reviewSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -155,14 +156,7 @@ export const reviewRouter = createTRPCRouter({
     }),
   create: publicProcedure
     .use(requirePermission('create:review'))
-    .input(
-      z.object({
-        userId: z.string(),
-        productId: z.string(),
-        rating: z.number().default(0.0),
-        comment: z.string().optional()
-      })
-    )
+    .input(reviewSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const review = await ctx.db.review.create({
         data: {
@@ -255,18 +249,10 @@ export const reviewRouter = createTRPCRouter({
 
   update: publicProcedure
     .use(requirePermission('update:review'))
-    .input(
-      z.object({
-        reviewId: z.string(),
-        userId: z.string(),
-        productId: z.string(),
-        rating: z.number().default(0.0),
-        comment: z.string().optional()
-      })
-    )
+    .input(reviewSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const review = await ctx.db.review.update({
-        where: { id: input?.reviewId },
+        where: { id: input?.id },
         data: {
           userId: input.userId,
           productId: input.productId,

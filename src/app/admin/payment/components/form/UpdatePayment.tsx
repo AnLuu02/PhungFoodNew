@@ -8,7 +8,7 @@ import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { paymentSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Payment } from '~/types/payment';
+import { PaymentClientType } from '~/types';
 
 export default function UpdatePayment({
   paymentId,
@@ -25,7 +25,7 @@ export default function UpdatePayment({
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Payment>({
+  } = useForm<PaymentClientType>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       id: '',
@@ -71,7 +71,7 @@ export default function UpdatePayment({
     }
   });
 
-  const onSubmit: SubmitHandler<Payment> = async formData => {
+  const onSubmit: SubmitHandler<PaymentClientType> = async formData => {
     try {
       const result = await updateMutation.mutateAsync(formData);
       if (result.code === 'OK') {

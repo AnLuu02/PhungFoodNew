@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { api } from '~/trpc/react';
+import { NotificationClientHasUser } from '~/types';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { NotificationModal } from './components/modal/cretae_update_notification';
 import { ViewModal } from './components/modal/ViewModal';
@@ -13,12 +14,11 @@ import { HistoryTabSection } from './components/section/HistoryTabSection';
 import { SendTabSection } from './components/section/SendTabSection';
 import { SettingsTabSection } from './components/section/SettingsTabSection';
 import { TemplatesTabSection } from './components/section/TemplatesTabSection';
-import { NotificationClient } from './types';
 export interface SendNotificationStateProps {
   open: boolean;
   typeAction: 'create' | 'update' | 'template';
   recipient?: 'all' | 'individual' | undefined;
-  notification?: NotificationClient;
+  notification?: NotificationClientHasUser;
 }
 
 const TABS = {
@@ -52,7 +52,7 @@ export default function NotificationManagement({
   });
   const [showViewDialog, setShowViewDialog] = useState<{
     open: boolean;
-    notification?: NotificationClient;
+    notification?: NotificationClientHasUser;
   }>({
     open: false
   });

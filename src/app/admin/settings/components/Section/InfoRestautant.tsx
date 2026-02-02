@@ -10,13 +10,13 @@ import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-ba
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { restaurantSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Restaurant } from '~/types/restaurant';
+import { RestaurantClientType } from '~/types';
 import ContactTab from '../info/ContactTab';
 import GeneralTab from '../info/GeneralTab';
 import { OpeningHourTab } from '../info/OpeningHourTab';
 import { SocialTab } from '../info/SocialTab';
 export default function RestaurantInfoSettings({ data }: any) {
-  const methods = useForm<Restaurant>({
+  const methods = useForm<RestaurantClientType>({
     resolver: zodResolver(restaurantSchema),
     defaultValues: data
   });
@@ -48,7 +48,7 @@ export default function RestaurantInfoSettings({ data }: any) {
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<Restaurant> = async formData => {
+  const onSubmit: SubmitHandler<RestaurantClientType> = async formData => {
     let logo: File | any;
     if (data?.logo?.url && data?.logo?.url !== '') {
       logo = await vercelBlobToFile(data?.logo?.url as string);

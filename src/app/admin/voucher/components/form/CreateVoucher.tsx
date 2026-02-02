@@ -26,7 +26,7 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { voucherSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Voucher } from '~/types/voucher';
+import { VoucherClientType } from '~/types';
 
 export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const [applyForLevel, setApplyForLevel] = useState(false);
@@ -36,7 +36,7 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
     watch,
     setValue,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Voucher>({
+  } = useForm<VoucherClientType>({
     resolver: zodResolver(voucherSchema),
     defaultValues: {
       id: '',
@@ -68,7 +68,7 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<Voucher> = async formData => {
+  const onSubmit: SubmitHandler<VoucherClientType> = async formData => {
     try {
       if (formData) {
         const result = await mutation.mutateAsync({

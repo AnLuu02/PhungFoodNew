@@ -50,14 +50,14 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                   <Box>
                     <Box className='font-medium'>
                       Hotline:{' '}
-                      <a href={`tel:${restaurant?.phone || '09180646181'}`} className='hover:underline'>
-                        {restaurant?.phone || '09180646181'}
+                      <a href={`tel:${restaurant?.hotPhone || '09180646181'}`} className='hover:underline'>
+                        {restaurant?.hotPhone || '09180646181'}
                       </a>
                     </Box>
                     <Box className='text-gray-400 dark:text-dark-text'>
                       Đặt món:{' '}
-                      <a href={`tel:${restaurant?.phone || '09180646181'}`} className='hover:underline'>
-                        {restaurant?.phone || '09180646181'}
+                      <a href={`tel:${restaurant?.hotPhone || '09180646181'}`} className='hover:underline'>
+                        {restaurant?.hotPhone || '09180646181'}
                       </a>
                     </Box>
                   </Box>

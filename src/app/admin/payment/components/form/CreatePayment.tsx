@@ -10,7 +10,7 @@ import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { paymentSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Payment } from '~/types/payment';
+import { PaymentClientType } from '~/types';
 
 export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
@@ -19,7 +19,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
     watch,
     setValue,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Payment>({
+  } = useForm<PaymentClientType>({
     resolver: zodResolver(paymentSchema),
     defaultValues: {
       id: '',
@@ -53,7 +53,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
     setValue('provider', tagProvider);
   }, [debouceName]);
 
-  const onSubmit: SubmitHandler<Payment> = async formData => {
+  const onSubmit: SubmitHandler<PaymentClientType> = async formData => {
     try {
       const result = await mutation.mutateAsync(formData);
       if (result.code === 'OK') {

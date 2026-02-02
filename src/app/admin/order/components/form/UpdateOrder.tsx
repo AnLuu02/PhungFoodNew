@@ -27,7 +27,7 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalAddressType, LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Order } from '~/types/order';
+import { OrderClientType } from '~/types';
 import OrderItemForm from './OrderItemForm';
 
 export default function UpdateOrder({
@@ -51,7 +51,7 @@ export default function UpdateOrder({
     setValue,
     getValues,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Order>({
+  } = useForm<OrderClientType>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
       id: '',
@@ -109,9 +109,9 @@ export default function UpdateOrder({
     if (data?.id) {
       reset({
         id: data?.id,
-        finalTotal: data?.finalTotal || 0,
-        discountAmount: data?.discountAmount || 0,
-        originalTotal: data?.originalTotal || 0,
+        finalTotal: Number(data?.finalTotal || 0),
+        discountAmount: Number(data?.discountAmount || 0),
+        originalTotal: Number(data?.originalTotal || 0),
         status: data?.status,
         userId: data?.userId || '',
         paymentId: data?.paymentId || '',
@@ -138,7 +138,7 @@ export default function UpdateOrder({
     }
   });
 
-  const onSubmit: SubmitHandler<Order> = async formData => {
+  const onSubmit: SubmitHandler<OrderClientType> = async formData => {
     try {
       if (!orderId) return;
       const result = await updateMutation.mutateAsync({
@@ -359,7 +359,7 @@ export default function UpdateOrder({
                     searchable
                     radius='md'
                     placeholder=' Chọn khách hàng'
-                    data={users?.map(user => ({ value: user.id, label: user.name }))}
+                    data={users?.map(user => ({ value: user.id, label: user?.name || user.email }))}
                     {...field}
                     error={errors.userId?.message}
                   />
@@ -448,8 +448,8 @@ export default function UpdateOrder({
                   id: '',
                   productId: '',
                   quantity: 1,
-                  price: 0,
-                  orderId: ''
+                  price: 0
+                  // orderId: ''
                 })
               }
               variant='outline'

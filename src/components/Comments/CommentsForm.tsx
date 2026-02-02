@@ -8,7 +8,7 @@ import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Review } from '~/types/review';
+import { ReviewClientType } from '~/types';
 
 export const CommentsForm = ({ product }: { product: any }) => {
   const { data: user } = useSession();
@@ -20,7 +20,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
     setValue,
     watch,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Review>({
+  } = useForm<ReviewClientType>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
       id: '',
@@ -41,7 +41,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
     }
   });
   const utils = api.useUtils();
-  const onSubmit: SubmitHandler<Review> = async formData => {
+  const onSubmit: SubmitHandler<ReviewClientType> = async formData => {
     if (!user?.user?.id) {
       NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
       return;

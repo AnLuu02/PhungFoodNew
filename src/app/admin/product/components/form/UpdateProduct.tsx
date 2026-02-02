@@ -20,6 +20,7 @@ import {
 import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import z from 'zod';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
@@ -28,9 +29,8 @@ import { createTag } from '~/lib/FuncHandler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
-import { productSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Product } from '~/types/product';
+import { ProductClientSchema, ProductClientType } from '~/types';
 import { regions } from './CreateProduct';
 
 export default function UpdateProduct({
@@ -58,12 +58,19 @@ export default function UpdateProduct({
     reset,
     watch,
     setValue
-  } = useForm<Product>({
-    resolver: zodResolver(productSchema),
+  } = useForm<ProductClientType & { id: string }>({
+    resolver: zodResolver(
+      ProductClientSchema.extend({
+        id: z
+          .string({ required_error: 'Sản phẩm không tồn tại. Kiểm tra lại.' })
+          .min(1, 'Sản phẩm không tồn tại. Kiểm tra lại.')
+      })
+    ),
     defaultValues: {
       id: '',
       name: '',
       tag: '',
+      unit: 'Phần',
       description: '',
       price: 0,
       discount: 0,
@@ -107,8 +114,9 @@ export default function UpdateProduct({
         name: data?.name,
         tag: data?.tag,
         description: data?.description || '',
-        price: data?.price,
-        discount: data?.discount,
+        price: Number(data?.price || 0),
+        unit: data?.unit,
+        discount: Number(data?.discount || 0),
         region: data?.region,
         tags: data?.tags,
         availableQuantity: data?.availableQuantity || 0,
@@ -136,7 +144,7 @@ export default function UpdateProduct({
     }
   });
 
-  const onSubmit: SubmitHandler<Product> = async formData => {
+  const onSubmit: SubmitHandler<ProductClientType & { id: string }> = async formData => {
     try {
       if (productId) {
         const thumbnail_format =
@@ -162,7 +170,7 @@ export default function UpdateProduct({
           ...formData,
           tag: createTag(formData.name),
           thumbnail: thumbnail_format as any,
-          gallery: images_format as any
+          gallery: images_format || []
         };
         const result = await updateMutation.mutateAsync({
           ...formDataWithImageUrlAsString,
@@ -448,7 +456,7 @@ export default function UpdateProduct({
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={4}>
           <Controller
             control={control}
             name='availableQuantity'
@@ -466,7 +474,7 @@ export default function UpdateProduct({
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={4}>
           <Controller
             control={control}
             name='soldQuantity'
@@ -487,7 +495,34 @@ export default function UpdateProduct({
             )}
           />
         </Grid.Col>
-
+        <Grid.Col span={4}>
+          <Controller
+            name='unit'
+            control={control}
+            render={({ field }) => (
+              <Select
+                label='Đơn vị'
+                radius='md'
+                placeholder=' Chọn đơn vị'
+                searchable
+                data={[
+                  {
+                    value: 'Phần',
+                    label: 'Phần'
+                  },
+                  {
+                    value: 'Cái',
+                    label: 'Cái'
+                  }
+                ]}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                error={errors.unit?.message}
+              />
+            )}
+          />
+        </Grid.Col>
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -564,7 +599,7 @@ export default function UpdateProduct({
             rules={{
               required: 'File hoặc URL là bắt buộc',
               validate: files =>
-                files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
+                files && files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
                   ? true
                   : 'Only PNG, JPEG, or JPG files are allowed'
             }}

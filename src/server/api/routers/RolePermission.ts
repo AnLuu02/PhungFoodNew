@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
+import { permissionSchema, roleSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 type RoleWithPermissions = Prisma.RoleGetPayload<{
@@ -113,13 +114,7 @@ export const rolePermissionRouter = createTRPCRouter({
   }),
   createRole: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(
-      z.object({
-        name: z.string(),
-        viName: z.string().optional(),
-        permissionIds: z.array(z.string())
-      })
-    )
+    .input(roleSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const role = await ctx.db.role.create({
         data: {
@@ -140,13 +135,7 @@ export const rolePermissionRouter = createTRPCRouter({
     .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
-        data: z.array(
-          z.object({
-            name: z.string().min(1, 'Tên vai trò không được để trống'),
-            viName: z.string().optional(),
-            permissionIds: z.array(z.string())
-          })
-        )
+        data: z.array(roleSchema)
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -185,17 +174,10 @@ export const rolePermissionRouter = createTRPCRouter({
     }),
   updateRole: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(
-      z.object({
-        roleId: z.string(),
-        name: z.string(),
-        viName: z.string().optional(),
-        permissionIds: z.array(z.string())
-      })
-    )
+    .input(roleSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const role = await ctx.db.role.upsert({
-        where: { id: input.roleId },
+        where: { id: input.id },
         create: {
           name: input.name,
           viName: input.viName,
@@ -212,7 +194,7 @@ export const rolePermissionRouter = createTRPCRouter({
               await ctx.db.permission.findMany({
                 where: {
                   roles: {
-                    some: { id: input.roleId }
+                    some: { id: input.id }
                   },
                   id: {
                     notIn: input.permissionIds
@@ -312,14 +294,10 @@ export const rolePermissionRouter = createTRPCRouter({
 
   createPermission: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(z.object({ name: z.string(), viName: z.string().optional(), description: z.string().optional() }))
+    .input(permissionSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const permission = await ctx.db.permission.create({
-        data: {
-          name: input.name,
-          viName: input.viName,
-          description: input.description
-        }
+        data: input
       });
       return {
         code: 'OK',
@@ -331,13 +309,7 @@ export const rolePermissionRouter = createTRPCRouter({
     .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(
       z.object({
-        data: z.array(
-          z.object({
-            viName: z.string().optional(),
-            name: z.string().min(1, 'Tên vai trò không được để trống'),
-            description: z.string().optional()
-          })
-        )
+        data: z.array(permissionSchema)
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -367,22 +339,11 @@ export const rolePermissionRouter = createTRPCRouter({
 
   updatePermission: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(
-      z.object({
-        permissionId: z.string(),
-        name: z.string(),
-        viName: z.string().optional(),
-        description: z.string().optional()
-      })
-    )
+    .input(permissionSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const role = await ctx.db.permission.update({
-        where: { id: input.permissionId },
-        data: {
-          viName: input.viName,
-          name: input.name,
-          description: input.description
-        }
+        where: { id: input.id },
+        data: input
       });
       if (!role) {
         throw new Error('Role not found');

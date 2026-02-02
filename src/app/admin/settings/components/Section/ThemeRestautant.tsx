@@ -22,7 +22,7 @@ import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { themeSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Theme } from '~/types/restaurant';
+import { ThemeClientType } from '~/types';
 
 export default function ThemeSettingsManagement({ restaurantId, data }: { restaurantId: string; data: any }) {
   const {
@@ -30,7 +30,7 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Theme>({
+  } = useForm<ThemeClientType>({
     resolver: zodResolver(themeSchema),
     defaultValues: {
       id: data?.id,
@@ -65,7 +65,7 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<Theme> = async formData => {
+  const onSubmit: SubmitHandler<ThemeClientType> = async formData => {
     let result = await updateMutation.mutateAsync({
       ...formData,
       restaurantId: restaurantId

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { invoiceSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
@@ -100,16 +101,7 @@ export const invoiceRouter = createTRPCRouter({
     }),
   create: publicProcedure
     .use(requirePermission('create:invoice'))
-    .input(
-      z.object({
-        orderId: z.string(),
-        salerId: z.string(),
-        invoiceNumber: z.string(),
-        status: z.string().default('PAID'),
-        currency: z.string().default('VND'),
-        taxCode: z.string().optional()
-      })
-    )
+    .input(invoiceSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const invoice = await ctx.db.invoice.create({ data: input });
       return {
@@ -171,17 +163,7 @@ export const invoiceRouter = createTRPCRouter({
 
   update: publicProcedure
     .use(requirePermission('update:invoice'))
-    .input(
-      z.object({
-        id: z.string(),
-        orderId: z.string(),
-        salerId: z.string(),
-        invoiceNumber: z.string(),
-        status: z.string().default('PAID'),
-        currency: z.string().default('VND'),
-        taxCode: z.string().optional()
-      })
-    )
+    .input(invoiceSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const invoice = await ctx.db.invoice.update({
         where: {

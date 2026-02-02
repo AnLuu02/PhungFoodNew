@@ -4,22 +4,11 @@ import { Grid, Group, NumberInput, Select, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { revenueSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-
-const revenueSchema = z.object({
-  id: z.string(),
-  userId: z.string(),
-  totalSpent: z.number(),
-  totalOrders: z.number(),
-  day: z.number(),
-  year: z.number(),
-  month: z.number()
-});
-
-type revenueForm = z.infer<typeof revenueSchema>;
+import { RevenueClientType } from '~/types';
 
 export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened: Dispatch<SetStateAction<boolean>> }) {
   const { data: users } = api.User.getAll.useQuery();
@@ -29,7 +18,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<revenueForm>({
+  } = useForm<RevenueClientType>({
     resolver: zodResolver(revenueSchema),
     defaultValues: {
       userId: '',
@@ -64,7 +53,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
     });
   }, [revenue]);
 
-  const onSubmit: SubmitHandler<revenueForm> = async formData => {
+  const onSubmit: SubmitHandler<RevenueClientType> = async formData => {
     try {
       const result = await createRevenueMutation.mutateAsync(formData);
       if (result) {

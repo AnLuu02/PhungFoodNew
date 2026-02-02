@@ -93,8 +93,8 @@ export const favouriteFoodRouter = createTRPCRouter({
         include: {
           product: {
             include: {
-              favouriteFood: true,
-              review: true,
+              favouriteFoods: true,
+              reviews: true,
               images: true
             }
           },

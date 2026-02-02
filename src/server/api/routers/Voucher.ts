@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { voucherSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -61,44 +62,10 @@ export const voucherRouter = createTRPCRouter({
     }),
   create: publicProcedure
     .use(requirePermission('create:voucher'))
-    .input(
-      z.object({
-        name: z.string().min(1, 'Tên voucher không được để trống'),
-        description: z.string().optional(),
-        type: z.enum(['PERCENTAGE', 'FIXED']),
-        isActive: z.boolean().default(true),
-        discountValue: z.number().min(1, 'Giá trị giảm không hợp lệ'),
-        minOrderPrice: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
-        maxDiscount: z.number().min(0, 'Giá trị tối thiểu không hợp lệ'),
-        code: z.string().min(1, 'Ma code khong duoc de trong'),
-        quantity: z.number().min(1, 'Số lượng không hợp lệ'),
-        quantityForUser: z.number().default(1),
-        applyAll: z.boolean().default(false),
-        availableQuantity: z.number().min(0).default(0),
-        startDate: z.date(),
-        endDate: z.date(),
-        pointUser: z.number().optional()
-      })
-    )
+    .input(voucherSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const voucher = await ctx.db.voucher.create({
-        data: {
-          name: input.name,
-          description: input.description,
-          type: input.type,
-          code: input.code,
-          isActive: input.isActive,
-          discountValue: input.discountValue,
-          minOrderPrice: input.minOrderPrice,
-          maxDiscount: input.maxDiscount,
-          quantity: input.quantity,
-          quantityForUser: input.quantityForUser,
-          availableQuantity: input.availableQuantity,
-          startDate: input.startDate,
-          endDate: input.endDate,
-          applyAll: input.applyAll,
-          pointUser: input.pointUser
-        }
+        data: input
       });
       return {
         code: 'OK',
@@ -173,7 +140,7 @@ export const voucherRouter = createTRPCRouter({
           OR: [
             { applyAll: true },
             {
-              voucherForUser: {
+              voucherForUsers: {
                 some: {
                   userId: input.userId
                 }
@@ -189,7 +156,7 @@ export const voucherRouter = createTRPCRouter({
           ]
         },
         include: {
-          voucherForUser: true
+          voucherForUsers: true
         }
       });
       return voucher;

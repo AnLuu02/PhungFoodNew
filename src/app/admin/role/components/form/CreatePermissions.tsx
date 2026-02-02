@@ -3,25 +3,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, Textarea, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { permissionSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-
-const permissionSchema = z.object({
-  name: z.string({ required_error: 'Tên quyền là bắt buộc' }).min(1, 'Tên quyền là bắt buộc'),
-  viName: z.string({ required_error: 'Tên phiên âm là bắt buộc' }).min(1, 'Tên phiên âm là bắt buộc'),
-  description: z.string().optional()
-});
-
-type PermissionForm = z.infer<typeof permissionSchema>;
+import { PermissionClientType } from '~/types';
 
 export default function CreatePermission({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<PermissionForm>({
+  } = useForm<PermissionClientType>({
     resolver: zodResolver(permissionSchema),
     defaultValues: {
       name: '',
@@ -39,7 +32,7 @@ export default function CreatePermission({ setOpened }: { setOpened: Dispatch<Se
     }
   });
 
-  const onSubmit: SubmitHandler<PermissionForm> = async formData => {
+  const onSubmit: SubmitHandler<PermissionClientType> = async formData => {
     try {
       const result = await createPermissionMutation.mutateAsync(formData);
       if (result) {

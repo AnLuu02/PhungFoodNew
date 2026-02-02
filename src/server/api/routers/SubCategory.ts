@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
+import { imageReqSchema, subCategorySchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -75,12 +76,12 @@ export const subCategoryRouter = createTRPCRouter({
           include: {
             category: true,
             image: true,
-            product: {
+            products: {
               where: {
                 isActive: true
               },
               include: {
-                favouriteFood: true,
+                favouriteFoods: true,
                 images: true
               }
             }
@@ -102,21 +103,7 @@ export const subCategoryRouter = createTRPCRouter({
     }),
   create: publicProcedure
     .use(requirePermission('create:subCategory'))
-    .input(
-      z.object({
-        name: z.string().min(1, 'Tên danh mục không được để trống'),
-        isActive: z.boolean().default(true),
-        description: z.string().optional(),
-        tag: z.string(),
-        categoryId: z.string(),
-        thumbnail: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional()
-      })
-    )
+    .input(subCategorySchema.extend({ thumbnail: imageReqSchema }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.subCategory.findFirst({
         where: {
@@ -172,22 +159,7 @@ export const subCategoryRouter = createTRPCRouter({
     }),
   update: publicProcedure
     .use(requirePermission('update:subCategory'))
-    .input(
-      z.object({
-        id: z.string(),
-        isActive: z.boolean().default(true),
-        name: z.string().min(1, 'Tên danh mục không được để trống'),
-        description: z.string().optional(),
-        tag: z.string(),
-        categoryId: z.string(),
-        thumbnail: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional()
-      })
-    )
+    .input(subCategorySchema.extend({ thumbnail: imageReqSchema }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.subCategory.findFirst({
         where: {

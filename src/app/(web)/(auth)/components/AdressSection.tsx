@@ -1,7 +1,7 @@
 import { GridCol, Select, Textarea } from '@mantine/core';
 import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form';
+import { UserClientType } from '~/types';
 import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
-import { User } from '~/types/user';
 
 export default function AddressSection({
   control,
@@ -11,9 +11,9 @@ export default function AddressSection({
   districts,
   wards
 }: {
-  control: Control<User, any, User>;
-  errors: FieldErrors<User>;
-  watch: UseFormWatch<User>;
+  control: Control<UserClientType, any, UserClientType>;
+  errors: FieldErrors<UserClientType>;
+  watch: UseFormWatch<UserClientType>;
   provinces?: ProvinceResponse;
   districts?: DistrictResponse;
   wards?: WardResponse;

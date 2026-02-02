@@ -5,7 +5,14 @@ import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
-import { openingHourSchema, socialSchema } from '~/lib/ZodSchema/schema';
+import {
+  bannerSchema,
+  imageReqSchema,
+  openingHourSchema,
+  restaurantSchema,
+  socialSchema,
+  themeSchema
+} from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
@@ -40,8 +47,9 @@ export const restaurantRouter = createTRPCRouter({
               isActive: true,
               description: 'Chuyên cung cấp các món ăn đặc sản vùng miền nói chung và miền Tây sông nước nói riêng.',
               address: '123 Đường Lê Lợi, Quận 1, TP.HCM',
-              phone: '0918064618',
-              website: 'https://phung-food-new.vercel.app/',
+              hotPhone: '0918064618',
+              phones: ['0942486950'],
+              websites: ['https://phung-food-new.vercel.app/'],
               email: 'anluu099@gmail.com',
               theme: {
                 create: {
@@ -128,33 +136,7 @@ export const restaurantRouter = createTRPCRouter({
   }),
   create: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(
-      z.object({
-        name: z.string().min(1, 'Tên là bắt buộc'),
-        description: z.string().optional(),
-        logo: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional(),
-        address: z.string().min(1, 'Địa chỉ là bắt buộc'),
-        phone: z.string().min(1, 'Phải có ít nhất một số điện thoại'),
-        website: z.string().optional(),
-        socials: z.array(socialSchema),
-        email: z.string().email().optional(),
-        theme: z
-          .object({
-            primaryColor: z.string(),
-            secondaryColor: z.string(),
-            themeMode: z.string().default('light'),
-            fontFamily: z.string().optional(),
-            borderRadius: z.string().optional(),
-            faviconUrl: z.string().optional()
-          })
-          .optional()
-      })
-    )
+    .input(restaurantSchema.omit({ openingHours: true }).extend({ logo: imageReqSchema }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       let imgURL: string | undefined;
 
@@ -192,46 +174,7 @@ export const restaurantRouter = createTRPCRouter({
 
   update: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(
-      z.object({
-        id: z.string().optional(),
-        name: z.string().min(1, 'Tên là bắt buộc'),
-        description: z.string().optional(),
-        logo: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional(),
-        address: z.string().min(1, 'Địa chỉ là bắt buộc'),
-        phone: z.string().min(1, 'Phải có ít nhất một số điện thoại'),
-        website: z.string().optional(),
-        socials: z.array(socialSchema),
-        email: z.string().email().optional(),
-        theme: z
-          .object({
-            primaryColor: z.string(),
-            secondaryColor: z.string(),
-            themeMode: z.string().default('light'),
-            fontFamily: z.string().nullable(),
-            borderRadius: z.string().nullable(),
-            faviconUrl: z.string().nullable()
-          })
-          .optional(),
-        openingHours: z
-          .array(
-            z.object({
-              id: z.string(),
-              dayOfWeek: z.string(),
-              viNameDay: z.string(),
-              openTime: z.string().optional(),
-              closeTime: z.string().optional(),
-              isClosed: z.boolean()
-            })
-          )
-          .optional()
-      })
-    )
+    .input(restaurantSchema.extend({ logo: imageReqSchema }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.restaurant.findFirst({
         where: {
@@ -320,17 +263,7 @@ export const restaurantRouter = createTRPCRouter({
     }),
 
   changeTheme: publicProcedure
-    .input(
-      z.object({
-        restaurantId: z.string(),
-        primaryColor: z.string(),
-        secondaryColor: z.string(),
-        themeMode: z.string().default('light'),
-        fontFamily: z.string().optional().nullable(),
-        borderRadius: z.string().optional().nullable(),
-        faviconUrl: z.string().optional().nullable()
-      })
-    )
+    .input(themeSchema.extend({ restaurantId: z.string() }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       try {
         const [, theme] = await Promise.all([
@@ -372,26 +305,10 @@ export const restaurantRouter = createTRPCRouter({
   }),
   createBanner: publicProcedure
     .input(
-      z.object({
-        isActive: z.boolean().default(true),
-        banner: z
-          .array(
-            z.object({
-              fileName: z.string(),
-              base64: z.string()
-            })
-          )
-          .optional(),
-        gallery: z
-          .array(
-            z.object({
-              fileName: z.string(),
-              base64: z.string()
-            })
-          )
-          .optional(),
-        startDate: z.date().optional(),
-        endDate: z.date().optional()
+      bannerSchema.extend({
+        restaurantId: z.string(),
+        banner: z.array(imageReqSchema),
+        gallery: z.array(imageReqSchema)
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -421,6 +338,7 @@ export const restaurantRouter = createTRPCRouter({
       }
       const banner = await ctx.db.banner.create({
         data: {
+          restaurantId: input.restaurantId,
           isActive: input.isActive,
           startDate: input.startDate,
           endDate: input.endDate,
@@ -463,27 +381,9 @@ export const restaurantRouter = createTRPCRouter({
     }),
   updateBanner: publicProcedure
     .input(
-      z.object({
-        id: z.string(),
-        banner: z
-          .array(
-            z.object({
-              fileName: z.string(),
-              base64: z.string()
-            })
-          )
-          .optional(),
-        gallery: z
-          .array(
-            z.object({
-              fileName: z.string(),
-              base64: z.string()
-            })
-          )
-          .optional(),
-        startDate: z.date().optional(),
-        endDate: z.date().optional(),
-        isActive: z.boolean()
+      bannerSchema.extend({
+        banner: z.array(imageReqSchema),
+        gallery: z.array(imageReqSchema)
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {

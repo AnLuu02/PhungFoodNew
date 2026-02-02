@@ -9,9 +9,8 @@ import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { createTag } from '~/lib/FuncHandler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { subCategorySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { SubCategory } from '~/types/category';
+import { SubCategoryClientSchema, SubCategoryClientType } from '~/types';
 
 export default function UpdateSubCategory({
   subCategoryId,
@@ -31,8 +30,8 @@ export default function UpdateSubCategory({
     reset,
     watch,
     setValue
-  } = useForm<SubCategory>({
-    resolver: zodResolver(subCategorySchema),
+  } = useForm<SubCategoryClientType>({
+    resolver: zodResolver(SubCategoryClientSchema),
     defaultValues: {
       id: '',
       name: '',
@@ -80,7 +79,7 @@ export default function UpdateSubCategory({
     }
   });
 
-  const onSubmit: SubmitHandler<SubCategory> = async formData => {
+  const onSubmit: SubmitHandler<SubCategoryClientType> = async formData => {
     if (subCategoryId) {
       const file = (formData?.thumbnail?.url as File) ?? undefined;
       const fileName = file ? file?.name : '';

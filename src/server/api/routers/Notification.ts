@@ -9,22 +9,12 @@ export const notificationRouter = createTRPCRouter({
   create: publicProcedure.input(notificationSchema).mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
     const notification = await ctx.db.notification.create({
       data: {
-        title: input.title,
-        message: input.message,
-        type: input.type,
-        recipient: input.recipient,
-        status: input.status,
-        priority: input.priority,
-        channels: input.channels,
-        createdAt: new Date(),
+        ...input,
         template: input.templateId
           ? {
               connect: { id: input.templateId }
             }
           : undefined,
-        scheduledAt: input.scheduledAt,
-        tags: input.tags,
-        analytics: input.analytics,
         recipients:
           input.recipient !== 'all' ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) } : undefined
       }

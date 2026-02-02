@@ -144,10 +144,10 @@ export const revenueRouter = createTRPCRouter({
       const endTimeToDate = endTime && new Date(endTime);
       const data = await ctx.db.category.findMany({
         include: {
-          subCategory: {
+          subCategories: {
             select: {
               name: true,
-              product: {
+              products: {
                 select: {
                   id: true,
                   name: true

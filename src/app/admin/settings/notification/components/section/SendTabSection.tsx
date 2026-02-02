@@ -5,9 +5,9 @@ import { IconUser, IconUsers } from '@tabler/icons-react';
 import { Dispatch, SetStateAction } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
+import { NotificationClientHasUser } from '~/types';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
-import { NotificationClient } from '../../types';
 
 export const SendTabSection = ({
   setShowSendDialog,
@@ -16,7 +16,7 @@ export const SendTabSection = ({
 }: {
   setShowSendDialog: Dispatch<SetStateAction<SendNotificationStateProps>>;
   setActiveTab: Dispatch<SetStateAction<string>>;
-  notifications: NotificationClient[];
+  notifications: NotificationClientHasUser[];
 }) => {
   return (
     <>

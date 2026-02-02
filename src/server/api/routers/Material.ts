@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { materialSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
@@ -81,14 +82,7 @@ export const materialRouter = createTRPCRouter({
     }),
   create: publicProcedure
     .use(requirePermission('create:material'))
-    .input(
-      z.object({
-        name: z.string().min(1, 'Tên nguyên liệu không được để trống'),
-        tag: z.string(),
-        description: z.string().optional(),
-        category: z.string().min(1, 'Danh mục không được để trống')
-      })
-    )
+    .input(materialSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingMaterial = await ctx.db.material.findMany({
         where: {
@@ -123,14 +117,7 @@ export const materialRouter = createTRPCRouter({
   createMany: publicProcedure
     .input(
       z.object({
-        data: z.array(
-          z.object({
-            name: z.string().min(1, 'Tên nguyên liệu không được để trống'),
-            tag: z.string(),
-            description: z.string().optional(),
-            category: z.string().min(1, 'Danh mục không được để trống')
-          })
-        )
+        data: z.array(materialSchema)
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -214,15 +201,7 @@ export const materialRouter = createTRPCRouter({
 
   update: publicProcedure
     .use(requirePermission('update:material'))
-    .input(
-      z.object({
-        id: z.string(),
-        name: z.string().min(1, 'Tên nguyên liệu không được để trống'),
-        category: z.string().min(1, 'Danh mục không được để trống'),
-        tag: z.string().min(1, 'Tag không được để trống'),
-        description: z.string().optional()
-      })
-    )
+    .input(materialSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingMaterial: any = await ctx.db.material.findFirst({
         where: {

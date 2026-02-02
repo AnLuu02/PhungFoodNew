@@ -8,27 +8,27 @@ datasource db {
 }
 
 model Category {
-  id          String        @id @default(cuid())
-  name        String
-  isActive    Boolean?      @default(true)
-  tag         String        @unique
-  description String?
-  subCategory SubCategory[]
-  createdAt   DateTime?     @default(now())
-  updatedAt   DateTime?     @updatedAt
+  id            String        @id @default(cuid())
+  name          String
+  isActive      Boolean       @default(true)
+  tag           String        @unique
+  description   String?
+  subCategories SubCategory[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
 }
 
 model SubCategory {
   id          String    @id @default(cuid())
   name        String
-  tag         String
-  isActive    Boolean?  @default(true)
-  categoryId  String
+  tag         String    @unique
+  isActive    Boolean   @default(true)
   description String?
+  categoryId  String
   image       Image?
-  product     Product[]
   category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt   DateTime? @default(now())
+  products    Product[]
+  createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
 }
 
@@ -37,46 +37,45 @@ model Voucher {
   name              String
   description       String?
   type              VoucherType
-  isActive          Boolean?         @default(false)
-  discountValue     Float
+  isActive          Boolean          @default(false)
+  discountValue     Decimal          @default(0) @db.Decimal(12, 2)
   code              String           @default("GIAMGIANE")
-  maxDiscount       Float
-  minOrderPrice     Float
+  maxDiscount       Decimal          @default(0) @db.Decimal(12, 2)
+  minOrderPrice     Decimal          @default(0) @db.Decimal(12, 2)
   quantity          Int              @default(0)
   quantityForUser   Int              @default(1)
   usedQuantity      Int              @default(0)
   availableQuantity Int              @default(0)
   applyAll          Boolean          @default(false)
-  startDate         DateTime
-  endDate           DateTime
+  startDate         DateTime         @default(now())
+  endDate           DateTime         @default(now())
   pointUser         Int?
-  voucherForUser    VoucherForUser[]
+  voucherForUsers   VoucherForUser[]
   orders            Order[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime?        @updatedAt
-  User              User[]
 }
 
 model VoucherForUser {
   id              String    @id @default(cuid())
+  userId          String?
   user            User?     @relation(fields: [userId], references: [id])
+  voucherId       String?
   voucher         Voucher?  @relation(fields: [voucherId], references: [id])
   quantityForUser Int       @default(1)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime? @updatedAt
-  userId          String?
-  voucherId       String?
 
   @@unique([userId, voucherId])
 }
 
 model Order {
   id             String      @id @default(cuid())
-  originalTotal  Int         @default(0)
-  finalTotal     Int         @default(0)
-  discountAmount Int         @default(0)
+  originalTotal  Decimal     @default(0) @db.Decimal(12, 2)
+  finalTotal     Decimal     @default(0) @db.Decimal(12, 2)
+  discountAmount Decimal     @default(0) @db.Decimal(12, 2)
   status         OrderStatus
-  transactionId  String?     @default("")
+  transactionId  String?
   transDate      DateTime?
   paymentId      String?
   payment        Payment?    @relation(fields: [paymentId], references: [id])
@@ -85,48 +84,52 @@ model Order {
   delivery       Delivery?
   userId         String?
   user           User?       @relation(fields: [userId], references: [id])
+  invoices       Invoice[]
   createdAt      DateTime?   @default(now())
   updatedAt      DateTime?   @updatedAt
-  invoice        Invoice?
 
   @@index([userId], map: "Order_usersId_fkey_unique")
+  @@index([status])
 }
 
 model Invoice {
-  id            String   @id @default(cuid())
-  orderId       String   @unique
-  order         Order    @relation(fields: [orderId], references: [id])
-  salerId       String?
-  invoiceNumber String   @unique
-  status        String   @default("PAID")
-  currency      String   @default("VND")
+  id            String    @id @default(cuid())
+  orderId       String
+  order         Order     @relation(fields: [orderId], references: [id])
+  invoiceNumber String    @unique
+  status        String    @default("PAID")
+  currency      String    @default("VND")
   taxCode       String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  saler         User?    @relation(fields: [salerId], references: [id])
+  salerId       String
+  saler         User      @relation(fields: [salerId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+
+  @@index([orderId])
 }
 
 model Delivery {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String?
-  phone     String?
-  address   Address?
+  id        String    @id @default(cuid())
+  name      String
+  email     String
+  phone     String
   note      String?
-  orderId   String   @unique
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  addressId String    @unique
+  address   Address   @relation(fields: [addressId], references: [id], onDelete: Cascade)
+  orderId   String    @unique
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model OrderItem {
   id        String    @id @default(cuid())
-  productId String
   quantity  Int       @default(1)
-  price     Int       @default(0)
-  note      String?   @default("")
-  orderId   String
+  price     Decimal   @default(0) @db.Decimal(12, 2)
+  note      String?
+  productId String
   product   Product   @relation(fields: [productId], references: [id])
+  orderId   String
   order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
@@ -149,7 +152,7 @@ model Payment {
   metadata      Json?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime? @updatedAt
-  order         Order[]
+  orders        Order[]
 }
 
 model Product {
@@ -157,109 +160,112 @@ model Product {
   name                  String
   description           String?
   descriptionDetailJson Json?
-  descriptionDetailHtml String?         @default("<p>Đang cập nhật</p>")
-  price                 Int             @default(0)
-  discount              Int             @default(0)
+  descriptionDetailHtml String          @default("<p>Đang cập nhật</p>")
+  price                 Decimal         @default(0) @db.Decimal(12, 2)
+  unit                  String          @default("Phần")
+  discount              Decimal         @default(0) @db.Decimal(12, 2)
   tag                   String          @unique
   tags                  String[]
-  isActive              Boolean?        @default(false)
+  isActive              Boolean         @default(false)
   region                String
   soldQuantity          Int             @default(0)
   availableQuantity     Int             @default(100)
   rating                Float           @default(5.0)
   totalRating           Int             @default(0)
-  orderItem             OrderItem[]
-  review                Review[]
-  favouriteFood         FavouriteFood[]
+  orderItems            OrderItem[]
+  reviews               Review[]
+  favouriteFoods        FavouriteFood[]
   materials             Material[]
-  subCategory           SubCategory?    @relation(fields: [subCategoryId], references: [id])
-  subCategoryId         String?
+  subCategoryId         String
+  subCategory           SubCategory     @relation(fields: [subCategoryId], references: [id])
   images                Image[]
-  createdAt             DateTime?       @default(now())
+  createdAt             DateTime        @default(now())
   updatedAt             DateTime?       @updatedAt
 
-  @@index([subCategoryId], map: "Product_categoryId_fkey_unique")
+  @@index([subCategoryId])
+  @@index([tag])
 }
 
 model Material {
   id          String    @id @default(cuid())
   name        String
-  tag         String
+  tag         String    @unique
   category    String
   description String?
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
   products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
 }
 
 model Review {
   id        String    @id @default(cuid())
-  userId    String
-  productId String
   rating    Float     @default(5.0)
   comment   String?
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  userId    String
   user      User      @relation(fields: [userId], references: [id])
+  productId String
   product   Product   @relation(fields: [productId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 
-  @@index([userId], map: "Review_userId_fkey_unique")
+  @@index([userId])
+  @@index([productId])
 }
 
 model User {
   id               String                  @id @default(cuid())
-  name             String
+  name             String?
   email            String                  @unique
   password         String
   isActive         Boolean                 @default(true)
   isVerified       Boolean                 @default(false)
   phone            String?                 @db.VarChar(10)
   dateOfBirth      DateTime?               @default(now())
-  gender           Gender?
+  gender           Gender                  @default(OTHER)
   pointUser        Int                     @default(0)
-  level            UserLevel
+  level            UserLevel               @default(BRONZE)
   resetToken       String?
   resetTokenExpiry DateTime?
   failedAttempts   Int                     @default(0)
   lockedUntil      DateTime?
   isLocked         Boolean                 @default(false)
-  order            Order[]
-  review           Review[]
-  favouriteFood    FavouriteFood[]
-  revenue          Revenue[]
+  orders           Order[]
+  reviews          Review[]
+  favouriteFoods   FavouriteFood[]
+  revenues         Revenue[]
   image            Image?
-  roleId           String?
-  role             Role?                   @relation(fields: [roleId], references: [id])
-  address          Address?
-  createdAt        DateTime?               @default(now())
-  updatedAt        DateTime?               @updatedAt
-  voucherForUser   VoucherForUser[]
-  Voucher          Voucher?                @relation(fields: [voucherId], references: [id])
+  roleId           String
+  role             Role                    @relation(fields: [roleId], references: [id])
+  address          Address[]
+  voucherForUsers  VoucherForUser[]
   voucherId        String?
   voucherForUserId String?
   userPermissions  UserPermission[]
-  invoice          Invoice[]
+  invoices         Invoice[]
   recipients       NotificationRecipient[]
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime?               @updatedAt
+
+  @@index([email])
 }
 
 model Address {
   id          String      @id @default(cuid())
   type        AddressType
-  provinceId  String?
-  districtId  String?
-  wardId      String?
-  province    String?
-  district    String?
-  ward        String?
-  detail      String?
+  provinceId  String
+  districtId  String
+  wardId      String
+  province    String
+  district    String
+  ward        String
+  detail      String
   postalCode  String?
-  fullAddress String?
+  fullAddress String
   createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  userId      String?     @unique
-  user        User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  delivery    Delivery?   @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
-  deliveryId  String?     @unique
+  updatedAt   DateTime?   @updatedAt
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id])
+  delivery    Delivery?
 }
 
 model Restaurant {
@@ -269,25 +275,26 @@ model Restaurant {
   description  String?
   logo         Image?
   email        String        @unique
-  phone        String
-  website      String?
+  hotPhone     String        @db.VarChar(10)
+  phones       String[]
+  websites     String[]
   socials      Social[]
   banners      Banner[]
   address      String
   createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  updatedAt    DateTime?     @updatedAt
   theme        Theme?
   openingHours OpeningHour[]
 }
 
 model OpeningHour {
   id           String     @id @default(cuid())
-  restaurantId String
   dayOfWeek    String
   viNameDay    String     @default("Thứ hai")
   openTime     String
   closeTime    String
   isClosed     Boolean    @default(false)
+  restaurantId String
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   createdAt    DateTime?  @default(now())
   updatedAt    DateTime?  @updatedAt
@@ -310,29 +317,29 @@ model Theme {
 }
 
 model Social {
-  id           String      @id @default(cuid())
-  platform     String      @unique
+  id           String     @id @default(cuid())
+  platform     String     @unique
   label        String
   value        String
   pattern      String
-  isActive     Boolean     @default(true)
+  isActive     Boolean    @default(true)
   icon         String?
-  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  restaurantId String?
-  createdAt    DateTime?   @default(now())
-  updatedAt    DateTime?   @updatedAt
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime?  @updatedAt
 }
 
 model Banner {
-  id           String      @id @default(cuid())
+  id           String     @id @default(cuid())
   images       Image[]
   isActive     Boolean
   startDate    DateTime?
   endDate      DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime?   @updatedAt
-  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
-  restaurantId String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime?  @updatedAt
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  restaurantId String
 }
 
 model Contact {
@@ -345,14 +352,7 @@ model Contact {
   type      TypeContact @default(COLLABORATION)
   responded Boolean     @default(false)
   createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-}
-
-enum TypeContact {
-  COLLABORATION
-  SUPPORT
-  FEEDBACK
-  OTHER
+  updatedAt DateTime?   @updatedAt
 }
 
 model Role {
@@ -361,7 +361,7 @@ model Role {
   viName      String?
   permissions Permission[]
   users       User[]
-  createdAt   DateTime?    @default(now())
+  createdAt   DateTime     @default(now())
   updatedAt   DateTime?    @updatedAt
 }
 
@@ -372,15 +372,15 @@ model Permission {
   description     String?
   roles           Role[]
   userPermissions UserPermission[]
-  createdAt       DateTime?        @default(now())
+  createdAt       DateTime         @default(now())
   updatedAt       DateTime?        @updatedAt
 }
 
 model UserPermission {
   id           String     @id @default(cuid())
   userId       String
-  permissionId String
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissionId String
   permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
   granted      Boolean    @default(true)
   createdAt    DateTime   @default(now())
@@ -396,7 +396,7 @@ model Revenue {
   day         Int
   year        Int
   month       Int
-  totalSpent  Decimal   @default(0)
+  totalSpent  Decimal   @default(0) @db.Decimal(12, 2)
   totalOrders Int       @default(0)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
@@ -408,10 +408,10 @@ model Revenue {
 model FavouriteFood {
   id        String    @id @default(cuid())
   userId    String
-  productId String
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
   product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt DateTime? @default(now())
+  createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 
   @@unique([userId, productId])
@@ -433,16 +433,69 @@ model Image {
   user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId     String?
   product       Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt     DateTime?    @default(now())
+  createdAt     DateTime     @default(now())
   updatedAt     DateTime?    @updatedAt
 
-  @@unique([id, subCategoryId, entityType, type])
-  @@unique([id, userId, entityType, type])
+  @@unique([subCategoryId, entityType, type])
+  @@unique([userId, entityType, type])
   @@unique([id, productId, entityType, type])
   @@unique([id, bannerId, entityType, type])
   @@index([subCategoryId, entityType])
   @@index([userId, entityType])
   @@index([productId, entityType])
+}
+
+model Notification {
+  id                     String                  @id @default(cuid())
+  title                  String
+  message                String
+  type                   NotificationType
+  recipient              RecipientType
+  status                 NotificationStatus
+  variables              Json?
+  priority               NotificationPriority
+  channels               NotificationChannel[]
+  createdAt              DateTime                @default(now())
+  scheduledAt            DateTime?
+  tags                   String[]
+  analytics              Json // { sent, delivered, read, clicked }
+  recipients             NotificationRecipient[]
+  template               NotificationTemplate?   @relation(fields: [notificationTemplateId], references: [id])
+  notificationTemplateId String?
+}
+
+model NotificationRecipient {
+  id             String                      @id @default(cuid())
+  notification   Notification                @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notificationId String
+  user           User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  sentAt         DateTime?
+  readAt         DateTime?
+  deliveredAt    DateTime?
+  clickedAt      DateTime?
+  status         NotificationRecipientStatus @default(PENDING)
+
+  @@unique([notificationId, userId])
+}
+
+model NotificationTemplate {
+  id            String           @id @default(cuid())
+  name          String           @unique
+  title         String
+  message       String
+  type          NotificationType
+  category      String
+  variables     String[]
+  createdAt     DateTime         @default(now())
+  notifications Notification[]
+}
+
+enum TypeContact {
+  COLLABORATION
+  SUPPORT
+  FEEDBACK
+  OTHER
 }
 
 enum ImageType {
@@ -493,7 +546,8 @@ enum UserLevel {
 }
 
 enum AddressType {
-  USER
+  HOME
+  WORKPlACE
   DELIVERY
 }
 
@@ -541,50 +595,4 @@ enum NotificationRecipientStatus {
   DELIVERED
   READ
   CLICKED
-}
-
-model Notification {
-  id                     String                  @id @default(cuid())
-  title                  String
-  message                String
-  type                   NotificationType
-  recipient              RecipientType
-  status                 NotificationStatus
-  variables              Json?
-  priority               NotificationPriority
-  channels               NotificationChannel[]
-  createdAt              DateTime                @default(now())
-  scheduledAt            DateTime?
-  tags                   String[]
-  analytics              Json // { sent, delivered, read, clicked }
-  recipients             NotificationRecipient[]
-  template               NotificationTemplate?   @relation(fields: [notificationTemplateId], references: [id])
-  notificationTemplateId String?
-}
-
-model NotificationRecipient {
-  id             String                      @id @default(cuid())
-  notification   Notification                @relation(fields: [notificationId], references: [id], onDelete: Cascade)
-  notificationId String
-  user           User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String
-  sentAt         DateTime?
-  readAt         DateTime?
-  deliveredAt    DateTime?
-  clickedAt      DateTime?
-  status         NotificationRecipientStatus @default(PENDING)
-
-  @@unique([notificationId, userId])
-}
-
-model NotificationTemplate {
-  id            String           @id @default(cuid())
-  name          String           @unique
-  title         String
-  message       String
-  type          NotificationType
-  category      String
-  variables     String[]
-  createdAt     DateTime         @default(now())
-  notifications Notification[]
 }

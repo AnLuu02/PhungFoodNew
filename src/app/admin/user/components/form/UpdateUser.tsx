@@ -19,6 +19,7 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
+import { Gender } from '@prisma/client';
 import { IconCalendar, IconFile, IconMail, IconPhone, IconUpload } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
@@ -33,9 +34,8 @@ import fetcher from '~/lib/FuncHandler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
-import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { User } from '~/types/user';
+import { UserClientSchema, UserClientType } from '~/types';
 
 export default function UpdateUser({
   email,
@@ -55,10 +55,10 @@ export default function UpdateUser({
     formState: { errors, isSubmitting, isDirty },
     reset,
     setValue
-  } = useForm<User>({
+  } = useForm<UserClientType>({
     resolver: zodResolver(
-      userSchema.extend({
-        phone: z.string().optional().nullable()
+      UserClientSchema.extend({
+        phone: z.string().optional()
       })
     ),
     defaultValues: {
@@ -66,7 +66,7 @@ export default function UpdateUser({
       name: '',
       email: '',
       image: undefined,
-      gender: LocalGender.OTHER,
+      gender: Gender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       isActive: true,
       password: '',
@@ -105,7 +105,7 @@ export default function UpdateUser({
     }
     reset({
       id: user?.id,
-      name: user?.name,
+      name: user?.name || undefined,
       email: user?.email,
       password: user?.password,
       dateOfBirth: user?.dateOfBirth || new Date(),
@@ -134,7 +134,7 @@ export default function UpdateUser({
     }
   });
 
-  const onSubmit: SubmitHandler<User> = async formData => {
+  const onSubmit: SubmitHandler<UserClientType> = async formData => {
     if (email) {
       const file = formData?.image?.url as File;
       const fileName = file?.name || '';

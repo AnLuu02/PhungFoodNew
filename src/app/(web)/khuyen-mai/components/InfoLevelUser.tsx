@@ -176,7 +176,7 @@ export default function InfoLevelUser() {
                       className='border-blue-200 bg-blue-100 p-3 text-center font-quicksand shadow-lg'
                     >
                       <Title order={1} fw={700} className='font-quicksand text-blue-600'>
-                        {userData.order.length || 0}
+                        {userData.orders.length || 0}
                       </Title>
                       <Text size='sm' fw={500} c={'dimmed'}>
                         Đơn hàng trong năm

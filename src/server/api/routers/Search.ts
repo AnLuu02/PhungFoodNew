@@ -108,7 +108,7 @@ export const searchRouter = createTRPCRouter({
             ]
           },
           include: {
-            subCategory: {
+            subCategories: {
               select: {
                 id: true,
                 name: true
@@ -145,12 +145,12 @@ export const searchRouter = createTRPCRouter({
           include: {
             category: true,
             image: true,
-            product: {
+            products: {
               where: {
                 isActive: true
               },
               include: {
-                favouriteFood: true,
+                favouriteFoods: true,
                 images: true
               }
             }
@@ -167,7 +167,9 @@ export const searchRouter = createTRPCRouter({
                 },
                 {
                   address: {
-                    detail: { contains: s, mode: 'insensitive' }
+                    some: {
+                      detail: { contains: s, mode: 'insensitive' }
+                    }
                   }
                 },
                 {

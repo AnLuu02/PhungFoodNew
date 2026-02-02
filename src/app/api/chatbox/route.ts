@@ -64,16 +64,16 @@ export async function POST(req: Request) {
                     product.discount
                       ? `
                         <span style="text-decoration: line-through; color: #9ca3af;">
-                          ${formatPriceLocaleVi(product.price)}
+                          ${formatPriceLocaleVi(Number(product.price || 0))}
                         </span>
                         <span style="color: #dc2626; font-weight: bold;">
-                          ${formatPriceLocaleVi(product.price - product.discount)}
+                          ${formatPriceLocaleVi(+product.price - +product.discount)}
                         </span>
                         <span style="font-weight: bold; background-color: #fde047; color: #b45309; font-size: 12px; padding: 2px 6px; border-radius: 4px;">
-                          -${Math.round((product.discount / product.price) * 100)}%
+                          -${Math.round((+product.discount / +product.price) * 100)}%
                         </span>
                       `
-                      : `<span style="color: #dc2626; font-weight: bold;">${formatPriceLocaleVi(product.price)}</span>`
+                      : `<span style="color: #dc2626; font-weight: bold;">${formatPriceLocaleVi(+product.price)}</span>`
                   }
                 </div>
                 <a
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         <div style="margin: 10px 0; max-width: 400px; padding: 16px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
         <h3 style="margin: 0; padding-bottom: 8px; color: #333; border-bottom: 2px solid #ddd;">An Luu</h3>
         <p style="margin: 8px 0; color: #555;"><strong>Địa chỉ:</strong> ${restaurant?.address}</p>
-        <p style="margin: 8px 0; color: #555;"><strong>Số điện thoại:</strong> <a href="${restaurant?.phone}" style="color: #007bff; text-decoration: none;">${restaurant?.phone}</a></p>
+        <p style="margin: 8px 0; color: #555;"><strong>Số điện thoại:</strong> <a href="${restaurant?.hotPhone}" style="color: #007bff; text-decoration: none;">${restaurant?.hotPhone}</a></p>
         <p style="margin: 8px 0; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
           <strong>Email:</strong> 
           <a href="${restaurant?.email}" style="color: #007bff; text-decoration: none;">

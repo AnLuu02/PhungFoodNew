@@ -1,4 +1,4 @@
-import { Gender, Prisma, UserLevel } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { compare } from 'bcryptjs';
 import { randomInt } from 'crypto';
@@ -9,8 +9,8 @@ import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/ha
 import { hashPassword } from '~/lib/FuncHandler/hashPassword';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
-import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/lib/ZodSchema/enum';
-import { baseAddressSchema } from '~/lib/ZodSchema/schema';
+import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
+import { imageReqSchema, userSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -40,7 +40,9 @@ export const userRouter = createTRPCRouter({
                 },
                 {
                   address: {
-                    detail: { contains: s, mode: 'insensitive' }
+                    some: {
+                      detail: { contains: s, mode: 'insensitive' }
+                    }
                   }
                 },
                 {
@@ -77,7 +79,9 @@ export const userRouter = createTRPCRouter({
                 },
                 {
                   address: {
-                    detail: { contains: s, mode: 'insensitive' }
+                    some: {
+                      detail: { contains: s, mode: 'insensitive' }
+                    }
                   }
                 },
                 {
@@ -117,27 +121,7 @@ export const userRouter = createTRPCRouter({
       };
     }),
   create: publicProcedure
-    .input(
-      z.object({
-        name: z.string().min(1, 'Tên không được để trống'),
-        gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
-        email: z.string().email({ message: 'Email không hợp lệ' }),
-        isActive: z.boolean().default(true),
-        image: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional(),
-        dateOfBirth: z.date().optional(),
-        password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
-        phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
-        address: baseAddressSchema.optional(),
-        pointUser: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
-        roleId: z.string().optional()
-      })
-    )
+    .input(userSchema.extend({ image: imageReqSchema }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const [existed, roles] = await ctx.db.$transaction([
         ctx.db.user.findFirst({
@@ -249,28 +233,7 @@ export const userRouter = createTRPCRouter({
     }),
   update: publicProcedure
     .use(requirePermission('update:user'))
-    .input(
-      z.object({
-        id: z.string(),
-        name: z.string().min(1, 'Tên không được để trống'),
-        email: z.string().email({ message: 'Email không hợp lệ' }),
-        isActive: z.boolean().default(true),
-        image: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional(),
-        gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
-        dateOfBirth: z.date().optional(),
-        password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
-        phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
-        address: baseAddressSchema,
-        pointUser: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
-        roleId: z.string()
-      })
-    )
+    .input(userSchema.extend({ image: imageReqSchema }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.user.findFirst({
         where: {
@@ -531,7 +494,7 @@ export const userRouter = createTRPCRouter({
           ]
         },
         include: {
-          order: input.hasOrders || false,
+          orders: input.hasOrders || false,
           image: true,
           role: {
             include: {

@@ -8,17 +8,16 @@ import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { categorySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Category } from '~/types/category';
+import { CategoryClientType } from '~/types';
 
 export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Category>({
+  } = useForm<CategoryClientType>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      id: '',
       isActive: true,
       name: '',
       tag: '',
@@ -42,7 +41,7 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
     }
   });
 
-  const onSubmit: SubmitHandler<Category> = async formData => {
+  const onSubmit: SubmitHandler<CategoryClientType> = async formData => {
     try {
       if (formData) {
         await mutation.mutateAsync({

@@ -20,13 +20,13 @@ import { generateNotifyHtml } from '~/lib/FuncHandler/MailHelpers/generateNotify
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { notificationSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
+import { NotificationClientHasUser, NotificationClientType } from '~/types';
 import { notificationTypeOptions } from '../../helpers';
-import { Notification, NotificationClient } from '../../types';
 
 interface NotificationModalProps {
   opened: boolean;
   onClose: () => void;
-  defaultValues?: Partial<NotificationClient>;
+  defaultValues?: Partial<NotificationClientHasUser>;
   mode?: 'create' | 'update' | 'template';
   recipient?: 'all' | 'individual' | undefined;
 }
@@ -47,7 +47,7 @@ export const NotificationModal = ({
     reset,
     setValue,
     formState: { errors, isSubmitting }
-  } = useForm<Notification>({
+  } = useForm<NotificationClientType>({
     resolver: zodResolver(notificationSchema),
     defaultValues
   });
@@ -106,7 +106,7 @@ export const NotificationModal = ({
     }
   }, [defaultValues, recipient]);
 
-  const onSubmit: SubmitHandler<Notification> = async formData => {
+  const onSubmit: SubmitHandler<NotificationClientType> = async formData => {
     try {
       if (mode === 'create') {
         let userPushers = watch('recipient') === 'all' ? [] : selectedUsers.map((user: any) => JSON.parse(user).id);

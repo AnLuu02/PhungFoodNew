@@ -8,9 +8,8 @@ import BButton from '~/components/Button/Button';
 import { createTag } from '~/lib/FuncHandler/generateTag';
 import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { subCategorySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { SubCategory } from '~/types/category';
+import { SubCategoryClientSchema, SubCategoryClientType } from '~/types';
 
 export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
@@ -18,8 +17,8 @@ export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<S
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     watch
-  } = useForm<SubCategory>({
-    resolver: zodResolver(subCategorySchema),
+  } = useForm<SubCategoryClientType>({
+    resolver: zodResolver(SubCategoryClientSchema),
     defaultValues: {
       id: '',
       name: '',
@@ -42,7 +41,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<S
     }
   });
 
-  const onSubmit: SubmitHandler<SubCategory> = async formData => {
+  const onSubmit: SubmitHandler<SubCategoryClientType> = async formData => {
     try {
       if (formData) {
         const file = formData?.thumbnail?.url as File;
@@ -99,7 +98,7 @@ export default function CreateSubCategory({ setOpened }: { setOpened: Dispatch<S
                 leftSectionPointerEvents='none'
                 {...field}
                 value={field.value as File}
-                error={errors.thumbnail?.url?.message}
+                error={errors.thumbnail?.url?.message?.toString()}
                 accept='image/png,image/jpeg,image/jpg'
               />
             )}

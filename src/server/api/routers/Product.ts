@@ -7,6 +7,7 @@ import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
 
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { NotifyError } from '~/lib/FuncHandler/toast';
+import { imageReqSchema, productSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { createCaller } from '../root';
@@ -211,8 +212,8 @@ export const productRouter = createTRPCRouter({
                 image: true
               }
             },
-            review: true,
-            favouriteFood: true
+            reviews: true,
+            favouriteFoods: true
           },
           orderBy:
             sort && sort?.length > 0
@@ -242,38 +243,7 @@ export const productRouter = createTRPCRouter({
     }),
   create: publicProcedure
     .use(requirePermission('create:product'))
-    .input(
-      z.object({
-        name: z.string().min(1, 'Tên không được để trống'),
-        description: z.string().optional(),
-        descriptionDetailJson: z.any().optional().nullable(),
-        descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
-        tag: z.string(),
-        availableQuantity: z.coerce.number().min(0, 'Số lượng khả dụng không âm'),
-        soldQuantity: z.coerce.number().min(0, 'Số lượng đã bán không âm'),
-        price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
-        discount: z.number().min(0, 'Giảm giá không được âm').default(0),
-        tags: z.array(z.string()).optional(),
-        isActive: z.boolean().default(true),
-        region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
-        thumbnail: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional(),
-        gallery: z
-          .array(
-            z.object({
-              fileName: z.string(),
-              base64: z.string()
-            })
-          )
-          .optional(),
-        subCategoryId: z.string().optional(),
-        materials: z.array(z.string()).optional()
-      })
-    )
+    .input(productSchema.extend({ thumbnail: imageReqSchema.optional(), gallery: z.array(imageReqSchema).default([]) }))
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existed = await ctx.db.product.findFirst({
         where: { tag: input.tag }
@@ -305,19 +275,7 @@ export const productRouter = createTRPCRouter({
 
       const product = await ctx.db.product.create({
         data: {
-          name: input.name,
-          description: input.description,
-          descriptionDetailJson: input.descriptionDetailJson,
-          descriptionDetailHtml: input.descriptionDetailHtml,
-          tag: input.tag,
-          price: input.price,
-          discount: input.discount,
-          subCategoryId: input.subCategoryId,
-          availableQuantity: input.availableQuantity,
-          soldQuantity: input.soldQuantity,
-          region: input.region,
-          tags: input.tags,
-          isActive: input.isActive,
+          ...input,
           materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
           images: {
             create: [
@@ -356,36 +314,10 @@ export const productRouter = createTRPCRouter({
   update: publicProcedure
     .use(requirePermission('update:product'))
     .input(
-      z.object({
+      productSchema.extend({
         id: z.string(),
-        name: z.string().min(1, 'Tên không được để trống'),
-        description: z.string().optional(),
-        descriptionDetailJson: z.any().optional().nullable(),
-        descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
-        tag: z.string(),
-        price: z.number().min(10000, 'Giá trị phải >= 10.000').default(10000),
-        discount: z.number().min(0, 'Giảm giá không được âm').default(0),
-        region: z.string().min(1, 'Món ăn này là của miền nào đây?'),
-        availableQuantity: z.coerce.number().min(0, 'Số lượng khả dụng không âm'),
-        soldQuantity: z.coerce.number().min(0, 'Số lượng đã bán không âm'),
-        tags: z.array(z.string()).optional(),
-        isActive: z.boolean().default(true),
-        thumbnail: z
-          .object({
-            fileName: z.string(),
-            base64: z.string()
-          })
-          .optional(),
-        gallery: z
-          .array(
-            z.object({
-              fileName: z.string(),
-              base64: z.string()
-            })
-          )
-          .optional(),
-        subCategoryId: z.string().optional(),
-        materials: z.array(z.string()).optional()
+        thumbnail: imageReqSchema.optional(),
+        gallery: z.array(imageReqSchema).optional()
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -485,19 +417,7 @@ export const productRouter = createTRPCRouter({
             id: input.id
           },
           data: {
-            name: input.name,
-            description: input.description,
-            tag: input.tag,
-            price: input.price,
-            descriptionDetailJson: input.descriptionDetailJson,
-            descriptionDetailHtml: input.descriptionDetailHtml,
-            availableQuantity: input.availableQuantity,
-            soldQuantity: input.soldQuantity,
-            discount: input.discount,
-            subCategoryId: input.subCategoryId,
-            region: input.region,
-            tags: input.tags,
-            isActive: input.isActive,
+            ...input,
             materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
             images:
               newImages?.length > 0
@@ -634,8 +554,8 @@ export const productRouter = createTRPCRouter({
                 : false)
             }
           },
-          review: hasReview ? true : false,
-          favouriteFood: true
+          reviews: hasReview ? true : false,
+          favouriteFoods: true
         }
       });
 
@@ -678,7 +598,7 @@ export const productRouter = createTRPCRouter({
                 : false)
             }
           },
-          review: {
+          reviews: {
             ...(hasReview
               ? {
                   include: {
@@ -697,7 +617,7 @@ export const productRouter = createTRPCRouter({
                 }
               : false)
           },
-          favouriteFood: true
+          favouriteFoods: true
         }
       });
     }),
@@ -729,8 +649,8 @@ export const productRouter = createTRPCRouter({
                 : undefined)
             }
           },
-          review: hasReview ? true : undefined,
-          favouriteFood: true
+          reviews: hasReview ? true : undefined,
+          favouriteFoods: true
         }
       });
       return product;

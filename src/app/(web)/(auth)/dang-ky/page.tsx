@@ -11,9 +11,8 @@ import BButton from '~/components/Button/Button';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
-import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { User } from '~/types/user';
+import { UserClientSchema, UserClientType } from '~/types';
 import AddressSection from '../components/AdressSection';
 const OtpModal = dynamic(() => import('~/components/Modals/ModalOtp'), {
   ssr: false
@@ -26,8 +25,8 @@ export default function Page() {
     handleSubmit,
     watch,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<User>({
-    resolver: zodResolver(userSchema),
+  } = useForm<UserClientType>({
+    resolver: zodResolver(UserClientSchema),
     mode: 'onChange',
     defaultValues: {
       id: '',
@@ -44,7 +43,7 @@ export default function Page() {
         provinceId: '',
         districtId: '',
         wardId: '',
-        type: LocalAddressType.USER,
+        type: LocalAddressType.HOME,
         province: '',
         district: '',
         ward: '',
@@ -77,7 +76,7 @@ export default function Page() {
     }
   });
 
-  const onSubmit: SubmitHandler<User> = async formData => {
+  const onSubmit: SubmitHandler<UserClientType> = async formData => {
     try {
       const province = formData?.address?.provinceId && provinceMap?.[formData?.address?.provinceId];
       const district = formData?.address?.districtId && districtMap?.[formData?.address?.districtId];

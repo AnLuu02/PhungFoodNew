@@ -9,7 +9,7 @@ import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { materialSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Material } from '~/types/material';
+import { MaterialClientType } from '~/types';
 
 export default function UpdateMaterial({
   materialId,
@@ -26,7 +26,7 @@ export default function UpdateMaterial({
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Material>({
+  } = useForm<MaterialClientType>({
     resolver: zodResolver(materialSchema),
     defaultValues: {
       id: '',
@@ -59,7 +59,7 @@ export default function UpdateMaterial({
     }
   });
 
-  const onSubmit: SubmitHandler<Material> = async formData => {
+  const onSubmit: SubmitHandler<MaterialClientType> = async formData => {
     if (materialId) {
       const result = await updateMutation.mutateAsync({
         ...formData,

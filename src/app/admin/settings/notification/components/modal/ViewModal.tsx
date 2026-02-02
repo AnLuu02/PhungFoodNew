@@ -17,14 +17,14 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
+import { NotificationClientHasUser } from '~/types';
 import { notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
-import { NotificationClient } from '../../types';
 
 interface ViewModalProps {
   opened: boolean;
   onClose: () => void;
   role?: 'client' | 'admin';
-  selectedNotification?: NotificationClient;
+  selectedNotification?: NotificationClientHasUser;
 }
 
 export const ViewModal = ({ opened, onClose, selectedNotification, role = 'client' }: ViewModalProps) => {

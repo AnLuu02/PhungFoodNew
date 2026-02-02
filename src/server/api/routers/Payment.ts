@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { seedPayments } from '~/lib/HardData/seed';
+import { paymentSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -45,21 +46,7 @@ export const paymentRouter = createTRPCRouter({
     }),
   create: publicProcedure
     .use(requirePermission('create:payment'))
-    .input(
-      z.object({
-        provider: z.string(),
-        name: z.string(),
-        apiKey: z.string().optional(),
-        secretKey: z.string().optional(),
-        clientId: z.string().optional(),
-        clientSecret: z.string().optional(),
-        webhookUrl: z.string().optional(),
-        webhookSecret: z.string().optional(),
-        isSandbox: z.boolean().default(true),
-        isActive: z.boolean().default(true),
-        metadata: z.any().optional()
-      })
-    )
+    .input(paymentSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const payment = await ctx.db.payment.create({
         data: input
@@ -127,22 +114,7 @@ export const paymentRouter = createTRPCRouter({
 
   update: publicProcedure
     .use(requirePermission('update:payment'))
-    .input(
-      z.object({
-        id: z.string(),
-        provider: z.string(),
-        name: z.string(),
-        apiKey: z.string().optional(),
-        secretKey: z.string().optional(),
-        clientId: z.string().optional(),
-        clientSecret: z.string().optional(),
-        webhookUrl: z.string().optional(),
-        webhookSecret: z.string().optional(),
-        isSandbox: z.boolean().default(true),
-        isActive: z.boolean().default(true),
-        metadata: z.any().optional()
-      })
-    )
+    .input(paymentSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const payment: any = await ctx.db.payment.update({
         where: { id: input?.id },

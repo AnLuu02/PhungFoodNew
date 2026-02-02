@@ -25,9 +25,8 @@ import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
 import { createTag } from '~/lib/FuncHandler/generateTag';
 import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { productSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Product } from '~/types/product';
+import { ProductClientSchema, ProductClientType } from '~/types';
 
 export const regions = [
   {
@@ -60,8 +59,8 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     watch
-  } = useForm<Product>({
-    resolver: zodResolver(productSchema),
+  } = useForm<ProductClientType>({
+    resolver: zodResolver(ProductClientSchema),
     defaultValues: {
       id: '',
       name: '',
@@ -74,7 +73,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
       soldQuantity: 0,
       price: 0,
       thumbnail: undefined,
-      gallery: [],
+      gallery: undefined,
       tags: [],
       isActive: true,
       region: 'Miền Nam',
@@ -94,7 +93,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
     }
   });
 
-  const onSubmit: SubmitHandler<Product> = async formData => {
+  const onSubmit: SubmitHandler<ProductClientType> = async formData => {
     try {
       if (formData) {
         const thumbnail_format =
@@ -530,7 +529,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             rules={{
               required: 'File hoặc URL là bắt buộc',
               validate: files =>
-                files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
+                files && files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
                   ? true
                   : 'Only PNG, JPEG, or JPG files are allowed'
             }}

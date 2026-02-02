@@ -46,7 +46,8 @@ export enum LocalUserLevel {
 }
 
 export enum LocalAddressType {
-  USER = 'USER',
+  HOME = 'HOME',
+  WORKPLACE = 'WORKPLACE',
   DELIVERY = 'DELIVERY'
 }
 

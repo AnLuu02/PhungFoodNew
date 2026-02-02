@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { categorySchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 const findExistingCategory = async (ctx: any, tag: string) => {
@@ -53,7 +54,7 @@ export const categoryRouter = createTRPCRouter({
             ]
           },
           include: {
-            subCategory: {
+            subCategories: {
               select: {
                 id: true,
                 name: true
@@ -140,10 +141,10 @@ export const categoryRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     let category = await ctx.db.category.findMany({
       include: {
-        subCategory: {
+        subCategories: {
           include: {
             image: true,
-            product: {
+            products: {
               where: {
                 isActive: true
               },
@@ -159,14 +160,7 @@ export const categoryRouter = createTRPCRouter({
   }),
   create: publicProcedure
     .use(requirePermission('create:category'))
-    .input(
-      z.object({
-        isActive: z.boolean().default(true),
-        name: z.string().min(1, 'Tên danh mục không được để trống'),
-        description: z.string().optional(),
-        tag: z.string()
-      })
-    )
+    .input(categorySchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const existingCategory = await findExistingCategory(ctx, input.tag);
       if (existingCategory) {
@@ -188,13 +182,7 @@ export const categoryRouter = createTRPCRouter({
     .use(requirePermission('create:category'))
     .input(
       z.object({
-        data: z.array(
-          z.object({
-            name: z.string().min(1, 'Tên danh mục không được để trống'),
-            description: z.string().optional(),
-            tag: z.string()
-          })
-        )
+        data: z.array(categorySchema)
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {

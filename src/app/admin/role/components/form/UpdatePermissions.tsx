@@ -3,19 +3,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { permissionSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-
-const permissionSchema = z.object({
-  name: z.string({ required_error: 'Tên quyền là bắt buộc' }).min(1, 'Tên quyền là bắt buộc'),
-  viName: z.string({ required_error: 'Tên phiên âm là bắt buộc' }).min(1, 'Tên phiên âm là bắt buộc'),
-  permissionId: z.string(),
-  description: z.string().optional()
-});
-
-type PermissionFormData = z.infer<typeof permissionSchema>;
+import { PermissionClientType } from '~/types';
 
 export default function UpdatePermission({
   setOpened,
@@ -29,9 +21,9 @@ export default function UpdatePermission({
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<PermissionFormData>({
+  } = useForm<PermissionClientType>({
     resolver: zodResolver(permissionSchema),
-    defaultValues: { permissionId, name: '', description: '' }
+    defaultValues: { id: '', name: '', description: '' }
   });
 
   const utils = api.useUtils();
@@ -48,15 +40,15 @@ export default function UpdatePermission({
   useEffect(() => {
     if (permissionData) {
       reset({
+        id: permissionData.id || '',
         viName: permissionData.viName || '',
         name: permissionData.name || '',
-        description: permissionData.description || '',
-        permissionId: permissionData.id || ''
+        description: permissionData.description || ''
       });
     }
   }, [permissionData, reset]);
 
-  const onSubmit: SubmitHandler<PermissionFormData> = async data => {
+  const onSubmit: SubmitHandler<PermissionClientType> = async data => {
     try {
       const result = await mutation.mutateAsync(data);
       if (result.code === 'OK') {

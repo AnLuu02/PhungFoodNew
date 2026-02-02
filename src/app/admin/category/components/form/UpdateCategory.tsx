@@ -8,7 +8,7 @@ import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { categorySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Category } from '~/types/category';
+import { CategoryClientType } from '~/types';
 
 export default function UpdateCategory({
   categoryId,
@@ -25,7 +25,7 @@ export default function UpdateCategory({
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Category>({
+  } = useForm<CategoryClientType>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       id: '',
@@ -62,7 +62,7 @@ export default function UpdateCategory({
     }
   });
 
-  const onSubmit: SubmitHandler<Category> = async formData => {
+  const onSubmit: SubmitHandler<CategoryClientType> = async formData => {
     if (categoryId) {
       await updateMutation.mutateAsync({
         where: {

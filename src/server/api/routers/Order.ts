@@ -1,9 +1,9 @@
-import { OrderStatus, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/FuncHandler/PrismaHelper';
 import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
-import { deliverySchema } from '~/lib/ZodSchema/schema';
+import { orderSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
@@ -156,28 +156,7 @@ export const orderRouter = createTRPCRouter({
     }),
   create: publicProcedure
     // .use(requirePermission('create:order'))
-    .input(
-      z.object({
-        originalTotal: z.number().default(0),
-        discountAmount: z.number().default(0),
-        finalTotal: z.number().default(0),
-        status: z.nativeEnum(OrderStatus),
-        userId: z.string(),
-        note: z.string().optional(),
-        paymentId: z.string().optional(),
-        delivery: deliverySchema.optional(),
-        transactionId: z.string().optional(),
-        orderItems: z.array(
-          z.object({
-            productId: z.string(),
-            quantity: z.number().default(1),
-            note: z.string().optional(),
-            price: z.number().default(0)
-          })
-        ),
-        vouchers: z.array(z.string()).default([])
-      })
-    )
+    .input(orderSchema)
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
       const order = await ctx.db.order.create({
         data: {
@@ -204,7 +183,7 @@ export const orderRouter = createTRPCRouter({
             }
           },
           vouchers: {
-            connect: input.vouchers.map(voucherId => ({ id: voucherId }))
+            connect: input.voucherIds.map(voucherId => ({ id: voucherId }))
           }
         },
         include: {

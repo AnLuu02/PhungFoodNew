@@ -23,9 +23,8 @@ import fetcher from '~/lib/FuncHandler/fetcher';
 import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
-import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { User } from '~/types/user';
+import { UserClientSchema, UserClientType } from '~/types';
 
 export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
@@ -33,8 +32,8 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
     handleSubmit,
     watch,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<User>({
-    resolver: zodResolver(userSchema),
+  } = useForm<UserClientType>({
+    resolver: zodResolver(UserClientSchema),
     defaultValues: {
       id: '',
       name: '',
@@ -53,7 +52,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
         district: '',
         ward: '',
         detail: '',
-        type: LocalAddressType.USER
+        type: LocalAddressType.HOME
       },
       roleId: '',
       pointUser: 0,
@@ -83,7 +82,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
     }
   });
 
-  const onSubmit: SubmitHandler<User> = async formData => {
+  const onSubmit: SubmitHandler<UserClientType> = async formData => {
     try {
       if (formData) {
         const file = formData?.image?.url as File;

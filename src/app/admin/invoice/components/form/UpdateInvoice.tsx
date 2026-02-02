@@ -7,7 +7,7 @@ import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { invoiceSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Invoice } from '~/types/invoice';
+import { InvoiceClientType } from '~/types';
 
 export default function UpdateInvoice({
   invoiceId,
@@ -24,7 +24,7 @@ export default function UpdateInvoice({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Invoice>({
+  } = useForm<InvoiceClientType>({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
       id: '',
@@ -55,7 +55,7 @@ export default function UpdateInvoice({
 
   useEffect(() => {
     if (!invoice) return;
-    const invoiceData = invoice.data as Invoice;
+    const invoiceData = invoice.data as InvoiceClientType;
     reset({
       id: invoiceData.id,
       orderId: invoiceData.orderId,
@@ -66,7 +66,7 @@ export default function UpdateInvoice({
       taxCode: invoiceData.taxCode
     });
   }, [invoice]);
-  const onSubmit: SubmitHandler<Invoice> = async formData => {
+  const onSubmit: SubmitHandler<InvoiceClientType> = async formData => {
     try {
       await mutation.mutateAsync(formData);
     } catch {

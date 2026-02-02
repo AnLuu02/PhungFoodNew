@@ -21,19 +21,12 @@ import { IconFilter, IconSearch } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { roleSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-
-const roleSchema = z.object({
-  name: z.string({ required_error: 'Tên vai trò là bắt buộc' }).min(1, 'Tên vai trò là bắt buộc'),
-  viName: z.string({ required_error: 'Tên phiên âm vai trò là bắt buộc' }).min(1, 'Tên phiên âm vai trò là bắt buộc'),
-  permissionIds: z.array(z.string()).nullable()
-});
-
-type RoleForm = z.infer<typeof roleSchema>;
+import { RoleClientType } from '~/types';
 
 export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const { data: permissions = [], isLoading } = api.RolePermission.getAllPermission.useQuery();
@@ -73,7 +66,7 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<RoleForm>({
+  } = useForm<RoleClientType>({
     resolver: zodResolver(roleSchema),
     defaultValues: {
       name: '',
@@ -92,7 +85,7 @@ export default function CreateRole({ setOpened }: { setOpened: Dispatch<SetState
     }
   });
 
-  const onSubmit: SubmitHandler<RoleForm> = async formData => {
+  const onSubmit: SubmitHandler<RoleClientType> = async formData => {
     try {
       const result = await createRoleMutation.mutateAsync({
         ...formData,

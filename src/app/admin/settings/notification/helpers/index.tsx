@@ -8,7 +8,7 @@ import {
   IconInfoCircle
 } from '@tabler/icons-react';
 import { NotificationType } from '~/lib/ZodSchema/enum';
-import { NotificationClient } from '../types';
+import { NotificationClientHasUser } from '~/types';
 
 export const getTypeIcon = (type: string) => {
   switch (type) {
@@ -60,7 +60,7 @@ export const updateActionClient = async ({
   action
 }: {
   mutationUpdateAction: any;
-  data: NotificationClient;
+  data: NotificationClientHasUser;
   session: any;
   action: 'sent' | 'delivered' | 'read' | 'clicked';
 }) => {

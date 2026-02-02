@@ -41,7 +41,7 @@ const Contact = async () => {
                 <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>
                   <IconPhone className='h-[70%] w-[70%]' />
                 </ThemeIcon>
-                <Text size='sm'>{restaurant?.phone}</Text>
+                <Text size='sm'>{restaurant?.hotPhone}</Text>
               </Flex>
               <Flex mb={20} align={'flex-start'}>
                 <ThemeIcon radius='xl' size='sm' className='bg-mainColor' mr={12}>

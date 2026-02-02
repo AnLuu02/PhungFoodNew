@@ -11,9 +11,8 @@ import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
-import { bannerSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Banner } from '~/types/restaurant';
+import { BannerClientSchema, BannerClientType } from '~/types';
 import { CarouselBanner } from '../CarouselBanner';
 import ModalViewBanner from './ModalViewBanner';
 
@@ -32,8 +31,8 @@ export default function BannerManagement({ data }: any) {
     watch,
     reset,
     setValue
-  } = useForm<Banner>({
-    resolver: zodResolver(bannerSchema),
+  } = useForm<BannerClientType>({
+    resolver: zodResolver(BannerClientSchema),
     defaultValues: {
       id: '',
       isActive: false,
@@ -113,7 +112,7 @@ export default function BannerManagement({ data }: any) {
       });
     }
   }, [activeBanner]);
-  const onSubmit: SubmitHandler<Banner> = async formData => {
+  const onSubmit: SubmitHandler<BannerClientType> = async formData => {
     try {
       const banners = await Promise.all(
         [formData.banner1, formData.banner2].map(async file => {

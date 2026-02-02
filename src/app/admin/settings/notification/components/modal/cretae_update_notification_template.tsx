@@ -7,14 +7,14 @@ import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { notificationTemplateSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
+import { NotificationTemplateClientType } from '~/types';
 import { notificationTypeOptions } from '../../helpers';
-import { NotificationTemplate } from '../../types';
 import { TemplateTextarea } from '../TemplateTextarea';
 
 interface Props {
   opened: boolean;
   onClose: () => void;
-  defaultValues?: Partial<NotificationTemplate>;
+  defaultValues?: Partial<NotificationTemplateClientType>;
   mode?: 'create' | 'update';
 }
 
@@ -25,7 +25,7 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
     reset,
     watch,
     formState: { errors, isSubmitting }
-  } = useForm<NotificationTemplate>({
+  } = useForm<NotificationTemplateClientType>({
     resolver: zodResolver(notificationTemplateSchema),
     defaultValues
   });
@@ -67,7 +67,7 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
       reset({});
     }
   }, [opened]);
-  const onSubmit: SubmitHandler<NotificationTemplate> = async formData => {
+  const onSubmit: SubmitHandler<NotificationTemplateClientType> = async formData => {
     try {
       if (mode === 'create') {
         await mutationCreate.mutateAsync({

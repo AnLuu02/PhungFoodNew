@@ -8,7 +8,7 @@ import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Review } from '~/types/review';
+import { ReviewClientType } from '~/types';
 
 export default function UpdateReview({
   reviewId,
@@ -27,7 +27,7 @@ export default function UpdateReview({
     control,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Review>({
+  } = useForm<ReviewClientType>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
       id: '',
@@ -60,11 +60,11 @@ export default function UpdateReview({
     }
   });
 
-  const onSubmit: SubmitHandler<Review> = async formData => {
+  const onSubmit: SubmitHandler<ReviewClientType> = async formData => {
     try {
       if (reviewId) {
         const updatedFormData = { ...formData };
-        const result = await updateMutation.mutateAsync({ reviewId, ...updatedFormData });
+        const result = await updateMutation.mutateAsync({ ...updatedFormData });
         if (result.code === 'OK') {
           NotifySuccess(result.message);
           setOpened(false);

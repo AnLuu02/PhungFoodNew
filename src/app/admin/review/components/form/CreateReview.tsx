@@ -8,14 +8,14 @@ import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Review } from '~/types/review';
+import { ReviewClientType } from '~/types';
 
 export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Review>({
+  } = useForm<ReviewClientType>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
       id: '',
@@ -45,7 +45,7 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
     }
   });
 
-  const onSubmit: SubmitHandler<Review> = async formData => {
+  const onSubmit: SubmitHandler<ReviewClientType> = async formData => {
     try {
       if (formData) {
         const result = await mutation.mutateAsync(formData);

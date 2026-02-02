@@ -7,7 +7,7 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { TypeContact } from '~/lib/ZodSchema/enum';
 import { contactSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
-import { Contact } from '~/types/contact';
+import { ContextClientType } from '~/types';
 const ContactTypeOptions = {
   [TypeContact.COLLABORATION]: { viName: 'Hợp tác' },
   [TypeContact.FEEDBACK]: { viName: 'Phản hồi' },
@@ -22,7 +22,7 @@ export const FormContact = () => {
     reset,
     setError,
     formState: { isSubmitting, isDirty }
-  } = useForm<Contact>({
+  } = useForm<ContextClientType>({
     resolver: zodResolver(contactSchema),
     mode: 'onChange',
     defaultValues: {
@@ -45,7 +45,7 @@ export const FormContact = () => {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.', error.message);
     }
   });
-  const onSubmit: SubmitHandler<Contact> = async formData => {
+  const onSubmit: SubmitHandler<ContextClientType> = async formData => {
     try {
       if (formData?.email === process.env.NEXT_PUBLIC_EMAIL_RESTAURANT) {
         setError('email', { message: 'Email không hợp lệ. Đây là email nhà hàng.' });

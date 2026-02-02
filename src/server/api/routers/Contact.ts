@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
+import { contactSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 export const contactRouter = createTRPCRouter({
@@ -114,28 +115,16 @@ export const contactRouter = createTRPCRouter({
       return contact;
     }),
 
-  create: publicProcedure
-    .input(
-      z.object({
-        fullName: z.string(),
-        responded: z.boolean().default(false),
-        type: z.enum(['COLLABORATION', 'OTHER', 'SUPPORT', 'FEEDBACK']).default('COLLABORATION'),
-        email: z.string(),
-        phone: z.string(),
-        subject: z.string().optional(),
-        message: z.string()
-      })
-    )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const contact = await ctx.db.contact.create({
-        data: input
-      });
-      return {
-        code: 'OK',
-        message: 'Tạo phiếu liên hệ của khách thành công.',
-        data: contact
-      };
-    }),
+  create: publicProcedure.input(contactSchema).mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+    const contact = await ctx.db.contact.create({
+      data: input
+    });
+    return {
+      code: 'OK',
+      message: 'Tạo phiếu liên hệ của khách thành công.',
+      data: contact
+    };
+  }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.contact.findMany({});
