@@ -15,9 +15,7 @@ export function useRealtimeNotification({ userId, onReceive }: UseRealtimeNotifi
     const channel = pusherClient.subscribe(`user-${userId}`);
 
     channel.bind('in-app-notify', onReceive);
-    presence.bind('pusher:subscription_succeeded', (members: any) => {
-      console.log('✅ Joined presence:', members);
-    });
+    presence.bind('pusher:subscription_succeeded', (members: any) => {});
     return () => {
       channel.unbind('in-app-notify', onReceive);
       channel.unsubscribe();

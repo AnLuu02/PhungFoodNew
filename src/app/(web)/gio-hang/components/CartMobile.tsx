@@ -9,7 +9,7 @@ import { Note } from './Note';
 
 export const ShoppingCartMobile = () => {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     setCart((items: any) =>
       items.map((item: any) => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
     );

@@ -29,7 +29,7 @@ export default function ShoppingCart() {
         ) : (
           <Paper shadow='xs' radius='md' className='p-0 lg:p-6'>
             <CartTable
-              updateQuantity={(id: number, quantity: number) => {
+              updateQuantity={(id: string, quantity: number) => {
                 setCart(items =>
                   items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
                 );

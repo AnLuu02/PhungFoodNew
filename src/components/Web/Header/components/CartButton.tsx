@@ -15,7 +15,7 @@ const CartButton = () => {
   const isDesktop = useMediaQuery(`(min-width: 1024px)`);
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     setCart(cart.map(item => (item.id === id ? { ...item, quantity } : item)));
   };
 
