@@ -9,15 +9,16 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
+import { CartItem, VoucherForUser } from '~/types/client-type-trpc';
 
-export const ApplyVoucher = ({ totalOrderPrice }: any) => {
+export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) => {
   const [showVoucher, setShowVoucher] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [voucherData, setVoucherData] = useState<any[]>([]);
+  const [voucherData, setVoucherData] = useState<VoucherForUser>([]);
   const [voucherCode, setVoucherCode] = useState('');
   const { data: user } = useSession();
-  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [appliedVouchers, setAppliedVouchers] = useLocalStorage<any[]>({
+  const [cart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
+  const [appliedVouchers, setAppliedVouchers] = useLocalStorage<VoucherForUser>({
     key: 'applied-vouchers',
     defaultValue: []
   });
@@ -30,12 +31,14 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
         userId: user?.user.id
       });
       if (voucherCode) {
-        const voucher = voucherData.find((item: any) => item.code?.toLowerCase() === voucherCode?.toLowerCase());
+        const voucher = voucherData.find(
+          (item: NonNullable<VoucherForUser>[0]) => item.code?.toLowerCase() === voucherCode?.toLowerCase()
+        );
         if (!voucher || allowedVoucher(totalOrderPrice, cart)) {
           NotifyError('Voucher không hợp lệ. Hoặc không đủ điều kiện.', 'Vui lý nhập lại mã khuyên mãi.');
           return;
         }
-        const isExist = appliedVouchers.find((item: any) => item.code?.toLowerCase() === voucher?.code?.toLowerCase());
+        const isExist = appliedVouchers.find(item => item.code?.toLowerCase() === voucher?.code?.toLowerCase());
         if (!isExist) {
           setAppliedVouchers(prev => {
             if (prev.some(item => item.code?.toLowerCase() === voucher?.code?.toLowerCase())) {
@@ -102,7 +105,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
                   <span className='text-xs text-green-700'>
                     -
                     {voucher.type === LocalVoucherType.FIXED
-                      ? formatPriceLocaleVi(voucher.maxDiscount)
+                      ? formatPriceLocaleVi(+(voucher.maxDiscount || 0))
                       : `${voucher.discountValue}%`}
                   </span>
                 </Box>

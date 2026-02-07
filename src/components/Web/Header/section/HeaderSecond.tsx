@@ -2,11 +2,12 @@ import { Badge, Box, Center, Flex, Group } from '@mantine/core';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 import SearchComponentClient from '~/components/Search/SearchClient';
+import { SubCategoryAll } from '~/types/client-type-trpc';
 import CartButton from '../components/CartButton';
 import LikeButton from '../components/FavouriteButton';
 import PromotionButton from '../components/PromotionButton';
 
-const Header2 = ({ subCategories }: { subCategories: any }) => {
+const Header2 = ({ subCategories }: { subCategories: SubCategoryAll }) => {
   const dataSubCategories = subCategories || [];
   return (
     <>

@@ -1,13 +1,13 @@
 'use client';
 
 import { Badge, Box, Card, Text } from '@mantine/core';
-import { NotificationTemplate } from '@prisma/client';
 import { IconPlus } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
+import { NotificationTemplateClientType } from '~/types';
 import { getTypeIcon } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
 import { NotificationTemplateModal } from '../modal/cretae_update_notification_template';
@@ -23,7 +23,7 @@ export const TemplatesTabSection = ({
   const [showTemplateModal, setshowTemplateModal] = useState<{
     open: boolean;
     typeAction: 'create' | 'update';
-    template?: NotificationTemplate;
+    template?: NotificationTemplateClientType;
   }>({
     open: false,
     typeAction: 'create'

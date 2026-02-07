@@ -20,6 +20,7 @@ import { IconChevronDown, IconLock, IconMail, IconShoppingBag, IconUser, IconUse
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { CartItem, VoucherForUser } from '~/types/client-type-trpc';
 
 const menuUser = [
   { label: 'Thông tin cá nhân', des: 'Xem và cập nhật thông tin cá nhân', href: '/thong-tin', icon: IconUser },
@@ -32,9 +33,15 @@ const menuUser = [
   { label: 'Đổi mật khẩu', des: 'Đổi mật khẩu người dùng', href: '/password/change-password', icon: IconLock }
 ];
 
-export default function UserSectionDesktop({ responsive, width }: { responsive?: boolean; width?: any }) {
-  const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [, , resetSelectedVouchers] = useLocalStorage<any[]>({
+export default function UserSectionDesktop({
+  responsive,
+  width
+}: {
+  responsive?: boolean;
+  width?: string | number | undefined;
+}) {
+  const [, , resetCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
+  const [, , resetSelectedVouchers] = useLocalStorage<VoucherForUser>({
     key: 'applied-vouchers',
     defaultValue: []
   });

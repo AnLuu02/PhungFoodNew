@@ -14,7 +14,7 @@ import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 export const HeaderClient = () => {
   const { data: restaurant, isLoading } = api.Restaurant.getOneActiveClient.useQuery();
   const restaurantData: any = restaurant ?? {};
-  const [language, setLanguage] = useLocalStorage<any>({ key: 'language', defaultValue: 'vn' });
+  const [language, setLanguage] = useLocalStorage<string>({ key: 'language', defaultValue: 'vn' });
   const timeOpen = useMemo(() => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurantData?.openingHours ?? [];

@@ -5,18 +5,18 @@ import { useSearchParams } from 'next/navigation';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { breakpoints } from '~/constants';
 import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
+import { ProductFind } from '~/types/client-type-trpc';
 import ActiveFilters from './ActiveFilters';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';
 import HeaderSearchResults from './HeaderSearchResults';
 
-export default function HeaderMenu({ responseData, isLoading }: { responseData: any; isLoading: boolean }) {
-  const products = responseData?.products || [];
+export default function HeaderMenu({ responseData, isLoading }: { responseData: ProductFind; isLoading: boolean }) {
   const searchParams = useSearchParams();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   return (
     <>
-      {searchParams.get('s') && <HeaderSearchResults products={products} isLoading={isLoading} />}
+      {searchParams.get('s') && <HeaderSearchResults products={responseData.products} isLoading={isLoading} />}
       <Grid mb={{ base: 20, md: 30 }}>
         <GridCol span={12}>
           <Grid>

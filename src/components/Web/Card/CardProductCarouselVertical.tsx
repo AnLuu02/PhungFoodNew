@@ -12,8 +12,9 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { ProductOne } from '~/types/client-type-trpc';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
-const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
+const ProductCardCarouselVertical = ({ data }: { data: ProductOne }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
@@ -95,13 +96,13 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
             </Tooltip>
           </Link>
           <Group m={0}>
-            {data?.discount > 0 && (
+            {+(data?.discount || 0) > 0 && (
               <Text size='sm' c={'dimmed'} fw={700} td='line-through'>
-                {data?.discount ? `${formatPriceLocaleVi(data?.price)}` : `180.000đ`}
+                {data?.discount ? `${formatPriceLocaleVi(+(data?.price || 0))}` : `180.000đ`}
               </Text>
             )}
             <Text size='md' fw={700} className='text-mainColor'>
-              {data?.price ? `${formatPriceLocaleVi(data?.price - data?.discount)} ` : `180.000đ`}
+              {data?.price ? `${formatPriceLocaleVi(+(data?.price || 0) - +(data?.discount || 0))} ` : `180.000đ`}
             </Text>
           </Group>
           <Flex align={'center'} gap={10} justify={'space-between'}>
@@ -152,9 +153,9 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
             {data?.subCategory.name || 'Đang cập nhật'}
           </Text>
         </Badge>
-        {data?.discount > 0 && (
+        {+(data?.discount || 0) > 0 && (
           <Badge color='red' pos={'absolute'} top={'-100%'} left={-10} pl={20}>
-            Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(0) + '%' : '20%'}
+            Giảm {data?.discount ? ((+(data?.discount || 0) / +(data?.price || 0)) * 100).toFixed(0) + '%' : '20%'}
           </Badge>
         )}
       </Card.Section>

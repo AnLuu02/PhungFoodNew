@@ -4,12 +4,13 @@ import { Divider, Grid, GridCol, Paper } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import Empty from '~/components/Empty';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
+import { CartItem } from '~/types/client-type-trpc';
 import { RecapCart } from '../thanh-toan/components/RecapCart';
 import { ShoppingCartMobile } from './components/CartMobile';
 import { CartTable } from './components/CartTable';
 
 export default function ShoppingCart() {
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
 
   if (cart && cart?.length === 0)
@@ -29,7 +30,7 @@ export default function ShoppingCart() {
         ) : (
           <Paper shadow='xs' radius='md' className='p-0 lg:p-6'>
             <CartTable
-              updateQuantity={(id: number, quantity: number) => {
+              updateQuantity={(id: string, quantity: number) => {
                 setCart(items =>
                   items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
                 );

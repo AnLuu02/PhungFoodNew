@@ -5,11 +5,12 @@ import { IconFilter } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { breakpoints } from '~/constants';
+import { CategoryAll, MaterialAll } from '~/types/client-type-trpc';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';
 import { SidebarFilterContent } from './SidebarFilterContent';
 
-export function SidebarMenu({ categories, materials }: any) {
+export function SidebarMenu({ categories, materials }: { categories: CategoryAll; materials: MaterialAll }) {
   const [drawerOpened, setDrawerOpened] = useState(false);
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   if (isMobile) {

@@ -17,7 +17,7 @@ export default async function CategoryManagementPage({
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const [allData, dataCategory, dataSubCategory] = await Promise.all([
+  const [categoryAll, categoryFind, subCategoryFind] = await Promise.all([
     api.Category.getAll(),
     api.Category.find({ skip: +currentPage, take: +limit, s }),
     api.SubCategory.find({ skip: +currentPage, take: +limit, s })
@@ -39,9 +39,9 @@ export default async function CategoryManagementPage({
 
         <CategoryClientManagementPage
           s={s}
-          allData={allData}
-          dataCategory={dataCategory}
-          dataSubCategory={dataSubCategory}
+          categoryAll={categoryAll}
+          categoryFind={categoryFind}
+          subCategoryFind={subCategoryFind}
         />
       </Stack>
     </>

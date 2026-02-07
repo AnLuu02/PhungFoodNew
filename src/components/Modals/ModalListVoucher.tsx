@@ -4,28 +4,46 @@ import { IconHelp } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { ProductOne, VoucherForUser } from '~/types/client-type-trpc';
 import { ModalProps } from '~/types/modal';
 import LoadingSpiner from '../Loading/LoadingSpiner';
 import VoucherTemplate from '../Template/VoucherTemplate';
-type ModalListVoucherProps<T = any> = ModalProps<T> & {
+type ModalListVoucherProps<
+  T = {
+    vouchers: VoucherForUser;
+    products: ProductOne[];
+  }
+> = ModalProps<T> & {
   loading?: boolean;
 };
-export default function ModalListVoucher({ opened, data, loading, onClose }: ModalListVoucherProps<any>) {
+
+type VoucherForm = {
+  vouchers: string[];
+};
+export default function ModalListVoucher({
+  opened,
+  data,
+  loading,
+  onClose
+}: ModalListVoucherProps<{
+  vouchers: VoucherForUser;
+  products: ProductOne[];
+}>) {
   const vouchers = data.vouchers || [];
   const products = data.products || [];
-  const [appliedVouchers, setSelectedVouchers] = useLocalStorage<any[]>({
+  const [appliedVouchers, setSelectedVouchers] = useLocalStorage<VoucherForUser>({
     key: 'applied-vouchers',
     defaultValue: []
   });
 
-  const { control, setValue } = useForm<any>({
+  const { control, setValue } = useForm<VoucherForm>({
     defaultValues: {
       vouchers: []
     }
   });
 
   useEffect(() => {
-    setValue('vouchers', appliedVouchers?.map((item: any) => item.id?.toString()) || []);
+    setValue('vouchers', appliedVouchers?.map(item => item.id?.toString()) || []);
   }, [appliedVouchers]);
 
   return (
@@ -61,7 +79,7 @@ export default function ModalListVoucher({ opened, data, loading, onClose }: Mod
                   {...field}
                   onChange={value => {
                     field.onChange(value);
-                    setSelectedVouchers([...vouchers.filter((item: any) => value.includes(item?.id?.toString()))]);
+                    setSelectedVouchers([...vouchers.filter(item => value.includes(item?.id?.toString()))]);
                   }}
                 >
                   {vouchers?.length > 0 ? (
@@ -73,12 +91,12 @@ export default function ModalListVoucher({ opened, data, loading, onClose }: Mod
                         </Text>
                       </Box>
                       <Stack mb={10} mt={6} gap={'xs'}>
-                        {vouchers?.map((item: any, index: number) => {
+                        {vouchers?.map((item, index) => {
                           return (
                             <label
                               key={index}
                               htmlFor={`voucher-${item?.id.toString()}`}
-                              className={`relative w-full ${allowedVoucher(item?.minOrderPrice || 0, products) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                              className={`relative w-full ${allowedVoucher(+(item?.minOrderPrice || 0), products) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                             >
                               <VoucherTemplate voucher={item} products={products} />
                             </label>

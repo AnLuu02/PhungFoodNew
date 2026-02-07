@@ -36,7 +36,7 @@ export default function SearchComponentClient({ subCategories }: any) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
-  const [historySearch, setHistorySearch] = useLocalStorage<any>({ key: 'historySearch', defaultValue: [] });
+  const [historySearch, setHistorySearch] = useLocalStorage<string[]>({ key: 'historySearch', defaultValue: [] });
   const [debounced] = useDebouncedValue(searchQuery, 500);
   const { data, isLoading } = api.Search.search.useQuery({ s: debounced ?? '' }, { enabled: !!debounced });
 

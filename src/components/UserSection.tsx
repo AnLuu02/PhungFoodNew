@@ -5,6 +5,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconChevronDown, IconLock, IconLogout, IconShoppingBag, IconUser, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { CartItem, VoucherForUser } from '~/types/client-type-trpc';
 
 const menuUser = [
   { label: 'Thông tin cá nhân', href: '/thong-tin', icon: IconUser },
@@ -12,9 +13,15 @@ const menuUser = [
   { label: 'Đổi mật khẩu', href: '/password/change-password', icon: IconLock }
 ];
 
-export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
-  const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [, , resetSelectedVouchers] = useLocalStorage<any[]>({
+export default function UserSection({
+  responsive,
+  width
+}: {
+  responsive?: boolean;
+  width?: string | number | undefined;
+}) {
+  const [, , resetCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
+  const [, , resetSelectedVouchers] = useLocalStorage<VoucherForUser>({
     key: 'applied-vouchers',
     defaultValue: []
   });

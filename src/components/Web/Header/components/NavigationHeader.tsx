@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
+import { CategoryAll } from '~/types/client-type-trpc';
 
 const navigationItem = [
   { label: 'Trang chủ', href: '/' },
@@ -15,7 +16,7 @@ const navigationItem = [
   { label: 'Tin tức', href: '/tin-tuc' },
   { label: 'Mua nhanh', href: '/goi-mon-nhanh' }
 ];
-function NavigationHeader({ categories }: { categories?: any }) {
+function NavigationHeader({ categories }: { categories: CategoryAll }) {
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1024px)');

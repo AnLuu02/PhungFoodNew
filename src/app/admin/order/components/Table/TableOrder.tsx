@@ -17,7 +17,6 @@ import {
 } from '../Button';
 
 import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
@@ -47,11 +46,11 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
       },
       {
         total: 0,
-        [OrderStatus.COMPLETED]: 0,
-        [OrderStatus.SHIPPING]: 0,
-        [OrderStatus.PENDING]: 0,
-        [OrderStatus.CANCELLED]: 0,
-        [OrderStatus.CONFIRMED]: 0
+        [LocalOrderStatus.COMPLETED]: 0,
+        [LocalOrderStatus.SHIPPING]: 0,
+        [LocalOrderStatus.PENDING]: 0,
+        [LocalOrderStatus.CANCELLED]: 0,
+        [LocalOrderStatus.CONFIRMED]: 0
       }
     );
 
@@ -64,26 +63,26 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
       },
       {
         label: 'Hoàn thành',
-        value: summary[OrderStatus.COMPLETED],
+        value: summary[LocalOrderStatus.COMPLETED],
         icon: IconCircleCheck,
         color: '#499764'
       },
       {
         label: 'Vận chuyển',
-        value: summary[OrderStatus.SHIPPING],
+        value: summary[LocalOrderStatus.SHIPPING],
         icon: IconTruckDelivery,
         color: '#C0A453'
       },
       {
         label: 'Chờ xác nhận',
-        value: summary[OrderStatus.PENDING],
+        value: summary[LocalOrderStatus.PENDING],
         icon: IconBellPause,
         color: '#F16329'
       },
 
       {
         label: 'Đã hủy',
-        value: summary[OrderStatus.CANCELLED],
+        value: summary[LocalOrderStatus.CANCELLED],
         icon: IconXboxX,
         color: '#CA041D'
       }

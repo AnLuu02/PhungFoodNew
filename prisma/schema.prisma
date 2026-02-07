@@ -562,31 +562,31 @@ enum NotificationType {
 }
 
 enum RecipientType {
-  individual
-  all
+  INDIVIDUAL
+  ALL
 }
 
 enum NotificationStatus {
-  draft
-  scheduled
-  sent
-  delivered
-  read
-  failed
+  DRAFT
+  SCHEDULED
+  SENT
+  DELIVERED
+  READ
+  FAILED
 }
 
 enum NotificationPriority {
-  low
-  medium
-  high
-  urgent
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }
 
 enum NotificationChannel {
-  push
-  email
-  sms
-  in_app
+  PUSH
+  EMAIL
+  SMS
+  IN_APP
 }
 
 enum NotificationRecipientStatus {

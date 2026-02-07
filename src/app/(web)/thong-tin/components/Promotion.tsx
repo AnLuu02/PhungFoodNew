@@ -2,8 +2,9 @@ import { Box, Card, Flex, Stack, Text, Title } from '@mantine/core';
 import Link from 'next/link';
 import BButton from '~/components/Button/Button';
 import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
+import { VoucherForUser } from '~/types/client-type-trpc';
 
-export function Promotions({ vouchers }: { vouchers: any }) {
+export function Promotions({ vouchers }: { vouchers: VoucherForUser }) {
   return (
     <Stack>
       <Flex className='sm:items-center' gap={'md'} justify={'space-between'} direction={{ base: 'column', sm: 'row' }}>

@@ -142,7 +142,7 @@ export const subCategoryRouter = createTRPCRouter({
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
                   type: LocalImageType.THUMBNAIL
-                } as any
+                }
               }
             : undefined
         }
@@ -206,13 +206,13 @@ export const subCategoryRouter = createTRPCRouter({
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
                         type: LocalImageType.THUMBNAIL
-                      } as any,
+                      },
                       create: {
                         entityType: LocalEntityType.CATEGORY,
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
                         type: LocalImageType.THUMBNAIL
-                      } as any
+                      }
                     }
                   }
                 : undefined

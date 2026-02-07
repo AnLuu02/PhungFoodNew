@@ -6,11 +6,26 @@ import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { api } from '~/trpc/react';
+import { CategoryAll, ProductFind, ProductOne } from '~/types/client-type-trpc';
 
-export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }: any) => {
+export const QuickMenu = ({
+  categories,
+  searchParams,
+  totalPages,
+  initProducts
+}: {
+  categories: CategoryAll;
+  searchParams?: {
+    page?: string;
+    limit?: string;
+    'danh-muc'?: string;
+  };
+  totalPages: number;
+  initProducts: NonNullable<ProductFind>['products'];
+}) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [dataRender, setDataRender] = useState<any>([...initProducts]);
+  const [dataRender, setDataRender] = useState<NonNullable<ProductFind>['products']>([...initProducts]);
   const utils = api.useUtils();
   useEffect(() => {
     setDataRender([...initProducts]);
@@ -29,7 +44,7 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
     setLoading(false);
   }
 
-  const dataMemorize = useMemo(() => {
+  const dataMemorize = useMemo<NonNullable<ProductFind>['products']>(() => {
     return dataRender;
   }, [dataRender]);
 
@@ -39,7 +54,7 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
         <Link href={`/goi-mon-nhanh`}>
           <BButton active={!searchParams?.['danh-muc']} children={'Tất cả'} variant='outline' radius={'xl'} />
         </Link>
-        {categories?.map((item: any, index: number) => (
+        {categories?.map((item, index) => (
           <>
             <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`}>
               <BButton
@@ -56,14 +71,14 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
       <Flex direction={'column'} w={'100%'}>
         <Grid>
           {dataMemorize?.length > 0 ? (
-            dataMemorize.map((item: any, index: number) => (
+            dataMemorize.map((item, index) => (
               <GridCol
                 span={{ base: 12, sm: 6, md: 6, lg: 3 }}
                 key={`${item.id}+${index}`}
                 className='animate-fadeUp'
                 style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
               >
-                <ProductCardCarouselVertical data={item} key={index} />
+                <ProductCardCarouselVertical data={item as ProductOne} key={index} />
               </GridCol>
             ))
           ) : (

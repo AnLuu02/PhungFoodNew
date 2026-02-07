@@ -2,6 +2,7 @@
 import { Box } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { api } from '~/trpc/react';
+import { ProductFind } from '~/types/client-type-trpc';
 import HeaderMenu from './components/HeaderMenu';
 import { MenuList } from './components/MenuList';
 
@@ -27,8 +28,8 @@ export default function MenuSection() {
   });
   return (
     <Box pos={'relative'}>
-      <HeaderMenu responseData={data} isLoading={isLoading} />
-      <MenuList responseData={data} isLoading={isLoading} />
+      <HeaderMenu responseData={data as ProductFind} isLoading={isLoading} />
+      <MenuList responseData={data as ProductFind} isLoading={isLoading} />
     </Box>
   );
 }

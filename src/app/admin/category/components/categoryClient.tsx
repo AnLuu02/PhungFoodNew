@@ -6,11 +6,22 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
+import { CategoryAll, CategoryFind, SubCategoryFind } from '~/types/client-type-trpc';
 import { CreateCategoryButton, CreateSubCategoryButton } from './Button';
 import TableCategory from './Table/TableCategory';
 import TableSubCategory from './Table/TableSubCategory';
 
-export default function CategoryClientManagementPage({ s, allData, dataCategory, dataSubCategory }: any) {
+export default function CategoryClientManagementPage({
+  s,
+  categoryAll,
+  categoryFind,
+  subCategoryFind
+}: {
+  s: string;
+  categoryAll: CategoryAll;
+  categoryFind: CategoryFind;
+  subCategoryFind: SubCategoryFind;
+}) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
@@ -19,22 +30,25 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
   const [activeTab, setActiveTab] = useState<'category' | 'subCategory'>('category');
   const { data: dataClient } =
     activeTab === 'category'
-      ? api.Category.find.useQuery({ skip: +page, take: +limit, s }, { initialData: dataCategory })
-      : api.SubCategory.find.useQuery({ skip: +page, take: +limit, s }, { initialData: dataSubCategory });
+      ? api.Category.find.useQuery({ skip: +page, take: +limit, s }, { initialData: categoryFind })
+      : api.SubCategory.find.useQuery({ skip: +page, take: +limit, s }, { initialData: subCategoryFind });
 
-  const { data: allDataClient } = api.Category.getAll.useQuery(undefined, { initialData: allData });
+  const { data: allDataClient } = api.Category.getAll.useQuery(undefined, { initialData: categoryAll });
   const { data: user } = useSession();
 
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient?.reduce(
-      (acc: any, item: any) => {
+      (
+        acc: { totalCate: number; activeCate: number; totalSubCate: number; activeSubCate: number },
+        item: NonNullable<CategoryAll>[0]
+      ) => {
         acc.totalCate += 1;
-        acc.totalSubCate += item.subCategory?.length || 0;
+        acc.totalSubCate += item.subCategories?.length || 0;
         if (item.isActive) {
           acc.activeCate += 1;
         }
-        item.subCategory?.forEach((subCategory: any) => {
+        item.subCategories?.forEach(subCategory => {
           if (subCategory.isActive) {
             acc.activeSubCate += 1;
           }
@@ -109,8 +123,8 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
       <Tabs
         variant='pills'
         value={activeTab}
-        onChange={(value: any) => {
-          setActiveTab(value);
+        onChange={value => {
+          setActiveTab(value as 'category' | 'subCategory');
           router.push(`/admin/category`);
         }}
         styles={{
@@ -154,7 +168,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
                       { value: 'all', label: 'Tất cả' },
                       { value: 'active', label: 'Hoạt động' },
                       { value: 'inactive', label: 'Tạm khóa' },
-                      ...allData?.map((item: any) => {
+                      ...categoryAll?.map(item => {
                         return {
                           label: item.name,
                           value: item.tag

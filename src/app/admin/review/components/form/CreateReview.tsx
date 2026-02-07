@@ -9,6 +9,7 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { ReviewClientType } from '~/types';
+import { ProductAll, UserAll } from '~/types/client-type-trpc';
 
 export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
   const {
@@ -72,7 +73,12 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
                 label='Product'
                 radius='md'
                 placeholder=' Chọn sản phẩm'
-                data={products?.map((product: any) => ({ value: product.id, label: product.name })) || []}
+                data={
+                  products?.map((product: NonNullable<ProductAll>[0]) => ({
+                    value: product.id,
+                    label: product.name
+                  })) || []
+                }
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -91,7 +97,9 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
                 label='user'
                 radius='md'
                 placeholder=' Chọn khách hàng'
-                data={users?.map((user: any) => ({ value: user.id, label: user.name })) || []}
+                data={
+                  users?.map((user: NonNullable<UserAll>[0]) => ({ value: user.id, label: user.name || 'Khách' })) || []
+                }
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}

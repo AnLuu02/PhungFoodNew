@@ -31,7 +31,7 @@ export default function AddressSection({
               searchable
               label='Tỉnh thành'
               placeholder='Tỉnh thành'
-              data={provinces?.results?.map((item: any) => ({
+              data={provinces?.results?.map(item => ({
                 value: item.province_id,
                 label: item.province_name
               }))}
@@ -54,7 +54,7 @@ export default function AddressSection({
               searchable
               label='Quận huyện'
               placeholder='Quận huyện'
-              data={districts?.results?.map((item: any) => ({
+              data={districts?.results?.map(item => ({
                 value: item.district_id,
                 label: item.district_name
               }))}
@@ -77,7 +77,7 @@ export default function AddressSection({
               label='Phường xã'
               searchable
               placeholder='Phường xã'
-              data={wards?.results?.map((item: any) => ({
+              data={wards?.results?.map(item => ({
                 value: item.ward_id,
                 label: item.ward_name
               }))}

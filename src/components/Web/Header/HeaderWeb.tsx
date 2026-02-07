@@ -1,6 +1,7 @@
 import BreadcrumbsComponent from '~/components/BreadcrumbsComponent';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
+import { CategoryAll, SubCategoryAll } from '~/types/client-type-trpc';
 import Header2 from './section/HeaderSecond';
 import Header3 from './section/HeaderThird';
 const getStaticData = async () => {
@@ -17,9 +18,9 @@ const HeaderWeb = async () => {
   const [categories, subCategories] = await getStaticData();
   return (
     <>
-      <Header2 subCategories={subCategories} />
-      <Header3 categories={categories} subCategories={subCategories} />
-      <BreadcrumbsComponent subCategories={subCategories} />
+      <Header2 subCategories={subCategories as SubCategoryAll} />
+      <Header3 categories={categories as CategoryAll} subCategories={subCategories as SubCategoryAll} />
+      <BreadcrumbsComponent subCategories={subCategories as SubCategoryAll} />
     </>
   );
 };

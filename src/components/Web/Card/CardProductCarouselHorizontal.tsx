@@ -12,8 +12,9 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { ProductOne } from '~/types/client-type-trpc';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
-const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
+const ProductCardCarouselHorizontal = ({ data }: { data: ProductOne }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
@@ -109,11 +110,11 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
           <Group>
             {data?.discount && (
               <Text size='sm' c={'dimmed'} td='line-through'>
-                {formatPriceLocaleVi(data?.price || 0)}
+                {formatPriceLocaleVi(+(data?.price || 0))}
               </Text>
             )}
             <Text size='md' fw={700} className='text-mainColor'>
-              {formatPriceLocaleVi((data?.price || 0) - (data?.discount || 0))}
+              {formatPriceLocaleVi(+(data?.price || 0) - +(data?.discount || 0))}
             </Text>
           </Group>
           <Flex w={'100%'} align={'center'} gap={10} justify={'space-between'}>
@@ -137,7 +138,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
       </Flex>
       {data?.discount ? (
         <Badge color='red' pos={'absolute'} top={10} left={8}>
-          Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(0) + '%' : '20%'}
+          Giảm {data?.discount ? ((+(data?.discount || 0) / +(data?.price || 1)) * 100).toFixed(0) + '%' : '20%'}
         </Badge>
       ) : (
         ''

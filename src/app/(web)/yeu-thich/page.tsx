@@ -6,9 +6,10 @@ import { useMemo } from 'react';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { api } from '~/trpc/react';
+import { ProductOne } from '~/types/client-type-trpc';
 
 export default function FavouritePage() {
-  const [localFavouriteFood] = useLocalStorage<{ product: any }[]>({
+  const [localFavouriteFood] = useLocalStorage<ProductOne[]>({
     key: 'favouriteFood',
     defaultValue: []
   });
@@ -22,7 +23,7 @@ export default function FavouritePage() {
   );
 
   const dataRender = useMemo(() => {
-    if (userEmail) return favouriteFoodFromApi.map((item: any) => item.product);
+    if (userEmail) return favouriteFoodFromApi.map(item => item.product);
     return localFavouriteFood;
   }, [userEmail, favouriteFoodFromApi, localFavouriteFood]);
 
@@ -39,7 +40,7 @@ export default function FavouritePage() {
           className={`animate-fadeUp`}
           style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
         >
-          <ProductCardCarouselVertical data={item} />
+          <ProductCardCarouselVertical data={item as ProductOne} />
         </GridCol>
       ))}
     </Grid>

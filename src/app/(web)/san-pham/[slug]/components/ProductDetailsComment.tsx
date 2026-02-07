@@ -3,8 +3,10 @@ import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { ProductOne } from '~/types/client-type-trpc';
 
-export default function ProductDetails({ product }: { product: any }) {
+export default function ProductDetails({ product }: { product: ProductOne }) {
+  if (!product) return;
   return (
     <Paper withBorder p='md'>
       <Stack>
@@ -21,7 +23,7 @@ export default function ProductDetails({ product }: { product: any }) {
         </Title>
         <Group>
           <Badge size='lg' variant='filled'>
-            {formatPriceLocaleVi(product.price)}
+            {formatPriceLocaleVi(+(product.price || 0))}
           </Badge>
           <Group gap='xs'>
             <Rating value={product.rating} readOnly color={'#FFC522'} />

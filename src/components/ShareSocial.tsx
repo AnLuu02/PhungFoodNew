@@ -9,8 +9,9 @@ import {
   IconMail
 } from '@tabler/icons-react';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
+import { ProductOne } from '~/types/client-type-trpc';
 
-export function ShareSocials({ data, type = 'default' }: { data: any; type?: 'default' | 'detail' }) {
+export function ShareSocials({ data, type = 'default' }: { data: Partial<ProductOne>; type?: 'default' | 'detail' }) {
   const DOMAIN = process.env.NEXT_PUBLIC_BASE_URL_DEPLOY || 'http://localhost:3000';
   const currentUrl = `${DOMAIN}/san-pham/${data?.tag || ''}`;
   const links = [

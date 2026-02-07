@@ -24,17 +24,18 @@ import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { CategoryAll } from '~/types/client-type-trpc';
 
-export default function MegaMenu({ categories }: { categories: any }) {
+export default function MegaMenu({ categories }: { categories: CategoryAll }) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<string | null>(
     searchParams.get('danh-muc') || (categories?.[0]?.tag as string)
   );
   const [bestSellerProducts, categoriesItem] = useMemo(() => {
-    const bestSellerProducts = categories.flatMap((item: any) =>
-      activeTab === item?.tag ? item?.subCategory.flatMap((subItem: any) => subItem?.product) : []
+    const bestSellerProducts = categories.flatMap(item =>
+      activeTab === item?.tag ? item?.subCategories.flatMap(subItem => subItem?.products) : []
     );
-    const categoriesItem = categories.flatMap((item: any) => (activeTab === item?.tag ? item?.subCategory : []));
+    const categoriesItem = categories.flatMap(item => (activeTab === item?.tag ? item?.subCategories : []));
     return [bestSellerProducts, categoriesItem];
   }, [activeTab]);
   return (
@@ -62,7 +63,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
           <ScrollAreaAutosize mah={'55vh'} scrollbarSize={5}>
             <Tabs.List>
               {categories?.length > 0 &&
-                categories?.map((item: any) => (
+                categories?.map(item => (
                   <Tabs.Tab
                     value={item.tag}
                     key={item.id + item.tag}
@@ -70,8 +71,8 @@ export default function MegaMenu({ categories }: { categories: any }) {
                     className='hover:bg-mainColor/10'
                     leftSection={
                       <Image
-                        src={item?.subCategory?.[0]?.image?.url || '/images/png/momo.png'}
-                        alt={item.image?.altText}
+                        src={item?.subCategories?.[0]?.image?.url || '/images/png/momo.png'}
+                        alt={item?.subCategories?.[0]?.image?.altText || 'Subcategory image'}
                         width={30}
                         height={30}
                         style={{ objectFit: 'cover' }}
@@ -88,10 +89,10 @@ export default function MegaMenu({ categories }: { categories: any }) {
         </Box>
 
         <ScrollAreaAutosize mih={'50vh'} className='flex-1' scrollbarSize={5}>
-          <Tabs.Panel value={activeTab || categories?.[0]?.tag}>
+          <Tabs.Panel value={activeTab || categories?.[0]?.tag || 'mon-chinh'}>
             <Box p={'lg'}>
               <Grid mb={'xs'}>
-                {categoriesItem?.map((category: any, index: number) => (
+                {categoriesItem?.map((category, index) => (
                   <GridCol span={4} key={category.id + index}>
                     <Link
                       href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${category.tag}`}
@@ -122,7 +123,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
                           {category.name}
                         </Text>
                         <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
-                          Số lượng: {category.product.length || 0}
+                          Số lượng: {category.products.length || 0}
                         </Text>
                       </Stack>
                     </Link>
@@ -149,7 +150,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
 
                 <Grid>
                   {bestSellerProducts?.length > 0 ? (
-                    bestSellerProducts?.map((product: any, index: number) => (
+                    bestSellerProducts?.map((product, index) => (
                       <GridCol
                         span={3}
                         key={product.id + product.tag}
@@ -186,7 +187,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
                                 </Text>
                               </Tooltip>
                               <Text fw={700} size='sm' className='text-mainColor'>
-                                {formatPriceLocaleVi(product?.price || 0)}
+                                {formatPriceLocaleVi(+(product?.price || 0))}
                               </Text>
                             </Stack>
                           </Stack>

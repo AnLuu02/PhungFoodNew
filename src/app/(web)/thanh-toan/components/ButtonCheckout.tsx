@@ -6,6 +6,7 @@ import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredent
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
+import { VoucherForUser } from '~/types/client-type-trpc';
 
 export const ButtonCheckout = ({
   stylesButtonCheckout,
@@ -22,7 +23,7 @@ export const ButtonCheckout = ({
   discountAmount: number;
   onClick?: () => void;
 }) => {
-  const [appliedVouchers] = useLocalStorage<any[]>({
+  const [appliedVouchers] = useLocalStorage<VoucherForUser>({
     key: 'applied-vouchers',
     defaultValue: []
   });
@@ -51,6 +52,7 @@ export const ButtonCheckout = ({
       const responseGuest = await guestCreateMutation.mutateAsync({
         email: guest.email || '',
         name: guest.email || '',
+        phone: '',
         password: guest.password || '',
         image: { fileName: '', base64: '' }
       });
@@ -70,7 +72,7 @@ export const ButtonCheckout = ({
             note: item.note,
             price: Number(item.price) || 0
           })),
-          vouchers: appliedVouchers?.map((item: any) => item.id).filter(Boolean) || []
+          voucherIds: appliedVouchers?.map(item => item.id).filter(Boolean) || []
         });
       } else {
         NotifyError('Đơn hàng không tồn tại.', 'Đơn hàng không hợp lệ.');

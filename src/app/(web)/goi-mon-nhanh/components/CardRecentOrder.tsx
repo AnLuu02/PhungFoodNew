@@ -1,17 +1,21 @@
 'use client';
 
 import { Box, Button, Card, Stack, Text } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
+import { OrderFilter } from '~/types/client-type-trpc';
 
-export default function CardRecentOrder({ order }: { order: any }) {
-  const [selectedOrder, setSelectedOrder] = useState<{ type: 'edit' | 'reorder'; data: any } | null>(null);
+export default function CardRecentOrder({ order }: { order: NonNullable<OrderFilter>[0] }) {
+  const [selectedOrder, setSelectedOrder] = useState<{
+    type: 'edit' | 'reorder';
+    data: NonNullable<OrderFilter>[0];
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const statusInfo = useMemo(() => {
-    return getStatusInfo(order?.status || OrderStatus.CANCELLED);
+    return getStatusInfo((order.status as LocalOrderStatus) || LocalOrderStatus.CANCELLED);
   }, [order]);
   return (
     <>
@@ -33,11 +37,11 @@ export default function CardRecentOrder({ order }: { order: any }) {
           <Box className='flex items-center justify-between'>
             <Box className='flex items-center gap-2'>
               <Text fw={700}>
-                Tổng đơn: <b className='text-mainColor'>{formatPriceLocaleVi(order?.finalTotal || 0)}</b>
+                Tổng đơn: <b className='text-mainColor'>{formatPriceLocaleVi(+(order?.finalTotal || 0))}</b>
               </Text>
             </Box>
             <Text fw={700}>
-              Đã giảm: <b className='text-mainColor'>{formatPriceLocaleVi(order?.discountAmount || 0)}</b>
+              Đã giảm: <b className='text-mainColor'>{formatPriceLocaleVi(+(order?.discountAmount || 0))}</b>
             </Text>{' '}
           </Box>
           <Box className='grid grid-cols-2 gap-4 text-sm'>

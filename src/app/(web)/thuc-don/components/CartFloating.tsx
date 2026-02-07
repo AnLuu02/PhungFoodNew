@@ -5,9 +5,10 @@ import { IconBell, IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { CartItem } from '~/types/client-type-trpc';
 
 export function CartFloating() {
-  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
   const totalPrice = useMemo(() => {
     return cart.reduce(
       (sum, item) => sum + (Number(item?.price || 0) - Number(item?.discount || 0)) * Number(item?.quantity || 0),

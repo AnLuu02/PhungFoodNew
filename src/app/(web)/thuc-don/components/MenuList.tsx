@@ -3,8 +3,9 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
+import { ProductFind } from '~/types/client-type-trpc';
 
-export const MenuList = ({ responseData, isLoading }: { responseData: any; isLoading: boolean }) => {
+export const MenuList = ({ responseData, isLoading }: { responseData: ProductFind; isLoading: boolean }) => {
   const products = responseData?.products || [];
   return (
     <Flex direction={'column'} align={'flex-start'}>

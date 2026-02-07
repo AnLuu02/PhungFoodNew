@@ -32,6 +32,7 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
+import { OrderFilter } from '~/types/client-type-trpc';
 
 const InvoiceToPrint = dynamic(() => import('~/components/InvoceToPrint'), {
   ssr: false
@@ -39,7 +40,9 @@ const InvoiceToPrint = dynamic(() => import('~/components/InvoceToPrint'), {
 const SearchLocal = dynamic(() => import('~/components/Search/SearchLocal'), {
   ssr: false
 });
-export default function MyOrderPageClient({ data }: any) {
+
+type Order = NonNullable<OrderFilter>[0];
+export default function MyOrderPageClient({ data }: { data: OrderFilter }) {
   const { openModal } = useModalActions();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
@@ -50,13 +53,13 @@ export default function MyOrderPageClient({ data }: any) {
 
   const filteredOrders = useMemo(() => {
     if (!selectedStatus) return orders;
-    return orders.filter((order: any) => order.status.toLowerCase() === selectedStatus.toLowerCase());
+    return orders.filter((order: Order) => order.status.toLowerCase() === selectedStatus.toLowerCase());
   }, [orders, selectedStatus]);
 
   const filteredOrdersSearch = useMemo(() => {
     if (!valueSearch) return filteredOrders;
     const search = valueSearch.toLowerCase();
-    return filteredOrders.filter((order: any) =>
+    return filteredOrders.filter((order: Order) =>
       [
         order?.payment?.name,
         order?.status,
@@ -67,7 +70,7 @@ export default function MyOrderPageClient({ data }: any) {
         order?.id?.toString()
       ]
         .filter(Boolean)
-        .some((field: any) => field.toLowerCase().includes(search))
+        .some((field: string | undefined) => field?.toLowerCase().includes(search))
     );
   }, [filteredOrders, valueSearch]);
 
@@ -82,7 +85,7 @@ export default function MyOrderPageClient({ data }: any) {
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    orders.forEach((order: any) => {
+    orders.forEach((order: Order) => {
       counts[order.status] = (counts[order.status] || 0) + 1;
     });
     return Object.entries(counts).map(([status, count]) => ({ status, count }));
@@ -91,9 +94,9 @@ export default function MyOrderPageClient({ data }: any) {
   const totalOrders = orders.length || 0;
   const totalAmount = useMemo(
     () =>
-      orders.reduce((sum: any, order: any) => {
+      orders.reduce((sum: number, order: Order) => {
         if (order.status === LocalOrderStatus.COMPLETED) {
-          return sum + order.finalTotal;
+          return sum + +(order.finalTotal || 0);
         }
         return sum;
       }, 0),
@@ -224,7 +227,7 @@ export default function MyOrderPageClient({ data }: any) {
                       </Table.Td>
                     </Table.Tr>
                   ) : (
-                    displayedOrders.map((order: any) => {
+                    displayedOrders.map((order: Order) => {
                       const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
                       return (
                         <Table.Tr key={order.id}>
@@ -240,7 +243,7 @@ export default function MyOrderPageClient({ data }: any) {
                           </Table.Td>
                           <Table.Td className='text-sm'>
                             <Highlight size='sm' highlight={valueSearch || ''}>
-                              {formatPriceLocaleVi(order.finalTotal || 0)}
+                              {formatPriceLocaleVi(+(order.finalTotal || 0))}
                             </Highlight>
                           </Table.Td>
                           <Table.Td className='text-sm'>

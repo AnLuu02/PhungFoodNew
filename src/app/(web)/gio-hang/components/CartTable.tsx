@@ -18,9 +18,10 @@ import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { CartItem } from '~/types/client-type-trpc';
 import { Note } from './Note';
-export const CartTable = ({ updateQuantity }: any) => {
-  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
+export const CartTable = ({ updateQuantity }: { updateQuantity: (id: string, quantity: number) => void }) => {
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
 
   return (
     <Table className='mb-6'>
@@ -36,7 +37,7 @@ export const CartTable = ({ updateQuantity }: any) => {
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>
-        {cart.map((item: any, index: number) => (
+        {cart.map((item, index) => (
           <Table.Tr key={item.id} className={`animate-fadeUp`} style={{ animationDuration: `${index * 0.05 + 0.5}s` }}>
             <Table.Td className='text-sm'>
               <Group wrap='nowrap' align='center'>
@@ -73,23 +74,28 @@ export const CartTable = ({ updateQuantity }: any) => {
                       size='xs'
                       p={0}
                       m={0}
-                      onClick={() => setCart(cart.filter((cartItem: any) => cartItem.id !== item.id))}
+                      onClick={() => setCart(cart.filter(cartItem => cartItem.id !== item.id))}
                     >
                       <IconTrash size={20} />
                     </Button>
 
                     <Text size='md' fw={700} className='text-mainColor lg:hidden'>
-                      {item?.price ? `${formatPriceLocaleVi(item?.price - item?.discount)} ` : `180.000đ`}
+                      {item?.price
+                        ? `${formatPriceLocaleVi(+(item?.price || 0) - +(item?.discount || 0))} `
+                        : `180.000đ`}
                     </Text>
-                    {item?.discount > 0 && (
+                    {+(item?.discount || 0) > 0 && (
                       <Badge color='red' size='sm'>
-                        Giảm {item?.discount ? ((item?.discount / item?.price) * 100).toFixed(0) + '%' : '20%'}
+                        Giảm{' '}
+                        {item?.discount
+                          ? ((+(item?.discount || 0) / +(item?.price || 0)) * 100).toFixed(0) + '%'
+                          : '20%'}
                       </Badge>
                     )}
                   </Group>
                   <Flex justify={'space-between'} w={'100%'} align={'center'}>
                     <Box>
-                      {cart.find((cartItem: any) => cartItem.id === item.id && cartItem?.note) ? (
+                      {cart.find(cartItem => cartItem.id === item.id && cartItem?.note) ? (
                         <Badge
                           c={'dimmed'}
                           variant='transparent'
@@ -129,7 +135,7 @@ export const CartTable = ({ updateQuantity }: any) => {
             </Table.Td>
             <Table.Td className='hidden text-sm lg:table-cell'>
               <Text className='text-red-500' size='md' fw={700}>
-                {formatPriceLocaleVi(item.price || 0)}
+                {formatPriceLocaleVi(+(item.price || 0) || 0)}
               </Text>
             </Table.Td>
             <Table.Td className='text-sm'>
@@ -137,10 +143,10 @@ export const CartTable = ({ updateQuantity }: any) => {
                 radius={'md'}
                 thousandSeparator=','
                 clampBehavior='strict'
-                value={item.quantity}
+                value={+(item.quantity || 0)}
                 onChange={quantity => {
                   if (Number(quantity) === 0) {
-                    setCart(cart.filter((cartItem: any) => cartItem.id !== item.id));
+                    setCart(cart.filter(cartItem => cartItem.id !== item.id));
                   }
                   updateQuantity(item.id, Number(quantity));
                 }}
@@ -151,12 +157,12 @@ export const CartTable = ({ updateQuantity }: any) => {
             </Table.Td>
             <Table.Td className='text-sm'>
               <Text className='text-red-500' size='md' fw={700}>
-                {formatPriceLocaleVi(item.discount * item.quantity)}
+                {formatPriceLocaleVi(+(item.discount || 0) * +(item.quantity || 0))}
               </Text>
             </Table.Td>
             <Table.Td className='text-sm'>
               <Text className='text-red-500' size='md' fw={700}>
-                {formatPriceLocaleVi((item.price - item.discount) * item.quantity)}
+                {formatPriceLocaleVi((+(item.price || 0) - +(item.discount || 0)) * +(item.quantity || 0))}
               </Text>
             </Table.Td>
           </Table.Tr>

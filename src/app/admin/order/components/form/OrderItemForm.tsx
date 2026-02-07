@@ -5,7 +5,8 @@ import { Control, Controller, FieldErrors, UseFormGetValues, UseFormSetValue, Us
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
-import { Order } from '~/types/order';
+import { OrderClientType } from '~/types';
+import { ProductAll } from '~/types/client-type-trpc';
 
 const OrderItemForm = ({
   index,
@@ -18,13 +19,13 @@ const OrderItemForm = ({
 }: {
   index: number;
   removeOrderItem: (index: number) => void;
-  control: Control<Order, any, Order>;
-  watch: UseFormWatch<Order>;
-  setValue: UseFormSetValue<Order>;
-  getValues: UseFormGetValues<Order>;
-  errors: FieldErrors<Order>;
+  control: Control<OrderClientType, any, OrderClientType>;
+  watch: UseFormWatch<OrderClientType>;
+  setValue: UseFormSetValue<OrderClientType>;
+  getValues: UseFormGetValues<OrderClientType>;
+  errors: FieldErrors<OrderClientType>;
 }) => {
-  const [productOrderItem, setProductOrderItem] = useState<any>({});
+  const [productOrderItem, setProductOrderItem] = useState<NonNullable<ProductAll>[0]>();
   const { data: products } = api.Product.getAll.useQuery({
     hasCategory: true,
     hasCategoryChild: true,
@@ -35,21 +36,21 @@ const OrderItemForm = ({
   const chooseQuantity = watch(`orderItems.${index}.quantity`);
   const orderItems = watch(`orderItems`);
   useEffect(() => {
-    const p = products?.find((product: any) => product.id === chooseProduct);
+    const p = products?.find(product => product.id === chooseProduct);
     if (p?.id) {
       setProductOrderItem(p);
-      setValue(`orderItems.${index}.price`, p?.price);
+      setValue(`orderItems.${index}.price`, +(p?.price || 0));
     }
   }, [chooseProduct]);
 
   useEffect(() => {
     setValue(
       'originalTotal',
-      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0)
+      orderItems.reduce((sum: number, item) => sum + (item.price || 0) * (item.quantity || 0), 0)
     );
     setValue(
       'finalTotal',
-      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0)
+      orderItems.reduce((sum: number, item) => sum + (item.price || 0) * (item.quantity || 0), 0)
     );
   }, [chooseProduct, chooseQuantity, orderItems]);
 
@@ -72,11 +73,11 @@ const OrderItemForm = ({
                 radius='md'
                 {...field}
                 placeholder='Select products'
-                data={products?.map((product: any) => ({
+                data={products?.map(product => ({
                   value: product.id,
                   label: product.name,
                   disabled:
-                    !product.availableQuantity || watch(`orderItems`).some((item: any) => item.productId === product.id)
+                    !product.availableQuantity || watch(`orderItems`).some(item => item.productId === product.id)
                 }))}
                 error={errors.orderItems?.[index]?.productId?.message}
               />

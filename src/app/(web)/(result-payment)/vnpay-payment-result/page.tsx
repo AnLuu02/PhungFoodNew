@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
 import { getVietnameseStatusMessage, mapOrderStatusToUIStatus } from '~/lib/FuncHandler/Payment';
 import { api } from '~/trpc/react';
+import { CartItem } from '~/types/client-type-trpc';
 import OrderStatusPage from './components/OrderStatusPage';
 import { PaymentStatusCardSkeleton } from './components/SkeletonLoading';
 
@@ -17,7 +18,7 @@ export default function PaymentResult() {
       enabled: !!orderId
     }
   );
-  const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [, , resetCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
   const [queryParams, setQueryParams] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const hasFetched = useRef(false);

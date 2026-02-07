@@ -9,16 +9,17 @@ import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { CartItem } from '~/types/client-type-trpc';
 import { ModalProps } from '~/types/modal';
 
 export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {
-  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
-  const [note, setNote] = useState('');
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
+  const [note, setNote] = useState<string>('');
   const [noteDebounced] = useDebouncedValue(note, 800);
   useEffect(() => {
     if (opened) {
-      const existNoteProduct = cart.find((item: any) => item.id === data?.id && item.note !== note);
-      if (existNoteProduct) {
+      const existNoteProduct = cart.find(item => item.id === data?.id && item.note !== note);
+      if (existNoteProduct?.note) {
         setNote(existNoteProduct?.note);
       }
     }

@@ -9,11 +9,12 @@ import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { CartItem } from '~/types/client-type-trpc';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
 
 const CartButton = () => {
   const isDesktop = useMediaQuery(`(min-width: 1024px)`);
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
 
   const updateQuantity = (id: number, quantity: number) => {
     setCart(cart.map(item => (item.id === id ? { ...item, quantity } : item)));

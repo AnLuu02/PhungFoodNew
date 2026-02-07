@@ -182,9 +182,10 @@ export const orderSchema = z.object({
   finalTotal: z.number().default(0),
   status: z.nativeEnum(OrderStatus),
   userId: z.string({ required_error: 'Ai là người mua hàng?' }).min(1, 'Ai là người mua hàng?'),
-  paymentId: z.string({ required_error: 'Chọn phương thức thanh toán' }).min(1, 'Chọn phương thức thanh toán'),
+  // paymentId: z.string({ required_error: 'Chọn phương thức thanh toán' }).min(1, 'Chọn phương thức thanh toán'),
+  paymentId: z.string().optional(),
   orderItems: z.array(orderItemSchema),
-  delivery: deliverySchema,
+  delivery: deliverySchema.optional(),
   voucherIds: z.array(z.string()).default([])
 });
 export const materialSchema = z.object({
@@ -319,7 +320,7 @@ export const notificationSchema = z.object({
   userIds: z.array(z.string()).optional().default([]),
   variables: z.object({}).optional().default({}),
 
-  status: z.nativeEnum(NotificationStatus).default(NotificationStatus.sent),
+  status: z.nativeEnum(NotificationStatus).default(NotificationStatus.SENT),
   priority: z.nativeEnum(NotificationPriority),
   channels: z.array(z.nativeEnum(NotificationChannel)).default([]),
 

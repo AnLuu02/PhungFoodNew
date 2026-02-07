@@ -1,0 +1,27 @@
+import { RouterOutputs } from '~/trpc/react';
+
+export type CategoryFind = RouterOutputs['Category']['find'];
+export type CategoryAll = RouterOutputs['Category']['getAll'];
+export type CategoryOne = RouterOutputs['Category']['getOne'];
+export type CategoryFilter = RouterOutputs['Category']['getFilter'];
+
+export type SubCategoryFind = RouterOutputs['SubCategory']['find'];
+export type SubCategoryAll = RouterOutputs['SubCategory']['getAll'];
+
+export type MaterialAll = RouterOutputs['Material']['getAll'];
+
+export type ProductFind = RouterOutputs['Product']['find'];
+export type ProductAll = RouterOutputs['Product']['getAll'];
+export type ProductFilter = RouterOutputs['Product']['getFilter'];
+export type ProductOne = RouterOutputs['Product']['getOne'];
+
+export type CartItem = ProductOne & { note?: string; quantity: number };
+
+export type UserAll = RouterOutputs['User']['getAll'];
+export type UserOne = RouterOutputs['User']['getOne'];
+
+export type VoucherForUser = RouterOutputs['Voucher']['getVoucherForUser'];
+
+export type OrderFilter = RouterOutputs['Order']['getFilter'];
+
+export type FavouriteFilter = RouterOutputs['FavouriteFood']['getFilter'];

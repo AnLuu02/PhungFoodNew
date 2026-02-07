@@ -7,9 +7,10 @@ import { useEffect, useState } from 'react';
 import { breakpoints } from '~/constants';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
-export const ButtonToggleLike = ({ data }: any) => {
+import { ProductOne } from '~/types/client-type-trpc';
+export const ButtonToggleLike = ({ data }: { data: ProductOne }) => {
   const { data: session } = useSession();
-  const [localFavouriteFood, setLocalFavouriteFood] = useLocalStorage<any>({
+  const [localFavouriteFood, setLocalFavouriteFood] = useLocalStorage<ProductOne[]>({
     key: 'favouriteFood',
     defaultValue: []
   });
@@ -21,12 +22,12 @@ export const ButtonToggleLike = ({ data }: any) => {
 
   useEffect(() => {
     if (session) {
-      const favourite = data?.favouriteFood?.find((item: any) => item.userId === session?.user?.id);
+      const favourite = data?.favouriteFoods?.find(item => item.userId === session?.user?.id);
       if (favourite) {
         setLike(true);
       }
     } else {
-      const favourite = localFavouriteFood?.find((item: any) => item.id === data.id);
+      const favourite = localFavouriteFood?.find(item => item?.id === data?.id);
       if (favourite) {
         setLike(true);
       }
@@ -60,7 +61,7 @@ export const ButtonToggleLike = ({ data }: any) => {
             onClick={async () => {
               if (session) {
                 setLoading(true);
-                await mutationCancleFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
+                await mutationCancleFavourite.mutateAsync({ userId: session?.user?.id, productId: data?.id || '' });
                 setLike(false);
                 setLoading(false);
                 NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
@@ -70,7 +71,7 @@ export const ButtonToggleLike = ({ data }: any) => {
                 setTimeout(() => {
                   setLoading(false);
                 }, 500);
-                setLocalFavouriteFood(localFavouriteFood.filter((item: any) => item.id !== data.id));
+                setLocalFavouriteFood(localFavouriteFood.filter(item => item?.id !== data?.id));
                 NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
               }
             }}
@@ -82,7 +83,7 @@ export const ButtonToggleLike = ({ data }: any) => {
             onClick={async () => {
               if (session) {
                 setLoading(true);
-                await mutationAddFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
+                await mutationAddFavourite.mutateAsync({ userId: session?.user?.id, productId: data?.id || '' });
                 setLike(true);
                 setLoading(false);
                 NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');

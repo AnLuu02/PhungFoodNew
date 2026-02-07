@@ -3,12 +3,13 @@ import { Group, Stack, Textarea } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button/Button';
-export const Note = ({ productId }: any) => {
-  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
-  const [note, setNote] = useState<any>('');
+import { CartItem } from '~/types/client-type-trpc';
+export const Note = ({ productId }: { productId: string }) => {
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
+  const [note, setNote] = useState<string>('');
 
   useEffect(() => {
-    const product = cart.find((item: any) => item.id === productId);
+    const product = cart.find(item => item.id === productId);
     if (product?.note) {
       setNote(product?.note);
     }
@@ -30,7 +31,7 @@ export const Note = ({ productId }: any) => {
           w={'max-content'}
           size='xs'
           onClick={() => {
-            setCart((prev: any) => prev.map((item: any) => (item.id === productId ? { ...item, note } : item)));
+            setCart(prev => prev.map(item => (item.id === productId ? { ...item, note } : item)));
           }}
         >
           Áp dụng
@@ -42,10 +43,10 @@ export const Note = ({ productId }: any) => {
           size='xs'
           className='text-white'
           onClick={() => {
-            const productExist = cart.find((item: any) => item.id === productId);
+            const productExist = cart.find(item => item.id === productId);
             if (productExist) {
               const { note, ...rest } = productExist;
-              setCart((prev: any) => prev.map((item: any) => (item.id === productId ? { ...rest } : item)));
+              setCart(prev => prev.map(item => (item.id === productId ? { ...rest } : item)));
               setNote('');
             }
           }}

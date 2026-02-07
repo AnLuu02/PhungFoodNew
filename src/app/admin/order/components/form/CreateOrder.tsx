@@ -14,7 +14,6 @@ import {
   Title
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
@@ -365,7 +364,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                     label='Trạng thái (chỉ đọc)'
                     radius={'md'}
                     placeholder='Chọn trạng thái'
-                    data={Object.values(OrderStatus).map(status => ({
+                    data={Object.values(LocalOrderStatus).map(status => ({
                       value: status,
                       label: getStatusInfo(status as LocalOrderStatus).label
                     }))}

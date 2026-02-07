@@ -14,8 +14,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
+import { ProductAll, ProductFind } from '~/types/client-type-trpc';
 
-export default function TableProduct({ s, data, allData }: { s: string; data: any; allData: any }) {
+export default function TableProduct({ s, data, allData }: { s: string; data: ProductFind; allData: ProductAll }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -31,7 +32,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (acc: any, item) => {
         acc.total += 1;
         acc.purchased += item.soldQuantity || 0;
         if (item.isActive) {
@@ -142,7 +143,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
               }}
               data={[
                 { value: 'all', label: 'Tất cả danh mục' },
-                ...(categories || []).map((item: any) => ({ value: item.tag, label: item.name }))
+                ...(categories || []).map(item => ({ value: item.tag, label: item.name }))
               ]}
               nothingFoundMessage='Không tìm thấy'
             />
@@ -166,7 +167,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((item: any) => (
+              currentItems.map(item => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -183,7 +184,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                     />
                   </Table.Td>
 
-                  <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
+                  <Table.Td className='text-sm'>{formatPriceLocaleVi(+(item.price || 0))}</Table.Td>
 
                   <Table.Td className='text-sm'>
                     <Spoiler

@@ -3,6 +3,7 @@
 import { useLocalStorage } from '@mantine/hooks';
 import BButton, { IBButton } from '~/components/Button/Button';
 import { flyToCart, getVisibleToEl } from '~/lib/ButtonHandler/FlyToCart';
+import { CartItem } from '~/types/client-type-trpc';
 
 export function ButtonAddToCart({
   product,
@@ -15,7 +16,7 @@ export function ButtonAddToCart({
   handleAfterAdd: () => void;
   notify: (title?: string, message?: string) => void;
 }) {
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
 
   return (
     <BButton

@@ -8,6 +8,7 @@ import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { LocalVoucherType } from '~/lib/ZodSchema/enum';
+import { CartItem, VoucherForUser } from '~/types/client-type-trpc';
 import { ModalRecentOrder } from '../../../../components/Modals/ModalRecentOrder';
 import { ApplyVoucher } from './ApplyVoucher';
 import { ButtonCheckout } from './ButtonCheckout';
@@ -16,20 +17,22 @@ import { CartItemPayment } from './CartItemPayment';
 export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
   const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);
   const { data: session } = useSession();
-  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [appliedVouchers] = useLocalStorage<any[]>({
+  const [cart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
+  const [appliedVouchers] = useLocalStorage<VoucherForUser>({
     key: 'applied-vouchers',
     defaultValue: []
   });
 
   const { originalTotal, discount, tax, discountAmountByVoucher, finalTotal } = useMemo(() => {
-    const originalTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const discount = cart.reduce((sum, item) => (item.discount ? sum + item.discount * item.quantity : sum), 0);
+    const originalTotal = cart.reduce((sum, item) => sum + +(item.price || 0) * item.quantity, 0);
+    const discount = cart.reduce((sum, item) => (item.discount ? sum + +(item.discount || 0) * item.quantity : sum), 0);
     const tax = originalTotal * 0.1;
     const discountAmountByVoucher = (appliedVouchers ?? []).reduce((sum, item) => {
       if (!item?.discountValue) return sum;
       const value =
-        item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
+        item.type === LocalVoucherType.FIXED
+          ? +(item.discountValue || 0)
+          : (+(item.discountValue || 0) * originalTotal) / 100;
       return sum + value;
     }, 0);
     const finalTotal = originalTotal + tax - discount - discountAmountByVoucher;
@@ -71,7 +74,7 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
                 mx={'-16px'}
               >
                 <Stack gap={'md'} py={'sm'} px={16}>
-                  {cart?.map((item: any, index: number) => (
+                  {cart?.map((item, index) => (
                     <Box className={`animate-fadeUp`} style={{ animationDuration: `${index * 0.05 + 0.5}s` }}>
                       <CartItemPayment key={index} item={item} />
                     </Box>

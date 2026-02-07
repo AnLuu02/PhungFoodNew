@@ -4,14 +4,21 @@ import { Flex, Group, Paper, Skeleton, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
+import { ProductFind } from '~/types/client-type-trpc';
 
-export default function HeaderSearchResults({ products, isLoading }: any) {
+export default function HeaderSearchResults({
+  products,
+  isLoading
+}: {
+  products: NonNullable<ProductFind>['products'];
+  isLoading: boolean;
+}) {
   const params = useSearchParams();
-  const [historySearch, setHistorySearch] = useLocalStorage<any>({ key: 'historySearch', defaultValue: [] });
+  const [historySearch, setHistorySearch] = useLocalStorage<string[]>({ key: 'historySearch', defaultValue: [] });
 
   useEffect(() => {
     if (!params.get('s')) return;
-    const exist = historySearch.find((item: any) => item === decodeURIComponent(params.get('s') as string));
+    const exist = historySearch.find(item => item === decodeURIComponent(params.get('s') as string));
     if (!exist) {
       setHistorySearch((h: any) => [...h, params.get('s')]);
     }

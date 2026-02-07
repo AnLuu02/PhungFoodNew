@@ -19,21 +19,19 @@ const FastMenu = async ({
     'danh-muc'?: string;
   };
 }) => {
-  const categoriesData = await api.Category.getAll();
+  const categories = await api.Category.getAll();
   const foodItems = await api.Product.find({
     skip: Number(searchParams?.page) || 0,
     take: Number(searchParams?.limit) || 8,
     'danh-muc': searchParams?.['danh-muc']
   });
-  const categories = categoriesData || [];
-  const products = foodItems?.products || [];
 
   return (
     <Grid gutter={'md'}>
       <GridCol span={{ base: 12, sm: 7, md: 7, lg: 8 }} className='h-fit' pt={'xs'}>
         <QuickMenu
-          categories={categories}
-          initProducts={products}
+          categories={categories || []}
+          initProducts={foodItems?.products || []}
           totalPages={foodItems.pagination.totalPages}
           searchParams={searchParams}
         />

@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, RecipientType } from '@prisma/client';
 import { z } from 'zod';
 import { getOnlineUserIds } from '~/lib/PusherConfig/handler';
 import { pusherServer } from '~/lib/PusherConfig/server';
@@ -16,7 +16,9 @@ export const notificationRouter = createTRPCRouter({
             }
           : undefined,
         recipients:
-          input.recipient !== 'all' ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) } : undefined
+          input.recipient !== RecipientType.ALL
+            ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) }
+            : undefined
       }
     });
     return { code: 'OK', message: 'Tạo thông báo thành công.', data: notification };
@@ -99,7 +101,7 @@ export const notificationRouter = createTRPCRouter({
   syncOffline: publicProcedure.input(z.object({ userId: z.string() })).mutation(async ({ ctx, input }) => {
     const missed = await ctx.db.notification.findMany({
       where: {
-        recipient: 'all',
+        recipient: RecipientType.ALL,
         recipients: { none: { userId: input.userId } }
       },
       include: {

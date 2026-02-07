@@ -19,7 +19,7 @@ export default function UpdateSubCategory({
   subCategoryId: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult: any = api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }, { enabled: !!subCategoryId });
+  const queryResult = api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }, { enabled: !!subCategoryId });
   const { data, isLoading: isLoadingDataSubCategory } = queryResult;
   const [loading, setLoading] = useState(false);
 

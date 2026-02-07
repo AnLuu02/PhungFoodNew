@@ -33,7 +33,6 @@ import ProductImage from './components/ProductImage';
 import RatingStatistics from './components/RatingStatistics';
 import RelatedProducts from './components/RelatedProducts';
 
-import { useSession } from 'next-auth/react';
 import { ShareSocials } from '~/components/ShareSocial';
 import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
 import ViewingUser from '~/components/UserViewing';
@@ -42,7 +41,6 @@ import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Ca
 import GuideOrder from './components/GuideOrder';
 
 export default function ProductDetailClient(data: any) {
-  const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState('description');
   const [note, setNote] = useState('');
   const [quantity, setQuantity] = useState(1);

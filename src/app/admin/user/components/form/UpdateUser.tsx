@@ -19,7 +19,6 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
-import { Gender } from '@prisma/client';
 import { IconCalendar, IconFile, IconMail, IconPhone, IconUpload } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
@@ -66,7 +65,7 @@ export default function UpdateUser({
       name: '',
       email: '',
       image: undefined,
-      gender: Gender.OTHER,
+      gender: LocalGender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       isActive: true,
       password: '',

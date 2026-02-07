@@ -6,11 +6,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
+import { SubCategoryAll } from '~/types/client-type-trpc';
 import BreadcrumbsBase from './BreadcrumbsBase';
-const BreadcrumbsComponent = ({ subCategories }: any) => {
+const BreadcrumbsComponent = ({ subCategories }: { subCategories: SubCategoryAll }) => {
   const pathname = usePathname();
   const params = useSearchParams();
-  const subCategoriesData = subCategories || [];
   return pathname === '/' ? (
     ''
   ) : pathname !== '/thuc-don' ? (
@@ -50,7 +50,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
               control: 'h-[40px] w-[40px] rounded-full bg-mainColor text-white'
             }}
           >
-            {subCategoriesData?.length === 0
+            {subCategories?.length === 0
               ? [1, 2, 3, 4, 5, 6].map(item => (
                   <Carousel.Slide key={item}>
                     <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>
@@ -61,7 +61,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
                     </Card>
                   </Carousel.Slide>
                 ))
-              : subCategoriesData.map((item: any, index: number) => (
+              : subCategories.map((item, index) => (
                   <Carousel.Slide
                     key={item.id}
                     className='animate-fadeUp'

@@ -574,7 +574,7 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const { s, hasCategory, hasCategoryChild, hasReview, hasUser, userRole }: any = input;
+      const { s, userRole }: any = input;
       return await ctx.db.product.findFirst({
         where: {
           ...(userRole && userRole != UserRole.CUSTOMER
@@ -591,31 +591,17 @@ export const productRouter = createTRPCRouter({
           subCategory: {
             include: {
               image: true,
-              ...(hasCategoryChild
-                ? {
-                    category: hasCategory ? true : false
-                  }
-                : false)
+              category: true
             }
           },
           reviews: {
-            ...(hasReview
-              ? {
-                  include: {
-                    user: {
-                      ...(hasUser
-                        ? {
-                            select: {
-                              id: true,
-                              name: true,
-                              image: true
-                            }
-                          }
-                        : false)
-                    }
-                  }
+            include: {
+              user: {
+                include: {
+                  image: true
                 }
-              : false)
+              }
+            }
           },
           favouriteFoods: true
         }

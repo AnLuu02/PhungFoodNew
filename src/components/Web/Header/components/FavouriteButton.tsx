@@ -6,15 +6,16 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { api } from '~/trpc/react';
+import { ProductOne } from '~/types/client-type-trpc';
 
 const LikeButton = () => {
-  const [localFavouriteFood] = useLocalStorage<any>({
+  const [localFavouriteFood] = useLocalStorage<ProductOne[]>({
     key: 'favouriteFood',
     defaultValue: []
   });
   const { data: session } = useSession();
   const user = session?.user;
-  const { data: favouriteFoodFromApi = [] } = api.FavouriteFood.getFilter.useQuery(
+  const { data: favouriteFoodFromApi } = api.FavouriteFood.getFilter.useQuery(
     { s: user?.email || '' },
     { enabled: !!user?.email }
   );

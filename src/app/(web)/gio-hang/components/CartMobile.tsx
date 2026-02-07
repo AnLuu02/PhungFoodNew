@@ -5,16 +5,15 @@ import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { CartItem } from '~/types/client-type-trpc';
 import { Note } from './Note';
 
 export const ShoppingCartMobile = () => {
-  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
-  const updateQuantity = (id: number, quantity: number) => {
-    setCart((items: any) =>
-      items.map((item: any) => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
-    );
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
+  const updateQuantity = (id: string, quantity: number) => {
+    setCart(items => items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item)));
   };
-  return cart.map((item: any) => (
+  return cart.map(item => (
     <Paper shadow='xs' radius='md' p={'xs'} mb={'xs'} withBorder key={item.id}>
       <Stack gap={'4'}>
         <Group>
@@ -39,13 +38,13 @@ export const ShoppingCartMobile = () => {
               {item.name}
             </Text>
             <Group m={0} p={0}>
-              {item?.discount > 0 && (
+              {+(item?.discount || 0) > 0 && (
                 <Text size='sm' c={'dimmed'} fw={700} td='line-through'>
-                  {item?.discount ? `${formatPriceLocaleVi(item?.price)}` : `180.000đ`}
+                  {item?.discount ? `${formatPriceLocaleVi(+(item?.price || 0))}` : `180.000đ`}
                 </Text>
               )}
               <Text size='md' fw={700} className='text-mainColor'>
-                {item?.price ? `${formatPriceLocaleVi(item?.price - item?.discount)} ` : `180.000đ`}
+                {item?.price ? `${formatPriceLocaleVi(+(item?.price || 0) - +(item?.discount || 0))} ` : `180.000đ`}
               </Text>
             </Group>
             <Group m={0} p={0}>
@@ -57,7 +56,7 @@ export const ShoppingCartMobile = () => {
                 value={item.quantity}
                 onChange={quantity => {
                   if (Number(quantity) === 0) {
-                    setCart(cart.filter((cartItem: any) => cartItem.id !== item.id));
+                    setCart(cart.filter(cartItem => cartItem.id !== item.id));
                   }
                   updateQuantity(item.id, Number(quantity));
                 }}
@@ -73,7 +72,7 @@ export const ShoppingCartMobile = () => {
                 size='xs'
                 p={0}
                 m={0}
-                onClick={() => setCart(cart.filter((cartItem: any) => cartItem.id !== item.id))}
+                onClick={() => setCart(cart.filter(cartItem => cartItem.id !== item.id))}
               >
                 <IconTrash size={16} />
               </Button>
@@ -82,10 +81,10 @@ export const ShoppingCartMobile = () => {
         </Group>
         <Flex justify={'space-between'} w={'100%'} align={'center'}>
           <Text className='text-red-500' size='md' fw={700}>
-            {formatPriceLocaleVi((item.price - item.discount) * item.quantity)}
+            {formatPriceLocaleVi((+(item.price || 0) - +(item.discount || 0)) * item.quantity)}
           </Text>
           <Box>
-            {cart.find((cartItem: any) => cartItem.id === item.id && cartItem?.note) ? (
+            {cart.find(cartItem => cartItem.id === item.id && cartItem?.note) ? (
               <Badge c={'dimmed'} variant='transparent' px={0} mx={0} leftSection={<IconCheck size={12} />} size='sm'>
                 Đã thêm ghi chú
               </Badge>

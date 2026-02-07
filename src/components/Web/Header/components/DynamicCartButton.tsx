@@ -5,11 +5,12 @@ import { IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
 import useScrollPosition from '~/components/Hooks/use-on-scroll';
 import { HEIGHT_HEADER } from '~/constants';
+import { CartItem } from '~/types/client-type-trpc';
 import CartButton from './CartButton';
 
 export default function DynamicCartButton({ heightShow }: { heightShow?: number }) {
   const scroll = useScrollPosition(heightShow || HEIGHT_HEADER);
-  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
   return (
     scroll >= (heightShow || HEIGHT_HEADER) && (
       <Box className={`animate-fadeDown`}>

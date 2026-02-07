@@ -5,8 +5,9 @@ import { useSession } from 'next-auth/react';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
+import { ProductOne } from '~/types/client-type-trpc';
 
-export const CommentsList = ({ data }: { data: any[] }) => {
+export const CommentsList = ({ data }: { data: NonNullable<ProductOne>['reviews'] }) => {
   const { data: user } = useSession();
   const mutationDelete = api.Review.delete.useMutation();
   const utils = api.useUtils();
@@ -21,7 +22,7 @@ export const CommentsList = ({ data }: { data: any[] }) => {
     );
   }
 
-  return data.map((comment: any) => (
+  return data.map(comment => (
     <Paper shadow='sm' p='sm' radius='md' withBorder key={comment.id} className='mb-4' pos={'relative'}>
       <Flex direction={'column'} gap={'md'} align={'flex-start'} justify={'flex-start'}>
         <Group gap={7}>

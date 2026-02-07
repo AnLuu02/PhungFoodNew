@@ -5,9 +5,10 @@ import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
+import { CartItem } from '~/types/client-type-trpc';
 
 export function CartItemPayment({ item }: any) {
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
   return (
     <>
       <Group key={item.id} wrap='nowrap' align='flex-start'>

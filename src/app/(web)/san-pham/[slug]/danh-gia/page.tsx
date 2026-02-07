@@ -8,24 +8,24 @@ import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarous
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { api } from '~/trpc/react';
+import { ProductOne } from '~/types/client-type-trpc';
 import RatingStatistics from '../components/RatingStatistics';
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const productTag = params.slug;
-  const { data, isLoading } = api.Product.getOne.useQuery(
+  const { data: product, isLoading } = api.Product.getOne.useQuery(
     { s: productTag, hasReview: true, hasUser: true },
     { enabled: !!productTag }
   );
   let ratingCountsDefault = [0, 0, 0, 0, 0];
-  const product: any = data ?? [];
   const ratingCounts = useMemo(() => {
     return (
-      product?.review?.reduce((acc: any, item: any) => {
+      product?.reviews?.reduce((acc: any, item: NonNullable<ProductOne>['reviews'][0]) => {
         acc[item.rating - 1] += 1;
         return acc;
       }, ratingCountsDefault) || ratingCountsDefault
     );
-  }, [product?.review]);
+  }, [product?.reviews]);
 
   return (
     <Box py='md'>
@@ -36,7 +36,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           className='h-fit'
           span={{ base: 12, sm: 5, md: 3, lg: 3 }}
         >
-          {isLoading ? <CardSkeleton /> : <ProductCardCarouselVertical data={product} />}
+          {isLoading ? <CardSkeleton /> : <ProductCardCarouselVertical data={product as ProductOne} />}
         </GridCol>
         <GridCol
           pos={{ base: 'relative', md: 'sticky' }}
@@ -57,9 +57,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           ) : (
             <>
               <ScrollAreaAutosize mah={500}>
-                <CommentsList data={product?.review || []} />
+                <CommentsList data={product?.reviews || []} />
               </ScrollAreaAutosize>
-              <CommentsForm product={product} />
+              <CommentsForm product={product as ProductOne} />
             </>
           )}
         </GridCol>

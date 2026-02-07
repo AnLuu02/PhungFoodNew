@@ -9,8 +9,9 @@ import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toa
 import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { ReviewClientType } from '~/types';
+import { ProductOne } from '~/types/client-type-trpc';
 
-export const CommentsForm = ({ product }: { product: any }) => {
+export const CommentsForm = ({ product }: { product: ProductOne }) => {
   const { data: user } = useSession();
 
   const {
@@ -46,7 +47,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
       NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
       return;
     }
-    setValue('productId', product.id);
+    setValue('productId', product?.id || '');
     await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
   };
   return (

@@ -6,15 +6,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
+import { CategoryAll, SubCategoryAll } from '~/types/client-type-trpc';
 import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 import DynamicCartButton from '../components/DynamicCartButton';
 import NavigationHeader from '../components/NavigationHeader';
 import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
 
-const Header3 = ({ categories, subCategories }: any) => {
+const Header3 = ({ categories, subCategories }: { categories: CategoryAll; subCategories: SubCategoryAll }) => {
   const [imgMounted, setImgMounted] = useState(false);
-  const subCategoriesData: any = subCategories || [];
-  const categoriesData: any = categories || [];
   const [opened, { close, toggle }] = useDisclosure();
   return (
     <Flex
@@ -72,8 +71,8 @@ const Header3 = ({ categories, subCategories }: any) => {
             <Menu.Dropdown className='bg-white p-0 shadow-md dark:bg-dark-card'>
               {imgMounted ? (
                 <ScrollAreaAutosize mah={{ base: 300, md: 400 }} scrollbarSize={5}>
-                  {subCategoriesData?.length > 0 ? (
-                    subCategoriesData?.map((item: any, index: number) => {
+                  {subCategories?.length > 0 ? (
+                    subCategories?.map((item, index) => {
                       return (
                         <Link href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`} key={index}>
                           <Menu.Item
@@ -112,7 +111,7 @@ const Header3 = ({ categories, subCategories }: any) => {
         </Box>
       </Flex>
 
-      <NavigationHeader categories={categoriesData} />
+      <NavigationHeader categories={categories} />
       <NavigationHeaderMobile opened={opened} close={close} />
     </Flex>
   );
