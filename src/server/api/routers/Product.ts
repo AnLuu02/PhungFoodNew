@@ -496,23 +496,15 @@ export const productRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        s: z.string().optional(),
-        hasCategory: z.boolean().default(false).optional(),
-        hasCategoryChild: z.boolean().default(false).optional(),
-        hasReview: z.boolean().default(false).optional(),
-        userRole: z.string().optional()
+        s: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { s, hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
+      const { s, userRole }: any = input;
       const search = s?.trim();
       const product = await ctx.db.product.findMany({
         where: {
-          ...(userRole && userRole != UserRole.CUSTOMER
-            ? {}
-            : {
-                isActive: true
-              }),
+          isActive: true,
           OR: [
             { id: search },
             { tag: search },
@@ -547,14 +539,11 @@ export const productRouter = createTRPCRouter({
           subCategory: {
             include: {
               image: true,
-              ...(hasCategoryChild
-                ? {
-                    category: hasCategory ? true : false
-                  }
-                : false)
+
+              category: true
             }
           },
-          reviews: hasReview ? true : false,
+          reviews: true,
           favouriteFoods: true
         }
       });
@@ -566,10 +555,6 @@ export const productRouter = createTRPCRouter({
     .input(
       z.object({
         s: z.string(),
-        hasCategory: z.boolean().default(false).optional(),
-        hasCategoryChild: z.boolean().default(false).optional(),
-        hasReview: z.boolean().default(false).optional(),
-        hasUser: z.boolean().default(false).optional(),
         userRole: z.string().optional()
       })
     )
@@ -597,7 +582,7 @@ export const productRouter = createTRPCRouter({
           reviews: {
             include: {
               user: {
-                include: {
+                select: {
                   image: true
                 }
               }
@@ -610,14 +595,11 @@ export const productRouter = createTRPCRouter({
   getAll: publicProcedure
     .input(
       z.object({
-        hasCategory: z.boolean().default(false).optional(),
-        hasCategoryChild: z.boolean().default(false).optional(),
-        hasReview: z.boolean().default(false).optional(),
         userRole: z.string().optional()
       })
     )
     .query(async ({ ctx, input }) => {
-      const { hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
+      const { userRole }: any = input;
       const product = await ctx.db.product.findMany({
         where: {
           ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
@@ -628,14 +610,11 @@ export const productRouter = createTRPCRouter({
           subCategory: {
             include: {
               image: true,
-              ...(hasCategoryChild
-                ? {
-                    category: hasCategory ? true : false
-                  }
-                : undefined)
+
+              category: true
             }
           },
-          reviews: hasReview ? true : undefined,
+          reviews: true,
           favouriteFoods: true
         }
       });

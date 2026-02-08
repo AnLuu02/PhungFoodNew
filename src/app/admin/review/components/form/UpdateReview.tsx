@@ -19,7 +19,7 @@ export default function UpdateReview({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const queryResult = api.Review.getFilter.useQuery({ s: reviewId || '' }, { enabled: !!reviewId });
-  const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: UserRole.ADMIN });
+  const { data: products } = api.Product.getAll.useQuery({ userRole: UserRole.ADMIN });
   const { data: users } = api.User.getAll.useQuery();
   const { data } = queryResult;
 

@@ -29,9 +29,6 @@ export default function CreateReview({ setOpened }: { setOpened: Dispatch<SetSta
   });
 
   const { data: products } = api.Product.getAll.useQuery({
-    hasCategoryChild: true,
-    hasCategory: true,
-    hasReview: true,
     userRole: UserRole.ADMIN
   });
   const { data: users } = api.User.getAll.useQuery();

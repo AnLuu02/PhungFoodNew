@@ -26,11 +26,7 @@ const OrderItemForm = ({
   errors: FieldErrors<OrderClientType>;
 }) => {
   const [productOrderItem, setProductOrderItem] = useState<NonNullable<ProductAll>[0]>();
-  const { data: products } = api.Product.getAll.useQuery({
-    hasCategory: true,
-    hasCategoryChild: true,
-    hasReview: true
-  });
+  const { data: products } = api.Product.getAll.useQuery({});
 
   const chooseProduct = watch(`orderItems.${index}.productId`);
   const chooseQuantity = watch(`orderItems.${index}.quantity`);

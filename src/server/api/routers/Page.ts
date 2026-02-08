@@ -66,9 +66,7 @@ export const pageRouter = createTRPCRouter({
   getInitProductDetail: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
     const caller = createCaller(ctx);
     const product = await caller.Product.getOne({
-      s: input?.slug || '',
-      hasCategory: true,
-      hasCategoryChild: true
+      s: input?.slug || ''
     });
 
     if (!product) return null;

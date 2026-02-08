@@ -52,11 +52,7 @@ export const favouriteFoodRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        s: z.string(),
-        hasReview: z.boolean().optional(),
-        hasUser: z.boolean().optional(),
-        hasCategory: z.boolean().optional(),
-        hassubCategory: z.boolean().optional()
+        s: z.string()
       })
     )
     .query(async ({ ctx, input }) => {
