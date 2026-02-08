@@ -3,8 +3,9 @@
 import { Grid, GridCol, Group, Paper, Spoiler, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { IconGift } from '@tabler/icons-react';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import { InitProductDetail } from '~/types/client-type-trpc';
 
-export default function DiscountCodes({ data }: { data: any }) {
+export default function DiscountCodes({ data }: { data: NonNullable<InitProductDetail>['dataVouchers'] }) {
   // const { data: session } = useSession();
   // const { data: vouchers = [] } = api.Voucher.getVoucherForUser.useQuery(
   //   { userId: session?.user?.id || '' },
@@ -46,9 +47,9 @@ export default function DiscountCodes({ data }: { data: any }) {
       >
         <Grid mt='md'>
           {data?.length > 0 &&
-            data.map((promo: any) => (
-              <GridCol span={{ base: 12, sm: 6, md: 6 }} key={promo.id}>
-                <VoucherTemplate voucher={promo} />
+            data.map(voucher => (
+              <GridCol span={{ base: 12, sm: 6, md: 6 }} key={voucher.id}>
+                <VoucherTemplate voucher={voucher} />
               </GridCol>
             ))}
         </Grid>

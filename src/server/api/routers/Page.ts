@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { UserRole } from '~/constants';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { getFilterProduct, getOneProduct } from '~/server/services/product.service';
+import { getVoucherAppliedAllVoucher } from '~/server/services/voucher.service';
 import { createCaller } from '../root';
 
 export const pageRouter = createTRPCRouter({
@@ -64,20 +66,17 @@ export const pageRouter = createTRPCRouter({
     };
   }),
   getInitProductDetail: publicProcedure.input(z.object({ slug: z.string() })).query(async ({ ctx, input }) => {
-    const caller = createCaller(ctx);
-    const product = await caller.Product.getOne({
-      s: input?.slug || ''
-    });
+    const product = await getOneProduct(ctx.db, { s: input.slug });
 
     if (!product) return null;
 
     const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
-      caller.Product.getFilter({ s: product?.subCategory?.tag || '' }),
-      caller.Product.getFilter({ s: product?.subCategory?.category?.tag || '' }),
-      caller.Voucher.getVoucherAppliedAll()
+      getFilterProduct(ctx.db, { s: product?.subCategory?.tag || '' }),
+      getFilterProduct(ctx.db, { s: product?.subCategory?.category?.tag || '' }),
+      getVoucherAppliedAllVoucher(ctx.db)
     ]);
 
-    const results: any = {
+    const results = {
       product,
       dataRelatedProducts: dataRelatedProducts?.status === 'fulfilled' ? dataRelatedProducts.value : [],
       dataHintProducts: dataHintProducts?.status === 'fulfilled' ? dataHintProducts.value : [],

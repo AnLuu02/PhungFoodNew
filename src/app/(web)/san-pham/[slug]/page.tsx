@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
+import { InitProductDetail } from '~/types/client-type-trpc';
 import ProductDetailClient from './pageClient';
 
 export const dynamic = 'force-static';
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 
   const { product } = productData;
-  const imageUrl = product.image?.url || 'https://phungfood.com/default-image.jpg';
+  const imageUrl = product.images?.[0]?.url || 'https://phungfood.com/default-image.jpg';
 
   return {
     title: `${product.name} - Phụng Food`,
@@ -49,7 +50,7 @@ async function ProductDetail({ params }: { params: { slug: string } }) {
   if (!data?.product) {
     return notFound();
   }
-  return <ProductDetailClient data={data} />;
+  return <ProductDetailClient data={data as InitProductDetail} />;
 }
 
 export default ProductDetail;

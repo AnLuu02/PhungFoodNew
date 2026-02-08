@@ -9,6 +9,7 @@ import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { imageReqSchema, productSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { getFilterProduct, getOneProduct } from '~/server/services/product.service';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { createCaller } from '../root';
 
@@ -499,57 +500,7 @@ export const productRouter = createTRPCRouter({
         s: z.string().optional()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { s, userRole }: any = input;
-      const search = s?.trim();
-      const product = await ctx.db.product.findMany({
-        where: {
-          isActive: true,
-          OR: [
-            { id: search },
-            { tag: search },
-            {
-              materials: {
-                some: {
-                  category: search
-                }
-              }
-            },
-            {
-              subCategory: {
-                OR: [
-                  {
-                    tag: search
-                  },
-
-                  {
-                    category: {
-                      tag: search
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        include: {
-          images: true,
-          materials: true,
-
-          subCategory: {
-            include: {
-              image: true,
-
-              category: true
-            }
-          },
-          reviews: true,
-          favouriteFoods: true
-        }
-      });
-
-      return product;
-    }),
+    .query(async ({ ctx, input }) => getFilterProduct(ctx.db, input)),
 
   getOne: publicProcedure
     .input(
@@ -558,40 +509,7 @@ export const productRouter = createTRPCRouter({
         userRole: z.string().optional()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { s, userRole }: any = input;
-      return await ctx.db.product.findFirst({
-        where: {
-          ...(userRole && userRole != UserRole.CUSTOMER
-            ? {}
-            : {
-                isActive: true
-              }),
-
-          OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
-        },
-        include: {
-          images: true,
-          materials: true,
-          subCategory: {
-            include: {
-              image: true,
-              category: true
-            }
-          },
-          reviews: {
-            include: {
-              user: {
-                select: {
-                  image: true
-                }
-              }
-            }
-          },
-          favouriteFoods: true
-        }
-      });
-    }),
+    .query(async ({ ctx, input }) => getOneProduct(ctx.db, input)),
   getAll: publicProcedure
     .input(
       z.object({

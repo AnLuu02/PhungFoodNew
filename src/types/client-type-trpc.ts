@@ -34,3 +34,6 @@ export type ReviewAll = RouterOutputs['Review']['getAll'];
 
 export type RolePermissionOne = RouterOutputs['RolePermission']['getOne'];
 export type RolePermissionAll = RouterOutputs['RolePermission']['getAllPermission'];
+
+//page
+export type InitProductDetail = RouterOutputs['Page']['getInitProductDetail'];

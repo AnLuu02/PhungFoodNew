@@ -5,7 +5,9 @@ import { TOP_POSITION_STICKY } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
-export default function RelatedProducts({ data }: any) {
+import { InitProductDetail } from '~/types/client-type-trpc';
+export default function RelatedProducts({ data }: { data: NonNullable<InitProductDetail>['dataRelatedProducts'] }) {
+  if (!data || data?.length <= 0) return;
   return (
     <Paper
       radius='md'
@@ -24,7 +26,7 @@ export default function RelatedProducts({ data }: any) {
       </Center>
       <ScrollAreaAutosize mah={350} scrollbarSize={5}>
         <Stack p='md'>
-          {data?.map((product: any) => (
+          {data?.map(product => (
             <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
               <Box w={60} h={60} pos={'relative'} className='overflow-hidden'>
                 <Image
@@ -52,11 +54,11 @@ export default function RelatedProducts({ data }: any) {
                 </Link>
                 <Group gap='xs'>
                   <Text className='text-red-600' fw={700}>
-                    {formatPriceLocaleVi(product.price - product.discount)}
+                    {formatPriceLocaleVi(+(product.price || 0) - +(product.discount || 0))}
                   </Text>
-                  {product.discount > 0 && (
+                  {+(product.discount || 0) > 0 && (
                     <Text c='dimmed' td='line-through' size='sm'>
-                      {formatPriceLocaleVi(product.price)}
+                      {formatPriceLocaleVi(+(product.price || 0))}
                     </Text>
                   )}
                 </Group>

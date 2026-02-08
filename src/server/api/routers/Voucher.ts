@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { voucherSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { getVoucherAppliedAllVoucher } from '~/server/services/voucher.service';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 export const voucherRouter = createTRPCRouter({
   find: publicProcedure
@@ -95,9 +96,7 @@ export const voucherRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     return await ctx.db.voucher.findMany({});
   }),
-  getVoucherAppliedAll: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.voucher.findMany({ where: { applyAll: true } });
-  }),
+  getVoucherAppliedAll: publicProcedure.query(async ({ ctx }) => getVoucherAppliedAllVoucher(ctx.db)),
   getOne: publicProcedure
     .input(
       z.object({

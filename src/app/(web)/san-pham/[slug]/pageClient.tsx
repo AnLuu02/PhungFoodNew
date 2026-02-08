@@ -38,13 +38,14 @@ import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
 import ViewingUser from '~/components/UserViewing';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Carousel-Only';
+import { InitProductDetail } from '~/types/client-type-trpc';
 import GuideOrder from './components/GuideOrder';
 
-export default function ProductDetailClient(data: any) {
+export default function ProductDetailClient({ data }: { data: InitProductDetail }) {
   const [activeTab, setActiveTab] = useState('description');
   const [note, setNote] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const { product, dataRelatedProducts, dataHintProducts, dataVouchers }: any = data?.data || {
+  const { product, dataRelatedProducts, dataHintProducts, dataVouchers } = data || {
     product: {},
     dataRelatedProducts: [],
     dataHintProducts: [],
@@ -53,21 +54,21 @@ export default function ProductDetailClient(data: any) {
   const discount = product?.discount || 0;
   const [relatedProducts, hintProducts, inStock, gallery] = useMemo(() => {
     return [
-      dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [],
-      dataHintProducts?.filter((item: any) => item.id !== product?.id) || [],
-      product?.availableQuantity - product?.soldQuantity > 0,
-      product?.images?.filter((item: any) => item.type !== LocalImageType.THUMBNAIL && item.url) || []
+      dataRelatedProducts?.filter(item => item.id !== product?.id) || [],
+      dataHintProducts?.filter(item => item.id !== product?.id) || [],
+      product?.availableQuantity || 0 - (product?.soldQuantity || 0) > 0,
+      product?.images?.filter(item => item.type !== LocalImageType.THUMBNAIL && item.url) || []
     ];
   }, [product]);
   const ratingCounts = useMemo(() => {
     let ratingCountsDefault = [0, 0, 0, 0, 0];
     return (
-      product?.review?.reduce((acc: any, item: any) => {
+      product?.reviews?.reduce((acc: any, item: NonNullable<InitProductDetail>['product']['reviews'][0]) => {
         acc[item.rating - 1] += 1;
         return acc;
       }, ratingCountsDefault) || ratingCountsDefault
     );
-  }, [product?.review]);
+  }, [product?.reviews]);
 
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 
@@ -96,7 +97,7 @@ export default function ProductDetailClient(data: any) {
                     { url: 'https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1000' }
                   ]
             }
-            discount={discount}
+            discount={+discount}
             tag={product?.tag || ''}
           />
         </Grid.Col>
@@ -106,7 +107,7 @@ export default function ProductDetailClient(data: any) {
               <Badge className={`${inStock ? 'bg-mainColor' : 'bg-red-500'}`} radius={'sm'} size='md'>
                 {inStock ? 'Còn hàng' : 'Hết hàng'}
               </Badge>
-              <Rating value={product?.rating?.toFixed(1)} readOnly size='md' color={'#FFC522'} />
+              <Rating value={+(product?.rating?.toFixed(1) || 1)} readOnly size='md' color={'#FFC522'} />
               <Text size='xs' className='text-mainColor'>
                 {product?.totalRating || 0} đánh giá
               </Text>
@@ -138,19 +139,19 @@ export default function ProductDetailClient(data: any) {
             <Group align='center'>
               <Title order={2} className='font-quicksand text-subColor' fw={700}>
                 <b className='text-black dark:text-dark-text'>Giá:</b>{' '}
-                {formatPriceLocaleVi((product?.price || 0) - discount || 0)}
+                {formatPriceLocaleVi(+(product?.price || 0) - +(discount || 0))}
               </Title>
-              {discount > 0 && (
+              {+discount > 0 && (
                 <Text size='sm' td='line-through' c='dimmed'>
-                  Giá thị trường: {formatPriceLocaleVi(product?.price || 0)}
+                  Giá thị trường: {formatPriceLocaleVi(+(product?.price || 0))}
                 </Text>
               )}
             </Group>
             <Divider />
 
-            {discount > 0 && (
+            {+discount > 0 && (
               <Text size='sm' c='dimmed'>
-                Tiết kiệm: {formatPriceLocaleVi(product?.discount || 0)} so với giá thị trường
+                Tiết kiệm: {formatPriceLocaleVi(+(product?.discount || 0))} so với giá thị trường
               </Text>
             )}
 
@@ -196,7 +197,7 @@ export default function ProductDetailClient(data: any) {
                     </Text>
                   }
                   value={quantity}
-                  onChange={(value: any) => setQuantity(value)}
+                  onChange={value => setQuantity(+value || 1)}
                   thousandSeparator=','
                   min={0}
                   max={Number(product?.availableQuantity) || 100}
@@ -238,7 +239,7 @@ export default function ProductDetailClient(data: any) {
                 Loại sản phẩm: {product?.subCategory?.name || 'Súp bông tuyết'}
               </Text>
               <Text c={'dimmed'} size='sm'>
-                Khuyến mãi: <b className='text-red-500'>giảm {formatPriceLocaleVi(product?.discount)}</b>
+                Khuyến mãi: <b className='text-red-500'>giảm {formatPriceLocaleVi(+(product?.discount || 0))}</b>
               </Text>
               <Text c={'dimmed'} size='sm'>
                 Đã bán: <b className='text-red-500'>{product?.soldQuantity || 0}</b> sản phẩm

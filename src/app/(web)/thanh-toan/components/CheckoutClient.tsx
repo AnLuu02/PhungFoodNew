@@ -236,7 +236,10 @@ export default function CheckoutClient({ order }: { order: OrderOne }) {
               <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
                 <Stack gap={'md'} py={'sm'} className='overflow-x-hidden'>
                   {order?.orderItems?.map((item, index) => (
-                    <CartItemPayment key={index} item={{ ...item.product, note: item.note, quantity: item.quantity }} />
+                    <CartItemPayment
+                      key={index}
+                      item={{ ...item.product, note: item.note || undefined, quantity: item.quantity }}
+                    />
                   ))}
                 </Stack>
               </ScrollAreaAutosize>

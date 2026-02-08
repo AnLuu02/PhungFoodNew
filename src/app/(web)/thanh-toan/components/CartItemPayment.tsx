@@ -7,7 +7,7 @@ import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { CartItem } from '~/types/client-type-trpc';
 
-export function CartItemPayment({ item }: any) {
+export function CartItemPayment({ item }: { item: any }) {
   const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
   return (
     <>
@@ -51,7 +51,7 @@ export function CartItemPayment({ item }: any) {
         </Box>
         <Group align='center' gap={'md'} p={0} m={0}>
           <Text className='text-right' fw={700}>
-            {formatPriceLocaleVi(item.price * item.quantity)}
+            {formatPriceLocaleVi(+(item.price || 0) * item.quantity)}
           </Text>
           <Button
             h={'max-content'}
