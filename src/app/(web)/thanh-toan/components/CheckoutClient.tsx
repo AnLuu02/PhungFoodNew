@@ -26,10 +26,11 @@ import { NotifyError } from '~/lib/FuncHandler/toast';
 import { LocalAddressType, LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
+import { OrderItem, OrderOne } from '~/types/client-type-trpc';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
 import { PaymentForm } from './PaymentForm';
-export default function CheckoutClient({ order }: { order: any }) {
+export default function CheckoutClient({ order }: { order: OrderOne }) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
@@ -40,18 +41,25 @@ export default function CheckoutClient({ order }: { order: any }) {
     }
   });
   const { discountAmountByVoucher, discount, originalTotal, tax, finalTotal } = useMemo(() => {
-    const originalTotal = order?.orderItems?.reduce((sum: any, item: any) => sum + item.price * item.quantity, 0);
-    const discountAmountByVoucher = (order?.vouchers ?? []).reduce((sum: any, item: any) => {
-      const value =
-        item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
-      return sum + value;
-    }, 0);
-    const discount = order?.orderItems?.reduce((sum: any, item: any) => {
-      if (item.product.discount > 0) {
-        return sum + item.product.discount * item.quantity;
-      }
-      return sum;
-    }, 0);
+    const originalTotal =
+      order?.orderItems?.reduce((sum: number, item: OrderItem) => sum + +(item.price || 0) * item.quantity, 0) || 0;
+    const discountAmountByVoucher = (order?.vouchers ?? []).reduce(
+      (sum: number, item: NonNullable<OrderOne>['vouchers'][0]) => {
+        const value =
+          item.type === LocalVoucherType.FIXED
+            ? item.discountValue
+            : (+(item.discountValue || 0) * originalTotal) / 100;
+        return sum + +(value || 0);
+      },
+      0
+    );
+    const discount =
+      order?.orderItems?.reduce((sum: number, item: OrderItem) => {
+        if (+item.product.discount > 0) {
+          return sum + +item.product.discount * item.quantity;
+        }
+        return sum;
+      }, 0) || 0;
 
     const tax = originalTotal * 0.1;
     const finalTotal = originalTotal + tax - discount - discountAmountByVoucher;
@@ -112,8 +120,7 @@ export default function CheckoutClient({ order }: { order: any }) {
           postalCode: order?.delivery?.address?.postalCode || '',
           detail: order?.delivery?.address?.detail,
           type: LocalAddressType.DELIVERY
-        },
-        note: order?.delivery?.note
+        }
       });
     }
   }, [order]);
@@ -195,8 +202,8 @@ export default function CheckoutClient({ order }: { order: any }) {
           if (paymentUrl) {
             order.vouchers && order.vouchers.length > 0
               ? await mutationUseVoucher.mutateAsync({
-                  userId: order?.user.id || '',
-                  voucherIds: order.vouchers.map((v: any) => v.id)
+                  userId: order?.user?.id || '',
+                  voucherIds: order.vouchers.map((v: NonNullable<OrderOne>['vouchers'][0]) => v.id)
                 })
               : null;
             window.location.href = paymentUrl;
@@ -211,7 +218,7 @@ export default function CheckoutClient({ order }: { order: any }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit as any)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
         <GridCol span={{ base: 12, sm: 6, md: 8, lg: 4 }} className='h-fit'>
           <DeliveryCard control={control} watch={watch} provinces={provinces} districts={districts} wards={wards} />
@@ -228,7 +235,7 @@ export default function CheckoutClient({ order }: { order: any }) {
               </Title>
               <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
                 <Stack gap={'md'} py={'sm'} className='overflow-x-hidden'>
-                  {order?.orderItems?.map((item: any, index: number) => (
+                  {order?.orderItems?.map((item, index) => (
                     <CartItemPayment key={index} item={{ ...item.product, note: item.note, quantity: item.quantity }} />
                   ))}
                 </Stack>
@@ -257,7 +264,7 @@ export default function CheckoutClient({ order }: { order: any }) {
                     Khuyến mãi:
                   </Text>
                   <Text size='md' fw={700}>
-                    -{formatPriceLocaleVi(discountAmountByVoucher || 0)}
+                    -{formatPriceLocaleVi(discountAmountByVoucher)}
                   </Text>
                 </Group>
                 <Group justify='space-between' className='mb-2'>

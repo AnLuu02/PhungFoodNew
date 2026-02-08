@@ -28,7 +28,7 @@ interface NotificationModalProps {
   onClose: () => void;
   defaultValues?: Partial<NotificationClientHasUser>;
   mode?: 'create' | 'update' | 'template';
-  recipient?: 'all' | 'individual' | undefined;
+  recipient?: 'ALL' | 'INDIVIDUAL' | undefined;
 }
 
 export const NotificationModal = ({
@@ -109,7 +109,7 @@ export const NotificationModal = ({
   const onSubmit: SubmitHandler<NotificationClientType> = async formData => {
     try {
       if (mode === 'create') {
-        let userPushers = watch('recipient') === 'all' ? [] : selectedUsers.map((user: any) => JSON.parse(user).id);
+        let userPushers = watch('recipient') === 'ALL' ? [] : selectedUsers.map((user: any) => JSON.parse(user).id);
 
         const createNotify = await mutationCreate.mutateAsync({
           ...formData,
@@ -120,15 +120,15 @@ export const NotificationModal = ({
         }
         await Promise.all([
           ...formData.channels.map(async channel => {
-            channel === 'in_app' &&
+            channel === 'IN_APP' &&
               (await mutationPushOnline.mutateAsync({
                 notificationId: createNotify.data.id as string,
                 userIds: userPushers
               }));
-            if (channel === 'email') {
+            if (channel === 'EMAIL') {
               const html = generateNotifyHtml(formData);
               const emails =
-                watch('recipient') === 'all'
+                watch('recipient') === 'ALL'
                   ? allUsers.map(user => user.email)
                   : selectedUsers.map((user: any) => JSON.parse(user).email);
               fetch('/api/send-mail', {
@@ -231,7 +231,7 @@ export const NotificationModal = ({
 
             <Controller
               name='priority'
-              defaultValue='medium'
+              defaultValue='MEDIUM'
               control={control}
               render={({ field }) => (
                 <Select
@@ -253,7 +253,7 @@ export const NotificationModal = ({
 
           <Controller
             name='recipient'
-            defaultValue='all'
+            defaultValue='ALL'
             control={control}
             render={({ field }) => (
               <Select
@@ -275,7 +275,7 @@ export const NotificationModal = ({
               />
             )}
           />
-          {watch('recipient') === 'individual' && (
+          {watch('recipient') === 'INDIVIDUAL' && (
             <MultiSelect
               label='Chọn người dùng'
               disabled={allUsers.length === 0}
@@ -298,7 +298,7 @@ export const NotificationModal = ({
           <Controller
             name='channels'
             control={control}
-            defaultValue={['in_app']}
+            defaultValue={['IN_APP']}
             render={({ field }) => (
               <MultiSelect
                 radius={'md'}

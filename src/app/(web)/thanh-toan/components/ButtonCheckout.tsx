@@ -6,7 +6,7 @@ import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredent
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
-import { VoucherForUser } from '~/types/client-type-trpc';
+import { CartItem, VoucherForUser } from '~/types/client-type-trpc';
 
 export const ButtonCheckout = ({
   stylesButtonCheckout,
@@ -17,7 +17,7 @@ export const ButtonCheckout = ({
   onClick
 }: {
   stylesButtonCheckout: IBButton;
-  data: any;
+  data: CartItem[];
   finalTotal: number;
   originalTotal: number;
   discountAmount: number;
@@ -42,7 +42,7 @@ export const ButtonCheckout = ({
       NotifyError(e.message);
     }
   });
-  const orderItems: any = data ?? [];
+  const orderItems: CartItem[] = data ?? [];
   const guestCreateMutation = api.User.create.useMutation();
   const handleCreateOrder = async () => {
     let userId = user?.user?.id;
@@ -66,7 +66,7 @@ export const ButtonCheckout = ({
           discountAmount: discountAmount,
           status: LocalOrderStatus.UNPAID,
           userId: userId || '',
-          orderItems: orderItems?.map((item: any) => ({
+          orderItems: orderItems?.map(item => ({
             productId: item.id,
             quantity: item.quantity,
             note: item.note,

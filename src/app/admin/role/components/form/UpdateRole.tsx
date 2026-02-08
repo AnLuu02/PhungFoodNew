@@ -29,7 +29,13 @@ export function syncPermissions(init: any[], dynamic: any[]): any[] {
   return result;
 }
 
-export default function UpdateRole({ id, setOpened }: { id: any; setOpened: Dispatch<SetStateAction<any>> }) {
+export default function UpdateRole({
+  id,
+  setOpened
+}: {
+  id: string;
+  setOpened: Dispatch<SetStateAction<boolean | null>>;
+}) {
   const { data: user } = useSession();
   const { data: role, isLoading: isLoadingRole } = api.RolePermission.getOne.useQuery({ id }, { enabled: !!id });
   const { data: permissions = [], isLoading } = api.RolePermission.getAllPermission.useQuery(undefined, {
@@ -94,7 +100,7 @@ export default function UpdateRole({ id, setOpened }: { id: any; setOpened: Disp
       if (!role?.id) return;
       await mutationUpdate.mutateAsync({
         name: role?.name,
-        roleId: id,
+        viName: role?.viName || 'Khách',
         permissionIds: seletedPermissions.map((item: any) => item.id)
       });
       setOpened(null);

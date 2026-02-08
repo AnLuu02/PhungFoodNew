@@ -23,5 +23,14 @@ export type UserOne = RouterOutputs['User']['getOne'];
 export type VoucherForUser = RouterOutputs['Voucher']['getVoucherForUser'];
 
 export type OrderFilter = RouterOutputs['Order']['getFilter'];
+export type OrderOne = RouterOutputs['Order']['getOne'];
+
+export type OrderItem = NonNullable<OrderOne>['orderItems'][0];
 
 export type FavouriteFilter = RouterOutputs['FavouriteFood']['getFilter'];
+
+export type ReviewFind = RouterOutputs['Review']['find'];
+export type ReviewAll = RouterOutputs['Review']['getAll'];
+
+export type RolePermissionOne = RouterOutputs['RolePermission']['getOne'];
+export type RolePermissionAll = RouterOutputs['RolePermission']['getAllPermission'];

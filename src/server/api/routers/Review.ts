@@ -123,6 +123,7 @@ export const reviewRouter = createTRPCRouter({
               select: {
                 id: true,
                 name: true,
+                email: true,
                 image: true
               }
             },

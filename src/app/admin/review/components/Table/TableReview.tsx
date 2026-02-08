@@ -13,8 +13,9 @@ import { useMemo } from 'react';
 import { CommentsList } from '~/components/Comments/CommentsList';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
+import { ReviewAll, ReviewFind } from '~/types/client-type-trpc';
 
-export default function TableReview({ s, data, allData }: { s: string; data: any; allData?: any }) {
+export default function TableReview({ s, data, allData }: { s: string; data: ReviewFind; allData: ReviewAll }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
@@ -32,10 +33,11 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
 
-    const now = new Date();
-
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (
+        acc: { total: number; gte4star: number; from2to4: number; poorStar: number },
+        item: NonNullable<ReviewAll>[0]
+      ) => {
         acc.total += 1;
         if (item.rating > 4) {
           acc.gte4star += 1;
@@ -193,11 +195,11 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((item: any) => (
+              currentItems.map(item => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
-                      {item.user?.name}
+                      {item.user?.name || ''}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
@@ -210,7 +212,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
-                      {item.comment}
+                      {item.comment || ''}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>

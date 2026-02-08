@@ -1,8 +1,14 @@
 import { Box, Flex, Paper, Radio, Skeleton, Stack, Text, Title } from '@mantine/core';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
+import z from 'zod';
+import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 
-export const PaymentForm = ({ control }: any) => {
+export const PaymentForm = ({
+  control
+}: {
+  control: Control<z.infer<typeof deliverySchema> & { paymentId: string }>;
+}) => {
   const { data: paymentData, isLoading } = api.Payment.getAll.useQuery(undefined, {
     enabled: !!control
   });
@@ -37,7 +43,7 @@ export const PaymentForm = ({ control }: any) => {
                   error={fieldState.error?.message}
                 >
                   <Stack>
-                    {payment?.map((item: any, index: number) => (
+                    {payment?.map((item, index) => (
                       <Paper withBorder p='md' radius='md'>
                         <Radio
                           label={

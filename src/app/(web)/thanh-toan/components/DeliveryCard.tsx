@@ -1,6 +1,8 @@
 import { Card, Grid, GridCol, Select, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
+import z from 'zod';
+import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
 
 export function DeliveryCard({
@@ -10,7 +12,7 @@ export function DeliveryCard({
   districts,
   wards
 }: {
-  control: any;
+  control: Control<z.infer<typeof deliverySchema> & { paymentId: string }>;
   watch: any;
   provinces?: ProvinceResponse;
   districts?: DistrictResponse;

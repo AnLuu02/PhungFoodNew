@@ -173,7 +173,6 @@ export function CopyOrderButton({ data }: { data: any }) {
               status: data?.status || LocalOrderStatus.UNPAID,
               userId: data?.userId || '',
               paymentId: data?.paymentId || '',
-              note: data?.note || '',
               transactionId: data?.transactionId || '',
               orderItems: data?.orderItems || [],
               delivery: {

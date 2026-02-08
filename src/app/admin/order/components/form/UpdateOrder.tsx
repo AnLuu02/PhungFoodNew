@@ -166,19 +166,6 @@ export default function UpdateOrder({
                 price: item.price
               }
             }))
-          },
-          delivery: {
-            update: {
-              name: formData.delivery.name,
-              email: formData.delivery.email,
-              phone: formData.delivery.phone,
-              note: formData.delivery.note,
-              address: {
-                update: {
-                  ...formData.delivery.address
-                }
-              }
-            }
           }
         },
         orderId: orderId

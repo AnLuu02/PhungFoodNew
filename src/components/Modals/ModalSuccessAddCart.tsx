@@ -9,10 +9,10 @@ import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
-import { CartItem } from '~/types/client-type-trpc';
+import { CartItem, ProductOne } from '~/types/client-type-trpc';
 import { ModalProps } from '~/types/modal';
 
-export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {
+export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<ProductOne>) {
   const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
   const [note, setNote] = useState<string>('');
   const [noteDebounced] = useDebouncedValue(note, 800);
@@ -28,7 +28,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
   useEffect(() => {
     if (noteDebounced) {
       const { cartFilter, existNoteProduct } = cart?.reduce(
-        (acc: any, item: any) => {
+        (acc: { cartFilter: CartItem[]; existNoteProduct: CartItem | null }, item: CartItem) => {
           if (item.id === data?.id) {
             acc.existNoteProduct = item;
           } else {
@@ -93,7 +93,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
             <Box>
               <Text fw={700}>{data?.name || 'Hành tây'}</Text>
               <Text className='text-mainColor' fw={700}>
-                {formatPriceLocaleVi(data?.price || 0)}
+                {formatPriceLocaleVi(+(data?.price || 0))}
               </Text>
             </Box>
           </Group>
@@ -103,7 +103,8 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
               Giỏ hàng của bạn hiện có <b>{cart?.length || 0}</b> sản phẩm
             </Text>
             <Text size='sm' c='dimmed'>
-              <b>{data?.name}</b> có <b>{cart?.find((item: any) => item.id === data?.id)?.quantity || 0} </b> sản phẩm
+              <b>{data?.name}</b> có <b>{cart?.find((item: CartItem) => item.id === data?.id)?.quantity || 0} </b> sản
+              phẩm
             </Text>
           </Box>
           <Group w={'100%'}>
@@ -123,9 +124,9 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
               color='dark'
               onClick={() => {
                 if (note !== '') {
-                  const existingItem = cart.find((item: any) => item.id === data?.id);
+                  const existingItem = cart.find((item: CartItem) => item.id === data?.id);
                   if (existingItem) {
-                    setCart(cart.map((item: any) => (item.id === data?.id ? { ...item, note } : item)));
+                    setCart(cart.map((item: CartItem) => (item.id === data?.id ? { ...item, note } : item)));
                   }
                 }
                 onClose();
@@ -144,8 +145,8 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
               data={cart}
-              finalTotal={data?.price || 0}
-              originalTotal={data?.price || 0}
+              finalTotal={+(data?.price || 0)}
+              originalTotal={+(data?.price || 0)}
               discountAmount={0}
               onClick={() => onClose()}
             />

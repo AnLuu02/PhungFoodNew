@@ -5,9 +5,13 @@ import { useSession } from 'next-auth/react';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
-import { ProductOne } from '~/types/client-type-trpc';
+import { ProductOne, ReviewFind } from '~/types/client-type-trpc';
 
-export const CommentsList = ({ data }: { data: NonNullable<ProductOne>['reviews'] }) => {
+export const CommentsList = ({
+  data
+}: {
+  data: NonNullable<ProductOne>['reviews'] | NonNullable<ReviewFind>['reviews'];
+}) => {
   const { data: user } = useSession();
   const mutationDelete = api.Review.delete.useMutation();
   const utils = api.useUtils();
@@ -52,13 +56,13 @@ export const CommentsList = ({ data }: { data: NonNullable<ProductOne>['reviews'
       <Text size='xs' className='absolute bottom-2 right-2 text-gray-500 dark:text-dark-text'>
         {formatDateViVN(comment.createdAt || new Date())}
       </Text>
-      {comment.userId === user?.user?.id && (
+      {comment?.user?.id === user?.user?.id && (
         <Button
           variant='subtle'
           size='xs'
           className='absolute right-2 top-2 text-red-500'
           onClick={() => {
-            if (comment.id && comment.userId === user?.user?.id) {
+            if (comment.id && comment?.user?.id === user?.user?.id) {
               confirmDelete({
                 id: { id: comment.id },
                 mutationDelete,

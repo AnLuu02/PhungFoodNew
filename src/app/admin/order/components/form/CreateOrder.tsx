@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconMail, IconPhone } from '@tabler/icons-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import BButton from '~/components/Button/Button';
@@ -26,10 +26,12 @@ import { LocalAddressType, LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { OrderClientType } from '~/types';
+import { UserAll } from '~/types/client-type-trpc';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 import OrderItemForm from './OrderItemForm';
 
 export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
-  const [users, setUsers] = useState<any>([]);
+  const [users, setUsers] = useState<UserAll>([]);
   const {
     control,
     handleSubmit,
@@ -106,38 +108,27 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
       NotifyError(e.message);
     }
   });
+
+  useEffect(() => {
+    const provinceId = watch('delivery.address.provinceId'),
+      districtId = watch('delivery.address.districtId'),
+      wardId = watch('delivery.address.wardId'),
+      detail = watch('delivery.address.detail');
+    const province = provinces?.results?.find((item: Province) => item.province_id === provinceId);
+    const district = districts?.results?.find((item: District) => item.district_id === districtId);
+    const ward = wards?.results?.find((item: Ward) => item.ward_id === wardId);
+    const fullAddress = `${detail}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+
+    setValue('delivery.address.fullAddress', fullAddress);
+  }, [provinces, districts, wards, watch('delivery.address.detail')]);
+
   const onSubmit: SubmitHandler<OrderClientType> = async formData => {
     try {
       if (!formData) return;
       if (formData.orderItems.length === 0) {
         NotifyError('Không hợp lệ.', 'Bạn phải có ít nhất một sản phẩm trong hóa đơn.');
       } else {
-        const province = provinces?.results?.find(
-          (item: any) => item.province_id === formData?.delivery?.address?.provinceId
-        );
-        const district = districts?.results?.find(
-          (item: any) => item.district_id === formData?.delivery?.address?.districtId
-        );
-        const ward = wards?.results?.find((item: any) => item.ward_id === formData?.delivery?.address?.wardId);
-        const fullAddress = `${formData?.delivery?.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
-
-        await mutation.mutateAsync({
-          ...formData,
-          delivery: {
-            ...formData?.delivery,
-            address: {
-              ...formData?.delivery.address,
-              detail: formData?.delivery.address?.detail || '',
-              provinceId: formData?.delivery.address?.provinceId || '',
-              districtId: formData?.delivery.address?.districtId || '',
-              wardId: formData?.delivery.address?.wardId || '',
-              province: province?.province_name || '',
-              district: district?.district_name || '',
-              ward: ward?.ward_name || '',
-              fullAddress
-            }
-          } as any
-        });
+        await mutation.mutateAsync(formData);
       }
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
@@ -213,7 +204,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                         searchable
                         radius='md'
                         placeholder='Chọn tỉnh thành'
-                        data={provinces?.results?.map((item: any) => ({
+                        data={provinces?.results?.map((item: Province) => ({
                           value: item.province_id,
                           label: item.province_name
                         }))}
@@ -234,7 +225,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                         searchable
                         radius='md'
                         placeholder='Chọn quận huyện'
-                        data={districts?.results?.map((item: any) => ({
+                        data={districts?.results?.map((item: District) => ({
                           value: item.district_id,
                           label: item.district_name
                         }))}
@@ -255,7 +246,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                         searchable
                         radius='md'
                         placeholder='Chọn phường xã'
-                        data={wards?.results?.map((item: any) => ({
+                        data={wards?.results?.map((item: Ward) => ({
                           value: item.ward_id,
                           label: item.ward_name
                         }))}
@@ -309,7 +300,10 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                     searchable
                     radius='md'
                     placeholder='Chọn khách hàng'
-                    data={users?.map((user: any) => ({ value: user.id, label: user.name }))}
+                    data={users?.map((user: NonNullable<UserAll>[0]) => ({
+                      value: user.id,
+                      label: user.name || 'Khách'
+                    }))}
                     {...field}
                     error={errors.userId?.message}
                   />
