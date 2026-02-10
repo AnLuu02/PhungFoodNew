@@ -1,5 +1,5 @@
 import { notificationPriorityInfo } from '~/app/admin/settings/notification/helpers';
-import { Notification } from '~/app/admin/settings/notification/types';
+import { NotificationClientType } from '~/types';
 const colors = {
   SYSTEM: {
     primary: '#3b82f6',
@@ -31,7 +31,7 @@ const colors = {
   }
 };
 
-export function generateNotifyHtml(notification: Notification) {
+export function generateNotifyHtml(notification: NotificationClientType) {
   const { primary, light } = colors[notification.type] || colors.SYSTEM;
 
   const formattedDate = new Date(notification.createdAt || new Date()).toLocaleString('vi-VN', {

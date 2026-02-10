@@ -12,9 +12,9 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
-import { ProductOne } from '~/types/client-type-trpc';
+import { ProductFind, ProductOne } from '~/types/client-type-trpc';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
-const ProductCardCarouselVertical = ({ data }: { data: ProductOne }) => {
+const ProductCardCarouselVertical = ({ data }: { data: ProductOne | NonNullable<ProductFind>['products'][0] }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
@@ -76,7 +76,7 @@ const ProductCardCarouselVertical = ({ data }: { data: ProductOne }) => {
                 </Button>
               )}
             </Tooltip>
-            <ButtonToggleLike data={data} />
+            <ButtonToggleLike data={data as ProductOne} />
           </Button.Group>
         </Box>
       </Card.Section>

@@ -96,11 +96,11 @@ export const HistoryTabSection = ({
             onChange={(value: any) => setFilterStatus(value || 'all')}
             data={[
               { value: 'all', label: 'Tất cả trạng thái' },
-              { value: 'sent', label: 'Đã gửi' },
-              { value: 'delivered', label: 'Đã chuyển' },
-              { value: 'read', label: 'Đã đọc' },
-              { value: 'scheduled', label: 'Đã lên lịch' },
-              { value: 'failed', label: 'Lỗi!!!' }
+              { value: 'SENT', label: 'Đã gửi' },
+              { value: 'DELIVERED', label: 'Đã chuyển' },
+              { value: 'READ', label: 'Đã đọc' },
+              { value: 'SCHEDULED', label: 'Đã lên lịch' },
+              { value: 'FAILED', label: 'Lỗi!!!' }
             ]}
           />
 
@@ -166,9 +166,9 @@ export const HistoryTabSection = ({
             {filterNotifications?.length > 0 ? (
               filterNotifications.map((notification: any) => {
                 const priories =
-                  notificationPriorityInfo?.[notification?.priority as 'low' | 'medium' | 'high' | 'urgent'];
+                  notificationPriorityInfo?.[notification?.priority as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'];
                 const status =
-                  notificationStatusInfo?.[notification?.status as 'draft' | 'scheduled' | 'sent' | 'delivered'];
+                  notificationStatusInfo?.[notification?.status as 'DRAFT' | 'SCHEDULED' | 'SENT' | 'DELIVERED'];
 
                 return (
                   <Paper withBorder radius={'lg'} key={notification?.id} className='space-y-3 p-4'>
@@ -193,12 +193,12 @@ export const HistoryTabSection = ({
                                   : formatDateViVN(notification?.createdAt)}
                             </span>
                             <span className='flex items-center gap-1'>
-                              {notification?.recipient === 'all' ? (
+                              {notification?.recipient === 'ALL' ? (
                                 <IconUsers className='h-3 w-3' />
                               ) : (
                                 <IconUser className='h-3 w-3' />
                               )}
-                              {notification?.recipient === 'all'
+                              {notification?.recipient === 'ALL'
                                 ? 'Tất cả người dùng'
                                 : notification?.recipient === 'individual'
                                   ? notification?.recipients?.length + ' người dùng'
@@ -215,13 +215,13 @@ export const HistoryTabSection = ({
                       </Box>
                     </Box>
 
-                    {notification?.status === 'sent' && (
+                    {notification?.status === 'SENT' && (
                       <SimpleGrid cols={4} mt={'md'}>
                         {[
-                          { key: 'sent', label: 'Đã gửi' },
-                          { key: 'delivered', label: 'Đã nhận được' },
-                          { key: 'read', label: 'Đã đọc' },
-                          { key: 'clicked', label: 'Đã truy cập' }
+                          { key: 'SENT', label: 'Đã gửi' },
+                          { key: 'DELIVERED', label: 'Đã nhận được' },
+                          { key: 'READ', label: 'Đã đọc' },
+                          { key: 'CLICKED', label: 'Đã truy cập' }
                         ].map(({ key, label }) => (
                           <Paper
                             key={key + label}
@@ -232,7 +232,7 @@ export const HistoryTabSection = ({
                           >
                             <Stack className='text-center' gap={4}>
                               <Text fw={700}>
-                                {notification.analytics?.[key as 'sent' | 'delivered' | 'read' | 'clicked'] || 0}
+                                {notification.analytics?.[key as 'SENT' | 'DELIVERED' | 'READ' | 'CLICKED'] || 0}
                               </Text>
                               <Text c='dimmed' size='xs'>
                                 {label}

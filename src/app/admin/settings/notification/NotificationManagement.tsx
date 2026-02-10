@@ -17,7 +17,7 @@ import { TemplatesTabSection } from './components/section/TemplatesTabSection';
 export interface SendNotificationStateProps {
   open: boolean;
   typeAction: 'create' | 'update' | 'template';
-  recipient?: 'all' | 'individual' | undefined;
+  recipient?: 'ALL' | 'INDIVIDUAL' | undefined;
   notification?: NotificationClientHasUser;
 }
 

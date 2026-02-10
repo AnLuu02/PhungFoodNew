@@ -1,14 +1,15 @@
 'use client';
 import { Box, Card, Center, Divider, ScrollArea, Stack, Text } from '@mantine/core';
+import { CategoryAll, MaterialAll } from '~/types/client-type-trpc';
 import { MaterialFilter } from './Filter/MaterialFilter';
 import { MenuCategoryFilter } from './Filter/MenuCategoryFilter';
 import { PriceCheckedFilter } from './Filter/PriceCheckedFilter';
 import { FilterRating } from './Filter/RatingFilter';
 
-export function SidebarFilterContent({ categories, materials }: any) {
+export function SidebarFilterContent({ categories, materials }: { categories: CategoryAll; materials: MaterialAll }) {
   return (
     <>
-      <MenuCategoryFilter categories={categories} materials={materials} />
+      <MenuCategoryFilter categories={categories} />
       <Card p={0} className='rounded-md bg-gray-100 dark:bg-dark-card'>
         <Box className='rounded-t-md bg-mainColor p-2 text-white'>
           <Text size='sm' fw={700}>

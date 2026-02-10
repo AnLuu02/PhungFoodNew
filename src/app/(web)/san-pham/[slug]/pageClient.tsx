@@ -61,10 +61,13 @@ export default function ProductDetailClient({ data }: { data: InitProductDetail 
     ];
   }, [product]);
   const ratingCounts = useMemo(() => {
-    let ratingCountsDefault = [0, 0, 0, 0, 0];
+    let ratingCountsDefault: number[] = [0, 0, 0, 0, 0];
     return (
-      product?.reviews?.reduce((acc: any, item: NonNullable<InitProductDetail>['product']['reviews'][0]) => {
-        acc[item.rating - 1] += 1;
+      product?.reviews?.reduce((acc: number[], item: NonNullable<InitProductDetail>['product']['reviews'][0]) => {
+        const index = item.rating - 1;
+        if (index >= 0 && index < acc.length && acc[index]) {
+          acc[index] += 1;
+        }
         return acc;
       }, ratingCountsDefault) || ratingCountsDefault
     );

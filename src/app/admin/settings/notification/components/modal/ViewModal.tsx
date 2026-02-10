@@ -30,8 +30,8 @@ interface ViewModalProps {
 export const ViewModal = ({ opened, onClose, selectedNotification, role = 'client' }: ViewModalProps) => {
   const [viewDetail, setViewDetail] = useState(false);
 
-  const priority = notificationPriorityInfo?.[selectedNotification?.priority as 'low' | 'medium' | 'high' | 'urgent'];
-  const status = notificationStatusInfo?.[selectedNotification?.status as 'draft' | 'scheduled' | 'sent' | 'delivered'];
+  const priority = notificationPriorityInfo?.[selectedNotification?.priority as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'];
+  const status = notificationStatusInfo?.[selectedNotification?.status as 'DRAFT' | 'SCHEDULED' | 'SENT' | 'DELIVERED'];
 
   const isAdmin = role === 'admin';
 
@@ -137,11 +137,11 @@ export const ViewModal = ({ opened, onClose, selectedNotification, role = 'clien
                   </Text>
                   <Group p={0} m={0} gap={4}>
                     <Text c='dimmed' size='sm'>
-                      {selectedNotification.recipient === 'all'
+                      {selectedNotification.recipient === 'ALL'
                         ? 'Tất cả người dùng'
                         : selectedNotification?.recipients?.length + ' người dùng'}
                     </Text>
-                    {selectedNotification.recipient !== 'all' && (
+                    {selectedNotification.recipient !== 'ALL' && (
                       <BButton variant='subtle' size='xs' onClick={() => setViewDetail(!viewDetail)}>
                         Chi tiết
                       </BButton>
@@ -149,7 +149,7 @@ export const ViewModal = ({ opened, onClose, selectedNotification, role = 'clien
                   </Group>
                 </Grid.Col>
                 <Grid.Col span={12}>
-                  {selectedNotification.status === 'sent' && (
+                  {selectedNotification.status === 'SENT' && (
                     <Box>
                       <Text fw={500} size='sm'>
                         Phân tích
@@ -157,14 +157,14 @@ export const ViewModal = ({ opened, onClose, selectedNotification, role = 'clien
                       <Paper withBorder radius='md' p='md' mt='sm'>
                         <Grid>
                           {[
-                            { key: 'sent', label: 'Đã gửi' },
-                            { key: 'delivered', label: 'Đã nhận được' },
-                            { key: 'read', label: 'Đã đọc' },
-                            { key: 'clicked', label: 'Đã truy cập' }
+                            { key: 'SENT', label: 'Đã gửi' },
+                            { key: 'DELIVERED', label: 'Đã nhận được' },
+                            { key: 'READ', label: 'Đã đọc' },
+                            { key: 'CLICKED', label: 'Đã truy cập' }
                           ].map(({ key, label }) => (
                             <Grid.Col span={3} key={key} ta='center'>
                               <Text fz='xl' fw={700}>
-                                {selectedNotification.analytics?.[key as 'sent' | 'delivered' | 'read' | 'clicked'] ||
+                                {selectedNotification.analytics?.[key as 'SENT' | 'DELIVERED' | 'READ' | 'CLICKED'] ||
                                   0}
                               </Text>
                               <Text c='dimmed' fz='xs'>

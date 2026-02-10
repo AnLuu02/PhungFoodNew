@@ -37,3 +37,4 @@ export type RolePermissionAll = RouterOutputs['RolePermission']['getAllPermissio
 
 //page
 export type InitProductDetail = RouterOutputs['Page']['getInitProductDetail'];
+export type InitReport = RouterOutputs['Page']['getInitReport'];

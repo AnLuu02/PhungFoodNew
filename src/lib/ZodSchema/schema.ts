@@ -309,6 +309,18 @@ export const notificationTemplateSchema = z.object({
   variables: z.array(z.string()).default([]),
   createdAt: z.date().default(() => new Date())
 });
+export const notificationRecipientSchema = z.object({
+  id: z.string().optional(),
+  notificationId: z.string({ required_error: 'Thiếu ID thông báo' }),
+  userId: z.string({ required_error: 'Thiếu ID người nhận' }),
+
+  status: z.enum(['PENDING', 'SENT', 'DELIVERED', 'READ', 'CLICKED']).default('PENDING'),
+
+  sentAt: z.date().optional(),
+  deliveredAt: z.date().optional(),
+  readAt: z.date().optional(),
+  clickedAt: z.date().optional()
+});
 export const notificationSchema = z.object({
   id: z.string().optional(),
   title: z.string({ required_error: 'Tiêu đề thông báo là bắt buộc' }).min(1, 'Tiêu đề không được để trống'),
@@ -334,25 +346,12 @@ export const notificationSchema = z.object({
 
   analytics: z
     .object({
-      sent: z.number().default(0),
-      delivered: z.number().default(0),
-      read: z.number().default(0),
-      clicked: z.number().default(0)
+      SENT: z.number().default(0),
+      DELIVERED: z.number().default(0),
+      READ: z.number().default(0),
+      CLICKED: z.number().default(0)
     })
-    .default({ sent: 0, delivered: 0, read: 0, clicked: 0 })
-});
-
-export const notificationRecipientSchema = z.object({
-  id: z.string().optional(),
-  notificationId: z.string({ required_error: 'Thiếu ID thông báo' }),
-  userId: z.string({ required_error: 'Thiếu ID người nhận' }),
-
-  status: z.enum(['pending', 'sent', 'delivered', 'read', 'clicked']).default('pending'),
-
-  sentAt: z.date().optional(),
-  deliveredAt: z.date().optional(),
-  readAt: z.date().optional(),
-  clickedAt: z.date().optional()
+    .default({ SENT: 0, DELIVERED: 0, READ: 0, CLICKED: 0 })
 });
 
 export const roleSchema = z.object({

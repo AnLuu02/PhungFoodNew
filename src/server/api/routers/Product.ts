@@ -205,10 +205,7 @@ export const productRouter = createTRPCRouter({
             images: true,
             materials: true,
             subCategory: {
-              select: {
-                id: true,
-                tag: true,
-                name: true,
+              include: {
                 category: true,
                 image: true
               }
@@ -231,7 +228,6 @@ export const productRouter = createTRPCRouter({
       );
 
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-      console.log('___totalProductsQuery', totalProductsQuery);
 
       return {
         products,

@@ -26,19 +26,19 @@ export const getTypeIcon = (type: string) => {
 };
 
 export const notificationPriorityInfo = {
-  low: { viName: 'Thấp', color: 'bg-gray-100 text-gray-800 border-gray-200' },
-  medium: { viName: 'Trung bình', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-  high: { viName: 'Cao', color: 'bg-orange-100 text-orange-800 border-orange-200' },
-  urgent: { viName: 'Khẩn cấp', color: 'bg-red-100 text-red-800 border-red-200' }
+  LOW: { viName: 'Thấp', color: 'bg-gray-100 text-gray-800 border-gray-200' },
+  MEDIUM: { viName: 'Trung bình', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+  HIGH: { viName: 'Cao', color: 'bg-orange-100 text-orange-800 border-orange-200' },
+  URGENT: { viName: 'Khẩn cấp', color: 'bg-red-100 text-red-800 border-red-200' }
 };
 
 export const notificationStatusInfo = {
-  draft: { viName: 'Bản nháp', icon: <IconClock className='h-4 w-4 text-gray-500' /> },
-  scheduled: { viName: 'Đã lên lịch', icon: <IconClock className='h-4 w-4 text-orange-500' /> },
-  sent: { viName: 'Đã gửi', icon: <IconCircleCheck className='h-4 w-4 text-green-500' /> },
-  delivered: { viName: 'Đã gửi thành công', icon: <IconCircleCheck className='h-4 w-4 text-blue-500' /> },
-  read: { viName: 'Đã đọc', icon: <IconEye className='h-4 w-4 text-purple-500' /> },
-  failed: { viName: 'Gửi thất bại', icon: <IconCircleX className='h-4 w-4 text-red-500' /> }
+  DRAFT: { viName: 'Bản nháp', icon: <IconClock className='h-4 w-4 text-gray-500' /> },
+  SCHEDULED: { viName: 'Đã lên lịch', icon: <IconClock className='h-4 w-4 text-orange-500' /> },
+  SENT: { viName: 'Đã gửi', icon: <IconCircleCheck className='h-4 w-4 text-green-500' /> },
+  DELIVERED: { viName: 'Đã gửi thành công', icon: <IconCircleCheck className='h-4 w-4 text-blue-500' /> },
+  READ: { viName: 'Đã đọc', icon: <IconEye className='h-4 w-4 text-purple-500' /> },
+  FAILED: { viName: 'Gửi thất bại', icon: <IconCircleX className='h-4 w-4 text-red-500' /> }
 };
 
 export const notificationTypeOptions = {
@@ -62,7 +62,7 @@ export const updateActionClient = async ({
   mutationUpdateAction: any;
   data: NotificationClientHasUser;
   session: any;
-  action: 'sent' | 'delivered' | 'read' | 'clicked';
+  action: 'SENT' | 'DELIVERED' | 'READ' | 'CLICKED';
 }) => {
   await mutationUpdateAction.mutateAsync({
     where: { id: data.id },

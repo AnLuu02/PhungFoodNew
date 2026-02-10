@@ -218,7 +218,7 @@ export function SendMessageAllUserAdvanced() {
         </BButton>
       </Tooltip>
 
-      <NotificationModal opened={opened} onClose={() => setOpened(false)} recipient='all' />
+      <NotificationModal opened={opened} onClose={() => setOpened(false)} recipient='ALL' />
     </>
   );
 }
@@ -244,7 +244,7 @@ export function SendMessageOrderButton({ user }: { user: any }) {
       <NotificationModal
         opened={opened}
         onClose={() => setOpened(false)}
-        recipient='individual'
+        recipient='INDIVIDUAL'
         defaultValues={{
           recipients: [{ user: { id: user?.id, email: user?.email } } as any]
         }}

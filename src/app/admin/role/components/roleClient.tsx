@@ -183,7 +183,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
                   label: 'Quyền xóa'
                 },
                 {
-                  value: 'read',
+                  value: 'READ',
                   label: 'Quyền xem'
                 }
               ]}

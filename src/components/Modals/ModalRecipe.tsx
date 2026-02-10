@@ -32,7 +32,7 @@ import {
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { ModalProps } from '~/types/modal';
-import { Recipe } from '../../types/recipe';
+import { Recipe } from '~/types/recipe';
 
 export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<Recipe>) {
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);

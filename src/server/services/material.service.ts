@@ -1,18 +1,8 @@
 import { PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
-export async function findMaterial(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  input: { skip: number; take: number; s?: string }
-) {
+export async function findMaterial(db: PrismaClient, input: { skip: number; take: number; s?: string }) {
   const { skip, take, s } = input;
 
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
@@ -79,16 +69,7 @@ export async function findMaterial(
     }
   };
 }
-export async function createMaterial(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  input: any
-): Promise<ResponseTRPC> {
+export async function createMaterial(db: PrismaClient, input: any): Promise<ResponseTRPC> {
   const existingMaterial = await db.material.findMany({
     where: {
       tag: input.tag
@@ -120,16 +101,7 @@ export async function createMaterial(
   };
 }
 export function updateMaterial() {}
-export function deleteMaterial(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  id: string
-): ResponseTRPC {
+export function deleteMaterial(db: PrismaClient, id: string): ResponseTRPC {
   return {
     code: 'OK',
     message: 'Xóa nguyên liệu thành công.',

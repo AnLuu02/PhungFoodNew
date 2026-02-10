@@ -25,7 +25,7 @@ export const SendTabSection = ({
           withBorder
           radius={'lg'}
           className='cursor-pointer transition duration-200 hover:scale-[1.01] hover:border-mainColor hover:shadow-md'
-          onClick={() => setShowSendDialog({ open: true, typeAction: 'create', recipient: 'all' })}
+          onClick={() => setShowSendDialog({ open: true, typeAction: 'create', recipient: 'ALL' })}
         >
           <Box className='pb-3'>
             <Box className='flex items-center gap-2'>
@@ -44,7 +44,7 @@ export const SendTabSection = ({
           withBorder
           radius={'lg'}
           className='cursor-pointer transition duration-200 hover:scale-[1.01] hover:border-mainColor hover:shadow-md'
-          onClick={() => setShowSendDialog({ open: true, typeAction: 'create', recipient: 'individual' })}
+          onClick={() => setShowSendDialog({ open: true, typeAction: 'create', recipient: 'INDIVIDUAL' })}
         >
           <Box className='pb-3'>
             <Box className='flex items-center gap-2'>
@@ -77,7 +77,7 @@ export const SendTabSection = ({
             {notifications?.length > 0 ? (
               notifications.slice(0, 5).map((notification: any) => {
                 const priority =
-                  notificationPriorityInfo?.[notification?.priority as 'low' | 'medium' | 'high' | 'urgent'];
+                  notificationPriorityInfo?.[notification?.priority as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'];
 
                 return (
                   <Paper
@@ -96,7 +96,7 @@ export const SendTabSection = ({
                     <Box className='flex items-center gap-2'>
                       {
                         notificationStatusInfo?.[
-                          notification?.status as 'draft' | 'scheduled' | 'sent' | 'delivered' | 'read' | 'failed'
+                          notification?.status as 'DRAFT' | 'SCHEDULED' | 'SENT' | 'DELIVERED' | 'READ' | 'FAILED'
                         ]?.icon
                       }
                       <Badge variant='outline' className={priority?.color}>

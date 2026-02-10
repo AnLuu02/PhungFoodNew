@@ -27,14 +27,15 @@ import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
+import { UserOne } from '~/types/client-type-trpc';
 
-export function UserInfo({ userInfor }: { userInfor: any }) {
+export function UserInfo({ userInfor }: { userInfor: UserOne }) {
   const [opened, setOpened] = useState(false);
-  const { statusObj }: any = useMemo(() => {
+  const { statusObj } = useMemo(() => {
     const orderData =
-      userInfor?.order?.map((order: any) => ({
+      userInfor?.orders?.map(order => ({
         id: order.id,
-        date: new Date(order.createdAt).toISOString().split('T')[0] || new Date('yyyy-mm-dd'),
+        date: new Date(order.createdAt || new Date()).toISOString().split('T')[0] || new Date('yyyy-mm-dd'),
         finalTotal: order?.finalTotal || 0,
         status: order.status
       })) || [];
@@ -155,7 +156,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                 Địa chỉ
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.address?.fullAddress || 'Đang cập nhật'}
+                {userInfor?.address?.[0]?.fullAddress || 'Đang cập nhật'}
               </Text>
             </Grid.Col>
           </Grid>

@@ -30,9 +30,10 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
+import { SubCategoryAll } from '~/types/client-type-trpc';
 import VoiceSearchModal from './SearchAsVoice';
 
-export default function SearchComponentClient({ subCategories }: any) {
+export default function SearchComponentClient({ subCategories }: { subCategories: SubCategoryAll }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -104,8 +105,8 @@ export default function SearchComponentClient({ subCategories }: any) {
         bottom={-22}
         left={0}
       >
-        {subCategories &&
-          subCategories.map((item: any, index: number) => {
+        {subCategories?.length > 0 &&
+          subCategories.map((item, index) => {
             return (
               index < 8 && (
                 <Tooltip
@@ -261,7 +262,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       </Button>
                     </Flex>
                     <Stack gap={8}>
-                      {historySearchRender.map((item: any, index: number) => (
+                      {historySearchRender.map((item, index) => (
                         <Flex key={index} justify='space-between' align='center'>
                           <Button
                             variant='transparent'
@@ -286,7 +287,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                             variant='transparent'
                             size='sm'
                             onClick={() => {
-                              setHistorySearch(historySearch.filter((item: any) => item !== historySearch[index]));
+                              setHistorySearch(historySearch.filter(item => item !== historySearch[index]));
                             }}
                           >
                             <IconX size={16} />
@@ -303,8 +304,8 @@ export default function SearchComponentClient({ subCategories }: any) {
                       Tra cứu hàng đầu
                     </Text>
                     <Flex gap={8} wrap='wrap'>
-                      {subCategories &&
-                        subCategories.map((term: any, index: number) => (
+                      {subCategories?.length > 0 &&
+                        subCategories.map((term, index) => (
                           <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`} key={index}>
                             <Badge
                               key={index}
@@ -323,7 +324,7 @@ export default function SearchComponentClient({ subCategories }: any) {
 
                 {categoryData.length > 0 && (
                   <Box my={8}>
-                    {categoryData.map((category: any) => (
+                    {categoryData.map(category => (
                       <Link key={category.id} href={`/thuc-don?s=${category.tag}`}>
                         <Flex align={'center'} gap={8} px={'md'} py={5} className='hover:bg-mainColor/10'>
                           <IconSearch size={24} className='text-gray-400 dark:text-dark-text' />
@@ -343,7 +344,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                   <>
                     <Divider />
                     <Box my={8}>
-                      {subCategoryData.map((category: any) => (
+                      {subCategoryData.map(category => (
                         <Link key={category.id} href={`/thuc-don?s=${category.tag}`}>
                           <Flex align={'center'} gap={8} px={'md'} py={5} className='hover:bg-mainColor/10'>
                             <IconSearch size={24} className='text-gray-400 dark:text-dark-text' />
@@ -364,7 +365,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                   <>
                     <Divider />
                     <Box>
-                      {productData.map((product: any) => (
+                      {productData.map(product => (
                         <Box>
                           <Link key={product.id} href={`/san-pham/${product.tag}`}>
                             <Flex
@@ -397,11 +398,14 @@ export default function SearchComponentClient({ subCategories }: any) {
                                     {product.name}
                                   </Highlight>
                                   <Text size='sm'>
-                                    <b className='m-0 p-0 text-mainColor'>{formatPriceLocaleVi(product.price)}</b> /phần
+                                    <b className='m-0 p-0 text-mainColor'>
+                                      {formatPriceLocaleVi(+(product.price || 0))}
+                                    </b>{' '}
+                                    /phần
                                   </Text>
                                   {product.tags && product.tags.length > 0 && (
                                     <Flex gap={4} mt={'xs'}>
-                                      {product.tags.slice(0, 3)?.map((tag: any, index: number) => (
+                                      {product.tags.slice(0, 3)?.map((tag, index) => (
                                         <Tooltip key={index} label={tag}>
                                           <Badge
                                             key={index}

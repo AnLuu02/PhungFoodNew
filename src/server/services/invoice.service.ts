@@ -1,17 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
-export async function findInvoices(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  input: { skip: number; take: number; s?: string }
-) {
+export async function findInvoices(db: PrismaClient, input: { skip: number; take: number; s?: string }) {
   const { skip, take, s } = input;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
@@ -65,16 +55,7 @@ export async function findInvoices(
   };
 }
 
-export const getInvoiceByIdOrNumber = (
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  s: string
-) => {
+export const getInvoiceByIdOrNumber = (db: PrismaClient, s: string) => {
   const keyword = s.trim();
   return db.invoice.findFirst({
     where: {
@@ -83,30 +64,13 @@ export const getInvoiceByIdOrNumber = (
   });
 };
 
-export const getAllInvoices = (
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >
-) => {
+export const getAllInvoices = (db: PrismaClient) => {
   return db.invoice.findMany({
     include: { saler: true }
   });
 };
 
-export async function createInvoice(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  input: any
-): Promise<ResponseTRPC> {
+export async function createInvoice(db: PrismaClient, input: any): Promise<ResponseTRPC> {
   const invoice = await db.invoice.create({ data: input });
 
   return {
@@ -116,16 +80,7 @@ export async function createInvoice(
   };
 }
 
-export async function updateInvoice(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  input: any
-): Promise<ResponseTRPC> {
+export async function updateInvoice(db: PrismaClient, input: any): Promise<ResponseTRPC> {
   const invoice = await db.invoice.update({
     where: { id: input.id },
     data: input
@@ -138,16 +93,7 @@ export async function updateInvoice(
   };
 }
 
-export async function deleteInvoice(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  id: string
-): Promise<ResponseTRPC> {
+export async function deleteInvoice(db: PrismaClient, id: string): Promise<ResponseTRPC> {
   const invoice = await db.invoice.delete({
     where: { id }
   });

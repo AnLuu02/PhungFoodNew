@@ -33,8 +33,9 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
+import { OrderFilter } from '~/types/client-type-trpc';
 
-export function OrderList({ orders }: { orders: any }) {
+export function OrderList({ orders }: { orders: OrderFilter }) {
   const [activeTab, setActiveTab] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
@@ -54,7 +55,7 @@ export function OrderList({ orders }: { orders: any }) {
 
   const orderData = useMemo(
     () =>
-      orders?.map((order: any) => ({
+      orders?.map(order => ({
         ...order,
         date: new Date(order.createdAt || new Date()).toISOString().split('T')[0],
         finalTotal: order?.finalTotal || 0,
@@ -66,13 +67,13 @@ export function OrderList({ orders }: { orders: any }) {
 
   const filteredOrders = useMemo(() => {
     if (activeTab === 'all') return orderData;
-    return orderData.filter((order: any) => order.status === activeTab);
+    return orderData.filter(order => order.status === activeTab);
   }, [orderData, activeTab]);
 
   const filteredOrdersSearch = useMemo(() => {
     if (!debouncedSearch) return filteredOrders;
     const search = debouncedSearch.toLowerCase();
-    return filteredOrders.filter((order: any) =>
+    return filteredOrders.filter(order =>
       [
         order?.payment?.name,
         order?.status,
@@ -94,9 +95,9 @@ export function OrderList({ orders }: { orders: any }) {
 
   const statusObj = useMemo(() => {
     const orderData =
-      orders?.map((order: any) => ({
+      orders?.map(order => ({
         id: order.id,
-        date: new Date(order.createdAt).toISOString().split('T')[0] || new Date('yyyy-mm-dd'),
+        date: new Date(order.createdAt || new Date()).toISOString().split('T')[0] || new Date('yyyy-mm-dd'),
         finalTotal: order?.finalTotal || 0,
         status: order.status
       })) || [];
@@ -172,7 +173,7 @@ export function OrderList({ orders }: { orders: any }) {
           content='center'
           value={activeTab}
           radius={'md'}
-          onChange={(value: any) => setActiveTab(value)}
+          onChange={value => setActiveTab(value || 'all')}
           styles={{
             tab: {
               border: '1px solid',
@@ -238,7 +239,7 @@ export function OrderList({ orders }: { orders: any }) {
                 </Table.Thead>
                 <Table.Tbody>
                   {displayedOrders?.length > 0 ? (
-                    displayedOrders.map((order: any) => {
+                    displayedOrders.map(order => {
                       const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
                       return (
                         <Table.Tr key={order.id}>
@@ -248,7 +249,7 @@ export function OrderList({ orders }: { orders: any }) {
                             </Tooltip>
                           </Table.Td>
                           <Table.Td className='text-sm'>{formatDateViVN(order.date)}</Table.Td>
-                          <Table.Td className='text-sm'>{formatPriceLocaleVi(order.finalTotal || 0)}</Table.Td>
+                          <Table.Td className='text-sm'>{formatPriceLocaleVi(+(order.finalTotal || 0))}</Table.Td>
                           <Table.Td style={{ textTransform: 'capitalize' }}>
                             <Tooltip label={statusInfo.label}>
                               <Badge leftSection={<statusInfo.icon size={16} />} color={statusInfo.color}>

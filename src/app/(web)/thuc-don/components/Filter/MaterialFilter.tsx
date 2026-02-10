@@ -3,8 +3,9 @@ import { Checkbox, CheckIcon, Flex, Group, ScrollAreaAutosize, Stack, Text } fro
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
+import { MaterialAll } from '~/types/client-type-trpc';
 
-export const MaterialFilter = ({ materials }: any) => {
+export const MaterialFilter = ({ materials }: { materials: MaterialAll }) => {
   const params = useSearchParams();
   const [valueMaterials, setValueMaterials] = useState<string[]>([]);
   const router = useRouter();
@@ -51,7 +52,7 @@ export const MaterialFilter = ({ materials }: any) => {
         <Stack gap='xs' pr={'xs'}>
           <Checkbox.Group value={valueMaterials} onChange={setValueMaterials}>
             <Group mt='xs'>
-              {materials.map((type: any) => (
+              {materials.map(type => (
                 <Checkbox
                   icon={CheckIcon}
                   name='type'

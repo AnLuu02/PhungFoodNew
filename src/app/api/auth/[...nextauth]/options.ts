@@ -73,7 +73,8 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name ?? '',
             password: randomPass,
-            image: user.image ? { fileName: user.image, base64: '' } : undefined
+            image: user.image ? { fileName: user.image, base64: '' } : { fileName: '', base64: '' },
+            phone: ''
           });
         }
         return true;

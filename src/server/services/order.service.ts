@@ -54,7 +54,7 @@ export const findOrders = async (db: PrismaClient, input: FindOrderInput) => {
       orderBy,
       include: {
         payment: true,
-        user: { include: { image: true, address: true } },
+        user: { include: { image: true, address: true }, omit: { password: true } },
         delivery: { include: { address: true } },
         orderItems: {
           include: {
@@ -162,7 +162,7 @@ export const getOrderByFilter = async (db: PrismaClient, s: string, period?: num
         }
       },
       vouchers: true,
-      user: { include: { image: true, address: true } },
+      user: { include: { image: true, address: true }, omit: { password: true } },
       payment: true,
       delivery: { include: { address: true } }
     }
@@ -191,7 +191,7 @@ export const getOrderByIdOrEmail = async (db: PrismaClient, s: string) => {
         }
       },
       vouchers: true,
-      user: { include: { image: true, address: true } },
+      user: { include: { image: true, address: true }, omit: { password: true } },
       payment: true,
       delivery: { include: { address: true } }
     }

@@ -1,6 +1,6 @@
 import { Card, Grid, GridCol, Select, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, UseFormWatch } from 'react-hook-form';
 import z from 'zod';
 import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
@@ -13,7 +13,7 @@ export function DeliveryCard({
   wards
 }: {
   control: Control<z.infer<typeof deliverySchema> & { paymentId: string }>;
-  watch: any;
+  watch: UseFormWatch<z.infer<typeof deliverySchema> & { paymentId: string }>;
   provinces?: ProvinceResponse;
   districts?: DistrictResponse;
   wards?: WardResponse;
@@ -89,7 +89,7 @@ export function DeliveryCard({
                   radius='md'
                   label='Tỉnh thành'
                   placeholder='Chọn tỉnh thành'
-                  data={provinces?.results?.map((item: any) => ({
+                  data={provinces?.results?.map(item => ({
                     value: item.province_id,
                     label: item.province_name
                   }))}
@@ -112,7 +112,7 @@ export function DeliveryCard({
                   radius='md'
                   label='Quận huyện'
                   placeholder='Chọn quận huyện'
-                  data={districts?.results?.map((item: any) => ({
+                  data={districts?.results?.map(item => ({
                     value: item.district_id,
                     label: item.district_name
                   }))}
@@ -135,7 +135,7 @@ export function DeliveryCard({
                   radius='md'
                   label='Phường xã'
                   placeholder='Chọn phường xã'
-                  data={wards?.results?.map((item: any) => ({
+                  data={wards?.results?.map(item => ({
                     value: item.ward_id,
                     label: item.ward_name
                   }))}

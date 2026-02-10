@@ -1,17 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { DefaultArgs } from '@prisma/client/runtime/library';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
-export async function createDelivery(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  input: any
-): Promise<ResponseTRPC> {
+export async function createDelivery(db: PrismaClient, input: any): Promise<ResponseTRPC> {
   const delivery = await db.delivery.create({
     data: {
       name: input.name,
@@ -41,16 +31,7 @@ export async function createDelivery(
   };
 }
 
-export async function updateDelivery(
-  db: PrismaClient<
-    {
-      log: 'error'[];
-    },
-    'error',
-    DefaultArgs
-  >,
-  input: any
-): Promise<ResponseTRPC> {
+export async function updateDelivery(db: PrismaClient, input: any): Promise<ResponseTRPC> {
   const existingDelivery = await db.delivery.findFirst({
     where: { id: input.id }
   });

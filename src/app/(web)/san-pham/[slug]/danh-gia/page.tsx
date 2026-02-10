@@ -14,11 +14,14 @@ import RatingStatistics from '../components/RatingStatistics';
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const productTag = params.slug;
   const { data: product, isLoading } = api.Product.getOne.useQuery({ s: productTag }, { enabled: !!productTag });
-  let ratingCountsDefault = [0, 0, 0, 0, 0];
+  let ratingCountsDefault: number[] = [0, 0, 0, 0, 0];
   const ratingCounts = useMemo(() => {
     return (
-      product?.reviews?.reduce((acc: any, item: NonNullable<ProductOne>['reviews'][0]) => {
-        acc[item.rating - 1] += 1;
+      product?.reviews?.reduce((acc: number[], item: NonNullable<ProductOne>['reviews'][0]) => {
+        const index = item.rating - 1;
+        if (index >= 0 && index < acc.length && acc[index]) {
+          acc[index] += 1;
+        }
         return acc;
       }, ratingCountsDefault) || ratingCountsDefault
     );

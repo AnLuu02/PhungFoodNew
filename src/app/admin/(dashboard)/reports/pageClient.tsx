@@ -6,6 +6,7 @@ import { IconBrandCashapp, IconCheese, IconReport, IconShoppingCart, IconUser } 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { formatMoneyShort } from '~/lib/FuncHandler/Format';
+import { InitReport } from '~/types/client-type-trpc';
 import { ChangeRate } from './components/ChangeRate';
 import { ExportReports } from './components/ExportReportsBtn';
 import ReportDetailPageClient from './components/ReportDetail';
@@ -46,7 +47,7 @@ export default function ReportPageClient({
   revenueByOrderStatus,
   distributionProducts,
   recentActivitiesApp
-}: any) {
+}: InitReport) {
   const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -135,7 +136,7 @@ export default function ReportPageClient({
               allowDeselect={false}
               radius={'md'}
               value={valueSelect}
-              onChange={(value: any) => {
+              onChange={value => {
                 let url = '';
                 if (value === 'all') {
                   params.delete('startTime');

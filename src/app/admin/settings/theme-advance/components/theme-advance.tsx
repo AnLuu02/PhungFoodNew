@@ -8,7 +8,7 @@ export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme
   const shadowOptions = [
     { name: 'None', value: 'none' },
     { name: 'Small', value: 'small' },
-    { name: 'Medium', value: 'medium' },
+    { name: 'MEDIUM', value: 'MEDIUM' },
     { name: 'Large', value: 'large' }
   ];
 

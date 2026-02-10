@@ -104,13 +104,13 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
 
                   <Stack gap='xs'>
                     <Select
-                      defaultValue='medium'
+                      defaultValue='MEDIUM'
                       label='Chính sách mật khẩu'
                       radius='md'
                       data={[
-                        { value: 'low', label: 'Thấp (8+ ký tự)' },
-                        { value: 'medium', label: 'Trung bình (8+ ký tự, số)' },
-                        { value: 'high', label: 'Cao (8+ ký tự, số, ký hiệu)' }
+                        { value: 'LOW', label: 'Thấp (8+ ký tự)' },
+                        { value: 'MEDIUM', label: 'Trung bình (8+ ký tự, số)' },
+                        { value: 'HIGH', label: 'Cao (8+ ký tự, số, ký hiệu)' }
                       ]}
                     />
                   </Stack>

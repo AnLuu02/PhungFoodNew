@@ -17,7 +17,7 @@ export const MenuList = ({ responseData, isLoading }: { responseData: ProductFin
             </GridCol>
           ))
         ) : products?.length > 0 ? (
-          products.map((item: any) => (
+          products.map(item => (
             <GridCol key={item.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
               <ProductCardCarouselVertical key={item.id} data={item} />
             </GridCol>

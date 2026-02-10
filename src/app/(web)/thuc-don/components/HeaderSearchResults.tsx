@@ -17,13 +17,16 @@ export default function HeaderSearchResults({
   const [historySearch, setHistorySearch] = useLocalStorage<string[]>({ key: 'historySearch', defaultValue: [] });
 
   useEffect(() => {
-    if (!params.get('s')) return;
-    const exist = historySearch.find(item => item === decodeURIComponent(params.get('s') as string));
-    if (!exist) {
-      setHistorySearch((h: any) => [...h, params.get('s')]);
-    }
+    const query = params.get('s');
+    if (!query) return;
+    const decodedQuery = decodeURIComponent(query);
+    setHistorySearch(h => {
+      if (h.includes(decodedQuery)) {
+        return h;
+      }
+      return [...h, decodedQuery];
+    });
   }, [params]);
-
   return (
     <Paper className='bg-gray-100 dark:bg-dark-card' mb='lg' p={'md'} radius={'lg'}>
       <Group mb='xs'>

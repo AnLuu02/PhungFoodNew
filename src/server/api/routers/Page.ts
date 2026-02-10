@@ -2,6 +2,15 @@ import { z } from 'zod';
 import { UserRole } from '~/constants';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { getFilterProduct, getOneProduct } from '~/server/services/product.service';
+import { getRecentActivityApp } from '~/server/services/recentActivity.service';
+import {
+  getDistributionProducts,
+  getOverview,
+  getRevenueByCategory,
+  getRevenueOrderStatus,
+  getTopProducts,
+  getTopUsers
+} from '~/server/services/revenue.service';
 import { getVoucherAppliedAllVoucher } from '~/server/services/voucher.service';
 import { createCaller } from '../root';
 
@@ -109,17 +118,16 @@ export const pageRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const caller = createCaller(ctx);
       const { startTime, endTime } = input;
       const queryOverview = { startTime, endTime };
-      const results: any = await Promise.allSettled([
-        caller.Revenue.getOverview(queryOverview),
-        caller.Revenue.getTopUsers(queryOverview),
-        caller.Revenue.getRevenueByCategory(queryOverview),
-        caller.Revenue.getTopProducts(queryOverview),
-        caller.Revenue.getRevenueOrderStatus(queryOverview),
-        caller.Revenue.getDistributionProducts(queryOverview),
-        caller.RecentActivity.getRecentActivityApp(queryOverview)
+      const results = await Promise.allSettled([
+        getOverview(ctx.db, queryOverview),
+        getTopUsers(ctx.db, queryOverview),
+        getRevenueByCategory(ctx.db, queryOverview),
+        getTopProducts(ctx.db, queryOverview),
+        getRevenueOrderStatus(ctx.db, queryOverview),
+        getDistributionProducts(ctx.db, queryOverview),
+        getRecentActivityApp(ctx.db, queryOverview)
       ]);
 
       const [

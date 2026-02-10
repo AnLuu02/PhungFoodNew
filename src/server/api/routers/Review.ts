@@ -236,7 +236,8 @@ export const reviewRouter = createTRPCRouter({
           user: {
             include: {
               image: true
-            }
+            },
+            omit: { password: true }
           }
         }
       });

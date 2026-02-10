@@ -239,10 +239,10 @@ export const NotificationModal = ({
                   label='Mức ưu tiên'
                   placeholder='Chọn mức...'
                   data={[
-                    { value: 'low', label: 'Thấp' },
-                    { value: 'medium', label: 'Trung bình' },
-                    { value: 'high', label: 'Cao' },
-                    { value: 'urgent', label: 'Khẩn cấp' }
+                    { value: 'LOW', label: 'Thấp' },
+                    { value: 'MEDIUM', label: 'Trung bình' },
+                    { value: 'HIGH', label: 'Cao' },
+                    { value: 'URGENT', label: 'Khẩn cấp' }
                   ]}
                   {...field}
                   error={errors.priority?.message}

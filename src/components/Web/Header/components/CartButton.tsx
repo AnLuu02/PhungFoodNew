@@ -16,16 +16,16 @@ const CartButton = () => {
   const isDesktop = useMediaQuery(`(min-width: 1024px)`);
   const [cart, setCart] = useLocalStorage<CartItem[]>({ key: 'cart', defaultValue: [] });
 
-  const updateQuantity = (id: number, quantity: number) => {
+  const updateQuantity = (id: string, quantity: number) => {
     setCart(cart.map(item => (item.id === id ? { ...item, quantity } : item)));
   };
 
-  const removeItem = (id: number) => {
+  const removeItem = (id: string) => {
     setCart(cart.filter(item => item.id !== id));
   };
 
   const originalTotal = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return cart.reduce((sum, item) => sum + +(item.price || 0) * item.quantity, 0);
   }, [cart]);
 
   return (
@@ -70,7 +70,7 @@ const CartButton = () => {
                       getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
                     }
                     name={item?.name}
-                    price={item?.price}
+                    price={+(item?.price || 0)}
                     quantity={item?.quantity}
                     onQuantityChange={(value: any) => updateQuantity(item?.id, value)}
                     onDelete={() => removeItem(item?.id)}

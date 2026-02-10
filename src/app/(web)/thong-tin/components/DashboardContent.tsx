@@ -5,12 +5,21 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconChartBar, IconGift, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
+import { OrderFilter, UserOne, VoucherForUser } from '~/types/client-type-trpc';
 import { OrderList } from './OrderList';
 import { Promotions } from './Promotion';
 import { UserInfo } from './UserInfo';
 import { UserStatistics } from './UserStatistics';
 
-export function DashboardContent({ userInfor, orders, vouchers }: { userInfor: any; orders: any; vouchers: any }) {
+export function DashboardContent({
+  userInfor,
+  orders,
+  vouchers
+}: {
+  userInfor: UserOne;
+  orders: OrderFilter;
+  vouchers: VoucherForUser;
+}) {
   const [activeTab, setActiveTab] = useState<string | null>('user-info');
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 

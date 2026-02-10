@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/options';
 import { api } from '~/trpc/server';
+import { UserOne } from '~/types/client-type-trpc';
 import { DashboardContent } from './components/DashboardContent';
 
 export const metadata: Metadata = {
@@ -19,10 +20,11 @@ export default async function CustomerProfile() {
       userId: session?.user?.id || ''
     })
   ]);
+  if (userInfor.status !== 'fulfilled') return;
   return (
     <Box py={{ base: 0, md: 'xs' }}>
       <DashboardContent
-        userInfor={userInfor.status === 'fulfilled' ? userInfor.value : {}}
+        userInfor={userInfor.value as UserOne}
         orders={orders.status === 'fulfilled' ? orders.value : []}
         vouchers={vouchers.status === 'fulfilled' ? vouchers.value : []}
       />

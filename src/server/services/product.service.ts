@@ -26,8 +26,11 @@ export const getOneProduct = async (db: PrismaClient, input: { s: string; userRo
         reviews: {
           include: {
             user: {
-              select: {
+              include: {
                 image: true
+              },
+              omit: {
+                password: true
               }
             }
           }

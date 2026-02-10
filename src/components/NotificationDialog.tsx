@@ -20,11 +20,11 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import { ViewModal } from '~/app/admin/settings/notification/components/modal/ViewModal';
 import { updateActionClient } from '~/app/admin/settings/notification/helpers';
-import { NotificationClient, NotificationRecipient } from '~/app/admin/settings/notification/types';
 import { formatTimeAgo } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { pusherClient } from '~/lib/PusherConfig/client';
 import { api } from '~/trpc/react';
+import { NotificationClientHasUser, NotificationRecipientClientType } from '~/types';
 import BButton from './Button/Button';
 import { useRealtimeNotification } from './Hooks/use-realtime-notification';
 
@@ -41,17 +41,17 @@ function NotificationDialog() {
     enabled: !!session?.user?.id
   });
   const notificationsData = data?.data ?? [];
-  const [notifications, setNotifications] = useState<NotificationClient[]>([]);
+  const [notifications, setNotifications] = useState<NotificationClientHasUser[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
   const hasClicked = useRef(false);
   const [showViewDialog, setShowViewDialog] = useState<{
     open: boolean;
-    notification: NotificationClient;
+    notification: NotificationClientHasUser;
   }>({
     open: false,
-    notification: {} as NotificationClient
+    notification: {} as NotificationClientHasUser
   });
   const mutationUpdateAction = api.Notification.updateActionUser.useMutation({
     onError: error => {
@@ -83,7 +83,7 @@ function NotificationDialog() {
         mutationUpdateAction,
         data,
         session,
-        action: 'delivered'
+        action: 'DELIVERED'
       });
     }
   });
@@ -269,19 +269,19 @@ function NotificationDialog() {
                                     mutationUpdateAction,
                                     data: notification,
                                     session,
-                                    action: 'clicked'
+                                    action: 'CLICKED'
                                   });
                                   setNotifications(
                                     notifications.map(n =>
                                       n?.id === (notification.id as string)
                                         ? {
                                             ...n,
-                                            analytics: { ...n?.analytics, clicked: n?.analytics?.clicked + 1 },
+                                            analytics: { ...n?.analytics, clicked: n?.analytics?.CLICKED + 1 },
                                             recipients: [
                                               {
                                                 ...n?.recipients?.[0],
                                                 clickedAt: new Date()
-                                              } as NotificationRecipient
+                                              } as NotificationRecipientClientType
                                             ]
                                           }
                                         : n
@@ -408,7 +408,7 @@ function NotificationDialog() {
                                         mutationUpdateAction,
                                         data: notification,
                                         session,
-                                        action: 'read'
+                                        action: 'READ'
                                       });
                                     }
                                   }}
@@ -460,7 +460,7 @@ function NotificationDialog() {
       </Box>
       <ViewModal
         opened={showViewDialog.open}
-        onClose={() => setShowViewDialog({ open: false, notification: {} as NotificationClient })}
+        onClose={() => setShowViewDialog({ open: false, notification: {} as NotificationClientHasUser })}
         selectedNotification={showViewDialog.notification}
       />
     </>
