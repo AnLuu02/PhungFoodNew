@@ -9,7 +9,7 @@ import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { imageReqSchema, productSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
-import { getFilterProduct, getOneProduct } from '~/server/services/product.service';
+import { getAllProduct, getFilterProduct, getOneProduct } from '~/server/services/product.service';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { createCaller } from '../root';
 
@@ -512,28 +512,7 @@ export const productRouter = createTRPCRouter({
         userRole: z.string().optional()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { userRole }: any = input;
-      const product = await ctx.db.product.findMany({
-        where: {
-          ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
-        },
-        include: {
-          images: true,
-          materials: true,
-          subCategory: {
-            include: {
-              image: true,
-
-              category: true
-            }
-          },
-          reviews: true,
-          favouriteFoods: true
-        }
-      });
-      return product;
-    }),
+    .query(async ({ ctx, input }) => getAllProduct(ctx.db, input)),
 
   getTotalProductSales: publicProcedure.query(async ({ ctx }) => {
     const totalProductSales = await ctx.db.product.aggregate({

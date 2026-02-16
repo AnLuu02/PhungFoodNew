@@ -103,7 +103,8 @@ export const userRouter = createTRPCRouter({
           },
           orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : undefined,
           include: {
-            role: true
+            role: true,
+            address: true
           }
         })
       ]);

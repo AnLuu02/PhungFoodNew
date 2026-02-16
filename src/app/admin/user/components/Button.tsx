@@ -1,7 +1,7 @@
 'use client';
 import { ActionIcon, Modal, Title, Tooltip } from '@mantine/core';
 import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
@@ -33,7 +33,7 @@ export function CreateUserButton() {
   );
 }
 
-export function UpdatePermissions({ email }: { email: any }) {
+export function UpdatePermissions({ email }: { email: string }) {
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -66,7 +66,7 @@ export function UpdateUserButton({
 }: {
   email: string;
   openedFromClient?: boolean;
-  setOpenedFromClient?: any;
+  setOpenedFromClient?: Dispatch<SetStateAction<boolean>>;
 }) {
   const [opened, setOpened] = useState(false);
   useEffect(() => {

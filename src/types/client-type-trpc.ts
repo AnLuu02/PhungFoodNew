@@ -8,6 +8,7 @@ export type CategoryFilter = RouterOutputs['Category']['getFilter'];
 export type SubCategoryFind = RouterOutputs['SubCategory']['find'];
 export type SubCategoryAll = RouterOutputs['SubCategory']['getAll'];
 
+export type MaterialFind = RouterOutputs['Material']['find'];
 export type MaterialAll = RouterOutputs['Material']['getAll'];
 
 export type ProductFind = RouterOutputs['Product']['find'];
@@ -17,10 +18,13 @@ export type ProductOne = RouterOutputs['Product']['getOne'];
 
 export type CartItem = ProductOne & { note?: string; quantity: number };
 
+export type UserFind = RouterOutputs['User']['find'];
 export type UserAll = RouterOutputs['User']['getAll'];
 export type UserOne = RouterOutputs['User']['getOne'];
 
 export type VoucherForUser = RouterOutputs['Voucher']['getVoucherForUser'];
+export type VoucherFind = RouterOutputs['Voucher']['find'];
+export type VoucherAll = RouterOutputs['Voucher']['getAll'];
 
 export type OrderFilter = RouterOutputs['Order']['getFilter'];
 export type OrderOne = RouterOutputs['Order']['getOne'];
@@ -38,3 +42,4 @@ export type RolePermissionAll = RouterOutputs['RolePermission']['getAllPermissio
 //page
 export type InitProductDetail = RouterOutputs['Page']['getInitProductDetail'];
 export type InitReport = RouterOutputs['Page']['getInitReport'];
+export type InitAdmin = RouterOutputs['Page']['getInitAdmin'];

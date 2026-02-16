@@ -3,7 +3,7 @@ import { UserRole } from '~/constants';
 
 export const getOneProduct = async (db: PrismaClient, input: { s: string; userRole?: string }) => {
   {
-    const { s, userRole }: any = input;
+    const { s, userRole } = input;
     return await db.product.findFirst({
       where: {
         ...(userRole && userRole != UserRole.CUSTOMER
@@ -42,7 +42,7 @@ export const getOneProduct = async (db: PrismaClient, input: { s: string; userRo
 };
 
 export const getFilterProduct = async (db: PrismaClient, input: { s?: string }) => {
-  const { s }: any = input;
+  const { s } = input;
   const search = s?.trim();
   const product = await db.product.findMany({
     where: {
@@ -90,5 +90,27 @@ export const getFilterProduct = async (db: PrismaClient, input: { s?: string }) 
     }
   });
 
+  return product;
+};
+
+export const getAllProduct = async (db: PrismaClient, input: { userRole?: string }) => {
+  const { userRole } = input;
+  const product = await db.product.findMany({
+    where: {
+      ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
+    },
+    include: {
+      images: true,
+      materials: true,
+      subCategory: {
+        include: {
+          image: true,
+          category: true
+        }
+      },
+      reviews: true,
+      favouriteFoods: true
+    }
+  });
   return product;
 };

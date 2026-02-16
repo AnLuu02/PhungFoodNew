@@ -23,9 +23,17 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { categoriesMaterial } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
+import { MaterialAll, MaterialFind } from '~/types/client-type-trpc';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
-
-export default function TableMaterial({ s, data, allData }: { s: string; data: any; allData: any }) {
+type CategoryType = 'thit-tuoi' | 'hai-san' | 'rau-cu' | 'cac-loai-nam' | 'thuc-pham-chay';
+const initialSummary: Record<CategoryType, number> = {
+  'thit-tuoi': 0,
+  'hai-san': 0,
+  'rau-cu': 0,
+  'cac-loai-nam': 0,
+  'thuc-pham-chay': 0
+};
+export default function TableMaterial({ s, data, allData }: { s: string; data: MaterialFind; allData: MaterialAll }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
@@ -38,11 +46,16 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
-        acc[item.category] += 1;
+      (acc, item) => {
+        const cat = item.category as CategoryType;
+
+        if (acc[cat] !== undefined) {
+          acc[cat] += 1;
+        }
+
         return acc;
       },
-      { 'thit-tuoi': 0, 'hai-san': 0, 'rau-cu': 0, 'cac-loai-nam': 0, 'thuc-pham-chay': 0 }
+      { ...initialSummary }
     );
     return [
       {
@@ -128,7 +141,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
               }}
               data={[
                 { value: 'all', label: 'Tất cả danh mục' },
-                ...(categoriesMaterial || []).map((item: any) => ({ value: item.value, label: item.label }))
+                ...(categoriesMaterial || []).map(item => ({ value: item.value, label: item.label }))
               ]}
               nothingFoundMessage='Không tìm thấy'
             />
@@ -160,7 +173,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((row: any, index: number) => (
+              currentItems.map((row, index) => (
                 <Table.Tr key={index}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -169,7 +182,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
-                      {row.description}
+                      {row.description || ''}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>

@@ -9,25 +9,29 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
+import { VoucherAll, VoucherFind } from '~/types/client-type-trpc';
 import CardVoucher from './card-voucher';
 import { UpdateVoucherModal } from './Modal/UpdateVoucherModal';
 import { ViewVoucherModal } from './Modal/ViewVoucherModal';
 
-export default function VoucherClient({ s, data, allData }: { s: string; data: any; allData?: any }) {
+export default function VoucherClient({ s, data, allData }: { s: string; data: VoucherFind; allData?: VoucherAll }) {
   const searchParams = useSearchParams();
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Voucher.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
   const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined, { initialData: allData });
-  const [selectedPromotion, setSelectedPromotion] = useState<{ type: 'edit' | 'view'; data: any } | null>(null);
+  const [selectedPromotion, setSelectedPromotion] = useState<{
+    type: 'edit' | 'view';
+    data: NonNullable<VoucherFind>['vouchers'][0];
+  } | null>(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
   const filteredItems = useMemo(() => {
     if (!dataClient?.vouchers) return [];
 
-    return dataClient.vouchers.filter((promotion: any) => {
-      const matchStatus = statusFilter === 'all' || promotion.status?.toLowerCase() === statusFilter?.toLowerCase();
+    return dataClient.vouchers.filter(promotion => {
+      const matchStatus = statusFilter === 'all';
 
       const matchType = typeFilter === 'all' || promotion.type?.toLowerCase() === typeFilter?.toLowerCase();
 
@@ -41,7 +45,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
     const now = new Date();
 
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (acc: { total: number; enabled: number; expired: number; totalUsage: number }, item) => {
         const endDate = new Date(item.endDate);
         const used = +item.usedQuantity || 0;
 
@@ -161,7 +165,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
         <Empty hasButton={false} title='Không có kết quả phù hợp' content='' />
       ) : (
         <SimpleGrid cols={3}>
-          {filteredItems.map((promotion: any) => {
+          {filteredItems.map(promotion => {
             return (
               <CardVoucher key={promotion.id} promotion={promotion} s={s} setSelectedPromotion={setSelectedPromotion} />
             );

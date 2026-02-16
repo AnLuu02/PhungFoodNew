@@ -2,22 +2,28 @@
 
 import { Badge, Box, Button, Card, Highlight, Stack, Text } from '@mantine/core';
 import { IconCopy, IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { getPromotionStatus, getStatusColor } from '~/lib/FuncHandler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
+import { VoucherFind } from '~/types/client-type-trpc';
 
 export default function CardVoucher({
   promotion,
   s,
   setSelectedPromotion
 }: {
-  promotion: any;
+  promotion: NonNullable<VoucherFind>['vouchers'][0];
   s: string;
-  setSelectedPromotion: any;
+  setSelectedPromotion: Dispatch<
+    SetStateAction<{
+      type: 'edit' | 'view';
+      data: NonNullable<VoucherFind>['vouchers'][0];
+    } | null>
+  >;
 }) {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const mutationDelete = api.Voucher.delete.useMutation();
@@ -59,7 +65,7 @@ export default function CardVoucher({
                   {promotion.name || 'Đang cập nhật'}
                 </Highlight>
                 <Highlight lineClamp={2} size='sm' highlight={s}>
-                  {promotion.description}
+                  {promotion.description || ''}
                 </Highlight>
               </Box>
               <Badge variant='light' radius={'md'} className={getStatusColor(status.name)}>
@@ -128,6 +134,11 @@ export default function CardVoucher({
                 setLoading({ copy: true });
                 await mutationCreate.mutateAsync({
                   ...promotion,
+                  discountValue: +(promotion.discountValue || 0),
+                  maxDiscount: +(promotion.maxDiscount || 0),
+                  minOrderPrice: +(promotion.minOrderPrice || 0),
+                  description: promotion?.description ?? undefined,
+                  pointUser: promotion?.pointUser ?? undefined,
                   name: promotion.name + '-' + new Date().getTime(),
                   isActive: false,
                   id: ''

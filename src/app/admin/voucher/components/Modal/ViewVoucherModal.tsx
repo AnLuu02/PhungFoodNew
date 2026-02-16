@@ -1,11 +1,27 @@
 'use client';
 
 import { Badge, Box, Modal, Text } from '@mantine/core';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { Dispatch, SetStateAction } from 'react';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getPromotionStatus } from '~/lib/FuncHandler/vouchers-calculate';
 import { LocalVoucherType } from '~/lib/ZodSchema/enum';
+import { VoucherFind } from '~/types/client-type-trpc';
 
-export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: any) => {
+export const ViewVoucherModal = ({
+  selectedPromotion,
+  setSelectedPromotion
+}: {
+  selectedPromotion: {
+    type: 'edit' | 'view';
+    data: NonNullable<VoucherFind>['vouchers'][0];
+  } | null;
+  setSelectedPromotion: Dispatch<
+    SetStateAction<{
+      type: 'edit' | 'view';
+      data: NonNullable<VoucherFind>['vouchers'][0];
+    } | null>
+  >;
+}) => {
   return (
     <Modal
       padding={'lg'}
@@ -40,7 +56,7 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
                 </Text>
                 <Text size='sm'>
                   <strong>Giảm:</strong>{' '}
-                  {selectedPromotion?.data?.type === 'percentage'
+                  {selectedPromotion?.data?.type === 'PERCENTAGE'
                     ? `${selectedPromotion?.data?.discountValue}%`
                     : `$${selectedPromotion?.data?.discountValue}`}
                 </Text>
@@ -68,9 +84,10 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
                 <Text size='sm'>
                   <strong>Ngày kết thúc:</strong> {formatDateViVN(selectedPromotion?.data?.endDate)}
                 </Text>
-                {selectedPromotion?.data?.minOrderAmount && (
+                {selectedPromotion?.data?.minOrderPrice && (
                   <Text size='sm'>
-                    <strong>Đơn tối thiểu:</strong> ${selectedPromotion?.data?.minOrderPrice}
+                    <strong>Đơn tối thiểu:</strong>{' '}
+                    {formatPriceLocaleVi(+(selectedPromotion?.data?.minOrderPrice || 0))}
                   </Text>
                 )}
               </Box>
@@ -105,7 +122,7 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
                   Tất cả khách hàng
                 </Badge>
               )}
-              {selectedPromotion?.data?.pointUser > 0 && (
+              {selectedPromotion?.data?.pointUser && selectedPromotion?.data?.pointUser > 0 && (
                 <Badge
                   variant='outline'
                   className='text-xs'

@@ -214,7 +214,7 @@ export default async function Dashboard() {
               <Divider />
               <SimpleGrid cols={1} mt={'md'} px={'md'} pb={'md'}>
                 {recentActivities?.length > 0 ? (
-                  recentActivities.slice(0, 5).map((item: any, index: number) => {
+                  recentActivities.slice(0, 5).map((item, index) => {
                     return (
                       <Flex align={'flex-start'} gap={'md'} key={index}>
                         <Avatar

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { UserRole } from '~/constants';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-import { getFilterProduct, getOneProduct } from '~/server/services/product.service';
+import { getAllProduct, getFilterProduct, getOneProduct } from '~/server/services/product.service';
 import { getRecentActivityApp } from '~/server/services/recentActivity.service';
 import {
   getDistributionProducts,
@@ -94,16 +94,13 @@ export const pageRouter = createTRPCRouter({
     return results;
   }),
   getInitAdmin: publicProcedure.query(async ({ ctx }) => {
-    const caller = createCaller(ctx);
-    const results: any = await Promise.allSettled([
-      caller.Product.getAll({ userRole: UserRole.ADMIN }),
-      caller.Revenue.getOverview({}),
-      caller.RecentActivity.getRecentActivityApp({})
+    const results = await Promise.all([
+      getAllProduct(ctx.db, { userRole: UserRole.ADMIN }),
+      getOverview(ctx.db, {}),
+      getRecentActivityApp(ctx.db, {})
     ]);
 
-    const [products, revenue, recentActivities] = results.map((item: any) =>
-      item.status === 'fulfilled' ? item.value : []
-    );
+    const [products, revenue, recentActivities] = results;
     return {
       products,
       revenue,
@@ -120,7 +117,7 @@ export const pageRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { startTime, endTime } = input;
       const queryOverview = { startTime, endTime };
-      const results = await Promise.allSettled([
+      const results = await Promise.all([
         getOverview(ctx.db, queryOverview),
         getTopUsers(ctx.db, queryOverview),
         getRevenueByCategory(ctx.db, queryOverview),
@@ -138,7 +135,7 @@ export const pageRouter = createTRPCRouter({
         revenueByOrderStatus,
         distributionProducts,
         recentActivitiesApp
-      ] = results.map((item: any) => (item.status === 'fulfilled' ? item.value : Array.isArray(item.value) ? [] : {}));
+      ] = results;
       return {
         overview,
         topUsers,
