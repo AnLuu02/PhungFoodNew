@@ -3,6 +3,7 @@
 import { Card, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import React, { useEffect, useMemo } from 'react';
+import Reveal from '~/components/Reveal';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 
 const LayoutPromotion = ({ data }: any) => {
@@ -135,7 +136,9 @@ const LayoutPromotion = ({ data }: any) => {
         <Grid p={'sm'}>
           {data?.map((item: any, index: number) => (
             <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={item.id} mih={162}>
-              <ProductCardCarouselHorizontal data={item} key={item.id} />
+              <Reveal x={(index + 1) * 2} delay={index * 0.01}>
+                <ProductCardCarouselHorizontal data={item} key={item.id} />
+              </Reveal>
             </GridCol>
           ))}
         </Grid>
