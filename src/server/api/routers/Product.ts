@@ -228,10 +228,6 @@ export const productRouter = createTRPCRouter({
       );
 
       const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-<<<<<<< HEAD
-
-=======
->>>>>>> d3bb02a7af8dc61a4e35fc72ceb61463d35a5d58
       return {
         products,
         pagination: {
