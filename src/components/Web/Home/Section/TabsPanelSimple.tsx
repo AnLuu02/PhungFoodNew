@@ -4,6 +4,7 @@ import { ActionIcon, Box, Card, CardSection, Center, Flex, Group, Stack, Text, T
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
+import Reveal from '~/components/Reveal';
 
 const TabsPanelCarouselSimple = ({ data }: any) => {
   const [embla, setEmbla] = useState<Embla | null>(null);
@@ -81,39 +82,41 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
           getEmblaApi={setEmbla}
           containScroll='trimSnaps'
         >
-          {data?.map((item: any) => (
+          {data?.map((item: any, index: number) => (
             <CarouselSlide key={item.id}>
-              <Card
-                radius={'md'}
-                padding='lg'
-                component='a'
-                withBorder
-                h={200}
-                href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
-                className='hover:border-10 cursor-pointer bg-gray-100 duration-150 hover:border-mainColor hover:shadow-lg dark:bg-dark-card dark:hover:border-mainColor/50 dark:hover:shadow-lg'
-              >
-                <CardSection>
-                  <Box w={'100%'} h={120} pos={'relative'}>
-                    <Image
-                      style={{ objectFit: 'cover' }}
-                      loading='lazy'
-                      src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
-                      fill
-                      alt={item?.name || 'Cà chua'}
-                    />
-                  </Box>
-                </CardSection>
-                <Stack gap={1} mt={'xs'} align='center'>
-                  <Tooltip label={item?.name || 'Cà chua'} withArrow>
-                    <Text size={'md'} fw={700} lineClamp={1} className='hover:text-mainColor'>
-                      {item?.name || 'Cà chua'}
+              <Reveal key={item.id + index} x={(index + 1) * 2} delay={index * 0.01}>
+                <Card
+                  radius={'md'}
+                  padding='lg'
+                  component='a'
+                  withBorder
+                  h={200}
+                  href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`}
+                  className='hover:border-10 cursor-pointer bg-gray-100 duration-150 hover:border-mainColor hover:shadow-lg dark:bg-dark-card dark:hover:border-mainColor/50 dark:hover:shadow-lg'
+                >
+                  <CardSection>
+                    <Box w={'100%'} h={120} pos={'relative'}>
+                      <Image
+                        style={{ objectFit: 'cover' }}
+                        loading='lazy'
+                        src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                        fill
+                        alt={item?.name || 'Cà chua'}
+                      />
+                    </Box>
+                  </CardSection>
+                  <Stack gap={1} mt={'xs'} align='center'>
+                    <Tooltip label={item?.name || 'Cà chua'} withArrow>
+                      <Text size={'md'} fw={700} lineClamp={1} className='hover:text-mainColor'>
+                        {item?.name || 'Cà chua'}
+                      </Text>
+                    </Tooltip>
+                    <Text c='dimmed' size='xs'>
+                      {item?.product?.length || 0} sản phẩm
                     </Text>
-                  </Tooltip>
-                  <Text c='dimmed' size='xs'>
-                    {item?.product?.length || 0} sản phẩm
-                  </Text>
-                </Stack>
-              </Card>
+                  </Stack>
+                </Card>
+              </Reveal>
             </CarouselSlide>
           ))}
         </Carousel>

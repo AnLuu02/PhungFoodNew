@@ -3,8 +3,6 @@ import { useLocalStorage } from '@mantine/hooks';
 import { IconAlertSquareRounded, IconCheck, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { CartItem } from '~/types/client-type-trpc';
 import { Note } from './Note';
 
@@ -26,7 +24,8 @@ export const ShoppingCartMobile = () => {
           >
             <Image
               loading='lazy'
-              src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+              // src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+              src={'/images/jpg/empty-300x240.jpg'}
               width={60}
               height={60}
               className='rounded-md object-cover'

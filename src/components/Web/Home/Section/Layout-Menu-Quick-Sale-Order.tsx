@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Flex, Grid, GridCol, Title } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
+import Reveal from '~/components/Reveal';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 
 const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh: any } }) => {
@@ -52,7 +53,9 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
             {anVatFilter.map((item: any, index: number) => {
               return (
                 <GridCol span={12} key={index}>
-                  <ProductCardCarouselHorizontal data={item} />
+                  <Reveal y={(index + 1) * 2} delay={index * 0.01}>
+                    <ProductCardCarouselHorizontal key={index} data={item} />
+                  </Reveal>
                 </GridCol>
               );
             })}
@@ -95,7 +98,9 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
             {thucUongFilter.map((item: any, index: number) => {
               return (
                 <GridCol span={12} key={index}>
-                  <ProductCardCarouselHorizontal data={item} />
+                  <Reveal y={(index + 1) * 2} delay={index * 0.01}>
+                    <ProductCardCarouselHorizontal data={item} />
+                  </Reveal>
                 </GridCol>
               );
             })}
@@ -139,7 +144,9 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
             {monChinhFilter.map((item: any, index: number) => {
               return (
                 <GridCol span={12} key={index}>
-                  <ProductCardCarouselHorizontal key={index} data={item} />
+                  <Reveal y={(index + 1) * 2} delay={index * 0.01}>
+                    <ProductCardCarouselHorizontal key={index} data={item} />
+                  </Reveal>
                 </GridCol>
               );
             })}

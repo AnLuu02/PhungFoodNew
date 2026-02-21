@@ -4,6 +4,7 @@ import { ActionIcon, Center, Flex, Group, Text } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { memo, useCallback, useEffect, useState } from 'react';
+import Reveal from '~/components/Reveal';
 import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
 
 const TabsPanelCarousel = ({ data }: any) => {
@@ -84,7 +85,9 @@ const TabsPanelCarousel = ({ data }: any) => {
         >
           {data.map((product: any, index: number) => (
             <CarouselSlide key={index} h={320}>
-              <ProductCardCarouselVertical data={product} key={product.id} />
+              <Reveal key={product.id + index} x={(index + 1) * 2} delay={index * 0.01}>
+                <ProductCardCarouselVertical data={product} key={product.id} />
+              </Reveal>
             </CarouselSlide>
           ))}
         </Carousel>

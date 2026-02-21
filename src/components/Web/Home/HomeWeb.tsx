@@ -1,4 +1,5 @@
 import { Container, Space } from '@mantine/core';
+import Reveal from '~/components/Reveal';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { recipes } from '~/lib/HardData/recipe';
 import { PartnerCard } from '../Card/CardPartner';
@@ -31,58 +32,60 @@ const HomeWeb = ({
     <>
       {data.banner?.id && <BannerSection banner={data.banner} />}
       <Space h='xl' />
-      <ReusablePromoBanner
-        title='🎉 Ưu đãi đặc biệt 🎉'
-        subtitle={
-          <>
-            🔊 Từ ngày <b className='text-4xl italic text-yellow-500'>{formatDateViVN(new Date())}</b> đến hết ngày{' '}
-            <b className='text-4xl italic text-yellow-500'>
-              {formatDateViVN(new Date().setDate(new Date().getDate() + 1))}
-            </b>{' '}
-            giảm giá <b className='text-4xl italic text-yellow-500'> 15%</b> tất cả món ăn có trong cửa hàng.
-          </>
-        }
-        buttonText='Đặt ngay'
-        buttonLink='/thuc-don'
-        layout='center'
-        backgroundImage='/images/jpg/banner_food1.jpg'
-        height={400}
-        overlayColor='rgba(0,0,0,0.4)'
-      />
+      <Reveal z={50}>
+        <ReusablePromoBanner
+          title='🎉 Ưu đãi đặc biệt 🎉'
+          subtitle={
+            <>
+              🔊 Từ ngày <b className='text-4xl italic text-yellow-500'>{formatDateViVN(new Date())}</b> đến hết ngày{' '}
+              <b className='text-4xl italic text-yellow-500'>
+                {formatDateViVN(new Date().setDate(new Date().getDate() + 1))}
+              </b>{' '}
+              giảm giá <b className='text-4xl italic text-yellow-500'> 15%</b> tất cả món ăn có trong cửa hàng.
+            </>
+          }
+          buttonText='Đặt ngay'
+          buttonLink='/thuc-don'
+          layout='center'
+          backgroundImage='/images/jpg/banner_food1.jpg'
+          height={400}
+          overlayColor='rgba(0,0,0,0.4)'
+        />
+      </Reveal>
       <Space h='xl' />
       <Container pl={0} pr={0} size='xl'>
         {data.category?.anVat && (
-          <>
+          <Reveal z={50}>
             <CategoryCarouselHorizontal data={data.category} />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
         {data.productBestSaler?.products?.length > 0 && (
-          <>
+          <Reveal z={50}>
             <LayoutProductCarouselWithImage
               imageUrl='/images/jpg/best-saller.jpg'
               data={data.productBestSaler?.products}
               loai='san-pham-ban-chay'
             />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
-        <>
+        <Reveal z={50}>
           <LayoutGrid3Col />
           <Space h='xl' />
-        </>
+        </Reveal>
 
         {data.productDiscount?.products?.length > 0 && (
-          <>
+          <Reveal z={50}>
             <LayoutPromotion data={data.productDiscount?.products} />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
         {data.productHot?.products?.length > 0 && (
-          <>
+          <Reveal z={50}>
             <LayoutProductCarouselWithImage
               imageUrl='/images/jpg/hot.jpg'
               data={data.productHot?.products}
@@ -92,11 +95,11 @@ const HomeWeb = ({
               loai='san-pham-hot'
             />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
         {data.productHot?.products?.length > 0 && (
-          <>
+          <Reveal z={50}>
             <LayoutGridCarouselOnly
               title='Sản phẩm nổi bật'
               data={data.productHot?.products}
@@ -107,11 +110,11 @@ const HomeWeb = ({
               CardElement={ProductCardCarouselVertical}
             />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
         {data.productNew?.products?.length > 0 && (
-          <>
+          <Reveal z={50}>
             <LayoutGridCarouselOnly
               title='Sản phẩm mới'
               data={data.productNew?.products}
@@ -122,11 +125,11 @@ const HomeWeb = ({
               CardElement={ProductCardCarouselVertical}
             />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
         {data.materials?.rauCu?.products?.length > 0 && (
-          <>
+          <Reveal z={50}>
             <LayoutProductCarouselWithImage2
               data={{ 'rau-cu': data.materials.rauCu, 'cac-loai-nam': data.materials.cacLoaiNam }}
               title='Chay thanh đạm'
@@ -136,11 +139,11 @@ const HomeWeb = ({
               ]}
             />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
         {data.materials?.thitTuoi?.products?.length > 0 && (
-          <>
+          <Reveal z={50}>
             <LayoutProductCarouselWithImage2
               data={{ 'hai-san': data.materials.haiSan, 'thit-tuoi': data.materials.thitTuoi }}
               title='Mặn tươi ngon'
@@ -151,10 +154,10 @@ const HomeWeb = ({
               ]}
             />
             <Space h='xl' />
-          </>
+          </Reveal>
         )}
 
-        <>
+        <Reveal z={50}>
           <LayoutGridCarouselOnly
             title='Video hướng dẫn'
             data={recipes}
@@ -169,7 +172,7 @@ const HomeWeb = ({
             CardElement={RecipeCard}
           />
           <Space h='xl' />
-        </>
+        </Reveal>
         {/* <>
           <LayoutGridCarouselOnly
             title='Tin tức tiêu dùng'
@@ -188,7 +191,7 @@ const HomeWeb = ({
         </> */}
 
         {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (
-          <>
+          <Reveal z={50}>
             <FastMenuSection
               data={{
                 anVat: data.category.anVat,
@@ -196,9 +199,9 @@ const HomeWeb = ({
                 monChinh: data.category.monChinh
               }}
             />
-          </>
+          </Reveal>
         )}
-        <>
+        <Reveal z={50}>
           <Space h='xl' />
           <LayoutGridCarouselOnly
             title='Đối tác của chúng tôi'
@@ -210,7 +213,7 @@ const HomeWeb = ({
             minHeight={180}
             CardElement={PartnerCard}
           />
-        </>
+        </Reveal>
       </Container>
     </>
   );
