@@ -31,11 +31,14 @@ export default function MegaMenu({ categories }: { categories: any }) {
     searchParams.get('danh-muc') || (categories?.[0]?.tag as string)
   );
   const [bestSellerProducts, categoriesItem] = useMemo(() => {
-    const bestSellerProducts = categories.flatMap((item: any) =>
-      activeTab === item?.tag ? item?.subCategory.flatMap((subItem: any) => subItem?.product) : []
-    );
-    const categoriesItem = categories.flatMap((item: any) => (activeTab === item?.tag ? item?.subCategory : []));
-    return [bestSellerProducts, categoriesItem];
+    if (categories && Array.isArray(categories)) {
+      const bestSellerProducts = categories.flatMap((item: any) =>
+        activeTab === item?.tag ? item?.subCategory.flatMap((subItem: any) => subItem?.product) : []
+      );
+      const categoriesItem = categories.flatMap((item: any) => (activeTab === item?.tag ? item?.subCategory : []));
+      return [bestSellerProducts, categoriesItem];
+    }
+    return [[], []];
   }, [activeTab]);
   return (
     <Tabs

@@ -15,7 +15,7 @@ const navigationItem = [
   { label: 'Tin tức', href: '/tin-tuc' },
   { label: 'Mua nhanh', href: '/goi-mon-nhanh' }
 ];
-function NavigationHeader({ categories }: { categories?: any }) {
+function NavigationHeader({ categories }: { categories: any }) {
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1024px)');
