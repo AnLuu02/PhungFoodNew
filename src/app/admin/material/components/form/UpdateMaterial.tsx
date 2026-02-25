@@ -4,7 +4,7 @@ import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { categoriesMaterial } from '~/constants';
+import { categoryMaterials } from '~/constants';
 import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { materialSchema } from '~/lib/ZodSchema/schema';
@@ -104,9 +104,9 @@ export default function UpdateMaterial({
                 radius='md'
                 placeholder='Chọn loại nguyên liệu'
                 searchable
-                data={categoriesMaterial?.map(category => ({
-                  value: category.value,
-                  label: category.label
+                data={Object.entries(categoryMaterials)?.map(([value, label]) => ({
+                  value,
+                  label
                 }))}
                 value={field.value}
                 onChange={field.onChange}

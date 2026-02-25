@@ -101,7 +101,7 @@ export const materialRouter = createTRPCRouter({
           data: {
             name: input.name,
             tag: input.tag,
-            description: input.description,
+            description: input.description || 'Đang cập nhật./',
             category: input.category
           }
         });

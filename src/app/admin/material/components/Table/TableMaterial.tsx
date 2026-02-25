@@ -14,13 +14,14 @@ import {
   Text,
   Title
 } from '@mantine/core';
-import { IconDumpling, IconFish, IconMeat, IconMushroomFilled, IconSalad } from '@tabler/icons-react';
+import { IconMeat } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { categoriesMaterial } from '~/constants';
+import { categoryMaterials } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
@@ -36,46 +37,27 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
   const { data: allDataClient } = api.Material.getAll.useQuery(undefined, { initialData: allData });
   const currentItems = dataClient?.materials || [];
   const dataFilter = useMemo(() => {
+    let keys: any = {};
+    Object.keys(categoryMaterials)?.map(k => {
+      keys[k] = 0;
+    });
     if (!allDataClient) return [];
-    const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
-        acc[item.category] += 1;
-        return acc;
-      },
-      { 'thit-tuoi': 0, 'hai-san': 0, 'rau-cu': 0, 'cac-loai-nam': 0, 'thuc-pham-chay': 0 }
-    );
-    return [
-      {
-        label: 'Thịt tươi',
-        value: summary['thit-tuoi'],
-        icon: IconMeat,
-        color: '#446DAE'
-      },
-      {
-        label: 'Rau củ',
-        value: summary['rau-cu'],
-        icon: IconDumpling,
-        color: '#499764'
-      },
-      {
-        label: 'Các loại nấm',
-        value: summary['cac-loai-nam'],
-        icon: IconMushroomFilled,
-        color: '#C0A453'
-      },
-      {
-        label: 'Thực phẩm chay',
-        value: summary['thuc-pham-chay'],
-        icon: IconSalad,
-        color: '#CA041D'
-      },
-      {
-        label: 'Hải sản',
-        value: summary['hai-san'],
-        icon: IconFish,
-        color: '#228AE5'
-      }
-    ];
+    const summary = allDataClient.reduce((acc: any, item: any) => {
+      acc[item.category] += 1;
+      return acc;
+    }, keys);
+
+    return Object.entries(categoryMaterials).map(([key, value]) => ({
+      label: value,
+      tag: key,
+      value: summary?.[key],
+      icon: IconMeat,
+      color:
+        '#' +
+        Math.floor(Math.random() * 16777215)
+          .toString(16)
+          .padStart(6, '0')
+    }));
   }, [allDataClient]);
 
   return (
@@ -84,28 +66,30 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
         {dataFilter?.map((item, index) => {
           const IconR = item.icon;
           return (
-            <Card
-              style={{ backgroundColor: item.color + 10 }}
-              shadow='md'
-              radius={'lg'}
-              pos={'relative'}
-              key={index}
-              p={'md'}
-            >
-              <Flex align={'center'} gap={'md'}>
-                <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
-                  <IconR size={20} />
-                </ActionIcon>
-                <Box>
-                  <Title order={6} className='font-quicksand'>
-                    {item.label}
-                  </Title>
-                  <Title order={3} className='font-quicksand'>
-                    {item.value}
-                  </Title>
-                </Box>
-              </Flex>
-            </Card>
+            <Link href={`/admin/material?s=${item.tag}`}>
+              <Card
+                style={{ backgroundColor: item.color + 10 }}
+                shadow='md'
+                radius={'lg'}
+                pos={'relative'}
+                key={index}
+                p={'md'}
+              >
+                <Flex align={'center'} gap={'md'}>
+                  <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
+                    <IconR size={20} />
+                  </ActionIcon>
+                  <Box>
+                    <Title order={6} className='font-quicksand'>
+                      {item.label}
+                    </Title>
+                    <Title order={3} className='font-quicksand'>
+                      {item.value}
+                    </Title>
+                  </Box>
+                </Flex>
+              </Card>
+            </Link>
           );
         })}
       </SimpleGrid>
@@ -128,7 +112,10 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
               }}
               data={[
                 { value: 'all', label: 'Tất cả danh mục' },
-                ...(categoriesMaterial || []).map((item: any) => ({ value: item.value, label: item.label }))
+                ...Object.entries(categoryMaterials)?.map(([value, label]) => ({
+                  value,
+                  label
+                }))
               ]}
               nothingFoundMessage='Không tìm thấy'
             />

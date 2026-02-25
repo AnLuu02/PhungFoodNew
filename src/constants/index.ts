@@ -20,29 +20,71 @@ export const UserRole = {
   CUSTOMER: 'CUSTOMER'
 };
 
-export const categoriesMaterial = [
-  {
-    value: 'thit-tuoi',
-    label: 'Thịt tươi'
-  },
-  {
-    value: 'hai-san',
-    label: 'Hải sản'
-  },
-  {
-    value: 'rau-cu',
-    label: 'Rau củ'
-  },
-  {
-    value: 'cac-loai-nam',
-    label: 'Các loại nấm'
-  },
-  {
-    value: 'thuc-pham-chay',
-    label: 'Thực phẩm chay'
-  }
-];
+// export const categoriesMaterial = [
+//   {
+//     value: 'thit-tuoi',
+//     label: 'Thịt tươi'
+//   },
+//   {
+//     value: 'hai-san',
+//     label: 'Hải sản'
+//   },
+//   {
+//     value: 'rau-cu',
+//     label: 'Rau củ'
+//   },
+//   {
+//     value: 'cac-loai-nam',
+//     label: 'Các loại nấm'
+//   },
 
+//   {
+//     value: 'thuc-pham-che-bien',
+//     label: 'Thực phẩm chế biến'
+//   },
+//   {
+//     value: 'san-pham-tu-trung',
+//     label: 'Sản phẩm từ trứng'
+//   },
+//   {
+//     value: 'gia-vi',
+//     label: 'Gia vị'
+//   },
+//   {
+//     value: 'gia-vi-tuoi',
+//     label: 'Gia vị tươi'
+//   },
+//   {
+//     value: 'tinh-bot',
+//     label: 'Tinh bột'
+//   },
+//   {
+//     value: 'trai-cay',
+//     label: 'Trái cây'
+//   },
+//   {
+//     value: 'cac-loai-hat',
+//     label: 'Các loại hạt'
+//   },
+//   {
+//     value: 'dau-&-che-pham',
+//     label: 'Đậu & chế phẩm'
+//   }
+// ];
+export const categoryMaterials = {
+  'thit-tuoi': 'Thịt tươi',
+  'hai-san': 'Hải sản',
+  'rau-cu': 'Rau củ',
+  'cac-loai-nam': 'Các loại nấm',
+  'thuc-pham-che-bien': 'Thực phẩm chế biến',
+  'san-pham-tu-trung': 'Sản phẩm từ trứng',
+  'gia-vi': 'Gia vị',
+  'gia-vi-tuoi': 'Gia vị tươi',
+  'tinh-bot': 'Tinh bột',
+  'trai-cay': 'Trái cây',
+  'cac-loai-hat': 'Các loại hạt',
+  'dau-&-che-pham': 'Đậu & chế phẩm'
+};
 export const dataSort = [
   {
     name: 'Mới nhất',
