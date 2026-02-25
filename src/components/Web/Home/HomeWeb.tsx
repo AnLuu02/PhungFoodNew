@@ -132,7 +132,7 @@ const HomeWeb = ({
           <Reveal z={50}>
             <LayoutProductCarouselWithImage2
               data={{ 'rau-cu': data.materials.rauCu, 'cac-loai-nam': data.materials.cacLoaiNam }}
-              title='Chay thanh đạm'
+              title='Thanh đạm'
               navbar={[
                 { label: 'Rau củ', key: 'rau-cu', url: 'rau-cu' },
                 { label: 'Các loại nấm', key: 'cac-loai-nam', url: 'cac-loai-nam' }
@@ -146,7 +146,7 @@ const HomeWeb = ({
           <Reveal z={50}>
             <LayoutProductCarouselWithImage2
               data={{ 'hai-san': data.materials.haiSan, 'thit-tuoi': data.materials.thitTuoi }}
-              title='Mặn tươi ngon'
+              title='Tươi ngon'
               imgaePositon={'right'}
               navbar={[
                 { label: 'Thịt tươi', key: 'thit-tuoi', url: 'thit-tuoi' },

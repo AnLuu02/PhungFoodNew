@@ -57,7 +57,7 @@ export default function ProductDetailClient(data: any) {
     return [
       dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [],
       dataHintProducts?.filter((item: any) => item.id !== product?.id) || [],
-      product?.availableQuantity - product?.soldQuantity > 0,
+      product?.availableQuantity > 0,
       product?.images?.filter((item: any) => item.type !== LocalImageType.THUMBNAIL && item.url) || []
     ];
   }, [product]);

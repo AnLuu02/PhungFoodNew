@@ -134,7 +134,7 @@ export function CreateManyRoleButton() {
             </BButton>
           )}
         </FileButton>
-        <Button bg={'red'} onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
+        <Button bg={'red'} radius={'md'} onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>
@@ -355,6 +355,7 @@ export function CreateManyPermissionButton() {
           )}
         </FileButton>
         <Button
+          radius={'md'}
           bg={'red'}
           onClick={handleExport}
           loading={fetchPermission?.isLoading}

@@ -132,7 +132,7 @@ export function CreateManyMaterialButton() {
             </BButton>
           )}
         </FileButton>
-        <Button bg={'red'} onClick={handleExport} disabled={fetchMaterials?.data?.length === 0}>
+        <Button bg={'red'} radius={'md'} onClick={handleExport} disabled={fetchMaterials?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>

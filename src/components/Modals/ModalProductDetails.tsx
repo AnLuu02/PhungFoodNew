@@ -36,7 +36,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
   const [quantity, setQuantity] = useState(1);
   const [currentImage, setCurrentImage] = useState('');
   const [showfullImage, setShowfullImage] = useState(false);
-  const inStock = data?.availableQuantity - data?.soldQuantity > 0;
+  const inStock = data?.availableQuantity > 0;
   useEffect(() => {
     setQuantity(1);
   }, [data]);

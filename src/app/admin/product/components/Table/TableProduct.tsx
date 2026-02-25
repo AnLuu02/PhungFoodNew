@@ -156,6 +156,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
               <Table.Th w={100}>Tên</Table.Th>
               <Table.Th w={100}>Ảnh</Table.Th>
               <Table.Th w={100}>Giá tiền</Table.Th>
+              <Table.Th w={100}>Nguyên liệu</Table.Th>
               <Table.Th w={400}>Mô tả</Table.Th>
               <Table.Th>Danh mục</Table.Th>
               <Table.Th>Trạng thái</Table.Th>
@@ -184,6 +185,23 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   </Table.Td>
 
                   <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
+                  <Table.Td className='text-sm'>
+                    {item?.materials?.length > 0
+                      ? item?.materials?.map((i: any) => (
+                          <Badge
+                            radius={'md'}
+                            bg={
+                              '#' +
+                              Math.floor(Math.random() * 16777215)
+                                .toString(16)
+                                .padStart(6, '0')
+                            }
+                          >
+                            {i?.name}
+                          </Badge>
+                        ))
+                      : 'Đang cập nhật'}
+                  </Table.Td>
 
                   <Table.Td className='text-sm'>
                     <Spoiler

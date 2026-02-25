@@ -180,6 +180,17 @@ export default function UpdateProduct({
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
+  useEffect(() => {
+    const handleSubmitForm = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleSubmit(onSubmit)();
+      }
+    };
+    window.addEventListener('keypress', handleSubmitForm);
+    return () => {
+      window.removeEventListener('keypress', handleSubmitForm);
+    };
+  }, []);
 
   return loading ? (
     <LoadingSpiner />

@@ -20,7 +20,7 @@ type ITypeProduct = {
 
 const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', navbar }: ITypeProduct) => {
   const [tab, setTab] = useState<string>(navbar?.[0]?.key || 'rau-cu');
-  const products = useMemo(() => data?.[tab], [data, tab]);
+  const products = useMemo(() => data?.[tab]?.products || [], [data, tab]);
 
   return (
     <Card
@@ -152,7 +152,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                         )}
                       </Carousel>
                       <Flex align={'center'} justify={'center'} mt={30}>
-                        <Link href={`/thuc-don?loai=${tab}`}>
+                        <Link href={`/thuc-don?s=${tab}`}>
                           <BButton children={'Xem tất cả'} variant='outline' radius={'xl'} />
                         </Link>
                       </Flex>
