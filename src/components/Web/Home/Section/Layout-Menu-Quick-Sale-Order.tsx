@@ -118,7 +118,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                   className='cursor-pointer font-quicksand font-bold hover:text-mainColor'
                   pos={'relative'}
                 >
-                  Tráng miệng
+                  Món chính
                   <Box
                     w={'100%'}
                     h={4}

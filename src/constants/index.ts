@@ -20,57 +20,6 @@ export const UserRole = {
   CUSTOMER: 'CUSTOMER'
 };
 
-// export const categoriesMaterial = [
-//   {
-//     value: 'thit-tuoi',
-//     label: 'Thịt tươi'
-//   },
-//   {
-//     value: 'hai-san',
-//     label: 'Hải sản'
-//   },
-//   {
-//     value: 'rau-cu',
-//     label: 'Rau củ'
-//   },
-//   {
-//     value: 'cac-loai-nam',
-//     label: 'Các loại nấm'
-//   },
-
-//   {
-//     value: 'thuc-pham-che-bien',
-//     label: 'Thực phẩm chế biến'
-//   },
-//   {
-//     value: 'san-pham-tu-trung',
-//     label: 'Sản phẩm từ trứng'
-//   },
-//   {
-//     value: 'gia-vi',
-//     label: 'Gia vị'
-//   },
-//   {
-//     value: 'gia-vi-tuoi',
-//     label: 'Gia vị tươi'
-//   },
-//   {
-//     value: 'tinh-bot',
-//     label: 'Tinh bột'
-//   },
-//   {
-//     value: 'trai-cay',
-//     label: 'Trái cây'
-//   },
-//   {
-//     value: 'cac-loai-hat',
-//     label: 'Các loại hạt'
-//   },
-//   {
-//     value: 'dau-&-che-pham',
-//     label: 'Đậu & chế phẩm'
-//   }
-// ];
 export const categoryMaterials = {
   'thit-tuoi': 'Thịt tươi',
   'hai-san': 'Hải sản',

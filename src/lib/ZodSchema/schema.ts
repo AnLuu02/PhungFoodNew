@@ -53,39 +53,34 @@ export const paymentSchema = z.object({
   metadata: z.any().optional()
 });
 
-export const productSchema = z
-  .object({
-    id: z.string().optional(),
-    name: z.string({ required_error: 'Tên sản phẩm là bắt buộc' }).min(1, 'Tên sản phẩm không được để trống'),
-    description: z.string().optional(),
-    descriptionDetailJson: z.any().optional().nullable(),
-    descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
-    region: z.string({ required_error: 'Món ăn này là của miền nào đây?' }).min(1, 'Món ăn này là của miền nào đây?'),
-    tag: z.string().optional(),
-    tags: z.array(z.string()),
-    isActive: z.boolean().default(true),
-    price: z
-      .number({ required_error: 'Giá trị phải lớn hơn hoặc bằng 10.000' })
-      .min(10000, 'Giá trị phải lớn hơn hoặc bằng 10.000')
-      .default(10000),
-    discount: z
-      .number({ required_error: 'Giá trị khuyên mái phải lớn hơn hoặc bằng 0' })
-      .min(0, 'Giá trị không được nhỏ hơn 0')
-      .optional()
-      .default(0),
-    thumbnail: z.instanceof(File).optional(),
-    gallery: z.array(z.instanceof(File)).optional(),
-    subCategoryId: z.string({ required_error: 'Hãy chọn danh mục sản phẩm' }).min(1, 'Hãy chọn danh mục sản phẩm'),
-    rating: z.number().optional(),
-    totalRating: z.number().optional(),
-    soldQuantity: z.coerce.number().min(0, 'Số lượng đã bán không được âm'),
-    availableQuantity: z.coerce.number().min(0, 'Số lượng khả dụng không được âm'),
-    materials: z.array(z.string()).optional()
-  })
-  .refine(data => data.soldQuantity <= data.availableQuantity, {
-    message: 'Không thể bán nhiều hơn số lượng còn lại',
-    path: ['soldQuantity']
-  });
+export const productSchema = z.object({
+  id: z.string().optional(),
+  name: z.string({ required_error: 'Tên sản phẩm là bắt buộc' }).min(1, 'Tên sản phẩm không được để trống'),
+  description: z.string().optional(),
+  descriptionDetailJson: z.any().optional().nullable(),
+  descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
+  region: z.string({ required_error: 'Món ăn này là của miền nào đây?' }).min(1, 'Món ăn này là của miền nào đây?'),
+  tag: z.string().optional(),
+  tags: z.array(z.string()),
+  isActive: z.boolean().default(true),
+  price: z
+    .number({ required_error: 'Giá trị phải lớn hơn hoặc bằng 10.000' })
+    .min(10000, 'Giá trị phải lớn hơn hoặc bằng 10.000')
+    .default(10000),
+  discount: z
+    .number({ required_error: 'Giá trị khuyên mái phải lớn hơn hoặc bằng 0' })
+    .min(0, 'Giá trị không được nhỏ hơn 0')
+    .optional()
+    .default(0),
+  thumbnail: z.instanceof(File).optional(),
+  gallery: z.array(z.instanceof(File)).optional(),
+  subCategoryId: z.string({ required_error: 'Hãy chọn danh mục sản phẩm' }).min(1, 'Hãy chọn danh mục sản phẩm'),
+  rating: z.number().optional(),
+  totalRating: z.number().optional(),
+  soldQuantity: z.coerce.number().min(0, 'Số lượng đã bán không được âm'),
+  availableQuantity: z.coerce.number().min(0, 'Số lượng khả dụng không được âm'),
+  materials: z.array(z.string()).optional()
+});
 
 //
 export const baseAddressSchema = z.object({
