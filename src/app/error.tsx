@@ -2,6 +2,7 @@
 
 import { Box, Button, Group, Stack, Text } from '@mantine/core';
 import { IconHeadphones, IconHome, IconReload } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import BButton from '~/components/Button/Button';
@@ -51,9 +52,11 @@ export default function Error({ error, reset }: ErrorProps) {
             Try Again
           </BButton>
 
-          <BButton size='md' variant='outline' leftSection={<IconHome size={20} />}>
-            Back to Home
-          </BButton>
+          <Link href={'/'}>
+            <BButton size='md' variant='outline' leftSection={<IconHome size={20} />}>
+              Back to Home
+            </BButton>
+          </Link>
         </Group>
 
         {/* Support Section */}
