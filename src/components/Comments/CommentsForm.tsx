@@ -57,8 +57,6 @@ export const CommentsForm = ({ product }: { product: any }) => {
     }
     await mutation.mutateAsync(formData);
   };
-  console.log(errors);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='w-full space-y-4'>
       <Flex align='center' gap={'xs'}>

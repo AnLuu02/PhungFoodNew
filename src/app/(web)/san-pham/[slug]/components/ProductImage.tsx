@@ -44,64 +44,66 @@ export default function ProductImage({
         pos='relative'
         w='100%'
       >
-        <Flex
-          w={{ base: '100%', sm: 'max-content', md: 'max-content', lg: 'max-content' }}
-          direction={{ base: 'row', sm: 'row', md: 'row', lg: 'column' }}
-          gap='xs'
-          justify='space-between'
-          align='center'
-          top={0}
-          left={0}
-        >
-          {displayImages.map((item, index) => (
-            <Paper
-              w={110}
-              h={110}
-              withBorder
-              key={index}
-              radius='md'
-              onClick={() => handleThumbnailClick(item.url, index)}
-              className={`cursor-pointer overflow-hidden ${
-                item.url === currentImage ? 'border-2 border-mainColor' : ''
-              }`}
-            >
-              <Box pos='relative'>
-                <Image
-                  loading='lazy'
-                  src={item.url || '/images/jpg/empty-300x240.jpg'}
-                  width={110}
-                  height={110}
-                  className='object-cover'
-                  alt='Thumbnail'
-                />
-              </Box>
-            </Paper>
-          ))}
-          {remainingCount > 0 && (
-            <Paper
-              onClick={() => handleThumbnailClick(currentImage, remainingCount - 1)}
-              w={110}
-              h={110}
-              withBorder
-              radius='md'
-              className={`cursor-pointer overflow-hidden`}
-            >
-              <Box pos='relative'>
-                <Image
-                  loading='lazy'
-                  src={currentImage || '/images/jpg/empty-300x240.jpg'}
-                  width={110}
-                  height={110}
-                  className='object-cover'
-                  alt='Thumbnail'
-                />
-                <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
-                  +{remainingCount}
+        {displayImages?.length > 0 && (
+          <Flex
+            w={{ base: '100%', sm: 'max-content', md: 'max-content', lg: 'max-content' }}
+            direction={{ base: 'row', sm: 'row', md: 'row', lg: 'column' }}
+            gap='xs'
+            justify='space-between'
+            align='center'
+            top={0}
+            left={0}
+          >
+            {displayImages.map((item, index) => (
+              <Paper
+                w={110}
+                h={110}
+                withBorder
+                key={index}
+                radius='md'
+                onClick={() => handleThumbnailClick(item.url, index)}
+                className={`cursor-pointer overflow-hidden ${
+                  item.url === currentImage ? 'border-2 border-mainColor' : ''
+                }`}
+              >
+                <Box pos='relative'>
+                  <Image
+                    loading='lazy'
+                    src={item.url || '/images/jpg/empty-300x240.jpg'}
+                    width={110}
+                    height={110}
+                    className='object-cover'
+                    alt='Thumbnail'
+                  />
                 </Box>
-              </Box>
-            </Paper>
-          )}
-        </Flex>
+              </Paper>
+            ))}
+            {remainingCount > 0 && (
+              <Paper
+                onClick={() => handleThumbnailClick(currentImage, remainingCount - 1)}
+                w={110}
+                h={110}
+                withBorder
+                radius='md'
+                className={`cursor-pointer overflow-hidden`}
+              >
+                <Box pos='relative'>
+                  <Image
+                    loading='lazy'
+                    src={currentImage || '/images/jpg/empty-300x240.jpg'}
+                    width={110}
+                    height={110}
+                    className='object-cover'
+                    alt='Thumbnail'
+                  />
+                  <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
+                    +{remainingCount}
+                  </Box>
+                </Box>
+              </Paper>
+            )}
+          </Flex>
+        )}
 
         <Paper radius='md' className='relative mb-4' w='100%'>
           <Flex direction='column' align='center' justify='center' w='100%'>
