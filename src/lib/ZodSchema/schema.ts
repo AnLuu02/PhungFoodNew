@@ -122,8 +122,8 @@ export const reviewSchema = z.object({
   id: z.string().optional(),
   userId: z.string({ required_error: 'Ai là người đánh giá?' }).min(1, 'Ai là người đánh giá?'),
   productId: z.string({ required_error: 'Product ID là bắt buộc' }).min(1, 'Product ID không được để trống'),
-  rating: z.number({ required_error: 'Rating là bắt buộc' }).min(0).max(5, 'Rating phải trong khoảng 0-5'),
-  comment: z.string({ required_error: 'Bình luận là bắt buộc' }).min(1, 'Bình luận không được để trống')
+  rating: z.number().default(1),
+  comment: z.string()
 });
 
 export const orderItemSchema = z.object({

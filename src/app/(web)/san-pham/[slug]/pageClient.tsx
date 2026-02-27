@@ -33,7 +33,6 @@ import ProductImage from './components/ProductImage';
 import RatingStatistics from './components/RatingStatistics';
 import RelatedProducts from './components/RelatedProducts';
 
-import { useSession } from 'next-auth/react';
 import { ShareSocials } from '~/components/ShareSocial';
 import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
 import ViewingUser from '~/components/UserViewing';
@@ -42,7 +41,6 @@ import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Ca
 import GuideOrder from './components/GuideOrder';
 
 export default function ProductDetailClient(data: any) {
-  const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState('description');
   const [note, setNote] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -61,15 +59,6 @@ export default function ProductDetailClient(data: any) {
       product?.images?.filter((item: any) => item.type !== LocalImageType.THUMBNAIL && item.url) || []
     ];
   }, [product]);
-  const ratingCounts = useMemo(() => {
-    let ratingCountsDefault = [0, 0, 0, 0, 0];
-    return (
-      product?.review?.reduce((acc: any, item: any) => {
-        acc[item.rating - 1] += 1;
-        return acc;
-      }, ratingCountsDefault) || ratingCountsDefault
-    );
-  }, [product?.review]);
 
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 
@@ -336,7 +325,7 @@ export default function ProductDetailClient(data: any) {
               <Tabs.Panel value='reviews' hidden={activeTab !== 'reviews'}>
                 <Grid>
                   <Grid.Col span={{ base: 12, md: 4 }}>
-                    <RatingStatistics ratings={ratingCounts} />
+                    <RatingStatistics productId={product?.id} />
                   </Grid.Col>
                   <Grid.Col span={{ base: 12, md: 8 }}>
                     <Comments product={product} max_height_scroll={200} />

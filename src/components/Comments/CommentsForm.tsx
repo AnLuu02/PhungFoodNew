@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Flex, Rating, Text, Textarea } from '@mantine/core';
 import { useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
@@ -17,7 +18,6 @@ export const CommentsForm = ({ product }: { product: any }) => {
     control,
     handleSubmit,
     reset,
-    setValue,
     watch,
     formState: { errors, isSubmitting, isDirty }
   } = useForm<Review>({
@@ -25,30 +25,40 @@ export const CommentsForm = ({ product }: { product: any }) => {
     defaultValues: {
       id: '',
       productId: product?.id ?? '',
+      userId: user?.user?.id ?? '',
       rating: 1.0,
       comment: ''
     }
   });
+  const utils = api.useUtils();
   const mutation = api.Review.create.useMutation({
     onSuccess: result => {
       utils.Review.invalidate();
       utils.Product.invalidate();
-      reset();
+      reset({ productId: product?.id, userId: user?.user?.id || '' });
       NotifySuccess(result.message);
     },
     onError: error => {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.', error.message);
     }
   });
-  const utils = api.useUtils();
+
+  useEffect(() => {
+    reset({
+      ...watch(),
+      productId: product?.id,
+      userId: user?.user?.id || ''
+    });
+  }, [product?.id, user?.user?.id]);
   const onSubmit: SubmitHandler<Review> = async formData => {
     if (!user?.user?.id) {
       NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
       return;
     }
-    setValue('productId', product.id);
-    await mutation.mutateAsync({ ...formData, userId: user?.user?.id });
+    await mutation.mutateAsync(formData);
   };
+  console.log(errors);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='w-full space-y-4'>
       <Flex align='center' gap={'xs'}>
@@ -58,35 +68,24 @@ export const CommentsForm = ({ product }: { product: any }) => {
 
         <Controller
           control={control}
-          disabled={isSubmitting || !user?.user?.id}
           name='rating'
-          render={({ field }) => (
-            <Rating disabled={isSubmitting || !user?.user?.id} size='lg' color={'#FFC522'} {...field} />
-          )}
+          render={({ field }) => <Rating size='lg' color={'#FFC522'} {...field} />}
         />
       </Flex>
       <Controller
         control={control}
         name='comment'
-        disabled={isSubmitting || !user?.user?.id}
         render={({ field }) => (
           <Textarea
             radius={'md'}
             placeholder='Chúng tôi hoan nghênh mọi góp ý của bạn.'
             flex={1}
-            disabled={isSubmitting || !user?.user?.id}
             {...field}
             error={errors.comment?.message}
           />
         )}
       />
-      <BButton
-        type='submit'
-        fullWidth
-        loading={isSubmitting}
-        disabled={isSubmitting || watch('comment') === '' || watch('rating') === 0 || !isDirty || !user?.user?.id}
-        children='Đánh giá'
-      />
+      <BButton type='submit' fullWidth loading={isSubmitting} disabled={isSubmitting} children='Đánh giá' />
     </form>
   );
 };

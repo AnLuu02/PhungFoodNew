@@ -1,7 +1,6 @@
 'use client';
 
 import { Box, Divider, Grid, GridCol, ScrollAreaAutosize } from '@mantine/core';
-import { useMemo } from 'react';
 import { CommentsForm } from '~/components/Comments/CommentsForm';
 import { CommentsList } from '~/components/Comments/CommentsList';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
@@ -16,16 +15,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     { s: productTag, hasReview: true, hasUser: true },
     { enabled: !!productTag }
   );
-  let ratingCountsDefault = [0, 0, 0, 0, 0];
   const product: any = data ?? [];
-  const ratingCounts = useMemo(() => {
-    return (
-      product?.review?.reduce((acc: any, item: any) => {
-        acc[item.rating - 1] += 1;
-        return acc;
-      }, ratingCountsDefault) || ratingCountsDefault
-    );
-  }, [product?.review]);
 
   return (
     <Box py='md'>
@@ -44,7 +34,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           className='h-fit'
           span={{ base: 12, sm: 6, md: 3, lg: 3 }}
         >
-          {isLoading ? <CardSkeleton /> : <RatingStatistics ratings={ratingCounts} />}
+          {isLoading ? <CardSkeleton /> : <RatingStatistics productId={product?.id} />}
           <Divider my='xl' />
         </GridCol>
         <GridCol

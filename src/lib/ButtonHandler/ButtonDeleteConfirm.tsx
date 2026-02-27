@@ -30,6 +30,7 @@ export const confirmDelete = ({
   } = messages;
 
   modals.openConfirmModal({
+    radius: 'md',
     title: (
       <Title order={4} fw={700} className='font-quicksand'>
         {confirmTitle}

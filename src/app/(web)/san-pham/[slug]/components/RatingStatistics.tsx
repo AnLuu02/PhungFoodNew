@@ -1,13 +1,20 @@
+'use client';
 import { Group, Paper, Progress, Stack, Text } from '@mantine/core';
 import { IconStarFilled } from '@tabler/icons-react';
-import { useMemo } from 'react';
+import { api } from '~/trpc/react';
+export default function RatingStatistics({ productId }: { productId: string }) {
+  const { data: reviews } = api.Review.getFilter.useQuery({ s: productId });
+  let ratingCountsDefault = [0, 0, 0, 0, 0];
+  let ratings: number[] =
+    reviews?.reduce((acc: any, item: any) => {
+      acc[item.rating - 1] += 1;
+      return acc;
+    }, ratingCountsDefault) || ratingCountsDefault;
+  let totalRating: number = ratings.reduce((sum, count) => sum + count, 0) || 0;
+  let averageRating = totalRating
+    ? ratings.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRating
+    : 0;
 
-export default function RatingStatistics({ ratings }: { ratings: number[] }) {
-  const totalRatings = useMemo(() => ratings.reduce((sum, count) => sum + count, 0) || 0, [ratings]);
-  const averageRating = useMemo(
-    () => (totalRatings ? ratings.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRatings : 0),
-    [ratings, totalRatings]
-  );
   return (
     <Paper withBorder p='md'>
       <Stack gap={'xs'}>
@@ -16,7 +23,7 @@ export default function RatingStatistics({ ratings }: { ratings: number[] }) {
             {averageRating.toFixed(1)}
           </Text>
           <Text size='sm' c='dimmed'>
-            {totalRatings} đánh giá
+            {totalRating} đánh giá
           </Text>
         </Group>
         {ratings.map((count, index) => (
@@ -28,7 +35,7 @@ export default function RatingStatistics({ ratings }: { ratings: number[] }) {
               <IconStarFilled size={16} color='#FFD700' />
             </Group>
             <Group gap='xs' style={{ flex: 1 }}>
-              <Progress value={(count / totalRatings) * 100} size='md' radius='xl' style={{ flex: 1 }} />
+              <Progress value={(count / totalRating) * 100} size='md' radius='xl' style={{ flex: 1 }} />
               <Text size='xs' c='dimmed' style={{ minWidth: '30px', textAlign: 'right' }}>
                 {count}
               </Text>

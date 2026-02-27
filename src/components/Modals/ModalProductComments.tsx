@@ -8,15 +8,7 @@ import Comments from '../Comments/Comments';
 import ProductCardCarouselVertical from '../Web/Card/CardProductCarouselVertical';
 
 function ModalProductComments({ type, opened, onClose, data }: ModalProps<any>) {
-  let ratingCountsDefault = [0, 0, 0, 0, 0];
   const { data: user } = useSession();
-
-  const ratingCounts =
-    data?.review?.reduce((acc: any, item: any) => {
-      acc[item.rating - 1] += 1;
-      return acc;
-    }, ratingCountsDefault) || ratingCountsDefault;
-
   return (
     <Modal
       transitionProps={{ transition: 'fade-down', duration: 200 }}
@@ -53,7 +45,7 @@ function ModalProductComments({ type, opened, onClose, data }: ModalProps<any>) 
             <ProductCardCarouselVertical data={data} />
           </Grid.Col>
           <Grid.Col span={4}>
-            <RatingStatistics ratings={ratingCounts} />
+            <RatingStatistics productId={data?.id} />
           </Grid.Col>
           <Grid.Col span={5}>
             <Comments product={data} max_height_scroll={350} />
