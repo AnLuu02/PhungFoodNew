@@ -1,16 +1,25 @@
 'use client';
 
-import { Avatar, Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Group,
+  Menu,
+  Paper,
+  Skeleton,
+  Stack,
+  Text,
+  Title,
+  UnstyledButton
+} from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { IconChevronDown, IconLock, IconLogout, IconShoppingBag, IconUser, IconUserCircle } from '@tabler/icons-react';
+import { IconChevronDown, IconMail, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
 import Link from 'next/link';
-
-const menuUser = [
-  { label: 'Thông tin cá nhân', href: '/thong-tin', icon: IconUser },
-  { label: 'Đơn hàng của tôi', href: '/don-hang-cua-toi', icon: IconShoppingBag },
-  { label: 'Đổi mật khẩu', href: '/password/change-password', icon: IconLock }
-];
+import { menuUserInfo } from '~/lib/Utils/ConfigUI';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -18,17 +27,32 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
     key: 'applied-vouchers',
     defaultValue: []
   });
-  const { data: user } = useSession();
-  if (!user)
+  const { data: user, status } = useSession();
+  if (status === 'loading') {
     return (
-      <Group gap={'xs'} align={'center'} justify='center'>
+      <>
+        <Group gap={'xs'} align={'center'} justify='flex-end' className='sm:min-w-[222px]'>
+          <Skeleton circle w={20} h={20} />
+          <Skeleton width={52} height={20} radius={'xl'} className='hidden sm:block' />
+          <Text className='hidden sm:block'>/</Text>
+          <Skeleton width={74} height={20} radius={'xl'} />
+        </Group>
+      </>
+    );
+  }
+  if (status === 'unauthenticated' || !user)
+    return (
+      <Group gap={'xs'} align={'center'} className={`justify-center sm:min-w-[222px] sm:justify-end`}>
         <IconUserCircle size={20} fontWeight={'bold'} />
-        <Link href='/dang-ky' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
+        <Link
+          href='/dang-ky'
+          className={` ${responsive ? 'hidden text-white sm:block' : 'text-black dark:text-dark-text'}`}
+        >
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng kí
           </Text>
         </Link>
-        <Text>/</Text>
+        <Text className='hidden sm:block'>/</Text>
         <Link href='/dang-nhap' className={`${responsive ? 'text-white' : 'text-black dark:text-dark-text'}`}>
           <Text size='sm' className={`cursor-pointer font-bold hover:underline`}>
             Đăng nhập
@@ -39,7 +63,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
   return (
     <Menu
       radius={'md'}
-      width={200}
+      width={360}
       position='bottom-end'
       transitionProps={{ transition: 'fade-down' }}
       offset={0}
@@ -48,28 +72,29 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
       <Menu.Target>
         <UnstyledButton
           className={`flex items-center rounded-full bg-subColor p-1 transition-colors duration-200 hover:opacity-95`}
-          w={width}
+          w={{ base: width || 'max-content', sm: width || 222 }}
+          pr={{ sm: 40, md: 0 }}
         >
           <Flex justify={'space-between'} align={'center'} gap={7} w={'100%'}>
-            <Group gap={7}>
+            <Flex align={'center'} wrap={'nowrap'} gap={7} flex={1}>
               <Box pos={'relative'} w={30} h={30} className='overflow-hidden rounded-full'>
-                <Avatar
-                  radius={'xl'}
-                  size={30}
-                  src={user?.user?.image}
+                <Image
+                  className='rounded-full object-cover'
+                  width={30}
+                  height={30}
+                  src={user?.user?.image || '/images/webp/user-default.webp'}
                   alt='User avatar'
-                  style={{ objectFit: 'cover' }}
                 />
               </Box>
-              <Box className={`text-left ${responsive && 'hidden sm:block'}`}>
-                <Text fw={700} size='sm' lh={1} className='text-black'>
+              <Box className={`text-left ${responsive && 'hidden sm:block'}`} flex={1} pos={'relative'}>
+                <Text fw={700} size='sm' lh={1} className='text-black' lineClamp={1}>
                   {user?.user?.name}
                 </Text>
-                <Text size='xs' fw={700} c={'dimmed'}>
+                <Text size='xs' fw={700} c={'dimmed'} lineClamp={1}>
                   {user?.user?.email}
                 </Text>
               </Box>
-            </Group>
+            </Flex>
             <IconChevronDown
               style={{ width: 12, height: 12 }}
               stroke={1.5}
@@ -78,43 +103,79 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
           </Flex>
         </UnstyledButton>
       </Menu.Target>
-      <Menu.Dropdown className='bg-subColor'>
-        <Divider />
-
-        {menuUser.map((item, index) => (
-          <>
-            <Link key={index} href={item.href}>
-              <Menu.Item
-                fw={500}
-                key={index}
-                className='hover:bg-[rgba(0,0,0,0.2)]'
-                leftSection={
-                  <item.icon color='black' fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />
-                }
+      <Menu.Dropdown p={0} className='rounded-md'>
+        <Box py={'lg'} pt={'xl'} className='rounded-md shadow-md'>
+          <Stack px={'lg'}>
+            <Title order={3} className='font-quicksand'>
+              Thông tin
+            </Title>
+            <Flex align={'flex-start'} gap={'md'}>
+              <Box
+                w={80}
+                h={80}
+                className='overflow-hidden rounded-full border border-solid border-mainColor'
+                pos={'relative'}
               >
-                <Text size='sm' className='text-black' p={0}>
-                  {item.label}
+                <Image
+                  src={user?.user?.image || '/images/png/403.png'}
+                  alt='User avatar'
+                  fill
+                  className='rounded-md object-cover'
+                />
+              </Box>
+              <Stack gap={2}>
+                <Text fw={700}> {user?.user?.name}</Text>
+                <Text size='sm' fw={600} className='text-gray-600 dark:text-dark-text'>
+                  {user?.user?.role === 'CUSTOMER'
+                    ? 'Người dùng'
+                    : user?.user?.role === 'ADMIN'
+                      ? 'Quản trị viên'
+                      : 'Nhân viên'}
                 </Text>
-              </Menu.Item>
-            </Link>
+                <Group align='center' gap={5}>
+                  <IconMail className='m-0 h-4 w-4 p-0 text-gray-600 dark:text-dark-text' />
+                  <Text size='sm' className='text-gray-600 dark:text-dark-text'>
+                    {user?.user?.email}
+                  </Text>
+                </Group>
+              </Stack>
+            </Flex>
+          </Stack>
+          <Box px={'lg'} mt={'md'}>
             <Divider />
-          </>
-        ))}
+          </Box>
+          {menuUserInfo.map((item, index) => (
+            <Link href={item.href} key={index}>
+              <Box key={index} className='flex items-center gap-4 hover:bg-mainColor/10' px={'lg'} py={'sm'}>
+                <Paper className='flex items-center justify-center bg-mainColor/10' w={50} h={50} radius={'md'}>
+                  <item.icon size={20} />
+                </Paper>
+                <Stack gap={2}>
+                  <Text fw={700}>{item.label}</Text>
+                  <Text size='sm' c={'dimmed'} fw={600}>
+                    {item.des}
+                  </Text>
+                </Stack>
+              </Box>
+            </Link>
+          ))}
 
-        <Menu.Item
-          fw={500}
-          leftSection={<IconLogout fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
-          color='white'
-          mt={'xs'}
-          className='bg-red-500 hover:bg-red-600'
-          onClick={() => {
-            resetCart();
-            resetSelectedVouchers();
-            signOut({ callbackUrl: 'https://www.facebook.com/' });
-          }}
-        >
-          Đăng xuất
-        </Menu.Item>
+          <Box px={'lg'} mt={'md'}>
+            <Button
+              fullWidth
+              variant='outline'
+              radius={'md'}
+              className='borđẻ-solid border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
+              onClick={() => {
+                resetCart();
+                resetSelectedVouchers();
+                signOut({ callbackUrl: 'https://www.facebook.com/' });
+              }}
+            >
+              Đăng xuất
+            </Button>
+          </Box>
+        </Box>
       </Menu.Dropdown>
     </Menu>
   );

@@ -1,5 +1,5 @@
 'use client';
-import { Avatar, Badge, Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
+import { Badge, Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronDown, IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -58,7 +58,13 @@ export default function Header() {
               className={`flex items-center ${userMenuOpened ? 'bg-[rgba(0,0,0,0.1)]' : ''} rounded-full p-2 transition-colors duration-200 hover:bg-[rgba(0,0,0,0.1)] hover:dark:bg-gray-800/30`}
             >
               <Group gap={7}>
-                <Avatar src={session?.user?.image || 'AD'} alt='User avatar' radius='lg' size={30} />
+                <Image
+                  src={session?.user?.image || 'AD'}
+                  alt='User avatar'
+                  className='rounded-full'
+                  width={30}
+                  height={30}
+                />
                 <Box className='hidden text-left sm:block'>
                   <Text fw={700} size='sm' lh={1}>
                     {session?.user?.name}

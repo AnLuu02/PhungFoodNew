@@ -1,7 +1,8 @@
 'use client';
 
-import { Avatar, Box, Button, Center, Flex, Group, Paper, Rating, Space, Spoiler, Text } from '@mantine/core';
+import { Box, Button, Center, Flex, Group, Paper, Rating, Space, Spoiler, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
@@ -25,7 +26,13 @@ export const CommentsList = ({ data }: { data: any[] }) => {
     <Paper shadow='sm' p='sm' radius='md' withBorder key={comment.id} className='mb-4' pos={'relative'}>
       <Flex direction={'column'} gap={'md'} align={'flex-start'} justify={'flex-start'}>
         <Group gap={7}>
-          <Avatar src={comment?.user?.image?.url} alt='User avatar' radius='lg' size={30} />
+          <Image
+            className='rounded-full object-cover'
+            width={30}
+            height={30}
+            src={comment?.user?.image?.url || '/images/webp/user-default.webp'}
+            alt='User avatar'
+          />
           <Box className='hidden text-left sm:block'>
             <Text fw={700} size='sm' lh={1} className='text-black dark:text-dark-text'>
               {comment?.user?.name}

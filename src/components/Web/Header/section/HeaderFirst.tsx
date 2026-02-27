@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import NotificationDialog from '~/components/NotificationDialog';
-import UserSectionDesktop from '~/components/UserSectionDesktop';
+import UserSection from '~/components/UserSection';
 import { api } from '~/trpc/react';
 import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 
@@ -112,7 +112,7 @@ export const HeaderClient = () => {
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-            <UserSectionDesktop responsive={true} />
+            <UserSection responsive={true} />
             <Box
               pos={{ base: 'fixed', sm: 'unset', md: 'unset', lg: 'fixed' }}
               left={{ base: 5, sm: 0, md: 0, lg: 5 }}

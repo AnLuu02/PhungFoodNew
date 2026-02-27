@@ -1,6 +1,5 @@
 'use client';
 import {
-  Avatar,
   Badge,
   Box,
   Card,
@@ -64,7 +63,13 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
           <Group mb='md' align='flex-start'>
             <Tooltip label='Đổi ảnh đại diện'>
               <Box w={90} h={90} pos='relative' className='group cursor-pointer overflow-hidden rounded-full'>
-                <Avatar src={userInfor?.image?.url} size={90} radius={45} />
+                <Image
+                  className='rounded-full object-cover'
+                  width={90}
+                  height={90}
+                  src={userInfor?.image?.url || '/images/webp/user-default.webp'}
+                  alt='User avatar'
+                />
                 <Flex
                   onClick={() => setOpened(true)}
                   className='absolute inset-0 hidden cursor-pointer group-hover:block group-hover:bg-[rgba(0,0,0,0.4)]'
