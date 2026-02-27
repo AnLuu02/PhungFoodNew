@@ -2,9 +2,9 @@
 import { ActionIcon, Box, Card, Flex, Group, Highlight, Modal, Text, Title } from '@mantine/core';
 import { IconSettings, IconShield } from '@tabler/icons-react';
 import { useState } from 'react';
-import PageSizeSelector from '~/components/Admin/Perpage';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
+import PageSizeSelector from '~/components/Perpage';
 import { UserRole } from '~/constants';
 import UpdateRole from '../form/UpdateRole';
 

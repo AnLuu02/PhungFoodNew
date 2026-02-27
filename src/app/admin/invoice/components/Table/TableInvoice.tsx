@@ -4,9 +4,9 @@ import { IconBrandCashapp, IconDumpling, IconMeat, IconMoneybag, IconMushroomFil
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SendOrderButton } from '~/app/admin/order/components/Button';
-import PageSizeSelector from '~/components/Admin/Perpage';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import CustomPagination from '~/components/Pagination';
+import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '../Button';

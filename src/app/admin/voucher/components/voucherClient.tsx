@@ -4,9 +4,9 @@ import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Title } 
 import { IconActivity, IconAlertTriangle, IconCircleCheck, IconGift } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import PageSizeSelector from '~/components/Admin/Perpage';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
+import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
 import CardVoucher from './card-voucher';

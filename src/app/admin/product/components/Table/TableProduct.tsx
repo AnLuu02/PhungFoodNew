@@ -1,8 +1,8 @@
 'use client';
 
 import { Avatar, Badge, Box, Group, Highlight, Spoiler, Table, Text, Tooltip } from '@mantine/core';
-import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
+import PageSizeSelector from '~/components/Perpage';
 import { UserRole } from '~/constants';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { LocalImageType } from '~/lib/ZodSchema/enum';

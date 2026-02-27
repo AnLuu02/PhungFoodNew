@@ -1,7 +1,7 @@
 'use client';
 import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
-import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
+import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';
 

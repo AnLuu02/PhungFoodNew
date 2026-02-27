@@ -17,8 +17,8 @@ import {
 import { IconBrandAsana, IconHelpOctagon, IconMessageReply, IconPhysotherapist } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import PageSizeSelector from '~/components/Admin/Perpage';
 import CustomPagination from '~/components/Pagination';
+import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { TypeContact } from '~/lib/ZodSchema/enum';
