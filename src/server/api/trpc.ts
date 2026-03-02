@@ -36,7 +36,7 @@ export const requirePermission = (
   options?: { requireAll?: boolean; requiredAdmin?: boolean }
 ) =>
   t.middleware(async ({ ctx, next }) => {
-    const { authOptions } = await import('~/app/api/auth/[...nextauth]/options');
+    const { authOptions } = await import('~/server/auth/options');
     const session = await getServerSession(authOptions);
     const user = session?.user ?? null;
 
