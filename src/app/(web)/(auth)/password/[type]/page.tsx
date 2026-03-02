@@ -104,7 +104,7 @@ export default function ForgotPassword() {
         email={email}
         timeExpiredMinutes={TIME_EXPIRED_MINUTES}
         onAfterVerify={token =>
-          (window.location.href = `/auth/reset-password?email=${encodeURIComponent(email)}&token=${token}`)
+          (window.location.href = `/reset-password?email=${encodeURIComponent(email)}&token=${token}`)
         }
       />
     </>
