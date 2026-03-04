@@ -32,6 +32,9 @@ const showNotification = ({
     ),
     color,
     icon: icon,
+    withBorder: true,
+    radius: 'md',
+    style: { borderColor: color },
     loading: false
   });
 };
