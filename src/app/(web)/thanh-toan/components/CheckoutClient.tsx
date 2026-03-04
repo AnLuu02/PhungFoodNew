@@ -14,6 +14,7 @@ import {
   Title
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
+import { AddressType, VoucherType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
@@ -23,7 +24,6 @@ import BButton from '~/components/Button/Button';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { LocalAddressType, LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
@@ -42,8 +42,7 @@ export default function CheckoutClient({ order }: { order: any }) {
   const { discountAmountByVoucher, discount, originalTotal, tax, finalTotal } = useMemo(() => {
     const originalTotal = order?.orderItems?.reduce((sum: any, item: any) => sum + item.price * item.quantity, 0);
     const discountAmountByVoucher = (order?.vouchers ?? []).reduce((sum: any, item: any) => {
-      const value =
-        item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
+      const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
       return sum + value;
     }, 0);
     const discount = order?.orderItems?.reduce((sum: any, item: any) => {
@@ -80,7 +79,7 @@ export default function CheckoutClient({ order }: { order: any }) {
         fullAddress: '',
         postalCode: '',
         detail: '',
-        type: LocalAddressType.DELIVERY
+        type: AddressType.DELIVERY
       },
       note: ''
     }
@@ -111,7 +110,7 @@ export default function CheckoutClient({ order }: { order: any }) {
           fullAddress: order?.delivery?.address?.fullAddress,
           postalCode: order?.delivery?.address?.postalCode || '',
           detail: order?.delivery?.address?.detail,
-          type: LocalAddressType.DELIVERY
+          type: AddressType.DELIVERY
         },
         note: order?.delivery?.note
       });

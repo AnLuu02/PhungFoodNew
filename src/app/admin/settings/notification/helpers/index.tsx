@@ -1,3 +1,4 @@
+import { NotificationType } from '@prisma/client';
 import {
   IconAlertTriangle,
   IconBrandZapier,
@@ -7,7 +8,6 @@ import {
   IconEye,
   IconInfoCircle
 } from '@tabler/icons-react';
-import { NotificationType } from '~/lib/ZodSchema/enum';
 import { NotificationClient } from '../types';
 
 export const getTypeIcon = (type: string) => {
@@ -47,7 +47,6 @@ export const notificationTypeOptions = {
   [NotificationType.ORDER]: { viName: 'Đơn hàng' },
   [NotificationType.PROMOTION]: { viName: 'Khuyến mãi' },
   [NotificationType.SECURITY]: { viName: 'Bảo mật' },
-  [NotificationType.ADMIN]: { viName: 'Quản trị viên' },
   [NotificationType.SUPPORT]: { viName: 'Hỗ trợ' },
   [NotificationType.REMINDER]: { viName: 'Nhắc nhở' }
 };

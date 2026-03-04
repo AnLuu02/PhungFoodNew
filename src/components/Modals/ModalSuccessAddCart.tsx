@@ -2,13 +2,13 @@
 
 import { Box, Button, Group, Modal, Paper, Stack, Text, Textarea } from '@mantine/core';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { ModalProps } from '~/types/modal';
 
 export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {
@@ -81,7 +81,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
             >
               <Image
                 loading='lazy'
-                src={getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                src={getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                 alt={data?.name || 'Hành tây'}
                 fill
                 style={{ objectFit: 'cover' }}

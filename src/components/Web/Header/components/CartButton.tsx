@@ -1,6 +1,7 @@
 'use client';
 import { Box, Button, Divider, Flex, Group, Menu, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,7 +9,6 @@ import { useMemo } from 'react';
 import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
 
 const CartButton = () => {
@@ -65,9 +65,7 @@ const CartButton = () => {
                 <Box key={item?.id}>
                   <CartItemFastMenu
                     key={item?.id}
-                    image={
-                      getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-                    }
+                    image={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                     name={item?.name}
                     price={item?.price}
                     quantity={item?.quantity}

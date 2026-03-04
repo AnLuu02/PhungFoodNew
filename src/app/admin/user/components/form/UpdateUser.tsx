@@ -19,6 +19,7 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
+import { Gender, UserLevel } from '@prisma/client';
 import { IconCalendar, IconFile, IconMail, IconPhone, IconUpload } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
@@ -32,7 +33,6 @@ import { infoUserLevel, UserRole } from '~/constants';
 import fetcher from '~/lib/FuncHandler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
 import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
@@ -66,7 +66,7 @@ export default function UpdateUser({
       name: '',
       email: '',
       image: undefined,
-      gender: LocalGender.OTHER,
+      gender: Gender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       isActive: true,
       password: '',
@@ -109,7 +109,7 @@ export default function UpdateUser({
       email: user?.email,
       password: user?.password,
       dateOfBirth: user?.dateOfBirth || new Date(),
-      gender: user?.gender || LocalGender.OTHER,
+      gender: user?.gender || Gender.OTHER,
       phone: user?.phone || '',
       roleId: user?.roleId || '',
       address: user?.address as any,
@@ -173,7 +173,7 @@ export default function UpdateUser({
 
   useEffect(() => {
     const level = infoUserLevel.find(level => level.minPoint <= pointUserValue && level.maxPoint >= pointUserValue);
-    setValue('level', level?.key || LocalUserLevel.BRONZE);
+    setValue('level', level?.key || UserLevel.BRONZE);
   }, [pointUserValue]);
 
   if (loading || isLoading || rolesLoading) return <LoadingSpiner />;
@@ -422,9 +422,9 @@ export default function UpdateUser({
                     label='Giới tính'
                     {...field}
                     data={[
-                      { value: LocalGender.MALE, label: 'Nam' },
-                      { value: LocalGender.FEMALE, label: 'Nữ' },
-                      { value: LocalGender.OTHER, label: 'Khác' }
+                      { value: Gender.MALE, label: 'Nam' },
+                      { value: Gender.FEMALE, label: 'Nữ' },
+                      { value: Gender.OTHER, label: 'Khác' }
                     ]}
                   />
                 )}

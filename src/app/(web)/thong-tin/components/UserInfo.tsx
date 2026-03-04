@@ -16,6 +16,7 @@ import {
   ThemeIcon,
   Tooltip
 } from '@mantine/core';
+import { Gender, UserLevel } from '@prisma/client';
 import { IconUpload } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -25,7 +26,6 @@ import BButton from '~/components/Button/Button';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
-import { LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
 
 export function UserInfo({ userInfor }: { userInfor: any }) {
   const [opened, setOpened] = useState(false);
@@ -40,7 +40,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
     const statusObj = getTotalOrderStatus(orderData);
     return { statusObj };
   }, [userInfor]);
-  const levelInfo = getInfoLevelUser(userInfor?.level as LocalUserLevel);
+  const levelInfo = getInfoLevelUser(userInfor?.level as UserLevel);
 
   return (
     <Grid p={0}>
@@ -122,11 +122,11 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                 Giới tính
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.gender === LocalGender.MALE
+                {userInfor?.gender === Gender.MALE
                   ? 'Nam'
-                  : userInfor?.gender === LocalGender.FEMALE
+                  : userInfor?.gender === Gender.FEMALE
                     ? 'Nữ'
-                    : userInfor?.gender === LocalGender.OTHER
+                    : userInfor?.gender === Gender.OTHER
                       ? 'Khác'
                       : 'Đang cập nhật'}
               </Text>

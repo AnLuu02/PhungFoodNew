@@ -6,7 +6,6 @@ import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import {
   CopyOrderButton,
   DeleteOrderButton,
@@ -27,7 +26,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  const filter = searchParams.get('filter') as LocalOrderStatus;
+  const filter = searchParams.get('filter') as OrderStatus;
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '5';
   const sortArr = searchParams.getAll('sort');
@@ -188,7 +187,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
           <Table.Tbody>
             {currentItems.length > 0 ? (
               currentItems.map((order: any) => {
-                const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
+                const statusInfo = getStatusInfo(order.status as OrderStatus);
                 return (
                   <Table.Tr key={order.id}>
                     <Table.Td className='text-sm'>
@@ -219,33 +218,17 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
                       <Group className='text-center'>
                         <>
                           <Group>
-                            {order.status === LocalOrderStatus.PENDING && (
-                              <HandleStateOrderButton
-                                id={order.id}
-                                status={LocalOrderStatus.CONFIRMED}
-                                title='Xác nhận'
-                              />
+                            {order.status === OrderStatus.PENDING && (
+                              <HandleStateOrderButton id={order.id} status={OrderStatus.CONFIRMED} title='Xác nhận' />
                             )}
-                            {order.status === LocalOrderStatus.CONFIRMED && (
-                              <HandleStateOrderButton
-                                id={order.id}
-                                status={LocalOrderStatus.SHIPPING}
-                                title='Giao hàng'
-                              />
+                            {order.status === OrderStatus.CONFIRMED && (
+                              <HandleStateOrderButton id={order.id} status={OrderStatus.SHIPPING} title='Giao hàng' />
                             )}
-                            {order.status === LocalOrderStatus.SHIPPING && (
-                              <HandleStateOrderButton
-                                id={order.id}
-                                status={LocalOrderStatus.COMPLETED}
-                                title='Hoàn thành'
-                              />
+                            {order.status === OrderStatus.SHIPPING && (
+                              <HandleStateOrderButton id={order.id} status={OrderStatus.COMPLETED} title='Hoàn thành' />
                             )}
-                            {order.status !== LocalOrderStatus.CANCELLED && (
-                              <HandleStateOrderButton
-                                id={order.id}
-                                status={LocalOrderStatus.CANCELLED}
-                                title='Hủy đơn'
-                              />
+                            {order.status !== OrderStatus.CANCELLED && (
+                              <HandleStateOrderButton id={order.id} status={OrderStatus.CANCELLED} title='Hủy đơn' />
                             )}
                             <UpdateOrderButton id={order.id} />
                             <DeleteOrderButton id={order.id} />
@@ -253,7 +236,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
                           </Group>
                           <Group>
                             {order?.user && <SendOrderButton order={order} />}
-                            {order.status !== LocalOrderStatus.COMPLETED && order?.user && (
+                            {order.status !== OrderStatus.COMPLETED && order?.user && (
                               <SendMessageOrderButton user={order.user} />
                             )}
                           </Group>

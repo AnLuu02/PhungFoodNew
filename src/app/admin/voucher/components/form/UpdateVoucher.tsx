@@ -18,12 +18,12 @@ import {
   TextInput
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
+import { VoucherType } from '@prisma/client';
 import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { voucherSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Voucher } from '~/types/voucher';
@@ -51,7 +51,7 @@ export default function UpdateVoucher({
       id: '',
       name: '',
       description: '',
-      type: LocalVoucherType.FIXED,
+      type: VoucherType.FIXED,
       isActive: true,
       discountValue: 0,
       minOrderPrice: 0,
@@ -209,8 +209,8 @@ export default function UpdateVoucher({
                     searchable
                     placeholder='Chọn phương thức'
                     data={[
-                      { value: LocalVoucherType.FIXED, label: 'Tiền mặt' },
-                      { value: LocalVoucherType.PERCENTAGE, label: '% đơn hàng' }
+                      { value: VoucherType.FIXED, label: 'Tiền mặt' },
+                      { value: VoucherType.PERCENTAGE, label: '% đơn hàng' }
                     ]}
                     error={errors.type?.message}
                     value={field.value}
@@ -228,14 +228,14 @@ export default function UpdateVoucher({
                   <NumberInput
                     radius={'md'}
                     {...field}
-                    leftSection={watch('type') === LocalVoucherType.PERCENTAGE ? '%' : '$'}
+                    leftSection={watch('type') === VoucherType.PERCENTAGE ? '%' : '$'}
                     thousandSeparator=','
                     label='Giá trị giảm giá'
                     clampBehavior='strict'
                     placeholder='Nhập số tiền hoặc %'
-                    max={watch('type') === LocalVoucherType.FIXED ? 100000000 : 100}
+                    max={watch('type') === VoucherType.FIXED ? 100000000 : 100}
                     onChange={value => {
-                      if (watch('type') === LocalVoucherType.FIXED) {
+                      if (watch('type') === VoucherType.FIXED) {
                         setValue('maxDiscount', +value);
                       }
                       field.onChange(value);

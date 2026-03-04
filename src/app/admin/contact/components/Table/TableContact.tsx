@@ -14,6 +14,7 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { TypeContact } from '@prisma/client';
 import { IconBrandAsana, IconHelpOctagon, IconMessageReply, IconPhysotherapist } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
@@ -21,7 +22,6 @@ import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { TypeContact } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import { CallPhoneButton, DeleteContactButton, SendMailButton } from '../Button';
 

@@ -19,6 +19,7 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
+import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -30,7 +31,6 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 const InvoiceToPrint = dynamic(() => import('~/components/InvoceToPrint'), {
@@ -92,7 +92,7 @@ export default function MyOrderPageClient({ data }: any) {
   const totalAmount = useMemo(
     () =>
       orders.reduce((sum: any, order: any) => {
-        if (order.status === LocalOrderStatus.COMPLETED) {
+        if (order.status === OrderStatus.COMPLETED) {
           return sum + order.finalTotal;
         }
         return sum;
@@ -133,7 +133,7 @@ export default function MyOrderPageClient({ data }: any) {
               </Card>
             </Grid.Col>
             {statusCounts.map(({ status, count }) => {
-              const statusInfo = getStatusInfo(status as LocalOrderStatus);
+              const statusInfo = getStatusInfo(status as OrderStatus);
               return (
                 <Grid.Col key={status} span={{ base: 6, sm: 4, md: 6, lg: 6 }}>
                   <Card
@@ -225,7 +225,7 @@ export default function MyOrderPageClient({ data }: any) {
                     </Table.Tr>
                   ) : (
                     displayedOrders.map((order: any) => {
-                      const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
+                      const statusInfo = getStatusInfo(order.status as OrderStatus);
                       return (
                         <Table.Tr key={order.id}>
                           <Table.Td w={100} className='max-w-[100px] overflow-hidden'>
@@ -271,15 +271,15 @@ export default function MyOrderPageClient({ data }: any) {
                                   <IconTrash size={16} />
                                 </ActionIcon>
                               </Tooltip>
-                              {order.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order.id} />}
-                              {order.status === LocalOrderStatus.UNPAID && (
+                              {order.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order.id} />}
+                              {order.status === OrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Tiếp tục thanh toán'>
                                     <BButton size='xs'>Thanh toán</BButton>
                                   </Tooltip>
                                 </Link>
                               )}
-                              {order.status === LocalOrderStatus.CANCELLED && (
+                              {order.status === OrderStatus.CANCELLED && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Đặt lại đơn hàng'>
                                     <BButton size='xs'>Đặt lại</BButton>

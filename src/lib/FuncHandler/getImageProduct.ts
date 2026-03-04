@@ -1,6 +1,6 @@
-import { LocalImageType } from '../ZodSchema/enum';
+import { ImageType } from '@prisma/client';
 
-export const getImageProduct = (data: any, key: LocalImageType) => {
+export const getImageProduct = (data: any, key: ImageType) => {
   const image = data?.find((p: any) => p.type === key);
   if (image && image?.url) {
     return image?.url;

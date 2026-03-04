@@ -15,6 +15,7 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -23,7 +24,6 @@ import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export default function MegaMenu({ categories }: { categories: any }) {
   const searchParams = useSearchParams();
@@ -173,7 +173,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
                                 <Image
                                   loading='lazy'
                                   src={
-                                    getImageProduct(product?.images, LocalImageType.THUMBNAIL) ||
+                                    getImageProduct(product?.images, ImageType.THUMBNAIL) ||
                                     '/images/jpg/empty-300x240.jpg'
                                   }
                                   alt={product.name}

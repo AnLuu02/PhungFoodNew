@@ -1,7 +1,7 @@
+import { OrderStatus } from '@prisma/client';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/server';
 import CheckoutClient from '../components/CheckoutClient';
 
@@ -18,7 +18,7 @@ async function CheckoutPage({ params }: { params: { slug: string } }) {
     );
   }
 
-  if (order.status !== LocalOrderStatus.UNPAID && order.status !== LocalOrderStatus.CANCELLED) {
+  if (order.status !== OrderStatus.UNPAID && order.status !== OrderStatus.CANCELLED) {
     const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
     redirect(
       `/vnpay-payment-result?orderId=${encodeURIComponent(orderId.trim())}` +

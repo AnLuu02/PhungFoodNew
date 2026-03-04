@@ -1,6 +1,7 @@
 'use client';
 import { Badge, Box, Button, Card, Flex, Group, Rating, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { IconEye } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,7 +12,6 @@ import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
 const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
   const router = useRouter();
@@ -30,7 +30,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
         <Image
           loading='lazy'
           id={`productImage-${data?.id}`}
-          src={getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+          src={getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           fill
           style={{ objectFit: 'cover' }}
           className='object-cover transition-transform duration-300 group-hover:scale-105'

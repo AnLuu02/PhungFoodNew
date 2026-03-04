@@ -2,21 +2,21 @@
 
 import { Carousel } from '@mantine/carousel';
 import { Box, Flex, Paper, SimpleGrid, Text } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useRef } from 'react';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export default function BannerSection({ banner }: any) {
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const [gallery, banners] = useMemo(() => {
     return banner?.images?.reduce(
       (acc: any, image: any) => {
-        if (image?.type === LocalImageType.GALLERY) {
+        if (image?.type === ImageType.GALLERY) {
           acc[0].push(image);
-        } else if (image?.type === LocalImageType.BANNER) {
+        } else if (image?.type === ImageType.BANNER) {
           acc[1].push(image);
         }
         return acc;

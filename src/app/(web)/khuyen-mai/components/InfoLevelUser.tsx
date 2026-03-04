@@ -13,11 +13,11 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { UserLevel } from '@prisma/client';
 import { IconBolt, IconBrandZapier, IconCurrencyDollar, IconUserPlus } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 import { getInfoLevelUser } from '~/constants';
-import { LocalUserLevel } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 export default function InfoLevelUser() {
@@ -29,8 +29,8 @@ export default function InfoLevelUser() {
     }
   );
   const [levelUser, levelNextUser] = useMemo(() => {
-    const levelUser = getInfoLevelUser((userData?.level as LocalUserLevel) || LocalUserLevel.BRONZE);
-    const levelNextUser = getInfoLevelUser(levelUser?.nextLevel || LocalUserLevel.BRONZE);
+    const levelUser = getInfoLevelUser((userData?.level as UserLevel) || UserLevel.BRONZE);
+    const levelNextUser = getInfoLevelUser(levelUser?.nextLevel || UserLevel.BRONZE);
     return [levelUser, levelNextUser];
   }, [userData]);
   return (

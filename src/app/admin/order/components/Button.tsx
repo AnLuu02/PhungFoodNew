@@ -1,6 +1,7 @@
 'use client';
 
 import { ActionIcon, Button, Group, Modal, Text, Title, Tooltip } from '@mantine/core';
+import { OrderStatus } from '@prisma/client';
 import { IconCopy, IconEdit, IconPlus, IconPrinter, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
@@ -10,7 +11,6 @@ import { handleConfirm } from '~/lib/ButtonHandler/ButtonHandleConfirm';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import { NotificationModal } from '../../settings/notification/components/modal/cretae_update_notification';
 import CreateOrder from './form/CreateOrder';
@@ -170,7 +170,7 @@ export function CopyOrderButton({ data }: { data: any }) {
               originalTotal: data?.originalTotal || 0,
               discountAmount: data?.discountAmount || 0,
               finalTotal: data?.finalTotal || 0,
-              status: data?.status || LocalOrderStatus.UNPAID,
+              status: data?.status || OrderStatus.UNPAID,
               userId: data?.userId || '',
               paymentId: data?.paymentId || '',
               note: data?.note || '',
@@ -203,7 +203,7 @@ export function CopyOrderButton({ data }: { data: any }) {
   );
 }
 
-const statusOptions = Object.values(LocalOrderStatus).map(status => ({
+const statusOptions = Object.values(OrderStatus).map(status => ({
   value: status,
   label: status
 }));
@@ -254,7 +254,7 @@ export function SendMessageOrderButton({ user }: { user: any }) {
   );
 }
 
-export function HandleStateOrderButton({ id, status, title }: { id: string; status: LocalOrderStatus; title: string }) {
+export function HandleStateOrderButton({ id, status, title }: { id: string; status: OrderStatus; title: string }) {
   const utils = api.useUtils();
   const mutation = api.Order.update.useMutation({
     onError: e => {
@@ -275,7 +275,7 @@ export function HandleStateOrderButton({ id, status, title }: { id: string; stat
                   id: id
                 },
                 data: {
-                  status: status || LocalOrderStatus.UNPAID
+                  status: status || OrderStatus.UNPAID
                 },
                 orderId: id
               },

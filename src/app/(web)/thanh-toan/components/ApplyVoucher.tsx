@@ -1,5 +1,6 @@
 import { Badge, Box, Button, Divider, Text, TextInput } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { VoucherType } from '@prisma/client';
 import { IconGift, IconPlus, IconTag, IconX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -7,7 +8,6 @@ import ModalListVoucher from '~/components/Modals/ModalListVoucher';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 export const ApplyVoucher = ({ totalOrderPrice }: any) => {
@@ -101,7 +101,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
                   <Badge className='bg-green-100 text-xs text-green-700'>{voucher.code}</Badge>
                   <span className='text-xs text-green-700'>
                     -
-                    {voucher.type === LocalVoucherType.FIXED
+                    {voucher.type === VoucherType.FIXED
                       ? formatPriceLocaleVi(voucher.maxDiscount)
                       : `${voucher.discountValue}%`}
                   </span>

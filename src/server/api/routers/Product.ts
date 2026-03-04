@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { UserRole } from '~/constants';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
-import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
 
+import { EntityType, ImageType } from '@prisma/client';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
@@ -297,7 +297,7 @@ export const productRouter = createTRPCRouter({
           const buffer = Buffer.from(item.base64, 'base64');
           const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
           const uploadedUrl = blob.url;
-          return uploadedUrl ? { url: uploadedUrl, type: LocalImageType.GALLERY } : null;
+          return uploadedUrl ? { url: uploadedUrl, type: ImageType.GALLERY } : null;
         })
       ).then(results => results.filter(item => item !== null));
 
@@ -323,17 +323,17 @@ export const productRouter = createTRPCRouter({
                 ? [
                     {
                       url: thumbnailURL,
-                      type: LocalImageType.THUMBNAIL,
-                      entityType: LocalEntityType.PRODUCT,
-                      altText: `Ảnh ${input?.thumbnail?.fileName} loại ${LocalImageType.THUMBNAIL}`
+                      type: ImageType.THUMBNAIL,
+                      entityType: EntityType.PRODUCT,
+                      altText: `Ảnh ${input?.thumbnail?.fileName} loại ${ImageType.THUMBNAIL}`
                     }
                   ]
                 : []),
               ...galleryURLs.map(item => ({
                 url: item.url,
                 type: item.type,
-                entityType: LocalEntityType.PRODUCT,
-                altText: `Ảnh ${item?.url} loại ${LocalImageType.GALLERY}`
+                entityType: EntityType.PRODUCT,
+                altText: `Ảnh ${item?.url} loại ${ImageType.GALLERY}`
               }))
             ]
           }
@@ -413,8 +413,8 @@ export const productRouter = createTRPCRouter({
       }
 
       const oldImages = existingProduct.images || [];
-      const oldThumbnail = oldImages.find(img => img?.type === LocalImageType.THUMBNAIL);
-      const oldGallery = oldImages.filter(img => img?.type === LocalImageType.GALLERY);
+      const oldThumbnail = oldImages.find(img => img?.type === ImageType.THUMBNAIL);
+      const oldGallery = oldImages.filter(img => img?.type === ImageType.GALLERY);
 
       let newThumbnail: any = oldThumbnail;
       if (input.thumbnail?.fileName) {
@@ -428,9 +428,9 @@ export const productRouter = createTRPCRouter({
           )?.url;
           newThumbnail = {
             url: url,
-            type: LocalImageType.THUMBNAIL,
-            altText: `Ảnh ${input.thumbnail.fileName} loại ${LocalImageType.THUMBNAIL}`,
-            entityType: LocalEntityType.PRODUCT
+            type: ImageType.THUMBNAIL,
+            altText: `Ảnh ${input.thumbnail.fileName} loại ${ImageType.THUMBNAIL}`,
+            entityType: EntityType.PRODUCT
           };
 
           if (oldThumbnail) await del(oldThumbnail.url, { token: tokenBlobVercel });
@@ -459,9 +459,9 @@ export const productRouter = createTRPCRouter({
             const uploadedImage = blob.url;
             return {
               url: uploadedImage,
-              type: LocalImageType.GALLERY,
-              altText: `Ảnh ${item.fileName} loại ${LocalImageType.GALLERY}`,
-              entityType: LocalEntityType.PRODUCT
+              type: ImageType.GALLERY,
+              altText: `Ảnh ${item.fileName} loại ${ImageType.GALLERY}`,
+              entityType: EntityType.PRODUCT
             };
           } catch {
             NotifyError('Có lỗi xảy ra khi tải ảnh lên Vercel Blob');

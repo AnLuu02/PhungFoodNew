@@ -1,10 +1,10 @@
+import { EntityType, ImageType } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { redis } from '~/lib/CacheConfig/redis';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
 import { openingHourSchema, socialSchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -177,10 +177,10 @@ export const restaurantRouter = createTRPCRouter({
           logo: imgURL
             ? {
                 create: {
-                  entityType: LocalEntityType.RESTAURANT,
+                  entityType: EntityType.RESTAURANT,
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
-                  type: LocalImageType.LOGO
+                  type: ImageType.LOGO
                 } as any
               }
             : undefined
@@ -280,16 +280,16 @@ export const restaurantRouter = createTRPCRouter({
                   upsert: {
                     where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
                     update: {
-                      entityType: LocalEntityType.RESTAURANT,
+                      entityType: EntityType.RESTAURANT,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: LocalImageType.LOGO
+                      type: ImageType.LOGO
                     } as any,
                     create: {
-                      entityType: LocalEntityType.RESTAURANT,
+                      entityType: EntityType.RESTAURANT,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: LocalImageType.LOGO
+                      type: ImageType.LOGO
                     } as any
                   }
                 }
@@ -404,7 +404,7 @@ export const restaurantRouter = createTRPCRouter({
             const buffer = Buffer.from(item.base64, 'base64');
             const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
             const uploadedUrl = blob.url;
-            return uploadedUrl ? { url: uploadedUrl, type: LocalImageType.BANNER } : null;
+            return uploadedUrl ? { url: uploadedUrl, type: ImageType.BANNER } : null;
           })
         ).then(results => results.filter(item => item !== null));
       }
@@ -415,7 +415,7 @@ export const restaurantRouter = createTRPCRouter({
             const buffer = Buffer.from(item.base64, 'base64');
             const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
             const uploadedUrl = blob.url;
-            return uploadedUrl ? { url: uploadedUrl, type: LocalImageType.GALLERY } : null;
+            return uploadedUrl ? { url: uploadedUrl, type: ImageType.GALLERY } : null;
           })
         ).then(results => results.filter(item => item !== null));
       }
@@ -429,14 +429,14 @@ export const restaurantRouter = createTRPCRouter({
               ...bannerURLs.map((item: any) => ({
                 url: item.url,
                 type: item.type,
-                entityType: LocalEntityType.RESTAURANT,
-                altText: `Ảnh ${item?.url} loại ${LocalImageType.BANNER}`
+                entityType: EntityType.RESTAURANT,
+                altText: `Ảnh ${item?.url} loại ${ImageType.BANNER}`
               })),
               ...galleryURLs.map((item: any) => ({
                 url: item.url,
                 type: item.type,
-                entityType: LocalEntityType.RESTAURANT,
-                altText: `Ảnh ${item?.url} loại ${LocalImageType.GALLERY}`
+                entityType: EntityType.RESTAURANT,
+                altText: `Ảnh ${item?.url} loại ${ImageType.GALLERY}`
               }))
             ]
           }
@@ -503,9 +503,9 @@ export const restaurantRouter = createTRPCRouter({
             const uploadedImage = blob.url;
             return {
               url: uploadedImage,
-              type: LocalImageType.GALLERY,
-              altText: `Ảnh ${item.fileName} loại ${LocalImageType.GALLERY}`,
-              entityType: LocalEntityType.RESTAURANT
+              type: ImageType.GALLERY,
+              altText: `Ảnh ${item.fileName} loại ${ImageType.GALLERY}`,
+              entityType: EntityType.RESTAURANT
             };
           } catch {
             NotifyError('Có lỗi xảy ra khi tải ảnh lên Vercel Blob');
@@ -519,9 +519,9 @@ export const restaurantRouter = createTRPCRouter({
             const uploadedImage = blob.url;
             return {
               url: uploadedImage,
-              type: LocalImageType.BANNER,
-              altText: `Ảnh ${item.fileName} loại ${LocalImageType.BANNER}`,
-              entityType: LocalEntityType.RESTAURANT
+              type: ImageType.BANNER,
+              altText: `Ảnh ${item.fileName} loại ${ImageType.BANNER}`,
+              entityType: EntityType.RESTAURANT
             };
           } catch {
             NotifyError('Có lỗi xảy ra khi tải ảnh lên Vercel Blob');

@@ -1,4 +1,4 @@
-import { Gender, Prisma, UserLevel } from '@prisma/client';
+import { EntityType, Gender, ImageType, Prisma, UserLevel } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { del, put } from '@vercel/blob';
 import { compare } from 'bcryptjs';
@@ -10,7 +10,6 @@ import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/ha
 import { hashPassword } from '~/lib/FuncHandler/hashPassword';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
-import { LocalEntityType, LocalGender, LocalImageType, LocalUserLevel } from '~/lib/ZodSchema/enum';
 import { baseAddressSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
@@ -121,7 +120,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(1, 'Tên không được để trống'),
-        gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
+        gender: z.nativeEnum(Gender).default(Gender.OTHER),
         email: z.string().email({ message: 'Email không hợp lệ' }),
         isActive: z.boolean().default(true),
         image: z
@@ -135,7 +134,7 @@ export const userRouter = createTRPCRouter({
         phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
         address: baseAddressSchema.optional(),
         pointUser: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
+        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE),
         roleId: z.string().optional()
       })
     )
@@ -220,10 +219,10 @@ export const userRouter = createTRPCRouter({
           image: imgURL
             ? {
                 create: {
-                  entityType: LocalEntityType.USER,
+                  entityType: EntityType.USER,
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
-                  type: LocalImageType.THUMBNAIL
+                  type: ImageType.THUMBNAIL
                 }
               }
             : undefined,
@@ -262,13 +261,13 @@ export const userRouter = createTRPCRouter({
             base64: z.string()
           })
           .optional(),
-        gender: z.nativeEnum(Gender).default(LocalGender.OTHER),
+        gender: z.nativeEnum(Gender).default(Gender.OTHER),
         dateOfBirth: z.date().optional(),
         password: z.string().min(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' }),
         phone: z.string().max(10, { message: 'Số điện thoại phải có 10 chữ số' }).optional(),
         address: baseAddressSchema,
         pointUser: z.number().default(0),
-        level: z.nativeEnum(UserLevel).default(LocalUserLevel.BRONZE),
+        level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE),
         roleId: z.string()
       })
     )
@@ -332,16 +331,16 @@ export const userRouter = createTRPCRouter({
                   upsert: {
                     where: { id: oldImage?.id || '' },
                     update: {
-                      entityType: LocalEntityType.USER,
+                      entityType: EntityType.USER,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: LocalImageType.THUMBNAIL
+                      type: ImageType.THUMBNAIL
                     },
                     create: {
-                      entityType: LocalEntityType.USER,
+                      entityType: EntityType.USER,
                       altText: `Ảnh ${input.name}`,
                       url: imgURL,
-                      type: LocalImageType.THUMBNAIL
+                      type: ImageType.THUMBNAIL
                     }
                   }
                 }
@@ -410,16 +409,16 @@ export const userRouter = createTRPCRouter({
                 upsert: {
                   where: { id: oldImage?.id || '' },
                   update: {
-                    entityType: LocalEntityType.USER,
+                    entityType: EntityType.USER,
                     altText: `Ảnh ${data.name}`,
                     url: imgURL,
-                    type: LocalImageType.THUMBNAIL
+                    type: ImageType.THUMBNAIL
                   },
                   create: {
-                    entityType: LocalEntityType.USER,
+                    entityType: EntityType.USER,
                     altText: `Ảnh ${data.name}`,
                     url: imgURL,
-                    type: LocalImageType.THUMBNAIL
+                    type: ImageType.THUMBNAIL
                   }
                 }
               }

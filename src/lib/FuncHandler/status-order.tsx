@@ -1,3 +1,4 @@
+import { OrderStatus } from '@prisma/client';
 import {
   Icon,
   IconAlertTriangle,
@@ -11,10 +12,9 @@ import {
   IconX
 } from '@tabler/icons-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
-import { LocalOrderStatus } from '../ZodSchema/enum';
 
 export const ORDER_STATUS_MAP: Record<
-  LocalOrderStatus,
+  OrderStatus,
   {
     key: string;
     label: string;
@@ -23,43 +23,43 @@ export const ORDER_STATUS_MAP: Record<
     icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
   }
 > = {
-  [LocalOrderStatus.COMPLETED]: {
-    key: LocalOrderStatus.COMPLETED,
+  [OrderStatus.COMPLETED]: {
+    key: OrderStatus.COMPLETED,
     label: 'Hoàn thành',
     color: '#008236',
     icon: IconCircleDashedCheck,
     message: 'Đơn hàng đã được hoàn thành thành công'
   },
-  [LocalOrderStatus.UNPAID]: {
-    key: LocalOrderStatus.UNPAID,
+  [OrderStatus.UNPAID]: {
+    key: OrderStatus.UNPAID,
     label: 'Chờ thanh toán',
     color: '#FF6900',
     icon: IconClock,
     message: 'Đơn hàng của bạn chưa được thanh toán'
   },
-  [LocalOrderStatus.PENDING]: {
-    key: LocalOrderStatus.PENDING,
+  [OrderStatus.PENDING]: {
+    key: OrderStatus.PENDING,
     label: 'Chờ xác nhận',
     color: '#155DFC',
     icon: IconClock,
     message: 'Đơn hàng của bạn đang chờ nhà hàng xác nhận.'
   },
-  [LocalOrderStatus.CONFIRMED]: {
-    key: LocalOrderStatus.CONFIRMED,
+  [OrderStatus.CONFIRMED]: {
+    key: OrderStatus.CONFIRMED,
     label: 'Đã xác nhận - đang chuẩn bị',
     color: '#155DFC',
     icon: IconClock,
     message: 'Đơn hàng của bạn đã được nhà hàng xác nhận. Đang chuẩn bị hàng.'
   },
-  [LocalOrderStatus.SHIPPING]: {
-    key: LocalOrderStatus.SHIPPING,
+  [OrderStatus.SHIPPING]: {
+    key: OrderStatus.SHIPPING,
     label: 'Đang giao hàng',
     color: '#009689',
     icon: IconTruck,
     message: 'Đơn hàng đang trên đường giao đến bạn'
   },
-  [LocalOrderStatus.CANCELLED]: {
-    key: LocalOrderStatus.CANCELLED,
+  [OrderStatus.CANCELLED]: {
+    key: OrderStatus.CANCELLED,
     label: 'Đã hủy',
     color: '#E7000B',
     icon: IconAlertTriangle,
@@ -67,7 +67,7 @@ export const ORDER_STATUS_MAP: Record<
   }
 };
 
-export const statusConfig: Record<LocalOrderStatus | string | any, any> = {
+export const statusConfig: Record<OrderStatus | string | any, any> = {
   ...ORDER_STATUS_MAP,
   ERROR: {
     key: 'ERROR',
@@ -87,48 +87,45 @@ export const statusConfig: Record<LocalOrderStatus | string | any, any> = {
 
 export const ORDER_STATUS_UI = [
   {
-    key: LocalOrderStatus.COMPLETED,
+    key: OrderStatus.COMPLETED,
     label: 'Hoàn thành',
     color: '#008236',
     icon: <IconCheck size={22} color='#008236' />
   },
   {
-    key: LocalOrderStatus.PENDING,
+    key: OrderStatus.PENDING,
     label: 'Chờ xác nhận',
     color: '#155DFC',
     icon: <IconClock size={22} color='#155DFC' />
   },
   {
-    key: LocalOrderStatus.SHIPPING,
+    key: OrderStatus.SHIPPING,
     label: 'Đang giao',
     color: '#009689',
     icon: <IconTruck size={22} color='#009689' />
   },
   {
-    key: LocalOrderStatus.CANCELLED,
+    key: OrderStatus.CANCELLED,
     label: 'Đã hủy',
     color: '#E7000B',
     icon: <IconX size={22} color='#E7000B' />
   },
   {
-    key: LocalOrderStatus.UNPAID,
+    key: OrderStatus.UNPAID,
     label: 'Chưa thanh toán',
     color: '#FF6900',
     icon: <IconClock size={22} color='#FF6900' />
   },
   {
-    key: LocalOrderStatus.CONFIRMED,
+    key: OrderStatus.CONFIRMED,
     label: 'Đã xác nhận - Đang chuẩn bị',
     color: '#FF6900',
     icon: <IconClock size={22} color='#FF6900' />
   }
 ];
 
-export const getStatusInfo = (status: LocalOrderStatus) => {
-  const icon = ORDER_STATUS_MAP[status as LocalOrderStatus]?.icon;
-  const color = ORDER_STATUS_MAP[status as LocalOrderStatus]?.color;
-  const label = ORDER_STATUS_MAP[status as LocalOrderStatus]?.label;
-  const message = ORDER_STATUS_MAP[status as LocalOrderStatus]?.message;
+export const getStatusInfo = (status: OrderStatus) => {
+  const { icon, color, label, message } = ORDER_STATUS_MAP[status];
   return {
     icon,
     color,
@@ -145,13 +142,13 @@ export const getTotalOrderStatus = (orders: any[]) => {
   const totalOrders = orders.length || 0;
   const completionRate = (objStatus.COMPLETED / totalOrders) * 100 || 0;
   return {
-    [LocalOrderStatus.COMPLETED]: objStatus.COMPLETED,
-    [LocalOrderStatus.UNPAID]: objStatus.UNPAID,
-    [LocalOrderStatus.CANCELLED]: objStatus.CANCELLED,
+    [OrderStatus.COMPLETED]: objStatus.COMPLETED,
+    [OrderStatus.UNPAID]: objStatus.UNPAID,
+    [OrderStatus.CANCELLED]: objStatus.CANCELLED,
     completionRate,
-    [LocalOrderStatus.PENDING]: objStatus.PENDING,
-    [LocalOrderStatus.SHIPPING]: objStatus.SHIPPING,
-    [LocalOrderStatus.CONFIRMED]: objStatus.CONFIRMED,
+    [OrderStatus.PENDING]: objStatus.PENDING,
+    [OrderStatus.SHIPPING]: objStatus.SHIPPING,
+    [OrderStatus.CONFIRMED]: objStatus.CONFIRMED,
     totalOrders
   };
 };

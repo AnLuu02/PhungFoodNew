@@ -19,6 +19,7 @@ import {
   Stack,
   Text
 } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconX } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -26,7 +27,6 @@ import { useEffect, useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { ModalProps } from '~/types/modal';
 import { ButtonAddToCart } from '../Button/ButtonAddToCart';
 import { ShareSocials } from '../ShareSocial';
@@ -66,14 +66,13 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                 <Image
                   loading='lazy'
                   src={
-                    getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) ||
-                    '/images/png/delicious-burger-fries.png'
+                    getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/png/delicious-burger-fries.png'
                   }
                   alt={data?.name}
                   className='cursor-pointer rounded-md object-cover'
                   fill
                   onClick={() => {
-                    setCurrentImage(getImageProduct(data?.images || [], LocalImageType.THUMBNAIL) || '');
+                    setCurrentImage(getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '');
                     setShowfullImage(true);
                   }}
                 />
@@ -90,14 +89,14 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                 slidesToScroll={1}
               >
                 {data?.images?.map((item: any, index: number) => {
-                  if (item?.type === LocalImageType.GALLERY) {
+                  if (item?.type === ImageType.GALLERY) {
                     return (
                       <Carousel.Slide key={index}>
                         <Card withBorder radius={'sm'}>
                           <Card.Section
                             className='cursor-pointer'
                             onClick={() => {
-                              setCurrentImage(item?.type === LocalImageType.GALLERY && item?.url);
+                              setCurrentImage(item?.type === ImageType.GALLERY && item?.url);
                               setShowfullImage(true);
                             }}
                           >

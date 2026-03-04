@@ -1,5 +1,4 @@
 import { OrderStatus } from '@prisma/client';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 
 export const buildSortFilter = (sort: any, sortValue: any[]) => {
   const orderBy: any[] = [];
@@ -30,8 +29,8 @@ export async function updateRevenue(ctx: any, status: OrderStatus, userId: strin
   await ctx.db.revenue.upsert({
     where: { userId_year_month_day: { userId, year, month, day } },
     update: {
-      totalSpent: status === LocalOrderStatus.COMPLETED ? { increment: orderTotal } : { decrement: orderTotal },
-      totalOrders: status === LocalOrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 },
+      totalSpent: status === OrderStatus.COMPLETED ? { increment: orderTotal } : { decrement: orderTotal },
+      totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 },
       orders: {
         connect: { id: order.id }
       }
@@ -53,9 +52,8 @@ export async function updateSales(ctx: any, status: OrderStatus, productId: stri
   await ctx.db.product.update({
     where: { id: productId },
     data: {
-      soldQuantity: status === LocalOrderStatus.COMPLETED ? { increment: soldQuantity } : { decrement: soldQuantity },
-      availableQuantity:
-        status === LocalOrderStatus.COMPLETED ? { decrement: soldQuantity } : { increment: soldQuantity }
+      soldQuantity: status === OrderStatus.COMPLETED ? { increment: soldQuantity } : { decrement: soldQuantity },
+      availableQuantity: status === OrderStatus.COMPLETED ? { decrement: soldQuantity } : { increment: soldQuantity }
     }
   });
 }

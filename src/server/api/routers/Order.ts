@@ -2,7 +2,6 @@ import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/FuncHandler/PrismaHelper';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -65,7 +64,7 @@ export const orderRouter = createTRPCRouter({
             ],
             status: filter
               ? {
-                  equals: filter?.trim() as LocalOrderStatus
+                  equals: filter?.trim() as OrderStatus
                 }
               : undefined
           },
@@ -114,7 +113,7 @@ export const orderRouter = createTRPCRouter({
             ],
             status: filter
               ? {
-                  equals: filter?.trim() as LocalOrderStatus
+                  equals: filter?.trim() as OrderStatus
                 }
               : undefined
           },
@@ -220,7 +219,7 @@ export const orderRouter = createTRPCRouter({
       }
 
       //test admin
-      if (order && order.status === LocalOrderStatus.COMPLETED) {
+      if (order && order.status === OrderStatus.COMPLETED) {
         updatepointUser(ctx, input.userId, Number(input.finalTotal) || 0);
         updateRevenue(ctx, order.status, input.userId, order);
         await Promise.all(
@@ -253,7 +252,7 @@ export const orderRouter = createTRPCRouter({
         }
       });
 
-      if (order && order.status === LocalOrderStatus.COMPLETED) {
+      if (order && order.status === OrderStatus.COMPLETED) {
         updateRevenue(ctx, order.status, order.userId, order);
         updatepointUser(ctx, order.userId, order.finalTotal);
         await Promise.all(

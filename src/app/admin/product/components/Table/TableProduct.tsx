@@ -5,10 +5,10 @@ import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { UserRole } from '~/constants';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
 import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
@@ -177,7 +177,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
 
                   <Table.Td className='text-sm'>
                     <Avatar
-                      src={item.images?.find((img: any) => img.type === LocalImageType.THUMBNAIL)?.url}
+                      src={item.images?.find((img: any) => img.type === ImageType.THUMBNAIL)?.url}
                       alt={item.name}
                       size={40}
                       radius='md'

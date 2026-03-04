@@ -13,11 +13,11 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { IconAlertSquareRounded, IconCheck, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { Note } from './Note';
 export const CartTable = ({ updateQuantity }: any) => {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
@@ -49,9 +49,7 @@ export const CartTable = ({ updateQuantity }: any) => {
                 >
                   <Image
                     loading='lazy'
-                    src={
-                      getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-                    }
+                    src={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                     width={60}
                     height={60}
                     className='rounded-md object-cover'

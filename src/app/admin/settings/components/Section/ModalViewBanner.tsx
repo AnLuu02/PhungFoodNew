@@ -1,9 +1,9 @@
 'use client';
 
 import { Modal, Text } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { useEffect, useMemo, useState } from 'react';
 import { vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { CarouselBanner } from '../CarouselBanner';
 
 export default function ModalViewBanner({ viewBanner, setViewBanner }: any) {
@@ -20,8 +20,8 @@ export default function ModalViewBanner({ viewBanner, setViewBanner }: any) {
       const gallery: string[] = [];
 
       viewBanner.images.forEach((image: any) => {
-        if (image.type === LocalImageType.BANNER) banners.push(image.url);
-        else if (image.type === LocalImageType.GALLERY) gallery.push(image.url);
+        if (image.type === ImageType.BANNER) banners.push(image.url);
+        else if (image.type === ImageType.GALLERY) gallery.push(image.url);
       });
 
       Promise.all([

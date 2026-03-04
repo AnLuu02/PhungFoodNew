@@ -1,9 +1,9 @@
 import { GoogleGenAI } from '@google/genai';
+import { ImageType } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { generateSocialUrl } from '~/lib/FuncHandler/generateSocial';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/server';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
               style="margin-top: 8px; margin-bottom: 8px; padding: 8px; background-color: #f3f4f6; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; align-items: flex-start; gap: 16px;"
             >
               <img
-                src="${getImageProduct(product?.images || [], LocalImageType.THUMBNAIL)}"
+                src="${getImageProduct(product?.images || [], ImageType.THUMBNAIL)}"
                 alt="${product.name}"
                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"
               />

@@ -14,7 +14,7 @@ import {
   Title
 } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { OrderStatus } from '@prisma/client';
+import { AddressType, OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
@@ -24,7 +24,6 @@ import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import fetcher from '~/lib/FuncHandler/fetcher';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalAddressType, LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
@@ -58,7 +57,7 @@ export default function UpdateOrder({
       finalTotal: 0,
       discountAmount: 0,
       originalTotal: 0,
-      status: LocalOrderStatus.UNPAID,
+      status: OrderStatus.UNPAID,
       userId: '',
       paymentId: '',
       orderItems: [],
@@ -70,7 +69,7 @@ export default function UpdateOrder({
           detail: '',
           postalCode: '',
           fullAddress: '',
-          type: LocalAddressType.DELIVERY,
+          type: AddressType.DELIVERY,
           province: '',
           district: '',
           ward: ''
@@ -416,7 +415,7 @@ export default function UpdateOrder({
                     placeholder=' Chọn trạng thái'
                     data={Object.values(OrderStatus).map(status => ({
                       value: status,
-                      label: getStatusInfo(status as LocalOrderStatus).label
+                      label: getStatusInfo(status as OrderStatus).label
                     }))}
                     {...field}
                     error={errors.status?.message}

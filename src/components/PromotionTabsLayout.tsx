@@ -14,11 +14,11 @@ import {
   ThemeIcon,
   Title
 } from '@mantine/core';
+import { VoucherType } from '@prisma/client';
 import { IconGift } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 
 export function PromotionTabLayout({ vouchers }: { vouchers: any }) {
   const [page, setPage] = useState(1);
@@ -83,10 +83,10 @@ export function PromotionTabLayout({ vouchers }: { vouchers: any }) {
             <Tabs.Tab size={'md'} fw={700} value='all'>
               Tất cả
             </Tabs.Tab>
-            <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.PERCENTAGE}>
+            <Tabs.Tab size={'md'} fw={700} value={VoucherType.PERCENTAGE}>
               Phầm trăm
             </Tabs.Tab>
-            <Tabs.Tab size={'md'} fw={700} value={LocalVoucherType.FIXED}>
+            <Tabs.Tab size={'md'} fw={700} value={VoucherType.FIXED}>
               Tiền mặt
             </Tabs.Tab>
           </Group>

@@ -16,10 +16,10 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { OrderStatus } from '@prisma/client';
 import { useMemo } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 const colors = ['blue.6', 'green.6', 'orange.6', 'red.6', 'gray.6'];
 export default function ReportRevenuePageClient({
   topUsers,
@@ -49,7 +49,7 @@ export default function ReportRevenuePageClient({
     });
   }, [revenueByCategories]);
   const revenueByOrderStatusRender = useMemo(() => {
-    const revenueByOrderStatusArr = Object.entries(LocalOrderStatus || {});
+    const revenueByOrderStatusArr = Object.entries(OrderStatus || {});
     return revenueByOrderStatusArr.map(([label]: any, index: number) => {
       const existed = revenueByOrderStatus.find((item: any) => item.status === label);
       if (existed) {

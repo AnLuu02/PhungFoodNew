@@ -1,4 +1,4 @@
-import { TypeContact } from '~/lib/ZodSchema/enum';
+import { TypeContact } from '@prisma/client';
 
 export type Contact = {
   id: string;

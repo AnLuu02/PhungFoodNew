@@ -14,6 +14,7 @@ import {
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
+import { AddressType, Gender, UserLevel } from '@prisma/client';
 import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -22,7 +23,6 @@ import BButton from '~/components/Button/Button';
 import fetcher from '~/lib/FuncHandler/fetcher';
 import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
 import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
@@ -40,7 +40,7 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
       name: '',
       email: '',
       image: undefined,
-      gender: LocalGender.OTHER,
+      gender: Gender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       isActive: true,
       password: '',
@@ -53,11 +53,11 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
         district: '',
         ward: '',
         detail: '',
-        type: LocalAddressType.USER
+        type: AddressType.USER
       },
       roleId: '',
       pointUser: 0,
-      level: LocalUserLevel.BRONZE
+      level: UserLevel.BRONZE
     }
   });
   const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
@@ -352,9 +352,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     radius='md'
                     {...field}
                     data={[
-                      { value: LocalGender.MALE, label: 'Nam' },
-                      { value: LocalGender.FEMALE, label: 'Nữ' },
-                      { value: LocalGender.OTHER, label: 'Khác' }
+                      { value: Gender.MALE, label: 'Nam' },
+                      { value: Gender.FEMALE, label: 'Nữ' },
+                      { value: Gender.OTHER, label: 'Khác' }
                     ]}
                   />
                 )}

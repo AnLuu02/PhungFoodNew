@@ -1,4 +1,4 @@
-import { LocalUserLevel } from '~/lib/ZodSchema/enum';
+import { UserLevel } from '@prisma/client';
 
 export const EMPTY_STRING = '';
 export const VND_SYMBOL = '₫';
@@ -91,72 +91,72 @@ export const priceRanges = [
 export const infoUserLevel = [
   {
     value: 0,
-    key: LocalUserLevel.BRONZE,
+    key: UserLevel.BRONZE,
     minPoint: 0,
     maxPoint: 499,
     viName: 'ĐỒNG',
     enName: 'BRONZE',
     color: '#3F2627',
     thumbnail: 'rank_dong.png',
-    nextLevel: LocalUserLevel.SILVER
+    nextLevel: UserLevel.SILVER
   },
   {
     value: 1,
-    key: LocalUserLevel.SILVER,
+    key: UserLevel.SILVER,
     minPoint: 500,
     maxPoint: 999,
     viName: 'BẠC',
     enName: 'SILVER',
     color: '#64707A',
     thumbnail: 'rank_bac.png',
-    nextLevel: LocalUserLevel.GOLD
+    nextLevel: UserLevel.GOLD
   },
   {
     value: 2,
-    key: LocalUserLevel.GOLD,
+    key: UserLevel.GOLD,
     minPoint: 1000,
     maxPoint: 1999,
     viName: 'VÀNG',
     enName: 'GOLD',
     color: '#523917',
     thumbnail: 'rank_vang.png',
-    nextLevel: LocalUserLevel.PLATINUM
+    nextLevel: UserLevel.PLATINUM
   },
   {
     value: 3,
-    key: LocalUserLevel.PLATINUM,
+    key: UserLevel.PLATINUM,
     minPoint: 2000,
     maxPoint: 4999,
     viName: 'BẠCH KIM',
     enName: 'PLATINUM',
     color: '#4183A7',
     thumbnail: 'rank_bk.png',
-    nextLevel: LocalUserLevel.DIAMOND
+    nextLevel: UserLevel.DIAMOND
   },
   {
     value: 4,
-    key: LocalUserLevel.DIAMOND,
+    key: UserLevel.DIAMOND,
     minPoint: 5000,
     maxPoint: 9999,
     viName: 'KIM CƯƠNG',
     enName: 'DIAMOND',
     color: '#5F77C3',
     thumbnail: 'rank_kc.png',
-    nextLevel: LocalUserLevel.DIAMOND
+    nextLevel: UserLevel.DIAMOND
   }
 ];
 
-export const getInfoLevelUser = (key: LocalUserLevel) => {
+export const getInfoLevelUser = (key: UserLevel) => {
   switch (key) {
-    case LocalUserLevel.BRONZE:
+    case UserLevel.BRONZE:
       return infoUserLevel[0] as any;
-    case LocalUserLevel.SILVER:
+    case UserLevel.SILVER:
       return infoUserLevel[1] as any;
-    case LocalUserLevel.GOLD:
+    case UserLevel.GOLD:
       return infoUserLevel[2] as any;
-    case LocalUserLevel.PLATINUM:
+    case UserLevel.PLATINUM:
       return infoUserLevel[3] as any;
-    case LocalUserLevel.DIAMOND:
+    case UserLevel.DIAMOND:
       return infoUserLevel[4] as any;
     default:
       return infoUserLevel[0] as any;

@@ -2,12 +2,12 @@
 
 import { BarChart, LineChart } from '@mantine/charts';
 import { ActionIcon, Badge, Box, Card, Flex, SimpleGrid, Table, Text, Title } from '@mantine/core';
+import { OrderStatus } from '@prisma/client';
 import { IconRotateClockwise, IconUserPlus } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 export default function ReportOverviewPageClient({ overviews }: any) {
   const revenues = overviews.revenues || [];
   const searchParams = useSearchParams();
@@ -166,7 +166,7 @@ export default function ReportOverviewPageClient({ overviews }: any) {
             </Table.Thead>
             <Table.Tbody>
               {overviews.orders.map((order: any) => {
-                const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
+                const statusInfo = getStatusInfo(order.status as OrderStatus);
                 return (
                   <Table.Tr key={order.id}>
                     <Table.Td>{order.id}</Table.Td>

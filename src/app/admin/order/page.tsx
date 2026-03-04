@@ -1,7 +1,7 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { OrderStatus } from '@prisma/client';
 import { Metadata } from 'next';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserAdvanced } from './components/Button';
 import TableOrder from './components/Table/TableOrder';
@@ -22,7 +22,7 @@ export default async function OrderManagementPage({
   const s = searchParams?.s || '';
   const currentPage = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const filter = searchParams?.filter as LocalOrderStatus;
+  const filter = searchParams?.filter as OrderStatus;
   const sortArr = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);

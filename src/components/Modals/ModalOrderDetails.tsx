@@ -20,17 +20,17 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { ImageType, OrderStatus, VoucherType } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { LocalImageType, LocalOrderStatus, LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { ModalProps } from '~/types/modal';
 import InvoiceToPrint from '../InvoceToPrint';
 
 function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
   const isDesktop = useMediaQuery(`(min-width:1024px)`);
-  const statusInfo = getStatusInfo(data?.status || LocalOrderStatus.PENDING);
+  const statusInfo = getStatusInfo(data?.status || OrderStatus.PENDING);
   return (
     <>
       <Modal
@@ -149,7 +149,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                                   </Badge>
                                   <span className='text-sm text-gray-600 dark:text-dark-text'>
                                     (
-                                    {voucher.type === LocalVoucherType.PERCENTAGE
+                                    {voucher.type === VoucherType.PERCENTAGE
                                       ? `${voucher.discountValue}%`
                                       : formatPriceLocaleVi(voucher.value)}
                                     )
@@ -260,7 +260,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                             <Avatar
                               size={40}
                               src={
-                                getImageProduct(item?.product?.images || [], LocalImageType.THUMBNAIL) ||
+                                getImageProduct(item?.product?.images || [], ImageType.THUMBNAIL) ||
                                 '/images/jpg/empty-300x240.jpg'
                               }
                               radius={'md'}

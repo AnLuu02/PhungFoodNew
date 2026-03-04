@@ -1,10 +1,10 @@
 import { Box, Button, Center, Flex, Group, Modal, Paper, Progress, ScrollArea, Text, Tooltip } from '@mantine/core';
+import { VoucherType } from '@prisma/client';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { ModalProps } from '~/types/modal';
 
 export default function ModalDetailVoucher({ type, data, opened, onClose }: ModalProps<any>) {
@@ -36,7 +36,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
             pos={'absolute'}
             top={0}
             left={0}
-            className={`z-[-1] ${voucher?.type === LocalVoucherType.FIXED ? 'bg-gradient-to-bl from-[#ff7f50] to-[#ff6347]' : 'bg-[#26ab99]/80'} `}
+            className={`z-[-1] ${voucher?.type === VoucherType.FIXED ? 'bg-gradient-to-bl from-[#ff7f50] to-[#ff6347]' : 'bg-[#26ab99]/80'} `}
           ></Box>
           <Paper ml={12} mr={12} shadow='md' className='translate-y-[20px]' p={0} pos={'relative'}>
             <Flex h={120} pos={'relative'} p={0}>
@@ -56,7 +56,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
                     height={120}
                     width={120}
                     src={
-                      voucher?.type === LocalVoucherType.PERCENTAGE
+                      voucher?.type === VoucherType.PERCENTAGE
                         ? '/images/png/voucher_bg_green.png'
                         : '/images/png/voucher_bg_red.png'
                     }
@@ -209,7 +209,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
           <Center className='fixed bottom-3 border-t hover:opacity-75' w={'100%'}>
             <Button
               fullWidth
-              className={`text-orange ${voucher?.type === LocalVoucherType.FIXED ? 'bg-[#ee4d2d] hover:bg-[#f7431f]' : 'bg-[#26ab99] hover:bg-[#26ab99]/80'} `}
+              className={`text-orange ${voucher?.type === VoucherType.FIXED ? 'bg-[#ee4d2d] hover:bg-[#f7431f]' : 'bg-[#26ab99] hover:bg-[#26ab99]/80'} `}
               onClick={onClose}
               w={'90%'}
             >

@@ -21,6 +21,7 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
+import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
@@ -31,7 +32,6 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 export function OrderList({ orders }: { orders: any }) {
@@ -189,19 +189,19 @@ export function OrderList({ orders }: { orders: any }) {
                 <Tabs.Tab size={'md'} fw={500} value='all'>
                   Tất cả
                 </Tabs.Tab>
-                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.COMPLETED}>
+                <Tabs.Tab size={'md'} fw={500} value={OrderStatus.COMPLETED}>
                   Hoàn thành
                 </Tabs.Tab>
-                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.PENDING}>
+                <Tabs.Tab size={'md'} fw={500} value={OrderStatus.PENDING}>
                   Chờ xác nhận
                 </Tabs.Tab>
-                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.UNPAID}>
+                <Tabs.Tab size={'md'} fw={500} value={OrderStatus.UNPAID}>
                   Chưa thanh toán
                 </Tabs.Tab>
-                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.SHIPPING}>
+                <Tabs.Tab size={'md'} fw={500} value={OrderStatus.SHIPPING}>
                   Đang giao
                 </Tabs.Tab>
-                <Tabs.Tab size={'md'} fw={500} value={LocalOrderStatus.CANCELLED}>
+                <Tabs.Tab size={'md'} fw={500} value={OrderStatus.CANCELLED}>
                   Đã hủy
                 </Tabs.Tab>
               </Group>
@@ -239,7 +239,7 @@ export function OrderList({ orders }: { orders: any }) {
                 <Table.Tbody>
                   {displayedOrders?.length > 0 ? (
                     displayedOrders.map((order: any) => {
-                      const statusInfo = getStatusInfo(order.status as LocalOrderStatus);
+                      const statusInfo = getStatusInfo(order.status as OrderStatus);
                       return (
                         <Table.Tr key={order.id}>
                           <Table.Td w={100} style={{ maxWidth: 100, overflow: 'hidden' }}>
@@ -273,9 +273,9 @@ export function OrderList({ orders }: { orders: any }) {
                                 </ActionIcon>
                               </Tooltip>
 
-                              {order?.status === LocalOrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
+                              {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
 
-                              {order?.status === LocalOrderStatus.UNPAID && (
+                              {order?.status === OrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Tiếp tục thanh toán'>
                                     <BButton size='xs'>Thanh toán</BButton>
@@ -283,7 +283,7 @@ export function OrderList({ orders }: { orders: any }) {
                                 </Link>
                               )}
 
-                              {order?.status === LocalOrderStatus.CANCELLED && (
+                              {order?.status === OrderStatus.CANCELLED && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Đặt lại đơn hàng'>
                                     <BButton size='xs'>Đặt lại</BButton>

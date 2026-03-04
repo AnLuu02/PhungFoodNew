@@ -17,6 +17,7 @@ import {
   Textarea,
   TextInput
 } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -27,7 +28,6 @@ import { UserRole } from '~/constants';
 import { createTag } from '~/lib/FuncHandler/generateTag';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { productSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Product } from '~/types/product';
@@ -85,9 +85,8 @@ export default function UpdateProduct({
   useEffect(() => {
     setLoading(true);
     if (data) {
-      const thumnailDb = data?.images?.find(image => image.type === LocalImageType.THUMBNAIL)?.url || '';
-      const galleries =
-        data?.images?.filter(image => image.type === LocalImageType.GALLERY).map(image => image.url) || [];
+      const thumnailDb = data?.images?.find(image => image.type === ImageType.THUMBNAIL)?.url || '';
+      const galleries = data?.images?.filter(image => image.type === ImageType.GALLERY).map(image => image.url) || [];
       Promise.all([
         thumnailDb && thumnailDb !== '' && vercelBlobToFile(thumnailDb as string),
         galleries && galleries?.length > 0 ? vercelBlobToFile(galleries as string[], { type: 'multiple' }) : []

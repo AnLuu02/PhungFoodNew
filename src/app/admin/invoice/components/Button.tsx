@@ -9,11 +9,11 @@ import CreateInvoice from './form/CreateInvoice';
 import UpdateInvoice from './form/UpdateInvoice';
 
 import { Box, Card, Flex, Stack, Text } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export function CreateInvoiceButton({ allData }: any) {
   const [opened, setOpened] = useState(false);
@@ -169,7 +169,7 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                   <Flex align={'center'} justify={'space-between'}>
                     <Group>
                       <Image
-                        src={getImageProduct(item?.product?.images, LocalImageType.THUMBNAIL) || ''}
+                        src={getImageProduct(item?.product?.images, ImageType.THUMBNAIL) || ''}
                         width={60}
                         height={60}
                         style={{ objectFit: 'cover' }}

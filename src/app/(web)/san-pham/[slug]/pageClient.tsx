@@ -5,11 +5,11 @@ import { useMediaQuery } from '@mantine/hooks';
 import { useMemo, useState } from 'react';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import DiscountCodes from './components/DiscountCodes';
 import ProductImage from './components/ProductImage';
 import RelatedProducts from './components/RelatedProducts';
 
+import { ImageType } from '@prisma/client';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Carousel-Only';
 import { ProductInsights } from './components/ProductInsights';
@@ -31,7 +31,7 @@ export default function ProductDetailClient(data: any) {
       dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [],
       dataHintProducts?.filter((item: any) => item.id !== product?.id) || [],
       product?.availableQuantity > 0,
-      product?.images?.filter((item: any) => item.type !== LocalImageType.THUMBNAIL && item.url) || []
+      product?.images?.filter((item: any) => item.type !== ImageType.THUMBNAIL && item.url) || []
     ];
   }, [product]);
 
@@ -47,9 +47,7 @@ export default function ProductDetailClient(data: any) {
           className='h-fit'
         >
           <ProductImage
-            thumbnail={
-              getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-            }
+            thumbnail={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             gallery={gallery?.length > 0 ? gallery : []}
             discount={discount}
             tag={product?.tag || ''}

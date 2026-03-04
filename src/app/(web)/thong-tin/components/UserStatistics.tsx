@@ -2,13 +2,13 @@
 
 import { LineChart } from '@mantine/charts';
 import { Box, Card, Center, Divider, Flex, Progress, Select, Space, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { UserLevel } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { getInfoLevelUser } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { LocalUserLevel } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 
 const months = [
@@ -49,7 +49,7 @@ export function UserStatistics() {
   }, [revenue]);
 
   const levelInfo = useMemo(() => {
-    return getInfoLevelUser(userDb?.level as LocalUserLevel);
+    return getInfoLevelUser(userDb?.level as UserLevel);
   }, [userDb]);
 
   return (

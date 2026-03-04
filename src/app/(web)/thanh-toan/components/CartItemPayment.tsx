@@ -1,10 +1,10 @@
 import { Badge, Box, Button, Group, Paper, Spoiler, Text, Tooltip } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export function CartItemPayment({ item }: any) {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -20,7 +20,7 @@ export function CartItemPayment({ item }: any) {
         >
           <Image
             loading='lazy'
-            src={getImageProduct(item?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+            src={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             width={50}
             height={50}
             className='rounded-md object-cover'

@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
+import { AddressType, Gender, UserLevel } from '@prisma/client';
 import { IconCalendar, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -10,7 +11,6 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalAddressType, LocalGender, LocalUserLevel } from '~/lib/ZodSchema/enum';
 import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { User } from '~/types/user';
@@ -34,7 +34,7 @@ export default function Page() {
       name: '',
       email: '',
       image: undefined,
-      gender: LocalGender.OTHER,
+      gender: Gender.OTHER,
       dateOfBirth: new Date(),
       isActive: true,
       password: '',
@@ -44,7 +44,7 @@ export default function Page() {
         provinceId: '',
         districtId: '',
         wardId: '',
-        type: LocalAddressType.USER,
+        type: AddressType.USER,
         province: '',
         district: '',
         ward: '',
@@ -52,7 +52,7 @@ export default function Page() {
         postalCode: ''
       },
       pointUser: 0,
-      level: LocalUserLevel.BRONZE
+      level: UserLevel.BRONZE
     }
   });
 
@@ -236,9 +236,9 @@ export default function Page() {
                         placeholder='Giới tính'
                         {...field}
                         data={[
-                          { value: LocalGender.MALE, label: 'Nam' },
-                          { value: LocalGender.FEMALE, label: 'Nữ' },
-                          { value: LocalGender.OTHER, label: 'Khác' }
+                          { value: Gender.MALE, label: 'Nam' },
+                          { value: Gender.FEMALE, label: 'Nữ' },
+                          { value: Gender.OTHER, label: 'Khác' }
                         ]}
                       />
                     )}

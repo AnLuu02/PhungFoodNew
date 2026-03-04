@@ -1,8 +1,8 @@
+import { EntityType, ImageType } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
-import { LocalEntityType, LocalImageType } from '~/lib/ZodSchema/enum';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -151,10 +151,10 @@ export const subCategoryRouter = createTRPCRouter({
           image: imgURL
             ? {
                 create: {
-                  entityType: LocalEntityType.CATEGORY,
+                  entityType: EntityType.CATEGORY,
                   altText: `Ảnh ${input.name}`,
                   url: imgURL,
-                  type: LocalImageType.THUMBNAIL
+                  type: ImageType.THUMBNAIL
                 } as any
               }
             : undefined
@@ -230,16 +230,16 @@ export const subCategoryRouter = createTRPCRouter({
                     upsert: {
                       where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
                       update: {
-                        entityType: LocalEntityType.CATEGORY,
+                        entityType: EntityType.CATEGORY,
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
-                        type: LocalImageType.THUMBNAIL
+                        type: ImageType.THUMBNAIL
                       } as any,
                       create: {
-                        entityType: LocalEntityType.CATEGORY,
+                        entityType: EntityType.CATEGORY,
                         altText: `Ảnh ${input.name}`,
                         url: imgURL,
-                        type: LocalImageType.THUMBNAIL
+                        type: ImageType.THUMBNAIL
                       } as any
                     }
                   }

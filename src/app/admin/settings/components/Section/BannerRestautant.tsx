@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionIcon, Badge, Box, Card, FileInput, Group, Paper, Stack, Switch } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconEye, IconFile, IconPlus, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
@@ -10,7 +11,6 @@ import BButton from '~/components/Button/Button';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { bannerSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Banner } from '~/types/restaurant';
@@ -73,8 +73,8 @@ export default function BannerManagement({ data }: any) {
       const gallery: string[] = [];
 
       activeBanner.images.forEach((image: any) => {
-        if (image.type === LocalImageType.BANNER) banners.push(image.url);
-        else if (image.type === LocalImageType.GALLERY) gallery.push(image.url);
+        if (image.type === ImageType.BANNER) banners.push(image.url);
+        else if (image.type === ImageType.GALLERY) gallery.push(image.url);
       });
 
       Promise.all([

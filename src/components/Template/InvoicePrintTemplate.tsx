@@ -1,6 +1,6 @@
 import { Box, Table, Text } from '@mantine/core';
+import { VoucherType } from '@prisma/client';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import Logo from '../Logo';
 
 type invoicePrintProps = {
@@ -22,7 +22,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
     }, 0) || 0;
 
   const totalDiscountVoucher = data?.vouchers?.reduce((acc: any, voucher: any) => {
-    if (voucher.type === LocalVoucherType.PERCENTAGE) {
+    if (voucher.type === VoucherType.PERCENTAGE) {
       const discount =
         (productSale?.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0) * voucher.discountValue) /
         100;
@@ -31,7 +31,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
       } else {
         acc += discount;
       }
-    } else if (voucher.type === LocalVoucherType.FIXED) {
+    } else if (voucher.type === VoucherType.FIXED) {
       acc += voucher.discountValue;
     }
     return acc;

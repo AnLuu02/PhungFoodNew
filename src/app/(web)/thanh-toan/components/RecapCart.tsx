@@ -1,13 +1,13 @@
 'use client';
 import { Box, Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { VoucherType } from '@prisma/client';
 import { IconPercentage30 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { ModalRecentOrder } from '../../../../components/Modals/ModalRecentOrder';
 import { ApplyVoucher } from './ApplyVoucher';
 import { ButtonCheckout } from './ButtonCheckout';
@@ -28,8 +28,7 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
     const tax = originalTotal * 0.1;
     const discountAmountByVoucher = (appliedVouchers ?? []).reduce((sum, item) => {
       if (!item?.discountValue) return sum;
-      const value =
-        item.type === LocalVoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
+      const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
       return sum + value;
     }, 0);
     const finalTotal = originalTotal + tax - discount - discountAmountByVoucher;

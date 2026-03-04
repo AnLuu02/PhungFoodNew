@@ -21,6 +21,7 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
+import { ImageType } from '@prisma/client';
 import { IconClock, IconSearch, IconX, IconXboxXFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,7 +29,6 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
 
@@ -382,10 +382,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                                 >
                                   <Image
                                     loading='lazy'
-                                    src={
-                                      getImageProduct(product.images, LocalImageType.THUMBNAIL) ||
-                                      '/images/png/momo.png'
-                                    }
+                                    src={getImageProduct(product.images, ImageType.THUMBNAIL) || '/images/png/momo.png'}
                                     alt={product.name}
                                     width={60}
                                     height={60}

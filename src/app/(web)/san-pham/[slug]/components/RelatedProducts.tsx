@@ -1,10 +1,10 @@
 import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 export default function RelatedProducts({ data }: any) {
   return (
     <Paper
@@ -29,9 +29,7 @@ export default function RelatedProducts({ data }: any) {
               <Box w={60} h={60} pos={'relative'} className='overflow-hidden'>
                 <Image
                   loading='lazy'
-                  src={
-                    getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-                  }
+                  src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
                   fill
                   alt='Hình ảnh sản phẩm'
                   className='rounded-md object-cover'

@@ -1,8 +1,8 @@
 import { Badge, Group, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { LocalImageType } from '~/lib/ZodSchema/enum';
 
 export default function ProductDetails({ product }: { product: any }) {
   return (
@@ -10,7 +10,7 @@ export default function ProductDetails({ product }: { product: any }) {
       <Stack>
         <Image
           loading='lazy'
-          src={getImageProduct(product?.images || [], LocalImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+          src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           width={300}
           height={300}
           alt='Hình ảnh sản phẩm'

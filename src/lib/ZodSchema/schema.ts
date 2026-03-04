@@ -1,16 +1,20 @@
 import {
   AddressType,
   EntityType,
+  Gender,
   ImageType,
   NotificationChannel,
   NotificationPriority,
+  NotificationRecipientStatus,
   NotificationStatus,
   NotificationType,
   OrderStatus,
-  RecipientType
+  RecipientType,
+  TypeContact,
+  UserLevel,
+  VoucherType
 } from '@prisma/client';
 import { z } from 'zod';
-import { LocalAddressType, LocalGender, LocalUserLevel } from './enum';
 export const imageSchema = z.object({
   id: z.string().optional(),
   url: z.any().optional(),
@@ -85,7 +89,7 @@ export const productSchema = z.object({
 //
 export const baseAddressSchema = z.object({
   id: z.string().optional().nullable(),
-  type: z.nativeEnum(AddressType).default(LocalAddressType.USER),
+  type: z.nativeEnum(AddressType).default(AddressType.USER),
   provinceId: z.string().optional().nullable(),
   districtId: z.string().optional().nullable(),
   wardId: z.string().optional().nullable(),
@@ -154,7 +158,7 @@ export const voucherSchema = z
     tag: z.string().optional(),
     name: z.string({}).min(1, 'Tên voucher không được để trống'),
     description: z.string().optional(),
-    type: z.enum(['PERCENTAGE', 'FIXED']),
+    type: z.nativeEnum(VoucherType).default('FIXED'),
     code: z.string({ required_error: 'Mã khuyên mái là bắt buộc' }).min(1, 'Mã khuyên mái là bắt buộc'),
     isActive: z.boolean().default(true),
     discountValue: z.number({ required_error: 'Giá trị giảm là bắt buộc' }).min(1, 'Giá trị giảm không hợp lệ'),
@@ -258,7 +262,7 @@ export const userSchema = z.object({
   phone: z.string({ required_error: 'Số điện thoại là bắt buộc' }).regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số'),
   image: imageSchema.optional(),
   isActive: z.boolean().default(true),
-  gender: z.nativeEnum(LocalGender).default(LocalGender.OTHER),
+  gender: z.nativeEnum(Gender).default(Gender.OTHER),
   roleId: z.string().optional(),
   dateOfBirth: z.date().optional(),
   password: z
@@ -269,7 +273,7 @@ export const userSchema = z.object({
     }),
   address: baseAddressSchema.optional().or(z.literal('')),
   pointUser: z.number().default(0),
-  level: z.nativeEnum(LocalUserLevel).default(LocalUserLevel.BRONZE)
+  level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
 });
 
 export const contactSchema = z.object({
@@ -280,7 +284,7 @@ export const contactSchema = z.object({
   message: z.string({ required_error: 'Nội dung là bắt buộc' }).min(1, 'Nội dung không được để trống'),
   responded: z.boolean().default(false),
   subject: z.string().optional(),
-  type: z.enum(['COLLABORATION', 'SUPPORT', 'FEEDBACK', 'OTHER']).default('COLLABORATION')
+  type: z.nativeEnum(TypeContact)
 });
 
 export const notificationTemplateSchema = z.object({
@@ -331,7 +335,7 @@ export const notificationRecipientSchema = z.object({
   notificationId: z.string({ required_error: 'Thiếu ID thông báo' }),
   userId: z.string({ required_error: 'Thiếu ID người nhận' }),
 
-  status: z.enum(['pending', 'sent', 'delivered', 'read', 'clicked']).default('pending'),
+  status: z.nativeEnum(NotificationRecipientStatus).default('PENDING'),
 
   sentAt: z.date().optional(),
   deliveredAt: z.date().optional(),

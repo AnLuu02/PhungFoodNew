@@ -1,9 +1,9 @@
 'use client';
 
 import { Badge, Box, Modal, Text } from '@mantine/core';
+import { VoucherType } from '@prisma/client';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getPromotionStatus } from '~/lib/FuncHandler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 
 export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: any) => {
   return (
@@ -36,7 +36,7 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
               <Box className='space-y-1 text-sm'>
                 <Text size='sm'>
                   <strong>Hình thức:</strong>{' '}
-                  {selectedPromotion?.data.type === LocalVoucherType.FIXED ? 'Tiền mặt' : '% đơn hàng'}
+                  {selectedPromotion?.data.type === VoucherType.FIXED ? 'Tiền mặt' : '% đơn hàng'}
                 </Text>
                 <Text size='sm'>
                   <strong>Giảm:</strong>{' '}

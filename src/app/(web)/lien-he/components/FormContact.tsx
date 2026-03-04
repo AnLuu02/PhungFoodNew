@@ -1,10 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
+import { TypeContact } from '@prisma/client';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { TypeContact } from '~/lib/ZodSchema/enum';
 import { contactSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Contact } from '~/types/contact';

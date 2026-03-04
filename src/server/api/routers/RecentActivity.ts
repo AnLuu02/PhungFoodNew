@@ -1,6 +1,6 @@
+import { OrderStatus } from '@prisma/client';
 import { z } from 'zod';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { LocalOrderStatus } from '~/lib/ZodSchema/enum';
 import { createTRPCRouter, publicProcedure } from '../trpc';
 
 export const recentActivityRouter = createTRPCRouter({
@@ -141,7 +141,7 @@ export const recentActivityRouter = createTRPCRouter({
           const createdAt = new Date(order?.createdAt).getTime();
           const updatedAt = new Date(order?.updatedAt).getTime();
           if (createdAt != updatedAt) {
-            if (order?.status === LocalOrderStatus.COMPLETED) {
+            if (order?.status === OrderStatus.COMPLETED) {
               acc.push({
                 id: order.id,
                 image: order?.user.image,
@@ -150,7 +150,7 @@ export const recentActivityRouter = createTRPCRouter({
                 action: 'Vừa thanh toán thành công đơn hàng',
                 timezone: order?.updatedAt
               });
-            } else if (order?.status === LocalOrderStatus.CANCELLED) {
+            } else if (order?.status === OrderStatus.CANCELLED) {
               acc.push({
                 id: order.id,
                 image: order?.user.image,
@@ -161,7 +161,7 @@ export const recentActivityRouter = createTRPCRouter({
               });
             }
           } else {
-            if (order?.status === LocalOrderStatus.UNPAID) {
+            if (order?.status === OrderStatus.UNPAID) {
               acc.push({
                 id: order.id,
                 image: order?.user.image,

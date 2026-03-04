@@ -1,5 +1,6 @@
 'use client';
 import { Box, Button, Card, Checkbox, Divider, Flex, Group, Progress, Stack, Text, Tooltip } from '@mantine/core';
+import { VoucherType } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -7,7 +8,6 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { LocalVoucherType } from '~/lib/ZodSchema/enum';
 import { api } from '~/trpc/react';
 import { DateVoucher } from '../DateVoucher';
 type VoucherTemplateProps = {
@@ -92,7 +92,7 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
             width={120}
             style={{ objectFit: 'cover' }}
             src={
-              voucher?.type === LocalVoucherType.PERCENTAGE
+              voucher?.type === VoucherType.PERCENTAGE
                 ? '/images/png/voucher_bg_green.png'
                 : '/images/png/voucher_bg_red.png'
             }
