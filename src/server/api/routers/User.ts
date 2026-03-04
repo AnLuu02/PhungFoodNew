@@ -1,4 +1,5 @@
 import { Gender, Prisma, UserLevel } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import { del, put } from '@vercel/blob';
 import { compare } from 'bcryptjs';
 import { randomInt } from 'crypto';
@@ -704,5 +705,23 @@ export const userRouter = createTRPCRouter({
       }
 
       return { code: 'OK', message: 'OTP hợp lệ.', data: user };
-    })
+    }),
+  verifyToken: publicProcedure.input(z.object({ email: z.string() })).mutation(async ({ ctx, input }) => {
+    const { email } = input;
+    const user = await ctx.db.user.findFirst({
+      where: {
+        email: email,
+        resetTokenExpiry: {
+          gt: new Date()
+        }
+      }
+    });
+    if (!user) {
+      throw new TRPCError({
+        code: 'TIMEOUT',
+        message: 'Token đã hết hạn. Vui lòng thử lại.'
+      });
+    }
+    return user;
+  })
 });
