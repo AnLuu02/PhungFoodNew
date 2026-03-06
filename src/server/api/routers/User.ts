@@ -1,8 +1,8 @@
-import { EntityType, Gender, ImageType, Prisma, UserLevel } from '@prisma/client';
-import { TRPCError } from '@trpc/server';
+import { EntityType, Gender, ImageType, Prisma, TokenType, UserLevel } from '@prisma/client';
 import { del, put } from '@vercel/blob';
 import { compare } from 'bcryptjs';
-import { randomInt } from 'crypto';
+import crypto, { randomInt } from 'crypto';
+import dayjs from 'dayjs';
 import { z } from 'zod';
 import { UserRole } from '~/constants';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
@@ -14,7 +14,25 @@ import { baseAddressSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
+const hashOTP = (otp: string) => {
+  const salt = process.env.OTP_SALT || 'default-salt';
+  return crypto
+    .createHash('sha256')
+    .update(otp + salt)
+    .digest('hex');
+};
 
+const createOTP = (timeExpiredMinutes = 3) => {
+  const now = dayjs();
+  const otp = randomInt(100000, 999999).toString();
+  const otpExpired = now.add(timeExpiredMinutes, 'minute').toDate();
+  const otpHash = hashOTP(otp);
+  return {
+    otp,
+    otpExpired,
+    otpHash
+  };
+};
 export const userRouter = createTRPCRouter({
   find: publicProcedure
     .input(
@@ -187,20 +205,17 @@ export const userRouter = createTRPCRouter({
           imgURL = input.image.fileName;
         }
       }
-      let otp = null,
-        otpExpiry = null;
+      let otpExpired = dayjs().toDate(),
+        otpHash = '',
+        otp = '';
       if (!regexCheckGuest.test(input.email)) {
-        const now = new Date();
-        otp = randomInt(100000, 999999).toString();
-        otpExpiry = new Date(now.getTime() + 3 * 60 * 1000);
+        ({ otp, otpExpired, otpHash } = createOTP());
         const emailContent = getOtpEmail(otp, input, 3);
         await sendEmail(input.email, 'Mã OTP kích hoạt tài khoản', emailContent);
       }
       const passwordHash = await hashPassword(input.password);
       const user = await ctx.db.user.create({
         data: {
-          resetToken: otp,
-          resetTokenExpiry: otpExpiry,
           name: input.name,
           email: input.email,
           gender: input.gender,
@@ -209,6 +224,15 @@ export const userRouter = createTRPCRouter({
           isVerified: regexCheckGuest.test(input.email) ? true : false,
           password: passwordHash,
           phone: input.phone,
+          tokens: otpHash
+            ? {
+                create: {
+                  tokenHash: otpHash,
+                  expires: otpExpired,
+                  type: 'EMAIL_VERIFICATION'
+                }
+              }
+            : undefined,
           address: input.address
             ? ({
                 create: input.address
@@ -614,27 +638,50 @@ export const userRouter = createTRPCRouter({
     return user;
   }),
   verifyEmail: publicProcedure
-    .input(z.object({ email: z.string().email(), timeExpiredMinutes: z.number().default(3) }))
+    .input(
+      z.object({ email: z.string().email(), timeExpiredMinutes: z.number().default(3), type: z.nativeEnum(TokenType) })
+    )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const { email, timeExpiredMinutes, type } = input;
       const user = await ctx.db.user.findUnique({
-        where: { email: input.email }
+        where: { email }
       });
 
       if (!user) {
         throw new Error('Email không tồn tại.');
       }
 
-      const otp = randomInt(100000, 999999).toString();
-      const now = new Date();
-      const otpExpiry = new Date(now.getTime() + (input.timeExpiredMinutes || 3) * 60 * 1000);
-      await ctx.db.user.update({
-        where: { email: input.email },
-        data: { resetToken: otp, resetTokenExpiry: otpExpiry }
+      const now = dayjs();
+      const lockedUntil = dayjs(user.lockedUntil);
+      if (user.isLocked && now.isBefore(lockedUntil)) {
+        const remainingSeconds = lockedUntil.diff(now, 'second');
+        const remainingMinutes = Math.ceil(remainingSeconds / 60);
+        const text = remainingMinutes <= 0 ? '<1' : remainingMinutes.toString();
+        throw new Error(`Tài khoản tạm thời bị khóa. Thử lại sau ${text} phút.`);
+      }
+      const { otp, otpExpired, otpHash } = createOTP();
+      await ctx.db.token.upsert({
+        where: {
+          email_type: {
+            email,
+            type
+          }
+        },
+        create: {
+          email,
+          expires: otpExpired,
+          tokenHash: otpHash,
+          type
+        },
+        update: {
+          email,
+          expires: otpExpired,
+          tokenHash: otpHash,
+          type
+        }
       });
-
-      const emailContent = getOtpEmail(otp, user, input.timeExpiredMinutes || 3);
-      await sendEmail(input.email, 'Mã OTP đặt lại mật khẩu', emailContent);
-
+      const emailContent = getOtpEmail(otp, user, timeExpiredMinutes);
+      await sendEmail(email, 'Mã OTP đặt lại mật khẩu', emailContent);
       return { code: 'OK', message: 'Mã OTP đã được gửi qua email!', data: user };
     }),
 
@@ -647,23 +694,26 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const user = await ctx.db.user.findUnique({
+      const token = await ctx.db.token.findUnique({
         where: {
-          email: input.email
+          email: input.email,
+          tokenHash: input.token
+        },
+        include: {
+          user: true
         }
       });
-      if (!user) {
-        throw new Error('Email không tồn tại');
+      if (!token) {
+        throw new Error('Mã OTP không hợp lệ.');
       }
 
-      const isTokenValid =
-        (await compare(user.resetToken || '', input.token)) && (user.resetTokenExpiry || new Date()) > new Date();
+      const isTokenValid = dayjs(token.expires).isAfter(dayjs());
 
       if (!isTokenValid) {
-        throw new Error('OTP không hợp lệ hoặc đã hết hạn.');
+        throw new Error('Mã OTP đã hết hạn.');
       }
 
-      const isSameAsCurrent = await compare(input.password, user.password);
+      const isSameAsCurrent = await compare(input.password, token.user.password);
       if (isSameAsCurrent) {
         throw new Error('Gần đây bạn đã sử dụng mật khẩu này. Vui lòng sử dụng mật khẩu khác.');
       }
@@ -671,56 +721,52 @@ export const userRouter = createTRPCRouter({
       const hashedPassword = await hashPassword(input.password);
 
       await ctx.db.user.update({
-        where: { id: user.id },
+        where: { id: token.user.id },
         data: {
           password: hashedPassword,
-          resetToken: null,
-          resetTokenExpiry: null
+          tokens: {
+            delete: {
+              id: token.id
+            }
+          }
         }
       });
-
-      return { code: 'OK', message: 'Mật khẩu đã được đặt lại.', data: user };
+      const { password, ...rest } = token.user;
+      return { code: 'OK', message: 'Mật khẩu đã được đặt lại.', data: rest };
     }),
 
   verifyOtp: publicProcedure
     .input(
       z.object({
         email: z.string().email(),
-        otp: z.string().length(6)
+        otp: z.string().length(6).optional(),
+        token: z.string().optional()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const now = new Date();
-      const user = await ctx.db.user.findFirst({
+    .mutation(async ({ ctx, input }) => {
+      const { email, otp, token } = input;
+      const now = dayjs().toDate();
+      const otpHash = otp && !token ? hashOTP(otp) : token;
+      const resp = await ctx.db.token.findUnique({
         where: {
-          email: input.email,
-          resetToken: input.otp,
-          resetTokenExpiry: { gte: now }
+          email,
+          tokenHash: otpHash,
+          expires: {
+            gt: now
+          }
+        },
+        include: {
+          user: true
         }
       });
 
-      if (!user) {
+      if (!resp) {
         throw new Error('OTP không hợp lệ hoặc đã hết hạn.');
       }
-
-      return { code: 'OK', message: 'OTP hợp lệ.', data: user };
-    }),
-  verifyToken: publicProcedure.input(z.object({ email: z.string() })).mutation(async ({ ctx, input }) => {
-    const { email } = input;
-    const user = await ctx.db.user.findFirst({
-      where: {
-        email: email,
-        resetTokenExpiry: {
-          gt: new Date()
-        }
-      }
-    });
-    if (!user) {
-      throw new TRPCError({
-        code: 'TIMEOUT',
-        message: 'Token đã hết hạn. Vui lòng thử lại.'
-      });
-    }
-    return user;
-  })
+      const { password, ...rest } = resp.user;
+      return {
+        ...resp,
+        user: { ...rest }
+      };
+    })
 });

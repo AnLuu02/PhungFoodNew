@@ -20,9 +20,10 @@ export default async function ResetPassword({
   };
 }) {
   const email = decodeURIComponent(searchParams?.email) || '';
+  const token = searchParams.token || '';
   try {
-    await api.User.verifyToken({ email });
-    return <FormResetPassword email={email} token={searchParams.token} />;
+    await api.User.verifyOtp({ email, token });
+    return <FormResetPassword email={email} token={token} />;
   } catch {
     redirect('/error?reason=time_out');
   }

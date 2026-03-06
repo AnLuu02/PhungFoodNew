@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { breakpoints } from '~/constants';
-import { navItems } from '~/lib/Utils/ConfigUI';
+import { navItems } from '~/lib/ConfigUI';
 import ButtonControlModeTheme from '../Button/ButtonControlModeTheme';
 import { GlobalSearch } from '../Search/GlobalSearch';
 

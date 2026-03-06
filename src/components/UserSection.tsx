@@ -19,7 +19,7 @@ import { IconChevronDown, IconMail, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { menuUserInfo } from '~/lib/Utils/ConfigUI';
+import { menuUserInfo } from '~/lib/ConfigUI';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });

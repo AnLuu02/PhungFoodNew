@@ -54,7 +54,6 @@ model Voucher {
   orders            Order[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime?        @updatedAt
-  User              User[]
 }
 
 model VoucherForUser {
@@ -218,8 +217,6 @@ model User {
   gender           Gender?
   pointUser        Int                     @default(0)
   level            UserLevel
-  resetToken       String?
-  resetTokenExpiry DateTime?
   failedAttempts   Int                     @default(0)
   lockedUntil      DateTime?
   isLocked         Boolean                 @default(false)
@@ -234,12 +231,25 @@ model User {
   createdAt        DateTime?               @default(now())
   updatedAt        DateTime?               @updatedAt
   voucherForUser   VoucherForUser[]
-  Voucher          Voucher?                @relation(fields: [voucherId], references: [id])
-  voucherId        String?
   voucherForUserId String?
   userPermissions  UserPermission[]
   invoice          Invoice[]
   recipients       NotificationRecipient[]
+  tokens           Token[]
+}
+
+model Token {
+  id        String    @id @default(cuid())
+  email     String
+  tokenHash String    @unique
+  type      TokenType
+  expires   DateTime
+  isRevoked Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [email], references: [email], onDelete: Cascade)
+
+  @@unique([email, type])
+  @@index([email])
 }
 
 model Address {
@@ -541,6 +551,15 @@ enum NotificationRecipientStatus {
   DELIVERED
   READ
   CLICKED
+}
+
+enum TokenType {
+  PASSWORD_RESET
+  EMAIL_VERIFICATION
+  MAGIC_LINK
+  TWO_FACTOR
+  EMAIL_CHANGE
+  ACCOUNT_CLOSURE
 }
 
 model Notification {

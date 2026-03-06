@@ -10,8 +10,8 @@ import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import BButton from '~/components/Button/Button';
+import { checkLoginCooldown, setLoginCooldown } from '~/lib/FuncHandler/HandleLockedUser/loginLimiter';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { checkLoginCooldown, setLoginCooldown } from '~/lib/Utils/loginLimiter';
 import LoginServices from '../components/LoginServices';
 
 export default function Page() {

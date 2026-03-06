@@ -1,6 +1,7 @@
 'use client';
 
 import { Center, Grid, GridCol, Modal, TextInput, Title } from '@mantine/core';
+import { TokenType } from '@prisma/client';
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
@@ -40,7 +41,7 @@ export const ModalForgotPassword = ({ opened, setOpened }: { opened: boolean; se
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    requestPasswordReset.mutate({ email, timeExpiredMinutes: TIME_EXPIRED_MINUTES });
+    requestPasswordReset.mutate({ email, timeExpiredMinutes: TIME_EXPIRED_MINUTES, type: TokenType.PASSWORD_RESET });
   };
 
   return (

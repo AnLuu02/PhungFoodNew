@@ -1,11 +1,11 @@
 'use client';
 
 import { Alert, Box, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
+import { TokenType } from '@prisma/client';
 import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import PeriodControl from '~/app/(web)/(auth)/components/PeriodControl';
 import BButton from '~/components/Button/Button';
-import { hashPassword } from '~/lib/FuncHandler/hashPassword';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 const formatTime = (seconds: number) => {
@@ -25,15 +25,14 @@ export default function OtpModal({
   onClose: () => void;
   email: string;
   timeExpiredMinutes?: number;
-  onAfterVerify?: (params: any) => void;
+  onAfterVerify?: (params: any, user: any) => void;
 }) {
   const [otp, setOtp] = useState('');
   const [timeLeft, setTimeLeft] = useState((timeExpiredMinutes || 3) * 60);
   const [loading, setLoading] = useState<{ type: 'submit' | 'resend'; value: boolean } | null>(null);
   const verifyOtp = api.User.verifyOtp.useMutation({
-    onSuccess: async () => {
-      const hashToken = await hashPassword(otp);
-      onAfterVerify?.(hashToken);
+    onSuccess: async res => {
+      onAfterVerify?.(res.tokenHash, res.user);
       onClose();
       NotifySuccess('Xác thực OTP thành công!');
       setLoading({ type: 'submit', value: false });
@@ -132,7 +131,7 @@ export default function OtpModal({
             loading={loading?.type === 'resend' && loading.value}
             onClick={() => {
               setLoading({ type: 'resend', value: true });
-              requestPasswordReset.mutate({ email, timeExpiredMinutes });
+              requestPasswordReset.mutate({ email, timeExpiredMinutes, type: TokenType.PASSWORD_RESET });
             }}
           >
             Gửi lại

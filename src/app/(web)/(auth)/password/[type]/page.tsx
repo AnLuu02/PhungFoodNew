@@ -2,17 +2,15 @@
 
 import { Card, Center, Divider, Grid, GridCol, Text, TextInput, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { TokenType } from '@prisma/client';
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button/Button';
+import OtpModal from '~/components/Modals/ModalOtp';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import PeriodControl from '../../components/PeriodControl';
-const OtpModal = dynamic(() => import('../../../../../components/Modals/ModalOtp'), {
-  ssr: false
-});
 
 const TIME_EXPIRED_MINUTES = 3;
 
@@ -38,11 +36,11 @@ export default function ForgotPassword() {
       NotifyError(error.message);
     }
   });
-
+  const verifyUser = api.User.updateCustom.useMutation();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    requestPasswordReset.mutate({ email, timeExpiredMinutes: TIME_EXPIRED_MINUTES });
+    requestPasswordReset.mutate({ email, timeExpiredMinutes: TIME_EXPIRED_MINUTES, type: TokenType.PASSWORD_RESET });
   };
 
   return (
@@ -103,9 +101,27 @@ export default function ForgotPassword() {
         onClose={close}
         email={email}
         timeExpiredMinutes={TIME_EXPIRED_MINUTES}
-        onAfterVerify={token =>
-          (window.location.href = `/reset-password?email=${encodeURIComponent(email)}&token=${token}`)
-        }
+        onAfterVerify={async (token, user) => {
+          if (!user?.isVerified) {
+            const resp = await verifyUser.mutateAsync({
+              where: {
+                id: user?.id
+              },
+              data: {
+                isVerified: true
+              }
+            });
+            if (resp?.data) {
+              try {
+                window.location.href = `/dang-nhap`;
+              } catch {
+                NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+              }
+            }
+          } else {
+            window.location.href = `/reset-password?email=${encodeURIComponent(email)}&token=${token}`;
+          }
+        }}
       />
     </>
   );

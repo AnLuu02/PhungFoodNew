@@ -3,7 +3,7 @@ import { randomBytes } from 'crypto';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import { checkIfLocked, handleFailedLogin, unlockIfExpired } from '~/lib/FuncHandler/HandleLockedUser/userLockService';
+import { handleFailedLogin, handleUserLock } from '~/lib/FuncHandler/HandleLockedUser/userLockService';
 import { api } from '~/trpc/server';
 
 export const authOptions: NextAuthOptions = {
@@ -24,19 +24,15 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const { email, password } = credentials as { email: string; password: string };
         const user = await api.User.getOne({ s: email || '' });
-        if (!user) {
-          throw new Error('Tài khoản không tồn tại.');
-        }
-        await unlockIfExpired(user);
-        const refreshed = await api.User.getOne({ s: email });
-        checkIfLocked(refreshed);
+        const refreshed = await handleUserLock(user);
 
         const isValid = await compare(password, refreshed.password);
         if (!isValid) await handleFailedLogin(refreshed);
-
-        if (!refreshed.isActive || !refreshed.isVerified)
-          throw new Error('Tài khoản của bạn hiện đang bị vô hiệu hóa.');
-
+        if (!refreshed.isActive) throw new Error('Tài khoản của bạn hiện đang bị vô hiệu hóa.');
+        if (!refreshed.isVerified)
+          throw new Error(
+            'Tài khoản của bạn chưa kích hoạt. VUI LÒNG ẤN QUÊN -/ QUÊN MẬT KHẨU /- ĐỂ TIẾN HÀNH KÍCH HOẠT.'
+          );
         await api.User.updateCustom({
           where: { email },
           data: { isLocked: false, failedAttempts: 0, lockedUntil: null }
@@ -64,9 +60,6 @@ export const authOptions: NextAuthOptions = {
         if (!user?.email) return false;
         const { email } = user;
         let userFromDb = await api.User.getOne({ s: email });
-
-        if (userFromDb?.isLocked && !(await unlockIfExpired(userFromDb))) return '/error?reason=locked';
-
         if (!userFromDb) {
           const randomPass = randomBytes(8).toString('hex');
           await api.User.create({
@@ -76,6 +69,9 @@ export const authOptions: NextAuthOptions = {
             image: user.image ? { fileName: user.image, base64: '' } : undefined
           });
         }
+
+        if (userFromDb?.isLocked && !(await handleUserLock(userFromDb))) return '/error?reason=locked';
+
         return true;
       } catch (error) {
         console.error('Error in signIn callback:', error);

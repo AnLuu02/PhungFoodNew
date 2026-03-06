@@ -4,34 +4,30 @@ import { api } from '~/trpc/server';
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_DURATION_MINUTES = 15;
 
-export async function unlockIfExpired(user: any) {
-  if (user.isLocked && user.lockedUntil) {
-    const now = dayjs();
-    const lockedUntil = dayjs(user.lockedUntil);
+export async function handleUserLock(user: any) {
+  if (!user?.isLocked || !user?.lockedUntil) return user;
 
-    if (now.isAfter(lockedUntil)) {
-      await api.User.updateCustom({
-        where: { email: user.email },
-        data: { isLocked: false, failedAttempts: 0, lockedUntil: null }
-      });
-      return true;
-    }
+  const now = dayjs();
+  const lockedUntil = dayjs(user.lockedUntil);
+
+  if (now.isAfter(lockedUntil)) {
+    const resp = await api.User.updateCustom({
+      where: { email: user.email },
+      data: {
+        isLocked: false,
+        failedAttempts: 0,
+        lockedUntil: null
+      }
+    });
+    if (!resp.data) throw new Error('Đã có lỗi xảy ra trong quá trình xử lí trạng thái người dùng.');
+    return resp.data;
   }
-  return false;
-}
 
-export function checkIfLocked(user: any) {
-  if (user.isLocked && user.lockedUntil) {
-    const now = dayjs();
-    const lockedUntil = dayjs(user.lockedUntil);
+  const remainingSeconds = lockedUntil.diff(now, 'second');
+  const remainingMinutes = Math.ceil(remainingSeconds / 60);
+  const text = remainingMinutes <= 0 ? '<1' : remainingMinutes.toString();
 
-    if (lockedUntil.isAfter(now)) {
-      const remainingSeconds = lockedUntil.diff(now, 'second');
-      const remainingMinutes = Math.ceil(remainingSeconds / 60);
-      const text = remainingMinutes <= 0 ? '<1' : remainingMinutes.toString();
-      throw new Error(`Tài khoản bị khóa. Vui lòng thử lại sau ${text} phút.`);
-    }
-  }
+  throw new Error(`Tài khoản bị khóa. Vui lòng thử lại sau ${text} phút.`);
 }
 
 export async function handleFailedLogin(user: any) {
@@ -53,5 +49,5 @@ export async function handleFailedLogin(user: any) {
     data: { failedAttempts: attempts }
   });
 
-  throw new Error(`Mật khẩu sai (${attempts}/${MAX_FAILED_ATTEMPTS}) lần.`);
+  throw new Error(`Mật khẩu sai không hợp lệ. Còn lại (${attempts}/${MAX_FAILED_ATTEMPTS}) lần.`);
 }
