@@ -1,17 +1,9 @@
 import { Alert, Avatar, Badge, Box, Button, Card, Flex, Text, Title } from '@mantine/core';
-import {
-  IconAward,
-  IconBrandZapier,
-  IconCrown,
-  IconGiftFilled,
-  IconHeart,
-  IconSparkles,
-  IconStar,
-  IconTrophy
-} from '@tabler/icons-react';
+import { IconAward, IconBrandZapier, IconGiftFilled, IconHeart, IconSparkles, IconStar } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
+import { promotionLevels } from '~/lib/HardData/promotion-level';
 import { api } from '~/trpc/server';
 import FooterSection from './components/FooterSection';
 import InfoLevelUser from './components/InfoLevelUser';
@@ -29,77 +21,7 @@ export default async function FoodPromotionPage() {
     take: 10,
     discount: true
   });
-  const levels = [
-    {
-      name: 'Đồng',
-      color: '#3F2627',
-      bg: '#3F262722',
-      icon: IconStar,
-      range: '0 - 999 điểm',
-      features: ['Giảm giá 5%', 'Tặng món tráng miệng sinh nhật', 'Ưu đãi hàng tuần'],
-      className: 'md:w-[30%] w-[80vw] sm:w-[45%] lg:w-[19%] flex-shrink-0 md:scale-90 hover:bg-[#3F262722]'
-    },
-    {
-      name: 'Bạc',
-      color: '#64707A',
-      bg: '#64707A22',
-      icon: IconTrophy,
-      range: '1,000 - 2,999 điểm',
-      features: [
-        'Giảm giá 10%',
-        'Giao hàng miễn phí cho đơn hàng từ 150.000 VND trở lên',
-        'Hỗ trợ ưu tiên',
-        'Cuối tuần nhân đôi điểm'
-      ],
-      className: 'md:w-[30%] w-[80vw] sm:w-[45%] lg:w-[19%] flex-shrink-0 md:scale-95 hover:bg-[#64707A22]'
-    },
-    {
-      name: 'Vàng',
-      color: '#FACC15',
-      bg: 'bg-yellow-50',
-      icon: IconCrown,
-      range: '3,000 - 7,999 điểm',
-      features: ['15% giảm giá', 'Miễn phí vận chuyển', 'Hỗ trợ trực tiếp', 'Monthly free meal', 'Exclusive events'],
-      className:
-        'md:w-[30%] w-[80vw] sm:w-[45%] lg:w-[19%] flex-shrink-0 lg:scale-105 bg-yellow-50 dark:bg-yellow-900 hover:bg-yellow-100 dark:hover:bg-yellow-800',
-      badge: { text: 'Phổ biến', className: 'bg-yellow-100 text-yellow-500' }
-    },
-    {
-      name: 'Bạch kim',
-      color: '#4183A7',
-      bg: '#4183A722',
-      icon: IconAward,
-      range: '8,000 - 14,999 điểm',
-      features: [
-        'Giảm giá 20%',
-        'Giao hàng ưu tiên',
-        'Quản lý tận tâm',
-        '2 bữa ăn miễn phí/tháng',
-        'Sự kiện bàn đầu bếp',
-        'Đồng sáng tạo thực đơn'
-      ],
-      className: 'md:w-[30%] w-[80vw] sm:w-[45%] lg:w-[19%] flex-shrink-0 md:scale-95 hover:bg-[#4183A722]',
-      badge: { text: 'Ưu tú', className: 'bg-[#4183A7] text-white' }
-    },
-    {
-      name: 'Kim cương',
-      color: '#5F77C3',
-      bg: '#5F77C322',
-      icon: IconSparkles,
-      range: '15,000+ điểm',
-      features: [
-        'Giảm giá 25%',
-        'Giao hàng ngay',
-        'Dịch vụ hỗ trợ 24/7',
-        'Bữa ăn miễn phí không giới hạn',
-        'Ăn tối riêng tư',
-        'Ưu đãi VIP hàng năm',
-        'Quyền lợi trọn đời'
-      ],
-      className: 'md:w-[30%] w-[80vw] sm:w-[45%] lg:w-[19%] flex-shrink-0 md:scale-90 hover:bg-[#5F77C322]',
-      badge: { text: 'Ưu tú', className: 'bg-[#5F77C3] text-white' }
-    }
-  ];
+
   return (
     <Box className='min-h-screen bg-mainColor/10' mx={{ base: -10, sm: -30, lg: -130 }} mt={-16}>
       <Box className='relative overflow-hidden bg-[linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url(/images/png/banner_food.png)] bg-cover bg-no-repeat px-4 py-16 text-white sm:py-24'>
@@ -237,7 +159,7 @@ export default async function FoodPromotionPage() {
             </Box>
 
             <Box className='flex gap-4 overflow-x-auto pb-2 lg:overflow-x-visible'>
-              {levels.map((level, i) => {
+              {Object.values(promotionLevels).map((level, i) => {
                 const Icon = level.icon;
                 return (
                   <Card

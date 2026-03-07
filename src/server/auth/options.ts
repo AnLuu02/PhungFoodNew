@@ -24,6 +24,9 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const { email, password } = credentials as { email: string; password: string };
         const user = await api.User.getOne({ s: email || '' });
+        if (!user) {
+          throw new Error('Người dùng không tồn tại.');
+        }
         const refreshed = await handleUserLock(user);
 
         const isValid = await compare(password, refreshed.password);
@@ -58,15 +61,16 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user }) {
       try {
         if (!user?.email) return false;
-        const { email } = user;
+        const { email, image, name } = user;
+
         let userFromDb = await api.User.getOne({ s: email });
         if (!userFromDb) {
           const randomPass = randomBytes(8).toString('hex');
           await api.User.create({
-            email: user.email,
-            name: user.name ?? '',
+            email,
+            name: name ?? '',
             password: randomPass,
-            image: user.image ? { fileName: user.image, base64: '' } : undefined
+            image: image ? { fileName: image, base64: '' } : undefined
           });
         }
 
@@ -86,6 +90,7 @@ export const authOptions: NextAuthOptions = {
         if (userFromDb?.id) {
           token.role = userFromDb?.role?.name;
           token.id = userFromDb?.id;
+          token.picture = userFromDb?.image?.url;
           token.permissions = userFromDb?.role?.permissions.map(p => p.name);
         }
       } catch (error) {
@@ -97,6 +102,8 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.role = token.role;
         session.user.id = token.id;
+        session.user.image = token.picture;
+        session.user.email = token.email;
         session.user.permissions = token.permissions;
       }
       return session;

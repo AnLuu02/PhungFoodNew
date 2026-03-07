@@ -196,8 +196,8 @@ export const userRouter = createTRPCRouter({
 
       let imgURL: string | undefined;
 
-      if (input?.image && input.image.fileName !== '') {
-        if (input.image?.base64 !== '') {
+      if (input?.image && input.image.fileName) {
+        if (input.image?.base64) {
           const buffer = Buffer.from(input.image.base64, 'base64');
           const blob = await put(input.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
           imgURL = blob.url;
@@ -591,7 +591,7 @@ export const userRouter = createTRPCRouter({
       ];
 
       if (!user) {
-        throw new Error(`Người dùng không tồn tại.`);
+        return null;
       }
       return {
         ...user,

@@ -91,15 +91,17 @@ export default function UpdateUser({
   );
   useEffect(() => {
     setLoading(true);
-    if (user && user?.image?.url && user?.image?.url !== '') {
+    if (user && user?.image?.url) {
       vercelBlobToFile(user?.image?.url as string)
         .then(file => {
           setValue('image.url', file as File);
         })
         .catch(err => {
-          new Error(err);
+          console.error(err);
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
       setLoading(false);
     }
@@ -196,7 +198,7 @@ export default function UpdateUser({
                     : '/images/jpg/empty-300x240.jpg'
                 }
                 size={200}
-                alt='Product Image'
+                alt='User Image'
                 className='mb-4'
               />
               <Box className='z-1 absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100'>

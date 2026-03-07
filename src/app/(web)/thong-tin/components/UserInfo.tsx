@@ -9,15 +9,18 @@ import {
   Grid,
   GridCol,
   Group,
+  List,
+  Paper,
   Progress,
   SimpleGrid,
+  Spoiler,
   Stack,
   Text,
   ThemeIcon,
   Tooltip
 } from '@mantine/core';
-import { Gender, UserLevel } from '@prisma/client';
-import { IconUpload } from '@tabler/icons-react';
+import { UserLevel } from '@prisma/client';
+import { IconCircleCheck, IconUpload } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -26,6 +29,7 @@ import BButton from '~/components/Button/Button';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
+import { promotionLevels } from '~/lib/HardData/promotion-level';
 
 export function UserInfo({ userInfor }: { userInfor: any }) {
   const [opened, setOpened] = useState(false);
@@ -40,18 +44,18 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
     const statusObj = getTotalOrderStatus(orderData);
     return { statusObj };
   }, [userInfor]);
-  const levelInfo = getInfoLevelUser(userInfor?.level as UserLevel);
+  const levelInfo = getInfoLevelUser(userInfor?.level);
 
   return (
-    <Grid p={0}>
-      <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }} className='h-fit'>
+    <Grid p={0} grow>
+      <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
         <Card
           shadow='lg'
           radius='lg'
           withBorder
           pos='relative'
           bg={`${levelInfo.color}22`}
-          className='h-fit pt-10 sm:p-7'
+          className='h-full pt-10 sm:p-7'
         >
           <Box pos='absolute' top={10} right={4}>
             <UpdateUserButton
@@ -117,7 +121,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                 {userInfor?.email}
               </Text>
             </Grid.Col>
-            <Grid.Col span={6}>
+            {/* <Grid.Col span={6}>
               <Text fw={700} size='sm'>
                 Giới tính
               </Text>
@@ -130,7 +134,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                       ? 'Khác'
                       : 'Đang cập nhật'}
               </Text>
-            </Grid.Col>
+            </Grid.Col> */}
             <Grid.Col span={6}>
               <Text fw={700} size='sm'>
                 Ngày sinh
@@ -162,6 +166,37 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
               <Text size='sm' c='dimmed'>
                 {userInfor?.address?.fullAddress || 'Đang cập nhật'}
               </Text>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Paper withBorder p='md' radius='md' shadow='xs' bg={`${levelInfo.color}10`}>
+                <Text size='sm' fw={700} mb={8}>
+                  Đặc quyền hạng {levelInfo.viName}
+                </Text>
+                <Spoiler
+                  maxHeight={50}
+                  showLabel='Xem thêm'
+                  hideLabel='Ẩn bớt'
+                  classNames={{
+                    control: 'w-full text-right text-sm font-bold text-mainColor'
+                  }}
+                >
+                  <List
+                    spacing='xs'
+                    size='xs'
+                    center
+                    icon={
+                      <ThemeIcon color={levelInfo.color} size={16} radius='xl'>
+                        <IconCircleCheck size={12} />
+                      </ThemeIcon>
+                    }
+                  >
+                    {promotionLevels[(levelInfo.key as UserLevel) || UserLevel.BRONZE].features.map(f => (
+                      <List.Item>{f}</List.Item>
+                    ))}
+                    <List.Item>Quà tặng sinh nhật bất ngờ</List.Item>
+                  </List>
+                </Spoiler>
+              </Paper>
             </Grid.Col>
           </Grid>
         </Card>
