@@ -1,10 +1,12 @@
+import { Gender, UserLevel } from '@prisma/client';
 import { compare } from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { handleFailedLogin, handleUserLock } from '~/lib/FuncHandler/HandleLockedUser/userLockService';
-import { api } from '~/trpc/server';
+import { db } from '../db';
+import { createUserService, getOneUserService, updateUserCustomService } from '../services/user.service';
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -23,7 +25,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const { email, password } = credentials as { email: string; password: string };
-        const user = await api.User.getOne({ s: email || '' });
+        const user = await getOneUserService(db, { s: email || '' });
         if (!user) {
           throw new Error('Người dùng không tồn tại.');
         }
@@ -36,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error(
             'Tài khoản của bạn chưa kích hoạt. VUI LÒNG ẤN QUÊN -/ QUÊN MẬT KHẨU /- ĐỂ TIẾN HÀNH KÍCH HOẠT.'
           );
-        await api.User.updateCustom({
+        await updateUserCustomService(db, {
           where: { email },
           data: { isLocked: false, failedAttempts: 0, lockedUntil: null }
         });
@@ -63,18 +65,23 @@ export const authOptions: NextAuthOptions = {
         if (!user?.email) return false;
         const { email, image, name } = user;
 
-        let userFromDb = await api.User.getOne({ s: email });
+        let userFromDb = await getOneUserService(db, { s: email });
         if (!userFromDb) {
           const randomPass = randomBytes(8).toString('hex');
-          await api.User.create({
+          await createUserService(db, {
             email,
             name: name ?? '',
+            isActive: true,
+            gender: Gender.OTHER,
+            pointUser: 0,
+            level: UserLevel.BRONZE,
             password: randomPass,
-            image: image ? { fileName: image, base64: '' } : undefined
+            image: image ? { fileName: image, base64: '' } : undefined,
+            phone: ''
           });
         }
         if (!userFromDb?.image && image) {
-          await api.User.updateCustom({
+          await updateUserCustomService(db, {
             where: { email },
             data: {
               name: userFromDb?.name || 'Khách hàng',
@@ -94,8 +101,7 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token }) {
       try {
-        const userFromDb = await api.User.getOne({ s: token?.email || '' });
-
+        const userFromDb = await getOneUserService(db, { s: token?.email || '' });
         if (userFromDb?.id) {
           token.role = userFromDb?.role?.name;
           token.id = userFromDb?.id;

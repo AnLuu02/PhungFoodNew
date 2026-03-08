@@ -19,8 +19,8 @@ export async function handleUserLock(user: any) {
         lockedUntil: null
       }
     });
-    if (!resp.data) throw new Error('Đã có lỗi xảy ra trong quá trình xử lí trạng thái người dùng.');
-    return resp.data;
+    if (!resp) throw new Error('Đã có lỗi xảy ra trong quá trình xử lí trạng thái người dùng.');
+    return resp;
   }
 
   const remainingSeconds = lockedUntil.diff(now, 'second');

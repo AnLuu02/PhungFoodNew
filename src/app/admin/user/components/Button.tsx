@@ -4,10 +4,10 @@ import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
-import CreateUser from './form/CreateUser';
 import UpdatePermissionUser from './form/UpdatePermissionUser';
-import UpdateUser from './form/UpdateUser';
+import UserUpsert from './form/UserUpsert';
 
 export function CreateUserButton() {
   const [opened, setOpened] = useState(false);
@@ -20,6 +20,7 @@ export function CreateUserButton() {
         closeOnClickOutside={false}
         size='100%'
         opened={opened}
+        radius={'md'}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -27,7 +28,7 @@ export function CreateUserButton() {
           </Title>
         }
       >
-        <CreateUser setOpened={setOpened} />
+        <UserUpsert setOpened={setOpened} method='create' />
       </Modal>
     </>
   );
@@ -46,6 +47,7 @@ export function UpdatePermissions({ email }: { email: any }) {
         closeOnClickOutside={false}
         size='70%'
         opened={opened}
+        radius={'md'}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -85,6 +87,7 @@ export function UpdateUserButton({
         closeOnClickOutside={false}
         size='100%'
         opened={opened}
+        radius={'md'}
         onClose={() => {
           setOpened(false);
           openedFromClient && setOpenedFromClient?.(false);
@@ -95,7 +98,7 @@ export function UpdateUserButton({
           </Title>
         }
       >
-        <UpdateUser email={email.toString()} setOpened={setOpened} />
+        <UserUpsert email={email.toString()} setOpened={setOpened} method='update' />
       </Modal>
     </>
   );
@@ -103,7 +106,11 @@ export function UpdateUserButton({
 
 export function DeleteUserButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.User.delete.useMutation();
+  const mutationDelete = api.User.delete.useMutation({
+    onError: e => {
+      NotifyError(e?.message);
+    }
+  });
 
   return (
     <>

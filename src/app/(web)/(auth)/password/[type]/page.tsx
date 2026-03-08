@@ -5,6 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { TokenType } from '@prisma/client';
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import OtpModal from '~/components/Modals/ModalOtp';
@@ -16,13 +17,15 @@ const TIME_EXPIRED_MINUTES = 3;
 
 export default function ForgotPassword() {
   const { data: user } = useSession();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure();
 
   useEffect(() => {
-    if (user?.user.email) {
-      setEmail(user?.user?.email);
+    const email = user?.user.email || searchParams.get('email');
+    if (email) {
+      setEmail(email);
     }
   }, [user]);
 
@@ -36,7 +39,11 @@ export default function ForgotPassword() {
       NotifyError(error.message);
     }
   });
-  const verifyUser = api.User.updateCustom.useMutation();
+  const verifyUser = api.User.updateCustom.useMutation({
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -111,12 +118,8 @@ export default function ForgotPassword() {
                 isVerified: true
               }
             });
-            if (resp?.data) {
-              try {
-                window.location.href = `/dang-nhap`;
-              } catch {
-                NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
-              }
+            if (resp) {
+              window.location.href = `/dang-nhap?email=${resp.email}&status=verify-success`;
             }
           } else {
             window.location.href = `/reset-password?email=${encodeURIComponent(email)}&token=${token}`;

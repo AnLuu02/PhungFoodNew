@@ -1,12 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Card, Center, Flex, Grid, GridCol, PasswordInput, Text, TextInput, Title } from '@mantine/core';
-import { IconKey, IconMail } from '@tabler/icons-react';
+import { Alert, Box, Card, Center, Flex, Grid, GridCol, PasswordInput, Text, TextInput, Title } from '@mantine/core';
+import { IconCheck, IconKey, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import BButton from '~/components/Button/Button';
@@ -17,11 +17,18 @@ import LoginServices from '../components/LoginServices';
 export default function Page() {
   const [error, setError] = useState('');
   const [cooldown, setCooldown] = useState(0);
-
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const { callbackUrl, email, status } = useMemo(() => {
+    const url = searchParams.get('callbackUrl') || '/';
+    return {
+      callbackUrl: url.startsWith('/') ? url : '/',
+      email: searchParams.get('email')?.trim().toLowerCase() || null,
+      status: searchParams.get('status')
+    };
+  }, [searchParams]);
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty }
   } = useForm({
@@ -37,6 +44,9 @@ export default function Page() {
       password: ''
     }
   });
+  useEffect(() => {
+    if (email) setValue('email', email);
+  }, [email]);
   useEffect(() => {
     if (cooldown > 0) {
       const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
@@ -90,6 +100,20 @@ export default function Page() {
                     ĐĂNG NHẬP
                   </Title>
                 </GridCol>
+                {status && (
+                  <GridCol span={12} className='flex justify-center'>
+                    <Alert
+                      w={'100%'}
+                      radius={'md'}
+                      variant='light'
+                      color='green'
+                      title='Thành công'
+                      icon={<IconCheck />}
+                    >
+                      Tài khoản của bạn đã được kích hoạt. Nhập mật khẩu để đăng nhập.
+                    </Alert>
+                  </GridCol>
+                )}
                 <GridCol span={12}>
                   <Controller
                     control={control}

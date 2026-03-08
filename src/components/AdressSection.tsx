@@ -1,30 +1,44 @@
 import { GridCol, Select, Textarea } from '@mantine/core';
-import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form';
+import { useDebouncedValue } from '@mantine/hooks';
+import { useEffect } from 'react';
+import { Control, Controller, UseFormSetValue, useWatch } from 'react-hook-form';
+import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { District, Province, Ward } from '~/types/ResponseFetcher';
-import { User } from '~/types/user';
 
 export default function AddressSection({
   control,
-  errors,
-  watch,
-  provinces,
-  districts,
-  wards
+  setValue
 }: {
-  control: Control<User, any, User>;
-  errors: FieldErrors<User>;
-  watch: UseFormWatch<User>;
-  provinces: Province[];
-  districts: District[];
-  wards: Ward[];
+  control: Control<any>;
+  setValue: UseFormSetValue<any>;
 }) {
+  const address = useWatch({
+    control,
+    name: 'address'
+  });
+
+  const { provinces, getProvince } = useProvinces();
+  const [debouncedProvinceId] = useDebouncedValue(address?.provinceId, 300);
+  const [debouncedDistrictId] = useDebouncedValue(address?.districtId, 300);
+  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
+  const { wards, getWard } = useWards(debouncedDistrictId);
+  useEffect(() => {
+    const province = getProvince(address?.provinceId, provinces);
+    const district = getDistrict(address?.districtId, districts);
+    const ward = getWard(address?.wardId, wards);
+    const fullAddress = `${address?.detail + ', ' || ''}${ward?.name || ''}, ${district?.name || ''}, ${province?.name || ''}`;
+    setValue('address.province', province?.name || '');
+    setValue('address.district', district?.name || '');
+    setValue('address.ward', ward?.name || '');
+    setValue('address.fullAddress', fullAddress);
+  }, [address?.provinceId, address?.districtId]);
   return (
     <>
       <GridCol span={4}>
         <Controller
           control={control}
           name='address.provinceId'
-          render={({ field }) => (
+          render={({ field, fieldState: { error } }) => (
             <Select
               {...field}
               radius={'md'}
@@ -36,7 +50,7 @@ export default function AddressSection({
                 label: item.name
               }))}
               nothingFoundMessage='Không tìm thấy...'
-              error={errors?.address?.province?.message}
+              error={error?.message}
             />
           )}
         />
@@ -46,8 +60,8 @@ export default function AddressSection({
         <Controller
           control={control}
           name='address.districtId'
-          disabled={!watch('address.provinceId')}
-          render={({ field }) => (
+          disabled={!address?.provinceId}
+          render={({ field, fieldState: { error } }) => (
             <Select
               radius={'md'}
               {...field}
@@ -59,7 +73,7 @@ export default function AddressSection({
                 label: item.name
               }))}
               nothingFoundMessage='Không tìm thấy...'
-              error={errors?.address?.district?.message}
+              error={error?.message}
             />
           )}
         />
@@ -69,8 +83,8 @@ export default function AddressSection({
         <Controller
           control={control}
           name='address.wardId'
-          disabled={!watch('address.districtId')}
-          render={({ field }) => (
+          disabled={!address?.districtId}
+          render={({ field, fieldState: { error } }) => (
             <Select
               {...field}
               radius={'md'}
@@ -82,7 +96,7 @@ export default function AddressSection({
                 label: item.name
               }))}
               nothingFoundMessage='Không tìm thấy...'
-              error={errors?.address?.ward?.message}
+              error={error?.message}
             />
           )}
         />
@@ -92,14 +106,14 @@ export default function AddressSection({
         <Controller
           control={control}
           name='address.detail'
-          render={({ field }) => (
+          render={({ field, fieldState: { error } }) => (
             <Textarea
               {...field}
               radius={'md'}
               label='Địa chỉ'
               placeholder='Địa chỉ cụ thể (số nhà, đường, phường,...)'
               resize='block'
-              error={errors?.address?.detail?.message}
+              error={error?.message}
             />
           )}
         />

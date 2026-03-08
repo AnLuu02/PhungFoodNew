@@ -39,9 +39,6 @@ export const requirePermission = (
     const { authOptions } = await import('~/server/auth/options');
     const session = await getServerSession(authOptions);
     const user = session?.user ?? null;
-
-    // if (!user) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Bạn chưa đăng nhập.' });
-
     if (options?.requiredAdmin && user?.role === 'ADMIN') {
       return next({ ctx: { ...ctx, user } });
     }

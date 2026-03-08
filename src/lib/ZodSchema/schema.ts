@@ -1,7 +1,6 @@
 import {
   AddressType,
   EntityType,
-  Gender,
   ImageType,
   NotificationChannel,
   NotificationPriority,
@@ -11,7 +10,6 @@ import {
   OrderStatus,
   RecipientType,
   TypeContact,
-  UserLevel,
   VoucherType
 } from '@prisma/client';
 import { literal, z } from 'zod';
@@ -249,31 +247,6 @@ export const bannerSchema = z.object({
   startDate: z.date().optional(),
   isActive: z.boolean().default(false),
   endDate: z.date().optional()
-});
-
-export const userSchema = z.object({
-  id: z.string().optional(),
-  name: z.string({ required_error: 'Tên người dùng là bắt buộc' }).min(1, 'Tên người dùng là bắt buộc'),
-
-  email: z
-    .string({ required_error: 'Email là bắt buộc' })
-    .email({ message: 'Email không hợp lệ (vd: example@gmail.com)' }),
-
-  phone: z.string({ required_error: 'Số điện thoại là bắt buộc' }).regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số'),
-  image: imageSchema.optional(),
-  isActive: z.boolean().default(true),
-  gender: z.nativeEnum(Gender).default(Gender.OTHER),
-  roleId: z.string().optional(),
-  dateOfBirth: z.date().optional(),
-  password: z
-    .string()
-    .min(6, { message: 'Tối thiểu 6 ký tự' })
-    .regex(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9])/, {
-      message: 'Mật khẩu phải đủ mạnh (hoa, thường, số, đặc biệt)'
-    }),
-  address: baseAddressSchema.optional().or(z.literal('')),
-  pointUser: z.number().default(0),
-  level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
 });
 
 export const contactSchema = z.object({

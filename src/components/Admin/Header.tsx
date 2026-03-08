@@ -59,7 +59,7 @@ export default function Header() {
             >
               <Group gap={7}>
                 <Image
-                  src={session?.user?.image || 'AD'}
+                  src={session?.user?.image || '/images/webp/user-default.webp'}
                   alt='User avatar'
                   className='rounded-full'
                   width={30}

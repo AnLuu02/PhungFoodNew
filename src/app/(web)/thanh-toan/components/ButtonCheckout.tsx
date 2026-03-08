@@ -42,7 +42,11 @@ export const ButtonCheckout = ({
     }
   });
   const orderItems: any = data ?? [];
-  const guestCreateMutation = api.User.create.useMutation();
+  const guestCreateMutation = api.User.create.useMutation({
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   const handleCreateOrder = async () => {
     let userId = user?.user?.id;
     setLoading(true);
@@ -52,9 +56,10 @@ export const ButtonCheckout = ({
         email: guest.email || '',
         name: guest.email || '',
         password: guest.password || '',
-        image: { fileName: '', base64: '' }
+        image: { fileName: '', base64: '' },
+        phone: ''
       });
-      userId = responseGuest.data.id;
+      userId = responseGuest.id;
     }
     try {
       if (orderItems?.length > 0) {

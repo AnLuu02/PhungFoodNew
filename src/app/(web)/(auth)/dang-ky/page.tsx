@@ -1,33 +1,36 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
+import { Alert, Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
-import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
-import { AddressType, Gender, UserLevel } from '@prisma/client';
-import { IconCalendar, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
-import dynamic from 'next/dynamic';
+import { useDisclosure } from '@mantine/hooks';
+import { Gender, UserLevel } from '@prisma/client';
+import { IconCalendar, IconInfoCircle, IconKey, IconMail, IconPhone } from '@tabler/icons-react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
+import OtpModal from '~/components/Modals/ModalOtp';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { userSchema } from '~/lib/ZodSchema/schema';
+import { UserInput, userInputSchema } from '~/shared/user.schema';
 import { api } from '~/trpc/react';
-import { User } from '~/types/user';
-import AddressSection from '../components/AdressSection';
-const OtpModal = dynamic(() => import('~/components/Modals/ModalOtp'), {
-  ssr: false
-});
+import { TRPCErrorCode } from '~/types/ResponseFetcher';
+import AddressSection from '../../../../components/AdressSection';
+
 export default function Page() {
   const [opened, { open, close }] = useDisclosure();
+  const [error, setError] = useState<{ code: TRPCErrorCode | undefined; message: string }>({
+    code: undefined,
+    message: ''
+  });
 
   const {
     control,
     handleSubmit,
-    watch,
+    getValues,
+    setValue,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<User>({
-    resolver: zodResolver(userSchema),
+  } = useForm<UserInput>({
+    resolver: zodResolver(userInputSchema),
     mode: 'onChange',
     defaultValues: {
       id: '',
@@ -39,64 +42,33 @@ export default function Page() {
       isActive: true,
       password: '',
       phone: '',
-      address: {
-        detail: '',
-        provinceId: '',
-        districtId: '',
-        wardId: '',
-        type: AddressType.USER,
-        province: '',
-        district: '',
-        ward: '',
-        fullAddress: '',
-        postalCode: ''
-      },
+      address: undefined,
       pointUser: 0,
       level: UserLevel.BRONZE
     }
   });
 
-  const { provinces, getProvince } = useProvinces();
-  const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
-  const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
-  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
-  const { wards, getWard } = useWards(debouncedDistrictId);
   const mutation = api.User.create.useMutation({
-    onSuccess: resp => {
-      if (resp?.code === 'OK') {
-        open();
-        return;
-      }
-      NotifyError(resp.message);
+    onSuccess: () => {
+      open();
     },
     onError: e => {
+      setError({
+        code: e.data?.code,
+        message: e.message
+      });
       NotifyError(e.message);
     }
   });
 
-  const onSubmit: SubmitHandler<User> = async formData => {
+  const onSubmit: SubmitHandler<UserInput> = async formData => {
+    console.log(formData);
     try {
-      const province = getProvince(formData.address?.provinceId, provinces);
-      const district = getDistrict(formData.address?.districtId, districts);
-      const ward = getWard(formData.address?.wardId, wards);
-      const fullAddress = `${formData.address?.detail + ', ' || ''}${ward?.name || ''}, ${district?.name || ''}, ${province.name || ''}`;
-
       await mutation.mutateAsync({
         ...formData,
         image: {
           fileName: '',
           base64: ''
-        },
-        address: {
-          ...formData.address,
-          provinceId: formData.address?.provinceId || '',
-          districtId: formData.address?.districtId || '',
-          wardId: formData.address?.wardId || '',
-          detail: formData.address?.detail || '',
-          province: province.name || '',
-          district: district?.name || '',
-          ward: ward?.name || '',
-          fullAddress: fullAddress
         }
       });
     } catch {
@@ -131,6 +103,25 @@ export default function Page() {
                     ĐĂNG KÍ
                   </Title>
                 </GridCol>
+                {error.code && (
+                  <GridCol span={12} className='flex justify-center'>
+                    <Alert
+                      w={'100%'}
+                      radius={'md'}
+                      variant='light'
+                      color='yellow'
+                      title='Cảnh báo'
+                      icon={<IconInfoCircle />}
+                    >
+                      {error.message}{' '}
+                      {error.code === 'NOT_IMPLEMENTED' && (
+                        <Link href={`/password/verify-email?email=${getValues('email')}`}>
+                          <BButton variant='outline'>Kích hoạt</BButton>
+                        </Link>
+                      )}
+                    </Alert>
+                  </GridCol>
+                )}
                 <GridCol span={6}>
                   <Controller
                     control={control}
@@ -241,14 +232,7 @@ export default function Page() {
                     )}
                   />
                 </GridCol>
-                <AddressSection
-                  control={control}
-                  errors={errors}
-                  watch={watch}
-                  provinces={provinces}
-                  districts={districts}
-                  wards={wards}
-                />
+                <AddressSection control={control} setValue={setValue} />
 
                 <GridCol span={12} className='flex justify-end'>
                   <Link href={'/dang-nhap'}>
@@ -279,12 +263,12 @@ export default function Page() {
       <OtpModal
         opened={opened}
         onClose={close}
-        email={watch('email')}
+        email={getValues('email')}
         timeExpiredMinutes={3}
         onAfterVerify={async () => {
           await updateMutation.mutateAsync({
             where: {
-              email: watch('email')
+              email: getValues('email')
             },
             data: {
               isVerified: true

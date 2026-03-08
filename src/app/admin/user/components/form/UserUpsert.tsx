@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   ActionIcon,
+  Alert,
   Avatar,
   Box,
   Button,
@@ -14,36 +15,39 @@ import {
   PasswordInput,
   Select,
   Switch,
-  Textarea,
   TextInput
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
 import { Gender, UserLevel } from '@prisma/client';
-import { IconCalendar, IconFile, IconMail, IconPhone, IconUpload } from '@tabler/icons-react';
+import { IconCalendar, IconFile, IconInfoCircle, IconMail, IconPhone, IconUpload } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
+import AddressSection from '~/components/AdressSection';
 import BButton from '~/components/Button/Button';
-import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { infoUserLevel, UserRole } from '~/constants';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { userSchema } from '~/lib/ZodSchema/schema';
+import { UserInput, userInputSchema } from '~/shared/user.schema';
 import { api } from '~/trpc/react';
-import { District, Province, Ward } from '~/types/ResponseFetcher';
-import { User } from '~/types/user';
+import { TRPCErrorCode } from '~/types/ResponseFetcher';
 
-export default function UpdateUser({
+export default function UserUpsert({
   email,
-  setOpened
+  setOpened,
+  method
 }: {
-  email: string;
+  email?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
+  method: 'create' | 'update';
 }) {
+  const [error, setError] = useState<{ code: TRPCErrorCode | undefined; message: string }>({
+    code: undefined,
+    message: ''
+  });
   const { data: session } = useSession();
   const { data: user } = api.User.getOne.useQuery({ s: email || '' }, { enabled: !!email });
   const [loading, setLoading] = useState(false);
@@ -55,12 +59,8 @@ export default function UpdateUser({
     formState: { errors, isSubmitting, isDirty },
     reset,
     setValue
-  } = useForm<User>({
-    resolver: zodResolver(
-      userSchema.extend({
-        phone: z.string().optional().nullable()
-      })
-    ),
+  } = useForm<UserInput>({
+    resolver: zodResolver(userInputSchema),
     defaultValues: {
       id: '',
       name: '',
@@ -76,11 +76,6 @@ export default function UpdateUser({
       pointUser: 0
     }
   });
-  const { provinces, getProvince } = useProvinces();
-  const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
-  const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
-  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
-  const { wards, getWard } = useWards(debouncedDistrictId);
 
   useEffect(() => {
     setLoading(true);
@@ -114,54 +109,34 @@ export default function UpdateUser({
     });
   }, [user, reset]);
   const utils = api.useUtils();
-  const updateMutation = api.User.update.useMutation({
-    onSuccess: result => {
-      if (result.code === 'OK') {
-        NotifySuccess(result.message);
-        setOpened(false);
-        utils.User.invalidate();
-      } else {
-        NotifyError(result.message);
-      }
+  const updateMutation = api.User?.[method]?.useMutation({
+    onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn thực hiện thao tác thành công.');
+      setOpened(false);
+      utils.User.invalidate();
     },
     onError: e => {
-      NotifyError(e?.message || 'Lỗi hệ thống');
+      setError({
+        code: e.data?.code,
+        message: e.message
+      });
+      NotifyError(e.message);
     }
   });
 
-  const onSubmit: SubmitHandler<User> = async formData => {
-    if (email) {
-      const file = formData?.image?.url as File;
-      const fileName = file?.name || '';
-      const base64 = file ? await fileToBase64(file) : '';
-
-      const province = getProvince(formData?.address?.provinceId, provinces);
-      const district = getDistrict(formData?.address?.districtId, districts);
-      const ward = getWard(formData?.address?.wardId, wards);
-      const fullAddress = `${formData.address?.detail || ''}, ${ward?.name || ''}, ${district?.name || ''}, ${province?.name || ''}`;
-
-      const formDataWithImageUrlAsString = {
-        ...formData,
-        address: {
-          ...formData.address,
-          detail: formData.address?.detail || '',
-          provinceId: formData.address?.provinceId || '',
-          districtId: formData.address?.districtId || '',
-          wardId: formData.address?.wardId || '',
-          province: province?.name || '',
-          district: district?.name || '',
-          ward: ward?.name || '',
-          fullAddress
-        },
-        image: {
-          fileName: fileName as string,
-          base64: base64 as string
-        }
-      };
-      await updateMutation.mutateAsync(formDataWithImageUrlAsString);
-    }
+  const onSubmit: SubmitHandler<UserInput> = async formData => {
+    const file = formData?.image?.url as File;
+    const fileName = file?.name || '';
+    const base64 = file ? await fileToBase64(file) : '';
+    const formDataWithImageUrlAsString = {
+      ...formData,
+      image: {
+        fileName: fileName as string,
+        base64: base64 as string
+      }
+    };
+    await updateMutation.mutateAsync(formDataWithImageUrlAsString);
   };
-
   const { data: roles, isLoading: rolesLoading } = api.RolePermission.getAllRole.useQuery();
 
   const [pointUserValue] = useDebouncedValue(watch('pointUser'), 500);
@@ -172,7 +147,6 @@ export default function UpdateUser({
   }, [pointUserValue]);
 
   if (loading || rolesLoading) return <LoadingSpiner />;
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid>
@@ -201,7 +175,10 @@ export default function UpdateUser({
                     bg={'red'}
                     disabled={!watch('image.url')}
                     onClick={() => {
-                      setValue('image.url', undefined);
+                      setValue('image.url', undefined, {
+                        shouldDirty: true,
+                        shouldValidate: true
+                      });
                     }}
                   >
                     Gỡ
@@ -241,6 +218,20 @@ export default function UpdateUser({
         </GridCol>
         <GridCol span={9}>
           <Grid gutter='md'>
+            {error.code && (
+              <GridCol span={12} className='flex justify-center'>
+                <Alert
+                  w={'100%'}
+                  radius={'md'}
+                  variant='light'
+                  color='yellow'
+                  title='Cảnh báo'
+                  icon={<IconInfoCircle />}
+                >
+                  {error.message}
+                </Alert>
+              </GridCol>
+            )}
             <GridCol span={4}>
               <Controller
                 control={control}
@@ -298,12 +289,12 @@ export default function UpdateUser({
               <Controller
                 control={control}
                 name='roleId'
-                disabled={session?.user.role !== UserRole.ADMIN}
                 render={({ field }) => (
                   <Select
                     label='Vai trò'
                     radius='md'
                     searchable
+                    disabled={session?.user.role !== UserRole.ADMIN}
                     placeholder='Chọn vai trò'
                     {...field}
                     data={
@@ -339,72 +330,6 @@ export default function UpdateUser({
                 }}
               />
             </GridCol>
-
-            <GridCol span={4}>
-              <Controller
-                control={control}
-                name={`address.provinceId`}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    searchable
-                    radius='md'
-                    label='Chọn tỉnh thành'
-                    placeholder='Chọn tỉnh thành'
-                    data={provinces.map((item: Province) => ({
-                      value: item.code.toString(),
-                      label: item.name
-                    }))}
-                    nothingFoundMessage='Nothing found...'
-                    error={errors?.address?.province?.message}
-                  />
-                )}
-              />
-            </GridCol>
-            <GridCol span={4}>
-              <Controller
-                control={control}
-                name={`address.districtId`}
-                disabled={!watch('address.provinceId')}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    radius='md'
-                    searchable
-                    label='Chọn quận huyện'
-                    placeholder='Chọn quận huyện'
-                    data={districts.map((item: District) => ({
-                      value: item.code.toString(),
-                      label: item.name
-                    }))}
-                    nothingFoundMessage='Nothing found...'
-                    error={errors?.address?.district?.message}
-                  />
-                )}
-              />
-            </GridCol>
-            <GridCol span={4}>
-              <Controller
-                control={control}
-                name={`address.wardId`}
-                disabled={!watch('address.districtId')}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    label='Chọn phường xã'
-                    searchable
-                    radius='md'
-                    placeholder='Chọn phường xã'
-                    data={wards.map((item: Ward) => ({
-                      value: item.code.toString(),
-                      label: item.name
-                    }))}
-                    nothingFoundMessage='Nothing found...'
-                    error={errors?.address?.ward?.message}
-                  />
-                )}
-              />
-            </GridCol>
             <GridCol span={4}>
               <Controller
                 control={control}
@@ -425,16 +350,17 @@ export default function UpdateUser({
                 )}
               />
             </GridCol>
+            <AddressSection control={control} setValue={setValue} />
             <GridCol span={4}>
               <Controller
                 control={control}
                 name={`pointUser`}
                 defaultValue={0}
-                disabled={session?.user.role !== UserRole.ADMIN}
                 render={({ field }) => (
                   <NumberInput
                     radius={'md'}
                     {...field}
+                    disabled={session?.user.role !== UserRole.ADMIN}
                     defaultValue={0}
                     min={0}
                     label='Điểm tích lũy'
@@ -447,12 +373,12 @@ export default function UpdateUser({
             <GridCol span={4}>
               <Controller
                 control={control}
-                disabled={session?.user.role !== UserRole.ADMIN}
                 name={`level`}
                 render={({ field }) => (
                   <Select
                     radius='md'
                     {...field}
+                    disabled={session?.user.role !== UserRole.ADMIN}
                     data={
                       infoUserLevel.map(level => ({ value: level.key, label: level.viName })) || [
                         { value: 0, label: 'Không cấp độ' }
@@ -486,7 +412,6 @@ export default function UpdateUser({
                   <Controller
                     control={control}
                     name={`isActive`}
-                    disabled={session?.user.role !== UserRole.ADMIN}
                     render={({ field }) => (
                       <Switch
                         name={field.name}
@@ -502,22 +427,6 @@ export default function UpdateUser({
                 </GridCol>
               </>
             )}
-
-            <GridCol span={12}>
-              <Controller
-                control={control}
-                name={`address.detail`}
-                render={({ field }) => (
-                  <Textarea
-                    {...field}
-                    label='Địa chỉ chi tiết'
-                    placeholder='Địa chỉ cụ thể (đường, phố,...)'
-                    resize='block'
-                    error={errors?.address?.detail?.message}
-                  />
-                )}
-              />
-            </GridCol>
 
             <GridCol span={12}>
               <BButton w-full type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>

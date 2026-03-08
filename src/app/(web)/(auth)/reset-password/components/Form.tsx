@@ -17,7 +17,7 @@ export default function FormResetPassword({ email, token }: { email: string; tok
 
   const resetPassword = api.User.resetPassword.useMutation({
     onSuccess: data => {
-      NotifySuccess(data.message);
+      NotifySuccess('Chúc mừng bạn thực hiện thao tác thành công.');
       setLoading(false);
       !user ? (window.location.href = '/dang-nhap') : (window.location.href = '/');
     },
