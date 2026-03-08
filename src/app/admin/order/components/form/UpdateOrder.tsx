@@ -18,15 +18,15 @@ import { AddressType, OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import useSWR from 'swr';
 import BButton from '~/components/Button/Button';
+import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import fetcher from '~/lib/FuncHandler/fetcher';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 import OrderItemForm from './OrderItemForm';
 
 export default function UpdateOrder({
@@ -90,19 +90,11 @@ export default function UpdateOrder({
     name: 'orderItems'
   });
 
-  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  const { provinces } = useProvinces();
   const [debouncedProvinceId] = useDebouncedValue(watch('delivery.address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('delivery.address.districtId'), 300);
-
-  const { data: districts } = useSWR<any>(
-    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
-    fetcher
-  );
-
-  const { data: wards } = useSWR<any>(
-    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
-    fetcher
-  );
+  const { districts } = useDistricts(debouncedProvinceId);
+  const { wards } = useWards(debouncedDistrictId);
 
   useEffect(() => {
     if (data?.id) {
@@ -266,9 +258,9 @@ export default function UpdateOrder({
                         {...field}
                         searchable
                         placeholder='Chọn tỉnh thành'
-                        data={provinces?.results?.map((item: any) => ({
-                          value: item.province_id,
-                          label: item.province_name
+                        data={provinces.map((item: Province) => ({
+                          value: item.code.toString(),
+                          label: item.name
                         }))}
                         nothingFoundMessage='Nothing found...'
                         error={fieldState.error?.message}
@@ -287,9 +279,9 @@ export default function UpdateOrder({
                         searchable
                         radius='md'
                         placeholder='Chọn quận huyện'
-                        data={districts?.results?.map((item: any) => ({
-                          value: item.district_id,
-                          label: item.district_name
+                        data={districts.map((item: District) => ({
+                          value: item.code.toString(),
+                          label: item.name
                         }))}
                         nothingFoundMessage='Nothing found...'
                         error={errors?.delivery?.address?.districtId?.message}
@@ -308,9 +300,9 @@ export default function UpdateOrder({
                         searchable
                         radius='md'
                         placeholder='Chọn phường xã'
-                        data={wards?.results?.map((item: any) => ({
-                          value: item.ward_id,
-                          label: item.ward_name
+                        data={wards.map((item: Ward) => ({
+                          value: item.code.toString(),
+                          label: item.name
                         }))}
                         nothingFoundMessage='Nothing found...'
                         error={errors?.delivery?.address?.wardId?.message}

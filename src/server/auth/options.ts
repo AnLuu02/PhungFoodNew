@@ -73,6 +73,15 @@ export const authOptions: NextAuthOptions = {
             image: image ? { fileName: image, base64: '' } : undefined
           });
         }
+        if (!userFromDb?.image && image) {
+          await api.User.updateCustom({
+            where: { email },
+            data: {
+              name: userFromDb?.name || 'Khách hàng',
+              image: { fileName: image, base64: '' }
+            }
+          });
+        }
 
         if (userFromDb?.isLocked && !(await handleUserLock(userFromDb))) return '/error?reason=locked';
 

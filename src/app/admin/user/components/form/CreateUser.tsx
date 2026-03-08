@@ -18,13 +18,13 @@ import { AddressType, Gender, UserLevel } from '@prisma/client';
 import { IconCalendar, IconFile, IconMail, IconPhone } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import useSWR from 'swr';
 import BButton from '~/components/Button/Button';
-import fetcher from '~/lib/FuncHandler/fetcher';
+import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 import { User } from '~/types/user';
 
 export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
@@ -60,19 +60,12 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
       level: UserLevel.BRONZE
     }
   });
-  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  const { provinces, getProvince } = useProvinces();
   const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
+  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
+  const { wards, getWard } = useWards(debouncedDistrictId);
 
-  const { data: districts } = useSWR<any>(
-    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
-    fetcher
-  );
-
-  const { data: wards } = useSWR<any>(
-    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
-    fetcher
-  );
   const utils = api.useUtils();
   const mutation = api.User.create.useMutation({
     onSuccess: () => {
@@ -90,10 +83,10 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
         const fileName = file?.name || '';
         const base64 = file ? await fileToBase64(file) : '';
 
-        const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
-        const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
-        const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
-        const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+        const province = getProvince(formData?.address?.provinceId, provinces);
+        const district = getDistrict(formData?.address?.districtId, districts);
+        const ward = getWard(formData?.address?.wardId, wards);
+        const fullAddress = `${formData.address?.detail || ''}, ${ward?.name || ''}, ${district?.name || ''}, ${province?.name || ''}`;
 
         const result = await mutation.mutateAsync({
           ...formData,
@@ -107,9 +100,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
             provinceId: formData.address?.provinceId || '',
             districtId: formData.address?.districtId || '',
             wardId: formData.address?.wardId || '',
-            province: province?.province_name || '',
-            district: district?.district_name || '',
-            ward: ward?.ward_name || '',
+            province: province?.name || '',
+            district: district?.name || '',
+            ward: ward?.name || '',
             fullAddress
           }
         });
@@ -286,9 +279,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     radius='md'
                     label='Chọn tỉnh thành'
                     placeholder='Chọn tỉnh thành'
-                    data={provinces?.results?.map((item: any) => ({
-                      value: item.province_id,
-                      label: item.province_name
+                    data={provinces.map((item: Province) => ({
+                      value: item.code.toString(),
+                      label: item.name
                     }))}
                     nothingFoundMessage='Nothing found...'
                     error={errors?.address?.province?.message}
@@ -308,9 +301,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     radius='md'
                     label='Chọn quận huyện'
                     placeholder='Chọn quận huyện'
-                    data={districts?.results?.map((item: any) => ({
-                      value: item.district_id,
-                      label: item.district_name
+                    data={districts.map((item: District) => ({
+                      value: item.code.toString(),
+                      label: item.name
                     }))}
                     nothingFoundMessage='Nothing found...'
                     error={errors?.address?.district?.message}
@@ -330,9 +323,9 @@ export default function CreateUser({ setOpened }: { setOpened: Dispatch<SetState
                     searchable
                     radius='md'
                     placeholder='Chọn phường xã'
-                    data={wards?.results?.map((item: any) => ({
-                      value: item.ward_id,
-                      label: item.ward_name
+                    data={wards.map((item: Ward) => ({
+                      value: item.code.toString(),
+                      label: item.name
                     }))}
                     nothingFoundMessage='Nothing found...'
                     error={errors?.address?.ward?.message}

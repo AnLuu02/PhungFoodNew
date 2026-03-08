@@ -1,55 +1,41 @@
-import { useMemo } from 'react';
-import useSWR from 'swr';
-import fetcher from '~/lib/FuncHandler/fetcher';
-import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
-
+import { useCallback, useEffect, useState } from 'react';
+import districtsData from '~/lib/HardData/provinces_vietnam/districts.json';
+import provincesData from '~/lib/HardData/provinces_vietnam/provinces.json';
+import wardsData from '~/lib/HardData/provinces_vietnam/wards.json';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 export const useProvinces = () => {
-  const swr = useSWR<ProvinceResponse>('https://api.vnappmob.com/api/v2/province/', fetcher);
-  const provinceMap = useMemo(() => {
-    return swr.data?.results.reduce(
-      (acc, p) => {
-        acc[p.province_id] = p.province_name;
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-  }, [swr.data]);
-
-  return { ...swr, provinceMap };
+  const getProvince = (code: any, provincesData: Province[]) => {
+    return provincesData.find(p => p.code == code)!;
+  };
+  return { provinces: provincesData, getProvince };
 };
 
-export const useDistricts = (provinceId?: string) => {
-  const swr = useSWR<DistrictResponse>(
-    provinceId ? `https://api.vnappmob.com/api/v2/province/district/${provinceId}` : null,
-    fetcher
+export const useDistricts = (province_code?: any) => {
+  const [districts, setDistricts] = useState<District[]>([]);
+  const getDistrict = useCallback(
+    (code: any, districts: District[]) => {
+      return districts.find(d => d.code == code);
+    },
+    [province_code]
   );
-  const districtMap = useMemo(() => {
-    return swr.data?.results.reduce(
-      (acc, p) => {
-        acc[p.district_id] = p.district_name;
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-  }, [swr.data]);
-
-  return { ...swr, districtMap };
+  useEffect(() => {
+    const data = districtsData.filter(d => d.province_code == province_code);
+    setDistricts(data);
+  }, [province_code]);
+  return { districts, getDistrict };
 };
 
-export const useWards = (districtId?: string) => {
-  const swr = useSWR<WardResponse>(
-    districtId ? `https://api.vnappmob.com/api/v2/province/ward/${districtId}` : null,
-    fetcher
+export const useWards = (district_code?: any) => {
+  const [wards, setWards] = useState<Ward[]>([]);
+  const getWard = useCallback(
+    (code: any, wards: Ward[]) => {
+      return wards.find(w => w.code == code);
+    },
+    [district_code]
   );
-  const wardMap = useMemo(() => {
-    return swr.data?.results.reduce(
-      (acc, p) => {
-        acc[p.ward_id] = p.ward_name;
-        return acc;
-      },
-      {} as Record<string, string>
-    );
-  }, [swr.data]);
-
-  return { ...swr, wardMap };
+  useEffect(() => {
+    const data = wardsData.filter(d => d.district_code == district_code);
+    setWards(data);
+  }, [district_code]);
+  return { wards, getWard };
 };

@@ -1,7 +1,7 @@
 import { Card, Grid, GridCol, Select, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
 import { Controller } from 'react-hook-form';
-import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 
 export function DeliveryCard({
   control,
@@ -12,9 +12,9 @@ export function DeliveryCard({
 }: {
   control: any;
   watch: any;
-  provinces?: ProvinceResponse;
-  districts?: DistrictResponse;
-  wards?: WardResponse;
+  provinces: Province[];
+  districts: District[];
+  wards: Ward[];
 }) {
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
@@ -87,9 +87,9 @@ export function DeliveryCard({
                   radius='md'
                   label='Tỉnh thành'
                   placeholder='Chọn tỉnh thành'
-                  data={provinces?.results?.map((item: any) => ({
-                    value: item.province_id,
-                    label: item.province_name
+                  data={provinces.map((item: Province) => ({
+                    value: item.code.toString(),
+                    label: item.name
                   }))}
                   withAsterisk
                   nothingFoundMessage='Nothing found...'
@@ -110,9 +110,9 @@ export function DeliveryCard({
                   radius='md'
                   label='Quận huyện'
                   placeholder='Chọn quận huyện'
-                  data={districts?.results?.map((item: any) => ({
-                    value: item.district_id,
-                    label: item.district_name
+                  data={districts.map((item: District) => ({
+                    value: item.code.toString(),
+                    label: item.name
                   }))}
                   withAsterisk
                   nothingFoundMessage='Nothing found...'
@@ -133,9 +133,9 @@ export function DeliveryCard({
                   radius='md'
                   label='Phường xã'
                   placeholder='Chọn phường xã'
-                  data={wards?.results?.map((item: any) => ({
-                    value: item.ward_id,
-                    label: item.ward_name
+                  data={wards.map((item: Ward) => ({
+                    value: item.code.toString(),
+                    label: item.name
                   }))}
                   withAsterisk
                   nothingFoundMessage='Nothing found...'

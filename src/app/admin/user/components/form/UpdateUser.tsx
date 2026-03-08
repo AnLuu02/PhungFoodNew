@@ -25,16 +25,16 @@ import { useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import useSWR from 'swr';
 import { z } from 'zod';
 import BButton from '~/components/Button/Button';
+import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { infoUserLevel, UserRole } from '~/constants';
-import fetcher from '~/lib/FuncHandler/fetcher';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { userSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 import { User } from '~/types/user';
 
 export default function UpdateUser({
@@ -76,19 +76,12 @@ export default function UpdateUser({
       pointUser: 0
     }
   });
-  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  const { provinces, getProvince } = useProvinces();
   const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
+  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
+  const { wards, getWard } = useWards(debouncedDistrictId);
 
-  const { data: districts } = useSWR<any>(
-    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
-    fetcher
-  );
-
-  const { data: wards, isLoading } = useSWR<any>(
-    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
-    fetcher
-  );
   useEffect(() => {
     setLoading(true);
     if (user && user?.image?.url) {
@@ -142,10 +135,10 @@ export default function UpdateUser({
       const fileName = file?.name || '';
       const base64 = file ? await fileToBase64(file) : '';
 
-      const province = provinces?.results?.find((item: any) => item.province_id === formData?.address?.provinceId);
-      const district = districts?.results?.find((item: any) => item.district_id === formData?.address?.districtId);
-      const ward = wards?.results?.find((item: any) => item.ward_id === formData?.address?.wardId);
-      const fullAddress = `${formData.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+      const province = getProvince(formData?.address?.provinceId, provinces);
+      const district = getDistrict(formData?.address?.districtId, districts);
+      const ward = getWard(formData?.address?.wardId, wards);
+      const fullAddress = `${formData.address?.detail || ''}, ${ward?.name || ''}, ${district?.name || ''}, ${province?.name || ''}`;
 
       const formDataWithImageUrlAsString = {
         ...formData,
@@ -155,9 +148,9 @@ export default function UpdateUser({
           provinceId: formData.address?.provinceId || '',
           districtId: formData.address?.districtId || '',
           wardId: formData.address?.wardId || '',
-          province: province?.province_name || '',
-          district: district?.district_name || '',
-          ward: ward?.ward_name || '',
+          province: province?.name || '',
+          district: district?.name || '',
+          ward: ward?.name || '',
           fullAddress
         },
         image: {
@@ -178,7 +171,7 @@ export default function UpdateUser({
     setValue('level', level?.key || UserLevel.BRONZE);
   }, [pointUserValue]);
 
-  if (loading || isLoading || rolesLoading) return <LoadingSpiner />;
+  if (loading || rolesLoading) return <LoadingSpiner />;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -358,9 +351,9 @@ export default function UpdateUser({
                     radius='md'
                     label='Chọn tỉnh thành'
                     placeholder='Chọn tỉnh thành'
-                    data={provinces?.results?.map((item: any) => ({
-                      value: item.province_id,
-                      label: item.province_name
+                    data={provinces.map((item: Province) => ({
+                      value: item.code.toString(),
+                      label: item.name
                     }))}
                     nothingFoundMessage='Nothing found...'
                     error={errors?.address?.province?.message}
@@ -380,9 +373,9 @@ export default function UpdateUser({
                     searchable
                     label='Chọn quận huyện'
                     placeholder='Chọn quận huyện'
-                    data={districts?.results?.map((item: any) => ({
-                      value: item.district_id,
-                      label: item.district_name
+                    data={districts.map((item: District) => ({
+                      value: item.code.toString(),
+                      label: item.name
                     }))}
                     nothingFoundMessage='Nothing found...'
                     error={errors?.address?.district?.message}
@@ -402,9 +395,9 @@ export default function UpdateUser({
                     searchable
                     radius='md'
                     placeholder='Chọn phường xã'
-                    data={wards?.results?.map((item: any) => ({
-                      value: item.ward_id,
-                      label: item.ward_name
+                    data={wards.map((item: Ward) => ({
+                      value: item.code.toString(),
+                      label: item.name
                     }))}
                     nothingFoundMessage='Nothing found...'
                     error={errors?.address?.ward?.message}

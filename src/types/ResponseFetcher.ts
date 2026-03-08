@@ -1,28 +1,27 @@
 export type Province = {
-  province_id: string;
-  province_name: string;
+  name: string;
+  code: number;
+  division_type: string;
+  codename: string;
+  phone_code: number;
+  districts: District[];
 };
 
 export type District = {
-  district_id: string;
-  district_name: string;
+  name: string;
+  code: number;
+  division_type: string;
+  codename: string;
+  province_code: number;
+  wards: Ward[];
 };
 
 export type Ward = {
-  ward_id: string;
-  ward_name: string;
-};
-
-export type ProvinceResponse = {
-  results: Province[];
-};
-
-export type DistrictResponse = {
-  results: District[];
-};
-
-export type WardResponse = {
-  results: Ward[];
+  name: string;
+  code: number;
+  division_type: string;
+  codename: string;
+  district_code: number;
 };
 
 export type ResponseTRPC = {

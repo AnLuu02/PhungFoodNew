@@ -18,14 +18,14 @@ import { AddressType, OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import useSWR from 'swr';
 import BButton from '~/components/Button/Button';
-import fetcher from '~/lib/FuncHandler/fetcher';
+import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 import OrderItemForm from './OrderItemForm';
 
 export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
@@ -77,19 +77,12 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
     control,
     name: 'orderItems'
   });
-  const { data: provinces } = useSWR<any>('https://api.vnappmob.com/api/v2/province/', fetcher);
+  const { provinces, getProvince } = useProvinces();
   const [debouncedProvinceId] = useDebouncedValue(watch('delivery.address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('delivery.address.districtId'), 300);
+  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
+  const { wards, getWard } = useWards(debouncedDistrictId);
 
-  const { data: districts } = useSWR<any>(
-    debouncedProvinceId ? `https://api.vnappmob.com/api/v2/province/district/${debouncedProvinceId}` : null,
-    fetcher
-  );
-
-  const { data: wards } = useSWR<any>(
-    debouncedDistrictId ? `https://api.vnappmob.com/api/v2/province/ward/${debouncedDistrictId}` : null,
-    fetcher
-  );
   const { data: payments } = api.Payment.getAll.useQuery();
   const utils = api.useUtils();
   const mutation = api.Order.create.useMutation({
@@ -112,14 +105,10 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
       if (formData.orderItems.length === 0) {
         NotifyError('Không hợp lệ.', 'Bạn phải có ít nhất một sản phẩm trong hóa đơn.');
       } else {
-        const province = provinces?.results?.find(
-          (item: any) => item.province_id === formData?.delivery?.address?.provinceId
-        );
-        const district = districts?.results?.find(
-          (item: any) => item.district_id === formData?.delivery?.address?.districtId
-        );
-        const ward = wards?.results?.find((item: any) => item.ward_id === formData?.delivery?.address?.wardId);
-        const fullAddress = `${formData?.delivery?.address?.detail || ''}, ${ward?.ward_name || ''}, ${district?.district_name || ''}, ${province?.province_name || ''}`;
+        const province = getProvince(formData?.delivery?.address?.provinceId, provinces);
+        const district = getDistrict(formData?.delivery?.address?.districtId, districts);
+        const ward = getWard(formData?.delivery?.address?.wardId, wards);
+        const fullAddress = `${formData?.delivery?.address?.detail || ''}, ${ward?.name || ''}, ${district?.name || ''}, ${province?.name || ''}`;
 
         await mutation.mutateAsync({
           ...formData,
@@ -131,9 +120,9 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
               provinceId: formData?.delivery.address?.provinceId || '',
               districtId: formData?.delivery.address?.districtId || '',
               wardId: formData?.delivery.address?.wardId || '',
-              province: province?.province_name || '',
-              district: district?.district_name || '',
-              ward: ward?.ward_name || '',
+              province: province?.name || '',
+              district: district?.name || '',
+              ward: ward?.name || '',
               fullAddress
             }
           } as any
@@ -213,9 +202,9 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                         searchable
                         radius='md'
                         placeholder='Chọn tỉnh thành'
-                        data={provinces?.results?.map((item: any) => ({
-                          value: item.province_id,
-                          label: item.province_name
+                        data={provinces.map((item: Province) => ({
+                          value: item.code.toString(),
+                          label: item.name
                         }))}
                         nothingFoundMessage='Nothing found...'
                         error={fieldState.error?.message}
@@ -234,9 +223,9 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                         searchable
                         radius='md'
                         placeholder='Chọn quận huyện'
-                        data={districts?.results?.map((item: any) => ({
-                          value: item.district_id,
-                          label: item.district_name
+                        data={districts.map((item: District) => ({
+                          value: item.code.toString(),
+                          label: item.name
                         }))}
                         nothingFoundMessage='Nothing found...'
                         error={errors?.delivery?.address?.districtId?.message}
@@ -255,9 +244,9 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                         searchable
                         radius='md'
                         placeholder='Chọn phường xã'
-                        data={wards?.results?.map((item: any) => ({
-                          value: item.ward_id,
-                          label: item.ward_name
+                        data={wards.map((item: Ward) => ({
+                          value: item.code.toString(),
+                          label: item.name
                         }))}
                         nothingFoundMessage='Nothing found...'
                         error={errors?.delivery?.address?.wardId?.message}

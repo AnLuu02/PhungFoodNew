@@ -56,14 +56,11 @@ export default function Page() {
     }
   });
 
-  const { data: provinces, provinceMap } = useProvinces();
-
+  const { provinces, getProvince } = useProvinces();
   const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
   const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
-
-  const { data: districts, districtMap } = useDistricts(debouncedProvinceId);
-  const { data: wards, wardMap } = useWards(debouncedDistrictId);
-
+  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
+  const { wards, getWard } = useWards(debouncedDistrictId);
   const mutation = api.User.create.useMutation({
     onSuccess: resp => {
       if (resp?.code === 'OK') {
@@ -79,10 +76,10 @@ export default function Page() {
 
   const onSubmit: SubmitHandler<User> = async formData => {
     try {
-      const province = formData?.address?.provinceId && provinceMap?.[formData?.address?.provinceId];
-      const district = formData?.address?.districtId && districtMap?.[formData?.address?.districtId];
-      const ward = formData?.address?.wardId && wardMap?.[formData?.address?.wardId];
-      const fullAddress = `${formData.address?.detail || ''}, ${ward || ''}, ${district || ''}, ${province || ''}`;
+      const province = getProvince(formData.address?.provinceId, provinces);
+      const district = getDistrict(formData.address?.districtId, districts);
+      const ward = getWard(formData.address?.wardId, wards);
+      const fullAddress = `${formData.address?.detail + ', ' || ''}${ward?.name || ''}, ${district?.name || ''}, ${province.name || ''}`;
 
       await mutation.mutateAsync({
         ...formData,
@@ -96,9 +93,9 @@ export default function Page() {
           districtId: formData.address?.districtId || '',
           wardId: formData.address?.wardId || '',
           detail: formData.address?.detail || '',
-          province: province || '',
-          district: district || '',
-          ward: ward || '',
+          province: province.name || '',
+          district: district?.name || '',
+          ward: ward?.name || '',
           fullAddress: fullAddress
         }
       });

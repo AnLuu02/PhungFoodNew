@@ -1,6 +1,6 @@
 import { GridCol, Select, Textarea } from '@mantine/core';
 import { Control, Controller, FieldErrors, UseFormWatch } from 'react-hook-form';
-import { DistrictResponse, ProvinceResponse, WardResponse } from '~/types/ResponseFetcher';
+import { District, Province, Ward } from '~/types/ResponseFetcher';
 import { User } from '~/types/user';
 
 export default function AddressSection({
@@ -14,9 +14,9 @@ export default function AddressSection({
   control: Control<User, any, User>;
   errors: FieldErrors<User>;
   watch: UseFormWatch<User>;
-  provinces?: ProvinceResponse;
-  districts?: DistrictResponse;
-  wards?: WardResponse;
+  provinces: Province[];
+  districts: District[];
+  wards: Ward[];
 }) {
   return (
     <>
@@ -31,9 +31,9 @@ export default function AddressSection({
               searchable
               label='Tỉnh thành'
               placeholder='Tỉnh thành'
-              data={provinces?.results?.map((item: any) => ({
-                value: item.province_id,
-                label: item.province_name
+              data={provinces.map((item: Province) => ({
+                value: item.code.toString(),
+                label: item.name
               }))}
               nothingFoundMessage='Không tìm thấy...'
               error={errors?.address?.province?.message}
@@ -54,9 +54,9 @@ export default function AddressSection({
               searchable
               label='Quận huyện'
               placeholder='Quận huyện'
-              data={districts?.results?.map((item: any) => ({
-                value: item.district_id,
-                label: item.district_name
+              data={districts.map((item: District) => ({
+                value: item.code.toString(),
+                label: item.name
               }))}
               nothingFoundMessage='Không tìm thấy...'
               error={errors?.address?.district?.message}
@@ -77,9 +77,9 @@ export default function AddressSection({
               label='Phường xã'
               searchable
               placeholder='Phường xã'
-              data={wards?.results?.map((item: any) => ({
-                value: item.ward_id,
-                label: item.ward_name
+              data={wards.map((item: Ward) => ({
+                value: item.code.toString(),
+                label: item.name
               }))}
               nothingFoundMessage='Không tìm thấy...'
               error={errors?.address?.ward?.message}

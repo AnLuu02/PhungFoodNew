@@ -409,14 +409,17 @@ export const userRouter = createTRPCRouter({
 
       if (data?.image?.fileName) {
         const filenameImgFromDb = oldImage ? getFileNameFromVercelBlob(oldImage.url) : null;
-
-        if (!filenameImgFromDb || filenameImgFromDb !== data.image.fileName) {
-          if (oldImage) await del(oldImage.url, { token: tokenBlobVercel });
-          const buffer = Buffer.from(data.image.base64, 'base64');
-          const blob = await put(data.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-          imgURL = blob.url;
+        if (data.image?.base64) {
+          if (!filenameImgFromDb || filenameImgFromDb !== data.image.fileName) {
+            if (oldImage) await del(oldImage.url, { token: tokenBlobVercel });
+            const buffer = Buffer.from(data.image.base64, 'base64');
+            const blob = await put(data.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
+            imgURL = blob.url;
+          } else {
+            imgURL = oldImage?.url;
+          }
         } else {
-          imgURL = oldImage?.url;
+          imgURL = data.image.fileName;
         }
       }
 
