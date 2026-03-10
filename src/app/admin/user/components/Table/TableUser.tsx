@@ -21,8 +21,9 @@ import { useMemo } from 'react';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { getInfoLevelUser, UserRole } from '~/constants';
+import { getInfoLevelUser } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
 

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { UserRole } from '~/constants';
+import { UserRole } from '~/shared/constants/user';
 import UpdateRole from '../form/UpdateRole';
 
 export const RoleSection = ({ data, s }: { data: any; s: string }) => {

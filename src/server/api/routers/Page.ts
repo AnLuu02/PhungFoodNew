@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { UserRole } from '~/constants';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { UserRole } from '~/shared/constants/user';
 import { createCaller } from '../root';
 
 export const pageRouter = createTRPCRouter({

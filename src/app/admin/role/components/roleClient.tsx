@@ -4,7 +4,7 @@ import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-r
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { UserRole } from '~/constants';
+import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
 import { CreateManyPermissionButton, CreateManyRoleButton, CreatePermissionButton, CreateRoleButton } from './Button';
 import { RoleSection } from './Section/role-section';

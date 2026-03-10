@@ -6,8 +6,8 @@ import { useSession } from 'next-auth/react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
 
 export function syncPermissions(init: any[], dynamic: any[]): any[] {

@@ -3,7 +3,6 @@
 import { Avatar, Badge, Box, Group, Highlight, Spoiler, Table, Text, Tooltip } from '@mantine/core';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { UserRole } from '~/constants';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
@@ -13,6 +12,7 @@ import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } fro
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
 
 export default function TableProduct({ s, data, allData }: { s: string; data: any; allData: any }) {

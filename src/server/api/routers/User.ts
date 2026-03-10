@@ -15,7 +15,7 @@ import {
   verifyEmailService,
   verifyOtpService
 } from '~/server/services/user.service';
-import { userReqSchema } from '~/shared/user.schema';
+import { userReqSchema } from '~/shared/schema/user.schema';
 
 export const userRouter = createTRPCRouter({
   find: publicProcedure

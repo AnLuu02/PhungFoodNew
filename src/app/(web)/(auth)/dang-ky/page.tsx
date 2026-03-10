@@ -11,7 +11,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import OtpModal from '~/components/Modals/ModalOtp';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { UserInput, userInputSchema } from '~/shared/user.schema';
+import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { api } from '~/trpc/react';
 import { TRPCErrorCode } from '~/types/ResponseFetcher';
 import AddressSection from '../../../../components/AdressSection';

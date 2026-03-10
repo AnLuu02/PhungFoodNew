@@ -5,12 +5,12 @@ import { compare, hash } from 'bcryptjs';
 import crypto, { randomInt } from 'crypto';
 import dayjs from 'dayjs';
 import { Session } from 'next-auth';
-import { UserRole } from '~/constants';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
-import { UserReq } from '~/shared/user.schema';
+import { UserRole } from '~/shared/constants/user';
+import { UserReq } from '~/shared/schema/user.schema';
 import { db } from '../db';
 
 const MAX_FAILED_ATTEMPTS = 5;

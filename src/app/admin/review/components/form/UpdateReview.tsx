@@ -4,9 +4,9 @@ import { Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { UserRole } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { reviewSchema } from '~/lib/ZodSchema/schema';
+import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
 import { Review } from '~/types/review';
 

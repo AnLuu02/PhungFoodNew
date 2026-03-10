@@ -14,11 +14,6 @@ export const breakpoints = {
   lg: 1200,
   xl: 1408
 };
-export const UserRole = {
-  ADMIN: 'ADMIN',
-  STAFF: 'STAFF',
-  CUSTOMER: 'CUSTOMER'
-};
 
 export const categoryMaterials = {
   'thit-tuoi': 'Thịt tươi',

@@ -28,10 +28,11 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import AddressSection from '~/components/AdressSection';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { infoUserLevel, UserRole } from '~/constants';
+import { infoUserLevel } from '~/constants';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { UserInput, userInputSchema } from '~/shared/user.schema';
+import { UserRole } from '~/shared/constants/user';
+import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { api } from '~/trpc/react';
 import { TRPCErrorCode } from '~/types/ResponseFetcher';
 

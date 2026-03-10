@@ -12,7 +12,7 @@ import {
   VoucherType
 } from '@prisma/client';
 import { literal, z } from 'zod';
-import { deliveryAddressSchema } from '~/shared/address.schema';
+import { deliveryAddressSchema } from '~/shared/schema/address.schema';
 export const imageSchema = z.object({
   id: z.string().optional(),
   url: z.any().optional(),

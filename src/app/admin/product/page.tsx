@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { UserRole } from '~/constants';
+import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/server';
 import { CreateProductButton } from './components/Button';
 import TableProduct from './components/Table/TableProduct';
