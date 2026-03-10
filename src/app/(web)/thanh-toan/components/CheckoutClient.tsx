@@ -13,15 +13,13 @@ import {
   Text,
   Title
 } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
-import { AddressType, VoucherType } from '@prisma/client';
+import { VoucherType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import BButton from '~/components/Button/Button';
-import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { deliverySchema } from '~/lib/ZodSchema/schema';
@@ -29,6 +27,12 @@ import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
 import { PaymentForm } from './PaymentForm';
+
+type DeliveryCheckout = {
+  delivery: z.infer<typeof deliverySchema>;
+  paymentId: string;
+};
+
 export default function CheckoutClient({ order }: { order: any }) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
@@ -57,74 +61,42 @@ export default function CheckoutClient({ order }: { order: any }) {
     return { discountAmountByVoucher, discount, originalTotal, tax, finalTotal };
   }, [order]);
 
-  const { control, watch, handleSubmit, reset } = useForm<z.infer<typeof deliverySchema> & { paymentId: string }>({
+  const { control, setValue, handleSubmit, reset } = useForm<DeliveryCheckout>({
     resolver: zodResolver(
-      deliverySchema.extend({
+      z.object({
+        delivery: deliverySchema,
         paymentId: z.string({ required_error: 'Chọn phương thức thanh toán.' }).min(1, 'Chọn phương thức thanh toán.')
       })
     ),
     mode: 'onChange',
     defaultValues: {
       paymentId: undefined,
-      name: '',
-      email: '',
-      phone: '',
-      address: {
-        provinceId: '',
-        districtId: '',
-        wardId: '',
-        province: '',
-        district: '',
-        ward: '',
-        fullAddress: '',
-        postalCode: '',
-        detail: '',
-        type: AddressType.DELIVERY
-      },
-      note: ''
+      delivery: {
+        name: '',
+        email: '',
+        phone: '',
+        address: undefined,
+        note: ''
+      }
     }
   });
-
-  const { provinces, getProvince } = useProvinces();
-  const [debouncedProvinceId] = useDebouncedValue(watch('address.provinceId'), 300);
-  const [debouncedDistrictId] = useDebouncedValue(watch('address.districtId'), 300);
-  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
-  const { wards, getWard } = useWards(debouncedDistrictId);
-
   useEffect(() => {
     if (order?.id) {
       reset({
-        name: order?.delivery?.name || session?.user?.name || '',
-        email: order?.delivery?.email || session?.user?.email || '',
-        phone: order?.delivery?.phone,
         paymentId: order?.payment?.id,
-        address: {
-          provinceId: order?.delivery?.address?.provinceId,
-          districtId: order?.delivery?.address?.districtId,
-          wardId: order?.delivery?.address?.wardId,
-          province: order?.delivery?.address?.province,
-          district: order?.delivery?.address?.district,
-          ward: order?.delivery?.address?.ward,
-          fullAddress: order?.delivery?.address?.fullAddress,
-          postalCode: order?.delivery?.address?.postalCode || '',
-          detail: order?.delivery?.address?.detail,
-          type: AddressType.DELIVERY
-        },
-        note: order?.delivery?.note
+        delivery: {
+          name: order?.delivery?.name || session?.user?.name || '',
+          email: order?.delivery?.email || session?.user?.email || '',
+          phone: order?.delivery?.phone,
+          note: order?.delivery?.note
+        }
       });
     }
   }, [order]);
 
-  const onSubmit: SubmitHandler<z.infer<typeof deliverySchema> & { paymentId: string }> = async (
-    formData
-  ): Promise<void> => {
+  const onSubmit: SubmitHandler<DeliveryCheckout> = async (formData): Promise<void> => {
     setLoading(true);
     if (order) {
-      const province = getProvince(formData.address?.provinceId, provinces);
-      const district = getDistrict(formData.address?.districtId, districts);
-      const ward = getWard(formData.address?.wardId, wards);
-      const fullAddress = `${formData.address?.detail || ''}, ${ward?.name || ''}, ${district?.name || ''}, ${province.name || ''}`;
-
       const resp = await mutationUpdateOrder.mutateAsync({
         where: { id: order.id },
         data: {
@@ -133,40 +105,20 @@ export default function CheckoutClient({ order }: { order: any }) {
             upsert: {
               where: { orderId: order.id },
               update: {
-                name: formData.name,
-                email: formData.email,
-                phone: formData.phone,
-                note: formData.note,
+                ...formData.delivery,
                 address: {
                   update: {
-                    ...formData.address,
-                    detail: formData.address?.detail || '',
-                    provinceId: formData.address?.provinceId || '',
-                    districtId: formData.address?.districtId || '',
-                    wardId: formData.address?.wardId || '',
-                    province: province.name || '',
-                    district: district?.name || '',
-                    ward: ward?.name || '',
-                    fullAddress
+                    ...formData.delivery.address,
+                    type: 'DELIVERY'
                   }
                 }
               },
               create: {
-                name: formData.name,
-                email: formData.email,
-                phone: formData.phone,
-                note: formData.note,
+                ...formData.delivery,
                 address: {
                   create: {
-                    ...formData.address,
-                    detail: formData.address?.detail || '',
-                    provinceId: formData.address?.provinceId || '',
-                    districtId: formData.address?.districtId || '',
-                    wardId: formData.address?.wardId || '',
-                    province: province.name || '',
-                    district: district?.name || '',
-                    ward: ward?.name || '',
-                    fullAddress
+                    ...formData.delivery.address,
+                    type: 'DELIVERY'
                   }
                 }
               }
@@ -211,7 +163,7 @@ export default function CheckoutClient({ order }: { order: any }) {
     <form onSubmit={handleSubmit(onSubmit as any)}>
       <Grid>
         <GridCol span={{ base: 12, sm: 6, md: 8, lg: 4 }} className='h-fit'>
-          <DeliveryCard control={control} watch={watch} provinces={provinces} districts={districts} wards={wards} />
+          <DeliveryCard control={control} setValue={setValue} name={'delivery'} />
         </GridCol>
 
         <GridCol span={{ base: 12, sm: 6, md: 8, lg: 4 }} className='sticky top-[80px] h-fit'>

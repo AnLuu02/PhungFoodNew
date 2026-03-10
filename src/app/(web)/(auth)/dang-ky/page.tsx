@@ -62,7 +62,6 @@ export default function Page() {
   });
 
   const onSubmit: SubmitHandler<UserInput> = async formData => {
-    console.log(formData);
     try {
       await mutation.mutateAsync({
         ...formData,
@@ -75,7 +74,7 @@ export default function Page() {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
-  const updateMutation = api.User.updateAny.useMutation({
+  const updateMutation = api.User.updateCustom.useMutation({
     onSuccess: () => {
       NotifySuccess('Xác thực tài khoản thành công!');
       window.location.href = '/dang-nhap';

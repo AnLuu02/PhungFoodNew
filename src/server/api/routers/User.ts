@@ -10,7 +10,6 @@ import {
   getOneUserService,
   getSellerService,
   resetPasswordService,
-  updateAnyService,
   updateUserCustomService,
   updateUserService,
   verifyEmailService,
@@ -31,7 +30,7 @@ export const userRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => await findUserService(ctx.db, input)),
   create: publicProcedure.input(userReqSchema).mutation(async ({ ctx, input }) => {
-    const user = await createUserService(ctx.db, input);
+    const user = await createUserService(ctx.db, input, ctx.session);
     return user;
   }),
   update: publicProcedure
@@ -76,21 +75,6 @@ export const userRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getOneUserService(ctx.db, input)),
-  updateAny: publicProcedure
-    .input(
-      z.object({
-        where: z.record(z.any()),
-        data: z.record(z.any())
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const user = await updateAnyService(ctx.db, input);
-      return {
-        code: 'OK',
-        message: 'Cập nhật người dùng.',
-        data: user
-      };
-    }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.user.findMany({ include: { role: true } });
     return user;

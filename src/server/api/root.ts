@@ -1,4 +1,3 @@
-import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
 import { categoryRouter } from './routers/Category';
 import { contactRouter } from './routers/Contact';
 import { deliveryRouter } from './routers/Delivery';
@@ -21,6 +20,7 @@ import { searchRouter } from './routers/Search';
 import { subCategoryRouter } from './routers/SubCategory';
 import { userRouter } from './routers/User';
 import { voucherRouter } from './routers/Voucher';
+import { createCallerFactory, createTRPCRouter } from './trpc';
 
 export const appRouter = createTRPCRouter({
   Page: pageRouter,

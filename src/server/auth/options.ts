@@ -4,9 +4,14 @@ import { randomBytes } from 'crypto';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
-import { handleFailedLogin, handleUserLock } from '~/lib/FuncHandler/HandleLockedUser/userLockService';
 import { db } from '../db';
-import { createUserService, getOneUserService, updateUserCustomService } from '../services/user.service';
+import {
+  createUserService,
+  getOneUserService,
+  handleFailedLogin,
+  handleUserLock,
+  updateUserCustomService
+} from '../services/user.service';
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -68,17 +73,21 @@ export const authOptions: NextAuthOptions = {
         let userFromDb = await getOneUserService(db, { s: email });
         if (!userFromDb) {
           const randomPass = randomBytes(8).toString('hex');
-          await createUserService(db, {
-            email,
-            name: name ?? '',
-            isActive: true,
-            gender: Gender.OTHER,
-            pointUser: 0,
-            level: UserLevel.BRONZE,
-            password: randomPass,
-            image: image ? { fileName: image, base64: '' } : undefined,
-            phone: ''
-          });
+          await createUserService(
+            db,
+            {
+              email,
+              name: name ?? '',
+              isActive: true,
+              gender: Gender.OTHER,
+              pointUser: 0,
+              level: UserLevel.BRONZE,
+              password: randomPass,
+              image: image ? { fileName: image, base64: '' } : undefined,
+              phone: ''
+            },
+            null
+          );
         }
         if (!userFromDb?.image && image) {
           await updateUserCustomService(db, {

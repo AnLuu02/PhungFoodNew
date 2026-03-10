@@ -1,6 +1,6 @@
 import { Gender, UserLevel } from '@prisma/client';
 import z from 'zod';
-import { baseAddressSchema } from '~/lib/ZodSchema/schema';
+import { baseAddressSchema } from './address.schema';
 import { imageInputSchema, imageReqSchema } from './image.schema';
 
 export const baseUserSchema = z.object({

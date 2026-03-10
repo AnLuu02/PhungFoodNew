@@ -4,12 +4,65 @@ import { del, put } from '@vercel/blob';
 import { compare, hash } from 'bcryptjs';
 import crypto, { randomInt } from 'crypto';
 import dayjs from 'dayjs';
+import { Session } from 'next-auth';
 import { UserRole } from '~/constants';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { UserReq } from '~/shared/user.schema';
+import { db } from '../db';
+
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCK_DURATION_MINUTES = 15;
+
+export async function handleUserLock(user: any) {
+  if (!user?.isLocked || !user?.lockedUntil) return user;
+
+  const now = dayjs();
+  const lockedUntil = dayjs(user.lockedUntil);
+
+  if (now.isAfter(lockedUntil)) {
+    const resp = await updateUserCustomService(db, {
+      where: { email: user.email },
+      data: {
+        isLocked: false,
+        failedAttempts: 0,
+        lockedUntil: null
+      }
+    });
+    if (!resp) throw new Error('Đã có lỗi xảy ra trong quá trình xử lí trạng thái người dùng.');
+    return resp;
+  }
+
+  const remainingSeconds = lockedUntil.diff(now, 'second');
+  const remainingMinutes = Math.ceil(remainingSeconds / 60);
+  const text = remainingMinutes <= 0 ? '<1' : remainingMinutes.toString();
+
+  throw new Error(`Tài khoản bị khóa. Vui lòng thử lại sau ${text} phút.`);
+}
+
+export async function handleFailedLogin(user: any) {
+  const attempts = user.failedAttempts + 1;
+  if (attempts >= MAX_FAILED_ATTEMPTS) {
+    await updateUserCustomService(db, {
+      where: { id: user.id },
+      data: {
+        isLocked: true,
+        failedAttempts: attempts,
+        lockedUntil: new Date(Date.now() + LOCK_DURATION_MINUTES * 60 * 1000)
+      }
+    });
+    throw new Error('Tài khoản bị khóa tạm thời do quá nhiều lần đăng nhập sai.');
+  }
+
+  await updateUserCustomService(db, {
+    where: { id: user.id },
+    data: { failedAttempts: attempts }
+  });
+
+  throw new Error(`Mật khẩu sai không hợp lệ. Còn lại (${attempts}/${MAX_FAILED_ATTEMPTS}) lần.`);
+}
 
 export const hashPassword = async (password: string) => {
   const saltRounds = 10;
@@ -133,7 +186,7 @@ export const findUserService = async (
     }
   };
 };
-export const createUserService = async (db: PrismaClient, input: UserReq) => {
+export const createUserService = async (db: PrismaClient, input: UserReq, session: Session | null) => {
   const [existed, roles] = await db.$transaction([
     db.user.findFirst({
       where: {
@@ -189,11 +242,11 @@ export const createUserService = async (db: PrismaClient, input: UserReq) => {
   let otpExpired = dayjs().toDate(),
     otpHash = '',
     otp = '';
-  if (!regexCheckGuest.test(input.email)) {
+  if (!regexCheckGuest.test(input.email) && session?.user?.email !== process.env.NEXT_PUBLIC_EMAIL_ADMIN) {
     ({ otp, otpExpired, otpHash } = createOTP());
     const emailContent = getOtpEmail(otp, input, 3);
     await sendEmail(input.email, 'Mã OTP kích hoạt tài khoản', emailContent);
-  } //xem lại
+  }
   const passwordHash = await hashPassword(input.password);
   const user = await db.user.create({
     data: {
@@ -514,14 +567,7 @@ export const getOneUserService = async (db: PrismaClient, input: { s?: string; h
     }
   };
 };
-export const updateAnyService = async (db: PrismaClient, input: { where: any; data: any }) => {
-  const { where, data } = input;
-  const user = await db.user.update({
-    where: where as Prisma.UserWhereUniqueInput,
-    data: data as Prisma.UserUpdateInput
-  });
-  return user;
-};
+
 export const getNotGuestService = async (db: PrismaClient) => {
   const user = await db.user.findMany({
     where: {

@@ -7,37 +7,40 @@ import { District, Province, Ward } from '~/types/ResponseFetcher';
 
 export default function AddressSection({
   control,
-  setValue
+  setValue,
+  name = 'address'
 }: {
   control: Control<any>;
   setValue: UseFormSetValue<any>;
+  name?: string;
 }) {
-  const address = useWatch({
-    control,
-    name: 'address'
-  });
-
+  const validName = name.includes('address') ? name : name + '.address';
+  const address = useWatch({ control, name: validName });
   const { provinces, getProvince } = useProvinces();
-  const [debouncedProvinceId] = useDebouncedValue(address?.provinceId, 300);
-  const [debouncedDistrictId] = useDebouncedValue(address?.districtId, 300);
-  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
-  const { wards, getWard } = useWards(debouncedDistrictId);
+  const [dbProvinceId] = useDebouncedValue(address?.provinceId, 300);
+  const [dbDistrictId] = useDebouncedValue(address?.districtId, 300);
+  const { districts, getDistrict } = useDistricts(dbProvinceId);
+  const { wards, getWard } = useWards(dbDistrictId);
   useEffect(() => {
-    const province = getProvince(address?.provinceId, provinces);
-    const district = getDistrict(address?.districtId, districts);
-    const ward = getWard(address?.wardId, wards);
-    const fullAddress = `${address?.detail + ', ' || ''}${ward?.name || ''}, ${district?.name || ''}, ${province?.name || ''}`;
-    setValue('address.province', province?.name || '');
-    setValue('address.district', district?.name || '');
-    setValue('address.ward', ward?.name || '');
-    setValue('address.fullAddress', fullAddress);
-  }, [address?.provinceId, address?.districtId]);
+    if (!address?.provinceId && !address?.detail) return setValue('address', undefined);
+    const p = getProvince(address?.provinceId, provinces);
+    const d = getDistrict(address?.districtId, districts);
+    const w = getWard(address?.wardId, wards);
+    const fullAddress = [address.detail, w?.name, d?.name, p?.name].filter(Boolean).join(', ');
+    const updates = {
+      province: p?.name || '',
+      district: d?.name || '',
+      ward: w?.name || '',
+      fullAddress
+    };
+    Object.entries(updates).forEach(([key, val]) => setValue(`${validName}.${key}`, val));
+  }, [address?.provinceId, address?.districtId, address?.wardId, address?.detail]);
   return (
     <>
-      <GridCol span={4}>
+      <GridCol span={12}>
         <Controller
           control={control}
-          name='address.provinceId'
+          name={`${validName}.provinceId`}
           render={({ field, fieldState: { error } }) => (
             <Select
               {...field}
@@ -56,11 +59,10 @@ export default function AddressSection({
         />
       </GridCol>
 
-      <GridCol span={4}>
+      <GridCol span={12}>
         <Controller
           control={control}
-          name='address.districtId'
-          disabled={!address?.provinceId}
+          name={`${validName}.districtId`}
           render={({ field, fieldState: { error } }) => (
             <Select
               radius={'md'}
@@ -72,6 +74,7 @@ export default function AddressSection({
                 value: item.code.toString(),
                 label: item.name
               }))}
+              disabled={!address?.provinceId}
               nothingFoundMessage='Không tìm thấy...'
               error={error?.message}
             />
@@ -79,11 +82,10 @@ export default function AddressSection({
         />
       </GridCol>
 
-      <GridCol span={4}>
+      <GridCol span={12}>
         <Controller
           control={control}
-          name='address.wardId'
-          disabled={!address?.districtId}
+          name={`${validName}.wardId`}
           render={({ field, fieldState: { error } }) => (
             <Select
               {...field}
@@ -96,6 +98,7 @@ export default function AddressSection({
                 label: item.name
               }))}
               nothingFoundMessage='Không tìm thấy...'
+              disabled={!address?.districtId}
               error={error?.message}
             />
           )}
@@ -105,7 +108,7 @@ export default function AddressSection({
       <GridCol span={12}>
         <Controller
           control={control}
-          name='address.detail'
+          name={`${validName}.detail`}
           render={({ field, fieldState: { error } }) => (
             <Textarea
               {...field}

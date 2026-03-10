@@ -1,21 +1,9 @@
-import { Card, Grid, GridCol, Select, Stack, Textarea, TextInput, Title } from '@mantine/core';
+import { Card, Grid, GridCol, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
 import { Controller } from 'react-hook-form';
-import { District, Province, Ward } from '~/types/ResponseFetcher';
+import AddressSection from '~/components/AdressSection';
 
-export function DeliveryCard({
-  control,
-  watch,
-  provinces,
-  districts,
-  wards
-}: {
-  control: any;
-  watch: any;
-  provinces: Province[];
-  districts: District[];
-  wards: Ward[];
-}) {
+export function DeliveryCard({ control, setValue, name }: { control: any; setValue: any; name: string }) {
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
       <Title order={2} className='mb-4 font-quicksand text-xl'>
@@ -25,7 +13,7 @@ export function DeliveryCard({
         <Grid>
           <GridCol span={12}>
             <Controller
-              name='email'
+              name={`${name}.email`}
               control={control}
               render={({ field, fieldState }) => (
                 <TextInput
@@ -43,7 +31,7 @@ export function DeliveryCard({
           </GridCol>
           <GridCol span={12}>
             <Controller
-              name='name'
+              name={`${name}.name`}
               control={control}
               render={({ field, fieldState }) => (
                 <TextInput
@@ -60,7 +48,7 @@ export function DeliveryCard({
           </GridCol>
           <GridCol span={12}>
             <Controller
-              name='phone'
+              name={`${name}.phone`}
               control={control}
               defaultValue=''
               render={({ field, fieldState }) => (
@@ -76,93 +64,10 @@ export function DeliveryCard({
               )}
             />
           </GridCol>
+          <AddressSection control={control} setValue={setValue} name={`${name}.address`} />
           <GridCol span={12}>
             <Controller
-              control={control}
-              name={`address.provinceId`}
-              render={({ field, fieldState }) => (
-                <Select
-                  {...field}
-                  searchable
-                  radius='md'
-                  label='Tỉnh thành'
-                  placeholder='Chọn tỉnh thành'
-                  data={provinces.map((item: Province) => ({
-                    value: item.code.toString(),
-                    label: item.name
-                  }))}
-                  withAsterisk
-                  nothingFoundMessage='Nothing found...'
-                  error={fieldState.error?.message}
-                />
-              )}
-            />
-          </GridCol>
-          <GridCol span={12}>
-            <Controller
-              control={control}
-              name={`address.districtId`}
-              disabled={!watch('address.provinceId')}
-              render={({ field, fieldState }) => (
-                <Select
-                  {...field}
-                  searchable
-                  radius='md'
-                  label='Quận huyện'
-                  placeholder='Chọn quận huyện'
-                  data={districts.map((item: District) => ({
-                    value: item.code.toString(),
-                    label: item.name
-                  }))}
-                  withAsterisk
-                  nothingFoundMessage='Nothing found...'
-                  error={fieldState.error?.message}
-                />
-              )}
-            />
-          </GridCol>
-          <GridCol span={12}>
-            <Controller
-              control={control}
-              name={`address.wardId`}
-              disabled={!watch('address.districtId')}
-              render={({ field, fieldState }) => (
-                <Select
-                  {...field}
-                  searchable
-                  radius='md'
-                  label='Phường xã'
-                  placeholder='Chọn phường xã'
-                  data={wards.map((item: Ward) => ({
-                    value: item.code.toString(),
-                    label: item.name
-                  }))}
-                  withAsterisk
-                  nothingFoundMessage='Nothing found...'
-                  error={fieldState.error?.message}
-                />
-              )}
-            />
-          </GridCol>
-          <GridCol span={12}>
-            <Controller
-              control={control}
-              name={`address.detail`}
-              render={({ field, fieldState }) => (
-                <Textarea
-                  {...field}
-                  label='Địa chỉ'
-                  placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
-                  resize='block'
-                  withAsterisk
-                  error={fieldState.error?.message}
-                />
-              )}
-            />
-          </GridCol>
-          <GridCol span={12}>
-            <Controller
-              name='note'
+              name={`${name}.note`}
               control={control}
               defaultValue=''
               render={({ field }) => (

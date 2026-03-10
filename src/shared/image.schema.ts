@@ -17,7 +17,7 @@ export const imageReqSchema = z.object({
   base64: z.string()
 });
 export const imageInputSchema = baseImageSchema.extend({
-  url: z.instanceof(File).optional()
+  url: z.instanceof(File).nullable().optional()
 });
 
 export type ImageFromDb = z.infer<typeof imageFromDbSchema>;

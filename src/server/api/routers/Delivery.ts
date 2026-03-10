@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { deliveryAddressSchema } from '~/lib/ZodSchema/schema';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { deliveryAddressSchema } from '~/shared/address.schema';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const deliveryRouter = createTRPCRouter({
