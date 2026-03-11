@@ -1,28 +1,25 @@
 'use client';
 import { Group, Pagination } from '@mantine/core';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
 export default function CustomPagination({ totalPages }: { totalPages: number }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
   const router = useRouter();
-
-  useEffect(() => {
-    if (currentPage == 1 && !searchParams.get('s')) {
-      const params = new URLSearchParams(searchParams);
-      params.delete('page');
-      router.push(`${pathname}?${params.toString()}`);
-    }
-  }, [currentPage, searchParams]);
-
-  const onChange = (newPage: number | string) => {
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const onChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
-    params.delete('page');
-    if (Number(newPage) > 1) params.set('page', newPage.toString());
-    router.push(`${pathname}?${params.toString()}`);
+
+    if (newPage <= 1) {
+      params.delete('page');
+    } else {
+      params.set('page', newPage.toString());
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
+
+  if (totalPages <= 1) return null;
   return (
     <Group justify='center'>
       <Pagination.Root

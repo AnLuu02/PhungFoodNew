@@ -10,13 +10,12 @@ import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';
 import HeaderSearchResults from './HeaderSearchResults';
 
-export default function HeaderMenu({ responseData, isLoading }: { responseData: any; isLoading: boolean }) {
-  const products = responseData?.products || [];
+export default function HeaderMenu({ totalProducts, isLoading }: { totalProducts: number; isLoading: boolean }) {
   const searchParams = useSearchParams();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   return (
     <>
-      {searchParams.get('s') && <HeaderSearchResults products={products} isLoading={isLoading} />}
+      {searchParams.get('s') && <HeaderSearchResults totalProducts={totalProducts} isLoading={isLoading} />}
       <Grid mb={{ base: 20, md: 30 }}>
         <GridCol span={12}>
           <Grid>
@@ -35,7 +34,7 @@ export default function HeaderMenu({ responseData, isLoading }: { responseData: 
                     <Group gap={'xs'}>
                       <Title className='font-quicksand text-mainColor'>{getTagFromQuery(searchParams)}</Title>
                       <Title order={2} className='font-quicksand text-mainColor'>
-                        ({responseData?.pagination?.totalProducts || 0})
+                        ({totalProducts || 0})
                       </Title>
                     </Group>
                   )}

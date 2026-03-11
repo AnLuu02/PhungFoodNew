@@ -9,6 +9,6 @@ export const metadata: Metadata = {
 };
 export default async function MyOrderPage() {
   const session = await getServerSession(authOptions);
-  const orders = await api.Order.getFilter({ s: session?.user?.email || '' });
-  return <MyOrderPageClient data={orders} />;
+  void api.Order.getFilter.prefetch({ s: session?.user?.email || '' });
+  return <MyOrderPageClient session={session} />;
 }

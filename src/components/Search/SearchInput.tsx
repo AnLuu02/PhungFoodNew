@@ -23,16 +23,18 @@ export function SearchInput({ width }: { width?: string | number | undefined }) 
       searchInputRef.current.value = '';
     }
   }, [searchParams.get('s')]);
-
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', '1');
     if (term) {
       params.set('s', term);
     } else {
       params.delete('s');
     }
-    router.replace(`${pathname}?${params.toString()}`);
+    params.delete('page');
+    const newRelativePathQuery = `${pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+    if (window.location.search !== `?${params.toString()}`) {
+      router.replace(newRelativePathQuery, { scroll: false });
+    }
   }, 500);
 
   return (

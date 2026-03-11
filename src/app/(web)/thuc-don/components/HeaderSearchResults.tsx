@@ -1,22 +1,10 @@
 'use client';
 
 import { Flex, Group, Paper, Skeleton, Text, Title } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
-export default function HeaderSearchResults({ products, isLoading }: any) {
+export default function HeaderSearchResults({ totalProducts, isLoading }: any) {
   const params = useSearchParams();
-  const [historySearch, setHistorySearch] = useLocalStorage<any>({ key: 'historySearch', defaultValue: [] });
-
-  useEffect(() => {
-    if (!params.get('s')) return;
-    const exist = historySearch.find((item: any) => item === decodeURIComponent(params.get('s') as string));
-    if (!exist) {
-      setHistorySearch((h: any) => [...h, params.get('s')]);
-    }
-  }, [params]);
-
   return (
     <Paper className='bg-gray-100 dark:bg-dark-card' mb='lg' p={'md'} radius={'lg'}>
       <Group mb='xs'>
@@ -37,16 +25,16 @@ export default function HeaderSearchResults({ products, isLoading }: any) {
           <Skeleton height={16} width='10px' radius='sm' />
         ) : (
           <Text c='dimmed' fw={600}>
-            {products?.length || 0}
+            {totalProducts || 0}
           </Text>
         )}
         <Text c='dimmed' fw={600}>
-          Tìm thấy sản phẩm với từ khóa
+          sản phẩm với từ khóa
         </Text>
         {isLoading ? (
           <Skeleton height={16} width='10%' radius='sm' />
         ) : (
-          <Text c='dimmed' fw={600}>
+          <Text c='dimmed' fw={600} className='italic'>
             "{params.get('s')}"
           </Text>
         )}

@@ -21,11 +21,12 @@ import {
 } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
+import InvoiceToPrint from '~/components/InvoceToPrint';
+import SearchLocal from '~/components/Search/SearchLocal';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
@@ -33,20 +34,13 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { api } from '~/trpc/react';
 
-const InvoiceToPrint = dynamic(() => import('~/components/InvoceToPrint'), {
-  ssr: false
-});
-const SearchLocal = dynamic(() => import('~/components/Search/SearchLocal'), {
-  ssr: false
-});
-export default function MyOrderPageClient({ data }: any) {
+export default function MyOrderPageClient({ session }: { session: any }) {
+  const { data: orders = [] } = api.Order.getFilter.useQuery({ s: session?.user?.email || '' });
   const { openModal } = useModalActions();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [valueSearch, setValueSearch] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-
-  const orders = data ?? [];
 
   const filteredOrders = useMemo(() => {
     if (!selectedStatus) return orders;
@@ -101,7 +95,7 @@ export default function MyOrderPageClient({ data }: any) {
   );
 
   const mutationDelete = api.Order.delete.useMutation();
-
+  const utils = api.useUtils();
   return (
     <Grid gutter='md'>
       <Grid.Col
@@ -264,6 +258,9 @@ export default function MyOrderPageClient({ data }: any) {
                                     confirmDelete({
                                       id: { id: order.id },
                                       mutationDelete,
+                                      callback: () => {
+                                        utils.Order.getFilter.invalidate();
+                                      },
                                       entityName: 'đơn hàng'
                                     })
                                   }

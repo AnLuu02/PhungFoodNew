@@ -36,7 +36,7 @@ export default function SearchComponentClient({ subCategories }: any) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
-  const [historySearch, setHistorySearch] = useLocalStorage<any>({ key: 'historySearch', defaultValue: [] });
+  const [historySearch, setHistorySearch] = useLocalStorage<string[]>({ key: 'historySearch', defaultValue: [] });
   const [debounced] = useDebouncedValue(searchQuery, 500);
   const { data, isLoading } = api.Search.search.useQuery({ s: debounced ?? '' }, { enabled: !!debounced });
 
@@ -46,7 +46,9 @@ export default function SearchComponentClient({ subCategories }: any) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
+    const value = searchQuery.trim();
+    if (value) {
+      setHistorySearch((prev: string[]) => (prev.includes(value) ? prev : [...prev, value]));
       router.push(`/thuc-don?s=${encodeURIComponent(searchQuery)}`);
     }
   };
@@ -62,6 +64,7 @@ export default function SearchComponentClient({ subCategories }: any) {
     }
     return [];
   }, [historySearch]);
+
   return (
     <Box w={'100%'} mx='auto' pos='relative'>
       <form onSubmit={handleSubmit}>
@@ -286,7 +289,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                             variant='transparent'
                             size='sm'
                             onClick={() => {
-                              setHistorySearch(historySearch.filter((item: any) => item !== historySearch[index]));
+                              setHistorySearch((prev: string[]) => prev.filter((_, i) => index !== i));
                             }}
                           >
                             <IconX size={16} />
