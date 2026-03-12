@@ -108,7 +108,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả danh mục' },

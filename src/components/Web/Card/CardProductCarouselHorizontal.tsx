@@ -125,7 +125,9 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             />
             <Text
               onClick={() => {
-                isMobile ? router.push(`/san-pham/${data?.tag}/danh-gia`) : openModal('comments', null, data);
+                isMobile
+                  ? router.push(`/san-pham/${data?.tag}/danh-gia`, { scroll: false })
+                  : openModal('comments', null, data);
               }}
               size='xs'
               className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline dark:text-dark-text'

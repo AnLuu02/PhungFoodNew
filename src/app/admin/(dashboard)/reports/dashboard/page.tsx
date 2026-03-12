@@ -160,7 +160,7 @@ export default function ReportPageClient({ overview }: any) {
     if (value[0] && value[1]) {
       params.set('startTime', value[0].getTime().toString());
       params.set('endTime', value[1].getTime().toString());
-      router.push('/admin/reports?' + params.toString());
+      router.push('/admin/reports?' + params.toString(), { scroll: false });
     }
   }, [value[1]]);
 
@@ -203,7 +203,7 @@ export default function ReportPageClient({ overview }: any) {
                   params.set('endTime', endTime.toString());
                   url = '/admin/reports?' + params.toString();
                 }
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               defaultValue={'7day'}
               data={dataSelect}

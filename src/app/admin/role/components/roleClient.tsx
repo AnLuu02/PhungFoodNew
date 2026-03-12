@@ -166,7 +166,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả' },

@@ -32,7 +32,7 @@ export const PriceCheckedFilter = () => {
                   s.set('minPrice', range.minPrice.toString());
                   s.set('maxPrice', range.maxPrice.toString());
                 }
-                router.push(`${pathname}?${s.toString()}`);
+                router.push(`${pathname}?${s.toString()}`, { scroll: false });
               }}
               name='range-price'
               label={range.label}

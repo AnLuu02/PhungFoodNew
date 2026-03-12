@@ -59,7 +59,7 @@ export function SortFilter() {
                       } else {
                         s.delete('sort', category.tag);
                       }
-                      router.push(`${pathname}?${s.toString()}`);
+                      router.push(`${pathname}?${s.toString()}`, { scroll: false });
                     }}
                   />
                 </GridCol>
@@ -73,7 +73,7 @@ export function SortFilter() {
               fullWidth
               onClick={() => {
                 s.delete('sort');
-                router.push(`${pathname}?${s.toString()}`);
+                router.push(`${pathname}?${s.toString()}`, { scroll: false });
               }}
             />
           </GridCol>

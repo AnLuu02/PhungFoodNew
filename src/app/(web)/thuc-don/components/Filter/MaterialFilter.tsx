@@ -35,7 +35,7 @@ export const MaterialFilter = ({ materials }: any) => {
                 } else {
                   s.delete('nguyen-lieu');
                 }
-                router.push(`${pathname}?${s.toString()}`);
+                router.push(`${pathname}?${s.toString()}`, { scroll: false });
               }}
               pr={20}
               classNames={{

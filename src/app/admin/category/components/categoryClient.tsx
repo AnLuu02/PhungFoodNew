@@ -111,7 +111,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
         value={activeTab}
         onChange={(value: any) => {
           setActiveTab(value);
-          router.push(`/admin/category`);
+          router.push(`/admin/category`, { scroll: false });
         }}
         styles={{
           tab: {
@@ -148,7 +148,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
                       if (value === 'all') params.delete('s');
                       else params.set('s', value as string);
                       const url = `${location.pathname}?${params.toString()}`;
-                      router.push(url);
+                      router.push(url, { scroll: false });
                     }}
                     data={[
                       { value: 'all', label: 'Tất cả' },

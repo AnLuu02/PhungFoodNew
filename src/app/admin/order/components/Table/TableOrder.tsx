@@ -136,7 +136,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả trạng thái' },
@@ -159,7 +159,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả' },

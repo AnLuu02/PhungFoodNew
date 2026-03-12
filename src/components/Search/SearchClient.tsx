@@ -49,7 +49,7 @@ export default function SearchComponentClient({ subCategories }: any) {
     const value = searchQuery.trim();
     if (value) {
       setHistorySearch((prev: string[]) => (prev.includes(value) ? prev : [...prev, value]));
-      router.push(`/thuc-don?s=${encodeURIComponent(searchQuery)}`);
+      router.push(`/thuc-don?s=${encodeURIComponent(searchQuery)}`, { scroll: false });
     }
   };
 
@@ -270,7 +270,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                             variant='transparent'
                             leftSection={<IconClock size={16} />}
                             onClick={() => {
-                              router.push(`/thuc-don?s=${encodeURIComponent(item)}`);
+                              router.push(`/thuc-don?s=${encodeURIComponent(item)}`, { scroll: false });
                             }}
                             styles={{
                               root: {

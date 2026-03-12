@@ -17,7 +17,7 @@ export const FilterRating = () => {
     if (minRating) {
       params.set('rating', String(minRating));
     }
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }, [minRating]);
   return (
     <Box>

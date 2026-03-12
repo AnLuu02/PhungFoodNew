@@ -34,7 +34,7 @@ export function PriceRangeFilter() {
     setMessage('');
     params.set('minPrice', String(minPrice));
     params.set('maxPrice', String(maxPrice));
-    router.push(`${pathname}?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
   return (
     <Popover width={300} position='bottom' radius={'md'} arrowSize={10} withArrow shadow='lg'>

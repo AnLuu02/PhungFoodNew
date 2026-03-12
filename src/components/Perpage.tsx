@@ -13,7 +13,7 @@ const PageSizeSelector = () => {
     s.delete('limit');
     s.set('limit', value ?? '5');
     const url = `${pathname}?${s.toString()}`;
-    router.push(url);
+    router.push(url, { scroll: false });
   };
 
   return (

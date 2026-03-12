@@ -128,7 +128,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả đánh giá' },
@@ -149,7 +149,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả đánh giá (sao)' },

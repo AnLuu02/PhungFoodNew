@@ -68,7 +68,7 @@ export default function Empty({
               onClick();
             } else {
               setLoadingEmpty(true);
-              router.push(url);
+              router.push(url, { scroll: false });
             }
           }}
         >

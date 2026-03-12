@@ -118,7 +118,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả trạng thái' },
@@ -138,7 +138,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   params.delete('page');
                 }
                 const url = `${location.pathname}?${params.toString()}`;
-                router.push(url);
+                router.push(url, { scroll: false });
               }}
               data={[
                 { value: 'all', label: 'Tất cả danh mục' },
