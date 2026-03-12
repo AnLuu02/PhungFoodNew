@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import tags from '~/constants/tags-vi';
 
-const BreadcrumbsBase = () => {
+export const BreadcrumbsBase = () => {
   const pathname = usePathname();
   const pathArray = pathname.split('/').filter(path => path);
   const titlePath = (path: keyof typeof tags) => {
@@ -40,5 +40,3 @@ const BreadcrumbsBase = () => {
     </Breadcrumbs>
   );
 };
-
-export default BreadcrumbsBase;

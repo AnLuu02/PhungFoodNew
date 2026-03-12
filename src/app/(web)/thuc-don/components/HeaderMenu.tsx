@@ -2,8 +2,10 @@
 import { Box, Flex, Grid, GridCol, Group, Skeleton, Text, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { breakpoints } from '~/constants';
+import tags from '~/constants/tags-vi';
 import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
 import ActiveFilters from './ActiveFilters';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
@@ -12,10 +14,12 @@ import HeaderSearchResults from './HeaderSearchResults';
 
 export default function HeaderMenu({ totalProducts, isLoading }: { totalProducts: number; isLoading: boolean }) {
   const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('s');
+  const activeTag = useMemo(() => getTagFromQuery(searchParams, tags), [searchParams, tags]);
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   return (
     <>
-      {searchParams.get('s') && <HeaderSearchResults totalProducts={totalProducts} isLoading={isLoading} />}
+      <HeaderSearchResults s={searchQuery} totalProducts={totalProducts} isLoading={isLoading} />
       <Grid mb={{ base: 20, md: 30 }}>
         <GridCol span={12}>
           <Grid>
@@ -32,7 +36,7 @@ export default function HeaderMenu({ totalProducts, isLoading }: { totalProducts
                     </Group>
                   ) : (
                     <Group gap={'xs'}>
-                      <Title className='font-quicksand text-mainColor'>{getTagFromQuery(searchParams)}</Title>
+                      <Title className='font-quicksand text-mainColor'>{activeTag}</Title>
                       <Title order={2} className='font-quicksand text-mainColor'>
                         ({totalProducts || 0})
                       </Title>

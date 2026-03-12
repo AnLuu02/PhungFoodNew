@@ -1,3 +1,4 @@
+import { ReadonlyURLSearchParams } from 'next/navigation';
 import tags from '~/constants/tags-vi';
 
 export const createTag = (input: string): string => {
@@ -13,21 +14,15 @@ export const createTag = (input: string): string => {
     .replace(/-$/, '');
 };
 
-export function getTagFromQuery(queryString: any) {
-  const s = Object.fromEntries(new URLSearchParams(queryString));
-  const { loai, 'danh-muc': danhMuc, 'nguyen-lieu': nguyenLieu, 'loai-san-pham': loaiSanPham } = s;
-  if (loai) {
-    return tags?.[loai] || tags?.loai || 'Loại sản phẩm';
-  }
-
-  if (danhMuc && loaiSanPham) {
-    return tags?.[loaiSanPham] || tags?.loaiSanPham || 'Loại sản phẩm';
-  }
-
-  if (danhMuc) {
-    return tags?.[danhMuc] || tags?.danhMuc || 'Danh mục sản phẩm';
-  }
-
+type QueryData = Record<string, string | undefined>;
+export function getTagFromQuery(query: ReadonlyURLSearchParams | QueryData, tags: Record<string, string>): string {
+  const s: QueryData = query instanceof ReadonlyURLSearchParams ? Object.fromEntries(query.entries()) : query;
+  const { loai, 'danh-muc': danhMuc, 'loai-san-pham': loaiSanPham } = s;
+  if (loai && tags[loai]) return tags[loai];
+  if (danhMuc && loaiSanPham && tags[loaiSanPham]) return tags[loaiSanPham];
+  if (danhMuc && tags[danhMuc]) return tags[danhMuc];
+  if (loai || (danhMuc && loaiSanPham)) return 'Loại sản phẩm';
+  if (danhMuc) return 'Danh mục sản phẩm';
   return 'Tất cả';
 }
 export function getViTag(tag: any) {

@@ -4,12 +4,11 @@ import { BackgroundImage, Box, Card, Flex, Skeleton, Text } from '@mantine/core'
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
-import BreadcrumbsBase from './BreadcrumbsBase';
-const BreadcrumbsComponent = ({ subCategories }: any) => {
+import { usePathname } from 'next/navigation';
+import { ActiveMenuPageText } from './ActiveMenuPageText';
+import { BreadcrumbsBase } from './BreadcrumbsBase';
+export const BreadcrumbsComponent = ({ subCategories }: any) => {
   const pathname = usePathname();
-  const params = useSearchParams();
   const subCategoriesData = subCategories || [];
   return pathname === '/' ? (
     ''
@@ -27,9 +26,7 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
     <Flex align={'center'} justify={'space-between'}>
       <BackgroundImage src='/images/jpg/breadcrumb_bg.jpg' h={400} w={'100%'} pos={'relative'} py={'md'}>
         <Flex direction={'column'} align={'center'} justify={'center'} className='relative z-10 py-8'>
-          <Text size='sm' className='mb-2 text-center text-3xl font-bold text-green-400'>
-            {getTagFromQuery(params)}
-          </Text>
+          <ActiveMenuPageText />
           <Box className='mb-8'>
             <BreadcrumbsBase />
           </Box>
@@ -93,5 +90,3 @@ const BreadcrumbsComponent = ({ subCategories }: any) => {
     </Flex>
   );
 };
-
-export default BreadcrumbsComponent;

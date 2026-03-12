@@ -2,26 +2,28 @@
 
 import { Group, InputBase, Pill, Text } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getViTag } from '~/lib/FuncHandler/generateTag';
-
+const IGNORED_PARAMS = ['page', 'limit', 'maxPrice', 'minPrice', 's'];
 export default function ActiveFilters() {
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
-  const ignored = ['page', 'limit', 'maxPrice', 'minPrice', 's'];
   const activeFilters = useMemo(() => {
     let price = '';
-    const dataFormat = Array.from(params.entries()).filter(([key, value]) => {
+
+    const dataFormat = Array.from(searchParams.entries()).filter(([key, value]) => {
       if (key === 'minPrice') {
-        price += 'Giá từ ' + formatPriceLocaleVi(value) + ' - ';
+        price += `Giá từ ${formatPriceLocaleVi(value)} - `;
       }
+
       if (key === 'maxPrice') {
         price += formatPriceLocaleVi(value);
       }
-      return value && !ignored.includes(key);
+
+      return value && !IGNORED_PARAMS.includes(key);
     });
 
     if (price) {
@@ -29,12 +31,9 @@ export default function ActiveFilters() {
     }
 
     return dataFormat;
-  }, [params]);
-
-  if (activeFilters.length === 0) return null;
-
+  }, [searchParams]);
   const removeFilter = (key: string, value: string) => {
-    const newParams = new URLSearchParams(searchParams.toString());
+    const newParams = new URLSearchParams(searchParams);
     const allValues = newParams.getAll(key);
     const updatedValues = allValues.filter(v => v !== value);
     if (key === 'price') {
@@ -44,7 +43,7 @@ export default function ActiveFilters() {
       newParams.delete(key);
     }
     updatedValues.forEach(v => newParams.append(key, v));
-    router.push(`?${newParams.toString()}`);
+    router.replace(`${window.location.pathname}?${newParams.toString()}`, { scroll: false });
   };
 
   const renderTag = (key: string, value: string) => {
@@ -53,8 +52,13 @@ export default function ActiveFilters() {
     }
     return getViTag(value).toLowerCase();
   };
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  return (
+  if (!isMounted) return null;
+
+  return activeFilters.length === 0 ? null : (
     <>
       <InputBase component='div' multiline radius={'lg'} w={'100%'} px={'xs'}>
         <Group gap={4}>

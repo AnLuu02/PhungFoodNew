@@ -4,7 +4,7 @@ import { AppShell, Box, Burger } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import Header from '~/components/Admin/Header';
 import Navbar from '~/components/Admin/Navbar';
-import BreadcrumbsBase from '~/components/BreadcrumbsBase';
+import { BreadcrumbsBase } from '~/components/Breadcrumbs/BreadcrumbsBase';
 
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();

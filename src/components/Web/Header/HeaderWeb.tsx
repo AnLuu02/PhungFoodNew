@@ -1,4 +1,4 @@
-import BreadcrumbsComponent from '~/components/BreadcrumbsComponent';
+import { BreadcrumbsComponent } from '~/components/Breadcrumbs/BreadcrumbsComponent';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
 import Header2 from './section/HeaderSecond';

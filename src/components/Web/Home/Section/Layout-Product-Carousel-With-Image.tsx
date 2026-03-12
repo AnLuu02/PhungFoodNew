@@ -130,7 +130,7 @@ const LayoutProductCarouselWithImage = ({
           </TabsPanel>
 
           <Flex align={'center'} justify={'center'} mt={30}>
-            <Link href={`/thuc-don?s=${loai}`}>
+            <Link href={`/thuc-don?loai=${loai}`}>
               <BButton children={'Xem tất cả'} variant='outline' radius={'xl'} />
             </Link>
           </Flex>

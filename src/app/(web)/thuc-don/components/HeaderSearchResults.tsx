@@ -1,11 +1,14 @@
 'use client';
-
 import { Flex, Group, Paper, Skeleton, Text, Title } from '@mantine/core';
-import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-export default function HeaderSearchResults({ totalProducts, isLoading }: any) {
-  const params = useSearchParams();
-  return (
+export default function HeaderSearchResults({ s, totalProducts, isLoading }: any) {
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (!isMounted) return null;
+  return s ? (
     <Paper className='bg-gray-100 dark:bg-dark-card' mb='lg' p={'md'} radius={'lg'}>
       <Group mb='xs'>
         <Flex align='center' justify='center' w={24} h={24} style={{ borderRadius: '50%' }} bg='blue'>
@@ -22,7 +25,7 @@ export default function HeaderSearchResults({ totalProducts, isLoading }: any) {
           Tìm thấy
         </Text>
         {isLoading ? (
-          <Skeleton height={16} width='10px' radius='sm' />
+          <Skeleton height={16} width='20px' radius='sm' />
         ) : (
           <Text c='dimmed' fw={600}>
             {totalProducts || 0}
@@ -35,10 +38,10 @@ export default function HeaderSearchResults({ totalProducts, isLoading }: any) {
           <Skeleton height={16} width='10%' radius='sm' />
         ) : (
           <Text c='dimmed' fw={600} className='italic'>
-            "{params.get('s')}"
+            "{s}"
           </Text>
         )}
       </Group>
     </Paper>
-  );
+  ) : null;
 }
