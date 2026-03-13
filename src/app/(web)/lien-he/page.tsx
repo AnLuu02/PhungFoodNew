@@ -66,7 +66,7 @@ const Contact = async () => {
             <Flex
               direction='column'
               w={'100%'}
-              h={'500px'}
+              mih={'500px'}
               className='bg-gray-100 dark:bg-dark-card'
               align={'center'}
               justify={'center'}

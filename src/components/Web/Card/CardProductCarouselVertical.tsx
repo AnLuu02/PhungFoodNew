@@ -151,7 +151,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
           right={-10}
         >
           <Text size='xs' fw={700} className='text-white'>
-            {data?.subCategory.name || 'Đang cập nhật'}
+            {data?.subCategory?.name || 'Đang cập nhật'}
           </Text>
         </Badge>
         {data?.discount > 0 && (

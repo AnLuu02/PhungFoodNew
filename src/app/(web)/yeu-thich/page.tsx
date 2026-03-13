@@ -27,9 +27,14 @@ export default function FavouritePage() {
   }, [userEmail, favouriteFoodFromApi, localFavouriteFood]);
 
   if (!dataRender?.length) {
-    return <Empty title='Không có sản phẩm yêu thích hiện tại' content='Không có sản phẩm yêu thích hiện tại' />;
+    return (
+      <Empty
+        title='Không có sản phẩm yêu thích hiện tại'
+        content='Không có sản phẩm yêu thích hiện tại'
+        btnText='Xem thực đơn'
+      />
+    );
   }
-
   return (
     <Grid w='100%' mt='md' columns={12}>
       {dataRender.map((item, index) => (

@@ -16,6 +16,7 @@ export default function Empty({
   url = '/thuc-don',
   size = 'md',
   hasButton = true,
+  btnText = 'Quay lại',
   onClick
 }: {
   noLogo?: boolean;
@@ -25,6 +26,7 @@ export default function Empty({
   url?: string;
   size?: Size;
   hasButton?: boolean;
+  btnText?: 'Quay lại' | string;
   onClick?: () => void;
 }) {
   const [loadingEmpty, setLoadingEmpty] = useState(false);
@@ -72,7 +74,7 @@ export default function Empty({
             }
           }}
         >
-          Quay lại
+          {btnText}
         </BButton>
       )}
     </Center>
