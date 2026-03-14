@@ -22,24 +22,6 @@ export const imageSchema = z.object({
   entityType: z.nativeEnum(EntityType).optional()
 });
 
-export const categorySchema = z.object({
-  id: z.string().optional(),
-  isActive: z.boolean().default(true),
-  tag: z.string().optional(),
-  name: z.string({ required_error: 'Tên danh mục là bắt buộc' }).min(1, 'Tên không được để trống'),
-  description: z.string().optional()
-});
-
-export const subCategorySchema = z.object({
-  id: z.string().optional(),
-  tag: z.string().optional(),
-  isActive: z.boolean().default(true),
-  name: z.string({ required_error: 'Tên danh mục con là bắt buộc' }).min(1, 'Tên không được để trống'),
-  description: z.string().optional(),
-  categoryId: z.string(),
-  thumbnail: imageSchema.optional()
-});
-
 export const paymentSchema = z.object({
   id: z.string(),
   provider: z.string({ required_error: 'Provider name is required' }).min(1, 'Provider name is required'),

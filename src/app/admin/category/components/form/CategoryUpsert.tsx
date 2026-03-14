@@ -1,58 +1,65 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
-import type { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { categorySchema } from '~/lib/ZodSchema/schema';
+import { baseCategorySchema, CategoryInput } from '~/shared/schema/category.schema';
 import { api } from '~/trpc/react';
-import { Category } from '~/types/category';
 
-export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
+export default function CategoryUpsert({
+  categoryId,
+  setOpened
+}: {
+  categoryId?: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
+  const queryResult = api.Category.getOne.useQuery({ s: categoryId || '' }, { enabled: !!categoryId });
+  const { data } = queryResult;
+
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting, isDirty }
-  } = useForm<Category>({
-    resolver: zodResolver(categorySchema),
+    watch,
+    formState: { errors, isSubmitting, isDirty },
+    reset
+  } = useForm<CategoryInput>({
+    resolver: zodResolver(baseCategorySchema),
     defaultValues: {
-      id: '',
+      id: undefined,
       isActive: true,
       name: '',
-      tag: '',
+      tag: undefined,
       description: ''
     }
   });
+  useEffect(() => {
+    if (data?.id) {
+      reset({
+        id: data.id,
+        name: data?.name,
+        isActive: data?.isActive || false,
+        tag: data?.tag,
+        description: data?.description || ''
+      });
+    }
+  }, [data, reset]);
 
   const utils = api.useUtils();
-  const mutation = api.Category.create.useMutation({
-    onSuccess: data => {
-      if (data.code === 'OK') {
-        utils.Category.invalidate();
-        NotifySuccess(data.message);
-        setOpened(false);
-        return;
-      }
-      NotifyError(data.message);
+  const updateMutation = api.Category.upsert.useMutation({
+    onSuccess: () => {
+      setOpened(false);
+      utils.Category.invalidate();
+      NotifySuccess('Chúc mừng bạn thực hiện thao tác thành công.');
     },
-    onError: err => {
-      NotifyError(err.message);
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 
-  const onSubmit: SubmitHandler<Category> = async formData => {
-    try {
-      if (formData) {
-        await mutation.mutateAsync({
-          ...formData,
-          tag: createTag(formData.name)
-        });
-      }
-    } catch {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
-    }
+  const onSubmit: SubmitHandler<CategoryInput> = async formData => {
+    await updateMutation.mutateAsync(formData);
   };
 
   return (
@@ -64,28 +71,23 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
             name='name'
             render={({ field }) => (
               <TextInput
-                {...field}
-                label='Tên danh mục'
-                size='sm'
                 radius={'md'}
+                {...field}
+                size='sm'
+                label='Tên danh mục'
                 placeholder='Nhập tên danh mục'
                 error={errors.name?.message}
               />
             )}
           />
         </GridCol>
+
         <GridCol span={12}>
           <Controller
             control={control}
             name='description'
             render={({ field }) => (
-              <Textarea
-                size='sm'
-                label='Mô tả'
-                placeholder='Nhập mô tả'
-                error={errors.description?.message}
-                {...field}
-              />
+              <Textarea size='sm' label='Mô tả' placeholder='Nhập mô tả' error={errors.name?.message} {...field} />
             )}
           />
         </GridCol>
@@ -107,7 +109,7 @@ export default function CreateCategory({ setOpened }: { setOpened: Dispatch<SetS
         </GridCol>
       </Grid>
       <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
-        Tạo mới
+        Tạo mới / Cập nhật
       </BButton>
     </form>
   );

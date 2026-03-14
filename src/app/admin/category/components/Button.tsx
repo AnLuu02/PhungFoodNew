@@ -8,10 +8,8 @@ import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
-import CreateCategory from './form/CreateCategory';
-import CreateSubCategory from './form/CreateSubCategory';
-import UpdateCategory from './form/UpdateCategory';
-import UpdateSubCategory from './form/UpdateSubCategory';
+import CategoryUpsert from './form/CategoryUpsert';
+import SubCategoryUpsert from './form/SubCategoryUpsert';
 const mapFields: Record<string, string> = {
   'Tên danh mục': 'name',
   Tag: 'tag',
@@ -132,6 +130,7 @@ export function CreateManyCategoryButton() {
       </Group>
 
       <Modal
+        radius={'md'}
         size={'xl'}
         opened={opened}
         onClose={() => {
@@ -198,6 +197,7 @@ export function CreateCategoryButton() {
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -207,7 +207,7 @@ export function CreateCategoryButton() {
           </Title>
         }
       >
-        <CreateCategory setOpened={setOpened} />
+        <CategoryUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -220,6 +220,7 @@ export function UpdateCategoryButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -229,7 +230,7 @@ export function UpdateCategoryButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdateCategory categoryId={id.toString()} setOpened={setOpened} />
+        <CategoryUpsert categoryId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -255,7 +256,6 @@ export function DeleteCategoryButton({ id }: { id: string }) {
             id: { id },
             mutationDelete,
             entityName: 'danh mục',
-
             callback: () => {
               utils.Category.invalidate();
             }
@@ -276,6 +276,7 @@ export function CreateSubCategoryButton() {
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         size={'xl'}
         opened={opened}
@@ -286,7 +287,7 @@ export function CreateSubCategoryButton() {
           </Title>
         }
       >
-        <CreateSubCategory setOpened={setOpened} />
+        <SubCategoryUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -300,6 +301,7 @@ export function UpdateSubCategoryButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         size={'xl'}
         opened={opened}
@@ -310,7 +312,7 @@ export function UpdateSubCategoryButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdateSubCategory subCategoryId={id.toString()} setOpened={setOpened} />
+        <SubCategoryUpsert subCategoryId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );

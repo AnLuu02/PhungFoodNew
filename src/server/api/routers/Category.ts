@@ -1,11 +1,16 @@
-import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import {
+  deleteCategoryService,
+  findCategoryService,
+  getAllCategoryService,
+  getFilterCategoryService,
+  getOneCategoryService,
+  upsertCategoryService
+} from '~/server/services/category.service';
+import { baseCategorySchema } from '~/shared/schema/category.schema';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
-const findExistingCategory = async (ctx: any, tag: string) => {
-  return await ctx.db.category.findFirst({ where: { tag } });
-};
 export const categoryRouter = createTRPCRouter({
   find: publicProcedure
     .input(
@@ -15,70 +20,7 @@ export const categoryRouter = createTRPCRouter({
         s: z.string().optional()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { skip, take, s } = input;
-
-      const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-      const [totalCategories, totalCategoriesQuery, categories] = await ctx.db.$transaction([
-        ctx.db.category.count(),
-        ctx.db.category.count({
-          where: {
-            OR: [
-              {
-                name: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                tag: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                description: { contains: s?.trim(), mode: 'insensitive' }
-              }
-            ]
-          }
-        }),
-        ctx.db.category.findMany({
-          skip: startPageItem,
-          take,
-          where: {
-            OR: [
-              {
-                name: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                tag: { contains: s?.trim(), mode: 'insensitive' }
-              },
-              {
-                description: { contains: s?.trim(), mode: 'insensitive' }
-              }
-            ]
-          },
-          include: {
-            subCategory: {
-              select: {
-                id: true,
-                name: true
-              }
-            }
-          }
-        })
-      ]);
-      const totalPages = Math.ceil(
-        Object.entries(input)?.length > 2
-          ? totalCategoriesQuery == 0
-            ? 1
-            : totalCategoriesQuery / take
-          : totalCategories / take
-      );
-      const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-
-      return {
-        categories,
-        pagination: {
-          currentPage,
-          totalPages
-        }
-      };
-    }),
+    .query(async ({ ctx, input }) => await findCategoryService(ctx.db, input)),
 
   delete: publicProcedure
     .use(requirePermission('delete:category'))
@@ -87,17 +29,7 @@ export const categoryRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const category = await ctx.db.category.delete({
-        where: { id: input.id }
-      });
-
-      return {
-        code: 'OK',
-        message: 'Xóa danh mục thành công.',
-        data: category
-      };
-    }),
+    .mutation(async ({ ctx, input }) => await deleteCategoryService(ctx.db, input)),
 
   getFilter: publicProcedure
     .input(
@@ -105,96 +37,20 @@ export const categoryRouter = createTRPCRouter({
         s: z.string()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const category = await ctx.db.category.findMany({
-        where: {
-          OR: [
-            { id: { equals: input.s?.trim() } },
-            { name: { equals: input.s?.trim() } },
-            { tag: { equals: input.s?.trim() } }
-          ]
-        }
-      });
-
-      return category;
-    }),
+    .query(async ({ ctx, input }) => await getFilterCategoryService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({
         s: z.string()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const category = await ctx.db.category.findFirst({
-        where: {
-          OR: [
-            { id: { equals: input.s?.trim() } },
-            { name: { equals: input.s?.trim() } },
-            { tag: { equals: input.s?.trim() } }
-          ]
-        }
-      });
-
-      return category;
-    }),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    let category = await ctx.db.category.findMany({
-      include: {
-        subCategory: {
-          include: {
-            image: true,
-            product: {
-              where: {
-                isActive: true
-              },
-              include: {
-                images: true
-              }
-            }
-          }
-        }
-      }
-    });
-    return category;
-  }),
-  create: publicProcedure
-    .use(requirePermission('create:category'))
-    .input(
-      z.object({
-        isActive: z.boolean().default(true),
-        name: z.string().min(1, 'Tên danh mục không được để trống'),
-        description: z.string().optional(),
-        tag: z.string()
-      })
-    )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const existingCategory = await findExistingCategory(ctx, input.tag);
-      if (existingCategory) {
-        return { code: 'CONFLICT', message: 'Danh mục đã tồn tại.', data: [] };
-      }
-      const category = await ctx.db.category.create({
-        data: input
-      });
-      if (category?.tag) {
-        await CreateTagVi({ old: [], new: category });
-      }
-      return {
-        code: 'OK',
-        message: 'Tạo danh mục thành công.',
-        data: category
-      };
-    }),
+    .query(async ({ ctx, input }) => await getOneCategoryService(ctx.db, input)),
+  getAll: publicProcedure.query(async ({ ctx }) => await getAllCategoryService(ctx.db)),
   createMany: publicProcedure
     .use(requirePermission('create:category'))
     .input(
       z.object({
-        data: z.array(
-          z.object({
-            name: z.string().min(1, 'Tên danh mục không được để trống'),
-            description: z.string().optional(),
-            tag: z.string()
-          })
-        )
+        data: z.array(baseCategorySchema)
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
@@ -228,29 +84,9 @@ export const categoryRouter = createTRPCRouter({
         data: newData
       };
     }),
-
-  update: publicProcedure
+  upsert: publicProcedure
     .use(requirePermission('update:category'))
-    .input(
-      z.object({
-        where: z.record(z.any()),
-        data: z.record(z.any())
-      })
-    )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const existingCategory = await findExistingCategory(ctx, input.data.tag);
-
-      if (existingCategory && existingCategory.id !== input.where.id) {
-        return { code: 'CONFLICT', message: 'Danh mục đã tồn tại.', data: [] };
-      }
-
-      const category = await ctx.db.category.update({
-        where: input.where as Prisma.CategoryWhereUniqueInput,
-        data: input.data as Prisma.CategoryUpdateInput
-      });
-
-      await CreateTagVi({ old: existingCategory, new: category });
-
-      return { code: 'OK', message: 'Cập nhật danh mục thành công.', data: category };
-    })
+    .use(requirePermission('create:category'))
+    .input(baseCategorySchema)
+    .mutation(async ({ ctx, input }) => await upsertCategoryService(ctx.db, input))
 });
