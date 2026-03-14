@@ -23,13 +23,14 @@ import { Video } from '~/components/Tiptap/extensions/VideoExtension';
 import { MediaButtons } from '~/components/Tiptap/MediaButtons';
 import { TiptapControl } from '~/components/Tiptap/TiptapControl';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { ContactInput } from '~/shared/schema/contact.schema';
 import { api } from '~/trpc/react';
 
 export default function MailResponse({
   userContactInfo,
   setOpenedModal
 }: {
-  userContactInfo: { id: string; email: string; name: string; message: string; responded: boolean };
+  userContactInfo: ContactInput;
   setOpenedModal: Dispatch<SetStateAction<boolean>>;
 }) {
   const [files, setFiles] = useState<File[]>([]);
@@ -37,7 +38,7 @@ export default function MailResponse({
   const [subject, setSubject] = useState('Phản hồi từ Phụng Food Restaurant');
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState<{ json: any; html: any }>({ json: {}, html: '' });
-
+  const utils = api.useUtils();
   const editor: Editor | null = useEditor({
     extensions: [
       StarterKit,
@@ -69,7 +70,12 @@ export default function MailResponse({
     immediatelyRender: false
   });
 
-  const updateMutation = api.Contact.update.useMutation();
+  const updateMutation = api.Contact.upsert.useMutation({
+    onSuccess: () => {
+      utils.Contact.find.invalidate();
+    },
+    onError: e => {}
+  });
 
   const handleSendEmail = async ({ type }: { type: 'default' | 'auto' }) => {
     setLoading(true);
@@ -79,7 +85,7 @@ export default function MailResponse({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: userContactInfo.name,
+          name: userContactInfo?.fullName || 'Khách hàng',
           email: userContactInfo.email,
           message: userContactInfo.message
         })
@@ -106,12 +112,9 @@ export default function MailResponse({
       if (json?.success) {
         if (!userContactInfo.responded) {
           await updateMutation.mutateAsync({
-            where: {
-              id: json?.data?.idRecord
-            },
-            data: {
-              responded: true
-            }
+            ...userContactInfo,
+            id: json?.data?.idRecord,
+            responded: true
           });
         }
         NotifySuccess('Thao tác thành công!', 'Phản hồi thành công! ');

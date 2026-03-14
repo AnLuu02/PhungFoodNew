@@ -177,15 +177,7 @@ export default function TableContact({ s, data, allData }: { s: string; data: an
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Group className='text-center'>
-                      <SendMailButton
-                        userContactInfo={{
-                          id: row.id,
-                          name: row.fullName,
-                          email: row.email,
-                          message: row.message,
-                          responded: row.responded
-                        }}
-                      />
+                      <SendMailButton userContactInfo={row} />
                       <CallPhoneButton phone={row.phone} />
                       <DeleteContactButton id={row.id} />
                     </Group>

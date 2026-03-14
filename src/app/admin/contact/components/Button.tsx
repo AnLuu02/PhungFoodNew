@@ -4,14 +4,11 @@ import { ActionIcon, Modal } from '@mantine/core';
 import { IconMail, IconPhone, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { ContactInput } from '~/shared/schema/contact.schema';
 import { api } from '~/trpc/react';
 import MailResponse from './form/MailResponse';
 
-export function SendMailButton({
-  userContactInfo
-}: {
-  userContactInfo: { id: string; email: string; name: string; message: string; responded: boolean };
-}) {
+export function SendMailButton({ userContactInfo }: { userContactInfo: ContactInput }) {
   const [opened, setOpened] = useState(false);
   return (
     <>
