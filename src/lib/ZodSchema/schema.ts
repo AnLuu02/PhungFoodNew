@@ -133,14 +133,6 @@ export const voucherSchema = z
     path: ['endDate']
   });
 
-export const materialSchema = z.object({
-  id: z.string().optional(),
-  name: z.string({ required_error: 'Tên là bắt buộc' }).min(1, 'Tên không được để trống'),
-  tag: z.string().optional(),
-  description: z.string().optional(),
-  category: z.string({ required_error: 'Danh mục là bắt buộc' }).min(1, 'Danh mục không được để trống')
-});
-
 export const invoiceSchema = z.object({
   id: z.string(),
   orderId: z.string({ required_error: 'Hóa đơn cho đơn hàng nào?' }).min(1, 'Hóa đơn cho đơn hàng nào?'),

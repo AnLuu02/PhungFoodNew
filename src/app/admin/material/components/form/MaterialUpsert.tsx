@@ -5,17 +5,15 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { categoryMaterials } from '~/constants';
-import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { materialSchema } from '~/lib/ZodSchema/schema';
+import { baseMaterialSchema, MaterialInput } from '~/shared/schema/material.schema';
 import { api } from '~/trpc/react';
-import { Material } from '~/types/material';
 
-export default function UpdateMaterial({
+export default function MaterialUpsert({
   materialId,
   setOpened
 }: {
-  materialId: string;
+  materialId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const queryResult = api.Material.getOne.useQuery({ s: materialId || '' }, { enabled: !!materialId });
@@ -26,23 +24,22 @@ export default function UpdateMaterial({
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Material>({
-    resolver: zodResolver(materialSchema),
+  } = useForm<MaterialInput>({
+    resolver: zodResolver(baseMaterialSchema),
     defaultValues: {
-      id: '',
+      id: undefined,
       name: '',
       category: '',
       tag: '',
       description: ''
     }
   });
-
   useEffect(() => {
     if (data?.id) {
       reset({
-        id: data?.id,
+        id: data?.id || '',
         name: data?.name,
-        tag: data?.tag,
+        tag: data?.tag || '',
         description: data?.description || '',
         category: data?.category
       });
@@ -50,8 +47,10 @@ export default function UpdateMaterial({
   }, [data, reset]);
 
   const utils = api.useUtils();
-  const updateMutation = api.Material.update.useMutation({
+  const updateMutation = api.Material.upsert.useMutation({
     onSuccess: () => {
+      setOpened(false);
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       utils.Material.invalidate();
     },
     onError: e => {
@@ -59,19 +58,8 @@ export default function UpdateMaterial({
     }
   });
 
-  const onSubmit: SubmitHandler<Material> = async formData => {
-    if (materialId) {
-      const result = await updateMutation.mutateAsync({
-        ...formData,
-        tag: createTag(formData.name)
-      });
-      setOpened(false);
-      if (result.code === 'OK') {
-        NotifySuccess(result.message);
-        return;
-      }
-      NotifyError(result.message);
-    }
+  const onSubmit: SubmitHandler<MaterialInput> = async formData => {
+    await updateMutation.mutateAsync(formData);
   };
 
   return (

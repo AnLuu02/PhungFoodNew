@@ -188,17 +188,19 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   <Table.Td className='text-sm'>
                     {item?.materials?.length > 0
                       ? item?.materials?.map((i: any) => (
-                          <Badge
-                            radius={'md'}
-                            bg={
-                              '#' +
-                              Math.floor(Math.random() * 16777215)
-                                .toString(16)
-                                .padStart(6, '0')
-                            }
-                          >
-                            {i?.name}
-                          </Badge>
+                          <Tooltip label={i?.name}>
+                            <Badge
+                              radius={'md'}
+                              bg={
+                                '#' +
+                                Math.floor(Math.random() * 16777215)
+                                  .toString(16)
+                                  .padStart(6, '0')
+                              }
+                            >
+                              {i?.name}
+                            </Badge>
+                          </Tooltip>
                         ))
                       : 'Đang cập nhật'}
                   </Table.Td>

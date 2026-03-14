@@ -19,8 +19,7 @@ import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
-import CreateMaterial from './form/CreateMaterial';
-import UpdateMaterial from './form/UpdateMaterial';
+import MaterialUpsert from './form/MaterialUpsert';
 const mapFields: Record<string, string> = {
   'Tên nguyên liệu': 'name',
   Tag: 'tag',
@@ -40,16 +39,13 @@ export function CreateManyMaterialButton() {
   };
   const importMutation = api.Material.createMany.useMutation({
     onSuccess: data => {
-      if (data.code === 'OK') {
-        NotifySuccess(data.message);
-        utils.Material.invalidate();
-        setOpened(false);
-        setData([]);
-        setLoading(false);
-        resetFileInput();
-        return;
-      }
-      NotifyError(data.message);
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      utils.Material.invalidate();
+      setOpened(false);
+      setData([]);
+      setLoading(false);
+      resetFileInput();
+      return;
     },
     onError: error => {
       setLoading(false);
@@ -138,6 +134,7 @@ export function CreateManyMaterialButton() {
       </Group>
 
       <Modal
+        radius={'md'}
         size={'xl'}
         opened={opened}
         onClose={() => {
@@ -209,16 +206,17 @@ export function CreateMaterialButton() {
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         opened={opened}
         closeOnClickOutside={false}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
-            Tạo danh mục
+            Tạo nguyên liệu
           </Title>
         }
       >
-        <CreateMaterial setOpened={setOpened} />
+        <MaterialUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -232,6 +230,7 @@ export function UpdateMaterialButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        radius={'md'}
         opened={opened}
         closeOnClickOutside={false}
         onClose={() => setOpened(false)}
@@ -241,7 +240,7 @@ export function UpdateMaterialButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdateMaterial materialId={id.toString()} setOpened={setOpened} />
+        <MaterialUpsert materialId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );

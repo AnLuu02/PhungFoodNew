@@ -108,3 +108,22 @@ export const seedCategory = [
       'Ăn vặt và tráng miệng là phần không thể thiếu đối với những ai yêu thích khám phá ẩm thực. Từ các món bánh ngọt mềm mịn, chè thơm lừng, kem mát lạnh, đến những món ăn vặt đường phố như bánh tráng trộn, cá viên chiên, mỗi món đều mang đến sự hấp dẫn riêng. Những món ăn này không chỉ giúp thỏa mãn vị giác mà còn là lựa chọn hoàn hảo để nhâm nhi cùng bạn bè, người thân. Dù là bữa ăn nhẹ trong ngày hay món tráng miệng sau bữa chính, đây luôn là phần khiến thực khách mong chờ nhất.'
   }
 ];
+
+export const seedRegions = [
+  {
+    value: 'mien-nam',
+    label: 'Miền Nam'
+  },
+  {
+    value: 'mien-tay',
+    label: 'Miền Tây'
+  },
+  {
+    value: 'mien-trung',
+    label: 'Miền Trung'
+  },
+  {
+    value: 'mien-bac',
+    label: 'Miền Bắc'
+  }
+];
