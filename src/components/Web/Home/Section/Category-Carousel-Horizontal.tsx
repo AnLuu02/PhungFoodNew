@@ -10,17 +10,19 @@ export type IDataCategory = {
 };
 
 const CategoryCarouselHorizontal = ({ data }: { data: IDataCategory }) => {
-  const [active, setActive] = useState<'an-vat-trang-mieng' | 'mon-chinh' | 'mon-chay'>('an-vat-trang-mieng');
+  const [active, setActive] = useState<'danh-muc-an-vat-trang-mieng' | 'danh-muc-mon-chinh' | 'danh-muc-mon-chay'>(
+    'danh-muc-an-vat-trang-mieng'
+  );
   const productAnVat = data?.anVat || [];
   const productMonChinh = data?.monChinh || [];
   const productMonChay = data?.monChay || [];
   const dataProps = useMemo(() => {
     switch (active) {
-      case 'an-vat-trang-mieng':
+      case 'danh-muc-an-vat-trang-mieng':
         return productAnVat;
-      case 'mon-chinh':
+      case 'danh-muc-mon-chinh':
         return productMonChinh;
-      case 'mon-chay':
+      case 'danh-muc-mon-chay':
         return productMonChay;
       default:
         return productAnVat;
@@ -29,7 +31,7 @@ const CategoryCarouselHorizontal = ({ data }: { data: IDataCategory }) => {
   return (
     <Tabs
       className='relative'
-      defaultValue='an-vat-trang-mieng'
+      defaultValue='danh-muc-an-vat-trang-mieng'
       variant='pills'
       classNames={{
         tab: `hover:bg-transparent hover:text-subColor data-[active=true]:bg-transparent data-[active=true]:text-subColor`
@@ -52,17 +54,17 @@ const CategoryCarouselHorizontal = ({ data }: { data: IDataCategory }) => {
           Danh mục nổi bật
         </Title>
         <TabsList justify='center' w={{ base: '100%', sm: 'max-content', md: '33.33333%' }}>
-          <TabsTab value='an-vat-trang-mieng' size={'xl'}>
+          <TabsTab value='danh-muc-an-vat-trang-mieng' size={'xl'}>
             <Text size='md' fw={700}>
               Ăn vặt
             </Text>
           </TabsTab>
-          <TabsTab value='mon-chinh' size={'xl'}>
+          <TabsTab value='danh-muc-mon-chinh' size={'xl'}>
             <Text size='md' fw={700}>
               Món chính
             </Text>
           </TabsTab>
-          <TabsTab value='mon-chay' size={'xl'}>
+          <TabsTab value='danh-muc-mon-chay' size={'xl'}>
             <Text size='md' fw={700}>
               Món chay
             </Text>

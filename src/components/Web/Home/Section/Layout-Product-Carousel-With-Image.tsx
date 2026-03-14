@@ -32,16 +32,18 @@ const LayoutProductCarouselWithImage = ({
   data: any;
   reverseGrid?: boolean;
 }) => {
-  const [active, setActive] = useState<'an-vat-trang-mieng' | 'mon-chinh' | 'mon-chay'>('an-vat-trang-mieng');
+  const [active, setActive] = useState<'danh-muc-an-vat-trang-mieng' | 'danh-muc-mon-chinh' | 'danh-muc-mon-chay'>(
+    'danh-muc-an-vat-trang-mieng'
+  );
 
   const activeMap: Record<string, string> = {
-    'an-vat-trang-mieng': 'an-vat-trang-mieng',
-    'mon-chinh': 'mon-chinh',
-    'mon-chay': 'mon-chay'
+    'danh-muc-an-vat-trang-mieng': 'danh-muc-an-vat-trang-mieng',
+    'danh-muc-mon-chinh': 'danh-muc-mon-chinh',
+    'danh-muc-mon-chay': 'danh-muc-mon-chay'
   };
   const dataProps = useMemo(() => {
     if (!data) return [];
-    const tag = activeMap[active] || 'an-vat-trang-mieng';
+    const tag = activeMap[active] || 'danh-muc-an-vat-trang-mieng';
     return data.filter((i: any) => i.subCategory.category.tag === tag);
   }, [active]);
   return (
@@ -80,7 +82,7 @@ const LayoutProductCarouselWithImage = ({
           </Stack>
         </BackgroundImage>
         <Tabs
-          defaultValue='an-vat-trang-mieng'
+          defaultValue='danh-muc-an-vat-trang-mieng'
           value={active}
           onChange={(value: any) => setActive(value)}
           variant='pills'
@@ -101,7 +103,7 @@ const LayoutProductCarouselWithImage = ({
             <Box></Box>
             <TabsList justify='center'>
               <Flex align={'center'}>
-                <TabsTab value='an-vat-trang-mieng' size={'xl'}>
+                <TabsTab value='danh-muc-an-vat-trang-mieng' size={'xl'}>
                   <Text size='md' fw={700}>
                     Ăn vặt
                   </Text>
@@ -109,7 +111,7 @@ const LayoutProductCarouselWithImage = ({
                 <Text size='xs' p={0} m={0} c={'dimmed'}>
                   //
                 </Text>
-                <TabsTab value='mon-chinh' size={'xl'}>
+                <TabsTab value='danh-muc-mon-chinh' size={'xl'}>
                   <Text size='md' fw={700}>
                     Món chính
                   </Text>
@@ -117,7 +119,7 @@ const LayoutProductCarouselWithImage = ({
                 <Text size='xs' p={0} m={0} c={'dimmed'}>
                   //
                 </Text>
-                <TabsTab value='mon-chay' size={'xl'}>
+                <TabsTab value='danh-muc-mon-chay' size={'xl'}>
                   <Text size='md' fw={700}>
                     Món chay
                   </Text>

@@ -8,7 +8,7 @@ const LayoutHotProduct = ({ data }: any) => {
     <Card h={{ base: 'max-content', md: 900 }} radius={'lg'} className='bg-gray-100 dark:bg-dark-card' p={0}>
       <Flex h={'100%'} direction={{ base: 'column', md: 'row' }}>
         <Tabs
-          defaultValue='an-vat-trang-mieng'
+          defaultValue='danh-muc-an-vat-trang-mieng'
           variant='pills'
           classNames={{
             tab: `hover:bg-transparent hover:text-subColor data-[active=true]:bg-transparent data-[active=true]:text-subColor`
@@ -21,7 +21,7 @@ const LayoutHotProduct = ({ data }: any) => {
           <Flex align={'center'} justify={'flex-end'} mb={20} direction={{ base: 'column-reverse', md: 'row' }}>
             <TabsList justify='center'>
               <Flex align={'center'}>
-                <TabsTab value='an-vat-trang-mieng' size={'xl'}>
+                <TabsTab value='danh-muc-an-vat-trang-mieng' size={'xl'}>
                   <Text size='md' fw={700}>
                     Ăn vặt
                   </Text>
@@ -29,7 +29,7 @@ const LayoutHotProduct = ({ data }: any) => {
                 <Text size='xs' p={0} m={0} c={'dimmed'}>
                   //
                 </Text>
-                <TabsTab value='mon-chinh' size={'xl'}>
+                <TabsTab value='danh-muc-mon-chinh' size={'xl'}>
                   <Text size='md' fw={700}>
                     Món chính
                   </Text>
@@ -37,7 +37,7 @@ const LayoutHotProduct = ({ data }: any) => {
                 <Text size='xs' p={0} m={0} c={'dimmed'}>
                   //
                 </Text>
-                <TabsTab value='mon-chay' size={'xl'}>
+                <TabsTab value='danh-muc-mon-chay' size={'xl'}>
                   <Text size='md' fw={700}>
                     Món chay
                   </Text>
@@ -45,7 +45,7 @@ const LayoutHotProduct = ({ data }: any) => {
               </Flex>
             </TabsList>
           </Flex>
-          <TabsPanel value={'an-vat-trang-mieng'}>
+          <TabsPanel value={'danh-muc-an-vat-trang-mieng'}>
             <TabsPanelCarousel data={data} />
           </TabsPanel>
           <Flex align={'center'} justify={'center'} mt={30}>

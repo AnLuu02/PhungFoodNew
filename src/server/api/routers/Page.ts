@@ -6,7 +6,7 @@ import { createCaller } from '../root';
 export const pageRouter = createTRPCRouter({
   getInit: publicProcedure.query(async ({ ctx }) => {
     const caller = createCaller(ctx);
-    const categories = ['an-vat-trang-mieng', 'mon-chinh', 'mon-chay', 'do-uong'];
+    const categories = ['danh-muc-an-vat-trang-mieng', 'danh-muc-mon-chinh', 'danh-muc-mon-chay', 'danh-muc-do-uong'];
     const productFilters = [
       { key: 'discount', value: true },
       { key: 'bestSaler', value: true },
