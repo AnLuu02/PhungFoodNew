@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { CategoryInput } from '~/shared/schema/category.schema';
 
 export const findCategoryService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
@@ -78,6 +78,7 @@ export const deleteCategoryService = async (db: PrismaClient, input: { id: strin
       message: 'Đã có lỗi xảy ra. Hãy thử lại sau.'
     });
   }
+  await ManageTagVi('delete', { oldTag: category.tag });
 
   return category;
 };
@@ -126,8 +127,11 @@ export const getAllCategoryService = async (db: PrismaClient) => {
 
 export const upsertCategoryService = async (db: PrismaClient, input: CategoryInput) => {
   const { id, ...data } = input;
-  const existingCategory = await db.category.findFirst({ where: { tag: input.tag } });
-  if (existingCategory && existingCategory.id !== id) {
+  const [existed, existedTag] = await db.$transaction([
+    db.category.findUnique({ where: { id: input.id || '' } }),
+    db.category.findUnique({ where: { tag: input.tag || '' } })
+  ]);
+  if (existedTag && existedTag.id !== id) {
     throw new TRPCError({
       code: 'CONFLICT',
       message: 'Tên định danh (tag) này đã tồn tại.'
@@ -140,8 +144,39 @@ export const upsertCategoryService = async (db: PrismaClient, input: CategoryInp
     create: data,
     update: data
   });
-  if (existingCategory?.tag && upserted?.tag) {
-    await CreateTagVi({ old: existingCategory, new: upserted });
-  }
+
+  await ManageTagVi('upsert', {
+    oldTag: existed?.tag,
+    newTag: upserted.tag,
+    newName: upserted.name
+  });
   return upserted;
+};
+
+export const createManyCategoryService = async (db: PrismaClient, input: { data: CategoryInput[] }) => {
+  const existingTags = await db.category.findMany({
+    where: {
+      tag: { in: input.data.map(item => item.tag) }
+    },
+    select: { tag: true }
+  });
+
+  const existingTagSet = new Set(existingTags.map(item => item.tag));
+  const newData = input.data.filter(item => !existingTagSet.has(item.tag));
+
+  if (newData.length === 0) {
+    throw new TRPCError({ code: 'CONFLICT', message: 'Tất cả danh mục đều đã tồn tại.' });
+  }
+
+  await db.category.createMany({
+    data: newData
+  });
+
+  if (newData?.length > 0) {
+    for (const category of newData) {
+      await ManageTagVi('upsert', { oldTag: undefined, newTag: category.tag, newName: category.name });
+    }
+  }
+
+  return newData;
 };

@@ -2,7 +2,7 @@
 import { Breadcrumbs, Text } from '@mantine/core';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import tags from '~/constants/tags-vi';
+import tags from '~/constants/tags-vi.json';
 
 export const BreadcrumbsBase = () => {
   const pathname = usePathname();

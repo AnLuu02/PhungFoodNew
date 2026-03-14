@@ -19,7 +19,7 @@ export const subCategoryReqSchema = baseSubCategorySchema
   })
   .transform(data => ({
     ...data,
-    tag: createTag(data?.name)
+    tag: createTag('Danh mục ' + data?.name)
   }));
 export const subCategoryFromDbSchema = baseSubCategorySchema
   .extend({
@@ -27,7 +27,7 @@ export const subCategoryFromDbSchema = baseSubCategorySchema
   })
   .transform(data => ({
     ...data,
-    tag: createTag(data?.name)
+    tag: createTag('Danh mục ' + data?.name)
   }));
 
 export const subCategoryInputSchema = baseSubCategorySchema
@@ -36,7 +36,7 @@ export const subCategoryInputSchema = baseSubCategorySchema
   })
   .transform(data => ({
     ...data,
-    tag: createTag(data?.name)
+    tag: createTag('Danh mục ' + data?.name)
   }));
 
 export type SubCategoryReq = z.infer<typeof subCategoryReqSchema>;

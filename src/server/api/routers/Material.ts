@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
@@ -106,7 +106,7 @@ export const materialRouter = createTRPCRouter({
           }
         });
         if (material?.tag) {
-          await CreateTagVi({ old: [], new: material });
+          await ManageTagVi('upsert', { oldTag: undefined, newTag: material.tag, newName: material.name });
         }
         return {
           code: 'OK',
@@ -154,7 +154,7 @@ export const materialRouter = createTRPCRouter({
 
       if (newData?.length > 0) {
         for (const material of newData) {
-          await CreateTagVi({ old: [], new: material });
+          await ManageTagVi('upsert', { oldTag: undefined, newTag: material.tag, newName: material.name });
         }
       }
 
@@ -246,8 +246,12 @@ export const materialRouter = createTRPCRouter({
           })
         ]);
 
-        if (material?.tag && updateMaterial?.tag) {
-          await CreateTagVi({ old: material, new: updateMaterial });
+        if (updateMaterial?.tag) {
+          await ManageTagVi('upsert', {
+            oldTag: material?.tag,
+            newTag: updateMaterial.tag,
+            newName: updateMaterial.name
+          });
         }
         return {
           code: 'OK',

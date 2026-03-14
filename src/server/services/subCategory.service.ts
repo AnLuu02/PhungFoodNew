@@ -1,7 +1,7 @@
 import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { del } from '@vercel/blob';
-import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { SubCategoryReq } from '~/shared/schema/subCategory.schema';
 import { uploadImageToVercel } from './image.service';
@@ -104,9 +104,11 @@ export const deleteSubCategoryService = async (db: PrismaClient, input: any) => 
     });
   }
 
-  subCategory?.image?.url && (await del(subCategory?.image?.url, { token: tokenBlobVercel }));
-
   const deletedSubCategory = await db.subCategory.delete({ where: { id: input.id } });
+  await Promise.all([
+    subCategory?.image?.url && del(subCategory?.image?.url, { token: tokenBlobVercel }),
+    ManageTagVi('delete', { oldTag: deletedSubCategory.tag })
+  ]);
 
   return deletedSubCategory;
 };
@@ -159,18 +161,35 @@ export const getAllSubCategoryService = async (db: PrismaClient) => {
   });
 };
 export const upsertSubCategoryService = async (db: PrismaClient, input: SubCategoryReq) => {
-  const existed = await db.subCategory.findUnique({
-    where: {
-      tag_categoryId: {
-        tag: input.tag,
-        categoryId: input.categoryId
-      }
-    },
-    include: { category: true, image: true }
-  });
+  // const subs = await db.subCategory.findMany();
+  // const format = subs.map(s => ({
+  //   oldTag: s.tag.split('danh-muc-')[1],
+  //   newTag: s.tag,
+  //   newName: s.name
+  // }));
 
-  if (!existed || existed.id === input.id) {
-    const oldImage = existed?.image;
+  // await ManageTagVi('upsert', format);
+
+  const [existedTag, existed] = await db.$transaction([
+    db.subCategory.findUnique({
+      where: {
+        tag_categoryId: {
+          tag: input.tag,
+          categoryId: input.categoryId
+        }
+      },
+      include: { category: true, image: true }
+    }),
+    db.subCategory.findUnique({
+      where: {
+        id: input.id || ''
+      },
+      include: { category: true, image: true }
+    })
+  ]);
+
+  if (!existedTag || existedTag.id === input.id) {
+    const oldImage = existedTag?.image;
     let { imgURL } = await uploadImageToVercel(oldImage, {
       fileName: input?.image?.fileName || '',
       base64: input?.image?.base64 || ''
@@ -223,8 +242,12 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
       }
     });
 
-    if (existed?.tag && updateSubCategory?.tag) {
-      await CreateTagVi({ old: existed, new: updateSubCategory });
+    if (updateSubCategory?.tag) {
+      await ManageTagVi('upsert', {
+        oldTag: existed?.tag,
+        newTag: updateSubCategory.tag,
+        newName: updateSubCategory.name
+      });
     }
     return updateSubCategory;
   }

@@ -166,7 +166,7 @@ const HomeWeb = ({
               h: 'max-content'
             }}
             navigation={{
-              href: '/huong-dan',
+              href: '/',
               label: 'Xem tất cả'
             }}
             CardElement={RecipeCard}

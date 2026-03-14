@@ -2,7 +2,7 @@
 import { Skeleton, Text } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import tags from '~/constants/tags-vi';
+import tags from '~/constants/tags-vi.json';
 import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
 
 export const ActiveMenuPageText = () => {

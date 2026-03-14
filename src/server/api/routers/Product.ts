@@ -1,9 +1,9 @@
 import { del, put } from '@vercel/blob';
 import { z } from 'zod';
-import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 
 import { EntityType, ImageType } from '@prisma/client';
+import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
@@ -341,7 +341,7 @@ export const productRouter = createTRPCRouter({
       });
 
       if (product?.tag) {
-        await CreateTagVi({ old: [], new: product });
+        await ManageTagVi('upsert', { newTag: product.tag, newName: product.name });
       }
 
       return {
@@ -537,7 +537,7 @@ export const productRouter = createTRPCRouter({
       ]);
 
       if (updatedProduct?.tag && product?.tag) {
-        await CreateTagVi({ old: product, new: updatedProduct });
+        await ManageTagVi('upsert', { oldTag: product.tag, newTag: updatedProduct.tag, newName: updatedProduct.name });
       }
       return {
         code: 'OK',

@@ -27,13 +27,9 @@ export function CreateManyCategoryButton() {
     if (fileInput) fileInput.value = '';
   };
   const importMutation = api.Category.createMany.useMutation({
-    onSuccess: data => {
-      if (data.code === 'OK') {
-        NotifySuccess(data.message);
-        utils.Category.invalidate();
-      } else {
-        NotifyError(data.message);
-      }
+    onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      utils.Category.invalidate();
       setOpened(false);
       setData([]);
       setLoading(false);
@@ -41,7 +37,7 @@ export function CreateManyCategoryButton() {
     },
     onError: error => {
       setLoading(false);
-      NotifyError('Import thất bại! Sai định dạng dữ liệu.');
+      NotifyError(error.message);
     }
   });
 

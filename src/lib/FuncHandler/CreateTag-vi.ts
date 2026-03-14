@@ -1,36 +1,46 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-export const CreateTagVi = async (data: { old: any; new: any }) => {
-  const filePath = path.join(process.cwd(), 'src', 'constants', 'tags-vi.ts');
-  let content = await fs.readFile(filePath, 'utf8');
+type TagData = {
+  oldTag?: string;
+  newTag?: string;
+  newName?: string;
+};
 
-  const match = content.match(/const tags: Record<string, string> = ({[\s\S]*?});/);
-  let tags: Record<string, string> = {};
+export const ManageTagVi = async (action: 'upsert' | 'delete' = 'upsert', data: TagData | TagData[]) => {
+  const filePath = path.join(process.cwd(), 'src', 'constants', 'tags-vi.json');
 
-  if (match && match[1]) {
-    let jsonString = match[1]
-      .trim()
-      .replace(/'([^']+)'/g, '"$1"')
-      .replace(/(\w+(-\w+)*):/g, '"$1":')
-      .replace(/,(\s*})/g, '$1');
-
-    if (data.old?.tag !== data.new?.tag) {
-      jsonString = jsonString.replace(
-        `"${data?.old?.tag}": "${data?.old?.name}"`,
-        `"${data?.new?.tag}": "${data?.new?.name}"`
-      );
-    }
-
+  try {
+    let tags: Record<string, string> = {};
     try {
-      tags = JSON.parse(jsonString);
-    } catch (error) {
-      console.error('Lỗi khi parse tags:', error);
+      const fileContent = await fs.readFile(filePath, 'utf8');
+      tags = JSON.parse(fileContent);
+    } catch (e) {
+      tags = {};
     }
+
+    const items = Array.isArray(data) ? data : [data];
+
+    items.forEach(item => {
+      if (action === 'upsert') {
+        if (item.oldTag && item.oldTag !== item.newTag) {
+          delete tags[item.oldTag];
+        }
+        if (item.newTag && item.newName) {
+          tags[item.newTag] = item.newName;
+        }
+      } else if (action === 'delete') {
+        const tagToDelete = item.oldTag || item.newTag;
+        if (tagToDelete && tags[tagToDelete]) {
+          delete tags[tagToDelete];
+        }
+      }
+    });
+
+    await fs.writeFile(filePath, JSON.stringify(tags, null, 2), 'utf8');
+    return { success: true, count: items.length };
+  } catch (error) {
+    console.error(`[Error] ManageTagVi failed:`, error);
+    return { success: false, error };
   }
-
-  tags[data?.new?.tag] = data?.new?.name;
-
-  const newContent = `const tags: Record<string, string> = ${JSON.stringify(tags, null, 2)};\n\nexport default tags;`;
-  await fs.writeFile(filePath, newContent);
 };

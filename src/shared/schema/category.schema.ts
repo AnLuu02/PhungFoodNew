@@ -11,7 +11,7 @@ export const baseCategorySchema = z
   })
   .transform(data => ({
     ...data,
-    tag: createTag(data?.name)
+    tag: createTag('Danh mục ' + data?.name)
   }));
 
 export type CategoryInput = z.infer<typeof baseCategorySchema>;

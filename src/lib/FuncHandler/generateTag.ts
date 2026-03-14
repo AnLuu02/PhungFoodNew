@@ -1,5 +1,5 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
-import tags from '~/constants/tags-vi';
+import tags from '~/constants/tags-vi.json';
 
 export const createTag = (input: string): string => {
   return input
@@ -26,8 +26,8 @@ export function getTagFromQuery(query: ReadonlyURLSearchParams | QueryData, tags
   return 'Tất cả';
 }
 export function getViTag(tag: any) {
-  if (tags?.[tag]) {
-    return tags?.[tag];
+  if (tags?.[tag as keyof typeof tags]) {
+    return tags?.[tag as keyof typeof tags];
   }
   return tag;
 }

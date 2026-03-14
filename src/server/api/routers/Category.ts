@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { CreateTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
+  createManyCategoryService,
   deleteCategoryService,
   findCategoryService,
   getAllCategoryService,
@@ -10,7 +10,6 @@ import {
   upsertCategoryService
 } from '~/server/services/category.service';
 import { baseCategorySchema } from '~/shared/schema/category.schema';
-import { ResponseTRPC } from '~/types/ResponseFetcher';
 export const categoryRouter = createTRPCRouter({
   find: publicProcedure
     .input(
@@ -53,37 +52,7 @@ export const categoryRouter = createTRPCRouter({
         data: z.array(baseCategorySchema)
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const existingTags = await ctx.db.category.findMany({
-        where: {
-          tag: { in: input.data.map(item => item.tag) }
-        },
-        select: { tag: true }
-      });
-
-      const existingTagSet = new Set(existingTags.map(item => item.tag));
-      const newData = input.data.filter(item => !existingTagSet.has(item.tag));
-
-      if (newData.length === 0) {
-        return { code: 'CONFLICT', message: 'Tất cả danh mục đều đã tồn tại.', data: [] };
-      }
-
-      const categories = await ctx.db.category.createMany({
-        data: newData
-      });
-
-      if (newData?.length > 0) {
-        for (const category of newData) {
-          await CreateTagVi({ old: [], new: [category] });
-        }
-      }
-
-      return {
-        code: 'OK',
-        message: `Đã thêm ${categories.count} danh mục mới.`,
-        data: newData
-      };
-    }),
+    .mutation(async ({ ctx, input }) => await createManyCategoryService(ctx.db, input)),
   upsert: publicProcedure
     .use(requirePermission('update:category'))
     .use(requirePermission('create:category'))
