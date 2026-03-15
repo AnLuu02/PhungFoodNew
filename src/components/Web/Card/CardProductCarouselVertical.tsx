@@ -12,16 +12,22 @@ import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { api } from '~/trpc/react';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
 const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
   const router = useRouter();
+  const utils = api.useUtils();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
+  const handlePrefectData = async () => {
+    utils.Page.getInitProductDetail.prefetch({ slug: data.id });
+  };
   return (
     <Card
       h={320}
       radius='md'
       padding={0}
+      onMouseEnter={handlePrefectData}
       shadow='sm'
       className='group flex transform cursor-pointer flex-col justify-between transition-all duration-300 hover:shadow-xl'
       pos={'relative'}

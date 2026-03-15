@@ -12,18 +12,24 @@ import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { api } from '~/trpc/react';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
 const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const router = useRouter();
+  const utils = api.useUtils();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
   const totalQuantityProduct = useMemo(() => {
     return (data?.availableQuantity || 0) + (data?.soldQuantity || 0);
   }, [data]);
+  const handlePrefectData = async () => {
+    utils.Page.getInitProductDetail.prefetch({ slug: data.id });
+  };
   return (
     <Card
       radius={'md'}
       withBorder
+      onMouseEnter={handlePrefectData}
       className='group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:shadow-lg dark:bg-dark-card'
       padding={0}
       pos={'relative'}
