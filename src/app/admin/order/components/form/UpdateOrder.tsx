@@ -117,8 +117,8 @@ export default function UpdateOrder({
     }
   }, [data, reset]);
 
-  const { data: payments } = api.Payment.getAll.useQuery();
-  const { data: users } = api.User.getAll.useQuery();
+  const { data: payments = [] } = api.Payment.getAll.useQuery();
+  const { data: users = [] } = api.User.getAll.useQuery();
   const utils = api.useUtils();
   const updateMutation = api.Order.update.useMutation({
     onSuccess: () => {
@@ -368,7 +368,7 @@ export default function UpdateOrder({
                     searchable
                     radius='md'
                     placeholder=' Chọn phương thức thanh toán'
-                    data={payments?.data?.map(payment => ({ value: payment.id, label: payment.name }))}
+                    data={payments?.map(payment => ({ value: payment.id, label: payment.name }))}
                     error={errors.paymentId?.message}
                   />
                 )}

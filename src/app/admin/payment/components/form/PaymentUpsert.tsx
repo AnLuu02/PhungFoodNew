@@ -1,28 +1,33 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, Switch, TextInput } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { useEffect, type Dispatch, type SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { createTag } from '~/lib/FuncHandler/generateTag';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { paymentSchema } from '~/lib/ZodSchema/schema';
+import { basePaymentSchema, PaymentInput } from '~/shared/schema/payment.schema';
 import { api } from '~/trpc/react';
-import { Payment } from '~/types/payment';
 
-export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
+export default function PaymentUpsert({
+  paymentId,
+  setOpened
+}: {
+  paymentId?: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
+  const queryResult = api.Payment.getOne.useQuery({ id: paymentId || '' }, { enabled: !!paymentId });
+  const { data } = queryResult;
+
   const {
     control,
     handleSubmit,
-    watch,
-    setValue,
-    formState: { errors, isSubmitting, isDirty }
-  } = useForm<Payment>({
-    resolver: zodResolver(paymentSchema),
+    formState: { errors, isSubmitting, isDirty },
+    reset
+  } = useForm<PaymentInput>({
+    resolver: zodResolver(basePaymentSchema),
     defaultValues: {
-      id: '',
+      id: undefined,
       provider: '',
       name: '',
       apiKey: '',
@@ -37,34 +42,38 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
     }
   });
 
-  const [debouceName] = useDebouncedValue(watch('name'), 800);
+  useEffect(() => {
+    if (!data) return;
+    reset({
+      id: data?.id,
+      provider: data?.provider,
+      name: data?.name,
+      apiKey: data?.apiKey || '',
+      secretKey: data?.secretKey || '',
+      clientId: data?.clientId || '',
+      clientSecret: data?.clientSecret || '',
+      webhookUrl: data?.webhookUrl || '',
+      webhookSecret: data?.webhookSecret || '',
+      isSandbox: data?.isSandbox,
+      isActive: data?.isActive
+    });
+  }, [data, reset]);
 
   const utils = api.useUtils();
-  const mutation = api.Payment.create.useMutation({
+  const updateMutation = api.Payment.upsert.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      setOpened(false);
       utils.Payment.invalidate();
     },
     onError: e => {
       NotifyError(e.message);
     }
   });
-  useEffect(() => {
-    const tagProvider = createTag(debouceName);
-    setValue('provider', tagProvider);
-  }, [debouceName]);
+  console.log(errors);
 
-  const onSubmit: SubmitHandler<Payment> = async formData => {
-    try {
-      const result = await mutation.mutateAsync(formData);
-      if (result.code === 'OK') {
-        NotifySuccess(result.message);
-        setOpened(false);
-      } else {
-        NotifyError(result.message);
-      }
-    } catch {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
-    }
+  const onSubmit: SubmitHandler<PaymentInput> = async formData => {
+    await updateMutation.mutateAsync(formData);
   };
 
   return (
@@ -79,11 +88,26 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
               {...field}
               label='id'
               placeholder='Nhập id'
-              error={errors.name?.message}
+              error={errors.id?.message}
               className='hidden'
             />
           )}
         />
+        <Grid.Col span={6}>
+          <Controller
+            control={control}
+            name='provider'
+            render={({ field }) => (
+              <TextInput
+                {...field}
+                radius='md'
+                label='Nhà cung cấp'
+                placeholder='Nhập Nhà cung cấp'
+                error={errors.provider?.message}
+              />
+            )}
+          />
+        </Grid.Col>
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -102,23 +126,6 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
         <Grid.Col span={6}>
           <Controller
             control={control}
-            name='provider'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                readOnly
-                radius='md'
-                label='Nhà cung cấp (tự tạo theo tên)'
-                placeholder='Nhà cung cấp'
-                error={errors.name?.message}
-              />
-            )}
-          />
-        </Grid.Col>
-
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
             name='apiKey'
             render={({ field }) => (
               <TextInput
@@ -126,7 +133,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
                 {...field}
                 label='API Key'
                 placeholder='Nhập API Key'
-                error={errors.name?.message}
+                error={errors.apiKey?.message}
               />
             )}
           />
@@ -141,7 +148,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
                 {...field}
                 label='Secret Key'
                 placeholder='Nhập Secret Key'
-                error={errors.name?.message}
+                error={errors.secretKey?.message}
               />
             )}
           />
@@ -156,7 +163,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
                 {...field}
                 label='Client ID'
                 placeholder='Nhập Client ID'
-                error={errors.name?.message}
+                error={errors.clientId?.message}
               />
             )}
           />
@@ -171,7 +178,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
                 {...field}
                 label=' Client Secret'
                 placeholder='Nhập   Client Secret'
-                error={errors.name?.message}
+                error={errors.clientSecret?.message}
               />
             )}
           />
@@ -186,7 +193,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
                 {...field}
                 label='Webhook Url'
                 placeholder='Nhập  Webhook Url'
-                error={errors.name?.message}
+                error={errors.webhookUrl?.message}
               />
             )}
           />
@@ -197,11 +204,11 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
             name='webhookSecret'
             render={({ field }) => (
               <TextInput
-                {...field}
                 radius='md'
+                {...field}
                 label='Webhook Secret'
                 placeholder='Nhập  Webhook Secret'
-                error={errors.name?.message}
+                error={errors.webhookSecret?.message}
               />
             )}
           />
@@ -256,7 +263,7 @@ export default function CreatePayment({ setOpened }: { setOpened: Dispatch<SetSt
         </Grid.Col>
       </Grid>
       <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
-        Tạo mới
+        Cập nhật
       </BButton>
     </form>
   );

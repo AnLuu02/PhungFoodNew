@@ -3,10 +3,9 @@ import { Controller } from 'react-hook-form';
 import { api } from '~/trpc/react';
 
 export const PaymentForm = ({ control }: any) => {
-  const { data: paymentData, isLoading } = api.Payment.getAll.useQuery(undefined, {
+  const { data: payment = [], isLoading } = api.Payment.getAll.useQuery(undefined, {
     enabled: !!control
   });
-  const payment = paymentData?.data ?? [];
   return (
     <Paper withBorder p='md' radius='md' mb='md'>
       <Box mb='md'>

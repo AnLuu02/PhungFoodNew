@@ -20,8 +20,7 @@ import BButton from '~/components/Button/Button';
 import { api } from '~/trpc/react';
 
 export default function PaymentSettingsManagement() {
-  const { data } = api.Payment.getAll.useQuery();
-  const payments = data?.data || [];
+  const { data: payments = [] } = api.Payment.getAll.useQuery();
   const [selectedPayment, setSelectedPayment] = useState('vnpay');
   return (
     <>

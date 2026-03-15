@@ -21,21 +21,6 @@ export const imageSchema = z.object({
   entityType: z.nativeEnum(EntityType).optional()
 });
 
-export const paymentSchema = z.object({
-  id: z.string(),
-  provider: z.string({ required_error: 'Provider name is required' }).min(1, 'Provider name is required'),
-  name: z.string({ required_error: 'Name is required' }).min(1, 'Name is required'),
-  apiKey: z.string().optional(),
-  secretKey: z.string().optional(),
-  clientId: z.string().optional(),
-  clientSecret: z.string().optional(),
-  webhookUrl: z.string().optional(),
-  webhookSecret: z.string().optional(),
-  isSandbox: z.boolean().default(true),
-  isActive: z.boolean().default(true),
-  metadata: z.any().optional()
-});
-
 export const productSchema = z.object({
   id: z.string().optional(),
   name: z.string({ required_error: 'Tên sản phẩm là bắt buộc' }).min(1, 'Tên sản phẩm không được để trống'),

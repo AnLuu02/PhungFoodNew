@@ -6,8 +6,7 @@ import { useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
-import CreatePayment from './form/CreatePayment';
-import UpdatePayment from './form/UpdatePayment';
+import PaymentUpsert from './form/PaymentUpsert';
 
 export function CreatePaymentButton() {
   const [opened, setOpened] = useState(false);
@@ -17,6 +16,7 @@ export function CreatePaymentButton() {
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         size={'xl'}
@@ -27,7 +27,7 @@ export function CreatePaymentButton() {
           </Title>
         }
       >
-        <CreatePayment setOpened={setOpened} />
+        <PaymentUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -41,6 +41,7 @@ export function UpdatePaymentButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -51,7 +52,7 @@ export function UpdatePaymentButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdatePayment paymentId={id.toString()} setOpened={setOpened} />
+        <PaymentUpsert paymentId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );

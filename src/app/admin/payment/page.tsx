@@ -37,7 +37,7 @@ export default async function PaymentManagementPage({
           </Box>
         </Flex>
         <Group justify='space-between' mb='md'>
-          <Text fw={500}>Số lượng bản ghi: {allData && allData?.data.length}</Text>
+          <Text fw={500}>Số lượng bản ghi: {allData && allData?.length}</Text>
           <Group>
             <SearchInput />
             <CreatePaymentButton />
