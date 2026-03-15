@@ -31,9 +31,6 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
   const currentItems = dataClient.reviews || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
-
-    const now = new Date();
-
     const summary = allDataClient.reduce(
       (acc: any, item: any) => {
         acc.total += 1;

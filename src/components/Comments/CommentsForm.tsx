@@ -7,9 +7,8 @@ import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
-import { reviewSchema } from '~/lib/ZodSchema/schema';
+import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
 import { api } from '~/trpc/react';
-import { Review } from '~/types/review';
 
 export const CommentsForm = ({ product }: { product: any }) => {
   const { data: user } = useSession();
@@ -20,10 +19,10 @@ export const CommentsForm = ({ product }: { product: any }) => {
     reset,
     watch,
     formState: { errors, isSubmitting, isDirty }
-  } = useForm<Review>({
-    resolver: zodResolver(reviewSchema),
+  } = useForm<ReviewInput>({
+    resolver: zodResolver(baseReviewSchema),
     defaultValues: {
-      id: '',
+      id: undefined,
       productId: product?.id ?? '',
       userId: user?.user?.id ?? '',
       rating: 1.0,
@@ -31,12 +30,12 @@ export const CommentsForm = ({ product }: { product: any }) => {
     }
   });
   const utils = api.useUtils();
-  const mutation = api.Review.create.useMutation({
-    onSuccess: result => {
+  const mutation = api.Review.upsert.useMutation({
+    onSuccess: () => {
       utils.Review.invalidate();
       utils.Product.invalidate();
       reset({ productId: product?.id, userId: user?.user?.id || '' });
-      NotifySuccess(result.message);
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
     },
     onError: error => {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.', error.message);
@@ -50,7 +49,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
       userId: user?.user?.id || ''
     });
   }, [product?.id, user?.user?.id]);
-  const onSubmit: SubmitHandler<Review> = async formData => {
+  const onSubmit: SubmitHandler<ReviewInput> = async formData => {
     if (!user?.user?.id) {
       NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');
       return;

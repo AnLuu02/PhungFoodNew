@@ -10,7 +10,7 @@ import {
   RecipientType,
   VoucherType
 } from '@prisma/client';
-import { literal, z } from 'zod';
+import { z } from 'zod';
 import { deliveryAddressSchema } from '~/shared/schema/address.schema';
 export const imageSchema = z.object({
   id: z.string().optional(),
@@ -59,13 +59,6 @@ export const deliverySchema = z.object({
   phone: z.string({ required_error: 'Số điện thoại là bắt buộc' }).regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số'),
   address: deliveryAddressSchema,
   note: z.string().optional()
-});
-export const reviewSchema = z.object({
-  id: z.string().optional(),
-  userId: z.string({ required_error: 'Ai là người đánh giá?' }).min(1, 'Ai là người đánh giá?').or(literal('')),
-  productId: z.string({ required_error: 'Product ID là bắt buộc' }).min(1, 'Product ID không được để trống'),
-  rating: z.number().default(1),
-  comment: z.string()
 });
 
 export const orderItemSchema = z.object({

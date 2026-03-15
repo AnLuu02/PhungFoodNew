@@ -6,8 +6,7 @@ import { useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
-import CreateReview from './form/CreateReview';
-import UpdateReview from './form/UpdateReview';
+import ReviewUpsert from './form/ReviewUpsert';
 
 export function CreateReviewButton() {
   const [opened, setOpened] = useState(false);
@@ -17,6 +16,7 @@ export function CreateReviewButton() {
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -26,7 +26,7 @@ export function CreateReviewButton() {
           </Title>
         }
       >
-        <CreateReview setOpened={setOpened} />
+        <ReviewUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -40,6 +40,7 @@ export function UpdateReviewButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -49,7 +50,7 @@ export function UpdateReviewButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdateReview reviewId={id.toString()} setOpened={setOpened} />
+        <ReviewUpsert reviewId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );

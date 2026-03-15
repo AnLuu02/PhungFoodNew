@@ -1,8 +1,15 @@
 import { z } from 'zod';
-import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
-import { ResponseTRPC } from '~/types/ResponseFetcher';
+import {
+  deleteReviewService,
+  findReviewService,
+  getAllReviewService,
+  getFilterReviewService,
+  getOneReviewService,
+  upsertReviewService
+} from '~/server/services/review.service';
+import { baseReviewSchema } from '~/shared/schema/review.schema';
 
 export const reviewRouter = createTRPCRouter({
   find: publicProcedure
@@ -14,185 +21,8 @@ export const reviewRouter = createTRPCRouter({
         sort: z.array(z.string()).optional()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { skip, take, s, sort } = input;
-      const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
-      const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-      const [totalReviews, totalReviewsQuery, reviews] = await ctx.db.$transaction([
-        ctx.db.review.count(),
-        ctx.db.review.count({
-          where: {
-            OR: filterStar
-              ? [
-                  {
-                    AND: [
-                      {
-                        rating: {
-                          gte: Number(filterStar)
-                        }
-                      },
-                      {
-                        rating: {
-                          lt: Number(filterStar) + 1
-                        }
-                      }
-                    ]
-                  }
-                ]
-              : [
-                  {
-                    comment: {
-                      contains: s?.trim(),
-                      mode: 'insensitive'
-                    }
-                  },
-                  {
-                    user: {
-                      name: {
-                        contains: s?.trim(),
-                        mode: 'insensitive'
-                      }
-                    }
-                  },
-                  {
-                    product: {
-                      name: {
-                        contains: s?.trim(),
-                        mode: 'insensitive'
-                      }
-                    }
-                  }
-                ]
-          },
-          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined
-        }),
-        ctx.db.review.findMany({
-          skip: startPageItem,
-          take,
-          where: {
-            OR: filterStar
-              ? [
-                  {
-                    AND: [
-                      {
-                        rating: {
-                          gte: Number(filterStar)
-                        }
-                      },
-                      {
-                        rating: {
-                          lt: Number(filterStar) + 1
-                        }
-                      }
-                    ]
-                  }
-                ]
-              : [
-                  {
-                    comment: {
-                      contains: s?.trim(),
-                      mode: 'insensitive'
-                    }
-                  },
-                  {
-                    user: {
-                      name: {
-                        contains: s?.trim(),
-                        mode: 'insensitive'
-                      }
-                    }
-                  },
-                  {
-                    product: {
-                      name: {
-                        contains: s?.trim(),
-                        mode: 'insensitive'
-                      }
-                    }
-                  }
-                ]
-          },
-          orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined,
-          select: {
-            id: true,
-            rating: true,
-            comment: true,
-            createdAt: true,
-            user: {
-              select: {
-                id: true,
-                name: true,
-                image: true
-              }
-            },
-            product: {
-              select: {
-                id: true,
-                name: true,
-                tag: true,
-                images: true
-              }
-            }
-          }
-        })
-      ]);
-      const totalPages = Math.ceil(
-        Object.entries(input)?.length > 2
-          ? totalReviewsQuery == 0
-            ? 1
-            : totalReviewsQuery / take
-          : totalReviews / take
-      );
-      const currentPage = skip ? Math.floor(skip / take + 1) : 1;
+    .query(async ({ ctx, input }) => await findReviewService(ctx.db, input)),
 
-      return {
-        reviews,
-        pagination: {
-          currentPage,
-          totalPages
-        }
-      };
-    }),
-  create: publicProcedure
-    .use(requirePermission('create:review'))
-    .input(
-      z.object({
-        userId: z.string(),
-        productId: z.string(),
-        rating: z.number().default(0.0),
-        comment: z.string().optional()
-      })
-    )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const review = await ctx.db.review.create({
-        data: {
-          userId: input.userId,
-          productId: input.productId,
-          rating: input.rating,
-          comment: input.comment
-        }
-      });
-
-      const starReview = await ctx.db.review.findMany({
-        where: { productId: input.productId }
-      });
-
-      const averageRating = starReview.reduce((acc, review) => acc + review.rating, 0) / starReview.length;
-
-      await ctx.db.product.update({
-        where: { id: input.productId },
-        data: {
-          rating: averageRating,
-          totalRating: starReview.length
-        }
-      });
-
-      return {
-        code: 'OK',
-        message: 'Đánh giá thành công.',
-        data: review
-      };
-    }),
   delete: publicProcedure
     .use(requirePermission('delete:review'))
     .input(
@@ -200,31 +30,7 @@ export const reviewRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const review = await ctx.db.review.delete({
-        where: { id: input.id }
-      });
-      const starReview = await ctx.db.review.findMany({
-        where: { productId: review.productId }
-      });
-
-      const averageRating = starReview.reduce((acc, review) => acc + review.rating, 0) / starReview.length || 0;
-
-      await ctx.db.product.update({
-        where: { id: review.productId },
-        data: {
-          totalRating: {
-            decrement: 1
-          },
-          rating: averageRating
-        }
-      });
-      return {
-        code: 'OK',
-        message: 'Xóa bình luận thành công.',
-        data: review
-      };
-    }),
+    .mutation(async ({ ctx, input }) => await deleteReviewService(ctx.db, input)),
 
   getFilter: publicProcedure
     .input(
@@ -232,67 +38,19 @@ export const reviewRouter = createTRPCRouter({
         s: z.string()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const review = await ctx.db.review.findMany({
-        where: {
-          OR: [{ id: { equals: input.s?.trim() } }, { productId: { equals: input.s?.trim() } }]
-        },
-        include: {
-          user: {
-            include: {
-              image: true
-            }
-          }
-        }
-      });
-
-      return review;
-    }),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const review = await ctx.db.review.findMany();
-    return review;
-  }),
-
-  update: publicProcedure
-    .use(requirePermission('update:review'))
+    .query(async ({ ctx, input }) => await getFilterReviewService(ctx.db, input)),
+  getOne: publicProcedure
     .input(
       z.object({
-        reviewId: z.string(),
-        userId: z.string(),
-        productId: z.string(),
-        rating: z.number().default(0.0),
-        comment: z.string().optional()
+        id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const review = await ctx.db.review.update({
-        where: { id: input?.reviewId },
-        data: {
-          userId: input.userId,
-          productId: input.productId,
-          rating: input.rating,
-          comment: input.comment
-        }
-      });
+    .query(async ({ ctx, input }) => await getOneReviewService(ctx.db, input)),
+  getAll: publicProcedure.query(async ({ ctx }) => await getAllReviewService(ctx.db)),
 
-      const starReview = await ctx.db.review.findMany({
-        where: { productId: input.productId }
-      });
-
-      const averageRating = starReview.reduce((acc, review) => acc + review.rating, 0) / starReview.length;
-
-      await ctx.db.product.update({
-        where: { id: input.productId },
-        data: {
-          rating: averageRating,
-          totalRating: starReview.length
-        }
-      });
-
-      return {
-        code: 'OK',
-        message: 'Cập nhật đánh giá thành công.',
-        data: review
-      };
-    })
+  upsert: publicProcedure
+    .use(requirePermission('update:review'))
+    .use(requirePermission('create:review'))
+    .input(baseReviewSchema)
+    .mutation(async ({ ctx, input }) => await upsertReviewService(ctx.db, input))
 });

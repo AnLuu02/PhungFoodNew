@@ -5,32 +5,30 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { reviewSchema } from '~/lib/ZodSchema/schema';
 import { UserRole } from '~/shared/constants/user';
+import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
 import { api } from '~/trpc/react';
-import { Review } from '~/types/review';
 
-export default function UpdateReview({
+export default function ReviewUpsert({
   reviewId,
   setOpened
 }: {
-  reviewId: string;
+  reviewId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = api.Review.getFilter.useQuery({ s: reviewId || '' }, { enabled: !!reviewId });
+  const { data } = api.Review.getOne.useQuery({ id: reviewId || '' }, { enabled: !!reviewId });
   const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: UserRole.ADMIN });
   const { data: users } = api.User.getAll.useQuery();
-  const { data } = queryResult;
 
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Review>({
-    resolver: zodResolver(reviewSchema),
+  } = useForm<ReviewInput>({
+    resolver: zodResolver(baseReviewSchema),
     defaultValues: {
-      id: '',
+      id: undefined,
       userId: '',
       productId: '',
       rating: 0.0,
@@ -39,20 +37,22 @@ export default function UpdateReview({
   });
 
   useEffect(() => {
-    if (data && data.length > 0) {
+    if (data) {
       reset({
-        id: data?.[0]?.id,
-        userId: data?.[0]?.userId,
-        productId: data?.[0]?.productId,
-        rating: data?.[0]?.rating,
-        comment: data?.[0]?.comment || ''
+        id: data?.id,
+        userId: data?.userId,
+        productId: data?.productId,
+        rating: data?.rating,
+        comment: data?.comment || ''
       });
     }
   }, [data, reset]);
 
   const utils = api.useUtils();
-  const updateMutation = api.Review.update.useMutation({
+  const updateMutation = api.Review.upsert.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      setOpened(false);
       utils.Review.invalidate();
     },
     onError: e => {
@@ -60,19 +60,8 @@ export default function UpdateReview({
     }
   });
 
-  const onSubmit: SubmitHandler<Review> = async formData => {
-    try {
-      if (reviewId) {
-        const updatedFormData = { ...formData };
-        const result = await updateMutation.mutateAsync({ reviewId, ...updatedFormData });
-        if (result.code === 'OK') {
-          NotifySuccess(result.message);
-          setOpened(false);
-        }
-      }
-    } catch {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
-    }
+  const onSubmit: SubmitHandler<ReviewInput> = async formData => {
+    await updateMutation.mutateAsync(formData);
   };
 
   return (

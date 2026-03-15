@@ -3,7 +3,7 @@ import { Group, Paper, Progress, Stack, Text } from '@mantine/core';
 import { IconStarFilled } from '@tabler/icons-react';
 import { api } from '~/trpc/react';
 export default function RatingStatistics({ productId }: { productId: string }) {
-  const { data: reviews } = api.Review.getFilter.useQuery({ s: productId });
+  const { data: reviews = [] } = api.Review.getFilter.useQuery({ s: productId });
   let ratingCountsDefault = [0, 0, 0, 0, 0];
   let ratings: number[] =
     reviews?.reduce((acc: any, item: any) => {
