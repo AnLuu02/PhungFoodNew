@@ -179,7 +179,6 @@ export function CopyOrderButton({ data }: { data: any }) {
               delivery: {
                 ...data?.delivery,
                 id: undefined,
-                orderId: undefined,
                 address: {
                   ...data?.delivery.address,
                   id: undefined,

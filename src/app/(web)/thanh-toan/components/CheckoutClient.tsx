@@ -22,14 +22,14 @@ import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { deliverySchema } from '~/lib/ZodSchema/schema';
+import { baseDeliverySchema, DeliveryInput } from '~/shared/schema/delivery.schema';
 import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
 import { PaymentForm } from './PaymentForm';
-
+type DeliveryInputWithoutOrderId = Omit<DeliveryInput, 'orderId'>;
 type DeliveryCheckout = {
-  delivery: z.infer<typeof deliverySchema>;
+  delivery: DeliveryInputWithoutOrderId;
   paymentId: string;
 };
 
@@ -64,7 +64,7 @@ export default function CheckoutClient({ order }: { order: any }) {
   const { control, setValue, handleSubmit, reset } = useForm<DeliveryCheckout>({
     resolver: zodResolver(
       z.object({
-        delivery: deliverySchema,
+        delivery: baseDeliverySchema.omit({ orderId: true }),
         paymentId: z.string({ required_error: 'Chọn phương thức thanh toán.' }).min(1, 'Chọn phương thức thanh toán.')
       })
     ),
@@ -80,6 +80,7 @@ export default function CheckoutClient({ order }: { order: any }) {
       }
     }
   });
+
   useEffect(() => {
     if (order?.id) {
       reset({
@@ -103,7 +104,7 @@ export default function CheckoutClient({ order }: { order: any }) {
           paymentId: formData.paymentId,
           delivery: {
             upsert: {
-              where: { orderId: order.id },
+              where: { id: order?.delivery?.id || '' },
               update: {
                 ...formData.delivery,
                 address: {
@@ -124,8 +125,7 @@ export default function CheckoutClient({ order }: { order: any }) {
               }
             }
           }
-        },
-        orderId: order.id
+        }
       });
 
       if (resp.code === 'OK') {

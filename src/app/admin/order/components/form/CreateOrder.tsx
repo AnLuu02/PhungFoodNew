@@ -13,19 +13,17 @@ import {
   TextInput,
   Title
 } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
 import { AddressType, OrderStatus } from '@prisma/client';
 import { IconMail, IconPhone } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import AddressSection from '~/components/AdressSection';
 import BButton from '~/components/Button/Button';
-import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { orderSchema } from '~/lib/ZodSchema/schema';
 import { api } from '~/trpc/react';
 import { Order } from '~/types/order';
-import { District, Province, Ward } from '~/types/ResponseFetcher';
 import OrderItemForm from './OrderItemForm';
 
 export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
@@ -68,7 +66,6 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
       }
     }
   });
-
   const {
     fields: orderItemFields,
     append: appendOrderItem,
@@ -77,11 +74,6 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
     control,
     name: 'orderItems'
   });
-  const { provinces, getProvince } = useProvinces();
-  const [debouncedProvinceId] = useDebouncedValue(watch('delivery.address.provinceId'), 300);
-  const [debouncedDistrictId] = useDebouncedValue(watch('delivery.address.districtId'), 300);
-  const { districts, getDistrict } = useDistricts(debouncedProvinceId);
-  const { wards, getWard } = useWards(debouncedDistrictId);
 
   const { data: payments = [] } = api.Payment.getAll.useQuery();
   const utils = api.useUtils();
@@ -105,11 +97,6 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
       if (formData.orderItems.length === 0) {
         NotifyError('Không hợp lệ.', 'Bạn phải có ít nhất một sản phẩm trong hóa đơn.');
       } else {
-        const province = getProvince(formData?.delivery?.address?.provinceId, provinces);
-        const district = getDistrict(formData?.delivery?.address?.districtId, districts);
-        const ward = getWard(formData?.delivery?.address?.wardId, wards);
-        const fullAddress = `${formData?.delivery?.address?.detail || ''}, ${ward?.name || ''}, ${district?.name || ''}, ${province?.name || ''}`;
-
         await mutation.mutateAsync({
           ...formData,
           delivery: {
@@ -119,11 +106,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
               detail: formData?.delivery.address?.detail || '',
               provinceId: formData?.delivery.address?.provinceId || '',
               districtId: formData?.delivery.address?.districtId || '',
-              wardId: formData?.delivery.address?.wardId || '',
-              province: province?.name || '',
-              district: district?.name || '',
-              ward: ward?.name || '',
-              fullAddress
+              wardId: formData?.delivery.address?.wardId || ''
             }
           } as any
         });
@@ -191,85 +174,7 @@ export default function CreateOrder({ setOpened }: { setOpened: Dispatch<SetStat
                 />
               </Group>
 
-              <Grid>
-                <GridCol span={4}>
-                  <Controller
-                    control={control}
-                    name={`delivery.address.provinceId`}
-                    render={({ field, fieldState }) => (
-                      <Select
-                        {...field}
-                        searchable
-                        radius='md'
-                        placeholder='Chọn tỉnh thành'
-                        data={provinces.map((item: Province) => ({
-                          value: item.code.toString(),
-                          label: item.name
-                        }))}
-                        nothingFoundMessage='Nothing found...'
-                        error={fieldState.error?.message}
-                      />
-                    )}
-                  />
-                </GridCol>
-                <GridCol span={4}>
-                  <Controller
-                    control={control}
-                    name={`delivery.address.districtId`}
-                    disabled={!watch('delivery.address.provinceId')}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        searchable
-                        radius='md'
-                        placeholder='Chọn quận huyện'
-                        data={districts.map((item: District) => ({
-                          value: item.code.toString(),
-                          label: item.name
-                        }))}
-                        nothingFoundMessage='Nothing found...'
-                        error={errors?.delivery?.address?.districtId?.message}
-                      />
-                    )}
-                  />
-                </GridCol>
-                <GridCol span={4}>
-                  <Controller
-                    control={control}
-                    name={`delivery.address.wardId`}
-                    disabled={!watch('delivery.address.districtId')}
-                    render={({ field }) => (
-                      <Select
-                        {...field}
-                        searchable
-                        radius='md'
-                        placeholder='Chọn phường xã'
-                        data={wards.map((item: Ward) => ({
-                          value: item.code.toString(),
-                          label: item.name
-                        }))}
-                        nothingFoundMessage='Nothing found...'
-                        error={errors?.delivery?.address?.wardId?.message}
-                      />
-                    )}
-                  />
-                </GridCol>
-                <GridCol span={12}>
-                  <Controller
-                    control={control}
-                    name={`delivery.address.detail`}
-                    render={({ field }) => (
-                      <Textarea
-                        {...field}
-                        label='Địa chỉ'
-                        placeholder='Địa chỉ cụ thể (đường, phố, quận, huyện,...)'
-                        resize='block'
-                        error={errors?.delivery?.address?.detail?.message}
-                      />
-                    )}
-                  />
-                </GridCol>
-              </Grid>
+              <AddressSection control={control} setValue={setValue} name={`delivery`} />
 
               <Controller
                 name='delivery.note'

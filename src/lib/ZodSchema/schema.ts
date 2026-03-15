@@ -11,7 +11,7 @@ import {
   VoucherType
 } from '@prisma/client';
 import { z } from 'zod';
-import { deliveryAddressSchema } from '~/shared/schema/address.schema';
+import { baseDeliverySchema } from '~/shared/schema/delivery.schema';
 export const imageSchema = z.object({
   id: z.string().optional(),
   url: z.any().optional(),
@@ -52,15 +52,6 @@ export const productSchema = z.object({
 
 //
 
-export const deliverySchema = z.object({
-  id: z.string().optional(),
-  name: z.string({ required_error: 'Tên người nhận là bắt buộc' }).min(1, 'Tên người nhận là bắt buộc'),
-  email: z.string({ required_error: 'Email là bắt buộc' }).email({ message: 'Email không hợp lệ' }),
-  phone: z.string({ required_error: 'Số điện thoại là bắt buộc' }).regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số'),
-  address: deliveryAddressSchema,
-  note: z.string().optional()
-});
-
 export const orderItemSchema = z.object({
   id: z.string().optional(),
   productId: z.string({ required_error: 'Product ID là bắt buộc' }).min(1, 'Product ID là bắt buộc'),
@@ -80,7 +71,7 @@ export const orderSchema = z.object({
   userId: z.string({ required_error: 'Ai là người mua hàng?' }).min(1, 'Ai là người mua hàng?'),
   paymentId: z.string({ required_error: 'Chọn phương thức thanh toán' }).min(1, 'Chọn phương thức thanh toán'),
   orderItems: z.array(orderItemSchema),
-  delivery: deliverySchema
+  delivery: baseDeliverySchema.omit({ orderId: true })
 });
 
 export const voucherSchema = z

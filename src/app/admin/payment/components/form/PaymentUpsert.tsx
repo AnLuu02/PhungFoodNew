@@ -70,8 +70,6 @@ export default function PaymentUpsert({
       NotifyError(e.message);
     }
   });
-  console.log(errors);
-
   const onSubmit: SubmitHandler<PaymentInput> = async formData => {
     await updateMutation.mutateAsync(formData);
   };

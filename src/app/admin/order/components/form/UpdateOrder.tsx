@@ -172,8 +172,7 @@ export default function UpdateOrder({
               }
             }
           }
-        },
-        orderId: orderId
+        }
       });
 
       if (result.code === 'OK') {

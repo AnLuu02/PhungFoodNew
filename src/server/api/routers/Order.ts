@@ -2,8 +2,8 @@ import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/FuncHandler/PrismaHelper';
-import { deliverySchema } from '~/lib/ZodSchema/schema';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { baseDeliverySchema } from '~/shared/schema/delivery.schema';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const orderRouter = createTRPCRouter({
@@ -164,7 +164,7 @@ export const orderRouter = createTRPCRouter({
         userId: z.string(),
         note: z.string().optional(),
         paymentId: z.string().optional(),
-        delivery: deliverySchema.optional(),
+        delivery: baseDeliverySchema.omit({ orderId: true }).optional(),
         transactionId: z.string().optional(),
         orderItems: z.array(
           z.object({
@@ -239,8 +239,7 @@ export const orderRouter = createTRPCRouter({
     .input(
       z.object({
         where: z.record(z.string(), z.any()),
-        data: z.record(z.string(), z.any()),
-        orderId: z.string()
+        data: z.record(z.string(), z.any())
       })
     )
     .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
