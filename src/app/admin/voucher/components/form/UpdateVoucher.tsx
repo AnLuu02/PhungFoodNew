@@ -24,9 +24,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { voucherSchema } from '~/lib/ZodSchema/schema';
+import { baseVoucherSchema, VoucherInput } from '~/shared/schema/voucher.schema';
 import { api } from '~/trpc/react';
-import { Voucher } from '~/types/voucher';
 
 export default function UpdateVoucher({
   data,
@@ -45,10 +44,10 @@ export default function UpdateVoucher({
     reset,
     watch,
     setValue
-  } = useForm<Voucher>({
-    resolver: zodResolver(voucherSchema),
+  } = useForm<VoucherInput>({
+    resolver: zodResolver(baseVoucherSchema),
     defaultValues: {
-      id: '',
+      id: undefined,
       name: '',
       description: '',
       type: VoucherType.FIXED,
@@ -98,6 +97,8 @@ export default function UpdateVoucher({
   const utils = api.useUtils();
   const updateMutation = api.Voucher.update.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      setOpened(false);
       utils.Voucher.invalidate();
     },
     onError: e => {
@@ -105,20 +106,14 @@ export default function UpdateVoucher({
     }
   });
 
-  const onSubmit: SubmitHandler<Voucher> = async formData => {
+  const onSubmit: SubmitHandler<VoucherInput> = async formData => {
     if (queryResult?.id) {
-      const result = await updateMutation.mutateAsync({
+      await updateMutation.mutateAsync({
         where: { id: queryResult?.id },
         data: {
           ...formData
         }
       });
-      if (result.code === 'OK') {
-        NotifySuccess(result.message);
-        setOpened(false);
-      } else {
-        NotifyError(result.message);
-      }
     }
   };
   const generatePromotionCode = () => {
