@@ -13,7 +13,7 @@ export function useHashTabs<T extends string>(validTabs: T[], defaultTab: T): Ho
   });
 
   const changeTab = useCallback((tab: T) => {
-    const newUrl = tab == defaultTab ? '' : `${window.location.pathname}#${tab}`;
+    const newUrl = `${window.location.pathname}${tab == defaultTab ? '' : '#' + tab}`;
     router.replace(newUrl, { scroll: false });
     setActiveTab(tab);
   }, []);

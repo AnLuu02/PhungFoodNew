@@ -168,6 +168,7 @@ export default function RoleUpsert({
       <Group align='center' justify='flex-end' className='mt-4'>
         <Button
           variant='outline'
+          radius={'md'}
           size='xs'
           onClick={() => {
             setSeletedPermissions([]);

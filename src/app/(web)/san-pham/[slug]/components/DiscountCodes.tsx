@@ -5,17 +5,6 @@ import { IconGift } from '@tabler/icons-react';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
 
 export default function DiscountCodes({ data }: { data: any }) {
-  // const { data: session } = useSession();
-  // const { data: vouchers = [] } = api.Voucher.getVoucherForUser.useQuery(
-  //   { userId: session?.user?.id || '' },
-  //   {
-  //     enabled: !!session?.user?.id
-  //   }
-  // );
-
-  // const voucherFinal = useMemo(() => {
-  //   return [...data, ...vouchers];
-  // }, [vouchers, data]);
   return (
     <Paper p='md' radius='md' className='bg-green-50 dark:bg-dark-background'>
       <Group align='center' mb={'xs'}>

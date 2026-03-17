@@ -14,7 +14,8 @@ import {
   IconSettings
 } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { api } from '~/trpc/react';
 import BannerManagement from './components/Section/BannerRestautant';
 import EmailSettingsManagement from './components/Section/EmailRestautant';
@@ -23,23 +24,23 @@ import PaymentSettingsManagement from './components/Section/PaymentRestautant';
 import PerformanceSettingsManagement from './components/Section/PerformanceRestautant';
 import SecuritySettingsManagement from './components/Section/SecurityRestautant';
 import ThemeSettingsManagement from './components/Section/ThemeRestautant';
-const TABS: { value: string; label: string; icon: any }[] = [
-  { value: 'general', label: 'Cài đặt hệ thống', icon: IconHome },
-  { value: 'banner', label: 'Banner', icon: IconBuildingStore },
-  { value: 'email', label: 'Email', icon: IconMail },
-  { value: 'payment', label: 'Thanh toán', icon: IconCreditCard },
-  { value: 'security', label: 'Bảo mật', icon: IconLock },
-  { value: 'theme', label: 'Giao diện', icon: IconPalette },
-  { value: 'performance', label: 'Hiệu suất', icon: IconActivity }
-];
-const DEFAULT_TAB = TABS?.[0]?.value || 'general';
+const TABS: Record<string, { value: string; label: string; icon: any }> = {
+  general: { value: 'general', label: 'Cài đặt hệ thống', icon: IconHome },
+  banner: { value: 'banner', label: 'Banner', icon: IconBuildingStore },
+  email: { value: 'email', label: 'Email', icon: IconMail },
+  payment: { value: 'payment', label: 'Thanh toán', icon: IconCreditCard },
+  security: { value: 'security', label: 'Bảo mật', icon: IconLock },
+  theme: { value: 'theme', label: 'Giao diện', icon: IconPalette },
+  performance: { value: 'performance', label: 'Hiệu suất', icon: IconActivity }
+};
+const DEFAULT_TAB = TABS?.['general']?.value || 'general';
 export default function SettingPageClient({ initData }: { initData: any }) {
   const { data: restaurant } = api.Restaurant.getOneActive.useQuery(undefined, {
     initialData: initData
   });
   const router = useRouter();
   const pathname = usePathname();
-  const [activeTab, setActiveTab] = useState<string>(DEFAULT_TAB);
+  const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const renderTabItem = useCallback(
     (activeTab: string) => {
       switch (activeTab) {
@@ -63,28 +64,7 @@ export default function SettingPageClient({ initData }: { initData: any }) {
     },
     [activeTab, restaurant, initData]
   );
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.substring(1);
-      const isValidTab = TABS.some(tab => tab.value === hash);
-      if (isValidTab) {
-        setActiveTab(hash);
-      } else {
-        setActiveTab(DEFAULT_TAB);
-      }
-    };
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, []);
 
-  const handleTabChange = (newTab: string) => {
-    setActiveTab(newTab);
-    const newUrl = `${pathname}#${newTab}`;
-    router.replace(newUrl, { scroll: false });
-  };
   return (
     <Stack>
       <Paper radius={'md'} withBorder shadow='md' py={'xl'} px={'xl'}>
@@ -135,7 +115,7 @@ export default function SettingPageClient({ initData }: { initData: any }) {
 
       <Tabs
         value={activeTab}
-        onChange={value => handleTabChange(value as string)}
+        onChange={value => changeTab(value!)}
         orientation='vertical'
         variant='pills'
         styles={{
@@ -154,7 +134,7 @@ export default function SettingPageClient({ initData }: { initData: any }) {
           </Text>
           <Tabs.List w={230}>
             <Stack gap={'md'}>
-              {TABS.map(tab => {
+              {Object.values(TABS).map(tab => {
                 const Icon = tab.icon;
                 return (
                   <Tabs.Tab key={tab.value} m={0} value={tab.value} leftSection={<Icon size={16} />}>

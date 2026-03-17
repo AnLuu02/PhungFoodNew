@@ -89,7 +89,7 @@ export default function PermissionUpsert({
                 size='sm'
                 placeholder='vd: Cập nhật sản phẩm'
                 radius='md'
-                error={errors.name?.message}
+                error={errors.viName?.message}
               />
             )}
           />
@@ -99,7 +99,13 @@ export default function PermissionUpsert({
             control={control}
             name='description'
             render={({ field }) => (
-              <Textarea {...field} label='Mô tả' size='sm' placeholder='Nhập mô tả' error={errors.name?.message} />
+              <Textarea
+                {...field}
+                label='Mô tả'
+                size='sm'
+                placeholder='Nhập mô tả'
+                error={errors.description?.message}
+              />
             )}
           />
         </Grid.Col>

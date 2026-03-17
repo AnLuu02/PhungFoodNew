@@ -9,14 +9,14 @@ export default function CustomPagination({ totalPages }: { totalPages: number })
   const currentPage = Number(searchParams.get('page')) || 1;
   const onChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams);
-
+    const hash = window.location.hash;
     if (newPage <= 1) {
       params.delete('page');
     } else {
       params.set('page', newPage.toString());
     }
 
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    router.push(`${pathname}?${params.toString()}${hash ? hash : ''}`, { scroll: false });
   };
 
   if (totalPages <= 1) return null;

@@ -33,9 +33,7 @@ export default function OtpModal({
   const verifyOtp = api.User.verifyOtp.useMutation({
     onSuccess: async res => {
       onAfterVerify?.(res.tokenHash, res.user);
-      // onClose();
       NotifySuccess('Xác thực OTP thành công!');
-      // setLoading({ type: 'submit', value: false });
     },
     onError: error => {
       NotifyError(error.message);

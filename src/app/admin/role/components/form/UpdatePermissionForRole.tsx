@@ -121,6 +121,7 @@ export default function UpdatePermissionForRole({
               <Button
                 variant='outline'
                 size='xs'
+                radius={'md'}
                 onClick={() => {
                   setSeletedPermissions([...initPermissions]);
                 }}

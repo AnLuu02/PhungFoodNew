@@ -11,11 +11,11 @@ import { NotificationClient } from '../../types';
 
 export const SendTabSection = ({
   setShowSendDialog,
-  setActiveTab,
+  changeTab,
   notifications
 }: {
   setShowSendDialog: Dispatch<SetStateAction<SendNotificationStateProps>>;
-  setActiveTab: Dispatch<SetStateAction<string>>;
+  changeTab: (tab: string) => void;
   notifications: NotificationClient[];
 }) => {
   return (
@@ -69,7 +69,7 @@ export const SendTabSection = ({
               </Text>
               <Text size='sm'>Thông báo mới nhất của bạn đã gửi</Text>
             </Box>
-            <BButton onClick={() => setActiveTab('history')} disabled={notifications?.length <= 5}>
+            <BButton onClick={() => changeTab('history')} disabled={notifications?.length <= 5}>
               Xem thêm
             </BButton>
           </Group>

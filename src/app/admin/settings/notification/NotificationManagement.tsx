@@ -3,6 +3,7 @@
 import { Box, Stack, Tabs, TabsList, TabsPanel, TabsTab, Text } from '@mantine/core';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { api } from '~/trpc/react';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
@@ -22,13 +23,13 @@ export interface SendNotificationStateProps {
 }
 
 const TABS = {
-  SEND: 'send',
-  HISTORY: 'history',
-  TEMPLATES: 'templates',
-  ANALYTICS: 'analytics',
-  SETTINGS: 'settings'
+  send: { value: 'send', label: 'Gửi' },
+  history: { value: 'history', label: 'Lịch sử' },
+  templates: { value: 'templates', label: 'Mẫu' },
+  analytics: { value: 'analytics', label: 'Phân tích' },
+  settings: { value: 'settings', label: 'Cài đặt' }
 };
-const DEFAULT_TAB = TABS.SEND;
+const DEFAULT_TAB = TABS?.['send']?.value || 'send';
 export default function NotificationManagement({
   initData
 }: {
@@ -45,7 +46,7 @@ export default function NotificationManagement({
   const [mounted, setMounted] = useState(false);
   const notifications = notificationData.data ?? [];
   const templates = notificationTemplateData.data ?? [];
-  const [activeTab, setActiveTab] = useState(DEFAULT_TAB);
+  const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const [showSendDialog, setShowSendDialog] = useState<SendNotificationStateProps>({
     open: false,
     typeAction: 'create'
@@ -57,28 +58,9 @@ export default function NotificationManagement({
     open: false
   });
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.substring(1);
-      const isValidTab = Object.values(TABS).includes(hash);
-
-      if (isValidTab) {
-        setActiveTab(hash);
-      } else {
-        setActiveTab(DEFAULT_TAB);
-      }
-      setMounted(true);
-    };
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
+    setMounted(true);
   }, []);
-  const handleTabChange = (newTab: string) => {
-    setActiveTab(newTab);
-    const newUrl = `${pathname}#${newTab}`;
-    router.replace(newUrl, { scroll: false });
-  };
+
   return (
     <Box className='space-y-6' mb={'xl'} pb={'xl'}>
       <Box className='flex items-center justify-between'>
@@ -125,7 +107,7 @@ export default function NotificationManagement({
       ) : (
         <Tabs
           value={activeTab}
-          onChange={(value: any) => handleTabChange(value)}
+          onChange={value => changeTab(value!)}
           variant='pills'
           styles={{
             tab: {
@@ -138,19 +120,15 @@ export default function NotificationManagement({
           }}
         >
           <TabsList className='grid w-full grid-cols-5' mb={'md'}>
-            <TabsTab value='send'>Gửi</TabsTab>
-            <TabsTab value='history'>Lịch sử</TabsTab>
-            <TabsTab value='templates'>Mẫu</TabsTab>
-            <TabsTab value='analytics'>Phân tích</TabsTab>
-            <TabsTab value='settings'>Cài đặt</TabsTab>
+            {Object.values(TABS).map(({ value, label }) => (
+              <TabsTab key={value} value={value}>
+                {label}
+              </TabsTab>
+            ))}
           </TabsList>
 
           <TabsPanel value='send' className='space-y-6'>
-            <SendTabSection
-              setActiveTab={setActiveTab}
-              setShowSendDialog={setShowSendDialog}
-              notifications={notifications}
-            />
+            <SendTabSection changeTab={changeTab} setShowSendDialog={setShowSendDialog} notifications={notifications} />
           </TabsPanel>
 
           <TabsPanel value='history' className='space-y-6'>

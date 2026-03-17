@@ -108,6 +108,7 @@ export default function UpdatePermissionUser({
               </BButton>
               <Button
                 variant='outline'
+                radius={'md'}
                 size='xs'
                 onClick={() => {
                   setSeletedPermissions([...initPermissions]);

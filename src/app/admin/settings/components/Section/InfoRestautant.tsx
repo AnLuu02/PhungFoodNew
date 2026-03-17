@@ -6,6 +6,7 @@ import { IconHome, IconSpacingVertical } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
+import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { restaurantSchema } from '~/lib/ZodSchema/schema';
@@ -15,7 +16,17 @@ import ContactTab from '../info/ContactTab';
 import GeneralTab from '../info/GeneralTab';
 import { OpeningHourTab } from '../info/OpeningHourTab';
 import { SocialTab } from '../info/SocialTab';
+
+const TABS = {
+  basic: { value: 'basic', label: 'Thông tin cơ bản' },
+  contact: { value: 'contact', label: 'Liên hệ' },
+  hours_open: { value: 'hours_open', label: 'Giờ hoạt động' },
+  social: { value: 'social', label: 'Truyền thông' }
+};
+const DEFAULT_TAB = TABS?.['basic']?.value || 'basic';
+
 export default function RestaurantInfoSettings({ data }: any) {
+  const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const methods = useForm<Restaurant>({
     resolver: zodResolver(restaurantSchema),
     defaultValues: data
@@ -127,7 +138,8 @@ export default function RestaurantInfoSettings({ data }: any) {
           </Group>
           <Stack gap={'xl'}>
             <Tabs
-              defaultValue='basic'
+              value={activeTab}
+              onChange={value => changeTab(value!)}
               variant='pills'
               className='space-y-6'
               styles={{
@@ -142,10 +154,11 @@ export default function RestaurantInfoSettings({ data }: any) {
               }}
             >
               <TabsList className='grid w-full grid-cols-4'>
-                <TabsTab value='basic'>Thông tin cơ bản</TabsTab>
-                <TabsTab value='contact'>Liên hệ</TabsTab>
-                <TabsTab value='hours'>Giờ hoạt động</TabsTab>
-                <TabsTab value='social'>Truyền thông xã hội</TabsTab>
+                {Object.values(TABS).map(({ value, label }) => (
+                  <TabsTab value={value} key={value}>
+                    {label}
+                  </TabsTab>
+                ))}
               </TabsList>
 
               <TabsPanel value='basic' className='space-y-6'>
@@ -156,7 +169,7 @@ export default function RestaurantInfoSettings({ data }: any) {
                 <ContactTab />
               </TabsPanel>
 
-              <TabsPanel value='hours' className='space-y-6'>
+              <TabsPanel value='hours_open' className='space-y-6'>
                 <OpeningHourTab openingHours={data?.openingHours || []} />
               </TabsPanel>
 

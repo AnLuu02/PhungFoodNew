@@ -222,7 +222,15 @@ export function CreateRoleButton() {
 
 export function DeleteRoleButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.RolePermission.deleteRole.useMutation();
+  const mutationDelete = api.RolePermission.deleteRole.useMutation({
+    onSuccess: () => {
+      utils.RolePermission.findPermission.invalidate();
+      utils.RolePermission.find.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   return (
     <>
       <ActionIcon
@@ -232,10 +240,7 @@ export function DeleteRoleButton({ id }: { id: string }) {
           confirmDelete({
             id: { id },
             mutationDelete,
-            entityName: 'vai trò',
-            callback: () => {
-              utils.RolePermission.invalidate();
-            }
+            entityName: 'vai trò'
           });
         }}
       >
@@ -463,7 +468,15 @@ export function UpdatePermissionButton({ id }: { id: string }) {
 
 export function DeletePermissionButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.RolePermission.deletePermission.useMutation();
+  const mutationDelete = api.RolePermission.deletePermission.useMutation({
+    onSuccess: () => {
+      utils.RolePermission.findPermission.invalidate();
+      utils.RolePermission.find.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   return (
     <>
       <ActionIcon
@@ -473,10 +486,7 @@ export function DeletePermissionButton({ id }: { id: string }) {
           confirmDelete({
             id: { id },
             mutationDelete,
-            entityName: 'quyền',
-            callback: () => {
-              utils.RolePermission.findPermission.invalidate();
-            }
+            entityName: 'quyền'
           });
         }}
       >
