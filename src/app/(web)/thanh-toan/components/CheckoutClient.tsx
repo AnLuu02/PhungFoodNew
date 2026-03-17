@@ -44,20 +44,29 @@ export default function CheckoutClient({ order }: { order: any }) {
     }
   });
   const { discountAmountByVoucher, discount, originalTotal, tax, finalTotal } = useMemo(() => {
-    const originalTotal = order?.orderItems?.reduce((sum: any, item: any) => sum + item.price * item.quantity, 0);
     const discountAmountByVoucher = (order?.vouchers ?? []).reduce((sum: any, item: any) => {
       const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
       return sum + value;
     }, 0);
-    const discount = order?.orderItems?.reduce((sum: any, item: any) => {
-      if (item.product.discount > 0) {
-        return sum + item.product.discount * item.quantity;
+    const { discount, originalTotal } = order?.orderItems?.reduce(
+      (acc: { discount: number; originalTotal: number }, item: any) => {
+        acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
+        acc.originalTotal += (item.price || 0) * (item.quantity || 1);
+        return {
+          discount: acc.discount,
+          originalTotal: acc.originalTotal
+        };
+      },
+      {
+        discount: 0,
+        originalTotal: 0
       }
-      return sum;
-    }, 0);
+    ) || { discount: 0, originalTotal: 0 };
 
-    const tax = originalTotal * 0.1;
-    const finalTotal = originalTotal + tax - discount - discountAmountByVoucher;
+    const pricePaid = originalTotal - discount - discountAmountByVoucher;
+
+    const tax = pricePaid * 0.08;
+    const finalTotal = pricePaid + tax;
     return { discountAmountByVoucher, discount, originalTotal, tax, finalTotal };
   }, [order]);
 

@@ -23,15 +23,28 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
   });
 
   const { originalTotal, discount, tax, discountAmountByVoucher, finalTotal } = useMemo(() => {
-    const originalTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const discount = cart.reduce((sum, item) => (item.discount ? sum + item.discount * item.quantity : sum), 0);
-    const tax = originalTotal * 0.1;
+    const { discount, originalTotal } = cart?.reduce(
+      (acc: { discount: number; originalTotal: number }, item: any) => {
+        acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
+        acc.originalTotal += (item.price || 0) * (item.quantity || 1);
+        return {
+          discount: acc.discount,
+          originalTotal: acc.originalTotal
+        };
+      },
+      {
+        discount: 0,
+        originalTotal: 0
+      }
+    ) || { discount: 0, originalTotal: 0 };
     const discountAmountByVoucher = (appliedVouchers ?? []).reduce((sum, item) => {
       if (!item?.discountValue) return sum;
       const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
       return sum + value;
     }, 0);
-    const finalTotal = originalTotal + tax - discount - discountAmountByVoucher;
+    const pricePaid = originalTotal - discount - discountAmountByVoucher;
+    const tax = pricePaid * 0.08;
+    const finalTotal = pricePaid + tax;
     return { originalTotal, discount, tax, discountAmountByVoucher, finalTotal };
   }, [cart, appliedVouchers]);
 

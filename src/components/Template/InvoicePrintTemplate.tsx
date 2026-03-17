@@ -10,16 +10,21 @@ type invoicePrintProps = {
 
 export default function InvoicePrintTemplate(props: invoicePrintProps) {
   const { data, printRef } = props || {};
-
   const productSale: any = data.orderItems || [];
-  const totalPrice = data?.orderItems?.reduce((acc: any, item: any) => acc + item?.product?.price * item.quantity, 0);
-  const totalDiscount =
-    data?.orderItems?.reduce((acc: any, item: any) => {
-      if (item?.product?.discount > 0) {
-        acc += item?.product?.discount * item.quantity;
-      }
-      return acc;
-    }, 0) || 0;
+  const { discount, originalTotal } = productSale?.reduce(
+    (acc: { discount: number; originalTotal: number }, item: any) => {
+      acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
+      acc.originalTotal += (item.price || 0) * (item.quantity || 1);
+      return {
+        discount: acc.discount,
+        originalTotal: acc.originalTotal
+      };
+    },
+    {
+      discount: 0,
+      originalTotal: 0
+    }
+  ) || { discount: 0, originalTotal: 0 };
 
   const totalDiscountVoucher = data?.vouchers?.reduce((acc: any, voucher: any) => {
     if (voucher.type === VoucherType.PERCENTAGE) {
@@ -36,8 +41,9 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
     }
     return acc;
   }, 0);
-  const tax = totalPrice * 0.1;
-  const finalTotal = totalPrice - totalDiscount - totalDiscountVoucher + tax;
+  const pricePaid = originalTotal - discount - totalDiscountVoucher;
+  const tax = pricePaid * 0.08;
+  const finalTotal = pricePaid + tax;
   return (
     <Box ref={printRef} p={'xl'}>
       <Box display={'flex'} style={{ flexDirection: 'column', alignItems: 'center', gap: 8 }}>
@@ -105,13 +111,13 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
           <Text c={'dark'} fz={18} fw={'bold'}>
             Tổng hoá đơn:
           </Text>
-          <Text c={'dark'}>{formatPriceLocaleVi(totalPrice || 0)}</Text>
+          <Text c={'dark'}>{formatPriceLocaleVi(originalTotal || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
           <Text c={'dark'} fz={18} fw={'bold'}>
             Giảm giá:
           </Text>
-          <Text c={'dark'}>- {formatPriceLocaleVi(totalDiscount || 0)}</Text>
+          <Text c={'dark'}>- {formatPriceLocaleVi(discount || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
           <Text c={'dark'} fz={18} fw={'bold'}>
