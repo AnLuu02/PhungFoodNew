@@ -3,42 +3,38 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Grid, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { basePermissionSchema, PermissionInput } from '~/shared/schema/permission.schema';
 import { api } from '~/trpc/react';
 
-const permissionSchema = z.object({
-  name: z.string({ required_error: 'Tên quyền là bắt buộc' }).min(1, 'Tên quyền là bắt buộc'),
-  viName: z.string({ required_error: 'Tên phiên âm là bắt buộc' }).min(1, 'Tên phiên âm là bắt buộc'),
-  permissionId: z.string(),
-  description: z.string().optional()
-});
-
-type PermissionFormData = z.infer<typeof permissionSchema>;
-
-export default function UpdatePermission({
+export default function PermissionUpsert({
   setOpened,
   permissionId
 }: {
   setOpened: Dispatch<SetStateAction<boolean>>;
-  permissionId: string;
+  permissionId?: string;
 }) {
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<PermissionFormData>({
-    resolver: zodResolver(permissionSchema),
-    defaultValues: { permissionId, name: '', description: '' }
+  } = useForm<PermissionInput>({
+    resolver: zodResolver(basePermissionSchema),
+    defaultValues: { id: undefined, name: '', description: '' }
   });
 
   const utils = api.useUtils();
-  const { data: permissionData } = api.RolePermission.getOnePermission.useQuery({ id: permissionId });
-  const mutation = api.RolePermission.updatePermission.useMutation({
+  const { data: permissionData } = api.RolePermission.getOnePermission.useQuery(
+    { id: permissionId || '' },
+    { enabled: !!permissionId }
+  );
+  const mutation = api.RolePermission.upsertPermission.useMutation({
     onSuccess: () => {
-      utils.RolePermission.invalidate();
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      setOpened(false);
+      utils.RolePermission.findPermission.invalidate();
     },
     onError: e => {
       NotifyError(e.message);
@@ -51,20 +47,14 @@ export default function UpdatePermission({
         viName: permissionData.viName || '',
         name: permissionData.name || '',
         description: permissionData.description || '',
-        permissionId: permissionData.id || ''
+        id: permissionData.id || ''
       });
     }
   }, [permissionData, reset]);
 
-  const onSubmit: SubmitHandler<PermissionFormData> = async data => {
+  const onSubmit: SubmitHandler<PermissionInput> = async data => {
     try {
-      const result = await mutation.mutateAsync(data);
-      if (result.code === 'OK') {
-        NotifySuccess(result.message);
-        setOpened(false);
-      } else {
-        NotifyError(result.message);
-      }
+      await mutation.mutateAsync(data);
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
@@ -81,8 +71,8 @@ export default function UpdatePermission({
                 {...field}
                 label='Tên quyền'
                 size='sm'
+                placeholder='vd: create:user or update:user or delete:user or ...'
                 radius='md'
-                placeholder='Nhập tên quyền'
                 error={errors.name?.message}
               />
             )}
@@ -97,8 +87,8 @@ export default function UpdatePermission({
                 {...field}
                 label='Tên phiên âm quyền'
                 size='sm'
+                placeholder='vd: Cập nhật sản phẩm'
                 radius='md'
-                placeholder='Nhập tên phiên âm quyền'
                 error={errors.name?.message}
               />
             )}

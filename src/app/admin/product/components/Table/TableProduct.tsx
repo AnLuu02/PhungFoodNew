@@ -12,6 +12,7 @@ import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } fro
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
 
@@ -187,17 +188,9 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
                   <Table.Td className='text-sm'>
                     {item?.materials?.length > 0
-                      ? item?.materials?.map((i: any) => (
+                      ? item?.materials?.map((i: any, index: number) => (
                           <Tooltip label={i?.name}>
-                            <Badge
-                              radius={'md'}
-                              bg={
-                                '#' +
-                                Math.floor(Math.random() * 16777215)
-                                  .toString(16)
-                                  .padStart(6, '0')
-                              }
-                            >
+                            <Badge radius={'md'} bg={randomColorHex(index + 20)}>
                               {i?.name}
                             </Badge>
                           </Tooltip>

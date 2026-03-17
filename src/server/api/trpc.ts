@@ -55,7 +55,7 @@ export const requirePermission = (
 ) =>
   t.middleware(async ({ ctx, next }) => {
     const user = ctx.session?.user;
-    if (options?.requiredAdmin && user?.role === 'ADMIN') {
+    if (options?.requiredAdmin && (user?.role === 'ADMIN' || user?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN)) {
       return next({ ctx: { ...ctx, user } });
     }
     const userPerms = user && user?.permissions ? user?.permissions : [];

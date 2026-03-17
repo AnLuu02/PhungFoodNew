@@ -1,23 +1,31 @@
 'use client';
-import { Box, Button, Flex, Group, Paper, Text } from '@mantine/core';
+import { Box, Button, Flex, Group, Paper, Switch, Text } from '@mantine/core';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
-import FilterSection from '~/app/admin/role/components/Section/FilterSection';
-import PermissionSection from '~/app/admin/role/components/Section/PermissionSection';
-import { FilterPermission } from '~/app/admin/role/components/types';
 import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
+import FilterSection from '../Section/FilterSection';
+import PermissionSection from '../Section/PermissionSection';
+import { FilterPermission } from '../types';
 
-export default function UpdatePermissionUser({
-  email,
+export default function UpdatePermissionForRole({
+  id,
   setOpened
 }: {
-  email: any;
-  setOpened: Dispatch<SetStateAction<boolean>>;
+  id: any;
+  setOpened: Dispatch<
+    SetStateAction<{
+      mode: 'update:role' | 'update:permissionForRole';
+      data: any;
+    } | null>
+  >;
 }) {
-  const { data: user, isLoading: isLoadingUser } = api.User.getOne.useQuery({ s: email }, { enabled: !!email });
+  const { data: role, isLoading: isLoadingRole } = api.RolePermission.getOne.useQuery({ id }, { enabled: !!id });
+  const { data: permissions = [], isLoading } = api.RolePermission.getAllPermission.useQuery(undefined, {
+    enabled: !!id
+  });
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();
@@ -25,19 +33,20 @@ export default function UpdatePermissionUser({
   const [initPermissions, setInitPermissions] = useState<any>([]);
 
   useEffect(() => {
-    const userPermission = user?.role?.permissions ?? [];
-    setSeletedPermissions(userPermission);
-    setInitPermissions(userPermission);
-  }, [user]);
+    const rolePermission = role?.permissions ?? [];
+    setSeletedPermissions(rolePermission);
+    setInitPermissions(rolePermission);
+  }, [role]);
 
   const hasChange = useMemo(() => {
     return syncPermissions(initPermissions, seletedPermissions).length > 0;
   }, [seletedPermissions, initPermissions]);
 
   const utils = api.useUtils();
-  const mutationUpdate = api.RolePermission.updateUserPermissions.useMutation({
+  const mutationUpdate = api.RolePermission.upsertRole.useMutation({
     onSuccess: () => {
-      utils.User.invalidate();
+      setOpened(null);
+      NotifySuccess('Cập nhật quyền thành công');
       utils.RolePermission.invalidate();
     },
     onError: e => {
@@ -48,26 +57,19 @@ export default function UpdatePermissionUser({
     e.preventDefault();
     try {
       setLoading(true);
-      const usePermissions = syncPermissions(initPermissions, seletedPermissions);
-      if (!user?.id) return;
-      await mutationUpdate.mutateAsync(
-        usePermissions
-          .filter((item: any) => !!item.id && typeof item.granted === 'boolean')
-          .map((item: any) => ({
-            userId: user.id as string,
-            permissionId: String(item.id),
-            granted: Boolean(item.granted)
-          }))
-      );
-      setOpened(false);
-      NotifySuccess('Cập nhật quyền thành công');
+      if (!role?.id) return;
+      await mutationUpdate.mutateAsync({
+        name: role?.name,
+        id: id || '',
+        viName: role?.viName || '',
+        permissionIds: seletedPermissions.map((item: any) => item.id) ?? []
+      });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. ', 'Cập nhật quyền không thành công');
     } finally {
       setLoading(false);
     }
   };
-
   const handleFilter = useCallback((value: any) => {
     setFilter(value);
   }, []);
@@ -78,17 +80,18 @@ export default function UpdatePermissionUser({
     setSeletedPermissions(value);
   }, []);
 
-  if (isLoadingUser) {
+  if (isLoadingRole || isLoading) {
     return <LoadingSpiner />;
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <Text size='sm' mb={'lg'}>
-        Tùy chỉnh quyền cho <b>{user?.name}</b>. Quyền tùy chỉnh sẽ ghi đè lên quyền mặc định của vai trò.
+        Tùy chỉnh quyền cho <b>{role?.viName}</b>. Điều này ảnh hưởng đến tất cả người dùng có vai trò này nhưng không
+        có quyền tùy chỉnh.
       </Text>
 
-      {user && (
+      {role && (
         <Box className='space-y-6'>
           <Paper
             p={'lg'}
@@ -96,13 +99,22 @@ export default function UpdatePermissionUser({
             className='sticky left-0 top-[65px] z-10 flex items-center justify-between bg-gray-100'
           >
             <Box>
-              <Text fw={600}>{user.name}</Text>
-              <Text size='sm'>
-                Vai trò: {user.role?.viName || 'Đang cập nhật'} •{' '}
-                {user.userPermissions?.length ? 'Quyền tùy chỉnh' : 'Sử dụng quyền vai trò'}
-              </Text>
+              <Text fw={600}>{role.viName || 'Đang cập nhật'}</Text>
+              <Text size='sm'>{role?.permissions?.length || 0} quyền được chỉ định</Text>
             </Box>
             <Group>
+              <Switch
+                label='Áp dụng tất cả'
+                size='sm'
+                checked={seletedPermissions.length === permissions.length}
+                onChange={event => {
+                  if (event.currentTarget.checked) {
+                    setSeletedPermissions([...permissions]);
+                  } else {
+                    setSeletedPermissions([]);
+                  }
+                }}
+              />
               <BButton type='submit' disabled={!hasChange} loading={loading}>
                 Lưu thay đổi
               </BButton>

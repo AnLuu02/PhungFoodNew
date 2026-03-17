@@ -2,23 +2,29 @@
 import { ActionIcon, Box, Card, Divider, Flex, Group, Paper, Select, SimpleGrid, Tabs, Title } from '@mantine/core';
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
 import { CreateManyPermissionButton, CreateManyRoleButton, CreatePermissionButton, CreateRoleButton } from './Button';
-import { RoleSection } from './Section/role-section';
+import { RoleSection } from './Section/RoleSection';
 import TablePermission from './Section/TablePermissions';
 
+const TABS: Record<string, { value: string; label: string }> = {
+  role: { value: 'role', label: 'Vai trò' },
+  permission: { value: 'permission', label: 'Quyền người dùng' }
+};
+const DEFAULT_TAB = TABS?.['role']?.value || 'role';
 export default function RoleClient({ s, allData, dataRole, dataPermission }: any) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '5';
-  const [activeTab, setActiveTab] = useState<'role' | 'permission'>('role');
+  const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const { data: dataClient } =
-    activeTab === 'role'
+    activeTab === TABS?.['role']?.value
       ? api.RolePermission.find.useQuery({ skip: +page, take: +limit, s }, { initialData: dataRole })
       : api.RolePermission.findPermission.useQuery({ skip: +page, take: +limit, s }, { initialData: dataPermission });
 
@@ -71,6 +77,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
       }
     ];
   }, [allDataClient]);
+
   return (
     <>
       <SimpleGrid cols={4}>
@@ -124,8 +131,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
         variant='pills'
         value={activeTab}
         onChange={(value: any) => {
-          setActiveTab(value);
-          history.pushState(null, '', window.location.pathname);
+          changeTab(value);
         }}
         styles={{
           tab: {
@@ -145,12 +151,11 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
         >
           <Tabs.List>
             <Group gap={0}>
-              <Tabs.Tab size={'md'} fw={700} value={'role'}>
-                Vai trò
-              </Tabs.Tab>
-              <Tabs.Tab size={'md'} fw={700} value={'permission'}>
-                Quyền người dùng
-              </Tabs.Tab>
+              {Object.values(TABS).map(({ value, label }) => (
+                <Tabs.Tab key={value + label} size={'md'} fw={700} value={value}>
+                  {label}
+                </Tabs.Tab>
+              ))}
             </Group>
           </Tabs.List>
           <Group>

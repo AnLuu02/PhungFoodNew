@@ -169,7 +169,8 @@ export const findUserService = async (
       },
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : undefined,
       include: {
-        role: true
+        role: true,
+        address: true
       }
     })
   ]);

@@ -20,6 +20,9 @@ export default function TablePermission({ s, data }: { s: string; data: any }) {
                 Quyền
               </Table.Th>
               <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+                Chức năng
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
                 Mô tả
               </Table.Th>
               <Table.Th className='text-sm' style={{ minWidth: 100 }}>
@@ -43,7 +46,12 @@ export default function TablePermission({ s, data }: { s: string; data: any }) {
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight className='text-sm' highlight={s}>
-                      {row.description || 'Không có mô tả'}
+                      {row?.viName || 'Đang cập nhật.'}
+                    </Highlight>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Highlight className='text-sm' highlight={s}>
+                      {row.description || 'Đang cập nhật.'}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>

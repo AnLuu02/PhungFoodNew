@@ -8,9 +8,8 @@ import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
-import CreatePermission from './form/CreatePermissions';
-import CreateRole from './form/CreateRole';
-import UpdatePermission from './form/UpdatePermissions';
+import RoleUpsert from './form/RoleUpsert';
+import PermissionUpsert from './form/permission/PermissionUpsert';
 const mapFieldsRole: Record<string, string> = {
   'Vai trò': 'name',
   Quyền: 'permissionId'
@@ -27,13 +26,9 @@ export function CreateManyRoleButton() {
     if (fileInput) fileInput.value = '';
   };
   const importMutation = api.RolePermission.createManyRole.useMutation({
-    onSuccess: data => {
-      if (data.code === 'OK') {
-        NotifySuccess(data.message);
-        utils.RolePermission.invalidate();
-      } else {
-        NotifyError(data.message);
-      }
+    onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      utils.RolePermission.invalidate();
       setOpened(false);
       setData([]);
       setLoading(false);
@@ -140,6 +135,7 @@ export function CreateManyRoleButton() {
       </Group>
 
       <Modal
+        radius={'md'}
         size={'xl'}
         opened={opened}
         onClose={() => {
@@ -206,9 +202,11 @@ export function CreateRoleButton() {
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         size={'80%'}
+        className='overflow-hidden'
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -216,7 +214,7 @@ export function CreateRoleButton() {
           </Title>
         }
       >
-        <CreateRole setOpened={setOpened} />
+        <RoleUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -264,12 +262,8 @@ export function CreateManyPermissionButton() {
   };
   const importMutation = api.RolePermission.createManyPermission.useMutation({
     onSuccess: data => {
-      if (data.code === 'OK') {
-        NotifySuccess(data.message);
-        utils.RolePermission.invalidate();
-      } else {
-        NotifyError(data.message);
-      }
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      utils.RolePermission.invalidate();
       setOpened(false);
       setData([]);
       setLoading(false);
@@ -354,18 +348,13 @@ export function CreateManyPermissionButton() {
             </BButton>
           )}
         </FileButton>
-        <Button
-          radius={'md'}
-          bg={'red'}
-          onClick={handleExport}
-          loading={fetchPermission?.isLoading}
-          disabled={fetchPermission?.data?.length === 0}
-        >
+        <Button radius={'md'} bg={'red'} onClick={handleExport}>
           Export Excel
         </Button>
       </Group>
 
       <Modal
+        radius={'md'}
         size={'xl'}
         opened={opened}
         onClose={() => {
@@ -432,6 +421,7 @@ export function CreatePermissionButton() {
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -441,7 +431,7 @@ export function CreatePermissionButton() {
           </Title>
         }
       >
-        <CreatePermission setOpened={setOpened} />
+        <PermissionUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -455,6 +445,7 @@ export function UpdatePermissionButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -464,7 +455,7 @@ export function UpdatePermissionButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdatePermission permissionId={id.toString()} setOpened={setOpened} />
+        <PermissionUpsert permissionId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -484,7 +475,7 @@ export function DeletePermissionButton({ id }: { id: string }) {
             mutationDelete,
             entityName: 'quyền',
             callback: () => {
-              utils.RolePermission.invalidate();
+              utils.RolePermission.findPermission.invalidate();
             }
           });
         }}

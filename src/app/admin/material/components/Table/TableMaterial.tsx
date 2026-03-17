@@ -23,6 +23,7 @@ import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { categoryMaterials } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 
@@ -52,11 +53,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
       tag: key,
       value: summary?.[key],
       icon: IconMeat,
-      color:
-        '#' +
-        Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, '0')
+      color: randomColorHex()
     }));
   }, [allDataClient]);
 
