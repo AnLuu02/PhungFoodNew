@@ -2,7 +2,7 @@ import { Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { api } from '~/trpc/server';
-import { RecapCart } from '../thanh-toan/components/RecapCart';
+import { RecapCart } from '../../../components/RecapCart';
 import { QuickMenu } from './components/QuickMenu';
 
 export const metadata: Metadata = {

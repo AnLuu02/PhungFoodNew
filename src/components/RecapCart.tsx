@@ -8,10 +8,10 @@ import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { ModalRecentOrder } from '../../../../components/Modals/ModalRecentOrder';
-import { ApplyVoucher } from './ApplyVoucher';
-import { ButtonCheckout } from './ButtonCheckout';
-import { CartItemPayment } from './CartItemPayment';
+import { ApplyVoucher } from '../app/(web)/thanh-toan/components/ApplyVoucher';
+import { ButtonCheckout } from '../app/(web)/thanh-toan/components/ButtonCheckout';
+import { CartItemPayment } from '../app/(web)/thanh-toan/components/CartItemPayment';
+import { ModalRecentOrder } from './Modals/ModalRecentOrder';
 
 export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
   const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);

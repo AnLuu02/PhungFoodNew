@@ -1,86 +1,133 @@
 'use client';
 
-import { Box, Button, Card, Stack, Text } from '@mantine/core';
+import { Badge, Box, Card, Divider, Group, Stack, Text } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
+import { IconCalendarEvent, IconPackage, IconReceipt } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 
 export default function CardRecentOrder({ order }: { order: any }) {
-  const [selectedOrder, setSelectedOrder] = useState<{ type: 'edit' | 'reorder'; data: any } | null>(null);
+  const [_, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [loading, setLoading] = useState(false);
   const statusInfo = useMemo(() => {
     return getStatusInfo(order?.status || OrderStatus.CANCELLED);
   }, [order]);
   return (
     <>
-      <Card withBorder radius={'md'} key={order.id} className='overflow-hidden bg-gray-100 dark:bg-dark-card'>
-        <Stack>
-          <Box>
-            <Box className='flex items-start justify-between'>
-              <Box className='flex-1'>
-                <Text lineClamp={1} className='text-lg' fw={700}>
-                  {order?.id || 'Đang cập nhật'}
+      <Card
+        bg={statusInfo.color + 10}
+        withBorder
+        radius='md'
+        shadow='sm'
+        key={order.id}
+        className='bg-white transition-shadow hover:shadow-md dark:bg-dark-card'
+        padding='lg'
+      >
+        <Stack gap='sm'>
+          <Group justify='space-between' align='center'>
+            <Group gap='xs'>
+              <IconReceipt size={20} className='text-gray-500' />
+              <Text className='text-base' fw={700}>
+                {order?.id?.slice(-8).toUpperCase() || 'ĐANG CẬP NHẬT'}
+              </Text>
+            </Group>
+            <Badge color={statusInfo.color} variant='light' radius='sm'>
+              {statusInfo.label || 'Đang cập nhật'}
+            </Badge>
+          </Group>
+
+          <Divider variant='dashed' color='gray.3' />
+
+          <Box className='grid grid-cols-2 gap-4 py-2'>
+            <Group gap='sm' wrap='nowrap'>
+              <Box className='flex h-10 w-10 items-center justify-center rounded-full'>
+                <IconCalendarEvent size={18} className='text-gray-500' />
+              </Box>
+              <Box>
+                <Text size='xs' c='dimmed'>
+                  Ngày đặt
                 </Text>
-                <Text lineClamp={2} size='sm'>
-                  Trạng thái: <b> {statusInfo.label || 'Đang cập nhật'}</b>
+                <Text size='sm' fw={600}>
+                  {formatDateViVN(order?.createdAt || new Date())}
                 </Text>
               </Box>
-            </Box>
+            </Group>
+
+            <Group gap='sm' wrap='nowrap'>
+              <Box className='flex h-10 w-10 items-center justify-center rounded-full'>
+                <IconPackage size={18} className='text-gray-500' />
+              </Box>
+              <Box>
+                <Text size='xs' c='dimmed'>
+                  Số lượng
+                </Text>
+                <Text size='sm' fw={600}>
+                  {order?.orderItems?.length || 0} sản phẩm
+                </Text>
+              </Box>
+            </Group>
           </Box>
 
-          <Box className='flex items-center justify-between'>
-            <Box className='flex items-center gap-2'>
-              <Text fw={700}>
-                Tổng đơn: <b className='text-mainColor'>{formatPriceLocaleVi(order?.finalTotal || 0)}</b>
+          <Box className='dark:bg-dark-body rounded-lg p-3' bg={statusInfo.color + 20}>
+            <Group justify='space-between' mb={4}>
+              <Text size='sm' c='dimmed' fw={600}>
+                Tạm tính
               </Text>
-            </Box>
-            <Text fw={700}>
-              Đã giảm: <b className='text-mainColor'>{formatPriceLocaleVi(order?.discountAmount || 0)}</b>
-            </Text>{' '}
-          </Box>
-          <Box className='grid grid-cols-2 gap-4 text-sm'>
-            <Box>
-              <Text size='sm'>Đặt ngày</Text>
+              <Text size='sm' fw={500}>
+                {formatPriceLocaleVi((order?.finalTotal || 0) + (order?.discountAmount || 0))}
+              </Text>
+            </Group>
+            <Group justify='space-between' mb={4}>
+              <Text size='sm' c='dimmed' fw={600}>
+                Đã giảm
+              </Text>
+              <Text size='sm' fw={500} className='text-green-600'>
+                -{formatPriceLocaleVi(order?.discountAmount || 0)}
+              </Text>
+            </Group>
+            <Divider my='xs' />
+            <Group justify='space-between'>
               <Text size='sm' fw={700}>
-                {formatDateViVN(order?.createdAt || new Date())}
+                Tổng đơn
               </Text>
-            </Box>
-            <Box>
-              <Text size='sm'>Số lượng sản phẩm</Text>
-              <Text size='sm' fw={700}>
-                {order?.orderItems?.length || 0} sản phẩm
+              <Text size='lg' fw={800} className='text-mainColor'>
+                {formatPriceLocaleVi(order?.finalTotal || 0)}
               </Text>
-            </Box>
+            </Group>
           </Box>
-          <Box className='flex justify-end gap-2'>
-            <Button
+
+          <Group justify='flex-end' gap='sm' mt='xs'>
+            <BButton
+              loading={loading}
               variant='outline'
-              size='sm'
               onClick={() => {
-                setSelectedOrder({ type: 'edit', data: order });
-              }}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
+                setLoading(true);
+                setCart(
+                  order?.orderItems?.map((item: any) => ({
+                    ...item?.product,
+                    quantity: item?.quantity || 1,
+                    note: item?.note || ''
+                  }))
+                );
+                window.location.href = `/gio-hang`;
               }}
             >
               Tùy chỉnh
-            </Button>
+            </BButton>
             <BButton
-              children='Đặt lại đơn hàng'
+              radius='md'
               loading={loading}
               onClick={() => {
                 setLoading(true);
                 window.location.href = `/thanh-toan/${order?.id}`;
               }}
-            />
-          </Box>
+            >
+              Đặt lại đơn hàng
+            </BButton>
+          </Group>
         </Stack>
       </Card>
     </>

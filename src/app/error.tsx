@@ -22,7 +22,6 @@ export default function Error({ error, reset }: ErrorProps) {
   return (
     <main className='flex min-h-screen items-center justify-center px-4'>
       <div className='max-w-lg text-center'>
-        {/* Error Code */}
         <div className='relative'>
           <Group gap={2} justify='center' align='center'>
             <Box className='animate-shake text-8xl font-bold text-red-500 md:text-9xl'>E</Box>
@@ -33,20 +32,17 @@ export default function Error({ error, reset }: ErrorProps) {
           </Group>
         </div>
 
-        {/* Error Message */}
         <Stack gap='xs'>
           <h3 className='text-foreground text-balance text-3xl font-bold'>Something Went Wrong</h3>
 
           <Text className='text-lg text-gray-600'>Sorry, an unexpected error occurred. We're working to fix it.</Text>
         </Stack>
 
-        {/* Error Details (Minimal) */}
         <div className='rounded-lg border border-gray-200 bg-gray-50 p-4'>
           <Text className='text-sm font-medium text-gray-700'>Error Message:</Text>
           <Text className='mt-1 truncate text-sm text-red-600'>{error?.message || 'Unknown error occurred'}</Text>
         </div>
 
-        {/* Action Buttons */}
         <Group justify='center' gap='md' className='pt-4' wrap='nowrap'>
           <BButton size='md' onClick={reset} leftSection={<IconReload size={20} />}>
             Try Again
@@ -59,7 +55,6 @@ export default function Error({ error, reset }: ErrorProps) {
           </Link>
         </Group>
 
-        {/* Support Section */}
         <div className='mt-8 border-t border-gray-200 pt-6'>
           <Stack gap='md'>
             <Button
