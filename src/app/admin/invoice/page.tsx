@@ -39,11 +39,11 @@ export default async function InvoiceManagementPage({
 
         <Group justify='space-between'>
           <Text fw={500} size='md'>
-            Số lượng bản ghi: {allData && allData?.data?.length}
+            Số lượng bản ghi: {allData && allData?.length}
           </Text>
           <Group>
             <SearchInput />
-            <CreateInvoiceButton allData={allData?.data || []} />
+            <CreateInvoiceButton allData={allData} />
           </Group>
         </Group>
 

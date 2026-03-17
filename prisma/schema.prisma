@@ -94,17 +94,36 @@ model Order {
 }
 
 model Invoice {
-  id            String   @id @default(cuid())
-  orderId       String   @unique
-  order         Order    @relation(fields: [orderId], references: [id])
-  salerId       String?
-  invoiceNumber String   @unique
-  status        String   @default("PAID")
-  currency      String   @default("VND")
-  taxCode       String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  saler         User?    @relation(fields: [salerId], references: [id])
+  id             String        @id @default(cuid())
+  invoiceNumber  String        @unique
+  status         InvoiceStatus @default(DRAFT)
+  orderId        String        @unique
+  order          Order         @relation(fields: [orderId], references: [id])
+  sellerId       String
+  seller         User          @relation("SellerInvoices", fields: [sellerId], references: [id])
+  customerId     String?
+  customer       User?         @relation("CustomerInvoices", fields: [customerId], references: [id])
+  buyerName      String
+  buyerEmail     String?
+  buyerPhone     String?
+  buyerAddress   String?
+  buyerTaxCode   String?
+  subTotal       Float
+  taxAmount      Float         @default(0)
+  discountAmount Float         @default(0)
+  totalAmount    Float
+  currency       String        @default("VND")
+  paymentMethod  String?
+  pdfUrl         String?
+  note           String?       @db.Text
+  issuedAt       DateTime      @default(now())
+  paidAt         DateTime?
+  dueDate        DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([sellerId])
+  @@index([invoiceNumber])
 }
 
 model Delivery {
@@ -208,36 +227,37 @@ model Review {
 }
 
 model User {
-  id               String                  @id @default(cuid())
-  name             String
-  email            String                  @unique
-  password         String
-  isActive         Boolean                 @default(true)
-  isVerified       Boolean                 @default(false)
-  phone            String?                 @db.VarChar(10)
-  dateOfBirth      DateTime?               @default(now())
-  gender           Gender?
-  pointUser        Int                     @default(0)
-  level            UserLevel
-  failedAttempts   Int                     @default(0)
-  lockedUntil      DateTime?
-  isLocked         Boolean                 @default(false)
-  order            Order[]
-  review           Review[]
-  favouriteFood    FavouriteFood[]
-  revenue          Revenue[]
-  image            Image?
-  roleId           String?
-  role             Role?                   @relation(fields: [roleId], references: [id])
-  address          Address?
-  createdAt        DateTime?               @default(now())
-  updatedAt        DateTime?               @updatedAt
-  voucherForUser   VoucherForUser[]
-  voucherForUserId String?
-  userPermissions  UserPermission[]
-  invoice          Invoice[]
-  recipients       NotificationRecipient[]
-  tokens           Token[]
+  id                 String                  @id @default(cuid())
+  name               String
+  email              String                  @unique
+  password           String
+  isActive           Boolean                 @default(true)
+  isVerified         Boolean                 @default(false)
+  phone              String?                 @db.VarChar(10)
+  dateOfBirth        DateTime?               @default(now())
+  gender             Gender?
+  pointUser          Int                     @default(0)
+  level              UserLevel
+  failedAttempts     Int                     @default(0)
+  lockedUntil        DateTime?
+  isLocked           Boolean                 @default(false)
+  order              Order[]
+  review             Review[]
+  favouriteFood      FavouriteFood[]
+  revenue            Revenue[]
+  image              Image?
+  roleId             String?
+  role               Role?                   @relation(fields: [roleId], references: [id])
+  address            Address?
+  createdAt          DateTime?               @default(now())
+  updatedAt          DateTime?               @updatedAt
+  voucherForUser     VoucherForUser[]
+  voucherForUserId   String?
+  userPermissions    UserPermission[]
+  invoicesAsSeller   Invoice[]               @relation("SellerInvoices")
+  invoicesAsCustomer Invoice[]               @relation("CustomerInvoices")
+  recipients         NotificationRecipient[]
+  tokens             Token[]
 }
 
 model Token {
@@ -577,7 +597,7 @@ model Notification {
   createdAt              DateTime                @default(now())
   scheduledAt            DateTime?
   tags                   String[]
-  analytics              Json // { sent, delivered, read, clicked }
+  analytics              Json
   recipients             NotificationRecipient[]
   template               NotificationTemplate?   @relation(fields: [notificationTemplateId], references: [id])
   notificationTemplateId String?
@@ -608,4 +628,12 @@ model NotificationTemplate {
   variables     String[]
   createdAt     DateTime         @default(now())
   notifications Notification[]
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  CANCELLED
+  OVERDUE
 }

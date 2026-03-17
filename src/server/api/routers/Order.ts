@@ -403,12 +403,24 @@ export const orderRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
     const order = await ctx.db.order.findMany({
       include: {
-        orderItems: true,
-        user: {
+        orderItems: {
+          include: {
+            product: true
+          }
+        },
+        delivery: {
           select: {
-            id: true,
-            name: true,
-            email: true
+            address: true
+          }
+        },
+        payment: true,
+        vouchers: true,
+        user: {
+          include: {
+            address: true
+          },
+          omit: {
+            password: true
           }
         }
       }

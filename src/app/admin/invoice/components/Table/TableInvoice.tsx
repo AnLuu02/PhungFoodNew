@@ -1,5 +1,18 @@
 'use client';
-import { ActionIcon, Box, Card, Flex, Group, Highlight, SimpleGrid, Table, Text, Title } from '@mantine/core';
+import {
+  ActionIcon,
+  Badge,
+  Box,
+  Card,
+  Flex,
+  Group,
+  SimpleGrid,
+  Stack,
+  Table,
+  Text,
+  Title,
+  Tooltip
+} from '@mantine/core';
 import { IconBrandCashapp, IconDumpling, IconMeat, IconMoneybag, IconMushroomFilled } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
@@ -21,7 +34,7 @@ export default function TableInvoice({ s, data, allData }: { s: string; data: an
   const currentItems = dataClient?.invoices || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
-    const summary = allDataClient.data.reduce(
+    const summary = allDataClient.reduce(
       (acc: any, item: any) => {
         item.status === 'PAID' && (acc['PAID'] += 1);
         item.status === 'PENDING' && (acc['PENDING'] += 1);
@@ -98,93 +111,97 @@ export default function TableInvoice({ s, data, allData }: { s: string; data: an
         })}
       </SimpleGrid>
       <Box className={`tableAdmin w-full overflow-x-auto`}>
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+        <Table striped highlightOnHover withTableBorder withColumnBorders verticalSpacing='sm'>
+          <Table.Thead className='bg-gray-50 text-sm uppercase leading-normal dark:bg-dark-card'>
             <Table.Tr>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                ID
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Đơn hàng
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Người tạo
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Mã hóa đơn
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Trạng thái
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Tiền tệ
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Mã số thuế
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Ngày tạo
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Thao tác
-              </Table.Th>
+              <Table.Th w={150}>Mã hóa đơn</Table.Th>
+              <Table.Th>Đơn hàng</Table.Th>
+              <Table.Th>Khách hàng</Table.Th>
+              <Table.Th>Tổng tiền</Table.Th>
+              <Table.Th w={120}>Trạng thái</Table.Th>
+              <Table.Th w={120}>Phương thức</Table.Th>
+              <Table.Th w={150}>Ngày phát hành</Table.Th>
+              <Table.Th className='text-center'>Thao tác</Table.Th>
             </Table.Tr>
           </Table.Thead>
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
               currentItems.map((row: any, index: number) => (
-                <Table.Tr key={index}>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.id}
-                    </Highlight>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.orderId}
-                    </Highlight>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.saler.name}
-                    </Highlight>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
+                <Table.Tr key={row.id}>
+                  <Table.Td>
+                    <Text fw={700} size='sm' c='blue'>
                       {row.invoiceNumber}
-                    </Highlight>
+                    </Text>
                   </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
+
+                  <Table.Td>
+                    <Text size='sm'>#{row.orderId.slice(-6).toUpperCase()}</Text>
+                  </Table.Td>
+
+                  <Table.Td>
+                    <Stack gap={0}>
+                      <Text size='sm' fw={500}>
+                        {row.buyerName}
+                      </Text>
+                      <Text size='xs' c='dimmed'>
+                        {row.buyerPhone}
+                      </Text>
+                    </Stack>
+                  </Table.Td>
+
+                  <Table.Td>
+                    <Text size='sm' fw={700} c='red'>
+                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: row.currency }).format(
+                        row.totalAmount
+                      )}
+                    </Text>
+                  </Table.Td>
+
+                  <Table.Td>
+                    <Badge
+                      variant='light'
+                      color={row.status === 'PAID' ? 'green' : row.status === 'PENDING' ? 'yellow' : 'red'}
+                      fullWidth
+                    >
                       {row.status}
-                    </Highlight>
+                    </Badge>
                   </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.currency}
-                    </Highlight>
+
+                  <Table.Td>
+                    <Text size='xs' fw={500}>
+                      {row.paymentMethod}
+                    </Text>
                   </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.taxCode}
-                    </Highlight>
+
+                  <Table.Td>
+                    <Text size='sm'>{formatDateViVN(row.createdAt)}</Text>
                   </Table.Td>
-                  <Table.Td className='text-sm'>{formatDateViVN(row.createdAt)}</Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Group>
-                      <ViewInvoiceButton data={row} />
-                      <UpdateInvoiceButton id={row.id} />
-                      <DeleteInvoiceButton id={row.id} />
-                      <InvoiceToPrint id={row.id} />
-                      <SendOrderButton id={row.id} />
+
+                  <Table.Td>
+                    <Group justify='center' gap='xs' wrap='nowrap'>
+                      <Tooltip label='Xem chi tiết'>
+                        <ViewInvoiceButton data={row} />
+                      </Tooltip>
+                      <Tooltip label='Sửa'>
+                        <UpdateInvoiceButton id={row.id} />
+                      </Tooltip>
+                      <Tooltip label='In hóa đơn'>
+                        <InvoiceToPrint id={row?.order?.id} />
+                      </Tooltip>
+                      <Tooltip label='Gửi mail'>
+                        <SendOrderButton id={row?.order?.id} />
+                      </Tooltip>
+                      <Tooltip label='Xóa'>
+                        <DeleteInvoiceButton id={row.id} />
+                      </Tooltip>
                     </Group>
                   </Table.Td>
                 </Table.Tr>
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={9} className='bg-gray-100 text-center dark:bg-dark-card'>
+                <Table.Td colSpan={8} className='bg-gray-100 text-center dark:bg-dark-card' py={40}>
                   <Text size='md' c='dimmed'>
                     Không có bản ghi phù hợp.
                   </Text>

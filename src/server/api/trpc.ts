@@ -55,14 +55,15 @@ export const requirePermission = (
 ) =>
   t.middleware(async ({ ctx, next }) => {
     const user = ctx.session?.user;
-    if (options?.requiredAdmin && (user?.role === 'ADMIN' || user?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN)) {
+    const isSuperAdmin = user?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN;
+    if (options?.requiredAdmin && (user?.role === 'ADMIN' || isSuperAdmin)) {
       return next({ ctx: { ...ctx, user } });
     }
     const userPerms = user && user?.permissions ? user?.permissions : [];
     const reqList = Array.isArray(required) ? required : [required];
     const hasAll = reqList.every(p => userPerms.includes(p));
     const hasSome = reqList.some(p => userPerms.includes(p));
-    if (options?.requireAll ? !hasAll : !hasSome)
+    if ((options?.requireAll ? !hasAll : !hasSome) && !isSuperAdmin)
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'Bạn không có quyền thực hiện thao tác này. Liên hệ Admin để được hỗ trợ.'

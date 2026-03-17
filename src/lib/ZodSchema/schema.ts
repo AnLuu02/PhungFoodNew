@@ -73,15 +73,6 @@ export const orderSchema = z.object({
   delivery: baseDeliverySchema.omit({ orderId: true })
 });
 
-export const invoiceSchema = z.object({
-  id: z.string(),
-  orderId: z.string({ required_error: 'Hóa đơn cho đơn hàng nào?' }).min(1, 'Hóa đơn cho đơn hàng nào?'),
-  salerId: z.string({ required_error: 'Ai là người lập hóa đơn?' }).min(1, 'Ai là người lập hóa đơn?'),
-  invoiceNumber: z.string({ required_error: 'Số hóa đơn là bắt buộc' }).min(1, 'Số hóa đơn không hợp lệ'),
-  status: z.string().default('PAID'),
-  currency: z.string().default('VND'),
-  taxCode: z.string().optional()
-});
 export const themeSchema = z.object({
   id: z.string().optional(),
   primaryColor: z.string(),

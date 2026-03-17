@@ -1,31 +1,36 @@
 'use client';
 
-import { ActionIcon, Group, Modal, Paper, Title } from '@mantine/core';
-import { IconEdit, IconEye, IconPlus, IconTrash } from '@tabler/icons-react';
-import { useMemo, useState } from 'react';
+import { ActionIcon, Badge, Divider, Group, Modal, Paper, ScrollAreaAutosize, SimpleGrid, Title } from '@mantine/core';
+import {
+  IconCalendar,
+  IconCreditCard,
+  IconEdit,
+  IconEye,
+  IconFileText,
+  IconPlus,
+  IconTrash,
+  IconUser
+} from '@tabler/icons-react';
+import { useState } from 'react';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
-import CreateInvoice from './form/CreateInvoice';
-import UpdateInvoice from './form/UpdateInvoice';
 
 import { Box, Card, Flex, Stack, Text } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import BButton from '~/components/Button/Button';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import InvoiceUpsert from './form/InvoiceUpsert';
 
 export function CreateInvoiceButton({ allData }: any) {
   const [opened, setOpened] = useState(false);
-  const invoiceOrderIds = useMemo(() => {
-    return allData.map((item: any) => item.orderId);
-  }, [allData]);
   return (
     <>
       <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
       </BButton>
       <Modal
+        radius={'md'}
         opened={opened}
         closeOnClickOutside={false}
         size={'xl'}
@@ -36,7 +41,7 @@ export function CreateInvoiceButton({ allData }: any) {
           </Title>
         }
       >
-        <CreateInvoice invoiceOrderIds={invoiceOrderIds} setOpened={setOpened} />
+        <InvoiceUpsert invoiceId={allData?.id} setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -50,6 +55,7 @@ export function UpdateInvoiceButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
+        radius={'md'}
         size={'xl'}
         opened={opened}
         closeOnClickOutside={false}
@@ -60,7 +66,7 @@ export function UpdateInvoiceButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdateInvoice invoiceId={id.toString()} setOpened={setOpened} />
+        <InvoiceUpsert invoiceId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -91,113 +97,208 @@ export function DeleteInvoiceButton({ id }: { id: string }) {
   );
 }
 export function ViewInvoiceButton({ data }: { data: any }) {
-  const [selectedInvoice, setSelectedInvoice] = useState(false);
+  const [opened, setOpened] = useState(false);
   return (
     <>
-      <ActionIcon variant='transparent' onClick={() => setSelectedInvoice(true)}>
+      <ActionIcon variant='transparent' onClick={() => setOpened(true)}>
         <IconEye size={24} />
       </ActionIcon>
       <Modal
-        padding={'lg'}
-        radius={'md'}
-        size={'lg'}
-        opened={selectedInvoice}
-        onClose={() => setSelectedInvoice(false)}
-        title={
-          <Box>
-            <Text fw={700} size='lg'>
-              Chi tiết đơn hàng <b className='text-blue-500'>{data?.id}</b>
-            </Text>
-            <Text size='sm' c={'dimmed'}>
-              Hoàn thành thông tin đơn hàng và các mặt hàng
-            </Text>
-          </Box>
-        }
+        opened={opened}
+        onClose={() => setOpened(false)}
+        size='xl'
+        radius='lg'
+        padding={0} // Để padding bằng 0 để Header đẹp hơn
+        withCloseButton={false}
+        transitionProps={{ transition: 'fade', duration: 200 }}
         classNames={{
-          content: 'max-w-2xl'
+          title: 'w-full'
         }}
+        title={
+          data ? (
+            <Box className='rounded-t-lg bg-mainColor p-6 text-white' w={'100%'}>
+              <Flex justify='space-between' align='center'>
+                <Box>
+                  <Group gap='xs'>
+                    <IconFileText size={28} />
+                    <Title order={3} className='font-quicksand uppercase'>
+                      Hóa đơn điện tử
+                    </Title>
+                  </Group>
+                  <Text size='sm' opacity={0.8} mt={4}>
+                    Số: {data.invoiceNumber} | ID: {data.id}
+                  </Text>
+                </Box>
+                <Badge size='xl' color='white' variant='white' className='font-bold text-blue-600'>
+                  {data.paidAt ? 'ĐÃ THANH TOÁN' : 'CHỜ THANH TOÁN'}
+                </Badge>
+              </Flex>
+            </Box>
+          ) : (
+            'Hóa đơn trống'
+          )
+        }
       >
         {data && (
-          <Box className='space-y-4'>
-            <Box className='grid gap-4 md:grid-cols-2'>
-              <Box>
-                <Title order={4} className='mb-2 font-quicksand'>
-                  Thông tin khách hàng
-                </Title>
-                <Box className='space-y-1 text-sm'>
-                  <Text>
-                    <strong>Tên:</strong> {data?.order?.user?.name || 'Đang cập nhật'}
-                  </Text>
-                  <Text>
-                    <strong>Email:</strong> {data?.order?.user?.email || 'Đang cập nhật'}
-                  </Text>
-                  <Text>
-                    <strong>Số điện thoại:</strong> {data?.order?.user?.phone || 'Đang cập nhật'}
-                  </Text>
-                  <Text>
-                    <strong>Địa chỉ:</strong> {data?.order?.user?.address?.fullAddress || 'Chưa có địa chỉ'}
-                  </Text>
-                </Box>
-              </Box>
+          <ScrollAreaAutosize mah={500} scrollbarSize={5}>
+            <Box p='xl' className='space-y-8'>
+              <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl'>
+                <Stack gap='xs'>
+                  <Title
+                    order={5}
+                    className='flex items-center gap-2 font-quicksand uppercase tracking-wider text-gray-700'
+                  >
+                    <IconUser size={18} /> Bên mua hàng
+                  </Title>
+                  <Divider size='xs' color='blue.2' />
+                  <Box className='space-y-1'>
+                    <Text fw={700} size='lg'>
+                      {data.buyerName}
+                    </Text>
+                    {data.buyerTaxCode && (
+                      <Text size='sm'>
+                        MST: <span className='font-mono'>{data.buyerTaxCode}</span>
+                      </Text>
+                    )}
+                    <Text size='sm'>SĐT: {data.buyerPhone || 'N/A'}</Text>
+                    <Text size='sm'>Email: {data.buyerEmail || 'N/A'}</Text>
+                    <Text size='sm'>Địa chỉ: {data.buyerAddress || 'N/A'}</Text>
+                  </Box>
+                </Stack>
+
+                <Stack gap='xs'>
+                  <Title
+                    order={5}
+                    className='flex items-center gap-2 font-quicksand uppercase tracking-wider text-gray-700'
+                  >
+                    <IconCalendar size={18} /> Thời gian & Thanh toán
+                  </Title>
+                  <Divider size='xs' color='blue.2' />
+                  <Box className='space-y-1'>
+                    <Text size='sm'>
+                      <b>Ngày lập:</b> {formatDateViVN(data.issuedAt)}
+                    </Text>
+                    <Text size='sm'>
+                      <b>Ngày trả:</b> {data.paidAt ? formatDateViVN(data.paidAt) : '---'}
+                    </Text>
+                    <Text size='sm' className='flex items-center gap-1'>
+                      <IconCreditCard size={16} />
+                      <b>Phương thức:</b> {data.paymentMethod}
+                    </Text>
+                    <Text size='sm'>
+                      <b>Mã đơn hàng:</b> #{data.orderId.slice(-8).toUpperCase()}
+                    </Text>
+                  </Box>
+                </Stack>
+              </SimpleGrid>
 
               <Box>
-                <Title order={4} className='mb-2 font-quicksand'>
-                  Thông tin đơn hàng
+                <Title order={5} mb='sm' className='font-quicksand uppercase tracking-wider text-gray-700'>
+                  Chi tiết hàng hóa
                 </Title>
-                <Box className='space-y-1 text-sm'>
-                  <Text>
-                    <strong>Loại:</strong> Ăn uống
-                  </Text>
-                  <Text>
-                    <strong>Trạng thái:</strong> {data?.order?.status || 'Đang cập nhật'}
-                  </Text>
-                  <Text>
-                    <strong>Thanh toán:</strong> {data?.order?.payment?.name || 'Đang cập nhật'}
-                  </Text>
-                  <Text>
-                    <strong>Đơn giá:</strong> {formatPriceLocaleVi(data?.order?.finalTotal) || 'Đang cập nhật'}
-                  </Text>
-                </Box>
+                <Stack gap='xs'>
+                  {data.order?.orderItems?.map((item: any, idx: number) => (
+                    <Card key={idx} withBorder radius='md' p='sm' className='transition-colors hover:bg-gray-50'>
+                      <Flex justify='space-between' align='center'>
+                        <Group>
+                          <Image
+                            src={getImageProduct(item?.product?.images, 'THUMBNAIL') || '/images/png/empty_cart.png'}
+                            width={50}
+                            alt='Anh mon an'
+                            height={50}
+                            className='rounded-md'
+                          />
+                          <Box>
+                            <Text fw={600} size='sm'>
+                              {item.product.name}
+                            </Text>
+                            <Text size='xs' c='dimmed'>
+                              Số lượng: {item.quantity} x {formatPriceLocaleVi(item.originalPrice)}
+                            </Text>
+                          </Box>
+                        </Group>
+                        <Box className='text-right'>
+                          {item.discountAmount > 0 && (
+                            <Text size='xs' c='red' td='line-through'>
+                              -{formatPriceLocaleVi(item.discountAmount * item.quantity)}
+                            </Text>
+                          )}
+                          <Text fw={700}>{formatPriceLocaleVi(item.subTotal)}</Text>
+                        </Box>
+                      </Flex>
+                    </Card>
+                  ))}
+                </Stack>
               </Box>
-            </Box>
-            <Stack mt={'xl'}>
-              <Title order={4} className='font-quicksand'>
-                Danh sách mặt hàng
-              </Title>
-              {data?.order?.orderItems?.map((item: any) => (
-                <Card radius={'md'} shadow='md' className='bg-gray-50 dark:bg-dark-card'>
-                  <Flex align={'center'} justify={'space-between'}>
-                    <Group>
-                      <Image
-                        src={getImageProduct(item?.product?.images, ImageType.THUMBNAIL) || ''}
-                        width={60}
-                        height={60}
-                        style={{ objectFit: 'cover' }}
-                        alt={item?.product?.name || ''}
-                      />
-                      <Box>
-                        <Text fw={700}>{item?.product?.name || 'Đang cập nhật'}</Text>
-                        <Text size='sm' c={'dimmed'}>
-                          Số lượng: {item?.quantity || 0}
-                        </Text>
-                      </Box>
-                    </Group>
-                    <Text fw={700}>{formatPriceLocaleVi(item?.product?.price || 0)}</Text>
+
+              {/* Row 3: Bảng tổng kết tài chính (Minh bạch nhất) */}
+              <Paper withBorder radius='md' p='md' bg='gray.0' className='ml-auto max-w-sm'>
+                <Stack gap='sm'>
+                  <Flex justify='space-between'>
+                    <Text size='sm' c='dimmed'>
+                      Tạm tính:
+                    </Text>
+                    <Text size='sm' fw={600}>
+                      {formatPriceLocaleVi(data.subTotal)}
+                    </Text>
                   </Flex>
-                </Card>
-              ))}
-            </Stack>
-            <Stack mt={'xl'}>
-              <Title order={4} className='font-quicksand'>
-                Ghi chú
-              </Title>
-              <Paper p={'md'} className='bg-gray-100 dark:bg-dark-card'>
-                <Text size='sm' c={'dimmed'}>
-                  {data?.order?.note || 'Đang cập nhật'}
-                </Text>
+                  <Flex justify='space-between'>
+                    <Text size='sm' c='red'>
+                      Giảm giá (Voucher):
+                    </Text>
+                    <Text size='sm' fw={600} c='red'>
+                      -{formatPriceLocaleVi(data.discountAmount)}
+                    </Text>
+                  </Flex>
+                  <Flex justify='space-between'>
+                    <Text size='sm' c='dimmed'>
+                      Thuế VAT (8%):
+                    </Text>
+                    <Text size='sm' fw={600}>
+                      {formatPriceLocaleVi(data.taxAmount)}
+                    </Text>
+                  </Flex>
+                  <Divider />
+                  <Flex justify='space-between'>
+                    <Text fw={800} size='lg'>
+                      TỔNG CỘNG:
+                    </Text>
+                    <Text fw={800} size='lg' c='blue'>
+                      {formatPriceLocaleVi(data.totalAmount)}
+                    </Text>
+                  </Flex>
+                </Stack>
               </Paper>
-            </Stack>
-          </Box>
+
+              {/* Ghi chú */}
+              {data.note && (
+                <Box>
+                  <Text size='xs' fw={700} c='dimmed' className='mb-1 uppercase'>
+                    Ghi chú hóa đơn
+                  </Text>
+                  <Paper p='sm' withBorder radius='md' className='bg-yellow-50/50 italic text-gray-600'>
+                    <Text size='sm'>"{data.note}"</Text>
+                  </Paper>
+                </Box>
+              )}
+            </Box>
+
+            {/* Footer Actions */}
+            <Box p='md' className='flex justify-end gap-3 rounded-b-lg border-t bg-gray-50'>
+              <BButton variant='outline' onClick={() => setOpened(false)}>
+                Đóng
+              </BButton>
+              {data.pdfUrl && (
+                <a
+                  href={data.pdfUrl}
+                  target='_blank'
+                  className='flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-blue-700'
+                >
+                  <IconEye size={16} /> Xem bản PDF
+                </a>
+              )}
+            </Box>
+          </ScrollAreaAutosize>
         )}
       </Modal>
     </>
