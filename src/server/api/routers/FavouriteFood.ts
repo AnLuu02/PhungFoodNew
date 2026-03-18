@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
-import { ResponseTRPC } from '~/types/ResponseFetcher';
+import {
+  createFavouriteFoodService,
+  deleteFavouriteFoodService,
+  getFilterFavouriteFoodService
+} from '~/server/services/favouriteFood.service';
 
 export const favouriteFoodRouter = createTRPCRouter({
   create: publicProcedure
@@ -11,19 +15,7 @@ export const favouriteFoodRouter = createTRPCRouter({
         userId: z.string()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const favourite_food = await ctx.db.favouriteFood.create({
-        data: {
-          productId: input.productId,
-          userId: input.userId
-        }
-      });
-      return {
-        code: 'OK',
-        message: 'Tạo  thành công.',
-        data: favourite_food
-      };
-    }),
+    .mutation(async ({ ctx, input }) => await createFavouriteFoodService(ctx.db, input)),
   delete: publicProcedure
     .input(
       z.object({
@@ -31,23 +23,7 @@ export const favouriteFoodRouter = createTRPCRouter({
         productId: z.string()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const { userId, productId } = input;
-      const favourite_food = await ctx.db.favouriteFood.delete({
-        where: {
-          userId_productId: {
-            userId,
-            productId
-          }
-        }
-      });
-
-      return {
-        code: 'OK',
-        message: 'Xóa  thành công.',
-        data: favourite_food
-      };
-    }),
+    .mutation(async ({ ctx, input }) => await deleteFavouriteFoodService(ctx.db, input)),
 
   getFilter: publicProcedure
     .input(
@@ -55,57 +31,5 @@ export const favouriteFoodRouter = createTRPCRouter({
         s: z.string()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const favourite_food = await ctx.db.favouriteFood.findMany({
-        where: {
-          OR: [
-            { id: input.s?.trim() },
-            {
-              product: {
-                OR: [
-                  {
-                    tag: input.s?.trim()
-                  },
-                  {
-                    name: input.s?.trim()
-                  }
-                ]
-              }
-            },
-            {
-              user: {
-                OR: [
-                  {
-                    email: input.s?.trim()
-                  },
-                  {
-                    name: input.s?.trim()
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        include: {
-          product: {
-            include: {
-              favouriteFood: true,
-              review: true,
-              images: true,
-              subCategory: true
-            }
-          },
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              image: true
-            }
-          }
-        }
-      });
-
-      return favourite_food;
-    })
+    .query(async ({ ctx, input }) => await getFilterFavouriteFoodService(ctx.db, input))
 });
