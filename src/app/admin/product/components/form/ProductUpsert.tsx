@@ -17,76 +17,120 @@ import {
   Textarea,
   TextInput
 } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
+import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
-import { createTag } from '~/lib/FuncHandler/generateTag';
-import { fileToBase64 } from '~/lib/FuncHandler/handle-file-base64';
+import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { productSchema } from '~/lib/ZodSchema/schema';
+import { seedRegions } from '~/lib/HardData/seed';
+import { UserRole } from '~/shared/constants/user';
+import { ProductInput, productInputSchema } from '~/shared/schema/product.schema';
 import { api } from '~/trpc/react';
-import { Product } from '~/types/product';
 
-export const regions = [
-  {
-    value: 'mien-nam',
-    label: 'Miền Nam'
-  },
-  {
-    value: 'mien-tay',
-    label: 'Miền Tây'
-  },
-  {
-    value: 'mien-trung',
-    label: 'Miền Trung'
-  },
-  {
-    value: 'mien-bac',
-    label: 'Miền Bắc'
-  }
-];
-
-export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetStateAction<boolean>> }) {
+export default function ProductUpsert({
+  productId,
+  setOpened
+}: {
+  productId?: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
+  const [loading, setLoading] = useState(false);
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials } = api.Material.getAll.useQuery();
+
+  const { data } = api.Product.getOne.useQuery(
+    { s: productId || '', userRole: UserRole.ADMIN },
+    { enabled: !!productId }
+  );
+
   const [imageAddition, setImageAddition] = useState<File[]>([]);
-  const [json, setJson] = useState<any>(null);
-  const [html, setHtml] = useState<string>('<p>Đang cập nhật</p>');
 
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
-    watch
-  } = useForm<Product>({
-    resolver: zodResolver(productSchema),
+    reset,
+    watch,
+    setValue
+  } = useForm<ProductInput>({
+    resolver: zodResolver(productInputSchema),
     defaultValues: {
-      id: '',
+      id: undefined,
       name: '',
       tag: '',
       description: '',
-      descriptionDetailJson: {},
-      descriptionDetailHtml: '<p>Đang cập nhật</p>',
+      price: 0,
       discount: 0,
+      region: 'Miền Nam',
       availableQuantity: 0,
       soldQuantity: 0,
-      price: 0,
+      tags: [],
+      isActive: false,
+      descriptionDetailJson: {},
+      descriptionDetailHtml: '<p>Đang cập nhật</p>',
       thumbnail: undefined,
       gallery: [],
-      tags: [],
-      isActive: true,
-      region: 'Miền Nam',
       subCategoryId: '',
       materials: []
     },
     mode: 'onChange'
   });
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
+
+  useEffect(() => {
+    if (data) {
+      setLoading(true);
+      const thumnailDb = data?.images?.find(image => image.type === ImageType.THUMBNAIL)?.url || '';
+      const galleries = data?.images?.filter(image => image.type === ImageType.GALLERY).map(image => image.url) || [];
+      Promise.all([
+        thumnailDb && thumnailDb !== '' && vercelBlobToFile(thumnailDb as string),
+        galleries && galleries?.length > 0 ? vercelBlobToFile(galleries as string[], { type: 'multiple' }) : []
+      ])
+        .then(([thumbnail, images]) => {
+          thumbnail instanceof File && setValue('thumbnail', thumbnail);
+          if (Array.isArray(images) && images.every(img => img instanceof File)) {
+            setValue('gallery', images);
+            setImageAddition(images);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+      reset({
+        id: data?.id,
+        name: data?.name,
+        tag: data?.tag,
+        description: data?.description || '',
+        price: data?.price,
+        discount: data?.discount,
+        region: data?.region,
+        tags: data?.tags,
+        availableQuantity: data?.availableQuantity || 0,
+        soldQuantity: data?.soldQuantity || 0,
+        isActive: data?.isActive || false,
+        subCategoryId: data?.subCategoryId as string,
+        materials: Array.isArray(data?.materials) ? data.materials.map((material: any) => material.id) : [],
+        descriptionDetailJson: data?.descriptionDetailJson || {},
+        descriptionDetailHtml: data?.descriptionDetailHtml || '<p>Đang cập nhật</p>'
+      });
+    }
+  }, [data, reset]);
+
+  useEffect(() => {
+    setValue('gallery', imageAddition as File[]);
+  }, [imageAddition]);
 
   const utils = api.useUtils();
-  const mutation = api.Product.create.useMutation({
+  const updateMutation = api.Product.upsert.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      setOpened(false);
       utils.Product.invalidate();
     },
     onError: e => {
@@ -94,50 +138,57 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
     }
   });
 
-  const onSubmit: SubmitHandler<Product> = async formData => {
+  const onSubmit: SubmitHandler<ProductInput> = async formData => {
     try {
-      if (formData) {
-        const thumbnail_format =
-          formData.thumbnail instanceof File
-            ? {
-                fileName: formData.thumbnail.name,
-                base64: (await fileToBase64(formData.thumbnail)) as string
-              }
-            : undefined;
-        const gallery_format =
-          formData.gallery &&
-          (await Promise.all(
-            formData.gallery.map(async (image: any) => ({
-              fileName: image?.name || '',
-              base64: (await fileToBase64(image)) as string
-            }))
-          ));
+      const thumbnail_format =
+        formData.thumbnail &&
+        formData.thumbnail instanceof File &&
+        (await Promise.resolve({
+          fileName: formData?.thumbnail?.name || '',
+          base64: (await fileToBase64(formData.thumbnail)) as string
+        }));
+      const images_format =
+        formData.gallery && formData.gallery?.length > 0
+          ? await Promise?.all(
+              formData.gallery?.map(async (image: any) => {
+                return {
+                  fileName: image.name,
+                  base64: (await fileToBase64(image)) as string
+                };
+              })
+            )
+          : [];
 
-        const formDataWithImages = {
-          ...formData,
-          thumbnail: thumbnail_format,
-          gallery: gallery_format
-        };
-
-        const result = await mutation.mutateAsync({
-          ...formDataWithImages,
-          tag: createTag(formData.name),
-          descriptionDetailJson: json,
-          descriptionDetailHtml: html
-        });
-        if (result.code === 'OK') {
-          NotifySuccess(result.message);
-          setOpened(false);
-        } else {
-          NotifyError(result.message);
-        }
-      }
+      const formDataWithImageUrlAsString = {
+        ...formData,
+        thumbnail: thumbnail_format as any,
+        gallery: images_format as any
+      };
+      await updateMutation.mutateAsync({
+        ...formDataWithImageUrlAsString,
+        id: formData?.id || '',
+        descriptionDetailJson: formData.descriptionDetailJson,
+        descriptionDetailHtml: formData.descriptionDetailHtml
+      });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
+  useEffect(() => {
+    const handleSubmitForm = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleSubmit(onSubmit)();
+      }
+    };
+    window.addEventListener('keypress', handleSubmitForm);
+    return () => {
+      window.removeEventListener('keypress', handleSubmitForm);
+    };
+  }, []);
 
-  return (
+  return loading ? (
+    <LoadingSpiner />
+  ) : (
     <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
       <Grid>
         <GridCol span={6}>
@@ -218,6 +269,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
                   <Paper
                     withBorder
                     radius={'md'}
+                    key={index}
                     w={100}
                     h={100}
                     styles={{
@@ -290,8 +342,8 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             name='name'
             render={({ field }) => (
               <TextInput
-                radius='md'
                 {...field}
+                radius='md'
                 label='Tên sản phẩm'
                 placeholder='Nhập tên sản phẩm'
                 error={errors.name?.message}
@@ -389,7 +441,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
                 radius='md'
                 placeholder='Chọn vùng miền'
                 searchable
-                data={regions?.map(region => ({
+                data={seedRegions?.map(region => ({
                   value: region.value,
                   label: region.label
                 }))}
@@ -401,6 +453,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             )}
           />
         </Grid.Col>
+
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -412,7 +465,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
                 hideControls
                 label='Số lượng khả dụng'
                 placeholder='Nhập Số lượng khả dụng'
-                error={errors.discount?.message}
+                error={errors.availableQuantity?.message}
                 {...field}
               />
             )}
@@ -426,8 +479,8 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             defaultValue={0}
             render={({ field }) => (
               <NumberInput
-                {...field}
                 radius={'md'}
+                {...field}
                 thousandSeparator=','
                 hideControls
                 value={field.value ?? 0}
@@ -440,6 +493,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             )}
           />
         </Grid.Col>
+
         <Grid.Col span={6}>
           <Controller
             control={control}
@@ -482,20 +536,6 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => <Textarea label='Mô tả' placeholder='Nhập mô tả' {...field} />}
           />
         </Grid.Col>
-
-        <Grid.Col span={12}>
-          <Text fw={600} size='lg'>
-            Mô tả chi tiết
-          </Text>
-          <TiptapEditor
-            value={json}
-            onChange={({ json, html }) => {
-              setJson(json);
-              setHtml(html);
-            }}
-          />
-        </Grid.Col>
-
         <Grid.Col span={12} hidden>
           <Controller
             name='thumbnail'
@@ -505,7 +545,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
               validate: file =>
                 file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
                   ? true
-                  : 'Chỉ cho phép các định dạng file: PNG, JPEG, hoặc JPG'
+                  : 'Only PNG, JPEG, or JPG files are allowed'
             }}
             render={({ field }) => (
               <FileInput
@@ -530,7 +570,7 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             rules={{
               required: 'File hoặc URL là bắt buộc',
               validate: files =>
-                files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
+                files && files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
                   ? true
                   : 'Only PNG, JPEG, or JPG files are allowed'
             }}
@@ -554,8 +594,26 @@ export default function CreateProduct({ setOpened }: { setOpened: Dispatch<SetSt
             )}
           />
         </Grid.Col>
-        <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
-          Tạo sản phẩm
+        <Grid.Col span={12}>
+          <Text fw={600} size='lg'>
+            Mô tả chi tiết
+          </Text>
+          <Controller
+            control={control}
+            name='descriptionDetailJson'
+            render={({ field }) => (
+              <TiptapEditor
+                value={field.value}
+                onChange={value => {
+                  field.onChange(value.json);
+                  setValue('descriptionDetailHtml', value.html);
+                }}
+              />
+            )}
+          />
+        </Grid.Col>
+        <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth>
+          Tạo mới / Cập nhật
         </BButton>
       </Grid>
     </form>

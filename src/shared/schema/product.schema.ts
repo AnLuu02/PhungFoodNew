@@ -70,7 +70,11 @@ export const productReqSchema = baseProductSchema
   .transform(data => ({
     ...data,
     tag: createTag('Sản phẩm ' + data?.name)
-  }));
+  }))
+  .refine(data => data.discount < data.price, {
+    message: 'Giảm giá không được vượt quá 80% giá trị sản phẩm.',
+    path: ['discount']
+  });
 
 export const productInputSchema = baseProductSchema
   .extend({
@@ -80,7 +84,12 @@ export const productInputSchema = baseProductSchema
   .transform(data => ({
     ...data,
     tag: createTag('Sản phẩm ' + data?.name)
-  }));
+  }))
+  .refine(data => data.discount < data.price, {
+    message: 'Giảm giá không được vượt quá 80% giá trị sản phẩm.',
+    path: ['discount']
+  });
+
 export const productFromDbSchema = baseProductSchema
   .extend({
     thumbnail: imageFromDbSchema.optional(),
@@ -89,7 +98,11 @@ export const productFromDbSchema = baseProductSchema
   .transform(data => ({
     ...data,
     tag: createTag('Sản phẩm ' + data?.name)
-  }));
+  }))
+  .refine(data => data.discount < data.price, {
+    message: 'Giảm giá không được vượt quá 80% giá trị sản phẩm.',
+    path: ['discount']
+  });
 
 export type ProductInput = z.infer<typeof productInputSchema>;
 export type ProductReq = z.infer<typeof productReqSchema>;

@@ -189,7 +189,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   <Table.Td className='text-sm'>
                     {item?.materials?.length > 0
                       ? item?.materials?.map((i: any, index: number) => (
-                          <Tooltip label={i?.name}>
+                          <Tooltip label={i?.name} key={index}>
                             <Badge radius={'md'} bg={randomColorHex(index + 20)}>
                               {i?.name}
                             </Badge>

@@ -6,8 +6,7 @@ import { useState } from 'react';
 import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
-import CreateProduct from './form/CreateProduct';
-import UpdateProduct from './form/UpdateProduct';
+import ProductUpsert from './form/ProductUpsert';
 
 export function CreateProductButton() {
   const [opened, setOpened] = useState(false);
@@ -28,7 +27,7 @@ export function CreateProductButton() {
           </Title>
         }
       >
-        <CreateProduct setOpened={setOpened} />
+        <ProductUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -53,7 +52,7 @@ export function UpdateProductButton({ id }: { id: string }) {
           </Title>
         }
       >
-        <UpdateProduct productId={id.toString()} setOpened={setOpened} />
+        <ProductUpsert productId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );
