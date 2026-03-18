@@ -29,3 +29,8 @@ export async function withRedisCache<T>(key: string, fetcher: () => Promise<T>, 
   await redis.set(key_with_env, data, { ex: ttlSeconds });
   return data;
 }
+export async function delCache(key: string) {
+  const ENV = process.env.NODE_ENV || 'development';
+  const key_with_env = key + ':' + ENV;
+  return await redis.del(key_with_env);
+}

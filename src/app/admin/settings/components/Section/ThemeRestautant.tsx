@@ -20,9 +20,8 @@ import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { themeSchema } from '~/lib/ZodSchema/schema';
+import { baseThemeSchema, ThemeInput } from '~/shared/schema/restaurant.schema';
 import { api } from '~/trpc/react';
-import { Theme } from '~/types/restaurant';
 
 export default function ThemeSettingsManagement({ restaurantId, data }: { restaurantId: string; data: any }) {
   const {
@@ -30,8 +29,8 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<Theme>({
-    resolver: zodResolver(themeSchema),
+  } = useForm<ThemeInput>({
+    resolver: zodResolver(baseThemeSchema),
     defaultValues: {
       id: data?.id,
       primaryColor: data?.primaryColor,
@@ -59,23 +58,18 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
   const utils = api.useUtils();
   const updateMutation = api.Restaurant.changeTheme.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       utils.Restaurant.invalidate();
     },
     onError: e => {
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<Theme> = async formData => {
-    let result = await updateMutation.mutateAsync({
+  const onSubmit: SubmitHandler<ThemeInput> = async formData => {
+    await updateMutation.mutateAsync({
       ...formData,
       restaurantId: restaurantId
     });
-
-    if (result?.code === 'OK') {
-      NotifySuccess(result.message);
-    } else {
-      NotifyError(result?.message);
-    }
   };
   return (
     <>

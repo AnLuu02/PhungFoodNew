@@ -9,24 +9,29 @@ import { TEMPLATE_OPTIONS } from '~/lib/FuncHandler/generateSocial';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
-export function SocialLinkModal({ opened, onClose, restaurantId, index }: any) {
-  const { control, getValues, watch, setValue, reset } = useFormContext();
+export function SocialLinkModal({
+  opened,
+  onClose,
+  restaurantId,
+  index
+}: {
+  opened: { open: boolean; social?: any };
+  onClose: any;
+  restaurantId: string;
+  index: number;
+}) {
+  const { control, getValues, setValue, reset } = useFormContext();
   const [loading, setLoading] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const utils = api.useUtils();
   const isEdit = Boolean(opened?.social);
 
   const createMutation = api.Restaurant.createSocial.useMutation({
-    onSuccess: resp => {
-      if (resp.code === 'OK') {
-        utils.Restaurant.invalidate();
-        NotifySuccess(resp.message);
-        setLoading(false);
-        onClose();
-        return;
-      }
-      NotifyError(resp.message);
+    onSuccess: () => {
+      utils.Restaurant.invalidate();
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       setLoading(false);
+      onClose();
     },
     onError: err => {
       NotifyError(err.message);
@@ -35,17 +40,13 @@ export function SocialLinkModal({ opened, onClose, restaurantId, index }: any) {
   });
 
   const updateMutation = api.Restaurant.updateSocial.useMutation({
-    onSuccess: resp => {
-      if (resp.code === 'OK') {
-        utils.Restaurant.invalidate();
-        setLoading(false);
-        NotifySuccess(resp.message);
-        onClose();
-        reset(getValues());
-        return;
-      }
-      NotifyError(resp.message);
+    onSuccess: () => {
+      utils.Restaurant.invalidate();
       setLoading(false);
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      onClose();
+      reset(getValues());
+      return;
     },
     onError: err => {
       NotifyError(err.message);
@@ -57,7 +58,7 @@ export function SocialLinkModal({ opened, onClose, restaurantId, index }: any) {
     setLoading(true);
     const values = getValues(`socials.${index}`);
     if (isEdit && opened?.social?.id) {
-      await updateMutation.mutateAsync({ id: opened?.social?.id, data: values });
+      await updateMutation.mutateAsync(values);
     } else {
       await createMutation.mutateAsync({
         ...values,
@@ -79,9 +80,6 @@ export function SocialLinkModal({ opened, onClose, restaurantId, index }: any) {
     if (opened?.social) {
       setValue(`socials.${index}`, opened?.social);
     }
-    if (!opened?.open) {
-      setValue(`socials.${index}`, {});
-    }
   }, [opened?.open, opened?.social]);
 
   return (
@@ -91,7 +89,6 @@ export function SocialLinkModal({ opened, onClose, restaurantId, index }: any) {
       title={
         <Title order={3} className='font-quicksand'>
           {isEdit ? 'Cập nhật liên kết' : 'Tạo liên kết mới'}
-
           {opened?.social?.label && <b className='text-mainColor'>: {opened?.social?.label}</b>}
         </Title>
       }

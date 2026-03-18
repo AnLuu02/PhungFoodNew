@@ -1,6 +1,4 @@
 import {
-  EntityType,
-  ImageType,
   NotificationChannel,
   NotificationPriority,
   NotificationRecipientStatus,
@@ -11,14 +9,6 @@ import {
 } from '@prisma/client';
 import { z } from 'zod';
 import { baseDeliverySchema } from '~/shared/schema/delivery.schema';
-export const imageSchema = z.object({
-  id: z.string().optional(),
-  url: z.any().optional(),
-  altText: z.string().optional(),
-  type: z.nativeEnum(ImageType).default(ImageType.THUMBNAIL),
-  entityId: z.string().optional(),
-  entityType: z.nativeEnum(EntityType).optional()
-});
 
 export const productSchema = z.object({
   id: z.string().optional(),
@@ -71,60 +61,6 @@ export const orderSchema = z.object({
   paymentId: z.string({ required_error: 'Chọn phương thức thanh toán' }).min(1, 'Chọn phương thức thanh toán'),
   orderItems: z.array(orderItemSchema),
   delivery: baseDeliverySchema.omit({ orderId: true })
-});
-
-export const themeSchema = z.object({
-  id: z.string().optional(),
-  primaryColor: z.string(),
-  secondaryColor: z.string(),
-  themeMode: z.string().default('light'),
-  fontFamily: z.string().optional().nullable(),
-  borderRadius: z.string().optional().nullable(),
-  faviconUrl: z.string().optional().nullable()
-});
-export const socialSchema = z.object({
-  id: z.string().optional(),
-  platform: z.string().min(1, 'Platform không được để trống'),
-  label: z.string().min(1, 'Label không được để trống'),
-  value: z.string().min(1, 'Value không được để trống'),
-  pattern: z.string().min(1, 'Pattern không được để trống'),
-  icon: z.string().optional(),
-  isActive: z.boolean().default(true)
-});
-export const openingHourSchema = z.object({
-  id: z.string(),
-  dayOfWeek: z.string(),
-  openTime: z.string().optional(),
-  viNameDay: z.string(),
-  closeTIme: z.string().optional(),
-  isClosed: z.boolean()
-});
-
-export const restaurantSchema = z.object({
-  id: z.string().optional(),
-  address: z.string({ required_error: 'Địa chỉ là bắt buộc' }).min(1, 'Địa chỉ là bắt buộc'),
-
-  name: z.string({ required_error: 'Tên nhà hàng là bắt buộc' }).min(1, 'Tên nhà hàng là bắt buộc'),
-
-  email: z.string({ required_error: 'Email là bắt buộc' }).email({ message: 'Email không hợp lệ' }),
-
-  phone: z.string({ required_error: 'Số điện thoại là bắt buộc' }).regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số'),
-  description: z.string().optional(),
-  logo: imageSchema.optional(),
-  website: z.string().optional(),
-  socials: z.array(socialSchema),
-  theme: themeSchema.optional(),
-  openingHours: z.array(openingHourSchema).optional()
-});
-
-export const bannerSchema = z.object({
-  id: z.string().optional(),
-  banner1: z.instanceof(File).nullable().optional(),
-  banner2: z.instanceof(File).nullable().optional(),
-  gallery: z.array(z.instanceof(File)).optional(),
-  startDate: z.date().optional(),
-  isActive: z.boolean().default(false),
-  endDate: z.date().optional()
 });
 
 export const notificationTemplateSchema = z.object({

@@ -1,31 +1,21 @@
 import { ActionIcon, Card, Group, Stack, Switch, Text, TextInput } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { iconMap } from '~/lib/FuncHandler/generateSocial';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
 export const SocialTabItem = ({ item, index, setOpenedSocial }: { item: any; index: number; setOpenedSocial: any }) => {
-  const { control, reset, getValues, setValue } = useFormContext();
+  const { control, reset, getValues } = useFormContext();
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (item) {
-      setValue(`socials.${index}`, item);
-    }
-  }, [item]);
   const utils = api.useUtils();
   const mutationUpdate = api.Restaurant.updateSocial.useMutation({
-    onSuccess: data => {
-      if (data.code === 'OK') {
-        utils.Restaurant.invalidate();
-        reset(getValues());
-        setLoading(false);
-        NotifySuccess(data.message);
-        return;
-      }
-      NotifyError(data.message);
+    onSuccess: () => {
+      utils.Restaurant.invalidate();
+      reset(getValues());
+      setLoading(false);
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công');
     },
     onError: err => {
       NotifyError(err.message);
@@ -33,21 +23,13 @@ export const SocialTabItem = ({ item, index, setOpenedSocial }: { item: any; ind
   });
   const handleSaveLocal = async (data: any) => {
     setLoading(true);
-    await mutationUpdate.mutateAsync({
-      id: item?.id,
-      data
-    });
+    await mutationUpdate.mutateAsync(data);
   };
   const mutationDelete = api.Restaurant.deleteSocial.useMutation({
-    onSuccess: data => {
-      if (data.code === 'OK') {
-        utils.Restaurant.invalidate();
-        setLoading(false);
-        NotifySuccess(data.message);
-        return;
-      }
-      NotifyError(data.message);
+    onSuccess: () => {
+      utils.Restaurant.invalidate();
       setLoading(false);
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công');
     },
     onError: err => {
       NotifyError(err.message);

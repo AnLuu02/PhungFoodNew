@@ -1,19 +1,15 @@
 'use client';
 
-import { Box, Button, Center, Flex, Group, Paper, Stack, Tabs, Text, Title } from '@mantine/core';
+import { Center, Paper, Stack, Tabs, Text } from '@mantine/core';
 import {
   IconActivity,
   IconBuildingStore,
   IconCreditCard,
-  IconFileExport,
-  IconFileImport,
   IconHome,
   IconLock,
   IconMail,
-  IconPalette,
-  IconSettings
+  IconPalette
 } from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { api } from '~/trpc/react';
@@ -34,20 +30,16 @@ const TABS: Record<string, { value: string; label: string; icon: any }> = {
   performance: { value: 'performance', label: 'Hiệu suất', icon: IconActivity }
 };
 const DEFAULT_TAB = TABS?.['general']?.value || 'general';
-export default function SettingPageClient({ initData }: { initData: any }) {
-  const { data: restaurant } = api.Restaurant.getOneActive.useQuery(undefined, {
-    initialData: initData
-  });
-  const router = useRouter();
-  const pathname = usePathname();
+export default function SettingPageClient() {
+  const { data: restaurant } = api.Restaurant.getOneActive.useQuery();
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const renderTabItem = useCallback(
     (activeTab: string) => {
       switch (activeTab) {
         case 'general':
-          return <RestaurantInfoSettings data={restaurant} />;
+          return <RestaurantInfoSettings />;
         case 'banner':
-          return <BannerManagement data={restaurant?.banners} />;
+          return <BannerManagement data={restaurant?.banners} restaurantId={restaurant?.id || ''} />;
         case 'theme':
           return <ThemeSettingsManagement restaurantId={restaurant?.id || ''} data={restaurant?.theme} />;
         case 'email':
@@ -59,60 +51,14 @@ export default function SettingPageClient({ initData }: { initData: any }) {
         case 'performance':
           return <PerformanceSettingsManagement data={restaurant} />;
         default:
-          return <RestaurantInfoSettings data={restaurant} />;
+          return <RestaurantInfoSettings />;
       }
     },
-    [activeTab, restaurant, initData]
+    [activeTab, restaurant]
   );
 
   return (
     <Stack>
-      <Paper radius={'md'} withBorder shadow='md' py={'xl'} px={'xl'}>
-        <Flex align={'center'} justify={'space-between'}>
-          <Box>
-            <Title className='flex items-center gap-2 font-quicksand' order={3}>
-              <IconSettings size={20} />
-              Cài đặt hệ thống
-            </Title>
-            <Text fw={600} size={'sm'} c={'dimmed'}>
-              Quản lý và cấu hình các thiết lập cho hệ thống PhungFood
-            </Text>
-          </Box>
-          <Group>
-            <Button
-              size='sm'
-              variant='subtle'
-              leftSection={<IconFileImport size={16} />}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `!rounded-md !border-[#e5e5e5] !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-              }}
-            >
-              Import
-            </Button>
-            <Button
-              size='sm'
-              variant='subtle'
-              leftSection={<IconFileExport size={16} />}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `!rounded-md !border-[#e5e5e5] !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-              }}
-            >
-              Export
-            </Button>
-          </Group>
-        </Flex>
-      </Paper>
-
       <Tabs
         value={activeTab}
         onChange={value => changeTab(value!)}

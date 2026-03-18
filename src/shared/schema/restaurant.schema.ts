@@ -16,7 +16,7 @@ export const baseSocialSchema = z.object({
   label: z.string().min(1, 'Label không được để trống'),
   value: z.string().min(1, 'Value không được để trống'),
   pattern: z.string().min(1, 'Pattern không được để trống'),
-  icon: z.string().optional(),
+  icon: z.string().optional().nullable(),
   isActive: z.boolean().default(true)
 });
 export const baseOpeningHourSchema = z.object({
@@ -34,12 +34,11 @@ export const baseRestaurantSchema = z.object({
   name: z.string({ required_error: 'Tên nhà hàng là bắt buộc' }).min(1, 'Tên nhà hàng là bắt buộc'),
   email: z.string({ required_error: 'Email là bắt buộc' }).email({ message: 'Email không hợp lệ' }),
   phone: z.string({ required_error: 'Số điện thoại là bắt buộc' }).regex(/^\d{10}$/, 'Số điện thoại phải có 10 chữ số'),
-  description: z.string().optional(),
-  //   logo: imageSchema.optional(),
-  website: z.string().optional(),
+  description: z.string().optional().nullable(),
+  website: z.string().optional().nullable(),
   socials: z.array(baseSocialSchema),
-  theme: baseThemeSchema.optional(),
-  openingHours: z.array(baseOpeningHourSchema).optional()
+  theme: baseThemeSchema.optional().nullable(),
+  openingHours: z.array(baseOpeningHourSchema).optional().nullable()
 });
 
 export const restaurantReqSchema = baseRestaurantSchema.extend({
@@ -55,6 +54,7 @@ export const baseBannerSchema = z.object({
   //   gallery: z.array(z.instanceof(File)).optional(),
   startDate: z.date().optional(),
   isActive: z.boolean().default(false),
+  restaurantId: z.string().optional().nullable(),
   endDate: z.date().optional()
 });
 
@@ -62,11 +62,17 @@ export const bannerReqSchema = baseBannerSchema.extend({
   banner: z.array(imageReqSchema).optional(),
   gallery: z.array(imageReqSchema).optional()
 });
-
+export const bannerInputSchema = baseBannerSchema.extend({
+  banner1: z.instanceof(File).nullable().optional(),
+  banner2: z.instanceof(File).nullable().optional(),
+  gallery: z.array(z.instanceof(File)).optional()
+  // banner: z.array(imageReqSchema).optional(),
+  // gallery: z.array(imageReqSchema).optional()
+});
 export type ThemeInput = z.infer<typeof baseThemeSchema>;
 export type SocialInput = z.infer<typeof baseSocialSchema>;
 export type OpeningHourInput = z.infer<typeof baseOpeningHourSchema>;
-export type BannerInput = z.infer<typeof baseBannerSchema>;
+export type BannerInput = z.infer<typeof bannerInputSchema>;
 export type BannerReq = z.infer<typeof bannerReqSchema>;
 export type RestaurantInput = z.infer<typeof restaurantInputSchema>;
 export type RestaurantReq = z.infer<typeof restaurantReqSchema>;

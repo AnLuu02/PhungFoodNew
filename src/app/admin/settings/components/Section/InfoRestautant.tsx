@@ -3,19 +3,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Group, Paper, Stack, Switch, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import { IconHome, IconSpacingVertical } from '@tabler/icons-react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { restaurantSchema } from '~/lib/ZodSchema/schema';
+import { RestaurantInput, restaurantInputSchema } from '~/shared/schema/restaurant.schema';
 import { api } from '~/trpc/react';
-import { Restaurant } from '~/types/restaurant';
 import ContactTab from '../info/ContactTab';
 import GeneralTab from '../info/GeneralTab';
 import { OpeningHourTab } from '../info/OpeningHourTab';
 import { SocialTab } from '../info/SocialTab';
+import RestaurantInformationSkeleton from './Skeleton/RestaurantInformationSkeleton';
 
 const TABS = {
   basic: { value: 'basic', label: 'Thông tin cơ bản' },
@@ -25,11 +25,23 @@ const TABS = {
 };
 const DEFAULT_TAB = TABS?.['basic']?.value || 'basic';
 
-export default function RestaurantInfoSettings({ data }: any) {
+export default function RestaurantInfoSettings() {
+  const { data, isLoading } = api.Restaurant.getOneActive.useQuery();
+  const [loading, setLoading] = useState(true);
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
-  const methods = useForm<Restaurant>({
-    resolver: zodResolver(restaurantSchema),
-    defaultValues: data
+  const form = useForm<RestaurantInput>({
+    resolver: zodResolver(restaurantInputSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      socials: [],
+      theme: undefined,
+      description: undefined,
+      logo: undefined,
+      openingHours: undefined
+    }
   });
   const timeOpen = useMemo(() => {
     const timeIndex = new Date().getDay();
@@ -40,33 +52,38 @@ export default function RestaurantInfoSettings({ data }: any) {
       timeIndex
     };
   }, [data]);
-
   useEffect(() => {
-    if (data?.id) {
-      methods.reset(data);
-    }
-  }, [data?.id]);
-  const updateMutation = api.Restaurant.update.useMutation({
-    onSuccess: result => {
-      if (result?.code === 'OK') {
-        NotifySuccess(result.message);
-        methods.reset(methods.getValues());
-        return;
+    (async function setDefaultData() {
+      if (data?.id) {
+        let logo: File | any;
+        if (data?.logo?.url && data?.logo?.url !== '') {
+          logo = await vercelBlobToFile(data?.logo?.url as string);
+        } else {
+          logo = form.watch('logo.url');
+        }
+        form.reset({
+          ...data,
+          logo: {
+            ...data?.logo,
+            url: logo
+          }
+        });
+        setLoading(false);
       }
-      NotifyError(result?.message);
+    })();
+  }, [data?.id]);
+  const utils = api.useUtils();
+  const updateMutation = api.Restaurant.update.useMutation({
+    onSuccess: () => {
+      utils.Restaurant.invalidate();
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công');
     },
     onError: e => {
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<Restaurant> = async formData => {
-    let logo: File | any;
-    if (data?.logo?.url && data?.logo?.url !== '') {
-      logo = await vercelBlobToFile(data?.logo?.url as string);
-    } else {
-      logo = methods.watch('logo.url');
-    }
-    const file = (logo?.url as File) ?? undefined;
+  const onSubmit: SubmitHandler<RestaurantInput> = async formData => {
+    const file = formData?.logo?.url as File;
     const fileName = file ? file?.name : '';
     const base64 = file ? await fileToBase64(file) : '';
     const formDataWithImageUrlAsString = {
@@ -76,23 +93,12 @@ export default function RestaurantInfoSettings({ data }: any) {
         base64: base64 as string
       }
     };
-    await updateMutation.mutateAsync({
-      ...formDataWithImageUrlAsString,
-      theme: {
-        ...formData?.theme,
-        primaryColor: formData?.theme?.primaryColor || '#008b4b',
-        secondaryColor: formData?.theme?.secondaryColor || '#f8c144',
-        fontFamily: null,
-        borderRadius: null,
-        faviconUrl: null
-      },
-      openingHours: formData?.openingHours
-    });
+    await updateMutation.mutateAsync(formDataWithImageUrlAsString);
   };
-
+  if (isLoading || loading) return <RestaurantInformationSkeleton />;
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+    <FormProvider {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <Paper withBorder p='md' radius='md'>
           <Group justify='space-between' align='center' mb='lg'>
             <Box mb={'md'}>
@@ -107,13 +113,13 @@ export default function RestaurantInfoSettings({ data }: any) {
 
             <Group gap='sm'>
               <Controller
-                control={methods.control}
+                control={form.control}
                 name={`openingHours.${timeOpen.timeIndex}.isClosed`}
                 render={({ field, fieldState }) => (
                   <Switch
                     label={
                       <Text size='sm' fw={700}>
-                        {methods.watch(`openingHours.${timeOpen.timeIndex}.isClosed`) ? 'Đang đóng cửa' : 'Đang mở cửa'}
+                        {form.watch(`openingHours.${timeOpen.timeIndex}.isClosed`) ? 'Đang đóng cửa' : 'Đang mở cửa'}
                       </Text>
                     }
                     checked={!field.value}
@@ -128,8 +134,8 @@ export default function RestaurantInfoSettings({ data }: any) {
 
               <BButton
                 type='submit'
-                disabled={!methods.formState.isDirty}
-                loading={methods.formState.isSubmitting}
+                disabled={!form.formState.isDirty}
+                loading={form.formState.isSubmitting}
                 leftSection={<IconSpacingVertical size={16} />}
               >
                 Lưu toàn bộ

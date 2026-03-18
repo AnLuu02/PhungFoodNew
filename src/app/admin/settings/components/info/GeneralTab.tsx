@@ -1,33 +1,17 @@
 'use client';
 
-import {
-  Box,
-  Button,
-  Divider,
-  FileInput,
-  Grid,
-  GridCol,
-  Group,
-  Image,
-  Paper,
-  Select,
-  Stack,
-  Switch,
-  Text,
-  Textarea,
-  TextInput,
-  Title
-} from '@mantine/core';
-import { IconBuildingStore, IconRestore, IconSettings, IconSpacingVertical, IconUpload } from '@tabler/icons-react';
+import { Box, Button, FileInput, Group, Image, Paper, Stack, Text, Textarea, TextInput, Title } from '@mantine/core';
+import { IconBuildingStore, IconRestore, IconSpacingVertical, IconTrash, IconUpload } from '@tabler/icons-react';
 import { Controller, useFormContext } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 export default function GeneralTab() {
   const {
     control,
+    getValues,
+    setValue,
     watch,
-    formState: { isDirty }
+    formState: { isDirty, isSubmitting }
   } = useFormContext();
-
   return (
     <>
       <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
@@ -78,7 +62,7 @@ export default function GeneralTab() {
               <Text fw={600}>Logo nhà hàng</Text>
               <Box className='flex items-center gap-4'>
                 {watch('logo.url') ? (
-                  <Box className='relative flex w-[300px] items-center justify-center overflow-hidden rounded-lg'>
+                  <Box className='relative flex h-[200px] w-[200px] items-center justify-center overflow-hidden rounded-lg'>
                     <Image
                       loading='lazy'
                       src={
@@ -96,23 +80,60 @@ export default function GeneralTab() {
                   </Box>
                 )}
                 <Box className='space-y-2'>
-                  <Button
-                    variant='subtle'
-                    size='sm'
-                    component='label'
-                    htmlFor='logo.url'
-                    leftSection={<IconUpload size={16} />}
-                    styles={{
-                      root: {
-                        border: '1px solid '
-                      }
-                    }}
-                    classNames={{
-                      root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-                    }}
-                  >
-                    Upload logo
-                  </Button>
+                  {getValues('logo.url') ? (
+                    <Group>
+                      <Button
+                        variant='subtle'
+                        size='sm'
+                        component='label'
+                        htmlFor='logo.url'
+                        leftSection={<IconUpload size={16} />}
+                        styles={{
+                          root: {
+                            border: '1px solid '
+                          }
+                        }}
+                        classNames={{
+                          root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
+                        }}
+                      >
+                        Thay đổi
+                      </Button>
+                      <BButton
+                        size='sm'
+                        leftSection={<IconTrash size={16} />}
+                        c={'red'}
+                        onClick={() => {
+                          setValue('logo.url', null);
+                          setValue('logo', undefined, {
+                            shouldDirty: true,
+                            shouldValidate: true
+                          });
+                        }}
+                      >
+                        Xóa
+                      </BButton>
+                    </Group>
+                  ) : (
+                    <Button
+                      variant='subtle'
+                      size='sm'
+                      component='label'
+                      htmlFor='logo.url'
+                      leftSection={<IconUpload size={16} />}
+                      styles={{
+                        root: {
+                          border: '1px solid '
+                        }
+                      }}
+                      classNames={{
+                        root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
+                      }}
+                    >
+                      Upload logo
+                    </Button>
+                  )}
+
                   <Controller
                     name='logo.url'
                     control={control}
@@ -140,7 +161,7 @@ export default function GeneralTab() {
         </Box>
       </Paper>
 
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      {/* <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Box mb={'md'}>
           <Title order={4} className='flex items-center gap-2 font-quicksand'>
             <IconSettings className='h-5 w-5' />
@@ -326,10 +347,15 @@ export default function GeneralTab() {
             </Stack>
           </GridCol>
         </Grid>
-      </Paper>
+      </Paper> */}
 
       <Group justify='flex-start'>
-        <BButton type='submit' leftSection={<IconSpacingVertical size={16} />} disabled={!isDirty}>
+        <BButton
+          type='submit'
+          leftSection={<IconSpacingVertical size={16} />}
+          disabled={!isDirty}
+          loading={isSubmitting}
+        >
           Lưu thay đổi
         </BButton>
       </Group>

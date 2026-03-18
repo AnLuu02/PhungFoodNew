@@ -11,13 +11,12 @@ import BButton from '~/components/Button/Button';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { bannerSchema } from '~/lib/ZodSchema/schema';
+import { BannerInput, bannerInputSchema } from '~/shared/schema/restaurant.schema';
 import { api } from '~/trpc/react';
-import { Banner } from '~/types/restaurant';
 import { CarouselBanner } from '../CarouselBanner';
 import ModalViewBanner from './ModalViewBanner';
 
-export default function BannerManagement({ data }: any) {
+export default function BannerManagement({ data, restaurantId }: any) {
   const [viewBanner, setViewBanner] = useState<any>(null);
   const [activeBanner, setActiveBanner] = useState<any>({});
   const [loading, setLoading] = useState<{ type: 'set-default' | 'delete'; value: boolean } | null>(null);
@@ -32,8 +31,8 @@ export default function BannerManagement({ data }: any) {
     watch,
     reset,
     setValue
-  } = useForm<Banner>({
-    resolver: zodResolver(bannerSchema),
+  } = useForm<BannerInput>({
+    resolver: zodResolver(bannerInputSchema),
     defaultValues: {
       id: '',
       isActive: false,
@@ -41,12 +40,14 @@ export default function BannerManagement({ data }: any) {
       endDate: new Date(),
       banner1: undefined,
       banner2: undefined,
-      gallery: []
+      gallery: [],
+      restaurantId: undefined
     }
   });
   const utils = api.useUtils();
   const mutationCreate = api.Restaurant.createBanner.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       utils.Restaurant.getAllBanner.invalidate();
     },
     onError: e => {
@@ -55,6 +56,7 @@ export default function BannerManagement({ data }: any) {
   });
   const mutationUpdate = api.Restaurant.updateBanner.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       utils.Restaurant.getAllBanner.invalidate();
     },
     onError: e => {
@@ -99,7 +101,8 @@ export default function BannerManagement({ data }: any) {
         id: activeBanner.id,
         startDate: activeBanner.startDate || new Date(),
         endDate: activeBanner.endDate || new Date(),
-        isActive: activeBanner.isActive
+        isActive: activeBanner.isActive,
+        restaurantId
       });
     } else {
       reset({
@@ -109,11 +112,12 @@ export default function BannerManagement({ data }: any) {
         endDate: new Date(),
         banner1: undefined,
         banner2: undefined,
-        gallery: []
+        gallery: [],
+        restaurantId
       });
     }
   }, [activeBanner]);
-  const onSubmit: SubmitHandler<Banner> = async formData => {
+  const onSubmit: SubmitHandler<BannerInput> = async formData => {
     try {
       const banners = await Promise.all(
         [formData.banner1, formData.banner2].map(async file => {
@@ -139,14 +143,13 @@ export default function BannerManagement({ data }: any) {
       const payload = {
         ...formData,
         banner: banners.filter(item => item !== null),
-        gallery
+        gallery,
+        restaurantId
       };
 
-      const result = activeBanner?.id
+      activeBanner?.id
         ? await mutationUpdate.mutateAsync({ ...payload, id: activeBanner.id })
         : await mutationCreate.mutateAsync(payload);
-
-      result.code === 'OK' ? NotifySuccess(result.message) : NotifyError(result.message);
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
@@ -158,6 +161,7 @@ export default function BannerManagement({ data }: any) {
 
   const setDefaultBannerMutation = api.Restaurant.setDefaultBanner.useMutation({
     onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       utils.Restaurant.getAllBanner.invalidate();
     },
     onError: e => {
@@ -174,16 +178,12 @@ export default function BannerManagement({ data }: any) {
   });
   async function handleSetDefault(id: string) {
     setLoading({ type: 'set-default', value: true });
-    const result = await setDefaultBannerMutation.mutateAsync({ id });
-    if (result.code === 'OK') NotifySuccess(result.message);
-    else NotifyError(result.message);
+    await setDefaultBannerMutation.mutateAsync({ id });
     setLoading({ type: 'set-default', value: false });
   }
   async function handleDeleteBanner(id: string, otherId?: string) {
     setLoading({ type: 'delete', value: true });
-    const result = await deleteBannerMutation.mutateAsync({ id, otherId });
-    if (result.code === 'OK') NotifySuccess(result.message);
-    else NotifyError(result.message);
+    await deleteBannerMutation.mutateAsync({ id, otherId });
     setLoading({ type: 'delete', value: false });
   }
   return (
@@ -303,7 +303,7 @@ export default function BannerManagement({ data }: any) {
             rules={{
               required: 'File hoặc URL là bắt buộc',
               validate: files =>
-                files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
+                files && files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
                   ? true
                   : 'Only PNG, JPEG, or JPG files are allowed'
             }}
