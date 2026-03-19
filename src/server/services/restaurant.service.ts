@@ -385,32 +385,35 @@ export const updateBannerService = async (db: PrismaClient, input: BannerReq) =>
   ]);
 
   const newImages = results.filter(Boolean);
-  const updated = await db.banner.update({
-    where: {
-      id: input.id
-    },
-    data: {
-      startDate: input.startDate,
-      endDate: input.endDate,
-      isActive: input.isActive,
-      images: {
-        deleteMany: {},
-        create: newImages?.map((item: any) => ({
-          url: item.url,
-          type: item.type,
-          entityType: item.entityType,
-          altText: item.altText
-        }))
+  const [updated] = await Promise.all([
+    db.banner.update({
+      where: {
+        id: input.id
       },
-      restaurant: {
-        connect: {
-          id: input.restaurantId || ''
+      data: {
+        startDate: input.startDate,
+        endDate: input.endDate,
+        isActive: input.isActive,
+        images: {
+          deleteMany: {},
+          create: newImages?.map((item: any) => ({
+            url: item.url,
+            type: item.type,
+            entityType: item.entityType,
+            altText: item.altText
+          }))
+        },
+        restaurant: {
+          connect: {
+            id: input.restaurantId || ''
+          }
         }
-      }
-    },
-    include: { images: true }
-  });
-
+      },
+      include: { images: true }
+    }),
+    delCache('getOneActive'),
+    delCache('get-one-active-client')
+  ]);
   return updated;
 };
 export const setDefaultBannerService = async (db: PrismaClient, input: { id: string }) => {

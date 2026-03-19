@@ -4,7 +4,19 @@ import { Carousel } from '@mantine/carousel';
 import { ActionIcon, Box, Flex, Image, Paper, Stack, Text, Tooltip } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight, IconPlus, IconTrash } from '@tabler/icons-react';
 
-export const CarouselBanner = ({ previewUrls, setValue, galleries, banner1, banner2 }: any) => {
+export const CarouselBanner = ({
+  previewUrls,
+  setValue,
+  galleries,
+  banner1,
+  banner2
+}: {
+  previewUrls: string[];
+  setValue?: any;
+  galleries: any;
+  banner1: any;
+  banner2: any;
+}) => {
   return (
     <>
       <Stack mb={'xl'}>

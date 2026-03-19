@@ -10,7 +10,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { BannerInput, bannerInputSchema } from '~/shared/schema/restaurant.schema';
 import { api } from '~/trpc/react';
 import { CarouselBanner } from '../CarouselBanner';
@@ -58,6 +58,7 @@ export default function BannerManagement({ data, restaurantId }: any) {
     onSuccess: () => {
       NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       utils.Restaurant.getAllBanner.invalidate();
+      // window.open(process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL_DEPLOY, '_blank');
     },
     onError: e => {
       NotifyError(e.message);
@@ -194,7 +195,13 @@ export default function BannerManagement({ data, restaurantId }: any) {
           <BButton leftSection={<IconPlus size={16} />} onClick={() => setActiveBanner(null)}>
             Tạo mới
           </BButton>
-          <Paper withBorder radius='md' p='md' miw={154}>
+          <Paper
+            withBorder
+            radius='md'
+            p='md'
+            miw={154}
+            onClick={() => !activeBanner && NotifyWarning('Hãy chọn 1 mẫu banner làm mặc định.')}
+          >
             <Controller
               name='isActive'
               control={control}
@@ -205,6 +212,7 @@ export default function BannerManagement({ data, restaurantId }: any) {
                       <Badge color={field.value ? '#195EFE' : 'red'}>{field.value ? 'Hiển thị' : 'Ẩn'}</Badge>
                     </Group>
                   }
+                  disabled={!activeBanner}
                   className='text-mainColor duration-100'
                   checked={field.value}
                   onChange={e => field.onChange(e.currentTarget.checked)}
@@ -213,7 +221,7 @@ export default function BannerManagement({ data, restaurantId }: any) {
               )}
             />
           </Paper>
-          <BButton loading={isSubmitting} type='submit' disabled={!isDirty}>
+          <BButton loading={isSubmitting} type='submit' disabled={!isDirty && !activeBanner}>
             Lưu thay đổi
           </BButton>
         </Group>

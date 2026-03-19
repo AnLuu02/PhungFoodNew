@@ -79,9 +79,6 @@ export default function ProductUpsert({
     },
     mode: 'onChange'
   });
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
 
   useEffect(() => {
     if (data) {
