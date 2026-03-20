@@ -11,10 +11,9 @@ import { handleConfirm } from '~/lib/ButtonHandler/ButtonHandleConfirm';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { api } from '~/trpc/react';
+import { api, RouterOutputs } from '~/trpc/react';
 import { NotificationModal } from '../../settings/notification/components/modal/cretae_update_notification';
-import CreateOrder from './form/CreateOrder';
-import UpdateOrder from './form/UpdateOrder';
+import OrderUpsert from './form/OrderUpsert';
 
 export function CreateOrderButton() {
   const [opened, setOpened] = useState(false);
@@ -34,7 +33,7 @@ export function CreateOrderButton() {
           </Title>
         }
       >
-        <CreateOrder setOpened={setOpened} />
+        <OrderUpsert setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -110,7 +109,7 @@ export function UpdateOrderButton({ id }: { id: string }) {
           </Group>
         }
       >
-        <UpdateOrder orderId={id.toString()} setOpened={setOpened} />
+        <OrderUpsert orderId={id.toString()} setOpened={setOpened} />
       </Modal>
     </>
   );
@@ -144,10 +143,10 @@ export function DeleteOrderButton({ id }: { id: string }) {
   );
 }
 
-export function CopyOrderButton({ data }: { data: any }) {
+export function CopyOrderButton({ data }: { data: RouterOutputs['Order']['find']['orders'][number] }) {
   const [loading, setLoading] = useState(false);
   const utils = api.useUtils();
-  const mutationCreate = api.Order.create.useMutation({
+  const mutationCreate = api.Order.upsert.useMutation({
     onSuccess: () => {
       utils.Order.invalidate();
       setLoading(false);
@@ -167,32 +166,13 @@ export function CopyOrderButton({ data }: { data: any }) {
           onClick={async () => {
             setLoading(true);
             await mutationCreate.mutateAsync({
-              originalTotal: data?.originalTotal || 0,
-              discountAmount: data?.discountAmount || 0,
-              finalTotal: data?.finalTotal || 0,
-              status: data?.status || OrderStatus.UNPAID,
-              userId: data?.userId || '',
-              paymentId: data?.paymentId || '',
-              note: data?.note || '',
-              transactionId: data?.transactionId || '',
-              orderItems: data?.orderItems || [],
-              delivery: {
-                ...data?.delivery,
-                id: undefined,
-                address: {
-                  ...data?.delivery.address,
-                  id: undefined,
-                  detail: data?.delivery.address?.detail || '',
-                  provinceId: data?.delivery.address?.provinceId || '',
-                  districtId: data?.delivery.address?.districtId || '',
-                  wardId: data?.delivery.address?.wardId || '',
-                  province: data?.delivery?.address?.province || '',
-                  district: data?.delivery?.address?.district || '',
-                  ward: data?.delivery?.address?.ward || '',
-                  fullAddress: data?.delivery?.address?.fullAddress
-                }
-              } as any
-            });
+              ...data,
+              id: undefined,
+              orderItems: data?.orderItems?.map(item => ({
+                ...item,
+                orderId: undefined
+              }))
+            } as any);
           }}
         >
           <IconCopy size={24} />
@@ -201,11 +181,6 @@ export function CopyOrderButton({ data }: { data: any }) {
     </>
   );
 }
-
-const statusOptions = Object.values(OrderStatus).map(status => ({
-  value: status,
-  label: status
-}));
 
 export function SendMessageAllUserAdvanced() {
   const [opened, setOpened] = useState(false);
@@ -222,14 +197,6 @@ export function SendMessageAllUserAdvanced() {
     </>
   );
 }
-
-const messageTemplates = [
-  'Bạn còn món hàng chưa thanh toán!',
-  'Đừng quên đặt món cho hôm nay nhé!',
-  'Khuyến mãi hôm nay đã bắt đầu!',
-  'Bạn đã tích lũy được điểm thưởng!',
-  'Cảm ơn bạn đã sử dụng dịch vụ!'
-];
 
 export function SendMessageOrderButton({ user }: { user: any }) {
   const [opened, setOpened] = useState(false);

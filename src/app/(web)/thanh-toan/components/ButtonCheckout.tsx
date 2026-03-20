@@ -28,16 +28,13 @@ export const ButtonCheckout = ({
   });
   const { data: user } = useSession();
   const [loading, setLoading] = useState(false);
-  const mutationOrder = api.Order.create.useMutation({
+  const mutationOrder = api.Order.upsert.useMutation({
     onSuccess: resp => {
-      if (resp.code === 'OK') {
-        onClick?.();
-        window.location.href = `/thanh-toan/${resp.data.id}`;
-      } else {
-        NotifyError(resp.message, 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
-      }
+      onClick?.();
+      window.location.href = `/thanh-toan/${resp.id}`;
     },
     onError: e => {
+      setLoading(false);
       NotifyError(e.message);
     }
   });
@@ -64,9 +61,10 @@ export const ButtonCheckout = ({
     try {
       if (orderItems?.length > 0) {
         await mutationOrder.mutateAsync({
-          finalTotal: finalTotal,
-          originalTotal: originalTotal,
-          discountAmount: discountAmount,
+          id: undefined,
+          finalTotal,
+          originalTotal,
+          discountAmount,
           status: OrderStatus.UNPAID,
           userId: userId || '',
           orderItems: orderItems?.map((item: any) => ({
@@ -75,7 +73,7 @@ export const ButtonCheckout = ({
             note: item.note,
             price: Number(item.price) || 0
           })),
-          vouchers: appliedVouchers?.map((item: any) => item.id).filter(Boolean) || []
+          voucherIds: appliedVouchers?.map((item: any) => item?.id).filter(Boolean) || []
         });
       } else {
         NotifyError('Đơn hàng không tồn tại.', 'Đơn hàng không hợp lệ.');

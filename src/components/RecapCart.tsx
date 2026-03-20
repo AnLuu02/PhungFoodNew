@@ -4,7 +4,7 @@ import { useLocalStorage } from '@mantine/hooks';
 import { VoucherType } from '@prisma/client';
 import { IconPercentage30 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -12,9 +12,11 @@ import { ApplyVoucher } from '../app/(web)/thanh-toan/components/ApplyVoucher';
 import { ButtonCheckout } from '../app/(web)/thanh-toan/components/ButtonCheckout';
 import { CartItemPayment } from '../app/(web)/thanh-toan/components/CartItemPayment';
 import { ModalRecentOrder } from './Modals/ModalRecentOrder';
+import { RecapCartSkeleton } from './RecapCartSkeleton';
 
 export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
   const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { data: session } = useSession();
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [appliedVouchers] = useLocalStorage<any[]>({
@@ -47,7 +49,10 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
     const finalTotal = pricePaid + tax;
     return { originalTotal, discount, tax, discountAmountByVoucher, finalTotal };
   }, [cart, appliedVouchers]);
-
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (!isMounted) return <RecapCartSkeleton />;
   return (
     <>
       <Card shadow='sm' radius='md' withBorder>

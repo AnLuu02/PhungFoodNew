@@ -1,10 +1,16 @@
-import { OrderStatus, Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/FuncHandler/PrismaHelper';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
-import { baseDeliverySchema } from '~/shared/schema/delivery.schema';
-import { ResponseTRPC } from '~/types/ResponseFetcher';
+import {
+  deleteOrderService,
+  findOrderService,
+  getAllOrderService,
+  getFilterOrderService,
+  getOneOrderService,
+  updateOrderService,
+  upsertOrderService
+} from '~/server/services/order.service';
+import { baseOrderSchema } from '~/shared/schema/order.schema';
 
 export const orderRouter = createTRPCRouter({
   find: publicProcedure
@@ -17,223 +23,11 @@ export const orderRouter = createTRPCRouter({
         sort: z.array(z.string()).optional()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { skip, take, s, filter, sort } = input;
+    .query(async ({ ctx, input }) => await findOrderService(ctx.db, input)),
 
-      const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-      const [totalOrders, totalOrdersQuery, orders] = await ctx.db.$transaction([
-        ctx.db.order.count(),
-        ctx.db.order.count({
-          where: {
-            OR: [
-              {
-                payment: {
-                  OR: [
-                    {
-                      name: {
-                        contains: s?.trim(),
-                        mode: 'insensitive'
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                user: {
-                  name: {
-                    contains: s?.trim(),
-                    mode: 'insensitive'
-                  }
-                }
-              },
-              {
-                originalTotal: {
-                  equals: Number(s?.trim()) || 0
-                }
-              },
-              {
-                discountAmount: {
-                  equals: Number(s?.trim()) || 0
-                }
-              },
-              {
-                finalTotal: {
-                  equals: Number(s?.trim()) || 0
-                }
-              }
-            ],
-            status: filter
-              ? {
-                  equals: filter?.trim() as OrderStatus
-                }
-              : undefined
-          },
-          orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined
-        }),
-        ctx.db.order.findMany({
-          skip: startPageItem,
-          take,
-          where: {
-            OR: [
-              {
-                payment: {
-                  OR: [
-                    {
-                      name: {
-                        contains: s?.trim(),
-                        mode: 'insensitive'
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                user: {
-                  name: {
-                    contains: s?.trim(),
-                    mode: 'insensitive'
-                  }
-                }
-              },
-              {
-                originalTotal: {
-                  equals: Number(s?.trim()) || 0
-                }
-              },
-              {
-                discountAmount: {
-                  equals: Number(s?.trim()) || 0
-                }
-              },
-              {
-                finalTotal: {
-                  equals: Number(s?.trim()) || 0
-                }
-              }
-            ],
-            status: filter
-              ? {
-                  equals: filter?.trim() as OrderStatus
-                }
-              : undefined
-          },
-          orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined,
-          include: {
-            payment: true,
-            user: {
-              include: {
-                image: true,
-                address: true
-              }
-            },
-            delivery: { include: { address: true } },
-            orderItems: {
-              include: {
-                product: {
-                  include: {
-                    images: true
-                  }
-                }
-              }
-            },
-            vouchers: true
-          }
-        })
-      ]);
-      const totalPages = Math.ceil(
-        Object.entries(input)?.length > 2 ? (totalOrdersQuery == 0 ? 1 : totalOrdersQuery / take) : totalOrders / take
-      );
-      const currentPage = skip ? Math.floor(skip / take + 1) : 1;
-
-      return {
-        orders,
-        pagination: {
-          currentPage,
-          totalPages
-        }
-      };
-    }),
-  create: publicProcedure
-    // .use(requirePermission('create:order'))
-    .input(
-      z.object({
-        originalTotal: z.number().default(0),
-        discountAmount: z.number().default(0),
-        finalTotal: z.number().default(0),
-        status: z.nativeEnum(OrderStatus),
-        userId: z.string(),
-        note: z.string().optional(),
-        paymentId: z.string().optional(),
-        delivery: baseDeliverySchema.omit({ orderId: true }).optional(),
-        transactionId: z.string().optional(),
-        orderItems: z.array(
-          z.object({
-            productId: z.string(),
-            quantity: z.number().default(1),
-            note: z.string().optional(),
-            price: z.number().default(0)
-          })
-        ),
-        vouchers: z.array(z.string()).default([])
-      })
-    )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const order = await ctx.db.order.create({
-        data: {
-          originalTotal: Number(input.originalTotal) || 0,
-          discountAmount: Number(input.discountAmount) || 0,
-          finalTotal: Number(input.finalTotal) || 0,
-          status: input.status,
-          userId: input.userId,
-          paymentId: input.paymentId,
-          delivery: input.delivery
-            ? {
-                create: {
-                  ...input.delivery,
-                  address: {
-                    create: input.delivery.address
-                  }
-                } as any
-              }
-            : undefined,
-          transactionId: input.transactionId,
-          orderItems: {
-            createMany: {
-              data: input.orderItems
-            }
-          },
-          vouchers: {
-            connect: input.vouchers.map(voucherId => ({ id: voucherId }))
-          }
-        },
-        include: {
-          orderItems: true
-        }
-      });
-      if (!order) {
-        return {
-          code: 'ERROR',
-          message: 'Tạo đơn hàng không thành công.',
-          data: order
-        };
-      }
-
-      //test admin
-      if (order && order.status === OrderStatus.COMPLETED) {
-        updatepointUser(ctx, input.userId, Number(input.finalTotal) || 0);
-        updateRevenue(ctx, order.status, input.userId, order);
-        await Promise.all(
-          order?.orderItems?.map((orderItem: any) => {
-            return updateSales(ctx, order.status, orderItem.productId, orderItem?.quantity);
-          })
-        );
-      }
-      return {
-        code: 'OK',
-        message: 'Tạo đơn hàng thành công.',
-        data: order
-      };
-    }),
+  upsert: publicProcedure
+    .input(baseOrderSchema)
+    .mutation(async ({ ctx, input }) => await upsertOrderService(ctx.db, input)),
   update: publicProcedure
     .use(requirePermission('update:order'))
     .input(
@@ -242,30 +36,7 @@ export const orderRouter = createTRPCRouter({
         data: z.record(z.string(), z.any())
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const order: any = await ctx.db.order.update({
-        where: input.where as Prisma.OrderWhereUniqueInput,
-        data: input.data,
-        include: {
-          orderItems: true
-        }
-      });
-
-      if (order && order.status === OrderStatus.COMPLETED) {
-        updateRevenue(ctx, order.status, order.userId, order);
-        updatepointUser(ctx, order.userId, order.finalTotal);
-        await Promise.all(
-          order?.orderItems?.map((orderItem: any) => {
-            return updateSales(ctx, order.status, orderItem.productId, orderItem?.quantity);
-          })
-        );
-      }
-      return {
-        code: 'OK',
-        message: 'Cập nhật đơn hàng thành công.',
-        data: order
-      };
-    }),
+    .mutation(async ({ ctx, input }) => await updateOrderService(ctx.db, input)),
   delete: publicProcedure
     .use(requirePermission('delete:order'))
     .input(
@@ -273,17 +44,7 @@ export const orderRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-      const order = await ctx.db.order.delete({
-        where: { id: input.id }
-      });
-
-      return {
-        code: 'OK',
-        message: 'Tạo đơn hàng thành công.',
-        data: order
-      };
-    }),
+    .mutation(async ({ ctx, input }) => await deleteOrderService(ctx.db, input)),
 
   getFilter: publicProcedure
     .input(
@@ -292,139 +53,13 @@ export const orderRouter = createTRPCRouter({
         period: z.number().optional()
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { s, period } = input;
-      const searchQuery = s?.trim();
-      const where = {
-        AND: [
-          period
-            ? {
-                createdAt: {
-                  gte: new Date(new Date().setDate(new Date().getDate() - period)),
-                  lte: new Date()
-                }
-              }
-            : undefined,
-          {
-            OR: [
-              {
-                id: searchQuery
-              },
-              {
-                user: {
-                  email: {
-                    equals: searchQuery
-                  }
-                }
-              }
-            ]
-          }
-        ].filter(Boolean)
-      };
-      const order = await ctx.db.order.findMany({
-        where: where as any,
-        include: {
-          orderItems: {
-            include: {
-              product: {
-                include: {
-                  images: true
-                }
-              }
-            }
-          },
-          vouchers: true,
-          user: {
-            include: {
-              image: true,
-              address: true
-            }
-          },
-          payment: true,
-          delivery: {
-            include: {
-              address: true
-            }
-          }
-        }
-      });
-
-      return order;
-    }),
+    .query(async ({ ctx, input }) => getFilterOrderService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({
         s: z.string()
       })
     )
-    .query(async ({ ctx, input }) => {
-      return await ctx.db.order.findFirst({
-        where: {
-          OR: [
-            {
-              id: input.s?.trim()
-            },
-            {
-              user: {
-                email: {
-                  contains: input.s?.trim(),
-                  mode: 'insensitive'
-                }
-              }
-            }
-          ]
-        },
-        include: {
-          orderItems: {
-            include: {
-              product: {
-                include: {
-                  images: true
-                }
-              }
-            }
-          },
-          vouchers: true,
-          user: {
-            include: {
-              image: true,
-              address: true
-            }
-          },
-          payment: true,
-          delivery: {
-            include: {
-              address: true
-            }
-          }
-        }
-      });
-    }),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const order = await ctx.db.order.findMany({
-      include: {
-        orderItems: {
-          include: {
-            product: true
-          }
-        },
-        delivery: {
-          select: {
-            address: true
-          }
-        },
-        payment: true,
-        vouchers: true,
-        user: {
-          include: {
-            address: true
-          },
-          omit: {
-            password: true
-          }
-        }
-      }
-    });
-    return order;
-  })
+    .query(async ({ ctx, input }) => await getOneOrderService(ctx.db, input)),
+  getAll: publicProcedure.query(async ({ ctx }) => await getAllOrderService(ctx.db))
 });

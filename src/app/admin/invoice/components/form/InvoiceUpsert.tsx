@@ -74,6 +74,7 @@ export default function InvoiceUpsert({
     }
     reset({
       ...invoiceData,
+      orderId: invoiceData?.orderId || undefined,
       invoiceNumber: invoiceData?.invoiceNumber || invoiceNumberGen
     });
   }, [invoiceData, reset]);

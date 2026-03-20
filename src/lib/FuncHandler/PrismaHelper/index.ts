@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, PrismaClient } from '@prisma/client';
 
 export const buildSortFilter = (sort: any, sortValue: any[]) => {
   const orderBy: any[] = [];
@@ -20,27 +20,24 @@ export function getDateRange(year: any, month: any, day: any) {
   return { start, end };
 }
 
-export async function updateRevenue(ctx: any, status: OrderStatus, userId: string, order: any) {
+export async function updateRevenue(db: PrismaClient, status: OrderStatus, userId: string, order: any) {
   const orderTotal = order.finalTotal || 0;
   const now = new Date();
   const day = now.getDate();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
-  await ctx.db.revenue.upsert({
+  await db.revenue.upsert({
     where: { userId_year_month_day: { userId, year, month, day } },
     update: {
       totalSpent: status === OrderStatus.COMPLETED ? { increment: orderTotal } : { decrement: orderTotal },
-      totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 },
-      orders: {
-        connect: { id: order.id }
-      }
+      totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 }
     },
-    create: { userId, day, year, month, totalSpent: orderTotal, totalOrders: 1, orders: { connect: { id: order.id } } }
+    create: { userId, day, year, month, totalSpent: orderTotal, totalOrders: 1 }
   });
 }
 
-export async function updatepointUser(ctx: any, userId: string, orderTotalPrice: number) {
-  await ctx.db.user.update({
+export async function updatepointUser(db: PrismaClient, userId: string, orderTotalPrice: number) {
+  await db.user.update({
     where: { id: userId },
     data: {
       pointUser: { increment: orderTotalPrice >= 10000 ? orderTotalPrice / 10000 : 0 }
@@ -48,8 +45,8 @@ export async function updatepointUser(ctx: any, userId: string, orderTotalPrice:
   });
 }
 
-export async function updateSales(ctx: any, status: OrderStatus, productId: string, soldQuantity: number) {
-  await ctx.db.product.update({
+export async function updateSales(db: PrismaClient, status: OrderStatus, productId: string, soldQuantity: number) {
+  await db.product.update({
     where: { id: productId },
     data: {
       soldQuantity: status === OrderStatus.COMPLETED ? { increment: soldQuantity } : { decrement: soldQuantity },

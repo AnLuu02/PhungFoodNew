@@ -37,7 +37,33 @@ export default function CheckoutClient({ order }: { order: any }) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
-  const mutationUpdateOrder = api.Order.update.useMutation({
+  const mutationUpdateOrder = api.Order.upsert.useMutation({
+    onSuccess: async () => {
+      try {
+        const response = await fetch('/api/vnpay/create_payment_url', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            amount: order?.finalTotal || 0,
+            orderId: order.id
+          })
+        });
+        const { paymentUrl } = await response.json();
+        if (paymentUrl) {
+          order.vouchers && order.vouchers.length > 0
+            ? await mutationUseVoucher.mutateAsync({
+                userId: order?.user.id || '',
+                voucherIds: order.vouchers.map((v: any) => v.id)
+              })
+            : null;
+          window.location.href = paymentUrl;
+        }
+      } catch {
+        NotifyError('Đã có lỗi không mong muốn!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
+      }
+    },
     onError: e => {
       setLoading(false);
       NotifyError(e.message);
@@ -91,10 +117,11 @@ export default function CheckoutClient({ order }: { order: any }) {
   });
 
   useEffect(() => {
-    if (order?.id) {
+    if (order?.id && order?.delivery) {
       reset({
         paymentId: order?.payment?.id,
         delivery: {
+          ...order?.delivery,
           name: order?.delivery?.name || session?.user?.name || '',
           email: order?.delivery?.email || session?.user?.email || '',
           phone: order?.delivery?.phone,
@@ -104,67 +131,14 @@ export default function CheckoutClient({ order }: { order: any }) {
     }
   }, [order]);
 
-  const onSubmit: SubmitHandler<DeliveryCheckout> = async (formData): Promise<void> => {
+  const onSubmit: SubmitHandler<DeliveryCheckout> = async formData => {
     setLoading(true);
     if (order) {
-      const resp = await mutationUpdateOrder.mutateAsync({
-        where: { id: order.id },
-        data: {
-          paymentId: formData.paymentId,
-          delivery: {
-            upsert: {
-              where: { id: order?.delivery?.id || '' },
-              update: {
-                ...formData.delivery,
-                address: {
-                  update: {
-                    ...formData.delivery.address,
-                    type: 'DELIVERY'
-                  }
-                }
-              },
-              create: {
-                ...formData.delivery,
-                address: {
-                  create: {
-                    ...formData.delivery.address,
-                    type: 'DELIVERY'
-                  }
-                }
-              }
-            }
-          }
-        }
+      await mutationUpdateOrder.mutateAsync({
+        ...order,
+        paymentId: formData.paymentId,
+        delivery: formData.delivery
       });
-
-      if (resp.code === 'OK') {
-        try {
-          const response = await fetch('/api/vnpay/create_payment_url', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              amount: order?.finalTotal || 0,
-              orderId: order.id
-            })
-          });
-          const { paymentUrl } = await response.json();
-          if (paymentUrl) {
-            order.vouchers && order.vouchers.length > 0
-              ? await mutationUseVoucher.mutateAsync({
-                  userId: order?.user.id || '',
-                  voucherIds: order.vouchers.map((v: any) => v.id)
-                })
-              : null;
-            window.location.href = paymentUrl;
-          }
-        } catch {
-          NotifyError('Đã có lỗi không mong muốn!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
-        }
-      } else {
-        NotifyError('Đã có lỗi không mong muốn!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
-      }
     }
   };
 

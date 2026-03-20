@@ -97,8 +97,8 @@ model Invoice {
   id             String        @id @default(cuid())
   invoiceNumber  String        @unique
   status         InvoiceStatus @default(DRAFT)
-  orderId        String        @unique
-  order          Order         @relation(fields: [orderId], references: [id])
+  orderId        String?       @unique
+  order          Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
   sellerId       String
   seller         User          @relation("SellerInvoices", fields: [sellerId], references: [id])
   customerId     String?
@@ -456,7 +456,7 @@ model Image {
   type          ImageType
   entityType    EntityType
   bannerId      String?
-  banner        Banner?      @relation(fields: [bannerId], references: [id])
+  banner        Banner?      @relation(fields: [bannerId], references: [id], onDelete: Cascade)
   subCategoryId String?      @unique
   subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   restaurantId  String?      @unique

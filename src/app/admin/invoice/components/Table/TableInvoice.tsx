@@ -136,7 +136,7 @@ export default function TableInvoice({ s, data, allData }: { s: string; data: an
                   </Table.Td>
 
                   <Table.Td>
-                    <Text size='sm'>#{row.orderId.slice(-6).toUpperCase()}</Text>
+                    <Text size='sm'>#{row?.orderId?.slice(-6)?.toUpperCase() || 'Đang cập nhật'}</Text>
                   </Table.Td>
 
                   <Table.Td>

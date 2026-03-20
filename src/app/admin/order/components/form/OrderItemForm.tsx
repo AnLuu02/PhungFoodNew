@@ -1,29 +1,13 @@
 'use client';
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { Control, Controller, FieldErrors, UseFormGetValues, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
-import { Order } from '~/types/order';
 
-const OrderItemForm = ({
-  index,
-  removeOrderItem,
-  control,
-  watch,
-  setValue,
-  getValues,
-  errors
-}: {
-  index: number;
-  removeOrderItem: (index: number) => void;
-  control: Control<Order, any, Order>;
-  watch: UseFormWatch<Order>;
-  setValue: UseFormSetValue<Order>;
-  getValues: UseFormGetValues<Order>;
-  errors: FieldErrors<Order>;
-}) => {
+const OrderItemForm = ({ index, removeOrderItem }: { index: number; removeOrderItem: (index: number) => void }) => {
+  const { watch, setValue, getValues, control } = useFormContext();
   const [productOrderItem, setProductOrderItem] = useState<any>({});
   const { data: products } = api.Product.getAll.useQuery({
     hasCategory: true,
@@ -65,7 +49,7 @@ const OrderItemForm = ({
           <Controller
             control={control}
             name={`orderItems.${index}.productId`}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <Select
                 label='Chọn món'
                 searchable
@@ -78,7 +62,7 @@ const OrderItemForm = ({
                   disabled:
                     !product.availableQuantity || watch(`orderItems`).some((item: any) => item.productId === product.id)
                 }))}
-                error={errors.orderItems?.[index]?.productId?.message}
+                error={error?.message}
               />
             )}
           />
@@ -88,7 +72,7 @@ const OrderItemForm = ({
             control={control}
             name={`orderItems.${index}.quantity`}
             defaultValue={1}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <NumberInput
                 radius={'md'}
                 {...field}
@@ -97,7 +81,7 @@ const OrderItemForm = ({
                 min={0}
                 max={Number(productOrderItem?.availableQuantity) || 100}
                 placeholder='Select quantity'
-                error={errors?.orderItems?.[index]?.quantity?.message}
+                error={error?.message}
               />
             )}
           />
@@ -106,13 +90,13 @@ const OrderItemForm = ({
           <Controller
             name={`orderItems.${index}.price`}
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState: { error } }) => (
               <NumberInput
                 radius={'md'}
                 thousandSeparator=','
                 label={`Giá (chỉ đọc)`}
                 readOnly
-                error={errors.orderItems?.[index]?.price?.message}
+                error={error?.message}
                 {...field}
               />
             )}

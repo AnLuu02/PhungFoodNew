@@ -20,7 +20,7 @@ import { OrderStatus } from '@prisma/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { api } from '~/trpc/react';
+import { api, RouterOutputs } from '~/trpc/react';
 
 export default function TableOrder({ s, data, allData }: { s: string; data: any; allData?: any }) {
   const router = useRouter();
@@ -124,6 +124,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>
+            <PageSizeSelector />
             <Select
               allowDeselect={false}
               radius='md'
@@ -186,7 +187,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((order: any) => {
+              currentItems.map((order: RouterOutputs['Order']['find']['orders'][number]) => {
                 const statusInfo = getStatusInfo(order.status as OrderStatus);
                 return (
                   <Table.Tr key={order.id}>
@@ -197,12 +198,12 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
                     </Table.Td>
                     <Table.Td className='text-sm'>
                       <Highlight size='sm' highlight={s}>
-                        {order.user?.name}
+                        {order.user?.name || 'Đang cập nhật'}
                       </Highlight>
                     </Table.Td>
                     <Table.Td className='text-sm'>
                       <Highlight size='sm' highlight={s}>
-                        {order.payment?.name}
+                        {order.payment?.name || 'Đang cập nhật'}
                       </Highlight>
                     </Table.Td>
                     <Table.Td className='text-sm'>{formatPriceLocaleVi(order?.finalTotal || 0)}</Table.Td>

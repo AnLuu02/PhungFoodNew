@@ -1,5 +1,6 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
+import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/server';
 import { CreateInvoiceButton } from './components/Button';
@@ -42,7 +43,8 @@ export default async function InvoiceManagementPage({
             Số lượng bản ghi: {allData && allData?.length}
           </Text>
           <Group>
-            <SearchInput />
+            <PageSizeSelector />
+            <SearchInput width={300} />
             <CreateInvoiceButton allData={allData} />
           </Group>
         </Group>
