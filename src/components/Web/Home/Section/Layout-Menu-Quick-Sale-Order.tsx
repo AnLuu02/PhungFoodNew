@@ -37,7 +37,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                     className='rounded-full bg-mainColor'
                   ></Box>
                 </Title>
-                <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
+                <Link href='/thuc-don?danh-muc=danh-muc-an-vat-trang-mieng'>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
                     size='md'
@@ -82,7 +82,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                     className='rounded-full bg-mainColor'
                   ></Box>
                 </Title>
-                <Link href='/thuc-don?danh-muc=thuc-uong'>
+                <Link href='/thuc-don?danh-muc=danh-muc-thuc-uong'>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
                     size='md'
@@ -128,7 +128,7 @@ const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh
                     className='rounded-full bg-mainColor'
                   ></Box>
                 </Title>
-                <Link href='/thuc-don?danh-muc=an-vat-trang-mieng'>
+                <Link href='/thuc-don?danh-muc=danh-muc-mon-chinh'>
                   <Button
                     rightSection={<IconArrowRight size={20} />}
                     size='md'

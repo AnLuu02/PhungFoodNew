@@ -46,7 +46,7 @@ const LayoutGrid3Col = () => {
           </Title>
 
           <Box mt={'xs'}>
-            <Link href={`/thuc-don?danh-muc=do-uong`}>
+            <Link href={`/thuc-don?danh-muc=danh-muc-do-uong`}>
               <BButton children={'Xem ngay'} w={'max-content'} />
             </Link>
           </Box>
