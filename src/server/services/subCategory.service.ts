@@ -1,10 +1,8 @@
 import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { del } from '@vercel/blob';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
-import { tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
-import { SubCategoryReq } from '~/shared/schema/subCategory.schema';
-import { uploadImageToVercel } from './image.service';
+import { ImageFromDb, StatusImage } from '~/shared/schema/image.schema';
+import { SubCategoryFromDb } from '~/shared/schema/subCategory.schema';
 
 export const findSubCategoryService = async (db: PrismaClient, input: any) => {
   const { skip, take, s } = input;
@@ -90,7 +88,6 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
     }
   };
 };
-
 export const deleteSubCategoryService = async (db: PrismaClient, input: any) => {
   const subCategory = await db.subCategory.findUnique({
     where: { id: input.id },
@@ -105,21 +102,8 @@ export const deleteSubCategoryService = async (db: PrismaClient, input: any) => 
   }
 
   const deletedSubCategory = await db.subCategory.delete({ where: { id: input.id } });
-  await Promise.all([
-    subCategory?.image?.url && del(subCategory?.image?.url, { token: tokenBlobVercel }),
-    ManageTagVi('delete', { oldTag: deletedSubCategory.tag })
-  ]);
-
+  ManageTagVi('delete', { oldTag: deletedSubCategory.tag });
   return deletedSubCategory;
-};
-export const getFilterSubCategoryService = async (db: PrismaClient, input: any) => {
-  const subCategory = await db.subCategory.findMany({
-    where: {
-      OR: [{ id: { contains: input.s, mode: 'insensitive' } }]
-    }
-  });
-
-  return subCategory;
 };
 export const getOneSubCategoryService = async (db: PrismaClient, input: { s?: string }) => {
   const searchQuery = input.s?.trim();
@@ -160,100 +144,101 @@ export const getAllSubCategoryService = async (db: PrismaClient) => {
     }
   });
 };
-export const upsertSubCategoryService = async (db: PrismaClient, input: SubCategoryReq) => {
-  // const subs = await db.subCategory.findMany();
-  // const format = subs.map(s => ({
-  //   oldTag: s.tag.split('danh-muc-')[1],
-  //   newTag: s.tag,
-  //   newName: s.name
-  // }));
-
-  // await ManageTagVi('upsert', format);
-
-  const [existedTag, existed] = await db.$transaction([
-    db.subCategory.findUnique({
-      where: {
-        tag_categoryId: {
-          tag: input.tag,
-          categoryId: input.categoryId
+export const upsertSubCategoryService = async (db: PrismaClient, input: SubCategoryFromDb) => {
+  const { id, image, categoryId, ...data } = input;
+  let imageDb: Omit<ImageFromDb, 'status'> | undefined, statusFromReq;
+  if (image?.status) {
+    const { status, ...rest } = image;
+    imageDb = rest;
+    statusFromReq = status;
+  }
+  const existingSubCategory = id
+    ? await db.subCategory.findUnique({
+        where: { id },
+        include: {
+          image: {
+            include: {
+              subCategories: {
+                select: { id: true }
+              }
+            }
+          }
+        }
+      })
+    : null;
+  if (!id || (existingSubCategory && existingSubCategory.tag !== data.tag)) {
+    const duplicateTag = await db.subCategory.findUnique({
+      where: { tag_categoryId: { tag: data.tag, categoryId } }
+    });
+    if (duplicateTag) {
+      throw new TRPCError({ code: 'CONFLICT', message: 'Rất tiếc danh mục đã tồn tại.' });
+    }
+  }
+  const isDeleted = Boolean(statusFromReq === StatusImage.DELETED && imageDb && imageDb?.publicId);
+  const updatedSubCategory = await db.subCategory.upsert({
+    where: { id: id || 'NEW_ID' },
+    create: {
+      ...data,
+      category: {
+        connect: {
+          id: categoryId
         }
       },
-      include: { category: true, image: true }
-    }),
-    db.subCategory.findUnique({
-      where: {
-        id: input.id || ''
-      },
-      include: { category: true, image: true }
-    })
-  ]);
-
-  if (!existedTag || existedTag.id === input.id) {
-    const oldImage = existedTag?.image;
-    let { imgURL } = await uploadImageToVercel(oldImage, {
-      fileName: input?.image?.fileName || '',
-      base64: input?.image?.base64 || ''
-    });
-    const { id, ...data } = input;
-    const updateSubCategory = await db.subCategory.upsert({
-      where: {
-        id: id || 'Default_ID'
-      },
-      create: {
-        ...data,
-        image: imgURL
-          ? {
-              create: {
-                entityType: EntityType.CATEGORY,
-                altText: `Ảnh ${input.name}`,
-                url: imgURL,
-                type: ImageType.THUMBNAIL
-              }
-            }
-          : undefined
-      },
-      update: {
-        ...data,
-        image: imgURL
-          ? {
-              upsert: {
-                where: oldImage && oldImage.id ? { id: oldImage.id } : { id: 'unknown' },
-                update: {
-                  entityType: EntityType.CATEGORY,
-                  altText: `Ảnh ${input.name}`,
-                  url: imgURL,
-                  type: ImageType.THUMBNAIL
-                } as any,
-                create: {
-                  entityType: EntityType.CATEGORY,
-                  altText: `Ảnh ${input.name}`,
-                  url: imgURL,
-                  type: ImageType.THUMBNAIL
-                } as any
-              }
-            }
-          : oldImage?.id
+      image: {
+        connectOrCreate:
+          statusFromReq === StatusImage.NEW && imageDb
             ? {
-                delete: {
-                  id: oldImage?.id
+                where: {
+                  publicId: imageDb?.publicId || 'connect-or-create-image-id'
+                },
+                create: {
+                  ...imageDb,
+                  id: undefined,
+                  entityType: EntityType.SUB_CATEGORY,
+                  altText: `Ảnh ${data.name}`,
+                  url: imageDb?.url || '',
+                  type: ImageType.THUMBNAIL
                 }
               }
             : undefined
       }
-    });
-
-    if (updateSubCategory?.tag) {
-      await ManageTagVi('upsert', {
-        oldTag: existed?.tag,
-        newTag: updateSubCategory.tag,
-        newName: updateSubCategory.name
-      });
-    }
-    return updateSubCategory;
-  }
-
-  throw new TRPCError({
-    code: 'CONFLICT',
-    message: 'Rất tiếc danh mục đã tồn tại.'
+    },
+    update: {
+      ...data,
+      category: {
+        connect: {
+          id: categoryId
+        }
+      },
+      image: {
+        connectOrCreate:
+          statusFromReq === StatusImage.NEW && imageDb
+            ? {
+                where: {
+                  publicId: imageDb?.publicId || 'connect-or-create-image-id'
+                },
+                create: {
+                  ...imageDb,
+                  id: undefined,
+                  entityType: EntityType.SUB_CATEGORY,
+                  altText: `Ảnh ${data.name}`,
+                  url: imageDb?.url || '',
+                  type: ImageType.THUMBNAIL
+                }
+              }
+            : undefined,
+        disconnect: isDeleted ? { publicId: imageDb?.publicId || '' } : undefined
+      }
+    },
+    include: { image: true }
   });
+
+  if (updatedSubCategory.tag) {
+    ManageTagVi('upsert', {
+      oldTag: existingSubCategory?.tag,
+      newTag: updatedSubCategory.tag,
+      newName: updatedSubCategory.name
+    });
+  }
+  return updatedSubCategory;
 };

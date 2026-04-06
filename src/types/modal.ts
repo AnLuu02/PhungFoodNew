@@ -1,6 +1,15 @@
 import { ReactNode } from 'react';
 
-export type ModalType = 'comments' | 'details' | 'confirm' | 'orders' | 'success' | 'recipe' | 'voucher' | null;
+export type ModalType =
+  | 'comments'
+  | 'details'
+  | 'confirm'
+  | 'orders'
+  | 'success'
+  | 'recipe'
+  | 'voucher'
+  | 'images_library'
+  | null;
 
 export type ModalProps<T> = {
   type?: ModalType;

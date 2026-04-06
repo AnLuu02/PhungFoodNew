@@ -1,4 +1,4 @@
-import { GridCol, Select, Textarea } from '@mantine/core';
+import { Select, SimpleGrid, Textarea } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Control, Controller, UseFormSetValue, useWatch } from 'react-hook-form';
@@ -8,9 +8,11 @@ import { District, Province, Ward } from '~/types/ResponseFetcher';
 export default function AddressSection({
   control,
   setValue,
+  cols,
   name = 'address'
 }: {
   control: Control<any>;
+  cols?: number;
   setValue: UseFormSetValue<any>;
   name?: string;
 }) {
@@ -37,7 +39,7 @@ export default function AddressSection({
   }, [address?.provinceId, address?.districtId, address?.wardId, address?.detail]);
   return (
     <>
-      <GridCol span={12}>
+      <SimpleGrid cols={cols || 1}>
         <Controller
           control={control}
           name={`${validName}.provinceId`}
@@ -57,9 +59,7 @@ export default function AddressSection({
             />
           )}
         />
-      </GridCol>
 
-      <GridCol span={12}>
         <Controller
           control={control}
           name={`${validName}.districtId`}
@@ -80,9 +80,7 @@ export default function AddressSection({
             />
           )}
         />
-      </GridCol>
 
-      <GridCol span={12}>
         <Controller
           control={control}
           name={`${validName}.wardId`}
@@ -103,24 +101,21 @@ export default function AddressSection({
             />
           )}
         />
-      </GridCol>
-
-      <GridCol span={12}>
-        <Controller
-          control={control}
-          name={`${validName}.detail`}
-          render={({ field, fieldState: { error } }) => (
-            <Textarea
-              {...field}
-              radius={'md'}
-              label='Địa chỉ'
-              placeholder='Địa chỉ cụ thể (số nhà, đường, phường,...)'
-              resize='block'
-              error={error?.message}
-            />
-          )}
-        />
-      </GridCol>
+      </SimpleGrid>
+      <Controller
+        control={control}
+        name={`${validName}.detail`}
+        render={({ field, fieldState: { error } }) => (
+          <Textarea
+            {...field}
+            radius={'md'}
+            label='Địa chỉ'
+            placeholder='Địa chỉ cụ thể (số nhà, đường, phường,...)'
+            resize='block'
+            error={error?.message}
+          />
+        )}
+      />
     </>
   );
 }

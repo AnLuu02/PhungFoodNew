@@ -13,9 +13,9 @@ import {
 import { useCallback } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { api } from '~/trpc/react';
-import BannerManagement from './components/Section/BannerRestautant';
+import BannerManagement from './components/Section/Banner/BannerRestautant';
 import EmailSettingsManagement from './components/Section/EmailRestautant';
-import RestaurantInfoSettings from './components/Section/InfoRestautant';
+import RestaurantInfoSettings from './components/Section/Infomation/InfoRestautant';
 import PaymentSettingsManagement from './components/Section/PaymentRestautant';
 import PerformanceSettingsManagement from './components/Section/PerformanceRestautant';
 import SecuritySettingsManagement from './components/Section/SecurityRestautant';
@@ -39,7 +39,7 @@ export default function SettingPageClient() {
         case 'general':
           return <RestaurantInfoSettings />;
         case 'banner':
-          return <BannerManagement data={restaurant?.banners} restaurantId={restaurant?.id || ''} />;
+          return <BannerManagement restaurantId={restaurant?.id || ''} />;
         case 'theme':
           return <ThemeSettingsManagement restaurantId={restaurant?.id || ''} data={restaurant?.theme} />;
         case 'email':

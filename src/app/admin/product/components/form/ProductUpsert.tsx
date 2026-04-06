@@ -1,15 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  ActionIcon,
-  FileInput,
-  Flex,
   Grid,
   GridCol,
-  Image,
   MultiSelect,
   NumberInput,
-  Paper,
   Select,
   Switch,
   TagsInput,
@@ -17,19 +12,22 @@ import {
   Textarea,
   TextInput
 } from '@mantine/core';
-import { ImageType } from '@prisma/client';
-import { IconCheck, IconFile, IconTrash, IconX } from '@tabler/icons-react';
+import { EntityType, ImageType } from '@prisma/client';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import ThumbnailUpsert from '~/components/ImageFormUpsert';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
-import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
+import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { seedRegions } from '~/lib/HardData/seed';
 import { UserRole } from '~/shared/constants/user';
+import { StatusImage } from '~/shared/schema/image.schema';
 import { ProductInput, productInputSchema } from '~/shared/schema/product.schema';
 import { api } from '~/trpc/react';
+import GalleryUpsert from './GalleryUpsert';
 
 export default function ProductUpsert({
   productId,
@@ -38,25 +36,15 @@ export default function ProductUpsert({
   productId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [loading, setLoading] = useState(false);
+  const [imageDeleted, setImageDeleted] = useState<string[]>([]);
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials } = api.Material.getAll.useQuery();
-
-  const { data } = api.Product.getOne.useQuery(
+  const { data, isLoading } = api.Product.getOne.useQuery(
     { s: productId || '', userRole: UserRole.ADMIN },
     { enabled: !!productId }
   );
 
-  const [imageAddition, setImageAddition] = useState<File[]>([]);
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting, isDirty },
-    reset,
-    watch,
-    setValue
-  } = useForm<ProductInput>({
+  const formFields = useForm<ProductInput>({
     resolver: zodResolver(productInputSchema),
     defaultValues: {
       id: undefined,
@@ -82,24 +70,7 @@ export default function ProductUpsert({
 
   useEffect(() => {
     if (data) {
-      setLoading(true);
-      const thumnailDb = data?.images?.find(image => image.type === ImageType.THUMBNAIL)?.url || '';
-      const galleries = data?.images?.filter(image => image.type === ImageType.GALLERY).map(image => image.url) || [];
-      Promise.all([
-        thumnailDb && thumnailDb !== '' && vercelBlobToFile(thumnailDb as string),
-        galleries && galleries?.length > 0 ? vercelBlobToFile(galleries as string[], { type: 'multiple' }) : []
-      ])
-        .then(([thumbnail, images]) => {
-          thumbnail instanceof File && setValue('thumbnail', thumbnail);
-          if (Array.isArray(images) && images.every(img => img instanceof File)) {
-            setValue('gallery', images);
-            setImageAddition(images);
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-      reset({
+      formFields.reset({
         id: data?.id,
         name: data?.name,
         tag: data?.tag,
@@ -114,17 +85,17 @@ export default function ProductUpsert({
         subCategoryId: data?.subCategoryId as string,
         materials: Array.isArray(data?.materials) ? data.materials.map((material: any) => material.id) : [],
         descriptionDetailJson: data?.descriptionDetailJson || {},
-        descriptionDetailHtml: data?.descriptionDetailHtml || '<p>Đang cập nhật</p>'
+        descriptionDetailHtml: data?.descriptionDetailHtml || '<p>Đang cập nhật</p>',
+        thumbnail:
+          data?.images?.length > 0
+            ? (data?.images?.find(item => item?.type === ImageType.THUMBNAIL) as any)
+            : undefined,
+        gallery: data?.images?.length > 0 ? (data?.images?.filter(item => item?.type === ImageType.GALLERY) as any) : []
       });
     }
-  }, [data, reset]);
-
-  useEffect(() => {
-    setValue('gallery', imageAddition as File[]);
-  }, [imageAddition]);
-
+  }, [data, formFields.reset]);
   const utils = api.useUtils();
-  const updateMutation = api.Product.upsert.useMutation({
+  const updateMutation = api.Product.upsertToCloudinary.useMutation({
     onSuccess: () => {
       NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       setOpened(false);
@@ -136,45 +107,98 @@ export default function ProductUpsert({
   });
 
   const onSubmit: SubmitHandler<ProductInput> = async formData => {
-    try {
-      const thumbnail_format =
-        formData.thumbnail &&
-        formData.thumbnail instanceof File &&
-        (await Promise.resolve({
-          fileName: formData?.thumbnail?.name || '',
-          base64: (await fileToBase64(formData.thumbnail)) as string
-        }));
-      const images_format =
-        formData.gallery && formData.gallery?.length > 0
-          ? await Promise?.all(
-              formData.gallery?.map(async (image: any) => {
-                return {
-                  fileName: image.name,
-                  base64: (await fileToBase64(image)) as string
-                };
-              })
-            )
-          : [];
+    const thumbnailFile = formFields.getValues('thumbnail.urlFile');
+    const thumbnailPublicId = formFields.getValues('thumbnail.publicId');
+    const galleryInputFile = formFields.getValues('galleryInput');
+    const thumbnailToSave = thumbnailFile
+      ? await handleUploadFromClient(thumbnailFile, utils, {
+          folder: EntityType.PRODUCT + '/' + ImageType.THUMBNAIL
+        })
+      : undefined;
+    const galleryToSave =
+      galleryInputFile && galleryInputFile?.length > 0
+        ? await uploadMultipleToCloudinaryFromClient(galleryInputFile, utils, {
+            folder: EntityType.PRODUCT + '/' + ImageType.GALLERY
+          })
+        : [];
 
-      const formDataWithImageUrlAsString = {
-        ...formData,
-        thumbnail: thumbnail_format as any,
-        gallery: images_format as any
-      };
-      await updateMutation.mutateAsync({
-        ...formDataWithImageUrlAsString,
-        id: formData?.id || '',
-        descriptionDetailJson: formData.descriptionDetailJson,
-        descriptionDetailHtml: formData.descriptionDetailHtml
-      });
-    } catch {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    let thumbnailFromDb;
+    if (data?.images && data?.images?.length > 0) {
+      const { thumbnail } = data?.images?.reduce((acc: any, item: any) => {
+        acc.thumbnail = item?.type === ImageType.THUMBNAIL ? { ...item } : {};
+        return acc;
+      }, {});
+      thumbnailFromDb = { ...(thumbnail ?? {}) };
     }
+
+    const formDataWithImageUrlAsString = {
+      ...formData,
+      images: [
+        ...(thumbnailToSave
+          ? [
+              {
+                ...thumbnailFromDb,
+                ...thumbnailToSave,
+                id: undefined,
+                type: thumbnailFromDb?.type || ImageType.THUMBNAIL,
+                altText: thumbnailFromDb?.altText || 'Ảnh chính của sản phẩm ' + data?.name,
+                status: StatusImage.NEW
+              },
+              ...(thumbnailFromDb?.publicId
+                ? [
+                    {
+                      publicId: thumbnailFromDb?.publicId || '',
+                      status: StatusImage.DELETED
+                    }
+                  ]
+                : [])
+            ]
+          : thumbnailFromDb?.publicId && thumbnailFromDb?.publicId === thumbnailPublicId
+            ? [
+                {
+                  ...thumbnailFromDb,
+                  id: undefined,
+                  type: thumbnailFromDb?.type || ImageType.THUMBNAIL,
+                  altText: thumbnailFromDb?.altText || 'Ảnh chính của sản phẩm ' + data?.name,
+                  status: StatusImage.EXISTING
+                }
+              ]
+            : thumbnailFromDb?.publicId && !thumbnailPublicId
+              ? [
+                  {
+                    publicId: thumbnailFromDb?.publicId || '',
+                    status: StatusImage.DELETED
+                  }
+                ]
+              : []),
+        ...(galleryToSave && galleryToSave?.length > 0
+          ? galleryToSave?.map((item, index: number) => ({
+              ...item,
+              id: undefined,
+              type: ImageType.GALLERY,
+              altText: `Ảnh bổ sung ${index + 1} của sản phẩm ` + data?.name,
+              status: StatusImage.NEW
+            }))
+          : []),
+        ...(imageDeleted && imageDeleted?.length > 0
+          ? imageDeleted.map(publicId => ({
+              publicId,
+              status: StatusImage.DELETED
+            }))
+          : [])
+      ]
+    };
+    await updateMutation.mutateAsync({
+      ...formDataWithImageUrlAsString,
+      id: formData?.id || '',
+      descriptionDetailJson: formData.descriptionDetailJson,
+      descriptionDetailHtml: formData.descriptionDetailHtml
+    });
   };
   useEffect(() => {
     const handleSubmitForm = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        handleSubmit(onSubmit)();
+        formFields.handleSubmit(onSubmit)();
       }
     };
     window.addEventListener('keypress', handleSubmitForm);
@@ -182,437 +206,242 @@ export default function ProductUpsert({
       window.removeEventListener('keypress', handleSubmitForm);
     };
   }, []);
-
-  return loading ? (
-    <LoadingSpiner />
-  ) : (
-    <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
-      <Grid>
-        <GridCol span={6}>
-          <Text size='xl' fw={700}>
-            Ảnh chính
-          </Text>
-          <Flex align={'center'} gap={'xs'}>
-            {watch('thumbnail') && (
-              <Paper
-                withBorder
-                radius={'md'}
-                w={100}
-                h={100}
-                styles={{
-                  root: {
-                    borderStyle: 'dashed',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    gap: '2px'
-                  }
-                }}
-                pos={'relative'}
-              >
-                <Image
-                  loading='lazy'
-                  src={
-                    watch('thumbnail') && watch('thumbnail') instanceof File
-                      ? URL.createObjectURL(watch('thumbnail') as unknown as File)
-                      : watch('thumbnail')
-                  }
-                  alt='Product Image'
-                  className='mb-4'
-                  w={'100%'}
-                  h={'100%'}
+  if (isLoading) return <ModalUpsertSkeleton />;
+  return (
+    <FormProvider {...formFields}>
+      <form onSubmit={formFields.handleSubmit(onSubmit)} className='w-full'>
+        <Grid w={'100%'}>
+          <GridCol span={6}>
+            <ThumbnailUpsert nameField='thumbnail' />
+          </GridCol>
+          <GridCol span={12}>
+            <GalleryUpsert onDeleted={imgPublicIds => setImageDeleted(imgPublicIds)} />
+          </GridCol>
+          <Grid.Col span={6}>
+            <Controller
+              control={formFields.control}
+              name='name'
+              render={({ field, formState: { errors } }) => (
+                <TextInput
+                  {...field}
+                  radius='md'
+                  label='Tên sản phẩm'
+                  placeholder='Nhập tên sản phẩm'
+                  error={errors.name?.message}
                 />
-                <IconTrash color='red' className='absolute right-0 top-0' />
-              </Paper>
-            )}
-            <label htmlFor='thumbnail'>
-              <Paper
-                withBorder
-                radius={'md'}
-                w={100}
-                h={100}
-                styles={{
-                  root: {
-                    borderStyle: 'dashed',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer'
+              )}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Controller
+              name='subCategoryId'
+              control={formFields.control}
+              render={({ field, formState: { errors } }) => (
+                <Select
+                  label='Danh mục'
+                  radius='md'
+                  placeholder=' Chọn danh mục'
+                  searchable
+                  data={categories?.map(category => ({
+                    value: category.id,
+                    label: category.name + ` (${category.category.name})`
+                  }))}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.subCategoryId?.message}
+                />
+              )}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={6}>
+            <Controller
+              name='materials'
+              control={formFields.control}
+              render={({ field, formState: { errors } }) => (
+                <MultiSelect
+                  label='Nguyên liệu'
+                  placeholder='Chọn nguyên liệu'
+                  searchable
+                  data={materials?.map(material => ({
+                    value: material.id,
+                    label: material.name
+                  }))}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.materials?.message}
+                />
+              )}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={6}>
+            <Controller
+              control={formFields.control}
+              name='price'
+              render={({ field, formState: { errors } }) => (
+                <NumberInput
+                  radius={'md'}
+                  thousandSeparator=','
+                  hideControls
+                  label='Giá tiền'
+                  placeholder='Nhập giá tiền'
+                  error={errors.price?.message}
+                  {...field}
+                />
+              )}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Controller
+              control={formFields.control}
+              name='discount'
+              render={({ field, formState: { errors } }) => (
+                <NumberInput
+                  radius={'md'}
+                  thousandSeparator=','
+                  hideControls
+                  label='Giảm giá'
+                  placeholder='Nhập giảm giá'
+                  error={errors.discount?.message}
+                  {...field}
+                />
+              )}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Controller
+              control={formFields.control}
+              name='region'
+              render={({ field, formState: { errors } }) => (
+                <Select
+                  label='Vùng miền'
+                  radius='md'
+                  placeholder='Chọn vùng miền'
+                  searchable
+                  data={seedRegions?.map(region => ({
+                    value: region.value,
+                    label: region.label
+                  }))}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  error={errors.region?.message}
+                />
+              )}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={6}>
+            <Controller
+              control={formFields.control}
+              name='availableQuantity'
+              render={({ field, formState: { errors } }) => (
+                <NumberInput
+                  radius={'md'}
+                  thousandSeparator=','
+                  hideControls
+                  label='Số lượng khả dụng'
+                  placeholder='Nhập Số lượng khả dụng'
+                  error={errors.availableQuantity?.message}
+                  {...field}
+                />
+              )}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={6}>
+            <Controller
+              control={formFields.control}
+              name='soldQuantity'
+              defaultValue={0}
+              render={({ field, formState: { errors } }) => (
+                <NumberInput
+                  radius={'md'}
+                  {...field}
+                  thousandSeparator=','
+                  hideControls
+                  value={field.value ?? 0}
+                  onChange={val => field.onChange(val ? Number(val) : 0)}
+                  min={0}
+                  label='Số lượng đã bán'
+                  placeholder='Số lượng đã bán'
+                  error={errors.soldQuantity?.message}
+                />
+              )}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={6}>
+            <Controller
+              control={formFields.control}
+              name='isActive'
+              render={({ field, formState: { errors } }) => (
+                <Switch
+                  label='Trạng thái (Ẩn / Hiện)'
+                  error={errors.isActive?.message}
+                  checked={field.value}
+                  onChange={event => {
+                    const checked = event.target.checked;
+                    field.onChange(checked);
+                  }}
+                  thumbIcon={
+                    !!field.value ? (
+                      <IconCheck size={12} color='var(--mantine-color-teal-6)' stroke={3} />
+                    ) : (
+                      <IconX size={12} color='var(--mantine-color-red-6)' stroke={3} />
+                    )
                   }
-                }}
-              >
-                <Text size='xl' fw={200}>
-                  +
-                </Text>
-                <Text size='xs' fw={200}>
-                  Tải lên
-                </Text>
-              </Paper>
-            </label>
-          </Flex>
-        </GridCol>
-        <GridCol span={12}>
-          <Text size='xl' fw={700}>
-            Ảnh bổ sung
-          </Text>
-          <Flex align={'center'} gap={'xs'}>
-            {Array.isArray(imageAddition) &&
-              imageAddition!.map((image, index) => {
-                const imageUrl = image instanceof File ? URL.createObjectURL(image) : image;
-                return (
-                  <Paper
-                    withBorder
-                    radius={'md'}
-                    key={index}
-                    w={100}
-                    h={100}
-                    styles={{
-                      root: {
-                        borderStyle: 'dashed',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        gap: '2px',
-                        overflow: 'hidden'
-                      }
-                    }}
-                    pos={'relative'}
-                  >
-                    <Image
-                      loading='lazy'
-                      key={index}
-                      src={imageUrl}
-                      alt='Product Image'
-                      className='mb-4'
-                      onLoad={() => {
-                        if (image instanceof File) URL.revokeObjectURL(imageUrl);
-                      }}
-                      w={'100%'}
-                      h={'100%'}
-                    />
-                    <IconTrash
-                      color='red'
-                      onClick={() => {
-                        const newImageAddition = imageAddition!.filter((_, i) => i !== index);
-                        setImageAddition(newImageAddition);
-                      }}
-                      className='absolute right-0 top-0'
-                    />
-                  </Paper>
-                );
-              })}
-            <label htmlFor='gallery'>
-              <Paper
-                withBorder
-                radius={'md'}
-                w={100}
-                h={100}
-                styles={{
-                  root: {
-                    borderStyle: 'dashed',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer'
-                  }
-                }}
-              >
-                <Text size='xl' fw={200}>
-                  +
-                </Text>
-                <Text size='xs' fw={200}>
-                  Tải lên
-                </Text>
-              </Paper>
-            </label>
-          </Flex>
-        </GridCol>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='name'
-            render={({ field }) => (
-              <TextInput
-                {...field}
-                radius='md'
-                label='Tên sản phẩm'
-                placeholder='Nhập tên sản phẩm'
-                error={errors.name?.message}
-              />
-            )}
-          />
-        </Grid.Col>
+                />
+              )}
+            />
+          </Grid.Col>
 
-        <Grid.Col span={6}>
-          <Controller
-            name='subCategoryId'
-            control={control}
-            render={({ field }) => (
-              <Select
-                label='Danh mục'
-                radius='md'
-                placeholder=' Chọn danh mục'
-                searchable
-                data={categories?.map(category => ({
-                  value: category.id,
-                  label: category.name + ` (${category.category.name})`
-                }))}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={errors.subCategoryId?.message}
-              />
-            )}
-          />
-        </Grid.Col>
+          <Grid.Col span={12}>
+            <Controller
+              control={formFields.control}
+              name='tags'
+              render={({ field, formState: { errors } }) => (
+                <TagsInput {...field} label='Gắn tag cho sản phẩm' placeholder='Gắn tag cho sản phẩm' clearable />
+              )}
+            />
+          </Grid.Col>
 
-        <Grid.Col span={6}>
-          <Controller
-            name='materials'
-            control={control}
-            render={({ field }) => (
-              <MultiSelect
-                label='Nguyên liệu'
-                placeholder='Chọn nguyên liệu'
-                searchable
-                data={materials?.map(material => ({
-                  value: material.id,
-                  label: material.name
-                }))}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={errors.materials?.message}
-              />
-            )}
-          />
-        </Grid.Col>
+          <Grid.Col span={12}>
+            <Controller
+              control={formFields.control}
+              name='description'
+              render={({ field, formState: { errors } }) => (
+                <Textarea label='Mô tả' placeholder='Nhập mô tả' {...field} />
+              )}
+            />
+          </Grid.Col>
 
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='price'
-            render={({ field }) => (
-              <NumberInput
-                radius={'md'}
-                thousandSeparator=','
-                hideControls
-                label='Giá tiền'
-                placeholder='Nhập giá tiền'
-                error={errors.price?.message}
-                {...field}
-              />
-            )}
-          />
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='discount'
-            render={({ field }) => (
-              <NumberInput
-                radius={'md'}
-                thousandSeparator=','
-                hideControls
-                label='Giảm giá'
-                placeholder='Nhập giảm giá'
-                error={errors.discount?.message}
-                {...field}
-              />
-            )}
-          />
-        </Grid.Col>
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='region'
-            render={({ field }) => (
-              <Select
-                label='Vùng miền'
-                radius='md'
-                placeholder='Chọn vùng miền'
-                searchable
-                data={seedRegions?.map(region => ({
-                  value: region.value,
-                  label: region.label
-                }))}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={errors.region?.message}
-              />
-            )}
-          />
-        </Grid.Col>
-
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='availableQuantity'
-            render={({ field }) => (
-              <NumberInput
-                radius={'md'}
-                thousandSeparator=','
-                hideControls
-                label='Số lượng khả dụng'
-                placeholder='Nhập Số lượng khả dụng'
-                error={errors.availableQuantity?.message}
-                {...field}
-              />
-            )}
-          />
-        </Grid.Col>
-
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='soldQuantity'
-            defaultValue={0}
-            render={({ field }) => (
-              <NumberInput
-                radius={'md'}
-                {...field}
-                thousandSeparator=','
-                hideControls
-                value={field.value ?? 0}
-                onChange={val => field.onChange(val ? Number(val) : 0)}
-                min={0}
-                label='Số lượng đã bán'
-                placeholder='Số lượng đã bán'
-                error={errors.soldQuantity?.message}
-              />
-            )}
-          />
-        </Grid.Col>
-
-        <Grid.Col span={6}>
-          <Controller
-            control={control}
-            name='isActive'
-            render={({ field }) => (
-              <Switch
-                label='Trạng thái (Ẩn / Hiện)'
-                error={errors.isActive?.message}
-                checked={field.value}
-                onChange={event => {
-                  const checked = event.target.checked;
-                  field.onChange(checked);
-                }}
-                thumbIcon={
-                  !!field.value ? (
-                    <IconCheck size={12} color='var(--mantine-color-teal-6)' stroke={3} />
-                  ) : (
-                    <IconX size={12} color='var(--mantine-color-red-6)' stroke={3} />
-                  )
-                }
-              />
-            )}
-          />
-        </Grid.Col>
-
-        <Grid.Col span={12}>
-          <Controller
-            control={control}
-            name='tags'
-            render={({ field }) => (
-              <TagsInput {...field} label='Gắn tag cho sản phẩm' placeholder='Gắn tag cho sản phẩm' clearable />
-            )}
-          />
-        </Grid.Col>
-
-        <Grid.Col span={12}>
-          <Controller
-            control={control}
-            name='description'
-            render={({ field }) => <Textarea label='Mô tả' placeholder='Nhập mô tả' {...field} />}
-          />
-        </Grid.Col>
-        <Grid.Col span={12} hidden>
-          <Controller
-            name='thumbnail'
-            control={control}
-            rules={{
-              required: 'File hoặc URL là bắt buộc',
-              validate: file =>
-                file instanceof File && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
-                  ? true
-                  : 'Only PNG, JPEG, or JPG files are allowed'
-            }}
-            render={({ field }) => (
-              <FileInput
-                id='thumbnail'
-                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
-                label='Ảnh chính'
-                placeholder='Chọn một file'
-                leftSectionPointerEvents='none'
-                value={field.value as unknown as File}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                error={errors.thumbnail?.message}
-                accept='image/png,image/jpeg,image/jpg'
-              />
-            )}
-          />
-        </Grid.Col>
-        <Grid.Col span={12} hidden>
-          <Controller
-            name='gallery'
-            control={control}
-            rules={{
-              required: 'File hoặc URL là bắt buộc',
-              validate: files =>
-                files && files.every(file => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
-                  ? true
-                  : 'Only PNG, JPEG, or JPG files are allowed'
-            }}
-            render={({ field }) => (
-              <FileInput
-                id='gallery'
-                leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
-                label='Ảnh bổ sung'
-                placeholder='Chọn một file'
-                leftSectionPointerEvents='none'
-                value={field.value as unknown as File[]}
-                onChange={value => {
-                  field.onChange([...imageAddition, ...value]);
-                  setImageAddition(valueCurrent => [...valueCurrent, ...value]);
-                }}
-                onBlur={field.onBlur}
-                error={errors.thumbnail?.message}
-                accept='image/png,image/jpeg,image/jpg'
-                multiple
-              />
-            )}
-          />
-        </Grid.Col>
-        <Grid.Col span={12}>
-          <Text fw={600} size='lg'>
-            Mô tả chi tiết
-          </Text>
-          <Controller
-            control={control}
-            name='descriptionDetailJson'
-            render={({ field }) => (
-              <TiptapEditor
-                value={field.value}
-                onChange={value => {
-                  field.onChange(value.json);
-                  setValue('descriptionDetailHtml', value.html);
-                }}
-              />
-            )}
-          />
-        </Grid.Col>
-        <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth>
-          Tạo mới / Cập nhật
-        </BButton>
-      </Grid>
-    </form>
+          <Grid.Col span={12}>
+            <Text fw={600} size='lg'>
+              Mô tả chi tiết
+            </Text>
+            <Controller
+              control={formFields.control}
+              name='descriptionDetailJson'
+              render={({ field, formState: { errors } }) => (
+                <TiptapEditor
+                  value={field.value}
+                  onChange={value => {
+                    field.onChange(value.json);
+                    formFields.setValue('descriptionDetailHtml', value.html);
+                  }}
+                />
+              )}
+            />
+          </Grid.Col>
+          <BButton type='submit' className='mt-4' loading={formFields.formState.isSubmitting} fullWidth>
+            Tạo mới / Cập nhật
+          </BButton>
+        </Grid>
+      </form>
+    </FormProvider>
   );
 }

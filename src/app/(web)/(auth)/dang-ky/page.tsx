@@ -65,10 +65,7 @@ export default function Page() {
     try {
       await mutation.mutateAsync({
         ...formData,
-        image: {
-          fileName: '',
-          base64: ''
-        }
+        image: undefined
       });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
@@ -231,7 +228,9 @@ export default function Page() {
                     )}
                   />
                 </GridCol>
-                <AddressSection control={control} setValue={setValue} />
+                <GridCol span={12}>
+                  <AddressSection control={control} setValue={setValue} />
+                </GridCol>
 
                 <GridCol span={12} className='flex justify-end'>
                   <Link href={'/dang-nhap'}>

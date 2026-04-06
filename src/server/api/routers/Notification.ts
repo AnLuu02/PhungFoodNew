@@ -48,27 +48,10 @@ export const notificationRouter = createTRPCRouter({
       },
       orderBy: { createdAt: 'desc' }
     });
-    // if (data.length === 0) {
-    //   const sample = await ctx.db.notification.create({
-    //     data: {
-    //       title: 'Chào mừng đến với hệ thống!',
-    //       message: 'Đây là thông báo mẫu đầu tiên của bạn.',
-    //       type: 'SYSTEM',
-    //       recipient: 'all',
-    //       status: 'sent',
-    //       priority: 'medium',
-    //       channels: ['email', 'in_app'],
-    //       createdAt: new Date(),
-    //       tags: ['sample'],
-    //       analytics: { sent: 1, delivered: 1, read: 1, clicked: 0 }
-    //     }
-    //   });
-    //   return { code: 'OK', message: 'Đã tạo dữ liệu mẫu.', data: [sample] };
-    // }
+
     return { code: 'OK', message: 'Lấy danh sách thông báo thành công.', data };
   }),
   pushOnline: publicProcedure
-    // .use(requirePermission('create:notification', { requiredAdmin: true }))
     .input(z.object({ notificationId: z.string(), userIds: z.array(z.string()).default([]) }))
     .mutation(async ({ ctx, input }) => {
       const notification = await ctx.db.notification.findUnique({

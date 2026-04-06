@@ -53,7 +53,7 @@ export const ButtonCheckout = ({
         email: guest.email || '',
         name: guest.email || '',
         password: guest.password || '',
-        image: { fileName: '', base64: '' },
+        image: undefined,
         phone: ''
       });
       userId = responseGuest.id;

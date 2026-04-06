@@ -1,6 +1,6 @@
 import z from 'zod';
 import { createTag } from '~/lib/FuncHandler/generateTag';
-import { imageInputSchema, imageReqSchema } from './image.schema';
+import { imageFromDbSchema, imageInputSchema } from './image.schema';
 
 export const baseSubCategorySchema = z.object({
   id: z.string().optional(),
@@ -13,17 +13,9 @@ export const baseSubCategorySchema = z.object({
     .min(1, 'Danh mục con phải thuộc ít nhất 1 danh mục.')
 });
 
-export const subCategoryReqSchema = baseSubCategorySchema
-  .extend({
-    image: imageReqSchema.optional()
-  })
-  .transform(data => ({
-    ...data,
-    tag: createTag('Danh mục ' + data?.name)
-  }));
 export const subCategoryFromDbSchema = baseSubCategorySchema
   .extend({
-    image: imageReqSchema.optional()
+    image: imageFromDbSchema.optional()
   })
   .transform(data => ({
     ...data,
@@ -39,6 +31,5 @@ export const subCategoryInputSchema = baseSubCategorySchema
     tag: createTag('Danh mục ' + data?.name)
   }));
 
-export type SubCategoryReq = z.infer<typeof subCategoryReqSchema>;
 export type SubCategoryFromDb = z.infer<typeof subCategoryFromDbSchema>;
 export type SubCategoryInput = z.infer<typeof subCategoryInputSchema>;

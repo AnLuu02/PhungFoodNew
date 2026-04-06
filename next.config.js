@@ -18,11 +18,6 @@ const config = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'aoetaifwgjb4klqx.public.blob.vercel-storage.com',
-        pathname: '/**'
-      },
-      {
-        protocol: 'https',
         hostname: '*.vnecdn.net',
         pathname: '/**'
       },
@@ -39,6 +34,11 @@ const config = {
       {
         protocol: 'https',
         hostname: '*.googleusercontent.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
         pathname: '/**'
       }
     ]

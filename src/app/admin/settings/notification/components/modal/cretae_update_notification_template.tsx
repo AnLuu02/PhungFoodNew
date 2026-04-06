@@ -123,19 +123,7 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
               <TextInput radius={'md'} placeholder='Tiêu đề' label='Tiêu đề' {...field} error={errors.title?.message} />
             )}
           />
-          {/* <Controller
-            name='message'
-            control={control}
-            render={({ field }) => (
-              <Textarea
-                radius={'md'}
-                placeholder='Nội dung'
-                label='Nội dung'
-                {...field}
-                error={errors.message?.message}
-              />
-            )}
-          /> */}
+
           <TemplateTextarea name='message' control={control} label='Nội dung' />
           <Controller
             name='type'

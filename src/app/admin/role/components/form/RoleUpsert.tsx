@@ -6,7 +6,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseRoleSchema, RoleInput } from '~/shared/schema/role.schema';
 import { api } from '~/trpc/react';
@@ -95,7 +95,7 @@ export default function RoleUpsert({
   }, []);
 
   if (isLoadingRole || isLoading) {
-    return <LoadingSpiner />;
+    return <ModalUpsertSkeleton />;
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

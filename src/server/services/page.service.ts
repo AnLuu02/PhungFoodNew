@@ -7,7 +7,7 @@ import {
   getOneProductService
 } from './product.service';
 import { getRecentActivityAppService } from './recentActivity.service';
-import { getOneBannerService } from './restaurant.service';
+import { getOneBannerService } from './restaurant.banner.service';
 import {
   getDistributionProductsService,
   getOverviewRevenueService,
@@ -34,7 +34,6 @@ export const getInitPageService = async (db: PrismaClient) => {
     ...categories.map(category => findSubCategoryService(db, { skip: 0, take: 10, s: category })),
     ...productFilters.map(filter => findProductService(db, { skip: 0, take: 10, [filter.key]: filter.value })),
     ...materials.map(material => findProductService(db, { skip: 0, take: 10, s: material }))
-    // caller.News.fetchNews({ skip: 0, take: 10 })
   ];
 
   const results: any = await Promise.allSettled(promises);
@@ -54,7 +53,6 @@ export const getInitPageService = async (db: PrismaClient) => {
   const haiSan = getValue(10);
   const rauCu = getValue(11);
   const cacLoaiNam = getValue(12);
-  // const news = getValue(13);
 
   return {
     banner: banner || {},
@@ -74,7 +72,6 @@ export const getInitPageService = async (db: PrismaClient) => {
     productBestSaler: productBestSaler || [],
     productNew: productNew || [],
     productHot: productHot || []
-    // news
   };
 };
 export const getInitProductDetailPageService = async (db: PrismaClient, input: { slug: string }) => {

@@ -2,7 +2,7 @@
 import { Box, Button, Flex, Group, Paper, Switch, Text } from '@mantine/core';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 import BButton from '~/components/Button/Button';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -81,7 +81,7 @@ export default function UpdatePermissionForRole({
   }, []);
 
   if (isLoadingRole || isLoading) {
-    return <LoadingSpiner />;
+    return <ModalUpsertSkeleton />;
   }
 
   return (

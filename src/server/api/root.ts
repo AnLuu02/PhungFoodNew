@@ -2,6 +2,7 @@ import { categoryRouter } from './routers/Category';
 import { contactRouter } from './routers/Contact';
 import { deliveryRouter } from './routers/Delivery';
 import { favouriteFoodRouter } from './routers/FavouriteFood';
+import { imagesRouter } from './routers/Images';
 import { invoiceRouter } from './routers/Invoice';
 import { materialRouter } from './routers/Material';
 import { newsRouter } from './routers/news';
@@ -44,7 +45,8 @@ export const appRouter = createTRPCRouter({
   RolePermission: rolePermissionRouter,
   Restaurant: restaurantRouter,
   Notification: notificationRouter,
-  NotificationTemplate: notificationTemplateRouter
+  NotificationTemplate: notificationTemplateRouter,
+  Images: imagesRouter
 });
 
 export type AppRouter = typeof appRouter;

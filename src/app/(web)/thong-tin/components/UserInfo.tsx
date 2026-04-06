@@ -121,20 +121,6 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                 {userInfor?.email}
               </Text>
             </Grid.Col>
-            {/* <Grid.Col span={6}>
-              <Text fw={700} size='sm'>
-                Giới tính
-              </Text>
-              <Text size='sm' c='dimmed'>
-                {userInfor?.gender === Gender.MALE
-                  ? 'Nam'
-                  : userInfor?.gender === Gender.FEMALE
-                    ? 'Nữ'
-                    : userInfor?.gender === Gender.OTHER
-                      ? 'Khác'
-                      : 'Đang cập nhật'}
-              </Text>
-            </Grid.Col> */}
             <Grid.Col span={6}>
               <Text fw={700} size='sm'>
                 Ngày sinh

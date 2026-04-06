@@ -1,13 +1,16 @@
-import { del, put } from '@vercel/blob';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 
 import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
-import { NotifyError } from '~/lib/FuncHandler/toast';
 import { UserRole } from '~/shared/constants/user';
-import { FilterProductInput, FilterProductOptions, ProductReq, ServiceOptions } from '~/shared/schema/product.schema';
+import { StatusImage } from '~/shared/schema/image.schema';
+import {
+  FilterProductInput,
+  FilterProductOptions,
+  ProductFromDb,
+  ServiceOptions
+} from '~/shared/schema/product.schema';
 
 const buildFilter = (input: FilterProductOptions, userRole: any) => {
   const {
@@ -192,383 +195,8 @@ export const findProductService = async (db: PrismaClient, input: FilterProductI
     }
   };
 };
-export const createProductService = async (db: PrismaClient, input: ProductReq) => {
-  const existed = await db.product.findFirst({
-    where: { tag: input.tag }
-  });
-
-  if (existed) {
-    throw new TRPCError({
-      code: 'CONFLICT',
-      message: 'Sản phẩm đã tồn tại. Hãy thử lại.'
-    });
-  }
-
-  let thumbnailURL: string | null = null;
-  if (input.thumbnail && input.thumbnail.fileName !== '') {
-    const buffer = Buffer.from(input.thumbnail.base64, 'base64');
-    const blob = await put(input.thumbnail.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-    thumbnailURL = blob.url;
-  }
-
-  const galleryURLs = await Promise.all(
-    (input.gallery ?? []).map(async item => {
-      const buffer = Buffer.from(item.base64, 'base64');
-      const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-      const uploadedUrl = blob.url;
-      return uploadedUrl ? { url: uploadedUrl, type: ImageType.GALLERY } : null;
-    })
-  ).then(results => results.filter(item => item !== null));
-
-  const product = await db.product.create({
-    data: {
-      name: input.name,
-      description: input.description,
-      descriptionDetailJson: input.descriptionDetailJson,
-      descriptionDetailHtml: input.descriptionDetailHtml,
-      tag: input.tag,
-      price: input.price,
-      discount: input.discount,
-      subCategoryId: input.subCategoryId,
-      availableQuantity: input.availableQuantity,
-      soldQuantity: input.soldQuantity,
-      region: input.region,
-      tags: input.tags,
-      isActive: input.isActive,
-      materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
-      images: {
-        create: [
-          ...(thumbnailURL
-            ? [
-                {
-                  url: thumbnailURL,
-                  type: ImageType.THUMBNAIL,
-                  entityType: EntityType.PRODUCT,
-                  altText: `Ảnh ${input?.thumbnail?.fileName} loại ${ImageType.THUMBNAIL}`
-                }
-              ]
-            : []),
-          ...galleryURLs.map(item => ({
-            url: item.url,
-            type: item.type,
-            entityType: EntityType.PRODUCT,
-            altText: `Ảnh ${item?.url} loại ${ImageType.GALLERY}`
-          }))
-        ]
-      }
-    }
-  });
-
-  if (product?.tag) {
-    await ManageTagVi('upsert', { newTag: product.tag, newName: product.name });
-  }
-
-  return product;
-};
-export const updateProductService = async (db: PrismaClient, input: ProductReq) => {
-  const existingProduct = await db.product.findUnique({
-    where: { id: input.id },
-    include: { images: true }
-  });
-
-  if (!existingProduct) {
-    throw new TRPCError({
-      code: 'NOT_FOUND',
-      message: 'Sản phẩm không tồn tại.'
-    });
-  }
-
-  const duplicateProduct = await db.product.findFirst({
-    where: { tag: input.tag, id: { not: input.id } }
-  });
-
-  if (duplicateProduct) {
-    throw new TRPCError({
-      code: 'CONFLICT',
-      message: 'Sản phẩm đã tồn tại.'
-    });
-  }
-
-  const oldImages = existingProduct.images || [];
-  const oldThumbnail = oldImages.find(img => img?.type === ImageType.THUMBNAIL);
-  const oldGallery = oldImages.filter(img => img?.type === ImageType.GALLERY);
-
-  let newThumbnail: any = oldThumbnail;
-  if (input.thumbnail?.fileName) {
-    const filenameImgFromDb = oldThumbnail ? getFileNameFromVercelBlob(oldThumbnail.url) : null;
-    if (filenameImgFromDb !== input.thumbnail.fileName) {
-      const url = (
-        await put(input.thumbnail.fileName, Buffer.from(input.thumbnail.base64, 'base64'), {
-          access: 'public',
-          token: tokenBlobVercel
-        })
-      )?.url;
-      newThumbnail = {
-        url: url,
-        type: ImageType.THUMBNAIL,
-        altText: `Ảnh ${input.thumbnail.fileName} loại ${ImageType.THUMBNAIL}`,
-        entityType: EntityType.PRODUCT
-      };
-
-      if (oldThumbnail) await del(oldThumbnail.url, { token: tokenBlobVercel });
-    }
-  }
-
-  const anh_trong_db_dang_filename = oldGallery.map(item => ({
-    id: item.id,
-    fileName: getFileNameFromVercelBlob(item.url)
-  }));
-
-  const anh_moi =
-    input.gallery?.filter(item => !anh_trong_db_dang_filename.some(anhdb => anhdb.fileName === item.fileName)) ?? [];
-
-  const anh_xoa = oldGallery.filter(
-    item => !input.gallery?.some(img => img?.fileName === getFileNameFromVercelBlob(item.url))
-  );
-
-  const results = await Promise.all([
-    ...anh_xoa.map(img => del(img.url, { token: tokenBlobVercel }).then(() => null)),
-    ...anh_moi.map(async item => {
-      try {
-        const buffer = Buffer.from(item.base64, 'base64');
-        const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-        const uploadedImage = blob.url;
-        return {
-          url: uploadedImage,
-          type: ImageType.GALLERY,
-          altText: `Ảnh ${item.fileName} loại ${ImageType.GALLERY}`,
-          entityType: EntityType.PRODUCT
-        };
-      } catch {
-        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Có lỗi xảy ra khi tải ảnh lên Vercel Blob' });
-      }
-    })
-  ]);
-
-  const newGallery = results.filter(Boolean);
-
-  const newImages = [newThumbnail, ...oldGallery, ...newGallery]
-    .filter((item: any) => !anh_xoa.some(img => img?.url === item.url))
-    .filter(Boolean);
-
-  const [product, updatedProduct] = await db.$transaction([
-    db.product.findUnique({ where: { id: input.id } }),
-    db.product.update({
-      where: {
-        id: input.id
-      },
-      data: {
-        materials: input.materials ? { connect: input.materials.map(item => ({ id: item })) } : undefined,
-        images:
-          newImages?.length > 0
-            ? {
-                deleteMany: {
-                  productId: input.id,
-                  url: {
-                    notIn: newImages.map(img => img?.url)?.filter(Boolean)
-                  }
-                },
-                upsert: newImages.map(img => ({
-                  where: {
-                    id_productId_entityType_type: {
-                      id: img?.id || '',
-                      productId: input.id,
-                      entityType: img?.entityType,
-                      type: img?.type
-                    }
-                  } as any,
-                  update: {
-                    url: img?.url,
-                    type: img?.type,
-                    altText: img?.altText,
-                    entityType: img?.entityType
-                  } as any,
-                  create: {
-                    url: img?.url,
-                    type: img?.type,
-                    altText: img?.altText,
-                    entityType: img?.entityType
-                  } as any
-                }))
-              }
-            : undefined
-      },
-      include: { images: true }
-    })
-  ]);
-
-  if (updatedProduct?.tag && product?.tag) {
-    await ManageTagVi('upsert', { oldTag: product.tag, newTag: updatedProduct.tag, newName: updatedProduct.name });
-  }
-  return updatedProduct;
-};
-export const upsertProductService = async (db: PrismaClient, input1: ProductReq) => {
-  const { id, subCategoryId, thumbnail, gallery, ...data } = input1;
-  const existingProduct = await db.product.findUnique({
-    where: { id },
-    include: { images: true }
-  });
-
-  // if (!existingProduct) {
-  //   throw new TRPCError({ code: 'NOT_FOUND', message: 'Sản phẩm không tồn tại.' });
-  // }
-
-  const duplicateProduct = await db.product.findFirst({
-    where: { tag: data.tag, id: { not: id } }
-  });
-
-  if (duplicateProduct) {
-    throw new TRPCError({ code: 'CONFLICT', message: 'Sản phẩm đã tồn tại.' });
-  }
-
-  const oldImages = existingProduct?.images || [];
-  const oldThumbnail = oldImages.find(img => img?.type === ImageType.THUMBNAIL);
-  const oldGallery = oldImages.filter(img => img?.type === ImageType.GALLERY);
-
-  let newThumbnail: any = oldThumbnail;
-  if (thumbnail?.fileName) {
-    const filenameImgFromDb = oldThumbnail ? getFileNameFromVercelBlob(oldThumbnail.url) : null;
-    if (filenameImgFromDb !== thumbnail.fileName) {
-      const url = (
-        await put(thumbnail.fileName, Buffer.from(thumbnail.base64, 'base64'), {
-          access: 'public',
-          token: tokenBlobVercel
-        })
-      )?.url;
-      newThumbnail = {
-        url: url,
-        type: ImageType.THUMBNAIL,
-        altText: `Ảnh ${thumbnail.fileName} loại ${ImageType.THUMBNAIL}`,
-        entityType: EntityType.PRODUCT
-      };
-
-      if (oldThumbnail) await del(oldThumbnail.url, { token: tokenBlobVercel });
-    }
-  }
-
-  const anh_trong_db_dang_filename = oldGallery.map(item => ({
-    id: item.id,
-    fileName: getFileNameFromVercelBlob(item.url)
-  }));
-
-  const anh_moi =
-    gallery?.filter((item: any) => !anh_trong_db_dang_filename.some(anhdb => anhdb.fileName === item.fileName)) ?? [];
-
-  const anh_xoa = oldGallery.filter(
-    item => !gallery?.some((img: any) => img?.fileName === getFileNameFromVercelBlob(item.url))
-  );
-
-  const results = await Promise.all([
-    ...anh_xoa.map(img => del(img.url, { token: tokenBlobVercel }).then(() => null)),
-    ...anh_moi.map(async (item: any) => {
-      try {
-        const buffer = Buffer.from(item.base64, 'base64');
-        const blob = await put(item.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-        const uploadedImage = blob.url;
-        return {
-          url: uploadedImage,
-          type: ImageType.GALLERY,
-          altText: `Ảnh ${item.fileName} loại ${ImageType.GALLERY}`,
-          entityType: EntityType.PRODUCT
-        };
-      } catch {
-        NotifyError('Có lỗi xảy ra khi tải ảnh lên Vercel Blob');
-        return null;
-      }
-    })
-  ]);
-
-  const newGallery = results.filter(Boolean);
-
-  const newImages = [newThumbnail, ...oldGallery, ...newGallery]
-    .filter((item: any) => !anh_xoa.some(img => img?.url === item.url))
-    .filter(Boolean);
-
-  const updatedProduct = await db.product.upsert({
-    where: {
-      id: id || ''
-    },
-    create: {
-      ...data,
-      tag: data.tag || 'san-pham',
-      subCategory: {
-        connect: {
-          id: subCategoryId
-        }
-      },
-      materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
-      images: {
-        createMany: {
-          data: newImages?.map(({ productId, ...rest }) => rest)
-        }
-      }
-    },
-    update: {
-      ...data,
-      subCategory: {
-        connect: {
-          id: subCategoryId
-        }
-      },
-      materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
-      images:
-        newImages?.length > 0
-          ? {
-              deleteMany: {
-                url: {
-                  notIn: newImages.map(img => img?.url)?.filter(Boolean)
-                }
-              },
-              upsert: newImages.map(img => ({
-                where: {
-                  id_productId_entityType_type: {
-                    id: img?.id || 'DEFAULT_IMAGES_ID',
-                    productId: id || 'DEFAULT_PRODUCT_ID',
-                    entityType: img?.entityType,
-                    type: img?.type
-                  }
-                },
-                update: {
-                  id: img?.id,
-                  url: img?.url,
-                  type: img?.type,
-                  altText: img?.altText,
-                  entityType: img?.entityType
-                },
-                create: {
-                  url: img?.url,
-                  type: img?.type,
-                  altText: img?.altText,
-                  entityType: img?.entityType
-                }
-              }))
-            }
-          : undefined
-    },
-    include: { images: true }
-  });
-
-  if (updatedProduct?.tag) {
-    await ManageTagVi('upsert', {
-      oldTag: existingProduct?.tag,
-      newTag: updatedProduct.tag,
-      newName: updatedProduct.name
-    });
-  }
-  return updatedProduct;
-};
 
 export const deleteProductService = async (db: PrismaClient, input: { id: string }) => {
-  const product = await db.product.findUnique({
-    where: { id: input.id },
-    include: { images: true }
-  });
-  if (product?.images && product.images.length > 0) {
-    await Promise.all([
-      ...product.images.map(image => del(image.url, { token: tokenBlobVercel })),
-      ManageTagVi('delete', { oldTag: product.tag })
-    ]);
-  }
   const productDeleted = await db.product.delete({
     where: { id: input.id },
     include: { images: true }
@@ -705,4 +333,97 @@ export const getAllProductService = async (db: PrismaClient, input: ServiceOptio
     }
   });
   return product;
+};
+
+export const upsertProductToCloudinaryService = async (db: PrismaClient, input1: ProductFromDb) => {
+  const { id, subCategoryId, images, ...data } = input1;
+  const existingProduct = id
+    ? await db.product.findUnique({
+        where: { id },
+        include: { images: true }
+      })
+    : null;
+
+  if (!id || (existingProduct && existingProduct.tag !== data.tag)) {
+    const duplicateProduct = await db.product.findUnique({
+      where: { tag_subCategoryId: { tag: data.tag, subCategoryId } }
+    });
+
+    if (duplicateProduct) {
+      throw new TRPCError({ code: 'CONFLICT', message: 'Sản phẩm đã tồn tại.' });
+    }
+  }
+
+  const inputImages = [...(images || [])];
+  const newImages = inputImages.filter(i => i?.status === StatusImage.NEW) || [];
+  const deleteImages = inputImages.filter(i => i?.status === StatusImage.DELETED) || [];
+  const updatedProduct = await db.product.upsert({
+    where: {
+      id: id || ''
+    },
+    create: {
+      ...data,
+      tag: data.tag || 'san-pham',
+      subCategory: {
+        connect: {
+          id: subCategoryId
+        }
+      },
+      materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
+      images: newImages?.length
+        ? {
+            connectOrCreate: newImages.map(({ status, ...item }: any) => ({
+              where: {
+                publicId: item?.publicId || ''
+              },
+              create: {
+                ...item,
+                url: item?.url || '',
+                type: item?.type || ImageType.GALLERY,
+                altText: item?.altText || 'Ảnh sản phẩm ' + data?.name,
+                entityType: item?.entityType || EntityType.PRODUCT
+              }
+            }))
+          }
+        : undefined
+    },
+    update: {
+      ...data,
+      subCategory: {
+        connect: {
+          id: subCategoryId
+        }
+      },
+      materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
+      images: {
+        ...(newImages?.length
+          ? {
+              connectOrCreate: newImages.map(({ status, ...item }: any) => ({
+                where: {
+                  publicId: item?.publicId || ''
+                },
+                create: {
+                  ...item,
+                  url: item?.url || '',
+                  type: item?.type || ImageType.GALLERY,
+                  altText: item?.altText || 'Ảnh sản phẩm ' + data?.name,
+                  entityType: item?.entityType || EntityType.PRODUCT
+                }
+              }))
+            }
+          : undefined),
+        disconnect: deleteImages.length ? deleteImages.map(item => ({ publicId: item?.publicId || '' })) : undefined
+      }
+    },
+    include: { images: true }
+  });
+
+  if (updatedProduct?.tag) {
+    ManageTagVi('upsert', {
+      oldTag: existingProduct?.tag,
+      newTag: updatedProduct.tag,
+      newName: updatedProduct.name
+    });
+  }
+  return updatedProduct;
 };

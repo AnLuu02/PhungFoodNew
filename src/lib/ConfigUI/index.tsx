@@ -63,6 +63,7 @@ export const navItems = [
     children: [
       { label: 'Hệ thống', icon: IconSettings, href: '/admin/settings' },
       { label: 'Thông báo', icon: IconSettings, href: '/admin/settings/notification' },
+      { label: 'Hình ảnh', icon: IconSettings, href: '/admin/images' },
       { label: 'Giao diện nâng cao', icon: IconSettings, href: '/admin/settings/theme-advance' }
     ]
   }

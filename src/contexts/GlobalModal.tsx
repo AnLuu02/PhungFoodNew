@@ -16,6 +16,8 @@ const ModalRecipe = dynamic(() => import('~/components/Modals/ModalRecipe'), { s
 
 const ModalDetailVoucher = dynamic(() => import('~/components/Modals/ModalVoucherDetail'), { ssr: false });
 
+const ModalImageLibrary = dynamic(() => import('~/components/Modals/ModalImageLibrary'), { ssr: false });
+
 export const GlobalModal: React.FC = () => {
   const { closeModal } = useModalActions();
   const { opened, modalType, modalData } = useModalState();
@@ -49,6 +51,13 @@ export const GlobalModal: React.FC = () => {
       <ModalSuccessAddToCart
         type={modalType}
         opened={opened && modalType === 'success'}
+        onClose={closeModal}
+        data={modalData}
+      />
+
+      <ModalImageLibrary
+        type={modalType}
+        opened={opened && modalType === 'images_library'}
         onClose={closeModal}
         data={modalData}
       />

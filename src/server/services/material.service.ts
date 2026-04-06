@@ -129,20 +129,6 @@ export const getAllMaterialService = async (db: PrismaClient) => {
 };
 
 export const upsertMaterialService = async (db: PrismaClient, input: MaterialInput) => {
-  // const ms = await db.material.findMany();
-
-  // await db.$transaction(
-  //   ms.map(item =>
-  //     db.material.update({
-  //       where: { id: item.id || '' },
-  //       data: {
-  //         tag: 'nguyen-lieu-' + item.tag
-  //       }
-  //     })
-  //   )
-  // );
-  // const fm = ms.map(item => ({ oldTag: item.tag, newTag: 'nguyen-lieu-' + item.tag, newName: item.name }));
-  // await ManageTagVi('upsert', fm);
   const [existedTag, existed] = await db.$transaction([
     db.material.findFirst({
       where: {

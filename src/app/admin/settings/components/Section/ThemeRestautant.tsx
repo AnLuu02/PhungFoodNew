@@ -20,7 +20,7 @@ import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { baseThemeSchema, ThemeInput } from '~/shared/schema/restaurant.schema';
+import { themeSchemaWithRestaurantId, ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
 import { api } from '~/trpc/react';
 
 export default function ThemeSettingsManagement({ restaurantId, data }: { restaurantId: string; data: any }) {
@@ -29,8 +29,8 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
     handleSubmit,
     formState: { errors, isSubmitting, isDirty },
     reset
-  } = useForm<ThemeInput>({
-    resolver: zodResolver(baseThemeSchema),
+  } = useForm<ThemeWithRestaurantId>({
+    resolver: zodResolver(themeSchemaWithRestaurantId),
     defaultValues: {
       id: data?.id,
       primaryColor: data?.primaryColor,
@@ -38,7 +38,8 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
       themeMode: data?.themeMode,
       fontFamily: data?.fontFamily,
       borderRadius: data?.borderRadius,
-      faviconUrl: data?.faviconUrl
+      faviconUrl: data?.faviconUrl,
+      restaurantId: undefined
     }
   });
 
@@ -65,10 +66,10 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<ThemeInput> = async formData => {
+  const onSubmit: SubmitHandler<ThemeWithRestaurantId> = async formData => {
     await updateMutation.mutateAsync({
       ...formData,
-      restaurantId: restaurantId
+      restaurantId
     });
   };
   return (

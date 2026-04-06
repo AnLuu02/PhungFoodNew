@@ -1,7 +1,7 @@
 import { Gender, UserLevel } from '@prisma/client';
 import z from 'zod';
 import { baseAddressSchema } from './address.schema';
-import { imageInputSchema, imageReqSchema } from './image.schema';
+import { imageFromDbSchema, imageInputSchema } from './image.schema';
 
 export const baseUserSchema = z.object({
   id: z.string().optional(),
@@ -24,17 +24,14 @@ export const baseUserSchema = z.object({
   pointUser: z.number().default(0),
   level: z.nativeEnum(UserLevel).default(UserLevel.BRONZE)
 });
-export const userReqSchema = baseUserSchema.extend({
-  image: imageReqSchema.optional()
-});
+
 export const userFromDbSchema = baseUserSchema.extend({
-  image: imageReqSchema.optional()
+  image: imageFromDbSchema.optional()
 });
 
 export const userInputSchema = baseUserSchema.extend({
   image: imageInputSchema.optional()
 });
 
-export type UserReq = z.infer<typeof userReqSchema>;
 export type UserFromDb = z.infer<typeof userFromDbSchema>;
 export type UserInput = z.infer<typeof userInputSchema>;

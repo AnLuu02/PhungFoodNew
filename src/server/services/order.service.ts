@@ -160,8 +160,6 @@ export const findOrderService = async (
 
 export const upsertOrderService = async (db: PrismaClient, input: OrderInput) => {
   const { id, userId, paymentId, voucherIds, orderItems, delivery, ...data } = input;
-  console.log('data?.orderItems', id);
-
   const order = await db.order.upsert({
     where: { id: id || 'new-item-' + Math.random() },
     create: {
@@ -321,19 +319,6 @@ export const deleteOrderService = async (db: PrismaClient, input: { id: string }
     }
   });
 
-  //  const [order,invoice] = await db.$transaction([
-  //   db.order.delete({
-  //     where: { id: input.id }
-  //   }),
-  //   db.invoice.update({
-  //     where: {
-  //       orderId: input.id || ''
-  //     },
-  //     data: {
-  //       status: InvoiceStatus.CANCELLED
-  //     }
-  //   })
-  // ]);
   return order;
 };
 

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_CLOUDINARY")
 }
 
 model Category {
@@ -25,7 +25,8 @@ model SubCategory {
   isActive    Boolean?  @default(true)
   categoryId  String
   description String?
-  image       Image?
+  imageId     String?
+  image       Image?    @relation(fields: [imageId], references: [id])
   product     Product[]
   category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt   DateTime? @default(now())
@@ -198,6 +199,7 @@ model Product {
   createdAt             DateTime?       @default(now())
   updatedAt             DateTime?       @updatedAt
 
+  @@unique([tag, subCategoryId])
   @@index([subCategoryId], map: "Product_categoryId_fkey_unique")
 }
 
@@ -450,31 +452,38 @@ model FavouriteFood {
 }
 
 model Image {
-  id            String       @id @default(cuid())
-  url           String
-  altText       String?
-  type          ImageType
-  entityType    EntityType
+  id            String        @id @default(cuid())
+  url           String        @db.Text
+  publicId      String?       @unique
+  width         Int?
+  height        Int?
+  format        String?
+  altText       String?       @db.Text
+  type          ImageType     @default(OTHER)
+  entityType    EntityType    @default(UNASSIGNED)
   bannerId      String?
-  banner        Banner?      @relation(fields: [bannerId], references: [id], onDelete: Cascade)
-  subCategoryId String?      @unique
-  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  restaurantId  String?      @unique
-  restaurant    Restaurant?  @relation(fields: [restaurantId], references: [id])
-  userId        String?      @unique
-  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  banner        Banner?       @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  subCategories SubCategory[]
+  restaurantId  String?       @unique
+  restaurant    Restaurant?   @relation(fields: [restaurantId], references: [id])
+  userId        String?       @unique
+  user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId     String?
-  product       Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt     DateTime?    @default(now())
-  updatedAt     DateTime?    @updatedAt
+  product       Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt     DateTime?     @default(now())
+  updatedAt     DateTime?     @updatedAt
 
-  @@unique([id, subCategoryId, entityType, type])
   @@unique([id, userId, entityType, type])
   @@unique([id, productId, entityType, type])
   @@unique([id, bannerId, entityType, type])
-  @@index([subCategoryId, entityType])
   @@index([userId, entityType])
   @@index([productId, entityType])
+  @@index([type])
+  @@index([entityType])
+  @@index([productId])
+  @@index([bannerId])
+  @@index([userId])
+  @@index([restaurantId])
 }
 
 enum ImageType {
@@ -482,13 +491,20 @@ enum ImageType {
   GALLERY
   LOGO
   BANNER
+  PRODUCT
+  CATEGORY
+  USER
+  RESTAURANT
+  OTHER
 }
 
 enum EntityType {
   PRODUCT
   USER
-  CATEGORY
   RESTAURANT
+  SUB_CATEGORY
+  BANNER
+  UNASSIGNED
 }
 
 enum VoucherType {

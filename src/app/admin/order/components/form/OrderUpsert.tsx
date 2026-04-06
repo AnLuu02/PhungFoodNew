@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Alert,
+  Box,
   Card,
   Grid,
   GridCol,
@@ -19,7 +20,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import AddressSection from '~/components/AdressSection';
 import BButton from '~/components/Button/Button';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseOrderSchema, OrderInput } from '~/shared/schema/order.schema';
@@ -70,11 +71,7 @@ export default function OrderUpsert({
     }
   });
 
-  const {
-    fields: orderItemFields,
-    append: appendOrderItem,
-    remove: removeOrderItem
-  } = useFieldArray({
+  const { fields: orderItemFields, append: appendOrderItem } = useFieldArray({
     control: formFields.control,
     name: 'orderItems'
   });
@@ -122,11 +119,7 @@ export default function OrderUpsert({
     }
   };
 
-  useEffect(() => {
-    console.log('formFields.formState.errors', formFields.formState.errors);
-  }, [formFields.formState.errors]);
-
-  if (isLoading) return <LoadingSpiner />;
+  if (isLoading) return <ModalUpsertSkeleton />;
 
   return (
     <FormProvider {...formFields}>
@@ -224,7 +217,9 @@ export default function OrderUpsert({
                   />
                 </Group>
 
-                <AddressSection control={formFields.control} setValue={formFields.setValue} name={`delivery`} />
+                <Box w={'100%'}>
+                  <AddressSection control={formFields.control} setValue={formFields.setValue} name={`delivery`} />
+                </Box>
 
                 <Controller
                   name='delivery.note'
@@ -332,7 +327,7 @@ export default function OrderUpsert({
                 )}
               </GridCol>
               {orderItemFields.map((field, index) => (
-                <OrderItemForm key={field.id} {...field} index={index} removeOrderItem={removeOrderItem} />
+                <OrderItemForm key={field.id} {...field} index={index} />
               ))}
               <BButton
                 type='button'

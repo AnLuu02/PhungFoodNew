@@ -1,13 +1,17 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ActionIcon, FileInput, Grid, GridCol, Image, Paper, Select, Switch, Textarea, TextInput } from '@mantine/core';
-import { IconFile, IconTrash } from '@tabler/icons-react';
+import { Grid, GridCol, Modal, Paper, Select, Stack, Switch, Text, Textarea, TextInput, Title } from '@mantine/core';
+import { EntityType } from '@prisma/client';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import ImageRenderGrid from '~/app/admin/images/components/ImageRenderGrid';
+import { ImageWithAssociations } from '~/app/admin/images/types/image.types';
 import BButton from '~/components/Button/Button';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { fileToBase64, vercelBlobToFile } from '~/lib/FuncHandler/handle-file-base64';
+import ThumbnailUpsert from '~/components/ImageFormUpsert';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
+import { handleUploadFromClient, UploadedImage } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { StatusImage } from '~/shared/schema/image.schema';
 import { SubCategoryInput, subCategoryInputSchema } from '~/shared/schema/subCategory.schema';
 import { api } from '~/trpc/react';
 
@@ -18,17 +22,21 @@ export default function SubCategoryUpsert({
   subCategoryId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
+  const [imageLibraries, setImageLibraries] = useState<
+    | {
+        data: ImageWithAssociations[];
+        total: number;
+        pageInfo: {
+          skip: number;
+          take: number;
+          hasMore: boolean;
+        };
+      }
+    | undefined
+  >(undefined);
   const queryResult: any = api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }, { enabled: !!subCategoryId });
   const { data, isLoading: isLoadingDataSubCategory } = queryResult;
-  const [loading, setLoading] = useState(false);
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting, isDirty },
-    reset,
-    watch,
-    setValue
-  } = useForm<SubCategoryInput>({
+  const formFields = useForm<SubCategoryInput>({
     resolver: zodResolver(subCategoryInputSchema),
     defaultValues: {
       id: undefined,
@@ -42,31 +50,23 @@ export default function SubCategoryUpsert({
   });
 
   useEffect(() => {
-    setLoading(true);
-    if (data && data?.image?.url && data?.image?.url !== '') {
-      vercelBlobToFile(data?.image?.url as string)
-        .then(file => {
-          setValue('image.url', file as File);
-        })
-        .catch(err => {
-          new Error(err);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setValue('image.url', watch('image.url'));
-      setLoading(false);
-    }
-    reset({
+    formFields.reset({
       id: data?.id,
       name: data?.name,
       isActive: data?.isActive,
       tag: data?.tag,
       description: data?.description || '',
-      categoryId: data?.categoryId as string
+      categoryId: data?.categoryId as string,
+      image: data?.image
+        ? {
+            id: data?.image?.id,
+            publicId: data?.image?.publicId,
+            url: data?.image?.url
+          }
+        : undefined
     });
-  }, [data, reset]);
+  }, [data, formFields.reset]);
   const { data: categoryData, isLoading } = api.Category.getAll.useQuery();
-
   const utils = api.useUtils();
   const updateMutation = api.SubCategory.upsert.useMutation({
     onSuccess: () => {
@@ -78,176 +78,195 @@ export default function SubCategoryUpsert({
       NotifyError(e.message);
     }
   });
-
+  const connectImageFromLibraryMutation = api.Images.connectedEntity.useMutation({
+    onSuccess: () => {
+      utils.SubCategory.invalidate();
+      NotifySuccess('Cập nhật hình ảnh thành công.');
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
   const onSubmit: SubmitHandler<SubCategoryInput> = async formData => {
-    const file = (formData?.image?.url as File) ?? undefined;
-    const base64 = file ? await fileToBase64(file) : '';
-    const formDataWithImageUrlAsString = {
+    const acceptedFiles = formFields.getValues('image.urlFile');
+    const imagePublicId = formFields.getValues('image.publicId');
+    let imagesToSave: UploadedImage | undefined = acceptedFiles
+      ? await handleUploadFromClient(acceptedFiles, utils, {
+          folder: EntityType.SUB_CATEGORY
+        })
+      : undefined;
+
+    await updateMutation.mutateAsync({
       ...formData,
-      image: file
+      image: imagesToSave
         ? {
-            fileName: file?.name || '',
-            base64: base64 as string
+            ...formData?.image,
+            ...imagesToSave,
+            status: StatusImage.NEW
           }
-        : undefined
-    };
-    await updateMutation.mutateAsync(formDataWithImageUrlAsString);
+        : data?.image?.publicId && !imagePublicId
+          ? {
+              publicId: data?.image?.publicId,
+              status: StatusImage.DELETED
+            }
+          : undefined
+    });
   };
 
-  if (isLoadingDataSubCategory || loading) return <LoadingSpiner />;
+  const [opendLibrary, setOpenLibrary] = useState(false);
+
+  if (isLoadingDataSubCategory) return <ModalUpsertSkeleton />;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid>
-        <GridCol span={5}>
-          <Paper
-            withBorder
-            radius={'md'}
-            w={300}
-            h={300}
-            styles={{
-              root: {
-                overflow: 'hidden',
-                borderStyle: 'dashed',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                gap: '2px'
+    <FormProvider {...formFields}>
+      <form onSubmit={formFields.handleSubmit(onSubmit)}>
+        <Grid>
+          <GridCol span={12}>
+            <Grid gutter='md'>
+              <Grid.Col span={{ base: 12, md: 8 }}>
+                <Grid gutter='sm'>
+                  <Grid.Col span={12}>
+                    <Controller
+                      name='categoryId'
+                      control={formFields.control}
+                      render={({ field, formState: { errors } }) => (
+                        <Select
+                          disabled={isLoading}
+                          label='Danh mục chính'
+                          placeholder='Chọn danh mục cha'
+                          data={categoryData?.map(c => ({ value: c.id, label: c.name }))}
+                          {...field}
+                          error={errors.categoryId?.message}
+                          radius='md'
+                        />
+                      )}
+                    />
+                  </Grid.Col>
+
+                  <Grid.Col span={12}>
+                    <Controller
+                      name='name'
+                      control={formFields.control}
+                      render={({ field, formState: { errors } }) => (
+                        <TextInput
+                          {...field}
+                          required
+                          label='Tên danh mục'
+                          placeholder='Ví dụ: Đồ gia dụng'
+                          error={errors.name?.message}
+                          radius='md'
+                        />
+                      )}
+                    />
+                  </Grid.Col>
+
+                  <Grid.Col span={12}>
+                    <Controller
+                      name='description'
+                      control={formFields.control}
+                      render={({ field, formState: { errors } }) => (
+                        <Textarea
+                          label='Mô tả'
+                          placeholder='Mô tả ngắn về danh mục này...'
+                          rows={3}
+                          {...field}
+                          error={errors.description?.message}
+                          radius='md'
+                        />
+                      )}
+                    />
+                  </Grid.Col>
+
+                  <Grid.Col span={12}>
+                    <Controller
+                      name='isActive'
+                      control={formFields.control}
+                      render={({ field, formState: { errors } }) => (
+                        <Paper withBorder p='xs' radius='md'>
+                          <Switch
+                            label='Trạng thái hoạt động'
+                            description='Cho phép hiển thị danh mục này ngoài cửa hàng'
+                            checked={field.value}
+                            onChange={e => field.onChange(e.currentTarget.checked)}
+                          />
+                        </Paper>
+                      )}
+                    />
+                  </Grid.Col>
+                </Grid>
+              </Grid.Col>
+
+              <Grid.Col span={{ base: 12, md: 4 }}>
+                <Text size='sm' fw={500} mb={4}>
+                  Ảnh đại diện
+                </Text>
+                <Stack>
+                  <ThumbnailUpsert nameField='image' size={'100%'} />
+                  <BButton
+                    variant='outline'
+                    size='sm'
+                    fullWidth
+                    onClick={async () => {
+                      const data = await utils.Images.getAllImages.fetch({});
+                      if (data && data?.data?.length > 0) setImageLibraries(data);
+                      setOpenLibrary(true);
+                    }}
+                  >
+                    Chọn ảnh từ thư viện
+                  </BButton>
+                </Stack>
+              </Grid.Col>
+            </Grid>
+          </GridCol>
+          <GridCol>
+            <BButton
+              type='submit'
+              className='mt-4'
+              loading={formFields.formState.isSubmitting}
+              fullWidth
+              disabled={!formFields.formState.isDirty}
+            >
+              Tạo mới / Cập nhật
+            </BButton>
+          </GridCol>
+        </Grid>
+      </form>
+      <Modal
+        title={
+          <Title order={2} className='font-quicksand'>
+            Thư viện hình ảnh
+          </Title>
+        }
+        fullScreen
+        opened={opendLibrary}
+        onClose={() => setOpenLibrary(false)}
+      >
+        {opendLibrary && (
+          <ImageRenderGrid
+            imagesData={imageLibraries}
+            isLoading={false}
+            refetch={utils.Images.getAllImages.refetch()}
+            mode={'library'}
+            imageIdConnected={data?.image?.id}
+            onConnected={async (imageId, mode) => {
+              if (data?.id && imageId) {
+                await connectImageFromLibraryMutation.mutateAsync({
+                  entityId: data?.id,
+                  entityType: EntityType.SUB_CATEGORY,
+                  images: [
+                    {
+                      id: imageId,
+                      mode
+                    }
+                  ]
+                });
+                return;
               }
+              NotifyError('Danh mục hoặc ảnh không hợp lệ.');
             }}
-            pos={'relative'}
-          >
-            <Image
-              loading='lazy'
-              src={
-                watch('image.url') instanceof File
-                  ? URL.createObjectURL(watch('image.url') as File)
-                  : watch('image.url') || '/images/jpg/empty-300x240.jpg'
-              }
-              alt='Product Image'
-              className='mb-4 h-full w-full'
-            />
-            {watch('image.url') && (
-              <IconTrash
-                color='red'
-                width={40}
-                height={40}
-                className='absolute right-0 top-0 hover:opacity-40'
-                onClick={() => {
-                  setValue('image.url', null, {
-                    shouldDirty: true
-                  });
-                  setValue('image', undefined, {
-                    shouldDirty: true
-                  });
-                }}
-              />
-            )}
-          </Paper>
-        </GridCol>
-        <GridCol span={7}>
-          <Grid gutter='md'>
-            <GridCol span={12}>
-              <Controller
-                name='categoryId'
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    disabled={isLoading}
-                    radius='md'
-                    label='Danh mục chính'
-                    placeholder='Danh mục chính không được để trống'
-                    data={categoryData?.map(category => ({ value: category.id, label: category.name }))}
-                    {...field}
-                    error={errors.categoryId?.message}
-                  />
-                )}
-              />
-            </GridCol>
-            <GridCol span={6}>
-              <Controller
-                control={control}
-                name='name'
-                render={({ field }) => (
-                  <TextInput
-                    {...field}
-                    size='sm'
-                    required
-                    radius={'md'}
-                    label='Tên danh mục'
-                    placeholder='Nhập tên danh mục'
-                    error={errors.name?.message}
-                  />
-                )}
-              />
-            </GridCol>
-
-            <GridCol span={12}>
-              <Controller
-                control={control}
-                name='description'
-                render={({ field }) => (
-                  <Textarea
-                    size='sm'
-                    label='Mô tả'
-                    placeholder='Nhập mô tả'
-                    error={errors.description?.message}
-                    {...field}
-                  />
-                )}
-              />
-            </GridCol>
-
-            <Grid.Col span={6}>
-              <Controller
-                control={control}
-                name='isActive'
-                render={({ field }) => (
-                  <Switch
-                    checked={field.value}
-                    onChange={event => field.onChange(event.currentTarget.checked)}
-                    onBlur={field.onBlur}
-                    name={field.name}
-                    size='sm'
-                    label='Tình trạng'
-                  />
-                )}
-              />
-            </Grid.Col>
-
-            <GridCol span={12}>
-              <Controller
-                name='image.url'
-                control={control}
-                rules={{
-                  validate: file =>
-                    file && ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)
-                      ? true
-                      : 'Only PNG, JPEG, or JPG files are allowed'
-                }}
-                render={({ field }) => (
-                  <FileInput
-                    leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
-                    label='Ảnh chính'
-                    placeholder='Chọn một file'
-                    leftSectionPointerEvents='none'
-                    {...field}
-                    error={errors.image?.message}
-                    accept='image/png,image/jpeg,image/jpg'
-                  />
-                )}
-              />
-            </GridCol>
-          </Grid>
-        </GridCol>
-        <GridCol>
-          <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
-            Tạo mới / Cập nhật
-          </BButton>
-        </GridCol>
-      </Grid>
-    </form>
+          />
+        )}
+      </Modal>
+    </FormProvider>
   );
 }

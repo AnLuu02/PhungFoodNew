@@ -25,21 +25,8 @@ export function SocialLinkModal({
   const [selectedTemplate, setSelectedTemplate] = useState<any>(null);
   const utils = api.useUtils();
   const isEdit = Boolean(opened?.social);
-
-  const createMutation = api.Restaurant.createSocial.useMutation({
-    onSuccess: () => {
-      utils.Restaurant.invalidate();
-      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
-      setLoading(false);
-      onClose();
-    },
-    onError: err => {
-      NotifyError(err.message);
-      setLoading(false);
-    }
-  });
-
-  const updateMutation = api.Restaurant.updateSocial.useMutation({
+  const currentIndex = isEdit ? index : index + 1;
+  const mutationUpsert = api.Restaurant.upsertSocial.useMutation({
     onSuccess: () => {
       utils.Restaurant.invalidate();
       setLoading(false);
@@ -56,15 +43,11 @@ export function SocialLinkModal({
 
   const onSubmit = async () => {
     setLoading(true);
-    const values = getValues(`socials.${index}`);
-    if (isEdit && opened?.social?.id) {
-      await updateMutation.mutateAsync(values);
-    } else {
-      await createMutation.mutateAsync({
-        ...values,
-        restaurantId
-      });
-    }
+    const values = getValues(`socials.${currentIndex}`);
+    await mutationUpsert.mutateAsync({
+      ...values,
+      restaurantId
+    });
   };
 
   const handleTemplateSelect = (templateValue: string | null) => {
@@ -72,13 +55,14 @@ export function SocialLinkModal({
     const template = TEMPLATE_OPTIONS.find(t => t.value === templateValue);
     if (template) {
       setSelectedTemplate(template);
-      setValue(`socials.${index}`, template.defaultData);
+      setValue(`socials.${currentIndex}`, template.defaultData);
     }
   };
 
   useEffect(() => {
     if (opened?.social) {
-      setValue(`socials.${index}`, opened?.social);
+      setValue(`socials.${currentIndex}`, opened?.social);
+    } else {
     }
   }, [opened?.open, opened?.social]);
 
@@ -113,19 +97,19 @@ export function SocialLinkModal({
         />
         <Controller
           control={control}
-          name={`socials.${index}.platform`}
+          name={`socials.${currentIndex}.platform`}
           render={({ field }) => <TextInput radius='md' placeholder='vd: facebook' label='Platform' {...field} />}
         />
 
         <Controller
           control={control}
-          name={`socials.${index}.label`}
+          name={`socials.${currentIndex}.label`}
           render={({ field }) => <TextInput placeholder='vd: Facebook' radius='md' label='Label' {...field} />}
         />
 
         <Controller
           control={control}
-          name={`socials.${index}.value`}
+          name={`socials.${currentIndex}.value`}
           render={({ field }) => (
             <TextInput radius='md' label='Value' placeholder='Số điện thoại hoặc username...' {...field} />
           )}
@@ -133,7 +117,7 @@ export function SocialLinkModal({
 
         <Controller
           control={control}
-          name={`socials.${index}.pattern`}
+          name={`socials.${currentIndex}.pattern`}
           render={({ field }) => (
             <TextInput radius='md' label='Pattern' placeholder='Ví dụ: https://zalo.me/{value}' {...field} />
           )}
@@ -141,7 +125,7 @@ export function SocialLinkModal({
 
         <Controller
           control={control}
-          name={`socials.${index}.icon`}
+          name={`socials.${currentIndex}.icon`}
           render={({ field }) => (
             <TextInput radius='md' placeholder='vd: brand-facebook' label='Icon (https://tabler.io/icons)' {...field} />
           )}
@@ -150,7 +134,7 @@ export function SocialLinkModal({
       <Group align='center' justify='space-between'>
         <Controller
           control={control}
-          name={`socials.${index}.isActive`}
+          name={`socials.${currentIndex}.isActive`}
           render={({ field }) => (
             <Switch
               radius='md'

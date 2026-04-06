@@ -108,7 +108,7 @@ export function ViewInvoiceButton({ data }: { data: any }) {
         onClose={() => setOpened(false)}
         size='xl'
         radius='lg'
-        padding={0} // Để padding bằng 0 để Header đẹp hơn
+        padding={0}
         withCloseButton={false}
         transitionProps={{ transition: 'fade', duration: 200 }}
         classNames={{
@@ -231,7 +231,6 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                 </Stack>
               </Box>
 
-              {/* Row 3: Bảng tổng kết tài chính (Minh bạch nhất) */}
               <Paper withBorder radius='md' p='md' bg='gray.0' className='ml-auto max-w-sm'>
                 <Stack gap='sm'>
                   <Flex justify='space-between'>
@@ -270,7 +269,6 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                 </Stack>
               </Paper>
 
-              {/* Ghi chú */}
               {data.note && (
                 <Box>
                   <Text size='xs' fw={700} c='dimmed' className='mb-1 uppercase'>
@@ -283,7 +281,6 @@ export function ViewInvoiceButton({ data }: { data: any }) {
               )}
             </Box>
 
-            {/* Footer Actions */}
             <Box p='md' className='flex justify-end gap-3 rounded-b-lg border-t bg-gray-50'>
               <BButton variant='outline' onClick={() => setOpened(false)}>
                 Đóng

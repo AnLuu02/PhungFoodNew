@@ -1,20 +1,18 @@
 'use client';
 import { Flex, Pagination, Select } from '@mantine/core';
-import { memo, useMemo, useState } from 'react';
+import { memo, useState } from 'react';
 function PaginationLocal({
-  data,
+  totalPages,
+  initPerpage,
   onChangePage,
   onChangePerPage
 }: {
-  data: any[];
+  totalPages: number;
+  initPerpage: number;
   onChangePage: (page: number) => void;
   onChangePerPage: (perPage: number) => void;
 }) {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
-  const totalPages = useMemo(() => {
-    return Math.ceil(data.length / perPage);
-  }, [data, perPage]);
 
   return (
     <Flex justify='flex-end' align='center' gap='md' direction={{ base: 'column-reverse', md: 'row' }}>
@@ -32,10 +30,9 @@ function PaginationLocal({
       />
       <Select
         radius='md'
-        value={String(perPage)}
+        value={String(initPerpage)}
         w={100}
         onChange={value => {
-          setPerPage(Number(value));
           setPage(1);
           onChangePage(1);
           onChangePerPage(Number(value));

@@ -1,32 +1,8 @@
 import z from 'zod';
-import { imageInputSchema, imageReqSchema } from './image.schema';
-
-export const baseThemeSchema = z.object({
-  id: z.string().optional(),
-  primaryColor: z.string(),
-  secondaryColor: z.string(),
-  themeMode: z.string().default('light'),
-  fontFamily: z.string().optional().nullable(),
-  borderRadius: z.string().optional().nullable(),
-  faviconUrl: z.string().optional().nullable()
-});
-export const baseSocialSchema = z.object({
-  id: z.string().optional(),
-  platform: z.string().min(1, 'Platform không được để trống'),
-  label: z.string().min(1, 'Label không được để trống'),
-  value: z.string().min(1, 'Value không được để trống'),
-  pattern: z.string().min(1, 'Pattern không được để trống'),
-  icon: z.string().optional().nullable(),
-  isActive: z.boolean().default(true)
-});
-export const baseOpeningHourSchema = z.object({
-  id: z.string(),
-  dayOfWeek: z.string(),
-  openTime: z.string(),
-  viNameDay: z.string(),
-  closeTime: z.string(),
-  isClosed: z.boolean()
-});
+import { imageFromDbSchema, imageInputSchema } from './image.schema';
+import { baseOpeningHourSchema } from './restaurant.openingHours.schema';
+import { baseSocialSchema } from './restaurant.socials.schema';
+import { baseThemeSchema } from './restaurant.theme.schema';
 
 export const baseRestaurantSchema = z.object({
   id: z.string().optional(),
@@ -41,38 +17,12 @@ export const baseRestaurantSchema = z.object({
   openingHours: z.array(baseOpeningHourSchema).optional().nullable()
 });
 
-export const restaurantReqSchema = baseRestaurantSchema.extend({
-  logo: imageReqSchema.optional()
+export const restaurantReqCloudinarySchema = baseRestaurantSchema.extend({
+  logo: imageFromDbSchema.optional()
 });
 export const restaurantInputSchema = baseRestaurantSchema.extend({
   logo: imageInputSchema.optional()
 });
-export const baseBannerSchema = z.object({
-  id: z.string().optional(),
-  //   banner1: z.instanceof(File).nullable().optional(),
-  //   banner2: z.instanceof(File).nullable().optional(),
-  //   gallery: z.array(z.instanceof(File)).optional(),
-  startDate: z.date().optional(),
-  isActive: z.boolean().default(false),
-  restaurantId: z.string().optional().nullable(),
-  endDate: z.date().optional()
-});
 
-export const bannerReqSchema = baseBannerSchema.extend({
-  banner: z.array(imageReqSchema).optional(),
-  gallery: z.array(imageReqSchema).optional()
-});
-export const bannerInputSchema = baseBannerSchema.extend({
-  banner1: z.instanceof(File).nullable().optional(),
-  banner2: z.instanceof(File).nullable().optional(),
-  gallery: z.array(z.instanceof(File)).optional()
-  // banner: z.array(imageReqSchema).optional(),
-  // gallery: z.array(imageReqSchema).optional()
-});
-export type ThemeInput = z.infer<typeof baseThemeSchema>;
-export type SocialInput = z.infer<typeof baseSocialSchema>;
-export type OpeningHourInput = z.infer<typeof baseOpeningHourSchema>;
-export type BannerInput = z.infer<typeof bannerInputSchema>;
-export type BannerReq = z.infer<typeof bannerReqSchema>;
 export type RestaurantInput = z.infer<typeof restaurantInputSchema>;
-export type RestaurantReq = z.infer<typeof restaurantReqSchema>;
+export type RestaurantReqCloudinary = z.infer<typeof restaurantReqCloudinarySchema>;

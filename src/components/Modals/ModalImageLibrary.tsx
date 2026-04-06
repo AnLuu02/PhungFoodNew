@@ -1,0 +1,46 @@
+'use client';
+
+import { Group, Modal, ScrollAreaAutosize, ThemeIcon, Title } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
+import { IconPictureInPicture } from '@tabler/icons-react';
+import ImageManager from '~/app/admin/images/components/ImageManager';
+import { ModalProps } from '~/types/modal';
+
+function ModalImageLibrary({ type, opened, onClose }: ModalProps<any>) {
+  const isDesktop = useMediaQuery(`(min-width:1024px)`);
+  return (
+    <>
+      <Modal
+        scrollAreaComponent={ScrollAreaAutosize}
+        opened={opened && type === 'images_library'}
+        radius={'md'}
+        onClose={onClose}
+        size={!isDesktop ? '100%' : '70%'}
+        h={'max-content'}
+        transitionProps={{ transition: 'fade-down', duration: 200 }}
+        padding='md'
+        title={
+          <Group gap='md'>
+            <ThemeIcon size={40} radius='md' variant='light' color='teal'>
+              <IconPictureInPicture style={{ width: 24, height: 24 }} />
+            </ThemeIcon>
+            <Title order={2} className='font-quicksand'>
+              Thư viện
+            </Title>
+          </Group>
+        }
+        pos={'relative'}
+        styles={{
+          header: {},
+          content: {
+            overflow: 'hidden'
+          }
+        }}
+      >
+        {type === 'images_library' && <ImageManager />}
+      </Modal>
+    </>
+  );
+}
+
+export default ModalImageLibrary;

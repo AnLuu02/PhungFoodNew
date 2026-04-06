@@ -156,7 +156,6 @@ export default function InvoiceUpsert({
             )}
           />
         </GridCol>
-        {/* Row 2: Invoice Number & Buyer Name */}
         <GridCol span={6}>
           <Controller
             control={control}
@@ -189,7 +188,6 @@ export default function InvoiceUpsert({
           />
         </GridCol>
 
-        {/* Row 3: Buyer Info */}
         <GridCol span={4}>
           <Controller
             control={control}
@@ -197,7 +195,7 @@ export default function InvoiceUpsert({
             render={({ field }) => (
               <TextInput
                 {...field}
-                value={field.value ?? ''} // Xử lý nullable
+                value={field.value ?? ''}
                 label='Email'
                 placeholder='example@gmail.com'
                 radius='md'
@@ -241,7 +239,6 @@ export default function InvoiceUpsert({
           />
         </GridCol>
 
-        {/* Row 4: Pricing Section (Sử dụng NumberInput của Mantine) */}
         <GridCol span={3}>
           <Controller
             control={control}
@@ -316,7 +313,6 @@ export default function InvoiceUpsert({
           />
         </GridCol>
 
-        {/* Row 5: Payment & Dates */}
         <GridCol span={6}>
           <Controller
             control={control}

@@ -1,42 +1,34 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
-  changeThemeService,
-  createBannerService,
-  createRestaurantService,
-  createSocialService,
   deleteBannerService,
-  deleteSocialService,
   getAllBannerService,
+  getOneBannerService,
+  setDefaultBannerService,
+  upsertBannerService
+} from '~/server/services/restaurant.banner.service';
+import { updateOpeningHoursService } from '~/server/services/restaurant.openingHours.service';
+import {
   getOneActiveClientService,
   getOneActiveService,
-  getOneBannerService,
-  getThemeService,
-  setDefaultBannerService,
-  updateBannerService,
-  updateOpeningHoursService,
-  updateRestaurantService,
-  updateSocialService
+  upsertRestaurantService
 } from '~/server/services/restaurant.service';
-import {
-  bannerReqSchema,
-  baseOpeningHourSchema,
-  baseSocialSchema,
-  baseThemeSchema,
-  restaurantReqSchema
-} from '~/shared/schema/restaurant.schema';
+import { deleteSocialService, upsertSocialService } from '~/server/services/restaurant.socials.service';
+import { changeThemeService, getThemeService } from '~/server/services/restaurant.theme.service';
+import { bannerReqSchemaCloudinary } from '~/shared/schema/restaurant.banner.schema';
+import { baseOpeningHourSchema } from '~/shared/schema/restaurant.openingHours.schema';
+import { restaurantReqCloudinarySchema } from '~/shared/schema/restaurant.schema';
+import { socialSchemaWithRestaurantId } from '~/shared/schema/restaurant.socials.schema';
+import { baseThemeSchema } from '~/shared/schema/restaurant.theme.schema';
 
 export const restaurantRouter = createTRPCRouter({
   getOneActive: publicProcedure.query(async ({ ctx }) => await getOneActiveService(ctx.db)),
   getOneActiveClient: publicProcedure.query(async ({ ctx }) => await getOneActiveClientService(ctx.db)),
-  create: publicProcedure
+  upsert: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(restaurantReqSchema)
-    .mutation(async ({ ctx, input }) => await createRestaurantService(ctx.db, input)),
-  update: publicProcedure
-    .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(restaurantReqSchema)
-    .mutation(async ({ ctx, input }) => await updateRestaurantService(ctx.db, input)),
+    .input(restaurantReqCloudinarySchema)
+    .mutation(async ({ ctx, input }) => await upsertRestaurantService(ctx.db, input)),
+  /////////////////////////////// theme//////////////////////////////////
   changeTheme: publicProcedure
     .input(
       baseThemeSchema.extend({
@@ -45,10 +37,12 @@ export const restaurantRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await changeThemeService(ctx.db, input)),
   getTheme: publicProcedure.query(async ({ ctx }) => await getThemeService(ctx.db)),
+  /////////////////////////////// banners//////////////////////////////////
   getAllBanner: publicProcedure.query(async ({ ctx }) => await getAllBannerService(ctx.db)),
-  createBanner: publicProcedure
-    .input(bannerReqSchema)
-    .mutation(async ({ ctx, input }) => await createBannerService(ctx.db, input)),
+
+  upsertBanner: publicProcedure
+    .input(bannerReqSchemaCloudinary)
+    .mutation(async ({ ctx, input }) => await upsertBannerService(ctx.db, input)),
   getOneBanner: publicProcedure
     .input(
       z.object({
@@ -56,9 +50,7 @@ export const restaurantRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getOneBannerService(ctx.db, input)),
-  updateBanner: publicProcedure
-    .input(bannerReqSchema)
-    .mutation(async ({ ctx, input }) => await updateBannerService(ctx.db, input)),
+
   setDefaultBanner: publicProcedure
     .input(
       z.object({
@@ -69,18 +61,17 @@ export const restaurantRouter = createTRPCRouter({
   deleteBanner: publicProcedure
     .input(
       z.object({
-        id: z.string(),
-        otherId: z.string().optional()
+        id: z.string()
+        // otherId: z.string().optional()
       })
     )
     .mutation(async ({ ctx, input }) => await deleteBannerService(ctx.db, input)),
-  createSocial: publicProcedure
-    .input(baseSocialSchema.extend({ restaurantId: z.string() }))
-    .mutation(async ({ ctx, input }) => await createSocialService(ctx.db, input)),
 
-  updateSocial: publicProcedure
-    .input(baseSocialSchema.partial())
-    .mutation(async ({ ctx, input }) => await updateSocialService(ctx.db, input)),
+  ///////////////////////////////socials//////////////////////////////////
+
+  upsertSocial: publicProcedure
+    .input(socialSchemaWithRestaurantId)
+    .mutation(async ({ ctx, input }) => await upsertSocialService(ctx.db, input)),
   deleteSocial: publicProcedure
     .input(
       z.object({
@@ -89,7 +80,7 @@ export const restaurantRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await deleteSocialService(ctx.db, input)),
-  //opening hour
+  ///////////////////////////////   opening hour //////////////////////////////////
   updateOpeningHours: publicProcedure
     .input(
       z.object({

@@ -6,9 +6,9 @@ import {
   findProductService,
   getAllProductService,
   getOneProductService,
-  upsertProductService
+  upsertProductToCloudinaryService
 } from '~/server/services/product.service';
-import { productReqSchema } from '~/shared/schema/product.schema';
+import { productFromDbSchema } from '~/shared/schema/product.schema';
 
 export const productRouter = createTRPCRouter({
   find: publicProcedure
@@ -37,20 +37,11 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await findProductService(ctx.db, input)),
-  // create: publicProcedure
-  //   .use(requirePermission('create:product'))
-  //   .input(productReqSchema)
-  //   .mutation(async ({ ctx, input }) => await createProductService(ctx.db, input)),
-
-  // update: publicProcedure
-  //   .use(requirePermission('update:product'))
-  //   .input(productReqSchema)
-  //   .mutation(async ({ ctx, input }) => await updateProductService(ctx.db, input)),
-  upsert: publicProcedure
+  upsertToCloudinary: publicProcedure
     .use(requirePermission('update:product'))
     .use(requirePermission('create:product'))
-    .input(productReqSchema)
-    .mutation(async ({ ctx, input }) => await upsertProductService(ctx.db, input)),
+    .input(productFromDbSchema) //
+    .mutation(async ({ ctx, input }) => await upsertProductToCloudinaryService(ctx.db, input)),
 
   delete: publicProcedure
     .use(requirePermission('delete:product'))
@@ -60,18 +51,6 @@ export const productRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await deleteProductService(ctx.db, input)),
-  // getFilter: publicProcedure
-  //   .input(
-  //     z.object({
-  //       s: z.string().optional(),
-  //       hasCategory: z.boolean().default(false).optional(),
-  //       hasCategoryChild: z.boolean().default(false).optional(),
-  //       hasReview: z.boolean().default(false).optional(),
-  //       userRole: z.string().optional()
-  //     })
-  //   )
-  //   .query(async ({ ctx, input }) => await getFilterProductService(ctx.db, input)),
-
   getOne: publicProcedure
     .input(
       z.object({
@@ -94,46 +73,4 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getAllProductService(ctx.db, input))
-
-  // getTotalProductSales: publicProcedure.query(async ({ ctx }) => {
-  //   const totalProductSales = await ctx.db.product.aggregate({
-  //     _sum: {
-  //       soldQuantity: true
-  //     }
-  //   });
-  //   return totalProductSales._sum.soldQuantity;
-  // }),
-
-  // getProductBestSalerByQuarter: publicProcedure
-  //   .input(
-  //     z.object({
-  //       query: z.enum(['all', 'week', 'month', 'year']).default('week')
-  //     })
-  //   )
-  //   .query(async ({ ctx, input }) => {
-  //     const { query }: any = input;
-  //     const caller = createCaller(ctx);
-
-  //     const orders: any = await caller.Order.getAll();
-
-  //     let products;
-  //     switch (query) {
-  //       case 'all':
-  //         products = [];
-  //         break;
-  //       case 'week':
-  //         products = orders.filter((order: any) => order.updatedAt > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
-  //         break;
-  //       case 'month':
-  //         products = orders.filter((order: any) => order.updatedAt > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
-  //         break;
-  //       case 'year':
-  //         products = orders.filter((order: any) => order.updatedAt > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000));
-  //         break;
-  //       default:
-  //         products = orders;
-  //     }
-
-  //     return products;
-  //   })
 });

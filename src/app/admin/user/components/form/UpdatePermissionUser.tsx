@@ -5,7 +5,7 @@ import FilterSection from '~/app/admin/role/components/Section/FilterSection';
 import PermissionSection from '~/app/admin/role/components/Section/PermissionSection';
 import { FilterPermission } from '~/app/admin/role/components/types';
 import BButton from '~/components/Button/Button';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -79,7 +79,7 @@ export default function UpdatePermissionUser({
   }, []);
 
   if (isLoadingUser) {
-    return <LoadingSpiner />;
+    return <ModalUpsertSkeleton />;
   }
 
   return (
@@ -93,7 +93,7 @@ export default function UpdatePermissionUser({
           <Paper
             p={'lg'}
             radius={'md'}
-            className='sticky left-0 top-[65px] z-10 flex items-center justify-between bg-gray-100'
+            className='sticky left-0 top-[65px] z-10 flex items-center justify-between bg-gray-100 dark:bg-dark-card'
           >
             <Box>
               <Text fw={600}>{user.name}</Text>

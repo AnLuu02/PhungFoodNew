@@ -64,7 +64,9 @@ export function DeliveryCard({ control, setValue, name }: { control: any; setVal
               )}
             />
           </GridCol>
-          <AddressSection control={control} setValue={setValue} name={`${name}.address`} />
+          <GridCol span={12}>
+            <AddressSection control={control} setValue={setValue} name={`${name}.address`} />
+          </GridCol>
           <GridCol span={12}>
             <Controller
               name={`${name}.note`}

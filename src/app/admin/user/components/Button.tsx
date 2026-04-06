@@ -39,7 +39,7 @@ export function UpdatePermissions({ email }: { email: any }) {
   return (
     <>
       <Tooltip label='Cập nhật quyền'>
-        <ActionIcon variant='transparent' color='black' onClick={() => setOpened(true)}>
+        <ActionIcon variant='transparent' color='black' onClick={() => setOpened(true)} className='dark:text-dark-text'>
           <IconKey size={20} />
         </ActionIcon>
       </Tooltip>

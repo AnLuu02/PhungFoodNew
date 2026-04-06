@@ -5,11 +5,10 @@ import {
   deleteSubCategoryService,
   findSubCategoryService,
   getAllSubCategoryService,
-  getFilterSubCategoryService,
   getOneSubCategoryService,
   upsertSubCategoryService
 } from '~/server/services/subCategory.service';
-import { subCategoryReqSchema } from '~/shared/schema/subCategory.schema';
+import { subCategoryFromDbSchema } from '~/shared/schema/subCategory.schema';
 
 export const subCategoryRouter = createTRPCRouter({
   find: publicProcedure
@@ -21,7 +20,6 @@ export const subCategoryRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await findSubCategoryService(ctx.db, input)),
-
   delete: publicProcedure
     .use(requirePermission('delete:subCategory'))
 
@@ -31,14 +29,6 @@ export const subCategoryRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await deleteSubCategoryService(ctx.db, input)),
-
-  getFilter: publicProcedure
-    .input(
-      z.object({
-        s: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => await getFilterSubCategoryService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({
@@ -50,6 +40,6 @@ export const subCategoryRouter = createTRPCRouter({
   upsert: publicProcedure
     .use(requirePermission('update:subCategory'))
     .use(requirePermission('create:subCategory'))
-    .input(subCategoryReqSchema)
+    .input(subCategoryFromDbSchema)
     .mutation(async ({ ctx, input }) => await upsertSubCategoryService(ctx.db, input))
 });

@@ -1,16 +1,15 @@
 import { EntityType, ImageType, Prisma, PrismaClient, TokenType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { del, put } from '@vercel/blob';
 import { compare, hash } from 'bcryptjs';
 import crypto, { randomInt } from 'crypto';
 import dayjs from 'dayjs';
 import { Session } from 'next-auth';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
-import { getFileNameFromVercelBlob, tokenBlobVercel } from '~/lib/FuncHandler/handle-file-base64';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { UserRole } from '~/shared/constants/user';
-import { UserReq } from '~/shared/schema/user.schema';
+import { ImageFromDb, StatusImage } from '~/shared/schema/image.schema';
+import { UserFromDb } from '~/shared/schema/user.schema';
 import { db } from '../db';
 
 const MAX_FAILED_ATTEMPTS = 5;
@@ -90,7 +89,6 @@ export const createOTP = (timeExpiredMinutes = 3) => {
   };
 };
 
-// fetch
 export const findUserService = async (
   db: PrismaClient,
   input: {
@@ -187,7 +185,9 @@ export const findUserService = async (
     }
   };
 };
-export const createUserService = async (db: PrismaClient, input: UserReq, session: Session | null) => {
+export const createUserService = async (db: PrismaClient, input: UserFromDb, session: Session | null) => {
+  const { id, image, address, roleId, ...data } = input;
+
   const [existed, roles] = await db.$transaction([
     db.user.findFirst({
       where: {
@@ -199,6 +199,11 @@ export const createUserService = async (db: PrismaClient, input: UserReq, sessio
     }),
     db.role.findMany({})
   ]);
+  let imageFromDb: ImageFromDb | null = null;
+  if (image && image?.status) {
+    const { status, ...data } = image;
+    imageFromDb = data;
+  }
   let defaultRole;
   if (roles.length > 0) {
     if (input.roleId) {
@@ -229,17 +234,6 @@ export const createUserService = async (db: PrismaClient, input: UserReq, sessio
     }
   }
 
-  let imgURL: string | undefined;
-
-  if (input?.image && input.image.fileName) {
-    if (input.image?.base64) {
-      const buffer = Buffer.from(input.image.base64, 'base64');
-      const blob = await put(input.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-      imgURL = blob.url;
-    } else {
-      imgURL = input.image.fileName;
-    }
-  }
   let otpExpired = dayjs().toDate(),
     otpHash = '',
     otp = '';
@@ -251,14 +245,9 @@ export const createUserService = async (db: PrismaClient, input: UserReq, sessio
   const passwordHash = await hashPassword(input.password);
   const user = await db.user.create({
     data: {
-      name: input.name,
-      email: input.email,
-      gender: input.gender,
-      dateOfBirth: input.dateOfBirth,
-      isActive: input.isActive,
+      ...data,
       isVerified: regexCheckGuest.test(input.email) ? true : false,
       password: passwordHash,
-      phone: input.phone,
       tokens: otpHash
         ? {
             create: {
@@ -275,16 +264,18 @@ export const createUserService = async (db: PrismaClient, input: UserReq, sessio
         : undefined,
       pointUser: input.pointUser,
       level: input.level,
-      image: imgURL
-        ? {
-            create: {
-              entityType: EntityType.USER,
-              altText: `Ảnh ${input.name}`,
-              url: imgURL,
-              type: ImageType.THUMBNAIL
+      image:
+        imageFromDb && image?.status === StatusImage.NEW
+          ? {
+              create: {
+                ...imageFromDb,
+                url: imageFromDb?.url || '',
+                altText: imageFromDb?.altText || 'Ảnh đại diện của ' + data?.name,
+                type: imageFromDb?.type || ImageType.LOGO,
+                entityType: imageFromDb?.entityType || EntityType.USER
+              }
             }
-          }
-        : undefined,
+          : undefined,
       role:
         roles.length > 0
           ? {
@@ -302,156 +293,113 @@ export const createUserService = async (db: PrismaClient, input: UserReq, sessio
 
   return user;
 };
-export const updateUserService = async (db: PrismaClient, input: any) => {
-  const existed = await db.user.findFirst({
+
+export const upsertUserService = async (db: PrismaClient, input: UserFromDb) => {
+  const { id, image, address, roleId, ...data } = input;
+  const existed = await db.user.findUnique({
     where: {
-      email: input.email
-    },
-    include: { image: true }
-  });
-
-  let imgURL: string | undefined;
-  const oldImage = existed?.image;
-
-  if (input?.image?.fileName) {
-    const filenameImgFromDb = oldImage ? getFileNameFromVercelBlob(oldImage.url) : null;
-
-    if (!filenameImgFromDb || filenameImgFromDb !== input.image.fileName) {
-      if (oldImage) await del(oldImage.url, { token: tokenBlobVercel });
-      const buffer = Buffer.from(input.image.base64, 'base64');
-      const blob = await put(input.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-      imgURL = blob.url;
-    } else {
-      imgURL = oldImage?.url;
+      id: id || 'default_id_findUnique'
     }
-  }
-
-  if (oldImage && oldImage.url && input.image?.fileName === '') {
-    await del(oldImage.url, { token: tokenBlobVercel });
-  }
-
-  if (!existed || existed.id === input.id) {
-    const user = await db.user.update({
-      where: { id: input.id },
-      data: {
-        name: input.name,
-        email: input.email,
-        dateOfBirth: input.dateOfBirth,
-        isActive: input.isActive,
-        phone: input.phone,
-        gender: input.gender,
-        address: {
-          upsert: {
-            create: {
-              ...input.address
-            },
-            update: {
-              ...input.address
-            }
-          } as any
-        },
-        pointUser: input.pointUser,
-        level: input.level,
-        role: {
-          connect: {
-            id: input.roleId
-          }
-        },
-        image: imgURL
-          ? {
-              upsert: {
-                where: { id: oldImage?.id || '' },
-                update: {
-                  entityType: EntityType.USER,
-                  altText: `Ảnh ${input.name}`,
-                  url: imgURL,
-                  type: ImageType.THUMBNAIL
-                },
-                create: {
-                  entityType: EntityType.USER,
-                  altText: `Ảnh ${input.name}`,
-                  url: imgURL,
-                  type: ImageType.THUMBNAIL
-                }
-              }
-            }
-          : oldImage?.url && input.image?.fileName === ''
-            ? {
-                delete: {
-                  id: oldImage?.id || ''
-                }
-              }
-            : undefined
-      }
+  });
+  if (existed && existed?.email !== data?.email) {
+    throw new TRPCError({
+      code: 'CONFLICT',
+      message: 'Email này đã tồn tại. Hãy thử lại.'
     });
-    return user;
   }
-
-  throw new TRPCError({
-    code: 'CONFLICT',
-    message: 'Người dùng đã tồn tại. Hãy thử lại.'
-  });
-};
-export const updateUserCustomService = async (db: PrismaClient, input: { where: any; data: any }) => {
-  const { where, data } = input;
-  const existed = await db.user.findFirst({
-    where: where as Prisma.UserWhereUniqueInput,
-    include: { image: true }
-  });
-
-  let imgURL: string | undefined;
-  const oldImage = existed?.image;
-
-  if (data?.image?.fileName) {
-    const filenameImgFromDb = oldImage ? getFileNameFromVercelBlob(oldImage.url) : null;
-    if (data.image?.base64) {
-      if (!filenameImgFromDb || filenameImgFromDb !== data.image.fileName) {
-        if (oldImage) await del(oldImage.url, { token: tokenBlobVercel });
-        const buffer = Buffer.from(data.image.base64, 'base64');
-        const blob = await put(data.image.fileName, buffer, { access: 'public', token: tokenBlobVercel });
-        imgURL = blob.url;
-      } else {
-        imgURL = oldImage?.url;
-      }
-    } else {
-      imgURL = data.image.fileName;
-    }
+  let imageFromDb: ImageFromDb | null = null;
+  if (image && image?.status) {
+    const { status, ...data } = image;
+    imageFromDb = data;
   }
-
-  if (oldImage && oldImage.url && data.image?.fileName === '') {
-    await del(oldImage.url, { token: tokenBlobVercel });
-  }
-
-  const user = await db.user.update({
-    where: where as Prisma.UserWhereUniqueInput,
-    data: {
+  const upsertUser = await db.user.upsert({
+    where: {
+      id: id || 'default_id_user'
+    },
+    create: {
       ...data,
-      image: imgURL
+      role: roleId
         ? {
-            upsert: {
-              where: { id: oldImage?.id || '' },
-              update: {
-                entityType: EntityType.USER,
-                altText: `Ảnh ${data.name}`,
-                url: imgURL,
-                type: ImageType.THUMBNAIL
-              },
-              create: {
-                entityType: EntityType.USER,
-                altText: `Ảnh ${data.name}`,
-                url: imgURL,
-                type: ImageType.THUMBNAIL
-              }
+            connect: {
+              id: roleId || 'default_role_id_connected'
             }
           }
-        : oldImage?.url && data.image?.fileName === ''
+        : undefined,
+      address: address
+        ? {
+            create: {
+              ...address,
+              id: undefined
+            }
+          }
+        : undefined,
+      image:
+        imageFromDb && image?.status === StatusImage.NEW
           ? {
-              delete: {
-                id: oldImage?.id || ''
+              create: {
+                ...imageFromDb,
+                url: imageFromDb?.url || '',
+                altText: imageFromDb?.altText || 'Ảnh đại diện của ' + data?.name,
+                type: imageFromDb?.type || ImageType.LOGO,
+                entityType: imageFromDb?.entityType || EntityType.USER
               }
             }
           : undefined
+    },
+    update: {
+      ...data,
+      role: roleId
+        ? {
+            connect: {
+              id: roleId || 'default_role_id_connected'
+            }
+          }
+        : undefined,
+      address: address
+        ? {
+            upsert: {
+              where: {
+                id: address?.id || 'default_address_id_upsert'
+              },
+              create: {
+                ...address,
+                id: undefined
+              },
+              update: {
+                ...address,
+                id: undefined
+              }
+            }
+          }
+        : undefined,
+      image: {
+        ...(imageFromDb && image?.status === StatusImage.NEW
+          ? {
+              create: {
+                ...imageFromDb,
+                url: imageFromDb?.url || '',
+                altText: imageFromDb?.altText || 'Ảnh đại diện của ' + data?.name,
+                type: imageFromDb?.type || ImageType.LOGO,
+                entityType: imageFromDb?.entityType || EntityType.USER
+              }
+            }
+          : undefined),
+        disconnect:
+          image?.status === StatusImage.DELETED && image?.publicId
+            ? { publicId: image?.publicId || 'default_public_id_delete' }
+            : undefined
+      }
     }
+  });
+
+  return upsertUser;
+};
+
+export const updateUserCustomService = async (db: PrismaClient, input: { where: any; data: any }) => {
+  const { where, data } = input;
+  const user = await db.user.update({
+    where: where as Prisma.UserWhereUniqueInput,
+    data: data
   });
   return user;
 };
@@ -467,9 +415,6 @@ export const deleteUserService = async (db: PrismaClient, input: { id: string })
       message: 'Ngươi dùng không tồn tại. Hãy thử lại.'
     });
   }
-
-  user?.image?.url && (await del(user?.image?.url, { token: tokenBlobVercel }));
-
   const deleteduser = await db.user.delete({ where: { id: input.id } });
 
   return deleteduser;

@@ -1,7 +1,7 @@
 import { Card, Flex, Group, Skeleton } from '@mantine/core';
-export const CardSkeleton = () => {
+export const CardSkeleton = ({ w, h }: { w?: number; h?: number }) => {
   return (
-    <Card h={320} radius='md' padding={'md'} shadow='sm' pos={'relative'}>
+    <Card h={h || 320} radius='md' padding={'md'} shadow='sm' pos={'relative'}>
       <Card.Section>
         <Skeleton h={160} />
       </Card.Section>

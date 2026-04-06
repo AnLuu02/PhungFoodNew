@@ -1,13 +1,17 @@
 'use client';
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
-const OrderItemForm = ({ index, removeOrderItem }: { index: number; removeOrderItem: (index: number) => void }) => {
+const OrderItemForm = ({ index }: { index: number }) => {
   const { watch, setValue, getValues, control } = useFormContext();
+  const { remove: removeOrderItem } = useFieldArray({
+    control,
+    name: 'orderItems'
+  });
   const [productOrderItem, setProductOrderItem] = useState<any>({});
   const { data: products } = api.Product.getAll.useQuery({
     hasCategory: true,

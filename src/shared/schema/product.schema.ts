@@ -1,6 +1,6 @@
 import z from 'zod';
 import { createTag } from '~/lib/FuncHandler/generateTag';
-import { imageFromDbSchema, imageReqSchema } from './image.schema';
+import { imageFromDbSchema, imageInputSchema } from './image.schema';
 
 export const getServiceOptionsSchema = z.object({
   s: z.string().optional(),
@@ -52,8 +52,6 @@ export const baseProductSchema = z.object({
     .min(0, 'Giá trị không được nhỏ hơn 0')
     .optional()
     .default(0),
-  //   thumbnail: z.instanceof(File).optional(),
-  //   gallery: z.array(z.instanceof(File)).optional(),
   subCategoryId: z.string({ required_error: 'Hãy chọn danh mục sản phẩm' }).min(1, 'Hãy chọn danh mục sản phẩm'),
   rating: z.number().optional(),
   totalRating: z.number().optional(),
@@ -62,24 +60,11 @@ export const baseProductSchema = z.object({
   materials: z.array(z.string()).optional()
 });
 
-export const productReqSchema = baseProductSchema
-  .extend({
-    thumbnail: imageReqSchema.optional(),
-    gallery: z.array(imageReqSchema).optional()
-  })
-  .transform(data => ({
-    ...data,
-    tag: createTag('Sản phẩm ' + data?.name)
-  }))
-  .refine(data => data.discount < data.price, {
-    message: 'Giảm giá không được vượt quá 80% giá trị sản phẩm.',
-    path: ['discount']
-  });
-
 export const productInputSchema = baseProductSchema
   .extend({
-    thumbnail: z.instanceof(File).optional(),
-    gallery: z.array(z.instanceof(File)).optional()
+    thumbnail: imageInputSchema.optional(),
+    gallery: z.array(imageInputSchema).optional(),
+    galleryInput: z.array(z.instanceof(File)).optional()
   })
   .transform(data => ({
     ...data,
@@ -92,8 +77,7 @@ export const productInputSchema = baseProductSchema
 
 export const productFromDbSchema = baseProductSchema
   .extend({
-    thumbnail: imageFromDbSchema.optional(),
-    gallery: z.array(imageFromDbSchema).optional()
+    images: z.array(imageFromDbSchema).optional()
   })
   .transform(data => ({
     ...data,
@@ -105,7 +89,6 @@ export const productFromDbSchema = baseProductSchema
   });
 
 export type ProductInput = z.infer<typeof productInputSchema>;
-export type ProductReq = z.infer<typeof productReqSchema>;
 export type ProductFromDb = z.infer<typeof productFromDbSchema>;
 
 export type FilterProductInput = z.infer<typeof filterProductInputSchema>;

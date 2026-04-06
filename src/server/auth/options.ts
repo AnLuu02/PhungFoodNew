@@ -1,4 +1,4 @@
-import { Gender, UserLevel } from '@prisma/client';
+import { EntityType, Gender, ImageType, UserLevel } from '@prisma/client';
 import { compare } from 'bcryptjs';
 import { randomBytes } from 'crypto';
 import type { NextAuthOptions } from 'next-auth';
@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
               pointUser: 0,
               level: UserLevel.BRONZE,
               password: randomPass,
-              image: image ? { fileName: image, base64: '' } : undefined,
+              image: image ? { url: image, type: ImageType.LOGO, entityType: EntityType.USER } : undefined,
               phone: ''
             },
             null
@@ -93,8 +93,7 @@ export const authOptions: NextAuthOptions = {
           await updateUserCustomService(db, {
             where: { email },
             data: {
-              name: userFromDb?.name || 'Khách hàng',
-              image: { fileName: image, base64: '' }
+              name: userFromDb?.name || 'Khách hàng'
             }
           });
         }
