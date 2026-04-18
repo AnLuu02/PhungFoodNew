@@ -73,8 +73,8 @@ export default function MegaMenu({ categories }: { categories: any }) {
                     className='hover:bg-mainColor/10'
                     leftSection={
                       <Image
-                        src={item?.subCategory?.[0]?.image?.url || '/images/png/momo.png'}
-                        alt={item.image?.altText}
+                        src={item?.subCategory?.[0]?.imageForEntity?.image?.url || '/images/png/momo.png'}
+                        alt={item?.imageForEntity?.altText || 'Ảnh minh họa'}
                         width={30}
                         height={30}
                         style={{ objectFit: 'cover' }}
@@ -113,8 +113,8 @@ export default function MegaMenu({ categories }: { categories: any }) {
                       >
                         <Image
                           loading='lazy'
-                          src={category.image?.url || '/images/png/momo.png'}
-                          alt={category.name}
+                          src={category?.imageForEntity?.image?.url || '/images/png/momo.png'}
+                          alt={category?.name || 'Ảnh minh họa'}
                           width={50}
                           height={50}
                           className='rounded-md object-cover'
@@ -173,7 +173,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
                                 <Image
                                   loading='lazy'
                                   src={
-                                    getImageProduct(product?.images, ImageType.THUMBNAIL) ||
+                                    getImageProduct(product?.imageForEntities, ImageType.THUMBNAIL) ||
                                     '/images/jpg/empty-300x240.jpg'
                                   }
                                   alt={product.name}

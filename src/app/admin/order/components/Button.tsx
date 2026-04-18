@@ -24,6 +24,7 @@ export function CreateOrderButton() {
       </BButton>
       <Modal
         closeOnClickOutside={false}
+        zIndex={150}
         size={'100%'}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -96,6 +97,7 @@ export function UpdateOrderButton({ id }: { id: string }) {
       </Tooltip>
       <Modal
         closeOnClickOutside={false}
+        zIndex={150}
         size={'100%'}
         opened={opened}
         onClose={() => setOpened(false)}

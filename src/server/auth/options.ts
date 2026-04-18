@@ -4,6 +4,7 @@ import { randomBytes } from 'crypto';
 import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
+import { StatusImage } from '~/shared/schema/image.info.schema';
 import { db } from '../db';
 import {
   createUserService,
@@ -52,7 +53,7 @@ export const authOptions: NextAuthOptions = {
           id: user?.id,
           name: user?.name,
           email: user?.email,
-          image: user?.image?.url,
+          image: user?.imageForEntity?.image?.url,
           role: user?.role?.name,
           permissions: user?.role?.permissions.map(p => p.name)
         };
@@ -83,13 +84,25 @@ export const authOptions: NextAuthOptions = {
               pointUser: 0,
               level: UserLevel.BRONZE,
               password: randomPass,
-              image: image ? { url: image, type: ImageType.LOGO, entityType: EntityType.USER } : undefined,
+              imageForEntity: image
+                ? {
+                    entityType: EntityType.USER,
+                    altText: `Ảnh ${user?.name}`,
+                    type: ImageType.THUMBNAIL,
+                    status: StatusImage.NEW,
+                    image: {
+                      url: image,
+                      type: ImageType.THUMBNAIL,
+                      altText: `Ảnh ${user?.name}`
+                    }
+                  }
+                : undefined,
               phone: ''
             },
             null
           );
         }
-        if (!userFromDb?.image && image) {
+        if (!userFromDb?.imageForEntity && image) {
           await updateUserCustomService(db, {
             where: { email },
             data: {
@@ -113,7 +126,7 @@ export const authOptions: NextAuthOptions = {
         if (userFromDb?.id) {
           token.role = userFromDb?.role?.name;
           token.id = userFromDb?.id;
-          token.picture = userFromDb?.image?.url;
+          token.picture = userFromDb?.imageForEntity?.image?.url;
           token.permissions = userFromDb?.role?.permissions.map(p => p.name);
         }
       } catch (error) {

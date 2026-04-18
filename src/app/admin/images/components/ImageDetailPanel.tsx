@@ -27,7 +27,7 @@ import { IconCopy, IconDownload, IconEdit, IconTrash, IconUnlink } from '@tabler
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
-import { NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
 interface ImageDetailPanelProps {
@@ -43,7 +43,6 @@ type FormValues = {
 
 export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageDetailPanelProps) {
   const [editOpened, { open: openEdit, close: closeEdit }] = useDisclosure(false);
-  const utils = api.useUtils();
   const { data: image, isLoading } = api.Images.getImageById.useQuery({
     id: imageId
   });
@@ -61,9 +60,32 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
       onRefresh();
     }
   });
+  const utils = api.useUtils();
   const detachMutation = api.Images.detachImageFromEntity.useMutation({
     onSuccess: () => {
       onRefresh();
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+    },
+    onMutate: async newTodo => {
+      await utils.Images.getImageById.cancel();
+      const prevData = utils.Images.getImageById.getData();
+      utils.Images.getImageById.setData({ id: imageId }, old => {
+        if (!old) return old;
+        const newData = old.associations.filter(i => i.id !== newTodo.entityId);
+        return {
+          ...old,
+          associations: newData,
+          isOrphaned: newData.length === 0,
+          usageCount: newData.length
+        };
+      });
+      return { prevData };
+    },
+    onSettled: () => {
+      utils.Images.getImageById.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 
@@ -80,8 +102,8 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
   );
 
   const handleDetachImage = useCallback(
-    (imageId: string, entityType: EntityType) => {
-      detachMutation.mutate({ imageId, entityType });
+    (imageId: string, entityType: EntityType, entityId: string) => {
+      detachMutation.mutate({ imageId, entityType, entityId });
     },
     [detachMutation]
   );
@@ -267,7 +289,8 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                             size='xs'
                             color='red'
                             variant='outline'
-                            onClick={() => handleDetachImage(imageId, assoc.type)}
+                            loading={detachMutation.isPending}
+                            onClick={() => handleDetachImage(imageId, assoc.type, assoc.id)}
                           >
                             Gỡ
                           </Button>
@@ -334,11 +357,10 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
         opened={editOpened}
         onClose={closeEdit}
         radius={'md'}
-        title={
-          <Title order={2} className='font-quicksand'>
-            Chỉnh sửa Metadata ảnh
-          </Title>
-        }
+        title={'Chỉnh sửa Metadata ảnh'}
+        classNames={{
+          title: 'font-quicksand text-2xl font-bold'
+        }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack gap='md'>

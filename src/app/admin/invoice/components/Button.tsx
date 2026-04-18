@@ -33,6 +33,7 @@ export function CreateInvoiceButton({ allData }: any) {
         radius={'md'}
         opened={opened}
         closeOnClickOutside={false}
+        zIndex={150}
         size={'xl'}
         onClose={() => setOpened(false)}
         title={
@@ -58,6 +59,7 @@ export function UpdateInvoiceButton({ id }: { id: string }) {
         radius={'md'}
         size={'xl'}
         opened={opened}
+        zIndex={150}
         closeOnClickOutside={false}
         onClose={() => setOpened(false)}
         title={
@@ -107,6 +109,7 @@ export function ViewInvoiceButton({ data }: { data: any }) {
         opened={opened}
         onClose={() => setOpened(false)}
         size='xl'
+        zIndex={150}
         radius='lg'
         padding={0}
         withCloseButton={false}
@@ -202,7 +205,10 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                       <Flex justify='space-between' align='center'>
                         <Group>
                           <Image
-                            src={getImageProduct(item?.product?.images, 'THUMBNAIL') || '/images/png/empty_cart.png'}
+                            src={
+                              getImageProduct(item?.product?.imageForEntities, 'THUMBNAIL') ||
+                              '/images/png/empty_cart.png'
+                            }
                             width={50}
                             alt='Anh mon an'
                             height={50}

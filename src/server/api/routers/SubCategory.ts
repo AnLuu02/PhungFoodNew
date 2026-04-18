@@ -8,7 +8,7 @@ import {
   getOneSubCategoryService,
   upsertSubCategoryService
 } from '~/server/services/subCategory.service';
-import { subCategoryFromDbSchema } from '~/shared/schema/subCategory.schema';
+import { subCategoryInputSchema } from '~/shared/schema/subCategory.schema';
 
 export const subCategoryRouter = createTRPCRouter({
   find: publicProcedure
@@ -40,6 +40,6 @@ export const subCategoryRouter = createTRPCRouter({
   upsert: publicProcedure
     .use(requirePermission('update:subCategory'))
     .use(requirePermission('create:subCategory'))
-    .input(subCategoryFromDbSchema)
+    .input(subCategoryInputSchema)
     .mutation(async ({ ctx, input }) => await upsertSubCategoryService(ctx.db, input))
 });

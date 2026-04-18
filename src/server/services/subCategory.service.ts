@@ -1,8 +1,8 @@
 import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
-import { ImageFromDb, StatusImage } from '~/shared/schema/image.schema';
-import { SubCategoryFromDb } from '~/shared/schema/subCategory.schema';
+import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
+import { SubCategoryInput } from '~/shared/schema/subCategory.schema';
 
 export const findSubCategoryService = async (db: PrismaClient, input: any) => {
   const { skip, take, s } = input;
@@ -62,16 +62,29 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
       },
       include: {
         category: true,
-        image: true,
+        imageForEntity: {
+          select: {
+            altText: true,
+            image: {
+              select: {
+                publicId: true,
+                url: true
+              }
+            }
+          }
+        },
         product: {
           where: {
             isActive: true
           },
           include: {
             favouriteFood: true,
-            images: true
+            imageForEntities: { include: { image: true } }
           }
         }
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     })
   ]);
@@ -90,8 +103,7 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
 };
 export const deleteSubCategoryService = async (db: PrismaClient, input: any) => {
   const subCategory = await db.subCategory.findUnique({
-    where: { id: input.id },
-    include: { image: true }
+    where: { id: input.id }
   });
 
   if (!subCategory) {
@@ -130,7 +142,11 @@ export const getOneSubCategoryService = async (db: PrismaClient, input: { s?: st
     },
     include: {
       category: true,
-      image: true
+      imageForEntity: {
+        include: {
+          image: true
+        }
+      }
     }
   });
 
@@ -139,16 +155,16 @@ export const getOneSubCategoryService = async (db: PrismaClient, input: { s?: st
 export const getAllSubCategoryService = async (db: PrismaClient) => {
   return await db.subCategory.findMany({
     include: {
-      image: true,
+      imageForEntity: { include: { image: true } },
       category: true
     }
   });
 };
-export const upsertSubCategoryService = async (db: PrismaClient, input: SubCategoryFromDb) => {
-  const { id, image, categoryId, ...data } = input;
-  let imageDb: Omit<ImageFromDb, 'status'> | undefined, statusFromReq;
-  if (image?.status) {
-    const { status, ...rest } = image;
+export const upsertSubCategoryService = async (db: PrismaClient, input: SubCategoryInput) => {
+  const { id, imageForEntity, categoryId, ...data } = input;
+  let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;
+  if (imageForEntity?.status) {
+    const { status, ...rest } = imageForEntity;
     imageDb = rest;
     statusFromReq = status;
   }
@@ -156,9 +172,10 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
     ? await db.subCategory.findUnique({
         where: { id },
         include: {
-          image: {
+          imageForEntity: {
             include: {
-              subCategories: {
+              image: true,
+              subCategory: {
                 select: { id: true }
               }
             }
@@ -174,9 +191,9 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
       throw new TRPCError({ code: 'CONFLICT', message: 'Rất tiếc danh mục đã tồn tại.' });
     }
   }
-  const isDeleted = Boolean(statusFromReq === StatusImage.DELETED && imageDb && imageDb?.publicId);
+
   const updatedSubCategory = await db.subCategory.upsert({
-    where: { id: id || 'NEW_ID' },
+    where: { id: id ?? 'default_upsert_id' },
     create: {
       ...data,
       category: {
@@ -184,20 +201,27 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
           id: categoryId
         }
       },
-      image: {
-        connectOrCreate:
+      imageForEntity: {
+        create:
           statusFromReq === StatusImage.NEW && imageDb
             ? {
-                where: {
-                  publicId: imageDb?.publicId || 'connect-or-create-image-id'
-                },
-                create: {
-                  ...imageDb,
-                  id: undefined,
-                  entityType: EntityType.SUB_CATEGORY,
-                  altText: `Ảnh ${data.name}`,
-                  url: imageDb?.url || '',
-                  type: ImageType.THUMBNAIL
+                ...imageDb,
+                id: undefined,
+                entityType: EntityType.CATEGORY,
+                altText: `Ảnh ${data.name}`,
+                type: ImageType.THUMBNAIL,
+                image: {
+                  connectOrCreate: {
+                    where: {
+                      publicId: imageDb?.image?.publicId
+                    },
+                    create: {
+                      ...(imageDb?.image ?? {}),
+                      url: imageDb?.image?.url || '',
+                      altText: imageDb?.image?.altText || 'Ảnh của danh mục ' + (data?.name || ''),
+                      type: imageDb?.image?.type || ImageType.THUMBNAIL
+                    }
+                  }
                 }
               }
             : undefined
@@ -205,32 +229,65 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
     },
     update: {
       ...data,
-      category: {
-        connect: {
-          id: categoryId
-        }
-      },
-      image: {
-        connectOrCreate:
-          statusFromReq === StatusImage.NEW && imageDb
+      category: categoryId
+        ? {
+            connect: {
+              id: categoryId
+            }
+          }
+        : undefined,
+      imageForEntity:
+        statusFromReq === StatusImage.DELETED && imageDb?.id
+          ? {
+              delete: { id: imageDb.id }
+            }
+          : imageDb
             ? {
-                where: {
-                  publicId: imageDb?.publicId || 'connect-or-create-image-id'
-                },
-                create: {
-                  ...imageDb,
-                  id: undefined,
-                  entityType: EntityType.SUB_CATEGORY,
-                  altText: `Ảnh ${data.name}`,
-                  url: imageDb?.url || '',
-                  type: ImageType.THUMBNAIL
+                upsert: {
+                  where: { id: imageDb.id },
+                  update: {
+                    ...imageDb,
+                    image:
+                      statusFromReq === StatusImage.NEW && imageDb.image
+                        ? {
+                            connectOrCreate: {
+                              where: {
+                                publicId: imageDb.image.publicId
+                              },
+                              create: {
+                                ...imageDb.image,
+                                url: imageDb?.image?.url || '',
+                                altText: imageDb?.image?.altText || 'Ảnh của danh mục ' + (data?.name || ''),
+                                type: imageDb?.image?.type || ImageType.THUMBNAIL
+                              }
+                            }
+                          }
+                        : undefined
+                  },
+                  create: {
+                    ...imageDb,
+                    image:
+                      statusFromReq === StatusImage.NEW && imageDb.image
+                        ? {
+                            connectOrCreate: {
+                              where: {
+                                publicId: imageDb.image.publicId
+                              },
+                              create: {
+                                ...imageDb.image,
+                                url: imageDb.image.url || '',
+                                altText: imageDb?.image?.altText || 'Ảnh của danh mục ' + (data?.name || ''),
+                                type: imageDb?.image?.type || ImageType.THUMBNAIL
+                              }
+                            }
+                          }
+                        : undefined
+                  }
                 }
               }
-            : undefined,
-        disconnect: isDeleted ? { publicId: imageDb?.publicId || '' } : undefined
-      }
+            : undefined
     },
-    include: { image: true }
+    include: { imageForEntity: { include: { image: true } } }
   });
 
   if (updatedSubCategory.tag) {

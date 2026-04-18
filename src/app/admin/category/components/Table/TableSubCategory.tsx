@@ -8,7 +8,6 @@ import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
 export default function TableSubCategory({ s, data, user }: { s: string; data: any; user?: any }) {
   const currentItems = data?.subCategories || [];
-
   return (
     <>
       <Box className={`tableAdmin w-full overflow-x-auto`}>
@@ -27,15 +26,20 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((item: any) => (
-                <Table.Tr key={item.id}>
+              currentItems.map((item: any, index: number) => (
+                <Table.Tr key={item.id + index}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
                       {item.name}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Avatar src={item.image?.url} alt={item.image?.altText} size={40} radius='md' />
+                    <Avatar
+                      src={item.imageForEntity?.image?.url}
+                      alt={item?.imageForEntity?.altText}
+                      size={40}
+                      radius='md'
+                    />
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>

@@ -15,7 +15,7 @@ import {
   verifyEmailService,
   verifyOtpService
 } from '~/server/services/user.service';
-import { userFromDbSchema } from '~/shared/schema/user.schema';
+import { userInputSchema } from '~/shared/schema/user.schema';
 
 export const userRouter = createTRPCRouter({
   find: publicProcedure
@@ -29,14 +29,14 @@ export const userRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await findUserService(ctx.db, input)),
-  create: publicProcedure.input(userFromDbSchema).mutation(async ({ ctx, input }) => {
+  create: publicProcedure.input(userInputSchema).mutation(async ({ ctx, input }) => {
     const user = await createUserService(ctx.db, input, ctx.session);
     return user;
   }),
 
   upsert: publicProcedure
     .use(requirePermission('update:user'))
-    .input(userFromDbSchema)
+    .input(userInputSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await upsertUserService(ctx.db, input);
       return user;

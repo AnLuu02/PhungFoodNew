@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 
   const { product } = productData;
-  const imageUrl = product.image?.url || 'https://phungfood.com/default-image.jpg';
+  const imageUrl = product?.imageForEntities?.map((item: any) => item?.image?.url).filter(Boolean) ?? [];
 
   return {
     title: `${product.name} - Phụng Food`,
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       title: product.name,
       description: product.description || '',
-      images: [imageUrl]
+      images: imageUrl
     }
   };
 }

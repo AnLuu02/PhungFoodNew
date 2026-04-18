@@ -5,7 +5,6 @@ import { ActionIcon, Box, FileInput, Flex, Image, Paper, Text, Tooltip } from '@
 import { IconChevronLeft, IconChevronRight, IconFile, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { ImageFromDb } from '~/shared/schema/image.schema';
 import { ImageAddition } from '../../../../product/components/form/GalleryUpsert';
 
 export const CarouselGallery = ({
@@ -26,7 +25,16 @@ export const CarouselGallery = ({
   useEffect(() => {
     const currentData = mode == 'edit' ? galleryFromDb : galleries;
     if (currentData) {
-      setGalleryAddition([...currentData.map(({ url, publicId }: ImageFromDb) => ({ url, publicId }))]);
+      setGalleryAddition([
+        ...currentData.map((imageForEntity: any) => ({
+          imageForEntityId: imageForEntity?.id,
+          image: {
+            url: imageForEntity?.image?.url,
+            publicId: imageForEntity?.image?.publicId
+          },
+          status: imageForEntity?.status
+        }))
+      ]);
     } else {
       setGalleryAddition(null);
     }
@@ -47,7 +55,7 @@ export const CarouselGallery = ({
   useEffect(() => {
     if (mode == 'edit') {
       if (galleryAddition) {
-        formFields.setValue('galleryInput', galleryAddition?.map(({ file }) => file).filter(Boolean));
+        formFields.setValue('galleryInput', galleryAddition?.map(({ image: { file } }) => file).filter(Boolean));
       } else {
         setGalleryAddition(null);
         formFields.setValue('galleryInput', null);
@@ -55,9 +63,9 @@ export const CarouselGallery = ({
     }
   }, [galleryAddition]);
 
-  const handleDeleteGallery = (index: number, publicId?: string) => {
+  const handleDeleteGallery = (index: number, imageForEntityId?: string) => {
     setGalleryAddition(prev => (prev ? prev.filter((_, i) => i !== index) : []));
-    serDelPublicIds((prev: string[]) => [...(prev ? prev : []), ...(publicId ? [publicId] : [])]);
+    serDelPublicIds((prev: string[]) => [...(prev ? prev : []), ...(imageForEntityId ? [imageForEntityId] : [])]);
   };
 
   return (
@@ -78,7 +86,7 @@ export const CarouselGallery = ({
               indicator: 'mx-[6px] h-[8px] w-[20px] rounded-full bg-mainColor'
             }}
           >
-            {galleryAddition.map(({ file, url, publicId }, index) => {
+            {galleryAddition.map(({ imageForEntityId, image: { file, url, publicId } }, index) => {
               const curUrl = file ? URL.createObjectURL(file) : url;
 
               return (
@@ -95,7 +103,7 @@ export const CarouselGallery = ({
                     {mode === 'edit' && (
                       <Tooltip label={'Xóa'} withArrow>
                         <ActionIcon
-                          onClick={() => handleDeleteGallery(index, publicId)}
+                          onClick={() => handleDeleteGallery(index, imageForEntityId)}
                           variant='subtle'
                           bg={'rgba(0, 0, 0, 0.5)'}
                           color='white'
@@ -146,7 +154,7 @@ export const CarouselGallery = ({
                   field.onChange(value);
                   setGalleryAddition(valueCurrent => [
                     ...(valueCurrent ?? []),
-                    ...(value ? value.map(file => ({ file })) : [])
+                    ...(value ? value.map(file => ({ image: { file } })) : [])
                   ]);
                 }}
                 onBlur={field.onBlur}

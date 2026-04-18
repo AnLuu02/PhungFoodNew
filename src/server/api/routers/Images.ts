@@ -4,71 +4,24 @@ import { z } from 'zod';
 import { ImageAssociation, ImageWithAssociations } from '~/app/admin/images/types/image.types';
 import cloudinary from '~/lib/Cloudinary/cloudinary';
 import { createTRPCRouter, protectedProcedure, publicProcedure, requirePermission } from '~/server/api/trpc';
-import { findContactService } from '~/server/services/contact.service';
-import {
-  bulkUpsertImageService,
-  checkExistingImageService,
-  deleteImageService,
-  upsertImageService
-} from '~/server/services/image.service';
+import { checkExistingImageService, deleteImageService, upsertImageService } from '~/server/services/image.service';
+import { getOneBannerService } from '~/server/services/restaurant.banner.service';
+import { getOneActiveClientService } from '~/server/services/restaurant.service';
+import { getOneUserService } from '~/server/services/user.service';
 import { imageFromDbSchema } from '~/shared/schema/image.schema';
 export const imagesRouter = createTRPCRouter({
-  find: publicProcedure
-    .input(
-      z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
-        s: z.string().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => await findContactService(ctx.db, input)),
-
+  checkExisting: publicProcedure
+    .input(z.object({ publicId: z.string() }))
+    .query(async ({ ctx, input }) => await checkExistingImageService(ctx.db, input)),
   upsert: publicProcedure
     .input(imageFromDbSchema)
     .mutation(async ({ ctx, input }) => await upsertImageService(ctx.db, input)),
-  bulkUpsert: publicProcedure
-    .input(z.array(imageFromDbSchema))
-    .mutation(async ({ ctx, input }) => await bulkUpsertImageService(ctx.db, input)),
 
   delete: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
     .input(z.object({ publicId: z.string() }))
     .mutation(async ({ ctx, input }) => await deleteImageService(ctx.db, input)),
-  checkExisting: publicProcedure
-    .input(z.object({ publicId: z.string() }))
-    .query(async ({ ctx, input }) => await checkExistingImageService(ctx.db, input)),
-  getAll: publicProcedure
-    .input(
-      z.object({
-        search: z.string().optional(),
-        limit: z.number().min(1).max(500).default(20),
-        cursor: z.string().nullish()
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const items = await ctx.db.image.findMany({
-        take: input.limit + 1,
-        where: input.search
-          ? {
-              altText: { contains: input.search, mode: 'insensitive' },
-              url: { contains: 'res.cloudinary.com', mode: 'insensitive' },
-              publicId: { not: null }
-            }
-          : {
-              url: { contains: 'res.cloudinary.com', mode: 'insensitive' },
-              publicId: { not: null }
-            },
-        cursor: input.cursor ? { id: input.cursor } : undefined,
-        orderBy: { createdAt: 'desc' }
-      });
 
-      let nextCursor: typeof input.cursor | undefined = undefined;
-      if (items.length > input.limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem?.id;
-      }
-      return { items, nextCursor };
-    }),
   getAllImages: protectedProcedure
     .input(
       z.object({
@@ -86,7 +39,6 @@ export const imagesRouter = createTRPCRouter({
       const where: Prisma.ImageWhereInput = {
         AND: [
           imageTypes?.length ? { type: { in: imageTypes } } : {},
-          entityTypes?.length ? { entityType: { in: entityTypes } } : {},
           searchQuery
             ? {
                 OR: [
@@ -97,7 +49,9 @@ export const imagesRouter = createTRPCRouter({
             : {},
           showOrphanedOnly
             ? {
-                AND: [{ productId: null }, { bannerId: null }, { userId: null }, { restaurantId: null }]
+                imageForEntities: {
+                  some: {}
+                }
               }
             : {}
         ]
@@ -107,11 +61,15 @@ export const imagesRouter = createTRPCRouter({
         ctx.db.image.findMany({
           where,
           include: {
-            product: true,
-            banner: true,
-            user: true,
-            restaurant: true,
-            subCategories: true
+            imageForEntities: {
+              include: {
+                product: true,
+                banner: true,
+                user: true,
+                restaurant: true,
+                subCategory: true
+              }
+            }
           },
           skip,
           take,
@@ -119,7 +77,6 @@ export const imagesRouter = createTRPCRouter({
         }),
         ctx.db.image.count({ where })
       ]);
-
       return {
         data: images.map(img => enrichImageWithAssociations(img)),
         total,
@@ -130,16 +87,52 @@ export const imagesRouter = createTRPCRouter({
         }
       };
     }),
-
+  getImageForEntity: protectedProcedure
+    .input(
+      z.object({
+        entityId: z.string()
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { entityId } = input;
+      return await ctx.db.imageForEntity.findMany({
+        where: {
+          OR: [
+            {
+              subCategoryId: entityId
+            },
+            {
+              bannerId: entityId
+            },
+            {
+              restaurantId: entityId
+            },
+            {
+              productId: entityId
+            },
+            {
+              userId: entityId
+            }
+          ]
+        },
+        include: {
+          image: true
+        }
+      });
+    }),
   getImageById: protectedProcedure.input(z.object({ id: z.string().cuid() })).query(async ({ ctx, input }) => {
     const image = await ctx.db.image.findUnique({
       where: { id: input.id },
       include: {
-        product: true,
-        banner: true,
-        user: true,
-        restaurant: true,
-        subCategories: true
+        imageForEntities: {
+          include: {
+            product: true,
+            banner: true,
+            user: true,
+            restaurant: true,
+            subCategory: true
+          }
+        }
       }
     });
 
@@ -172,11 +165,15 @@ export const imagesRouter = createTRPCRouter({
           updatedAt: new Date()
         },
         include: {
-          product: true,
-          banner: true,
-          user: true,
-          restaurant: true,
-          subCategories: true
+          imageForEntities: {
+            include: {
+              product: true,
+              banner: true,
+              user: true,
+              restaurant: true,
+              subCategory: true
+            }
+          }
         }
       });
 
@@ -187,15 +184,26 @@ export const imagesRouter = createTRPCRouter({
     .input(
       z.object({
         imageId: z.string().cuid(),
+        entityId: z.string(),
         entityType: z.nativeEnum(EntityType)
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { imageId, entityType } = input;
+      const { imageId, entityId, entityType } = input;
 
       const image = await ctx.db.image.findUnique({
         where: { id: imageId },
-        include: { subCategories: true }
+        include: {
+          imageForEntities: {
+            include: {
+              product: true,
+              banner: true,
+              user: true,
+              restaurant: true,
+              subCategory: true
+            }
+          }
+        }
       });
 
       if (!image) {
@@ -205,80 +213,52 @@ export const imagesRouter = createTRPCRouter({
         });
       }
 
-      const detachData: Prisma.ImageUpdateInput = {};
+      const detachData: Prisma.ImageForEntityDeleteArgs = { where: { id: '' } };
 
       switch (entityType) {
         case EntityType.PRODUCT:
-          detachData.product = {
-            disconnect: {
-              images: {
-                some: {
-                  id: imageId
-                }
-              }
-            }
+          detachData.where = {
+            productId: entityId,
+            imageId
+          } as any;
+        case EntityType.CATEGORY:
+          detachData.where = {
+            subCategoryId: entityId,
+            imageId
           };
-          break;
-        case EntityType.SUB_CATEGORY:
-          if (image.subCategories.length > 0) {
-            await ctx.db.subCategory.updateMany({
-              where: { id: { in: image.subCategories.map(sc => sc.id) } },
-              data: { imageId: null }
-            });
-          }
           break;
         case EntityType.BANNER:
-          detachData.banner = {
-            disconnect: {
-              images: {
-                some: {
-                  id: imageId
-                }
-              }
-            }
-          };
+          detachData.where = {
+            bannerId: entityId,
+            imageId
+          } as any;
           break;
         case EntityType.USER:
-          detachData.user = {
-            disconnect: {
-              image: {
-                id: imageId
-              }
-            }
+          detachData.where = {
+            userId: entityId,
+            imageId
           };
           break;
         case EntityType.RESTAURANT:
-          detachData.restaurant = {
-            disconnect: {
-              logo: {
-                id: imageId
-              }
-            }
+          detachData.where = {
+            restaurantId: entityId,
+            imageId
           };
           break;
       }
 
-      const updated = await ctx.db.image.update({
-        where: { id: imageId },
-        data: detachData,
-        include: {
-          product: true,
-          banner: true,
-          user: true,
-          restaurant: true,
-          subCategories: true
-        }
+      const deleted = await ctx.db.imageForEntity.delete({
+        ...detachData
       });
 
-      return enrichImageWithAssociations(updated);
+      return enrichImageWithAssociations(deleted);
     }),
 
   detachAllAssociations: protectedProcedure
     .input(z.object({ imageId: z.string().cuid() }))
     .mutation(async ({ ctx, input }) => {
       const image = await ctx.db.image.findUnique({
-        where: { id: input.imageId },
-        include: { subCategories: true }
+        where: { id: input.imageId }
       });
 
       if (!image) {
@@ -288,32 +268,11 @@ export const imagesRouter = createTRPCRouter({
         });
       }
 
-      if (image.subCategories.length > 0) {
-        await ctx.db.subCategory.updateMany({
-          where: { id: { in: image.subCategories.map(sc => sc.id) } },
-          data: { imageId: null }
-        });
-      }
-
-      const updated = await ctx.db.image.update({
-        where: { id: input.imageId },
-        data: {
-          productId: null,
-          bannerId: null,
-          userId: null,
-          restaurantId: null,
-          updatedAt: new Date()
-        },
-        include: {
-          product: true,
-          banner: true,
-          user: true,
-          restaurant: true,
-          subCategories: true
-        }
+      const deleted = await ctx.db.imageForEntity.deleteMany({
+        where: { imageId: input.imageId }
       });
 
-      return enrichImageWithAssociations(updated);
+      return enrichImageWithAssociations(deleted);
     }),
 
   bulkDeleteImages: protectedProcedure
@@ -331,10 +290,11 @@ export const imagesRouter = createTRPCRouter({
           where: {
             id: { in: imageIds },
             OR: [
-              { productId: { not: null } },
-              { bannerId: { not: null } },
-              { userId: { not: null } },
-              { restaurantId: { not: null } }
+              {
+                imageForEntities: {
+                  some: {}
+                }
+              }
             ]
           }
         });
@@ -398,6 +358,9 @@ export const imagesRouter = createTRPCRouter({
           .array(
             z.object({
               id: z.string(),
+              imageForEntityId: z.string().optional(),
+              altText: z.string(),
+              type: z.nativeEnum(ImageType),
               mode: z.enum(['connect', 'disconnect']).default('connect')
             })
           )
@@ -407,153 +370,296 @@ export const imagesRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { entityId, entityType, images } = input;
       if (!entityId || !images) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Du lieu khong hop le.' });
-      const { imageConnect, imageDisconnect } = images.reduce(
-        (
-          acc: {
-            imageConnect: { id: string; mode: 'connect' | 'disconnect' }[];
-            imageDisconnect: { id: string; mode: 'connect' | 'disconnect' }[];
-          },
-          item: { id: string; mode: 'connect' | 'disconnect' }
-        ) => {
-          item && item.mode === 'connect' && acc.imageConnect.push(item);
-          item && item.mode === 'disconnect' && acc.imageDisconnect.push(item);
-          return acc;
-        },
-        { imageConnect: [], imageDisconnect: [] }
-      );
-      console.log('imageConnectimageConnect', imageConnect, imageDisconnect);
 
-      const excuted = {
-        ...(imageConnect?.length > 0
-          ? imageConnect.map(item => ({
-              connect: {
-                id: item?.id
-              }
-            }))
-          : {}),
-        ...(imageDisconnect?.length > 0
-          ? imageDisconnect.map(item => ({
-              disconnect: {
-                id: item?.id
-              }
-            }))
-          : {})
-      };
       switch (entityType) {
         case EntityType.PRODUCT:
-          return await ctx.db.product.update({
-            where: {
-              id: entityId
-            },
-            data: {
-              images: excuted
-            }
-          } as any);
-        case EntityType.BANNER:
-          return await ctx.db.banner.update({
-            where: {
-              id: entityId
-            },
-            data: {
-              images: excuted
-            }
-          } as any);
-        case EntityType.RESTAURANT:
-          return await ctx.db.restaurant.update({
-            where: {
-              id: entityId
-            },
-            data: {
-              logo: {
-                ...(imageConnect.length > 0
-                  ? {
-                      connect: {
-                        id: imageConnect?.[0]?.id
-                      }
-                    }
-                  : {}),
-                ...(imageDisconnect.length > 0
-                  ? {
-                      disconnect: {
-                        id: imageDisconnect?.[0]?.id
-                      }
-                    }
-                  : {})
-              }
-            }
-          } as any);
-        case EntityType.SUB_CATEGORY:
-          return await ctx.db.subCategory.update({
-            where: {
-              id: entityId
-            },
-            data: {
-              image: {
-                ...(imageConnect.length > 0
-                  ? {
-                      connect: {
-                        id: imageConnect?.[0]?.id
-                      }
-                    }
-                  : {}),
-                ...(imageDisconnect.length > 0
-                  ? {
-                      disconnect: {
-                        id: imageDisconnect?.[0]?.id
-                      }
-                    }
-                  : {})
-              }
-            }
+          const product = await ctx.db.product.findUnique({
+            where: { id: entityId },
+            include: { imageForEntities: { include: { image: true } } }
           });
-        case EntityType.SUB_CATEGORY:
-          return await ctx.db.subCategory.update({
-            where: {
-              id: entityId
-            },
-            data: {
-              image: {
-                ...(imageConnect.length > 0
-                  ? {
-                      connect: {
-                        id: imageConnect?.[0]?.id
+
+          if (product) {
+            const existingThumbnail = images?.some(i => i.type === ImageType.THUMBNAIL)
+              ? product?.imageForEntities?.find(item => item?.type === ImageType.THUMBNAIL)
+              : null;
+            return await ctx.db.$transaction([
+              ...(existingThumbnail
+                ? [
+                    ctx.db.imageForEntity.deleteMany({
+                      where: {
+                        id: existingThumbnail?.id
                       }
-                    }
-                  : {}),
-                ...(imageDisconnect.length > 0
-                  ? {
-                      disconnect: {
-                        id: imageDisconnect?.[0]?.id
+                    })
+                  ]
+                : []),
+              ...images
+                .map(img => {
+                  if (img.mode === 'connect') {
+                    return ctx.db.imageForEntity.upsert({
+                      where: {
+                        id: img?.imageForEntityId || 'default'
+                      },
+                      create: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của sản phẩm ' + product.name,
+                        type: img.type,
+                        entityType,
+                        product: {
+                          connect: {
+                            id: product?.id
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      },
+                      update: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của sản phẩm ' + product.name,
+                        type: img.type,
+                        entityType,
+                        product: {
+                          connect: {
+                            id: product?.id
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
                       }
-                    }
-                  : {})
-              }
-            }
-          } as any);
+                    });
+                  } else {
+                    return ctx.db.imageForEntity.deleteMany({
+                      where: {
+                        id: img?.imageForEntityId || 'default'
+                      }
+                    });
+                  }
+                })
+                .filter(Boolean)
+            ]);
+          }
+          return;
+        case EntityType.BANNER:
+          const banner = await getOneBannerService(ctx.db, { isActive: true });
+          if (banner) {
+            return await ctx.db.$transaction(
+              images
+                .map(img => {
+                  if (img.mode === 'connect') {
+                    return ctx.db.imageForEntity.upsert({
+                      where: {
+                        id: img?.imageForEntityId || 'default'
+                      },
+                      create: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của nhà hàng ',
+                        type: img.type,
+                        entityType,
+                        banner: {
+                          connect: {
+                            id: banner?.id
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      },
+                      update: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của nhà hàng',
+                        type: img.type,
+                        entityType,
+                        banner: {
+                          connect: {
+                            id: banner?.id
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      }
+                    });
+                  } else {
+                    return ctx.db.imageForEntity.delete({
+                      where: {
+                        id: img?.imageForEntityId || 'default'
+                      }
+                    });
+                  }
+                })
+                .filter(Boolean)
+            );
+          }
+          return;
+
+        case EntityType.CATEGORY:
+          const subCategory = await ctx.db.subCategory.findUnique({ where: { id: entityId } });
+          if (subCategory) {
+            return await ctx.db.$transaction(
+              images
+                .map(img => {
+                  if (img.mode === 'connect') {
+                    return ctx.db.imageForEntity.upsert({
+                      where: {
+                        id: img?.imageForEntityId || 'default_id'
+                      },
+                      create: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của danh mục ' + subCategory.name,
+                        type: img.type,
+                        entityType,
+                        subCategory: {
+                          connect: {
+                            id: entityId
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      },
+                      update: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của danh mục ' + subCategory.name,
+                        type: img.type,
+                        entityType,
+                        subCategory: {
+                          connect: {
+                            id: entityId
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      }
+                    });
+                  } else {
+                    return ctx.db.imageForEntity.delete({
+                      where: {
+                        id: img?.imageForEntityId || 'default'
+                      }
+                    });
+                  }
+                })
+                .filter(Boolean)
+            );
+          }
+          return;
+
         case EntityType.USER:
-          return await ctx.db.user.update({
-            where: {
-              id: entityId
-            },
-            data: {
-              image: {
-                ...(imageConnect.length > 0
-                  ? {
-                      connect: {
-                        id: imageConnect?.[0]?.id
+          const user = await getOneUserService(ctx.db, { s: entityId });
+          if (user) {
+            return await ctx.db.$transaction(
+              images
+                .map(img => {
+                  if (img.mode === 'connect') {
+                    return ctx.db.imageForEntity.upsert({
+                      where: {
+                        id: img?.imageForEntityId || 'default_id'
+                      },
+                      create: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của người dùng' + (user?.name ?? ''),
+                        type: img.type,
+                        entityType,
+                        user: {
+                          connect: {
+                            id: entityId
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      },
+                      update: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của danh mục ' + (user?.name ?? ''),
+                        type: img.type,
+                        entityType,
+                        user: {
+                          connect: {
+                            id: entityId
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
                       }
-                    }
-                  : {}),
-                ...(imageDisconnect.length > 0
-                  ? {
-                      disconnect: {
-                        id: imageDisconnect?.[0]?.id
+                    });
+                  } else {
+                    return ctx.db.imageForEntity.delete({
+                      where: {
+                        id: img?.imageForEntityId || 'default'
                       }
-                    }
-                  : {})
-              }
-            }
-          } as any);
+                    });
+                  }
+                })
+                .filter(Boolean)
+            );
+          }
+          return;
+        case EntityType.RESTAURANT:
+          const restaurant = await getOneActiveClientService(ctx.db);
+          if (restaurant) {
+            return await ctx.db.$transaction(
+              images
+                .map(img => {
+                  if (img.mode === 'connect') {
+                    return ctx.db.imageForEntity.upsert({
+                      where: {
+                        id: img?.imageForEntityId || 'default_id'
+                      },
+                      create: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của nhà hàng' + (user?.name ?? ''),
+                        type: img.type,
+                        entityType,
+                        restaurant: {
+                          connect: {
+                            id: entityId
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      },
+                      update: {
+                        altText: img.altText || 'Ảnh ' + img.type + ' của nhà hàng ' + (user?.name ?? ''),
+                        type: img.type,
+                        entityType,
+                        restaurant: {
+                          connect: {
+                            id: entityId
+                          }
+                        },
+                        image: {
+                          connect: {
+                            id: img.id
+                          }
+                        }
+                      }
+                    });
+                  } else {
+                    return ctx.db.imageForEntity.delete({
+                      where: {
+                        id: img?.imageForEntityId || 'default'
+                      }
+                    });
+                  }
+                })
+                .filter(Boolean)
+            );
+          }
+          return;
         default:
           return;
       }
@@ -566,50 +672,52 @@ export const imagesRouter = createTRPCRouter({
 function enrichImageWithAssociations(image: any): ImageWithAssociations {
   const associations: ImageAssociation[] = [];
 
-  if (image.product) {
-    associations.push({
-      type: EntityType.PRODUCT,
-      name: image.product.name,
-      id: image.product.id,
-      label: `Product: ${image.product.name}`
-    });
-  }
+  if (image && image?.imageForEntities) {
+    image?.imageForEntities?.map((img: any) => {
+      if (img.product) {
+        associations.push({
+          type: EntityType.PRODUCT,
+          name: img.product.name,
+          id: img.product.id,
+          label: `Product: ${img.product.name}`
+        });
+      }
 
-  if (image.banner) {
-    associations.push({
-      type: EntityType.BANNER,
-      name: image.banner.title || 'Untitled Banner',
-      id: image.banner.id,
-      label: `Banner: ${image.banner.title || 'Untitled'}`
-    });
-  }
+      if (img.banner) {
+        associations.push({
+          type: EntityType.BANNER,
+          name: img.banner.title || 'Untitled Banner',
+          id: img.banner.id,
+          label: `Banner: ${img.banner.title || 'Untitled'}`
+        });
+      }
 
-  if (image.user) {
-    associations.push({
-      type: EntityType.USER,
-      name: image.user.name || image.user.email,
-      id: image.user.id,
-      label: `User: ${image.user.name || image.user.email}`
-    });
-  }
+      if (img.user) {
+        associations.push({
+          type: EntityType.USER,
+          name: img.user.name || img.user.email,
+          id: img.user.id,
+          label: `User: ${img.user.name || img.user.email}`
+        });
+      }
 
-  if (image.restaurant) {
-    associations.push({
-      type: EntityType.RESTAURANT,
-      name: image.restaurant.name,
-      id: image.restaurant.id,
-      label: `Restaurant: ${image.restaurant.name}`
-    });
-  }
+      if (img.restaurant) {
+        associations.push({
+          type: EntityType.RESTAURANT,
+          name: img.restaurant.name,
+          id: img.restaurant.id,
+          label: `Restaurant: ${img.restaurant.name}`
+        });
+      }
 
-  if (image.subCategories && image.subCategories.length > 0) {
-    image.subCategories.forEach((sc: any) => {
-      associations.push({
-        type: EntityType.SUB_CATEGORY,
-        name: sc.name,
-        id: sc.id,
-        label: `Category: ${sc.name}`
-      });
+      if (img.subCategory) {
+        associations.push({
+          type: EntityType.CATEGORY,
+          name: img.subCategory.name,
+          id: img.subCategory.id,
+          label: `Category: ${img.subCategory.name}`
+        });
+      }
     });
   }
 

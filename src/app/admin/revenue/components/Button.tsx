@@ -17,6 +17,7 @@ export function CreateRevenueButton() {
         Tạo mới
       </BButton>
       <Modal
+        zIndex={150}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -42,6 +43,7 @@ export function UpdateRevenueButton({ id }: { id: string }) {
       <Modal
         closeOnClickOutside={false}
         opened={opened}
+        zIndex={150}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>

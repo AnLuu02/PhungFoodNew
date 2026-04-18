@@ -1,13 +1,13 @@
 import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
-import { ImageFromDb, StatusImage } from '~/shared/schema/image.schema';
-import { RestaurantReqCloudinary } from '~/shared/schema/restaurant.schema';
+import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
+import { RestaurantInput } from '~/shared/schema/restaurant.schema';
 
 export const getOneActiveService = async (db: PrismaClient) => {
   const result = await db.restaurant.findFirst({
     where: { isActive: true },
     include: {
-      logo: true,
+      imageForEntity: { include: { image: true } },
       socials: {
         orderBy: {
           createdAt: 'desc'
@@ -15,7 +15,7 @@ export const getOneActiveService = async (db: PrismaClient) => {
       },
       theme: true,
       openingHours: true,
-      banners: { include: { images: true } }
+      banners: { include: { imageForEntities: { include: { image: true } } } }
     }
   });
   if (!result) {
@@ -88,11 +88,13 @@ export const getOneActiveService = async (db: PrismaClient) => {
     const result = await db.restaurant.findFirst({
       where: { isActive: true },
       include: {
-        logo: true,
+        imageForEntity: {
+          include: { image: true }
+        },
         socials: true,
         theme: true,
         openingHours: true,
-        banners: { include: { images: true } }
+        banners: { include: { imageForEntities: { include: { image: true } } } }
       }
     });
     return result;
@@ -103,14 +105,14 @@ export const getOneActiveClientService = async (db: PrismaClient) => {
   const result = await db.restaurant.findFirst({
     where: { isActive: true },
     include: {
-      logo: true,
+      imageForEntity: { include: { image: true } },
       socials: { where: { isActive: true } },
       theme: true,
       openingHours: true,
       banners: {
         where: { isActive: true },
         include: {
-          images: true
+          imageForEntities: { include: { image: true } }
         }
       }
     }
@@ -118,29 +120,42 @@ export const getOneActiveClientService = async (db: PrismaClient) => {
   return result;
 };
 
-export const upsertRestaurantService = async (db: PrismaClient, input: RestaurantReqCloudinary) => {
-  const { id, theme, socials, logo, openingHours, ...data } = input;
-  let logoFromDb: ImageFromDb | null = null;
-  if (logo && logo?.status) {
-    const { status, ...data } = logo;
-    logoFromDb = data;
+export const upsertRestaurantService = async (db: PrismaClient, input: RestaurantInput) => {
+  const { id, theme, socials, imageForEntity, openingHours, ...data } = input;
+  let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;
+  if (imageForEntity?.status) {
+    const { status, ...rest } = imageForEntity;
+    imageDb = rest;
+    statusFromReq = status;
   }
   const updatedRestaurant = await db.restaurant.upsert({
     where: { id: input.id || 'default_upsert_id' },
     create: {
       ...data,
-      logo:
-        logoFromDb && logo?.status === StatusImage.NEW
-          ? {
-              create: {
-                ...logoFromDb,
-                url: logoFromDb?.url || '',
-                altText: logoFromDb?.altText || 'Logo nha hang',
-                type: ImageType.LOGO,
-                entityType: EntityType.RESTAURANT
+      imageForEntity: {
+        create:
+          statusFromReq === StatusImage.NEW && imageDb
+            ? {
+                ...imageDb,
+                entityType: EntityType.RESTAURANT,
+                altText: `Ảnh ${data.name}`,
+                type: ImageType.THUMBNAIL,
+                image: {
+                  connectOrCreate: {
+                    where: {
+                      publicId: imageDb?.image?.publicId
+                    },
+                    create: {
+                      ...(imageDb?.image ?? {}),
+                      url: imageDb?.image?.url || '',
+                      altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
+                      type: imageDb?.image?.type || ImageType.THUMBNAIL
+                    }
+                  }
+                }
               }
-            }
-          : undefined,
+            : undefined
+      },
       theme: theme
         ? {
             create: {
@@ -165,20 +180,56 @@ export const upsertRestaurantService = async (db: PrismaClient, input: Restauran
     },
     update: {
       ...data,
-      logo: {
-        ...(logoFromDb && logo?.status === StatusImage.NEW
+      imageForEntity:
+        statusFromReq === StatusImage.DELETED && imageDb?.id
           ? {
-              create: {
-                ...logoFromDb,
-                url: logoFromDb?.url || '',
-                altText: logoFromDb?.altText || 'Logo nha hang',
-                type: ImageType.LOGO,
-                entityType: EntityType.RESTAURANT
-              }
+              delete: { id: imageDb.id }
             }
-          : undefined),
-        disconnect: logo?.status === StatusImage.DELETED ? { publicId: logo?.publicId } : undefined
-      },
+          : imageDb
+            ? {
+                upsert: {
+                  where: { id: imageDb.id },
+                  update: {
+                    ...imageDb,
+                    image:
+                      statusFromReq === StatusImage.NEW && imageDb.image
+                        ? {
+                            connectOrCreate: {
+                              where: {
+                                publicId: imageDb.image.publicId
+                              },
+                              create: {
+                                ...imageDb.image,
+                                url: imageDb?.image?.url || '',
+                                altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
+                                type: imageDb?.image?.type || ImageType.THUMBNAIL
+                              }
+                            }
+                          }
+                        : undefined
+                  },
+                  create: {
+                    ...imageDb,
+                    image:
+                      statusFromReq === StatusImage.NEW && imageDb.image
+                        ? {
+                            connectOrCreate: {
+                              where: {
+                                publicId: imageDb.image.publicId
+                              },
+                              create: {
+                                ...imageDb.image,
+                                url: imageDb.image.url || '',
+                                altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
+                                type: imageDb?.image?.type || ImageType.THUMBNAIL
+                              }
+                            }
+                          }
+                        : undefined
+                  }
+                }
+              }
+            : undefined,
       theme: theme
         ? {
             upsert: {

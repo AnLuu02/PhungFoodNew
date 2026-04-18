@@ -81,7 +81,9 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
             >
               <Image
                 loading='lazy'
-                src={getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                src={
+                  getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+                }
                 alt={data?.name || 'Hành tây'}
                 fill
                 style={{ objectFit: 'cover' }}

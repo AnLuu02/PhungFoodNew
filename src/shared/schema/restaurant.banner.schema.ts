@@ -1,5 +1,5 @@
 import z from 'zod';
-import { imageFromDbSchema, imageInputSchema } from './image.schema';
+import { imageInfoInputSchema } from './image.info.schema';
 
 export const baseBannerSchema = z.object({
   id: z.string().optional(),
@@ -10,13 +10,13 @@ export const baseBannerSchema = z.object({
 });
 
 export const bannerReqSchemaCloudinary = baseBannerSchema.extend({
-  images: z.array(imageFromDbSchema).optional()
+  imageForEntities: z.array(imageInfoInputSchema).optional()
 });
 export const bannerInputSchema = baseBannerSchema.extend({
-  banner1: imageInputSchema.optional(),
-  banner2: imageInputSchema.optional(),
+  banner1: imageInfoInputSchema.optional(),
+  banner2: imageInfoInputSchema.optional(),
   galleryInput: z.array(z.instanceof(File)).optional().nullable(),
-  gallery: z.array(imageInputSchema).optional()
+  gallery: z.array(imageInfoInputSchema).optional()
 });
 
 export type BannerInput = z.infer<typeof bannerInputSchema>;

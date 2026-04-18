@@ -42,7 +42,7 @@ export const getRecentActivityService = async (db: PrismaClient, input: { startT
         ]
       },
       include: {
-        image: true
+        imageForEntity: { include: { image: true } }
       }
     }),
     db.order.findMany({
@@ -66,7 +66,7 @@ export const getRecentActivityService = async (db: PrismaClient, input: { startT
             id: true,
             name: true,
             email: true,
-            image: true
+            imageForEntity: { include: { image: true } }
           }
         }
       }
@@ -87,7 +87,7 @@ export const getRecentActivityService = async (db: PrismaClient, input: { startT
           select: {
             id: true,
             name: true,
-            image: true
+            imageForEntity: { include: { image: true } }
           }
         }
       }
@@ -217,14 +217,14 @@ export const getRecentActivityAppService = async (
     db.product.findMany({
       where: where as any,
       include: {
-        images: true,
+        imageForEntities: { include: { image: true } },
         subCategory: true
       }
     }),
     db.restaurant.findMany({
       where: where as any,
       include: {
-        logo: {
+        imageForEntity: {
           select: {
             createdAt: true,
             updatedAt: true

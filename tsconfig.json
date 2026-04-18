@@ -11,7 +11,6 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
-
     "lib": ["dom", "dom.iterable", "ES2022"],
     "noEmit": true,
     "module": "ESNext",

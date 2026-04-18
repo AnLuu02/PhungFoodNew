@@ -1,6 +1,17 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Grid, GridCol, NumberInput, PasswordInput, Select, Switch, Text, TextInput } from '@mantine/core';
+import {
+  Alert,
+  Grid,
+  GridCol,
+  NumberInput,
+  PasswordInput,
+  Select,
+  Stack,
+  Switch,
+  Text,
+  TextInput
+} from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDebouncedValue } from '@mantine/hooks';
 import { EntityType, Gender, ImageType, UserLevel } from '@prisma/client';
@@ -14,10 +25,11 @@ import BButton from '~/components/Button/Button';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { infoUserLevel } from '~/constants';
+import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserRole } from '~/shared/constants/user';
-import { StatusImage } from '~/shared/schema/image.schema';
+import { StatusImage } from '~/shared/schema/image.info.schema';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { api } from '~/trpc/react';
 import { TRPCErrorCode } from '~/types/ResponseFetcher';
@@ -31,6 +43,7 @@ export default function UserUpsert({
   setOpened: Dispatch<SetStateAction<boolean>>;
   method: 'create' | 'update';
 }) {
+  const { openModal } = useModalActions();
   const [error, setError] = useState<{ code: TRPCErrorCode | undefined; message: string }>({
     code: undefined,
     message: ''
@@ -44,11 +57,7 @@ export default function UserUpsert({
       id: '',
       name: '',
       email: '',
-      image: {
-        url: undefined,
-        urlFile: undefined,
-        publicId: undefined
-      },
+      imageForEntity: undefined,
       gender: Gender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       isActive: true,
@@ -70,13 +79,15 @@ export default function UserUpsert({
         dateOfBirth: user?.dateOfBirth || new Date(),
         gender: user?.gender || Gender.OTHER,
         phone: user?.phone || '',
-        image: user?.image
+        imageForEntity: user?.imageForEntity
           ? ({
-              ...user?.image,
-              publicId: user?.image?.publicId || '',
-              altText: user?.image?.altText || 'Ảnh đại diện của ' + user?.name,
-              type: user?.image?.type || ImageType.LOGO,
-              entityType: user?.image?.entityType || EntityType.USER
+              ...user?.imageForEntity,
+              image: {
+                url: user?.imageForEntity?.image?.url || '',
+                publicId: user?.imageForEntity?.image?.publicId || '',
+                altText: user?.imageForEntity?.image?.altText || 'Ảnh đại diện của ' + user?.name,
+                type: user?.imageForEntity?.image?.type || ImageType.THUMBNAIL
+              }
             } as any)
           : undefined,
         roleId: user?.roleId || '',
@@ -104,23 +115,30 @@ export default function UserUpsert({
   });
 
   const onSubmit: SubmitHandler<UserInput> = async formData => {
-    const imageFile = formFields.getValues('image.urlFile');
-    const imagePublicId = formFields.getValues('image.publicId');
+    const imageFile = formFields.getValues('imageForEntity.image.urlFile');
+    const imagePublicId = formFields.getValues('imageForEntity.image.publicId');
     const imageToSave = await handleUploadFromClient(imageFile, utils, {
-      folder: EntityType.RESTAURANT + '/' + ImageType.LOGO
+      folder: EntityType.USER + '/' + ImageType.THUMBNAIL
     });
     await upsertMutation.mutateAsync({
       ...formData,
-      image: imageToSave
+      imageForEntity: imageToSave
         ? {
-            ...imageToSave,
-            type: ImageType.LOGO,
-            altText: 'Logo nhà hàng',
-            status: StatusImage.NEW
+            id: formData?.imageForEntity?.id,
+            altText: formData?.imageForEntity?.altText || 'Ảnh đại diện của ' + (formData?.name || ''),
+            type: formData?.imageForEntity?.type || ImageType.THUMBNAIL,
+            entityType: formData?.imageForEntity?.entityType || EntityType.USER,
+            status: StatusImage.NEW,
+            image: {
+              ...imageToSave,
+              id: undefined,
+              altText: formData?.imageForEntity?.altText || 'Ảnh đại diện của ' + (formData?.name || ''),
+              type: formData?.imageForEntity?.type || ImageType.THUMBNAIL
+            }
           }
-        : user?.image?.publicId && !imagePublicId
+        : user?.imageForEntity?.id && !imagePublicId
           ? {
-              publicId: user?.image?.publicId,
+              id: user?.imageForEntity?.id,
               status: StatusImage.DELETED
             }
           : undefined
@@ -372,7 +390,26 @@ export default function UserUpsert({
             <Text size='sm' fw={500} mb={4}>
               Ảnh đại diện
             </Text>
-            <ThumbnailUpsert nameField={'image'} size={'100%'} />
+            <Stack>
+              <ThumbnailUpsert nameField={'imageForEntity.image'} size={'100%'} />
+              <BButton
+                variant='outline'
+                size='sm'
+                fullWidth
+                onClick={async () =>
+                  openModal('images_library', undefined, {
+                    entityId: user?.id,
+                    entityType: EntityType.USER,
+                    initImageType: ImageType.THUMBNAIL,
+                    onRefetch: () => {
+                      utils.User.invalidate();
+                    }
+                  })
+                }
+              >
+                Chọn ảnh từ thư viện
+              </BButton>
+            </Stack>
           </GridCol>
         </Grid>
       </form>

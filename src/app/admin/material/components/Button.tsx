@@ -136,6 +136,7 @@ export function CreateManyMaterialButton() {
       <Modal
         radius={'md'}
         size={'xl'}
+        zIndex={150}
         opened={opened}
         onClose={() => {
           setOpened(false);
@@ -207,6 +208,7 @@ export function CreateMaterialButton() {
       </BButton>
       <Modal
         radius={'md'}
+        zIndex={150}
         opened={opened}
         closeOnClickOutside={false}
         onClose={() => setOpened(false)}
@@ -232,6 +234,7 @@ export function UpdateMaterialButton({ id }: { id: string }) {
       <Modal
         radius={'md'}
         opened={opened}
+        zIndex={150}
         closeOnClickOutside={false}
         onClose={() => setOpened(false)}
         title={

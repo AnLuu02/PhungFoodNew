@@ -3,11 +3,14 @@ import { ActionIcon, AspectRatio, Box, FileButton, Flex, Image, Stack, Text } fr
 import { IconEdit, IconTrash, IconUpload } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { StatusImage } from '~/shared/schema/image.schema';
+import { StatusImage } from '~/shared/schema/image.info.schema';
 export type ImageAddition = {
-  file?: File;
-  url?: string;
-  publicId?: string;
+  imageForEntityId?: string;
+  image: {
+    file?: File;
+    url?: string;
+    publicId?: string;
+  };
   status?: StatusImage;
 };
 export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: string[]) => void }) {
@@ -18,7 +21,16 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
 
   useEffect(() => {
     if (imageGalleryValue) {
-      setImageAddition([...imageGalleryValue.map(({ url, publicId, status }: any) => ({ url, publicId, status }))]);
+      setImageAddition([
+        ...imageGalleryValue.map((imageForEntity: any) => ({
+          imageForEntityId: imageForEntity?.id,
+          image: {
+            url: imageForEntity?.image?.url,
+            publicId: imageForEntity?.image?.publicId
+          },
+          status: imageForEntity?.status
+        }))
+      ]);
     }
   }, [imageGalleryValue]);
 
@@ -30,22 +42,22 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
 
   useEffect(() => {
     if (imageAddition) {
-      formFields.setValue('galleryInput', imageAddition?.map(({ file }) => file).filter(Boolean));
+      formFields.setValue('galleryInput', imageAddition?.map(({ image: { file } }) => file).filter(Boolean));
     }
   }, [imageAddition]);
 
-  const handleDeleteGalleryItem = (index: number, publicId?: string) => {
+  const handleDeleteGalleryItem = (index: number, imageForEntityId?: string) => {
     setImageAddition(prev => (prev ? prev.filter((_, i) => i !== index) : []));
-    publicId && setDeletedIds((prev: string[]) => [...(prev ?? []), publicId]);
+    imageForEntityId && setDeletedIds((prev: string[]) => [...(prev ?? []), imageForEntityId]);
   };
   return (
-    <>
+    <Stack gap={0}>
       <Text size='xl' fw={700}>
         Ảnh bổ sung
       </Text>
       <Flex align={'center'} gap={'xs'} wrap={'wrap'} w={'100%'} pos={'relative'}>
         {Array.isArray(imageAddition) &&
-          imageAddition!.map(({ file, url, publicId }, index) => {
+          imageAddition!.map(({ imageForEntityId, image: { file, url, publicId } }, index) => {
             const curUrl = file ? URL.createObjectURL(file) : url;
             return (
               <>
@@ -64,13 +76,16 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
                             onChange={file => {
                               const target = imageAddition?.[index];
                               if (target && file) {
-                                setDeletedIds(prev => [...(prev ?? []), ...(target.publicId ? [target.publicId] : [])]);
+                                setDeletedIds(prev => [
+                                  ...(prev ?? []),
+                                  ...(target?.imageForEntityId ? [target?.imageForEntityId] : [])
+                                ]);
                                 setImageAddition((prev: ImageAddition[] | null) => {
                                   const itemIndex = prev?.find((_, i) => i === index);
                                   if (itemIndex) {
-                                    itemIndex.file = file;
-                                    ((itemIndex.url = undefined),
-                                      (itemIndex.publicId = undefined),
+                                    itemIndex.image.file = file;
+                                    ((itemIndex.image.url = undefined),
+                                      (itemIndex.image.publicId = undefined),
                                       (itemIndex.status = StatusImage.NEW));
                                   }
                                   return [...(prev ?? [])];
@@ -90,7 +105,7 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
                             radius='xl'
                             size='lg'
                             color='red'
-                            onClick={() => handleDeleteGalleryItem(index, publicId)}
+                            onClick={() => handleDeleteGalleryItem(index, imageForEntityId)}
                             title='Xóa ảnh'
                           >
                             <IconTrash size={20} />
@@ -184,7 +199,7 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
                   field.onChange(value);
                   setImageAddition(valueCurrent => [
                     ...(valueCurrent ?? []),
-                    ...(value ? value.map(file => ({ file })) : [])
+                    ...(value ? value.map(file => ({ image: { file } })) : [])
                   ]);
                 }}
                 accept='image/png,image/jpeg'
@@ -245,6 +260,6 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
           )}
         />
       </Box> */}
-    </>
+    </Stack>
   );
 }

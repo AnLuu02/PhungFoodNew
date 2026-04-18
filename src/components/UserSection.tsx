@@ -27,7 +27,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
     key: 'applied-vouchers',
     defaultValue: []
   });
-  const { data: user, status } = useSession();
+  const { data: session, status } = useSession();
   if (status === 'loading') {
     return (
       <>
@@ -40,7 +40,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
       </>
     );
   }
-  if (status === 'unauthenticated' || !user)
+  if (status === 'unauthenticated' || !session)
     return (
       <Group gap={'xs'} align={'center'} className={`justify-center sm:min-w-[222px] sm:justify-end`}>
         <IconUserCircle size={20} fontWeight={'bold'} />
@@ -82,16 +82,16 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
                   className='rounded-full object-cover'
                   width={30}
                   height={30}
-                  src={user?.user?.image || '/images/webp/user-default.webp'}
+                  src={session?.user?.image || '/images/webp/user-default.webp'}
                   alt='User avatar'
                 />
               </Box>
               <Box className={`text-left ${responsive && 'hidden sm:block'}`} flex={1} pos={'relative'}>
                 <Text fw={700} size='sm' lh={1} className='text-black' lineClamp={1}>
-                  {user?.user?.name}
+                  {session?.user?.name}
                 </Text>
                 <Text size='xs' fw={700} c={'dimmed'} lineClamp={1}>
-                  {user?.user?.email}
+                  {session?.user?.email}
                 </Text>
               </Box>
             </Flex>
@@ -117,25 +117,25 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
                 pos={'relative'}
               >
                 <Image
-                  src={user?.user?.image || '/images/png/403.png'}
+                  src={session?.user?.image || '/images/png/403.png'}
                   alt='User avatar'
                   fill
                   className='rounded-md object-cover'
                 />
               </Box>
               <Stack gap={2}>
-                <Text fw={700}> {user?.user?.name}</Text>
+                <Text fw={700}> {session?.user?.name}</Text>
                 <Text size='sm' fw={600} className='text-gray-600 dark:text-dark-text'>
-                  {user?.user?.role === 'CUSTOMER'
+                  {session?.user?.role === 'CUSTOMER'
                     ? 'Người dùng'
-                    : user?.user?.role === 'ADMIN'
+                    : session?.user?.role === 'ADMIN'
                       ? 'Quản trị viên'
                       : 'Nhân viên'}
                 </Text>
                 <Group align='center' gap={5}>
                   <IconMail className='m-0 h-4 w-4 p-0 text-gray-600 dark:text-dark-text' />
                   <Text size='sm' className='text-gray-600 dark:text-dark-text'>
-                    {user?.user?.email}
+                    {session?.user?.email}
                   </Text>
                 </Group>
               </Stack>

@@ -219,7 +219,7 @@ export default async function Dashboard() {
                       <Flex align={'flex-start'} gap={'md'} key={index}>
                         <Avatar
                           className='border-1 border-solid border-mainColor'
-                          src={item?.image?.url}
+                          src={item?.imageForEntity?.image?.url}
                           radius={'xl'}
                         />
                         <Box>

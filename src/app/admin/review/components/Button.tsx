@@ -19,6 +19,7 @@ export function CreateReviewButton() {
         radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
+        zIndex={150}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -42,6 +43,7 @@ export function UpdateReviewButton({ id }: { id: string }) {
       <Modal
         radius={'md'}
         closeOnClickOutside={false}
+        zIndex={150}
         opened={opened}
         onClose={() => setOpened(false)}
         title={

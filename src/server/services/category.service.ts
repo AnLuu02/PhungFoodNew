@@ -109,13 +109,13 @@ export const getAllCategoryService = async (db: PrismaClient) => {
     include: {
       subCategory: {
         include: {
-          image: true,
+          imageForEntity: { include: { image: true } },
           product: {
             where: {
               isActive: true
             },
             include: {
-              images: true
+              imageForEntities: { include: { image: true } }
             }
           }
         }

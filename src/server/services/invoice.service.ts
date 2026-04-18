@@ -84,7 +84,7 @@ export const findInvoiceService = async (db: PrismaClient, input: { skip: number
               include: {
                 product: {
                   include: {
-                    images: true
+                    imageForEntities: { include: { image: true } }
                   }
                 }
               }

@@ -17,7 +17,7 @@ import { deleteSocialService, upsertSocialService } from '~/server/services/rest
 import { changeThemeService, getThemeService } from '~/server/services/restaurant.theme.service';
 import { bannerReqSchemaCloudinary } from '~/shared/schema/restaurant.banner.schema';
 import { baseOpeningHourSchema } from '~/shared/schema/restaurant.openingHours.schema';
-import { restaurantReqCloudinarySchema } from '~/shared/schema/restaurant.schema';
+import { restaurantInputSchema } from '~/shared/schema/restaurant.schema';
 import { socialSchemaWithRestaurantId } from '~/shared/schema/restaurant.socials.schema';
 import { baseThemeSchema } from '~/shared/schema/restaurant.theme.schema';
 
@@ -26,7 +26,7 @@ export const restaurantRouter = createTRPCRouter({
   getOneActiveClient: publicProcedure.query(async ({ ctx }) => await getOneActiveClientService(ctx.db)),
   upsert: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
-    .input(restaurantReqCloudinarySchema)
+    .input(restaurantInputSchema)
     .mutation(async ({ ctx, input }) => await upsertRestaurantService(ctx.db, input)),
   /////////////////////////////// theme//////////////////////////////////
   changeTheme: publicProcedure

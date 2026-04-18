@@ -260,7 +260,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                             <Avatar
                               size={40}
                               src={
-                                getImageProduct(item?.product?.images || [], ImageType.THUMBNAIL) ||
+                                getImageProduct(item?.product?.imageForEntities || [], ImageType.THUMBNAIL) ||
                                 '/images/jpg/empty-300x240.jpg'
                               }
                               radius={'md'}

@@ -136,6 +136,7 @@ export function CreateManyRoleButton() {
 
       <Modal
         radius={'md'}
+        zIndex={150}
         size={'xl'}
         opened={opened}
         onClose={() => {
@@ -202,6 +203,7 @@ export function CreateRoleButton() {
         Tạo mới
       </BButton>
       <Modal
+        zIndex={150}
         radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
@@ -359,6 +361,7 @@ export function CreateManyPermissionButton() {
       </Group>
 
       <Modal
+        zIndex={150}
         radius={'md'}
         size={'xl'}
         opened={opened}
@@ -428,6 +431,7 @@ export function CreatePermissionButton() {
       <Modal
         radius={'md'}
         closeOnClickOutside={false}
+        zIndex={150}
         opened={opened}
         onClose={() => setOpened(false)}
         title={
@@ -452,6 +456,7 @@ export function UpdatePermissionButton({ id }: { id: string }) {
       <Modal
         radius={'md'}
         closeOnClickOutside={false}
+        zIndex={150}
         opened={opened}
         onClose={() => setOpened(false)}
         title={

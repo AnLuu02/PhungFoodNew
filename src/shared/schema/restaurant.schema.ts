@@ -1,5 +1,5 @@
 import z from 'zod';
-import { imageFromDbSchema, imageInputSchema } from './image.schema';
+import { imageInfoInputSchema } from './image.info.schema';
 import { baseOpeningHourSchema } from './restaurant.openingHours.schema';
 import { baseSocialSchema } from './restaurant.socials.schema';
 import { baseThemeSchema } from './restaurant.theme.schema';
@@ -17,12 +17,8 @@ export const baseRestaurantSchema = z.object({
   openingHours: z.array(baseOpeningHourSchema).optional().nullable()
 });
 
-export const restaurantReqCloudinarySchema = baseRestaurantSchema.extend({
-  logo: imageFromDbSchema.optional()
-});
 export const restaurantInputSchema = baseRestaurantSchema.extend({
-  logo: imageInputSchema.optional()
+  imageForEntity: imageInfoInputSchema.optional()
 });
 
 export type RestaurantInput = z.infer<typeof restaurantInputSchema>;
-export type RestaurantReqCloudinary = z.infer<typeof restaurantReqCloudinarySchema>;

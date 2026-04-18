@@ -14,8 +14,8 @@ export default function BannerInputSection({
   banners?: ImageFromDb[];
 }) {
   const formFields = useFormContext();
-  const banner_1 = formFields.watch('banner1')?.url ? formFields.watch('banner1') : banners?.[0];
-  const banner_2 = formFields.watch('banner2')?.url ? formFields.watch('banner2') : banners?.[1];
+  const banner_1 = mode === 'edit' ? formFields.watch('banner1') : banners?.[0];
+  const banner_2 = mode === 'edit' ? formFields.watch('banner2') : banners?.[1];
   const [previewBanner1, setPreviewBanner1] = useState<string | null>(null);
   const [previewBanner2, setPreviewBanner2] = useState<string | null>(null);
   useEffect(() => {
@@ -23,29 +23,29 @@ export default function BannerInputSection({
     formFields.resetField('banner2');
   }, []);
   useEffect(() => {
-    if (banner_1?.urlFile instanceof File) {
-      const url = URL.createObjectURL(banner_1?.urlFile);
+    if (banner_1?.image?.urlFile instanceof File) {
+      const url = URL.createObjectURL(banner_1?.image?.urlFile);
       setPreviewBanner1(url);
       return () => URL.revokeObjectURL(url);
     }
-    if (banner_1?.url && !banner_1?.urlFile) {
-      setPreviewBanner1(banner_1?.url);
+    if (banner_1?.image?.url && !banner_1?.image?.urlFile) {
+      setPreviewBanner1(banner_1?.image?.url);
     } else {
       setPreviewBanner1(null);
     }
-  }, [banner_1?.url, banner_1?.urlFile]);
+  }, [banner_1?.image?.url, banner_1?.image?.urlFile]);
   useEffect(() => {
-    if (banner_2?.urlFile instanceof File) {
-      const url = URL.createObjectURL(banner_2?.urlFile);
+    if (banner_2?.image?.urlFile instanceof File) {
+      const url = URL.createObjectURL(banner_2?.image?.urlFile);
       setPreviewBanner2(url);
       return () => URL.revokeObjectURL(url);
     }
-    if (banner_2?.url && !banner_2?.urlFile) {
-      setPreviewBanner2(banner_2?.url);
+    if (banner_2?.image?.url && !banner_2?.image?.urlFile) {
+      setPreviewBanner2(banner_2?.image?.url);
     } else {
       setPreviewBanner2(null);
     }
-  }, [banner_2?.url, banner_2?.urlFile]);
+  }, [banner_2?.image?.url, banner_2?.image?.urlFile]);
   return (
     <>
       <Flex direction='column' align='center' justify='space-between' w={{ base: '100%', lg: '33.333333%' }}>
@@ -67,9 +67,11 @@ export default function BannerInputSection({
                       formFields.setValue(
                         'banner1',
                         {
-                          url: undefined,
-                          urlFile: undefined,
-                          publicId: ''
+                          image: {
+                            url: undefined,
+                            urlFile: undefined,
+                            publicId: ''
+                          }
                         },
                         {
                           shouldDirty: true,
@@ -91,7 +93,7 @@ export default function BannerInputSection({
               )}
             </>
           ) : (
-            <label htmlFor='banner1.urlFile' className='h-[190px] w-full cursor-pointer'>
+            <label htmlFor='banner1.image.urlFile' className='h-[190px] w-full cursor-pointer'>
               <Flex w={'100%'} h={'100%'} align={'center'} justify={'center'} direction={'column'} gap={10}>
                 <IconPlus size={20} />
                 <Text>Thêm ảnh</Text>
@@ -118,9 +120,11 @@ export default function BannerInputSection({
                       formFields.setValue(
                         'banner2',
                         {
-                          url: undefined,
-                          urlFile: undefined,
-                          publicId: ''
+                          image: {
+                            url: undefined,
+                            urlFile: undefined,
+                            publicId: ''
+                          }
                         },
                         {
                           shouldDirty: true,
@@ -142,7 +146,7 @@ export default function BannerInputSection({
               )}
             </>
           ) : (
-            <label htmlFor='banner2.urlFile' className='h-[190px] w-full cursor-pointer'>
+            <label htmlFor='banner2.image.urlFile' className='h-[190px] w-full cursor-pointer'>
               <Flex w={'100%'} h={'100%'} align={'center'} justify={'center'} direction={'column'} gap={10}>
                 <IconPlus size={20} />
                 <Text>Thêm ảnh</Text>
@@ -153,7 +157,7 @@ export default function BannerInputSection({
       </Flex>
       <Box hidden>
         <Controller
-          name='banner1.urlFile'
+          name='banner1.image.urlFile'
           control={formFields.control}
           rules={{
             required: 'File hoặc URL là bắt buộc',
@@ -164,7 +168,7 @@ export default function BannerInputSection({
           }}
           render={({ field, formState: { errors } }) => (
             <FileInput
-              id='banner1.urlFile'
+              id='banner1.image.urlFile'
               value={field.value}
               onChange={value => {
                 field.onChange(value);
@@ -178,7 +182,7 @@ export default function BannerInputSection({
       </Box>
       <Box hidden>
         <Controller
-          name='banner2.urlFile'
+          name='banner2.image.urlFile'
           control={formFields.control}
           rules={{
             required: 'File hoặc URL là bắt buộc',
@@ -189,7 +193,7 @@ export default function BannerInputSection({
           }}
           render={({ field, formState: { errors } }) => (
             <FileInput
-              id='banner2.urlFile'
+              id='banner2.image.urlFile'
               value={field.value}
               onChange={value => {
                 field.onChange(value);

@@ -71,7 +71,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                   className='rounded-full object-cover'
                   width={90}
                   height={90}
-                  src={userInfor?.image?.url || '/images/webp/user-default.webp'}
+                  src={userInfor?.imageForEntity?.image?.url || '/images/webp/user-default.webp'}
                   alt='User avatar'
                 />
                 <Flex

@@ -4,7 +4,6 @@ import FooterWeb from '~/components/Web/Footer/FooterWeb';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import { HeaderClient } from '~/components/Web/Header/section/HeaderFirst';
 import ServiceComponent from '~/components/Web/Home/components/ServiceComponent';
-import { GlobalModal } from '~/contexts/GlobalModal';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api, HydrateClient } from '~/trpc/server';
 
@@ -32,7 +31,6 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
         </Box>
         <FloatingWidget restaurant={restaurant} />
         <FooterWeb restaurant={restaurant} />
-        <GlobalModal />
       </Box>
     </HydrateClient>
   );

@@ -21,6 +21,7 @@ export function CreateUserButton() {
         size='100%'
         opened={opened}
         radius={'md'}
+        zIndex={150}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -47,6 +48,7 @@ export function UpdatePermissions({ email }: { email: any }) {
         closeOnClickOutside={false}
         size='70%'
         opened={opened}
+        zIndex={150}
         radius={'md'}
         onClose={() => setOpened(false)}
         title={
@@ -87,6 +89,7 @@ export function UpdateUserButton({
         closeOnClickOutside={false}
         size='100%'
         opened={opened}
+        zIndex={150}
         radius={'md'}
         onClose={() => {
           setOpened(false);

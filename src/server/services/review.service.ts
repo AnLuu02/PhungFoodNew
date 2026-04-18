@@ -114,7 +114,7 @@ export const findReviewService = async (
           select: {
             id: true,
             name: true,
-            image: true
+            imageForEntity: { include: { image: true } }
           }
         },
         product: {
@@ -122,7 +122,7 @@ export const findReviewService = async (
             id: true,
             name: true,
             tag: true,
-            images: true
+            imageForEntities: { include: { image: true } }
           }
         }
       }
@@ -179,7 +179,7 @@ export const getFilterReviewService = async (db: PrismaClient, input: { s: strin
       include: {
         user: {
           include: {
-            image: true
+            imageForEntity: { include: { image: true } }
           }
         }
       }
@@ -200,7 +200,7 @@ export const getOneReviewService = async (db: PrismaClient, input: { id: string 
       include: {
         user: {
           include: {
-            image: true
+            imageForEntity: { include: { image: true } }
           }
         }
       }

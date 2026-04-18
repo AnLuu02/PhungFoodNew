@@ -65,7 +65,10 @@ const CartButton = () => {
                 <Box key={item?.id}>
                   <CartItemFastMenu
                     key={item?.id}
-                    image={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                    image={
+                      getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) ||
+                      '/images/jpg/empty-300x240.jpg'
+                    }
                     name={item?.name}
                     price={item?.price}
                     quantity={item?.quantity}

@@ -69,6 +69,7 @@ export function SocialLinkModal({
   return (
     <Modal
       opened={opened?.open}
+      zIndex={150}
       onClose={onClose}
       title={
         <Title order={3} className='font-quicksand'>

@@ -3,7 +3,7 @@
 import { Flex, Modal, Text } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import { Dispatch, SetStateAction, useMemo } from 'react';
-import { ImageFromDb } from '~/shared/schema/image.schema';
+import { ImageInfoFromDb } from '~/shared/schema/image.info.schema';
 import BannerInputSection from './Banner/BannerInput';
 import { CarouselGallery } from './Banner/CarouselGallery';
 
@@ -15,16 +15,16 @@ export default function ModalViewBanner({
   setViewBanner: Dispatch<SetStateAction<{ isOpened: boolean; activeBanner: any }>>;
 }) {
   const { banners, galleries } = useMemo(() => {
-    return viewBanner?.activeBanner && Array.isArray(viewBanner?.activeBanner?.images)
-      ? viewBanner?.activeBanner?.images?.reduce(
+    return viewBanner?.activeBanner && Array.isArray(viewBanner?.activeBanner?.imageForEntities)
+      ? viewBanner?.activeBanner?.imageForEntities?.reduce(
           (
             acc: {
-              banners: ImageFromDb[];
-              galleries: ImageFromDb[];
+              banners: ImageInfoFromDb[];
+              galleries: ImageInfoFromDb[];
             },
-            item: ImageFromDb
+            item: ImageInfoFromDb
           ) => {
-            item?.type === ImageType.BANNER && acc.banners?.push(item);
+            item?.type === ImageType.THUMBNAIL && acc.banners?.push(item);
             item?.type === ImageType.GALLERY && acc.galleries?.push(item);
             return acc;
           },
@@ -45,7 +45,7 @@ export default function ModalViewBanner({
         {viewBanner?.activeBanner?.id ? (
           <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
             <CarouselGallery mode='view' galleries={galleries} />
-            <BannerInputSection banners={banners} />
+            <BannerInputSection mode='view' banners={banners} />
           </Flex>
         ) : null}
       </Modal>

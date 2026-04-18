@@ -11,7 +11,7 @@ import { PaymentStatusCardSkeleton } from './components/SkeletonLoading';
 export default function PaymentResult() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('vnp_TxnRef') || searchParams.get('orderId');
-  const { data: order, isLoading: loadingOrder } = api.Order.getOne.useQuery(
+  const { data, isLoading: loadingOrder } = api.Order.getOne.useQuery(
     { s: orderId || '' },
     {
       enabled: !!orderId
@@ -39,9 +39,10 @@ export default function PaymentResult() {
       if (
         searchParams.get('vnp_ResponseCode') === '00' &&
         searchParams.get('vnp_TransactionStatus') === '00' &&
-        order &&
+        data &&
         !hasSent.current
       ) {
+        const order: any = data;
         hasSent.current = true;
         const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
         fetch('/api/send-invoice', {
@@ -95,7 +96,7 @@ export default function PaymentResult() {
 
   if (queryParams) {
     const uiStatus = mapOrderStatusToUIStatus(
-      queryParams.statusOrder === order?.status ? queryParams.statusOrder : order?.status || 'ERROR',
+      queryParams.statusOrder === data?.status ? queryParams.statusOrder : data?.status || 'ERROR',
       queryParams.responseCode,
       queryParams.transactionStatus
     );
@@ -104,9 +105,9 @@ export default function PaymentResult() {
     return (
       <OrderStatusPage
         status={uiStatus}
-        customerName={order?.user?.name || 'Khách hàng'}
+        customerName={data?.user?.name || 'Khách hàng'}
         orderId={queryParams.orderId}
-        amount={queryParams.amount || order?.finalTotal || 0}
+        amount={queryParams.amount || data?.finalTotal || 0}
         customTitle={title}
         customMessage={message}
         onRetryPayment={() => {
@@ -122,7 +123,7 @@ export default function PaymentResult() {
   return (
     <OrderStatusPage
       status='ERROR'
-      customerName={order?.user?.name || 'Khách hàng'}
+      customerName={data?.user?.name || 'Khách hàng'}
       customTitle='Không tìm thấy thông tin đơn hàng'
       customMessage='Vui lòng kiểm tra lại đường dẫn hoặc liên hệ hỗ trợ khách hàng.'
       onBackToHome={() => {

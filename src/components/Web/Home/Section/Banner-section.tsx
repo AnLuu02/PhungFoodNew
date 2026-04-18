@@ -12,12 +12,12 @@ import { useMemo, useRef } from 'react';
 export default function BannerSection({ banner }: any) {
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const [gallery, banners] = useMemo(() => {
-    return banner?.images?.reduce(
-      (acc: any, image: any) => {
-        if (image?.type === ImageType.GALLERY) {
-          acc[0].push(image);
-        } else if (image?.type === ImageType.BANNER) {
-          acc[1].push(image);
+    return banner?.imageForEntities?.reduce(
+      (acc: any, item: any) => {
+        if (item?.type === ImageType.GALLERY) {
+          acc[0].push(item?.image);
+        } else if (item?.type === ImageType.THUMBNAIL) {
+          acc[1].push(item?.image);
         }
         return acc;
       },

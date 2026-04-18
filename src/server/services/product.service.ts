@@ -4,7 +4,7 @@ import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { UserRole } from '~/shared/constants/user';
-import { StatusImage } from '~/shared/schema/image.schema';
+import { StatusImage } from '~/shared/schema/image.info.schema';
 import {
   FilterProductInput,
   FilterProductOptions,
@@ -161,7 +161,7 @@ export const findProductService = async (db: PrismaClient, input: FilterProductI
         AND: filterParams.length > 0 ? filterParams : undefined
       } as any,
       include: {
-        images: true,
+        imageForEntities: { include: { image: true } },
         materials: true,
         subCategory: {
           select: {
@@ -169,7 +169,7 @@ export const findProductService = async (db: PrismaClient, input: FilterProductI
             tag: true,
             name: true,
             category: true,
-            image: true
+            imageForEntity: { include: { image: true } }
           }
         },
         review: true,
@@ -199,7 +199,9 @@ export const findProductService = async (db: PrismaClient, input: FilterProductI
 export const deleteProductService = async (db: PrismaClient, input: { id: string }) => {
   const productDeleted = await db.product.delete({
     where: { id: input.id },
-    include: { images: true }
+    include: {
+      imageForEntities: { include: { image: true } }
+    }
   });
   return productDeleted;
 };
@@ -241,12 +243,11 @@ export const getFilterProductService = async (db: PrismaClient, input: ServiceOp
       ]
     },
     include: {
-      images: true,
+      imageForEntities: { include: { image: true } },
       materials: true,
-
       subCategory: {
         include: {
-          image: true,
+          imageForEntity: { include: { image: true } },
           ...(hasCategoryChild
             ? {
                 category: hasCategory ? true : false
@@ -274,11 +275,13 @@ export const getOneProductService = async (db: PrismaClient, input: ServiceOptio
       OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
     },
     include: {
-      images: true,
+      imageForEntities: {
+        include: { image: true }
+      },
       materials: true,
       subCategory: {
         include: {
-          image: true,
+          imageForEntity: { include: { image: true } },
           ...(hasCategoryChild
             ? {
                 category: hasCategory ? true : false
@@ -296,7 +299,7 @@ export const getOneProductService = async (db: PrismaClient, input: ServiceOptio
                         select: {
                           id: true,
                           name: true,
-                          image: true
+                          imageForEntity: { include: { image: true } }
                         }
                       }
                     : false)
@@ -316,11 +319,11 @@ export const getAllProductService = async (db: PrismaClient, input: ServiceOptio
       ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
     },
     include: {
-      images: true,
+      imageForEntities: { include: { image: true } },
       materials: true,
       subCategory: {
         include: {
-          image: true,
+          imageForEntity: { include: { image: true } },
           ...(hasCategoryChild
             ? {
                 category: hasCategory ? true : false
@@ -336,11 +339,11 @@ export const getAllProductService = async (db: PrismaClient, input: ServiceOptio
 };
 
 export const upsertProductToCloudinaryService = async (db: PrismaClient, input1: ProductFromDb) => {
-  const { id, subCategoryId, images, ...data } = input1;
+  const { id, subCategoryId, imageForEntities, ...data } = input1;
   const existingProduct = id
     ? await db.product.findUnique({
         where: { id },
-        include: { images: true }
+        include: { imageForEntities: { include: { image: true } } }
       })
     : null;
 
@@ -354,9 +357,9 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
     }
   }
 
-  const inputImages = [...(images || [])];
-  const newImages = inputImages.filter(i => i?.status === StatusImage.NEW) || [];
-  const deleteImages = inputImages.filter(i => i?.status === StatusImage.DELETED) || [];
+  const inputImageForEntities = [...(imageForEntities || [])];
+  const newImages = inputImageForEntities.filter(i => i?.status === StatusImage.NEW) || [];
+  const deleteImages = inputImageForEntities.filter(i => i?.status === StatusImage.DELETED) || [];
   const updatedProduct = await db.product.upsert({
     where: {
       id: id || ''
@@ -370,18 +373,25 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
         }
       },
       materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
-      images: newImages?.length
+      imageForEntities: newImages?.length
         ? {
-            connectOrCreate: newImages.map(({ status, ...item }: any) => ({
-              where: {
-                publicId: item?.publicId || ''
-              },
-              create: {
-                ...item,
-                url: item?.url || '',
-                type: item?.type || ImageType.GALLERY,
-                altText: item?.altText || 'Ảnh sản phẩm ' + data?.name,
-                entityType: item?.entityType || EntityType.PRODUCT
+            create: newImages.map(({ status, ...item }: any) => ({
+              id: undefined,
+              entityType: EntityType.PRODUCT,
+              altText: `Ảnh  ${data.name}`,
+              type: item?.image?.type || ImageType.THUMBNAIL,
+              image: {
+                connectOrCreate: {
+                  where: {
+                    publicId: item?.image?.publicId
+                  },
+                  create: {
+                    ...(item?.image ?? {}),
+                    url: item?.image?.url || '',
+                    altText: item?.image?.altText || 'Ảnh của sản phẩm ' + (data?.name || ''),
+                    type: item?.image?.type || ImageType.THUMBNAIL
+                  }
+                }
               }
             }))
           }
@@ -395,27 +405,56 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
         }
       },
       materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
-      images: {
+      imageForEntities: {
         ...(newImages?.length
           ? {
-              connectOrCreate: newImages.map(({ status, ...item }: any) => ({
+              upsert: newImages.map(({ status, ...item }: any) => ({
                 where: {
-                  publicId: item?.publicId || ''
+                  id: item?.id || 'default_id'
                 },
                 create: {
-                  ...item,
-                  url: item?.url || '',
-                  type: item?.type || ImageType.GALLERY,
-                  altText: item?.altText || 'Ảnh sản phẩm ' + data?.name,
-                  entityType: item?.entityType || EntityType.PRODUCT
+                  entityType: EntityType.PRODUCT,
+                  altText: `Ảnh  ${data.name}`,
+                  type: item?.image?.type || ImageType.THUMBNAIL,
+                  image: {
+                    connectOrCreate: {
+                      where: {
+                        publicId: item?.image?.publicId
+                      },
+                      create: {
+                        ...(item?.image ?? {}),
+                        url: item?.image?.url || '',
+                        altText: item?.image?.altText || 'Ảnh của sản phẩm ' + (data?.name || ''),
+                        type: item?.image?.type || ImageType.THUMBNAIL
+                      }
+                    }
+                  }
+                },
+                update: {
+                  entityType: EntityType.PRODUCT,
+                  altText: `Ảnh  ${data.name}`,
+                  type: item?.image?.type || ImageType.THUMBNAIL,
+                  image: {
+                    connectOrCreate: {
+                      where: {
+                        publicId: item?.image?.publicId
+                      },
+                      create: {
+                        ...(item?.image ?? {}),
+                        url: item?.image?.url || '',
+                        altText: item?.image?.altText || 'Ảnh của sản phẩm ' + (data?.name || ''),
+                        type: item?.image?.type || ImageType.THUMBNAIL
+                      }
+                    }
+                  }
                 }
               }))
             }
-          : undefined),
-        disconnect: deleteImages.length ? deleteImages.map(item => ({ publicId: item?.publicId || '' })) : undefined
+          : {}),
+        delete: deleteImages ? deleteImages?.map(item => ({ id: item?.id })) : undefined
       }
     },
-    include: { images: true }
+    include: { imageForEntities: { include: { image: true } } }
   });
 
   if (updatedProduct?.tag) {

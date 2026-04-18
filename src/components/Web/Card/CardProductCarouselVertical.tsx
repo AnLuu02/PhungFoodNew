@@ -36,7 +36,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
         <Image
           loading='lazy'
           id={`productImage-${data?.id}`}
-          src={getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+          src={getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           fill
           style={{ objectFit: 'cover' }}
           className='object-cover transition-transform duration-300 group-hover:scale-105'

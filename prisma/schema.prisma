@@ -19,18 +19,17 @@ model Category {
 }
 
 model SubCategory {
-  id          String    @id @default(cuid())
-  name        String
-  tag         String
-  isActive    Boolean?  @default(true)
-  categoryId  String
-  description String?
-  imageId     String?
-  image       Image?    @relation(fields: [imageId], references: [id])
-  product     Product[]
-  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  id             String          @id @default(cuid())
+  name           String
+  tag            String
+  isActive       Boolean?        @default(true)
+  categoryId     String
+  description    String?
+  imageForEntity ImageForEntity?
+  product        Product[]
+  category       Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt      DateTime?       @default(now())
+  updatedAt      DateTime?       @updatedAt
 
   @@unique([tag, categoryId])
 }
@@ -174,30 +173,30 @@ model Payment {
 }
 
 model Product {
-  id                    String          @id @default(cuid())
+  id                    String           @id @default(cuid())
   name                  String
   description           String?
   descriptionDetailJson Json?
-  descriptionDetailHtml String?         @default("<p>Đang cập nhật</p>")
-  price                 Int             @default(0)
-  discount              Int             @default(0)
-  tag                   String          @unique
+  descriptionDetailHtml String?          @default("<p>Đang cập nhật</p>")
+  price                 Int              @default(0)
+  discount              Int              @default(0)
+  tag                   String           @unique
   tags                  String[]
-  isActive              Boolean?        @default(false)
+  isActive              Boolean?         @default(false)
   region                String
-  soldQuantity          Int             @default(0)
-  availableQuantity     Int             @default(100)
-  rating                Float           @default(5.0)
-  totalRating           Int             @default(0)
+  soldQuantity          Int              @default(0)
+  availableQuantity     Int              @default(100)
+  rating                Float            @default(5.0)
+  totalRating           Int              @default(0)
   orderItem             OrderItem[]
   review                Review[]
   favouriteFood         FavouriteFood[]
   materials             Material[]
-  subCategory           SubCategory?    @relation(fields: [subCategoryId], references: [id])
+  subCategory           SubCategory?     @relation(fields: [subCategoryId], references: [id])
   subCategoryId         String?
-  images                Image[]
-  createdAt             DateTime?       @default(now())
-  updatedAt             DateTime?       @updatedAt
+  imageForEntities      ImageForEntity[]
+  createdAt             DateTime?        @default(now())
+  updatedAt             DateTime?        @updatedAt
 
   @@unique([tag, subCategoryId])
   @@index([subCategoryId], map: "Product_categoryId_fkey_unique")
@@ -247,7 +246,7 @@ model User {
   review             Review[]
   favouriteFood      FavouriteFood[]
   revenue            Revenue[]
-  image              Image?
+  imageForEntity     ImageForEntity?
   roleId             String?
   role               Role?                   @relation(fields: [roleId], references: [id])
   address            Address?
@@ -297,21 +296,21 @@ model Address {
 }
 
 model Restaurant {
-  id           String        @id @default(cuid())
-  isActive     Boolean       @default(false)
-  name         String
-  description  String?
-  logo         Image?
-  email        String        @unique
-  phone        String
-  website      String?
-  socials      Social[]
-  banners      Banner[]
-  address      String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  theme        Theme?
-  openingHours OpeningHour[]
+  id             String          @id @default(cuid())
+  isActive       Boolean         @default(false)
+  name           String
+  description    String?
+  imageForEntity ImageForEntity?
+  email          String          @unique
+  phone          String
+  website        String?
+  socials        Social[]
+  banners        Banner[]
+  address        String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  theme          Theme?
+  openingHours   OpeningHour[]
 }
 
 model OpeningHour {
@@ -358,15 +357,15 @@ model Social {
 }
 
 model Banner {
-  id           String      @id @default(cuid())
-  images       Image[]
-  isActive     Boolean
-  startDate    DateTime?
-  endDate      DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime?   @updatedAt
-  restaurant   Restaurant? @relation(fields: [restaurantId], references: [id])
-  restaurantId String?
+  id               String           @id @default(cuid())
+  imageForEntities ImageForEntity[]
+  isActive         Boolean
+  startDate        DateTime?
+  endDate          DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime?        @updatedAt
+  restaurant       Restaurant?      @relation(fields: [restaurantId], references: [id])
+  restaurantId     String?
 }
 
 model Contact {
@@ -452,26 +451,41 @@ model FavouriteFood {
 }
 
 model Image {
-  id            String        @id @default(cuid())
-  url           String        @db.Text
-  publicId      String?       @unique
-  width         Int?
-  height        Int?
-  format        String?
-  altText       String?       @db.Text
-  type          ImageType     @default(OTHER)
-  entityType    EntityType    @default(UNASSIGNED)
+  id               String           @id @default(cuid())
+  url              String           @db.Text
+  publicId         String?          @unique
+  width            Int?
+  height           Int?
+  format           String?
+  altText          String?          @db.Text
+  type             ImageType        @default(OTHER)
+  createdAt        DateTime?        @default(now())
+  updatedAt        DateTime?        @updatedAt
+  imageForEntities ImageForEntity[]
+
+  @@index([publicId])
+  @@index([url])
+}
+
+model ImageForEntity {
+  id            String       @id @default(cuid())
+  altText       String?      @db.Text
+  type          ImageType    @default(OTHER)
+  entityType    EntityType   @default(UNASSIGNED)
   bannerId      String?
-  banner        Banner?       @relation(fields: [bannerId], references: [id], onDelete: Cascade)
-  subCategories SubCategory[]
-  restaurantId  String?       @unique
-  restaurant    Restaurant?   @relation(fields: [restaurantId], references: [id])
-  userId        String?       @unique
-  user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  banner        Banner?      @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  subCategoryId String?      @unique
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  restaurantId  String?      @unique
+  restaurant    Restaurant?  @relation(fields: [restaurantId], references: [id])
+  userId        String?      @unique
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId     String?
-  product       Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt     DateTime?     @default(now())
-  updatedAt     DateTime?     @updatedAt
+  product       Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt     DateTime?    @default(now())
+  updatedAt     DateTime?    @updatedAt
+  image         Image?       @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageId       String?
 
   @@unique([id, userId, entityType, type])
   @@unique([id, productId, entityType, type])
@@ -489,12 +503,6 @@ model Image {
 enum ImageType {
   THUMBNAIL
   GALLERY
-  LOGO
-  BANNER
-  PRODUCT
-  CATEGORY
-  USER
-  RESTAURANT
   OTHER
 }
 
@@ -502,7 +510,7 @@ enum EntityType {
   PRODUCT
   USER
   RESTAURANT
-  SUB_CATEGORY
+  CATEGORY
   BANNER
   UNASSIGNED
 }

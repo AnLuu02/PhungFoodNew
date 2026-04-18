@@ -2,11 +2,11 @@
 
 import { Button, Popover, Stack, Textarea } from '@mantine/core';
 import { useRef, useState } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
 interface TemplateTextareaProps {
   name: string;
-  control: Control<any>;
+  control: any;
   label?: string;
 }
 const variableSources = {

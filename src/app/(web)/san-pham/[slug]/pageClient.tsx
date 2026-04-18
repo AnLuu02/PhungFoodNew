@@ -2,7 +2,7 @@
 
 import { Grid } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import DiscountCodes from './components/DiscountCodes';
@@ -16,9 +16,6 @@ import { ProductInsights } from './components/ProductInsights';
 import { ProductOverview } from './components/ProductOverview';
 
 export default function ProductDetailClient(data: any) {
-  const [activeTab, setActiveTab] = useState('description');
-  const [note, setNote] = useState('');
-  const [quantity, setQuantity] = useState(1);
   const { product, dataRelatedProducts, dataHintProducts, dataVouchers }: any = data?.data || {
     product: {},
     dataRelatedProducts: [],
@@ -31,7 +28,7 @@ export default function ProductDetailClient(data: any) {
       dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [],
       dataHintProducts?.filter((item: any) => item.id !== product?.id) || [],
       product?.availableQuantity > 0,
-      product?.images?.filter((item: any) => item.type !== ImageType.THUMBNAIL && item.url) || []
+      product?.imageForEntities?.filter((item: any) => item?.type !== ImageType.THUMBNAIL && item?.image?.url) || []
     ];
   }, [product]);
 
@@ -47,7 +44,9 @@ export default function ProductDetailClient(data: any) {
           className='h-fit'
         >
           <ProductImage
-            thumbnail={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+            thumbnail={
+              getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+            }
             gallery={gallery?.length > 0 ? gallery : []}
             discount={discount}
             tag={product?.tag || ''}

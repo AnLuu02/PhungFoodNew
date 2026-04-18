@@ -20,6 +20,7 @@ export function CreatePaymentButton() {
         closeOnClickOutside={false}
         opened={opened}
         size={'xl'}
+        zIndex={150}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -44,6 +45,7 @@ export function UpdatePaymentButton({ id }: { id: string }) {
         radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
+        zIndex={150}
         onClose={() => setOpened(false)}
         size={'xl'}
         title={

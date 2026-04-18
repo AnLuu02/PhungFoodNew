@@ -126,7 +126,7 @@ export const findOrderService = async (
         payment: true,
         user: {
           include: {
-            image: true,
+            imageForEntity: { include: { image: true } },
             address: true
           }
         },
@@ -135,7 +135,7 @@ export const findOrderService = async (
           include: {
             product: {
               include: {
-                images: true
+                imageForEntities: { include: { image: true } }
               }
             }
           }
@@ -358,7 +358,7 @@ export const getFilterOrderService = async (db: PrismaClient, input: { s: string
         include: {
           product: {
             include: {
-              images: true
+              imageForEntities: { include: { image: true } }
             }
           }
         }
@@ -366,7 +366,7 @@ export const getFilterOrderService = async (db: PrismaClient, input: { s: string
       vouchers: true,
       user: {
         include: {
-          image: true,
+          imageForEntity: { include: { image: true } },
           address: true
         }
       },
@@ -404,7 +404,7 @@ export const getOneOrderService = async (db: PrismaClient, input: { s: string })
         include: {
           product: {
             include: {
-              images: true
+              imageForEntities: { include: { image: true } }
             }
           }
         }
@@ -412,7 +412,7 @@ export const getOneOrderService = async (db: PrismaClient, input: { s: string })
       vouchers: true,
       user: {
         include: {
-          image: true,
+          imageForEntity: { include: { image: true } },
           address: true
         }
       },

@@ -27,7 +27,9 @@ export const ShoppingCartMobile = () => {
           >
             <Image
               loading='lazy'
-              src={getImageProduct(item?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+              src={
+                getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+              }
               width={60}
               height={60}
               className='rounded-md object-cover'

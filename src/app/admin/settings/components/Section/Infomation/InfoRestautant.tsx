@@ -10,7 +10,7 @@ import BButton from '~/components/Button/Button';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { StatusImage } from '~/shared/schema/image.schema';
+import { StatusImage } from '~/shared/schema/image.info.schema';
 import { RestaurantInput, restaurantInputSchema } from '~/shared/schema/restaurant.schema';
 import { api } from '~/trpc/react';
 import RestaurantInformationSkeleton from '../Skeleton/RestaurantInformationSkeleton';
@@ -40,11 +40,7 @@ export default function RestaurantInfoSettings() {
       socials: [],
       theme: undefined,
       description: undefined,
-      logo: {
-        urlFile: undefined,
-        url: undefined,
-        publicId: undefined
-      },
+      imageForEntity: undefined,
       openingHours: undefined
     }
   });
@@ -61,10 +57,12 @@ export default function RestaurantInfoSettings() {
     if (data) {
       formFields.reset({
         ...data,
-        logo: {
-          ...data?.logo,
-          url: data?.logo?.url || '',
-          publicId: data?.logo?.publicId || ''
+        imageForEntity: {
+          ...data?.imageForEntity,
+          image: {
+            url: data?.imageForEntity?.image?.url || '',
+            publicId: data?.imageForEntity?.image?.publicId || ''
+          }
         } as any
       });
     }
@@ -80,23 +78,30 @@ export default function RestaurantInfoSettings() {
     }
   });
   const onSubmit: SubmitHandler<RestaurantInput> = async formData => {
-    const logoFile = formFields.getValues('logo.urlFile');
-    const logoPublicId = formFields.getValues('logo.publicId');
-    const logoToSave = await handleUploadFromClient(logoFile, utils, {
-      folder: EntityType.RESTAURANT + '/' + ImageType.LOGO
+    const imageFile = formFields.getValues('imageForEntity.image.urlFile');
+    const imagePublicId = formFields.getValues('imageForEntity.image.publicId');
+    const imagesToSave = await handleUploadFromClient(imageFile, utils, {
+      folder: EntityType.RESTAURANT + '/' + ImageType.THUMBNAIL
     });
     await upsertMutation.mutateAsync({
       ...formData,
-      logo: logoToSave
+      imageForEntity: imagesToSave
         ? {
-            ...logoToSave,
-            type: ImageType.LOGO,
-            altText: 'Logo nhà hàng',
-            status: StatusImage.NEW
+            id: formData?.imageForEntity?.id,
+            altText: formData?.imageForEntity?.altText || 'Ảnh Logo nhà hàng ' + (formData?.name || ''),
+            type: formData?.imageForEntity?.type || ImageType.THUMBNAIL,
+            entityType: formData?.imageForEntity?.entityType || EntityType.RESTAURANT,
+            status: StatusImage.NEW,
+            image: {
+              ...imagesToSave,
+              id: undefined,
+              altText: formData?.imageForEntity?.altText || 'Ảnh Logo nhà hàng ' + (formData?.name || ''),
+              type: ImageType.THUMBNAIL
+            }
           }
-        : data?.logo?.publicId && !logoPublicId
+        : data?.imageForEntity?.id && !imagePublicId
           ? {
-              publicId: data?.logo?.publicId,
+              id: data?.imageForEntity?.id,
               status: StatusImage.DELETED
             }
           : undefined

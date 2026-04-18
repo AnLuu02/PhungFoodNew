@@ -16,6 +16,7 @@ import NextTopLoader from 'nextjs-toploader';
 import { TRPCReactProvider } from '~/trpc/react';
 
 import ScrollToTop from '~/components/ScrollToTop';
+import { GlobalModal } from '~/contexts/GlobalModal';
 import { ModalProvider } from '~/contexts/ModalContext';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
@@ -108,7 +109,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>
-              <ModalProvider>{children}</ModalProvider>
+              <ModalProvider>
+                <>
+                  {children}
+                  <GlobalModal />
+                </>
+              </ModalProvider>
             </ModalsProvider>
             <ScrollToTop />
           </MantineProvider>

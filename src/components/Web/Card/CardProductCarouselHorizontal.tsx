@@ -39,7 +39,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
           <Image
             loading='lazy'
             id={`productImage-${data?.id}`}
-            src={getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+            src={getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
             fill
             style={{ objectFit: 'cover' }}
             alt={data?.name || 'Product Image'}

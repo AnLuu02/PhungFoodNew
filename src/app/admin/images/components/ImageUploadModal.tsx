@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid, GridCol, Group, Modal, Select, Textarea, Title } from '@mantine/core';
+import { Grid, GridCol, Group, Modal, Select, Textarea } from '@mantine/core';
 
 import { EntityType, ImageType } from '@prisma/client';
 import { useState } from 'react';
@@ -18,20 +18,30 @@ interface UploadModalProps {
   onClose: () => void;
   onSuccess: () => void;
 }
+const imageTypes: { label: string; value: ImageType }[] = [
+  {
+    label: 'Ảnh chính',
+    value: 'THUMBNAIL'
+  },
+  {
+    label: 'Ảnh mô tả',
+    value: 'GALLERY'
+  },
+  {
+    label: 'Ảnh chưa xác định',
+    value: 'OTHER'
+  }
+];
+const entityTypes: EntityType[] = ['PRODUCT', 'BANNER', 'USER', 'CATEGORY', 'RESTAURANT', 'UNASSIGNED'];
 
 export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
   const [isUploading, setIsUploading] = useState(false);
-
-  const imageTypes: ImageType[] = ['PRODUCT', 'CATEGORY', 'BANNER', 'USER', 'RESTAURANT', 'OTHER'];
-  const entityTypes: EntityType[] = ['PRODUCT', 'CATEGORY', 'BANNER', 'USER', 'RESTAURANT', 'UNASSIGNED'];
-
   const formFields = useForm<ImageInput>({
     defaultValues: {
       url: undefined,
       urlFile: undefined,
       altText: '',
-      type: 'OTHER',
-      entityType: 'UNASSIGNED'
+      type: 'OTHER'
     }
   });
 
@@ -54,7 +64,7 @@ export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
     setIsUploading(true);
     try {
       const imageToSave = await handleUploadFromClient(formData.urlFile, utils, {
-        folder: formData.entityType + '/' + formData.type
+        folder: formData.type
       });
 
       if (imageToSave) {
@@ -62,25 +72,22 @@ export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
           ...imageToSave,
           altText: formData?.altText || 'Ảnh chưa có mô tả.',
           url: imageToSave?.url || '',
-          type: formData.type,
-          entityType: formData.entityType
+          type: formData.type
         });
       }
     } finally {
       setIsUploading(false);
     }
   };
-  console.log(file);
 
   return (
     <Modal
       opened={opened}
       onClose={onClose}
-      title={
-        <Title order={3} className='font-quicksand'>
-          Tải ảnh lên
-        </Title>
-      }
+      title='Tải ảnh lên'
+      classNames={{
+        title: 'font-quicksand text-2xl font-bold'
+      }}
       size='lg'
       radius={'md'}
     >
@@ -107,23 +114,9 @@ export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
                 control={formFields.control}
                 render={({ field }) => (
                   <Select
-                    label='Image Type'
+                    label='Loại ảnh'
                     mt='md'
-                    data={imageTypes.map(t => ({ value: t, label: t }))}
-                    disabled={isUploading}
-                    {...field}
-                  />
-                )}
-              />
-
-              <Controller
-                name='entityType'
-                control={formFields.control}
-                render={({ field }) => (
-                  <Select
-                    label='Entity Type'
-                    mt='md'
-                    data={entityTypes.map(t => ({ value: t, label: t }))}
+                    data={imageTypes.map(({ value, label }) => ({ value, label }))}
                     disabled={isUploading}
                     {...field}
                   />

@@ -60,7 +60,7 @@ export default function GeneralTab() {
               <Text size='sm' fw={500} mb={4}>
                 Logo nhà hàng
               </Text>
-              <ThumbnailUpsert nameField='logo' />
+              <ThumbnailUpsert nameField='imageForEntity.image' />
             </Box>
           </Box>
         </Box>

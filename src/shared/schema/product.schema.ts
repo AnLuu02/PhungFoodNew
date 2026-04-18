@@ -1,6 +1,6 @@
 import z from 'zod';
 import { createTag } from '~/lib/FuncHandler/generateTag';
-import { imageFromDbSchema, imageInputSchema } from './image.schema';
+import { imageInfoFromDbSchema, imageInfoInputSchema } from './image.info.schema';
 
 export const getServiceOptionsSchema = z.object({
   s: z.string().optional(),
@@ -62,8 +62,8 @@ export const baseProductSchema = z.object({
 
 export const productInputSchema = baseProductSchema
   .extend({
-    thumbnail: imageInputSchema.optional(),
-    gallery: z.array(imageInputSchema).optional(),
+    thumbnail: imageInfoInputSchema.optional(),
+    gallery: z.array(imageInfoInputSchema).optional(),
     galleryInput: z.array(z.instanceof(File)).optional()
   })
   .transform(data => ({
@@ -77,7 +77,7 @@ export const productInputSchema = baseProductSchema
 
 export const productFromDbSchema = baseProductSchema
   .extend({
-    images: z.array(imageFromDbSchema).optional()
+    imageForEntities: z.array(imageInfoFromDbSchema).optional()
   })
   .transform(data => ({
     ...data,

@@ -16,6 +16,7 @@ export function CreateVoucherButton() {
       <Modal
         closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
+        zIndex={150}
         size={'80%'}
         opened={opened}
         onClose={() => setOpened(false)}

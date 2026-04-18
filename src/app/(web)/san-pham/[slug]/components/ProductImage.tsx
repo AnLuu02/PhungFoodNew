@@ -15,14 +15,14 @@ export default function ProductImage({
   tag
 }: {
   thumbnail: string;
-  gallery: { url: string }[];
+  gallery: { image: { url: string } }[];
   discount?: number;
   tag: string;
 }) {
   const isDesktop = useMediaQuery(`(min-width:${breakpoints.md}px)`);
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showFullImage, setShowFullImage] = useState(false);
-  const allImages = [{ url: thumbnail }, ...gallery];
+  const allImages = [{ image: { url: thumbnail } }, ...gallery];
   const [displayImages, remainingCount] = useMemo(() => {
     const displayImages = allImages.slice(1, !isDesktop ? 3 : 4);
     const remainingCount = allImages.length > (!isDesktop ? 3 : 4) ? allImages.length - (!isDesktop ? 3 : 4) : 0;
@@ -61,15 +61,15 @@ export default function ProductImage({
                 withBorder
                 key={index}
                 radius='md'
-                onClick={() => handleThumbnailClick(item.url, index)}
+                onClick={() => handleThumbnailClick(item?.image?.url, index)}
                 className={`cursor-pointer overflow-hidden ${
-                  item.url === currentImage ? 'border-2 border-mainColor' : ''
+                  item?.image?.url === currentImage ? 'border-2 border-mainColor' : ''
                 }`}
               >
                 <Box pos='relative'>
                   <Image
                     loading='lazy'
-                    src={item.url || '/images/jpg/empty-300x240.jpg'}
+                    src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                     width={110}
                     height={110}
                     className='object-cover'
@@ -150,8 +150,8 @@ export default function ProductImage({
           src: currentImage,
           alt: 'Ảnh chính sản phẩm'
         }}
-        gallery={[{ url: thumbnail }, ...gallery].map(item => ({
-          src: item.url,
+        gallery={[{ image: { url: thumbnail } }, ...gallery].map(item => ({
+          src: item?.image?.url,
           alt: 'Ảnh mô tả sản phẩm'
         }))}
         isOpen={showFullImage}

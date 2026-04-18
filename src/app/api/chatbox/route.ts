@@ -52,7 +52,7 @@ export async function POST(req: Request) {
               style="margin-top: 8px; margin-bottom: 8px; padding: 8px; background-color: #f3f4f6; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); display: flex; align-items: flex-start; gap: 16px;"
             >
               <img
-                src="${getImageProduct(product?.images || [], ImageType.THUMBNAIL)}"
+                src="${getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL)}"
                 alt="${product.name}"
                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"
               />

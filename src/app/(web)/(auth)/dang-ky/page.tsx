@@ -36,7 +36,7 @@ export default function Page() {
       id: '',
       name: '',
       email: '',
-      image: undefined,
+      imageForEntity: undefined,
       gender: Gender.OTHER,
       dateOfBirth: new Date(),
       isActive: true,
@@ -65,7 +65,7 @@ export default function Page() {
     try {
       await mutation.mutateAsync({
         ...formData,
-        image: undefined
+        imageForEntity: undefined
       });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

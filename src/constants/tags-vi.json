@@ -86,7 +86,6 @@
   "sup-ca-hoi-rau-cu": "Súp cá hồi rau củ",
   "sup-bap-bo-hue": "Súp bắp bò Huế",
   "sup-nam-hai-san": "Súp nấm hải sản",
-  "com-sen-bach-diep": "Cơm Sen Bách Diệp",
   "com-tam-chay": "Cơm Tấm Chay",
   "com-chien-duong-chau-chay": "Cơm Chiên Dương Châu Chay",
   "com-dui-ga-chay": "Cơm Đùi Gà Chay",
@@ -135,7 +134,6 @@
   "canh-bau-nau-tom-chay": "Canh Bầu Nấu Tôm Chay",
   "canh-kim-chi-dau-hu-non": "Canh Kim Chi Đậu Hũ Non",
   "canh-kho-qua-mo-tim": "Canh Khoai Mỡ Tím",
-  "che-thai-sau-rieng": "Chè Thái Sầu Riêng",
   "che-buoi-an-giang": "Chè Bưởi An Giang",
   "che-duong-nhan": "Chè Dưỡng Nhan",
   "che-khuc-bach": "Chè Khúc Bạch",
@@ -508,5 +506,7 @@
   "nguyen-lieu-nấm-dong-co": "Nấm đông cô",
   "nguyen-lieu-nam-dui-ga": "Nấm đùi gà",
   "nguyen-lieu-rau-xa-lach": "Rau xà lách",
-  "nguyen-lieu-rau-ma": "Rau má"
+  "nguyen-lieu-rau-ma": "Rau má",
+  "san-pham-com-sen-bach-diep": "Cơm Sen Bách Diệp",
+  "san-pham-che-thai-sau-rieng": "Chè Thái Sầu Riêng"
 }

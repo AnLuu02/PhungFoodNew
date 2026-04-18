@@ -18,6 +18,7 @@ export function SendMailButton({ userContactInfo }: { userContactInfo: ContactIn
       <Modal
         opened={opened}
         closeOnClickOutside={false}
+        zIndex={150}
         size={'90%'}
         onClose={() => setOpened(false)}
         classNames={{

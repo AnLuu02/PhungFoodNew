@@ -12,6 +12,7 @@ import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } fro
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { UserRole } from '~/shared/constants/user';
 import { api } from '~/trpc/react';
@@ -178,7 +179,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
 
                   <Table.Td className='text-sm'>
                     <Avatar
-                      src={item.images?.find((img: any) => img.type === ImageType.THUMBNAIL)?.url}
+                      src={getImageProduct(item?.imageForEntities ?? [], ImageType.THUMBNAIL)}
                       alt={item.name}
                       size={40}
                       radius='md'

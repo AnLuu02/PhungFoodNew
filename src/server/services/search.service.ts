@@ -14,7 +14,7 @@ export const searchService = async (db: PrismaClient, input: { s?: string }) => 
         ]
       },
       include: {
-        images: true,
+        imageForEntities: { include: { image: true } },
         materials: true,
         subCategory: {
           select: {
@@ -70,7 +70,7 @@ export const searchGlobalService = async (
         ]
       },
       include: {
-        images: true,
+        imageForEntities: { include: { image: true } },
         materials: true,
         subCategory: {
           select: {
@@ -134,14 +134,14 @@ export const searchGlobalService = async (
       },
       include: {
         category: true,
-        image: true,
+        imageForEntity: { include: { image: true } },
         product: {
           where: {
             isActive: true
           },
           include: {
             favouriteFood: true,
-            images: true
+            imageForEntities: { include: { image: true } }
           }
         }
       }

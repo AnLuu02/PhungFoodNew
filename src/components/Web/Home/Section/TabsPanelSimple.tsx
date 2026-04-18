@@ -99,7 +99,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                       <Image
                         style={{ objectFit: 'cover' }}
                         loading='lazy'
-                        src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                        src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
                         fill
                         alt={item?.name || 'Cà chua'}
                       />

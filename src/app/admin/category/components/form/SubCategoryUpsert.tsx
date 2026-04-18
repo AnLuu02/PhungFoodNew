@@ -1,17 +1,16 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, GridCol, Modal, Paper, Select, Stack, Switch, Text, Textarea, TextInput, Title } from '@mantine/core';
-import { EntityType } from '@prisma/client';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Grid, GridCol, Paper, Select, Stack, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { EntityType, ImageType } from '@prisma/client';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import ImageRenderGrid from '~/app/admin/images/components/ImageRenderGrid';
-import { ImageWithAssociations } from '~/app/admin/images/types/image.types';
 import BButton from '~/components/Button/Button';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
+import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient, UploadedImage } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { StatusImage } from '~/shared/schema/image.schema';
+import { StatusImage } from '~/shared/schema/image.info.schema';
 import { SubCategoryInput, subCategoryInputSchema } from '~/shared/schema/subCategory.schema';
 import { api } from '~/trpc/react';
 
@@ -22,18 +21,7 @@ export default function SubCategoryUpsert({
   subCategoryId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [imageLibraries, setImageLibraries] = useState<
-    | {
-        data: ImageWithAssociations[];
-        total: number;
-        pageInfo: {
-          skip: number;
-          take: number;
-          hasMore: boolean;
-        };
-      }
-    | undefined
-  >(undefined);
+  const { openModal } = useModalActions();
   const queryResult: any = api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }, { enabled: !!subCategoryId });
   const { data, isLoading: isLoadingDataSubCategory } = queryResult;
   const formFields = useForm<SubCategoryInput>({
@@ -45,7 +33,7 @@ export default function SubCategoryUpsert({
       isActive: true,
       description: '',
       categoryId: undefined,
-      image: undefined
+      imageForEntity: undefined
     }
   });
 
@@ -57,15 +45,15 @@ export default function SubCategoryUpsert({
       tag: data?.tag,
       description: data?.description || '',
       categoryId: data?.categoryId as string,
-      image: data?.image
+      imageForEntity: data?.imageForEntity
         ? {
-            id: data?.image?.id,
-            publicId: data?.image?.publicId,
-            url: data?.image?.url
+            ...data?.imageForEntity,
+            image: data?.imageForEntity?.image ? { ...data?.imageForEntity?.image } : undefined
           }
         : undefined
     });
   }, [data, formFields.reset]);
+
   const { data: categoryData, isLoading } = api.Category.getAll.useQuery();
   const utils = api.useUtils();
   const updateMutation = api.SubCategory.upsert.useMutation({
@@ -78,42 +66,38 @@ export default function SubCategoryUpsert({
       NotifyError(e.message);
     }
   });
-  const connectImageFromLibraryMutation = api.Images.connectedEntity.useMutation({
-    onSuccess: () => {
-      utils.SubCategory.invalidate();
-      NotifySuccess('Cập nhật hình ảnh thành công.');
-    },
-    onError: e => {
-      NotifyError(e.message);
-    }
-  });
   const onSubmit: SubmitHandler<SubCategoryInput> = async formData => {
-    const acceptedFiles = formFields.getValues('image.urlFile');
-    const imagePublicId = formFields.getValues('image.publicId');
+    const acceptedFiles = formFields.getValues('imageForEntity.image.urlFile');
+    const imagePublicId = formFields.getValues('imageForEntity.image.publicId');
     let imagesToSave: UploadedImage | undefined = acceptedFiles
       ? await handleUploadFromClient(acceptedFiles, utils, {
-          folder: EntityType.SUB_CATEGORY
+          folder: EntityType.CATEGORY + '/' + ImageType.THUMBNAIL
         })
       : undefined;
-
     await updateMutation.mutateAsync({
       ...formData,
-      image: imagesToSave
+      imageForEntity: imagesToSave
         ? {
-            ...formData?.image,
-            ...imagesToSave,
-            status: StatusImage.NEW
+            id: formData?.imageForEntity?.id,
+            altText: formData?.imageForEntity?.altText || 'Ảnh của danh mục ' + (formData?.name || ''),
+            type: formData?.imageForEntity?.type || ImageType.THUMBNAIL,
+            entityType: formData?.imageForEntity?.entityType || EntityType.CATEGORY,
+            status: StatusImage.NEW,
+            image: {
+              ...imagesToSave,
+              id: undefined,
+              altText: formData?.imageForEntity?.altText || 'Ảnh của danh mục ' + (formData?.name || ''),
+              type: formData?.imageForEntity?.type || ImageType.THUMBNAIL
+            }
           }
-        : data?.image?.publicId && !imagePublicId
+        : data?.imageForEntity?.id && !imagePublicId
           ? {
-              publicId: data?.image?.publicId,
+              id: data?.imageForEntity?.id,
               status: StatusImage.DELETED
             }
           : undefined
     });
   };
-
-  const [opendLibrary, setOpenLibrary] = useState(false);
 
   if (isLoadingDataSubCategory) return <ModalUpsertSkeleton />;
 
@@ -201,16 +185,21 @@ export default function SubCategoryUpsert({
                   Ảnh đại diện
                 </Text>
                 <Stack>
-                  <ThumbnailUpsert nameField='image' size={'100%'} />
+                  <ThumbnailUpsert nameField='imageForEntity.image' size={'100%'} />
                   <BButton
                     variant='outline'
                     size='sm'
                     fullWidth
-                    onClick={async () => {
-                      const data = await utils.Images.getAllImages.fetch({});
-                      if (data && data?.data?.length > 0) setImageLibraries(data);
-                      setOpenLibrary(true);
-                    }}
+                    onClick={async () =>
+                      openModal('images_library', undefined, {
+                        entityId: data?.id,
+                        entityType: EntityType.CATEGORY,
+                        initImageType: ImageType.THUMBNAIL,
+                        onRefetch: () => {
+                          utils.SubCategory.invalidate();
+                        }
+                      })
+                    }
                   >
                     Chọn ảnh từ thư viện
                   </BButton>
@@ -231,42 +220,6 @@ export default function SubCategoryUpsert({
           </GridCol>
         </Grid>
       </form>
-      <Modal
-        title={
-          <Title order={2} className='font-quicksand'>
-            Thư viện hình ảnh
-          </Title>
-        }
-        fullScreen
-        opened={opendLibrary}
-        onClose={() => setOpenLibrary(false)}
-      >
-        {opendLibrary && (
-          <ImageRenderGrid
-            imagesData={imageLibraries}
-            isLoading={false}
-            refetch={utils.Images.getAllImages.refetch()}
-            mode={'library'}
-            imageIdConnected={data?.image?.id}
-            onConnected={async (imageId, mode) => {
-              if (data?.id && imageId) {
-                await connectImageFromLibraryMutation.mutateAsync({
-                  entityId: data?.id,
-                  entityType: EntityType.SUB_CATEGORY,
-                  images: [
-                    {
-                      id: imageId,
-                      mode
-                    }
-                  ]
-                });
-                return;
-              }
-              NotifyError('Danh mục hoặc ảnh không hợp lệ.');
-            }}
-          />
-        )}
-      </Modal>
     </FormProvider>
   );
 }

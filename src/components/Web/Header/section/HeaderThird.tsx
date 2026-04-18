@@ -82,9 +82,9 @@ const Header3 = ({ categories, subCategories }: any) => {
                               <Image
                                 key={index}
                                 loading='lazy'
-                                src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                                src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
                                 style={{ objectFit: 'cover' }}
-                                alt='logo'
+                                alt={item?.imageForEntity?.altText || 'Ảnh minh họa'}
                                 width={30}
                                 height={30}
                               />

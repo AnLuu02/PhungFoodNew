@@ -1,5 +1,5 @@
 import ImageManager from './components/ImageManager';
 
 export default function ImageManagerPage() {
-  return <ImageManager />;
+  return <ImageManager mode={'page'} />;
 }

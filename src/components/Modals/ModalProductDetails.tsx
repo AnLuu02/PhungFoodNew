@@ -66,13 +66,14 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                 <Image
                   loading='lazy'
                   src={
-                    getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '/images/png/delicious-burger-fries.png'
+                    getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) ||
+                    '/images/png/delicious-burger-fries.png'
                   }
                   alt={data?.name}
                   className='cursor-pointer rounded-md object-cover'
                   fill
                   onClick={() => {
-                    setCurrentImage(getImageProduct(data?.images || [], ImageType.THUMBNAIL) || '');
+                    setCurrentImage(getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '');
                     setShowfullImage(true);
                   }}
                 />
@@ -88,7 +89,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                 withControls={false}
                 slidesToScroll={1}
               >
-                {data?.images?.map((item: any, index: number) => {
+                {data?.imageForEntities?.map((item: any, index: number) => {
                   if (item?.type === ImageType.GALLERY) {
                     return (
                       <Carousel.Slide key={index}>
@@ -96,7 +97,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                           <Card.Section
                             className='cursor-pointer'
                             onClick={() => {
-                              setCurrentImage(item?.type === ImageType.GALLERY && item?.url);
+                              setCurrentImage(item?.type === ImageType.GALLERY && item?.image?.url);
                               setShowfullImage(true);
                             }}
                           >
@@ -250,7 +251,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
           src: currentImage,
           alt: 'Ảnh chính'
         }}
-        gallery={data?.images?.map((item: any) => ({ src: item.url, alt: 'Ảnh mô tả' })) || []}
+        gallery={data?.imageForEntities?.map((item: any) => ({ src: item?.image?.url || '', alt: 'Ảnh mô tả' })) || []}
         isOpen={showfullImage}
         onClose={() => setShowfullImage(false)}
       />

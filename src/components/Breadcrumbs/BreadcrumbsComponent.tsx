@@ -70,10 +70,10 @@ export const BreadcrumbsComponent = ({ subCategories }: any) => {
                           <Image
                             loading='lazy'
                             style={{ objectFit: 'cover' }}
-                            src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                            src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
                             height={130}
                             width={130}
-                            alt={item.name}
+                            alt={item.name || 'Ảnh minh họa'}
                             className='rounded-full'
                           />
                         </Card.Section>

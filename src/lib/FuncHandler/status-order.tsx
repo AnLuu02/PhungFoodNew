@@ -1,6 +1,5 @@
 import { OrderStatus } from '@prisma/client';
 import {
-  Icon,
   IconAlertTriangle,
   IconCheck,
   IconCircleDashedCheck,
@@ -20,7 +19,7 @@ export const ORDER_STATUS_MAP: Record<
     label: string;
     color: string;
     message: string;
-    icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
+    icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
   }
 > = {
   [OrderStatus.COMPLETED]: {

@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
+import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
@@ -133,11 +133,10 @@ export function CreateManyCategoryButton() {
           setOpened(false);
           resetFileInput();
         }}
-        title={
-          <Title order={3} className='font-quicksand'>
-            Xem trước dữ liệu
-          </Title>
-        }
+        title={'Xem trước dữ liệu'}
+        classNames={{
+          title: 'font-quicksand text-2xl font-bold'
+        }}
       >
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
           <Box className={`tableAdmin w-full overflow-x-auto`}>
@@ -197,11 +196,10 @@ export function CreateCategoryButton() {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={
-          <Title order={2} className='font-quicksand'>
-            Tạo danh mục
-          </Title>
-        }
+        title={'Tạo danh mục'}
+        classNames={{
+          title: 'font-quicksand text-2xl font-bold'
+        }}
       >
         <CategoryUpsert setOpened={setOpened} />
       </Modal>
@@ -220,11 +218,11 @@ export function UpdateCategoryButton({ id }: { id: string }) {
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={
-          <Title order={2} className='font-quicksand'>
-            Cập nhật danh mục
-          </Title>
-        }
+        zIndex={150}
+        title={'Cập nhật danh mục'}
+        classNames={{
+          title: 'font-quicksand text-2xl font-bold'
+        }}
       >
         <CategoryUpsert categoryId={id.toString()} setOpened={setOpened} />
       </Modal>
@@ -277,11 +275,10 @@ export function CreateSubCategoryButton() {
         size={'xl'}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={
-          <Title order={2} className='font-quicksand'>
-            Tạo danh mục
-          </Title>
-        }
+        title={'Tạo danh mục'}
+        classNames={{
+          title: 'font-quicksand text-2xl font-bold'
+        }}
       >
         <SubCategoryUpsert setOpened={setOpened} />
       </Modal>
@@ -302,11 +299,11 @@ export function UpdateSubCategoryButton({ id }: { id: string }) {
         size={'xl'}
         opened={opened}
         onClose={() => setOpened(false)}
-        title={
-          <Title order={2} className='font-quicksand'>
-            Cập nhật danh mục
-          </Title>
-        }
+        zIndex={150}
+        title={' Cập nhật danh mục'}
+        classNames={{
+          title: 'font-quicksand text-2xl font-bold'
+        }}
       >
         <SubCategoryUpsert subCategoryId={id.toString()} setOpened={setOpened} />
       </Modal>

@@ -29,7 +29,10 @@ export default function RelatedProducts({ data }: any) {
               <Box w={60} h={60} pos={'relative'} className='overflow-hidden'>
                 <Image
                   loading='lazy'
-                  src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+                  src={
+                    getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) ||
+                    '/images/jpg/empty-300x240.jpg'
+                  }
                   fill
                   alt='Hình ảnh sản phẩm'
                   className='rounded-md object-cover'

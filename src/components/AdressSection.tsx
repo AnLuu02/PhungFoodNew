@@ -1,7 +1,7 @@
 import { Select, SimpleGrid, Textarea } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect } from 'react';
-import { Control, Controller, UseFormSetValue, useWatch } from 'react-hook-form';
+import { Controller, useWatch } from 'react-hook-form';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
 import { District, Province, Ward } from '~/types/ResponseFetcher';
 
@@ -11,9 +11,9 @@ export default function AddressSection({
   cols,
   name = 'address'
 }: {
-  control: Control<any>;
+  control: any;
   cols?: number;
-  setValue: UseFormSetValue<any>;
+  setValue: any;
   name?: string;
 }) {
   const validName = name.includes('address') ? name : name + '.address';

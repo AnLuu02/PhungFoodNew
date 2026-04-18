@@ -4,12 +4,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Badge, Flex, Group, Paper, Stack, Switch } from '@mantine/core';
 import { EntityType, ImageType } from '@prisma/client';
 import { IconPlus } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
-import { ImageFromDb, StatusImage } from '~/shared/schema/image.schema';
+import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
+import { ImageFromDb } from '~/shared/schema/image.schema';
 import { BannerInput, bannerInputSchema } from '~/shared/schema/restaurant.banner.schema';
 import { api } from '~/trpc/react';
 import BannerInputSection from './BannerInput';
@@ -21,14 +22,18 @@ export const bannerdefaultValues = {
   startDate: undefined,
   endDate: undefined,
   banner1: {
-    url: undefined,
-    urlFile: undefined,
-    publicId: ''
+    image: {
+      url: undefined,
+      urlFile: undefined,
+      publicId: ''
+    }
   },
   banner2: {
-    url: undefined,
-    urlFile: undefined,
-    publicId: ''
+    image: {
+      url: undefined,
+      urlFile: undefined,
+      publicId: ''
+    }
   },
   gallery: undefined,
   galleryInput: null,
@@ -56,16 +61,16 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
   useEffect(() => {
     if (activeBanner) {
       const { bannerFromDb, galleryFromDb } =
-        activeBanner && Array.isArray(activeBanner?.images)
-          ? activeBanner?.images?.reduce(
+        activeBanner && Array.isArray(activeBanner?.imageForEntities)
+          ? activeBanner?.imageForEntities?.reduce(
               (
                 acc: {
-                  bannerFromDb: ImageFromDb[];
-                  galleryFromDb: ImageFromDb[];
+                  bannerFromDb: ImageInfoFromDb[];
+                  galleryFromDb: ImageInfoFromDb[];
                 },
-                item: ImageFromDb
+                item: ImageInfoFromDb
               ) => {
-                item?.type === ImageType.BANNER && acc.bannerFromDb?.push(item);
+                item?.type === ImageType.THUMBNAIL && acc.bannerFromDb?.push(item);
                 item?.type === ImageType.GALLERY && acc.galleryFromDb?.push(item);
                 return acc;
               },
@@ -99,18 +104,18 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
   }, [activeBanner]);
 
   const onSubmit: SubmitHandler<BannerInput> = async formData => {
-    const banner_1_form = formFields.getValues('banner1');
-    const banner_2_form = formFields.getValues('banner2');
+    const banner_1_form = formFields.getValues('banner1.image');
+    const banner_2_form = formFields.getValues('banner2.image');
     const gallery_input = formFields.getValues('galleryInput');
     const [banner_1_ToSave, banner_2_ToSave, gallery_ToSave] = await Promise.all([
       banner_1_form?.urlFile
         ? handleUploadFromClient(banner_1_form?.urlFile, utils, {
-            folder: EntityType.RESTAURANT + '/' + ImageType.BANNER
+            folder: EntityType.RESTAURANT + '/' + ImageType.THUMBNAIL
           })
         : undefined,
       banner_2_form?.urlFile
         ? handleUploadFromClient(banner_2_form?.urlFile, utils, {
-            folder: EntityType.RESTAURANT + '/' + ImageType.BANNER
+            folder: EntityType.RESTAURANT + '/' + ImageType.THUMBNAIL
           })
         : undefined,
       gallery_input && gallery_input?.length > 0
@@ -120,16 +125,16 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
         : undefined
     ]);
     const { bannerFromDb, galleryFromDb } =
-      activeBanner && Array.isArray(activeBanner?.images)
-        ? activeBanner?.images?.reduce(
+      activeBanner && Array.isArray(activeBanner?.imageForEntities)
+        ? activeBanner?.imageForEntities?.reduce(
             (
               acc: {
-                bannerFromDb: ImageFromDb[];
-                galleryFromDb: ImageFromDb[];
+                bannerFromDb: ImageInfoFromDb[];
+                galleryFromDb: ImageInfoFromDb[];
               },
-              item: ImageFromDb
+              item: ImageInfoFromDb
             ) => {
-              item?.type === ImageType.BANNER && acc.bannerFromDb?.push(item);
+              item?.type === ImageType.THUMBNAIL && acc.bannerFromDb?.push(item);
               item?.type === ImageType.GALLERY && acc.galleryFromDb?.push(item);
               return acc;
             },
@@ -142,25 +147,29 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
         ? [
             {
               ...(formData?.banner1 ?? {}),
-              ...banner_1_ToSave,
               id: undefined,
-              type: ImageType.BANNER,
+              type: ImageType.THUMBNAIL,
               altText: `Banner 1 của nhà hàng`,
-              status: StatusImage.NEW
+              status: StatusImage.NEW,
+              image: {
+                ...banner_1_ToSave,
+                type: ImageType.THUMBNAIL,
+                altText: `Banner 1 của nhà hàng`
+              }
             },
             ...(bannerFromDb && bannerFromDb?.length > 0
               ? [
                   {
-                    publicId: bannerFromDb?.[0]?.publicId || '',
+                    id: bannerFromDb?.[0]?.id || '',
                     status: StatusImage.DELETED
                   }
                 ]
               : [])
           ]
-        : bannerFromDb?.[0]?.publicId && !banner_1_form?.publicId
+        : bannerFromDb?.[0]?.image?.publicId && !banner_1_form?.publicId
           ? [
               {
-                publicId: bannerFromDb?.[0]?.publicId || '',
+                id: bannerFromDb?.[0]?.id || '',
                 status: StatusImage.DELETED
               }
             ]
@@ -169,26 +178,30 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
         ? [
             {
               ...(formData?.banner2 ?? {}),
-              ...banner_2_ToSave,
-              id: undefined,
 
-              type: ImageType.BANNER,
+              id: undefined,
+              type: ImageType.THUMBNAIL,
               altText: `Banner 2 của nhà hàng`,
-              status: StatusImage.NEW
+              status: StatusImage.NEW,
+              image: {
+                ...banner_2_ToSave,
+                type: ImageType.THUMBNAIL,
+                altText: `Banner 2 của nhà hàng`
+              }
             },
             ...(bannerFromDb && bannerFromDb?.length > 1
               ? [
                   {
-                    publicId: bannerFromDb?.[1]?.publicId || '',
+                    id: bannerFromDb?.[1]?.id || '',
                     status: StatusImage.DELETED
                   }
                 ]
               : [])
           ]
-        : bannerFromDb?.[1]?.publicId && !banner_2_form?.publicId
+        : bannerFromDb?.[1]?.image?.publicId && !banner_2_form?.publicId
           ? [
               {
-                publicId: bannerFromDb?.[1]?.publicId || '',
+                id: bannerFromDb?.[1]?.id || '',
                 status: StatusImage.DELETED
               }
             ]
@@ -198,18 +211,24 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
         ? gallery_ToSave?.map((item: any, index) => ({
             ...(item
               ? {
-                  ...item,
                   id: undefined,
                   type: ImageType.GALLERY,
                   altText: `Ảnh bổ sung ${index} của nhà hàng`,
-                  status: StatusImage.NEW
+                  status: StatusImage.NEW,
+                  entityType: EntityType.BANNER,
+                  image: {
+                    ...item,
+                    id: undefined,
+                    altText: `Ảnh bổ sung ${index} của nhà hàng`,
+                    type: ImageType.GALLERY
+                  }
                 }
               : {})
           }))
         : []),
       ...(galleryDeleted && galleryDeleted?.length > 0
-        ? galleryDeleted.map(publicId => ({
-            publicId,
+        ? galleryDeleted.map(imageForEntityId => ({
+            id: imageForEntityId,
             status: StatusImage.DELETED
           }))
         : [])
@@ -217,9 +236,17 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
 
     await mutationUpsert.mutateAsync({
       ...formData,
-      images: imageReq
+      imageForEntities: imageReq
     });
   };
+
+  const handleSetDefaultBanner = useCallback((banner: any) => {
+    setActiveBanner(banner);
+  }, []);
+  const handleDeleteBanner = useCallback(() => {
+    formFields.reset(bannerdefaultValues);
+    setActiveBanner(null);
+  }, []);
 
   return (
     <FormProvider {...formFields}>
@@ -268,13 +295,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
             Lưu thay đổi
           </BButton>
         </Group>
-        <ListBannerTemplate
-          onSetDefaultBanner={banner => setActiveBanner(banner)}
-          onDeletedBanner={() => {
-            formFields.reset(bannerdefaultValues);
-            setActiveBanner(null);
-          }}
-        />
+        <ListBannerTemplate onSetDefaultBanner={handleSetDefaultBanner} onDeletedBanner={handleDeleteBanner} />
         <Stack mb={'xl'}>
           <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
             <CarouselGallery onDeleted={galleryPublicIds => setGalleryDeleted(galleryPublicIds)} />

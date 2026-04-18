@@ -2,11 +2,17 @@
 
 import { Group, Modal, ScrollAreaAutosize, ThemeIcon, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { EntityType, ImageType } from '@prisma/client';
 import { IconPictureInPicture } from '@tabler/icons-react';
 import ImageManager from '~/app/admin/images/components/ImageManager';
 import { ModalProps } from '~/types/modal';
-
-function ModalImageLibrary({ type, opened, onClose }: ModalProps<any>) {
+export interface ConnectedModalPayload {
+  entityId?: string;
+  entityType: EntityType;
+  initImageType: ImageType;
+  onRefetch: () => void;
+}
+function ModalImageLibrary({ type, opened, onClose }: ModalProps<ConnectedModalPayload>) {
   const isDesktop = useMediaQuery(`(min-width:1024px)`);
   return (
     <>
@@ -15,10 +21,11 @@ function ModalImageLibrary({ type, opened, onClose }: ModalProps<any>) {
         opened={opened && type === 'images_library'}
         radius={'md'}
         onClose={onClose}
-        size={!isDesktop ? '100%' : '70%'}
-        h={'max-content'}
+        size={!isDesktop ? '100%' : '90%'}
+        fullScreen
         transitionProps={{ transition: 'fade-down', duration: 200 }}
         padding='md'
+        zIndex={151}
         title={
           <Group gap='md'>
             <ThemeIcon size={40} radius='md' variant='light' color='teal'>
@@ -37,7 +44,7 @@ function ModalImageLibrary({ type, opened, onClose }: ModalProps<any>) {
           }
         }}
       >
-        {type === 'images_library' && <ImageManager />}
+        {type === 'images_library' && <ImageManager mode={'library'} />}
       </Modal>
     </>
   );

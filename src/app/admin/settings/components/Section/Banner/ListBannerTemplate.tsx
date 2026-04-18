@@ -19,7 +19,6 @@ export default function ListBannerTemplate({
   onSetDefaultBanner: (banner: any) => void;
   onDeletedBanner: () => void;
 }) {
-  const [isMounted, setIsMounted] = useState(false);
   const [viewBanner, setViewBanner] = useState<{ isOpened: boolean; activeBanner: any }>({
     isOpened: false,
     activeBanner: {}
@@ -42,9 +41,6 @@ export default function ListBannerTemplate({
     }
   }, [activeBanner]);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
   const setDefaultBannerMutation = api.Restaurant.setDefaultBanner.useMutation({
     onSuccess: () => {
       NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
@@ -101,7 +97,7 @@ export default function ListBannerTemplate({
               >
                 <Box h={220} pos={'relative'}>
                   <Image
-                    src={banner.images?.[0]?.url}
+                    src={banner.imageForEntities?.[0]?.image?.url}
                     alt='Banner'
                     w={'100%'}
                     h={'100%'}

@@ -1,14 +1,14 @@
 import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { ImageFromDb, StatusImage } from '~/shared/schema/image.schema';
+import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { BannerReqCloudinary } from '~/shared/schema/restaurant.banner.schema';
 
 //upsert banner
 export const upsertBannerService = async (db: PrismaClient, input: BannerReqCloudinary) => {
-  const { id, images, restaurantId, ...data } = input;
-  const imagesInput = images || [];
+  const { id, imageForEntities, restaurantId, ...data } = input;
+  const imagesInput = imageForEntities || [];
   const { newImages, deleteImages } = imagesInput.reduce(
-    (acc: { newImages: ImageFromDb[]; deleteImages: ImageFromDb[] }, item: ImageFromDb) => {
+    (acc: { newImages: ImageInfoFromDb[]; deleteImages: ImageInfoFromDb[] }, item: ImageInfoFromDb) => {
       item?.status === StatusImage.NEW && acc.newImages?.push(item);
       item?.status === StatusImage.DELETED && acc.deleteImages?.push(item);
       return acc;
@@ -28,23 +28,29 @@ export const upsertBannerService = async (db: PrismaClient, input: BannerReqClou
             }
           }
         : undefined,
-      images:
-        newImages && newImages?.length > 0
-          ? {
-              connectOrCreate: newImages.map(({ status, ...item }, index) => ({
-                where: {
-                  publicId: item?.publicId || 'Image_Default_PublicId'
-                },
-                create: {
-                  ...item,
-                  url: item?.url || '',
-                  type: item?.type || ImageType.BANNER,
-                  altText: item?.altText || `Ảnh banner nha hang ${index} `,
-                  entityType: item?.entityType || EntityType.RESTAURANT
+      imageForEntities: newImages?.length
+        ? {
+            create: newImages.map(({ status, ...item }: any, index: number) => ({
+              id: undefined,
+              entityType: EntityType.BANNER,
+              altText: item?.altText || 'Ảnh banner nhà hàng',
+              type: item?.type || ImageType.THUMBNAIL,
+              image: {
+                connectOrCreate: {
+                  where: {
+                    publicId: item?.image?.publicId
+                  },
+                  create: {
+                    ...(item?.image ?? {}),
+                    url: item?.image?.url || '',
+                    altText: item?.image?.altText || 'Ảnh banner ' + index,
+                    type: item?.image?.type || ImageType.THUMBNAIL
+                  }
                 }
-              }))
-            }
-          : undefined
+              }
+            }))
+          }
+        : undefined
     },
     update: {
       ...data,
@@ -55,32 +61,61 @@ export const upsertBannerService = async (db: PrismaClient, input: BannerReqClou
             }
           }
         : undefined,
-      images: {
-        ...(newImages && newImages?.length > 0
+      imageForEntities: {
+        ...(newImages?.length
           ? {
-              connectOrCreate: newImages.map(({ status, ...item }, index) => ({
+              upsert: newImages.map(({ status, ...item }: any) => ({
                 where: {
-                  publicId: item?.publicId || 'Image_Default_PublicId'
+                  id: item?.id || 'default_id'
                 },
                 create: {
-                  ...item,
-                  url: item?.url || '',
-                  type: item?.type || ImageType.BANNER,
-                  altText: item?.altText || `Ảnh banner nha hang ${index} `,
-                  entityType: item?.entityType || EntityType.RESTAURANT
+                  entityType: EntityType.BANNER,
+                  altText: item?.altText || 'Ảnh banner nhà hàng',
+                  type: item?.type || ImageType.THUMBNAIL,
+                  image: {
+                    connectOrCreate: {
+                      where: {
+                        publicId: item?.image?.publicId
+                      },
+                      create: {
+                        ...(item?.image ?? {}),
+                        url: item?.image?.url || '',
+                        altText: item?.image?.altText || 'Ảnh banner nhà hàng',
+                        type: item?.image?.type || ImageType.THUMBNAIL
+                      }
+                    }
+                  }
+                },
+                update: {
+                  entityType: EntityType.BANNER,
+                  altText: item?.altText || 'Ảnh banner nhà hàng',
+                  type: item?.type || ImageType.THUMBNAIL,
+                  image: {
+                    connectOrCreate: {
+                      where: {
+                        publicId: item?.image?.publicId
+                      },
+                      create: {
+                        ...(item?.image ?? {}),
+                        url: item?.image?.url || '',
+                        altText: item?.image?.altText || 'Ảnh banner nhà hàng',
+                        type: item?.image?.type || ImageType.THUMBNAIL
+                      }
+                    }
+                  }
                 }
               }))
             }
-          : undefined),
-        disconnect: deleteImages.length ? deleteImages.map(item => ({ publicId: item?.publicId || '' })) : undefined
+          : {}),
+        delete: deleteImages ? deleteImages?.map(item => ({ id: item?.id })) : undefined
       }
     },
     include: {
-      images: { select: { publicId: true } }
+      imageForEntities: { include: { image: true } }
     }
   });
 
-  if (banner?.id && !banner?.images?.length) {
+  if (banner?.id && !banner?.imageForEntities?.length) {
     await db.banner.delete({
       where: {
         id: banner?.id || ''
@@ -91,10 +126,10 @@ export const upsertBannerService = async (db: PrismaClient, input: BannerReqClou
   return banner;
 };
 
-export const getOneBannerService = async (db: PrismaClient, input: any) => {
+export const getOneBannerService = async (db: PrismaClient, input: { isActive?: boolean }) => {
   return await db.banner.findFirst({
     where: input.isActive ? { isActive: input.isActive } : undefined,
-    include: { images: true }
+    include: { imageForEntities: { include: { image: true } } }
   });
 };
 
@@ -132,7 +167,7 @@ export const deleteBannerService = async (db: PrismaClient, input: { id: string;
 
 export const getAllBannerService = async (db: PrismaClient) => {
   return await db.banner.findMany({
-    include: { images: true },
+    include: { imageForEntities: { include: { image: true } } },
     orderBy: { createdAt: 'desc' }
   });
 };

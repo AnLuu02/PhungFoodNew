@@ -10,7 +10,7 @@ export default function ProductDetails({ product }: { product: any }) {
       <Stack>
         <Image
           loading='lazy'
-          src={getImageProduct(product?.images || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+          src={getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
           width={300}
           height={300}
           alt='Hình ảnh sản phẩm'

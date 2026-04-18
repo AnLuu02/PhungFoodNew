@@ -385,7 +385,10 @@ export default function SearchComponentClient({ subCategories }: any) {
                                 >
                                   <Image
                                     loading='lazy'
-                                    src={getImageProduct(product.images, ImageType.THUMBNAIL) || '/images/png/momo.png'}
+                                    src={
+                                      getImageProduct(product.imageForEntities, ImageType.THUMBNAIL) ||
+                                      '/images/png/momo.png'
+                                    }
                                     alt={product.name}
                                     width={60}
                                     height={60}

@@ -35,7 +35,7 @@ export default function TableCategory({ data, s, user }: { s: string; data: any;
           <Table.Tbody>
             {currentItems.length > 0 ? (
               currentItems.map((row: any, index: number) => (
-                <Table.Tr key={index}>
+                <Table.Tr key={row.name + index}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
                       {row.name}

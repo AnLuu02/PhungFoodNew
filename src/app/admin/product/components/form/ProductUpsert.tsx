@@ -6,6 +6,7 @@ import {
   MultiSelect,
   NumberInput,
   Select,
+  Stack,
   Switch,
   TagsInput,
   Text,
@@ -20,11 +21,12 @@ import BButton from '~/components/Button/Button';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
+import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { seedRegions } from '~/lib/HardData/seed';
 import { UserRole } from '~/shared/constants/user';
-import { StatusImage } from '~/shared/schema/image.schema';
+import { StatusImage } from '~/shared/schema/image.info.schema';
 import { ProductInput, productInputSchema } from '~/shared/schema/product.schema';
 import { api } from '~/trpc/react';
 import GalleryUpsert from './GalleryUpsert';
@@ -36,6 +38,7 @@ export default function ProductUpsert({
   productId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
+  const { openModal } = useModalActions();
   const [imageDeleted, setImageDeleted] = useState<string[]>([]);
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials } = api.Material.getAll.useQuery();
@@ -87,10 +90,13 @@ export default function ProductUpsert({
         descriptionDetailJson: data?.descriptionDetailJson || {},
         descriptionDetailHtml: data?.descriptionDetailHtml || '<p>Đang cập nhật</p>',
         thumbnail:
-          data?.images?.length > 0
-            ? (data?.images?.find(item => item?.type === ImageType.THUMBNAIL) as any)
+          data?.imageForEntities?.length > 0
+            ? (data?.imageForEntities?.find(item => item?.type === ImageType.THUMBNAIL) as any)
             : undefined,
-        gallery: data?.images?.length > 0 ? (data?.images?.filter(item => item?.type === ImageType.GALLERY) as any) : []
+        gallery:
+          data?.imageForEntities?.length > 0
+            ? (data?.imageForEntities?.filter(item => item?.type === ImageType.GALLERY) as any)
+            : []
       });
     }
   }, [data, formFields.reset]);
@@ -107,8 +113,8 @@ export default function ProductUpsert({
   });
 
   const onSubmit: SubmitHandler<ProductInput> = async formData => {
-    const thumbnailFile = formFields.getValues('thumbnail.urlFile');
-    const thumbnailPublicId = formFields.getValues('thumbnail.publicId');
+    const thumbnailFile = formFields.getValues('thumbnail.image.urlFile');
+    const thumbnailPublicId = formFields.getValues('thumbnail.image.publicId');
     const galleryInputFile = formFields.getValues('galleryInput');
     const thumbnailToSave = thumbnailFile
       ? await handleUploadFromClient(thumbnailFile, utils, {
@@ -122,67 +128,60 @@ export default function ProductUpsert({
           })
         : [];
 
-    let thumbnailFromDb;
-    if (data?.images && data?.images?.length > 0) {
-      const { thumbnail } = data?.images?.reduce((acc: any, item: any) => {
-        acc.thumbnail = item?.type === ImageType.THUMBNAIL ? { ...item } : {};
-        return acc;
-      }, {});
-      thumbnailFromDb = { ...(thumbnail ?? {}) };
-    }
+    const thumbnailItem = data?.imageForEntities?.find((item: any) => item?.type === ImageType.THUMBNAIL);
+    const thumbnailFromDb: any = thumbnailItem ? { ...thumbnailItem } : {};
 
     const formDataWithImageUrlAsString = {
       ...formData,
-      images: [
+      imageForEntities: [
         ...(thumbnailToSave
           ? [
               {
-                ...thumbnailFromDb,
-                ...thumbnailToSave,
-                id: undefined,
-                type: thumbnailFromDb?.type || ImageType.THUMBNAIL,
                 altText: thumbnailFromDb?.altText || 'Ảnh chính của sản phẩm ' + data?.name,
-                status: StatusImage.NEW
+                type: thumbnailFromDb?.type || ImageType.THUMBNAIL,
+                status: StatusImage.NEW,
+                image: {
+                  ...thumbnailToSave,
+                  id: undefined,
+                  altText: formData?.thumbnail?.altText || 'Ảnh chính của sản phẩm ' + (formData?.name || ''),
+                  type: formData?.thumbnail?.type || ImageType.THUMBNAIL
+                }
               },
-              ...(thumbnailFromDb?.publicId
+              ...(thumbnailFromDb?.image?.publicId
                 ? [
                     {
-                      publicId: thumbnailFromDb?.publicId || '',
+                      id: thumbnailFromDb?.id,
                       status: StatusImage.DELETED
                     }
                   ]
                 : [])
             ]
-          : thumbnailFromDb?.publicId && thumbnailFromDb?.publicId === thumbnailPublicId
+          : thumbnailFromDb?.id && !thumbnailPublicId
             ? [
                 {
-                  ...thumbnailFromDb,
-                  id: undefined,
-                  type: thumbnailFromDb?.type || ImageType.THUMBNAIL,
-                  altText: thumbnailFromDb?.altText || 'Ảnh chính của sản phẩm ' + data?.name,
-                  status: StatusImage.EXISTING
+                  id: thumbnailFromDb?.id,
+                  type: ImageType.THUMBNAIL,
+                  status: StatusImage.DELETED
                 }
               ]
-            : thumbnailFromDb?.publicId && !thumbnailPublicId
-              ? [
-                  {
-                    publicId: thumbnailFromDb?.publicId || '',
-                    status: StatusImage.DELETED
-                  }
-                ]
-              : []),
+            : []),
         ...(galleryToSave && galleryToSave?.length > 0
           ? galleryToSave?.map((item, index: number) => ({
-              ...item,
-              id: undefined,
               type: ImageType.GALLERY,
               altText: `Ảnh bổ sung ${index + 1} của sản phẩm ` + data?.name,
-              status: StatusImage.NEW
+              status: StatusImage.NEW,
+              image: {
+                ...item,
+                id: undefined,
+                altText: 'Ảnh của danh mục ' + (formData?.name || ''),
+                type: ImageType.GALLERY
+              }
             }))
           : []),
         ...(imageDeleted && imageDeleted?.length > 0
-          ? imageDeleted.map(publicId => ({
-              publicId,
+          ? imageDeleted.map(imageForEntityId => ({
+              id: imageForEntityId,
+              type: ImageType.GALLERY,
               status: StatusImage.DELETED
             }))
           : [])
@@ -212,10 +211,50 @@ export default function ProductUpsert({
       <form onSubmit={formFields.handleSubmit(onSubmit)} className='w-full'>
         <Grid w={'100%'}>
           <GridCol span={6}>
-            <ThumbnailUpsert nameField='thumbnail' />
+            <Stack>
+              <ThumbnailUpsert nameField='thumbnail.image' />
+              <BButton
+                variant='outline'
+                size='sm'
+                fullWidth
+                className='w-[max-content]'
+                onClick={async () =>
+                  openModal('images_library', undefined, {
+                    entityId: data?.id,
+                    entityType: EntityType.PRODUCT,
+                    initImageType: ImageType.THUMBNAIL,
+                    onRefetch: () => {
+                      utils.Product.invalidate();
+                    }
+                  })
+                }
+              >
+                Chọn ảnh từ thư viện
+              </BButton>
+            </Stack>
           </GridCol>
           <GridCol span={12}>
-            <GalleryUpsert onDeleted={imgPublicIds => setImageDeleted(imgPublicIds)} />
+            <Stack>
+              <GalleryUpsert onDeleted={imgPublicIds => setImageDeleted(imgPublicIds)} />
+              <BButton
+                variant='outline'
+                className='w-[max-content]'
+                size='sm'
+                fullWidth
+                onClick={async () =>
+                  openModal('images_library', undefined, {
+                    entityId: data?.id,
+                    entityType: EntityType.PRODUCT,
+                    initImageType: ImageType.GALLERY,
+                    onRefetch: () => {
+                      utils.Product.invalidate();
+                    }
+                  })
+                }
+              >
+                Chọn ảnh từ thư viện
+              </BButton>
+            </Stack>
           </GridCol>
           <Grid.Col span={6}>
             <Controller

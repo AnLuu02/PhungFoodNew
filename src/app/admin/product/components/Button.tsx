@@ -19,6 +19,7 @@ export function CreateProductButton() {
         closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
         fullScreen
+        zIndex={150}
         opened={opened}
         onClose={() => setOpened(false)}
         title={
@@ -43,6 +44,7 @@ export function UpdateProductButton({ id }: { id: string }) {
       <Modal
         closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}
+        zIndex={150}
         fullScreen
         opened={opened}
         onClose={() => setOpened(false)}
