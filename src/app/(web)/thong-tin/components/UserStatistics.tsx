@@ -42,7 +42,7 @@ export function UserStatistics() {
     return {
       mockSpendingData: months.map(item => ({
         ...item,
-        amount: revenue?.find((spend: any) => spend.month === months.indexOf(item) + 1)?.totalSpent || 0
+        amount: Number(revenue?.find((spend: any) => spend.month === months.indexOf(item) + 1)?.totalSpent) || 0
       })),
       totalSpent: revenue?.reduce((sum, item) => sum + Number(item?.totalSpent || 0), 0) || 0
     };

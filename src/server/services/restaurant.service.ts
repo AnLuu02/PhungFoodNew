@@ -122,149 +122,159 @@ export const getOneActiveClientService = async (db: PrismaClient) => {
 
 export const upsertRestaurantService = async (db: PrismaClient, input: RestaurantInput) => {
   const { id, theme, socials, imageForEntity, openingHours, ...data } = input;
-  let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;
-  if (imageForEntity?.status) {
-    const { status, ...rest } = imageForEntity;
-    imageDb = rest;
-    statusFromReq = status;
-  }
-  const updatedRestaurant = await db.restaurant.upsert({
-    where: { id: input.id || 'default_upsert_id' },
-    create: {
-      ...data,
-      imageForEntity: {
-        create:
-          statusFromReq === StatusImage.NEW && imageDb
-            ? {
-                ...imageDb,
-                entityType: EntityType.RESTAURANT,
-                altText: `Ảnh ${data.name}`,
-                type: ImageType.THUMBNAIL,
-                image: {
-                  connectOrCreate: {
-                    where: {
-                      publicId: imageDb?.image?.publicId
-                    },
-                    create: {
-                      ...(imageDb?.image ?? {}),
-                      url: imageDb?.image?.url || '',
-                      altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
-                      type: imageDb?.image?.type || ImageType.THUMBNAIL
+
+  const result = await db.$transaction(async tx => {
+    let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;
+    if (imageForEntity?.status) {
+      const { status, ...rest } = imageForEntity;
+      imageDb = rest;
+      statusFromReq = status;
+    }
+    const oldData = id ? await tx.restaurant.findUnique({ where: { id } }) : null;
+    const newData = await tx.restaurant.upsert({
+      where: { id: input.id || 'default_upsert_id' },
+      create: {
+        ...data,
+        imageForEntity: {
+          create:
+            statusFromReq === StatusImage.NEW && imageDb
+              ? {
+                  ...imageDb,
+                  entityType: EntityType.RESTAURANT,
+                  altText: `Ảnh ${data.name}`,
+                  type: ImageType.THUMBNAIL,
+                  image: {
+                    connectOrCreate: {
+                      where: {
+                        publicId: imageDb?.image?.publicId
+                      },
+                      create: {
+                        ...(imageDb?.image ?? {}),
+                        url: imageDb?.image?.url || '',
+                        altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
+                        type: imageDb?.image?.type || ImageType.THUMBNAIL
+                      }
                     }
                   }
                 }
-              }
-            : undefined
-      },
-      theme: theme
-        ? {
-            create: {
-              ...theme
-            }
-          }
-        : undefined,
-      socials: socials
-        ? {
-            createMany: {
-              data: socials
-            }
-          }
-        : undefined,
-      openingHours: openingHours
-        ? {
-            createMany: {
-              data: openingHours
-            }
-          }
-        : undefined
-    },
-    update: {
-      ...data,
-      imageForEntity:
-        statusFromReq === StatusImage.DELETED && imageDb?.id
+              : undefined
+        },
+        theme: theme
           ? {
-              delete: { id: imageDb.id }
+              create: {
+                ...theme
+              }
             }
-          : imageDb
+          : undefined,
+        socials: socials
+          ? {
+              createMany: {
+                data: socials
+              }
+            }
+          : undefined,
+        openingHours: openingHours
+          ? {
+              createMany: {
+                data: openingHours
+              }
+            }
+          : undefined
+      },
+      update: {
+        ...data,
+        imageForEntity:
+          statusFromReq === StatusImage.DELETED && imageDb?.id
             ? {
-                upsert: {
-                  where: { id: imageDb.id },
-                  update: {
-                    ...imageDb,
-                    image:
-                      statusFromReq === StatusImage.NEW && imageDb.image
-                        ? {
-                            connectOrCreate: {
-                              where: {
-                                publicId: imageDb.image.publicId
-                              },
-                              create: {
-                                ...imageDb.image,
-                                url: imageDb?.image?.url || '',
-                                altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
-                                type: imageDb?.image?.type || ImageType.THUMBNAIL
+                delete: { id: imageDb.id }
+              }
+            : imageDb
+              ? {
+                  upsert: {
+                    where: { id: imageDb.id },
+                    update: {
+                      ...imageDb,
+                      image:
+                        statusFromReq === StatusImage.NEW && imageDb.image
+                          ? {
+                              connectOrCreate: {
+                                where: {
+                                  publicId: imageDb.image.publicId
+                                },
+                                create: {
+                                  ...imageDb.image,
+                                  url: imageDb?.image?.url || '',
+                                  altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
+                                  type: imageDb?.image?.type || ImageType.THUMBNAIL
+                                }
                               }
                             }
-                          }
-                        : undefined
-                  },
-                  create: {
-                    ...imageDb,
-                    image:
-                      statusFromReq === StatusImage.NEW && imageDb.image
-                        ? {
-                            connectOrCreate: {
-                              where: {
-                                publicId: imageDb.image.publicId
-                              },
-                              create: {
-                                ...imageDb.image,
-                                url: imageDb.image.url || '',
-                                altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
-                                type: imageDb?.image?.type || ImageType.THUMBNAIL
+                          : undefined
+                    },
+                    create: {
+                      ...imageDb,
+                      image:
+                        statusFromReq === StatusImage.NEW && imageDb.image
+                          ? {
+                              connectOrCreate: {
+                                where: {
+                                  publicId: imageDb.image.publicId
+                                },
+                                create: {
+                                  ...imageDb.image,
+                                  url: imageDb.image.url || '',
+                                  altText: imageDb?.image?.altText || 'Ảnh Logo nhà hàng ' + (data?.name || ''),
+                                  type: imageDb?.image?.type || ImageType.THUMBNAIL
+                                }
                               }
                             }
-                          }
-                        : undefined
+                          : undefined
+                    }
                   }
                 }
+              : undefined,
+        theme: theme
+          ? {
+              upsert: {
+                where: {
+                  id: theme?.id || 'default_theme_id'
+                },
+                create: theme,
+                update: theme
               }
-            : undefined,
-      theme: theme
-        ? {
-            upsert: {
-              where: {
-                id: theme?.id || 'default_theme_id'
-              },
-              create: theme,
-              update: theme
             }
-          }
-        : undefined,
-      socials: socials
-        ? {
-            upsert: socials?.map((item, index) => ({
-              where: {
-                id: item?.id || `default_id_social_${index}`
-              },
-              create: item,
-              update: item
-            }))
-          }
-        : undefined,
-      openingHours: openingHours
-        ? {
-            upsert: openingHours?.map((item, index) => ({
-              where: {
-                id: item?.id || `default_id_social_${index}`
-              },
-              create: item,
-              update: item
-            }))
-          }
-        : undefined
-    }
+          : undefined,
+        socials: socials
+          ? {
+              upsert: socials?.map((item, index) => ({
+                where: {
+                  id: item?.id || `default_id_social_${index}`
+                },
+                create: item,
+                update: item
+              }))
+            }
+          : undefined,
+        openingHours: openingHours
+          ? {
+              upsert: openingHours?.map((item, index) => ({
+                where: {
+                  id: item?.id || `default_id_social_${index}`
+                },
+                create: item,
+                update: item
+              }))
+            }
+          : undefined
+      }
+    });
+    return { oldData, newData };
   });
   await Promise.all([delCache('theme-default'), delCache('getOneActive'), delCache('get-one-active-client')]);
-  return updatedRestaurant;
+  return {
+    metaData: {
+      before: result.oldData ?? {},
+      after: result.newData ?? {}
+    }
+  };
 };

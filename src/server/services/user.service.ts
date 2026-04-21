@@ -453,7 +453,12 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
     }
   });
 
-  return upsertUser;
+  return {
+    metaData: {
+      before: existed ?? {},
+      after: upsertUser ?? {}
+    }
+  };
 };
 
 export const updateUserCustomService = async (db: PrismaClient, input: { where: any; data: any }) => {
@@ -478,7 +483,12 @@ export const deleteUserService = async (db: PrismaClient, input: { id: string })
   }
   const deleteduser = await db.user.delete({ where: { id: input.id } });
 
-  return deleteduser;
+  return {
+    metaData: {
+      before: deleteduser ?? {},
+      after: {}
+    }
+  };
 };
 export const getFilterUserService = async (db: PrismaClient, input: { s: string }) => {
   const user = await db.user.findMany({

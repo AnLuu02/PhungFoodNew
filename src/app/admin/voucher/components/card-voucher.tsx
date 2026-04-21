@@ -23,23 +23,19 @@ export default function CardVoucher({
   const mutationDelete = api.Voucher.delete.useMutation();
   const mutationCreate = api.Voucher.create.useMutation({
     onSuccess: newPromotion => {
-      if (newPromotion.code === 'OK') {
-        NotifySuccess('Thao tác thành công!', 'Nhân bản thành công.');
-        setLoading({ copy: false });
-        utils.Voucher.invalidate();
-      }
+      NotifySuccess('Thao tác thành công!', 'Nhân bản thành công.');
+      setLoading({ copy: false });
+      utils.Voucher.invalidate();
     },
     onError: e => {
       NotifyError(e.message);
     }
   });
   const mutationUpdate = api.Voucher.update.useMutation({
-    onSuccess: newPromotion => {
-      if (newPromotion.code === 'OK') {
-        NotifySuccess('Thao tác thành công!', 'Cập nhật thành công.');
-        setLoading({ copy: false });
-        utils.Voucher.invalidate();
-      }
+    onSuccess: () => {
+      NotifySuccess('Thao tác thành công!', 'Cập nhật thành công.');
+      setLoading({ copy: false });
+      utils.Voucher.invalidate();
     },
     onError: e => {
       NotifyError(e.message);

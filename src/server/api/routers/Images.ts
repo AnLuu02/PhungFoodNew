@@ -3,7 +3,13 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { ImageAssociation, ImageWithAssociations } from '~/app/admin/images/types/image.types';
 import cloudinary from '~/lib/Cloudinary/cloudinary';
-import { createTRPCRouter, protectedProcedure, publicProcedure, requirePermission } from '~/server/api/trpc';
+import {
+  activityLogger,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+  requirePermission
+} from '~/server/api/trpc';
 import { checkExistingImageService, deleteImageService, upsertImageService } from '~/server/services/image.service';
 import { getOneBannerService } from '~/server/services/restaurant.banner.service';
 import { getOneActiveClientService } from '~/server/services/restaurant.service';
@@ -14,11 +20,13 @@ export const imagesRouter = createTRPCRouter({
     .input(z.object({ publicId: z.string() }))
     .query(async ({ ctx, input }) => await checkExistingImageService(ctx.db, input)),
   upsert: publicProcedure
+    .use(activityLogger)
     .input(imageFromDbSchema)
     .mutation(async ({ ctx, input }) => await upsertImageService(ctx.db, input)),
 
   delete: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(z.object({ publicId: z.string() }))
     .mutation(async ({ ctx, input }) => await deleteImageService(ctx.db, input)),
 

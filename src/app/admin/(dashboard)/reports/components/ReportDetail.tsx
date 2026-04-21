@@ -1,24 +1,20 @@
 'use client';
 
 import { BarChart } from '@mantine/charts';
-import { ActionIcon, Box, Button, Card, Divider, Flex, SimpleGrid, Stack, Text, Title } from '@mantine/core';
+import { ActionIcon, Box, Button, Card, Flex, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import {
   IconArrowRight,
   IconChartCovariate,
-  IconCheese,
   IconCircleCheck,
-  IconClock,
-  IconDatabase,
   IconMoneybag,
   IconSettings,
   IconStack2Filled,
-  IconUsers,
   IconUsersGroup
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { formatTimeAgo } from '~/lib/FuncHandler/Format';
+import TimelineRecentActivity from '~/components/TimelineRecentActivity';
 
 const navReportDetails = [
   {
@@ -115,9 +111,8 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
     };
   }, [overviews]);
 
-  const recentActivitiesAppRender = useMemo(() => {
-    return recentActivitiesApp.slice(0, 5).filter(Boolean);
-  }, [recentActivitiesApp]);
+  const recentActivitiesAppRender = recentActivitiesApp?.items ?? [];
+
   return (
     <Stack>
       <Card withBorder shadow='sm' radius={'lg'}>
@@ -165,58 +160,8 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
       </Card>
 
       <SimpleGrid cols={2}>
-        <Card withBorder shadow='sm' radius={'lg'}>
-          <Flex align={'center'} justify={'space-between'} mb={'md'}>
-            <Box>
-              <Title order={5} className='font-quicksand'>
-                Hoạt động gần đây
-              </Title>
-              <Text size='sm' c={'dimmed'}>
-                Các sự kiện quan trọng trong hệ thống
-              </Text>
-            </Box>
-            <ActionIcon variant='light' size={'lg'}>
-              <IconClock size={16} />
-            </ActionIcon>
-          </Flex>
-          <Box>
-            <Divider />
-            <SimpleGrid cols={1} mt={'md'} px={'md'} pb={'md'}>
-              {recentActivitiesAppRender?.length > 0 ? (
-                recentActivitiesAppRender.map((item: any, index: number) => {
-                  return (
-                    <Flex align={'flex-start'} gap={'md'} key={index}>
-                      {item?.icon === 'product' ? (
-                        <IconCheese size={16} />
-                      ) : item?.icon === 'revenue' ? (
-                        <IconDatabase size={16} />
-                      ) : (
-                        <IconUsers size={16} />
-                      )}
-                      <Box>
-                        <Text size='sm'>
-                          <b>{item?.actor}</b> {item?.action} <b>{item?.target || ''}</b>
-                        </Text>
-                        <Text size='xs' c={'dimmed'}>
-                          {formatTimeAgo(item?.timezone)}
-                        </Text>
-                      </Box>
-                    </Flex>
-                  );
-                })
-              ) : (
-                <Text size='sm' ta={'center'} c={'dimmed'}>
-                  Không có hoạt động 7 ngày gần đây
-                </Text>
-              )}
-            </SimpleGrid>
-            {recentActivitiesApp?.length > 5 && (
-              <Button variant='subtle' rightSection={<IconArrowRight size={16} />}>
-                Xem tất cả hoạt động
-              </Button>
-            )}
-          </Box>
-        </Card>
+        <TimelineRecentActivity recentActivities={recentActivitiesAppRender?.slice(0, 2) || []} />
+
         <Card withBorder shadow='sm' radius={'lg'}>
           <Flex align={'center'} justify={'space-between'} mb={'md'}>
             <Box>

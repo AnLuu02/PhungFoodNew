@@ -134,19 +134,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
       onRefetch: modalData?.onRefetch
     }));
   }, []);
-  // useEffect(() => {
-  //   const cur = imageForEntity?.[0] ? imageForEntity?.[0] : null;
-  //   if (cur) {
-  //     setConnectedState(prev => ({
-  //       ...prev,
-  //       entityId: modalData.entityId,
-  //       entityType: cur?.entityType || modalData.entityType,
-  //       imageForEntityId: cur.id,
-  //       imageType: modalData.initImageType,
-  //       onRefetch: modalData?.onRefetch
-  //     }));
-  //   }
-  // }, [imageForEntity]);
+
   const handleSelectImage = useCallback((imageId: string) => {
     setSelectedImages(prev => {
       const next = new Set(prev);

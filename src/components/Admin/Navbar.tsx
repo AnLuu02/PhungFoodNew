@@ -1,84 +1,23 @@
-import { Box, Divider, Group, Menu, NavLink, ScrollArea, Stack, Text, UnstyledButton } from '@mantine/core';
+import { Box, Group, NavLink, ScrollArea, Stack, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconChevronDown, IconLogout, IconUser } from '@tabler/icons-react';
-import { signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
+import { IconLogout } from '@tabler/icons-react';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { breakpoints } from '~/constants';
 import { navItems } from '~/lib/ConfigUI';
-import ButtonControlModeTheme from '../Button/ButtonControlModeTheme';
 import { GlobalSearch } from '../Search/GlobalSearch';
+import UserSection from '../UserSection';
 
 export default function Navbar() {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
-  const { data: user } = useSession();
   const pathname = usePathname();
 
   return (
     <>
       <Group px={'md'} mt={'md'} align='flex-end' className='lg:hidden'>
-        <Menu
-          radius={'md'}
-          width={200}
-          position='bottom-end'
-          transitionProps={{ transition: 'fade-down' }}
-          offset={0}
-          withinPortal
-        >
-          <Menu.Target>
-            <UnstyledButton
-              className={`flex items-center rounded-full p-1 transition-colors duration-200 hover:opacity-95`}
-            >
-              <Group gap={7}>
-                <Image
-                  className='rounded-full object-cover'
-                  width={30}
-                  height={30}
-                  src={user?.user?.image || '/images/webp/user-default.webp'}
-                  alt='User avatar'
-                />
-                <Box className='text-left'>
-                  <Text fw={700} size='sm' lh={1}>
-                    {user?.user?.name}
-                  </Text>
-                  <Text size='xs' fw={700} c={'dimmed'}>
-                    {user?.user?.email}
-                  </Text>
-                </Box>
-                <IconChevronDown style={{ width: 12, height: 12 }} stroke={1.5} />
-              </Group>
-            </UnstyledButton>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <ButtonControlModeTheme />
-            <Divider />
-            <Link href={`/thong-tin`} className='text-white'>
-              <Menu.Item
-                fw={500}
-                leftSection={<IconUser fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
-              >
-                Thông tin cá nhân
-              </Menu.Item>
-            </Link>
-            <Divider />
-
-            <Menu.Item
-              fw={500}
-              leftSection={<IconLogout fontWeight={'bold'} style={{ width: 16, height: 16 }} stroke={1.5} />}
-              color='white'
-              mt={'xs'}
-              className='bg-red-500 hover:bg-red-600'
-              onClick={() => {
-                signOut({ callbackUrl: 'https://www.facebook.com/' });
-              }}
-            >
-              Đăng xuất
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-
-        {isMobile && <GlobalSearch width={400} />}
+        <UserSection />
+        {isMobile && <GlobalSearch width={300} />}
       </Group>
       <ScrollArea.Autosize scrollbarSize={6}>
         <Stack p={10} gap='xs'>

@@ -12,6 +12,8 @@ export default {
         // mainColor: '#008b4b',
         mainColor: 'rgb(var(--color-mainColor) / <alpha-value>)',
         subColor: 'rgb(var(--color-subColor) / <alpha-value>)',
+        backgroundAdmin: '#F7F7FD',
+        cardAdmin: '#F2F3FD',
         dark: {
           background: '#1e1e1e',
           card: '#2E2E2E',

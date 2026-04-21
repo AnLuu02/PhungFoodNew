@@ -7,7 +7,12 @@ export const createFavouriteFoodService = async (db: PrismaClient, input: { prod
       userId: input.userId
     }
   });
-  return favourite_food;
+  return {
+    metaData: {
+      before: {},
+      after: favourite_food
+    }
+  };
 };
 export const deleteFavouriteFoodService = async (db: PrismaClient, input: { productId: string; userId: string }) => {
   const { userId, productId } = input;
@@ -20,7 +25,12 @@ export const deleteFavouriteFoodService = async (db: PrismaClient, input: { prod
     }
   });
 
-  return favourite_food;
+  return {
+    metaData: {
+      before: favourite_food ?? {},
+      after: {}
+    }
+  };
 };
 
 export const getFilterFavouriteFoodService = async (db: PrismaClient, input: any) => {

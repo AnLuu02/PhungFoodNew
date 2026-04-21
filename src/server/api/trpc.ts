@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 
 import { getServerAuthSession } from '../auth';
 import { db } from '../db';
+import { logActivity } from '../services/activityLogger.service';
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();
@@ -71,3 +72,43 @@ export const requirePermission = (
 
     return next({ ctx: { ...ctx, user } });
   });
+
+export const activityLogger = t.middleware(async opts => {
+  const result = await opts.next();
+
+  if (result.ok && opts.type === 'mutation') {
+    const user = opts.ctx.session?.user;
+    const path = opts.path;
+    const input = opts.input;
+    const responseData = result.data as any;
+    try {
+      const logsToProcess = Array.isArray(responseData) ? responseData : [responseData];
+      if (logsToProcess && logsToProcess?.length > 0) {
+        Promise.all(
+          logsToProcess.map(async item => {
+            const logContent = item?.metaData || {
+              before: {},
+              after: item?.metaData
+            };
+            const action =
+              logContent?.before?.id === logContent?.after?.id?.id ? 'update' : !logContent?.before ? 'create' : path;
+            return logActivity({
+              action,
+              entityType: path?.split('.')?.[0]?.toLowerCase() || 'OTHER',
+              entityId: logContent?.before?.id || logContent?.after?.id || (input as any)?.id,
+              userId: user?.id,
+              metadata: {
+                before: logContent.before ?? {},
+                after: logContent.after ?? {}
+              }
+            });
+          })
+        );
+      }
+    } catch (err) {
+      console.error('Không thể lưu activity log:', err);
+    }
+  }
+
+  return result;
+});

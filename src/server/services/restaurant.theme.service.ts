@@ -4,22 +4,28 @@ import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
 
 export const changeThemeService = async (db: PrismaClient, input: ThemeWithRestaurantId) => {
+  const { id, ...data } = input;
   try {
-    const [, theme] = await Promise.all([
-      delCache('theme-default'),
-      delCache('getOneActive'),
-      delCache('get-one-active-client'),
-      db.theme.upsert({
+    const result = await db.$transaction(async tx => {
+      const oldData = id ? await tx.theme.findUnique({ where: { id } }) : null;
+      const newData = await db.theme.upsert({
         where: { restaurantId: input.restaurantId },
         update: {
-          ...input
+          ...data
         },
         create: {
-          ...input
+          ...data
         }
-      })
-    ]);
-    return theme;
+      });
+      return { oldData, newData };
+    });
+    await Promise.all([delCache('theme-default'), delCache('getOneActive'), delCache('get-one-active-client')]);
+    return {
+      metaData: {
+        before: result.oldData ?? {},
+        after: result.newData ?? {}
+      }
+    };
   } catch {
     throw new TRPCError({
       code: 'BAD_REQUEST',

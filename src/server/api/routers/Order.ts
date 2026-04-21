@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import {
   deleteOrderService,
   findOrderService,
@@ -26,10 +26,11 @@ export const orderRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await findOrderService(ctx.db, input)),
 
   upsert: publicProcedure
+    .use(activityLogger)
     .input(baseOrderSchema)
     .mutation(async ({ ctx, input }) => await upsertOrderService(ctx.db, input)),
   update: publicProcedure
-    .use(requirePermission('update:order'))
+    .use(activityLogger)
     .input(
       z.object({
         where: z.record(z.string(), z.any()),
@@ -38,7 +39,7 @@ export const orderRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await updateOrderService(ctx.db, input)),
   delete: publicProcedure
-    .use(requirePermission('delete:order'))
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()

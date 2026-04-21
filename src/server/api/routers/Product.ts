@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deleteProductService,
   findProductService,
@@ -40,11 +40,13 @@ export const productRouter = createTRPCRouter({
   upsertToCloudinary: publicProcedure
     .use(requirePermission('update:product'))
     .use(requirePermission('create:product'))
+    .use(activityLogger)
     .input(productFromDbSchema) //
     .mutation(async ({ ctx, input }) => await upsertProductToCloudinaryService(ctx.db, input)),
 
   delete: publicProcedure
     .use(requirePermission('delete:product'))
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()

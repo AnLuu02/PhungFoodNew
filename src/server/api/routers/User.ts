@@ -1,6 +1,6 @@
 import { TokenType } from '@prisma/client';
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   createUserService,
   deleteUserService,
@@ -29,19 +29,24 @@ export const userRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await findUserService(ctx.db, input)),
-  create: publicProcedure.input(userInputSchema).mutation(async ({ ctx, input }) => {
-    const user = await createUserService(ctx.db, input, ctx.session);
-    return user;
-  }),
+  create: publicProcedure
+    .use(activityLogger)
+    .input(userInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      const user = await createUserService(ctx.db, input, ctx.session);
+      return user;
+    }),
 
   upsert: publicProcedure
     .use(requirePermission('update:user'))
+    .use(activityLogger)
     .input(userInputSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await upsertUserService(ctx.db, input);
       return user;
     }),
   updateCustom: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         where: z.record(z.any()),
@@ -54,6 +59,7 @@ export const userRouter = createTRPCRouter({
     }),
   delete: publicProcedure
     .use(requirePermission('delete:user'))
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()

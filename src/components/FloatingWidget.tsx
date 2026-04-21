@@ -35,7 +35,12 @@ export default async function FloatingWidget({ restaurant }: { restaurant: any }
           </MenuDropdown>
         </Menu>
       </Box>
-      <Box pos={'fixed'} bottom={100} right={{ base: -15, sm: 20 }} className='z-[200] flex flex-col space-y-4'>
+      <Box
+        pos={'fixed'}
+        bottom={{ base: 150, sm: 100 }}
+        right={{ base: -15, sm: 20 }}
+        className='z-[200] flex flex-col space-y-4'
+      >
         <Menu shadow='md' width={250} position='top'>
           <MenuTarget>
             <Box>

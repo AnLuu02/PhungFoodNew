@@ -1,6 +1,7 @@
 import { Box } from '@mantine/core';
 import FloatingWidget from '~/components/FloatingWidget';
 import FooterWeb from '~/components/Web/Footer/FooterWeb';
+import { NavigationFixed } from '~/components/Web/Header/components/NavigationFIxed';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import { HeaderClient } from '~/components/Web/Header/section/HeaderFirst';
 import ServiceComponent from '~/components/Web/Home/components/ServiceComponent';
@@ -18,20 +19,23 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   });
   return (
     <HydrateClient>
-      <Box p={0} m={0}>
-        <>
-          <HeaderClient />
-          <HeaderWeb />
-        </>
-        <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>
-          {children}
+      <>
+        <Box className='pb-[70px] sm:p-0'>
+          <>
+            <HeaderClient />
+            <HeaderWeb />
+          </>
+          <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>
+            {children}
+          </Box>
+          <Box pl={{ base: 20, lg: 130 }} pr={{ base: 20, lg: 130 }}>
+            <ServiceComponent />
+          </Box>
+          <FloatingWidget restaurant={restaurant} />
+          <FooterWeb restaurant={restaurant} />
         </Box>
-        <Box pl={{ base: 20, lg: 130 }} pr={{ base: 20, lg: 130 }}>
-          <ServiceComponent />
-        </Box>
-        <FloatingWidget restaurant={restaurant} />
-        <FooterWeb restaurant={restaurant} />
-      </Box>
+        <NavigationFixed />
+      </>
     </HydrateClient>
   );
 };

@@ -1,17 +1,14 @@
 'use client';
-import { Badge, Box, Divider, Flex, Group, Menu, Text, UnstyledButton } from '@mantine/core';
-import { IconChevronDown, IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
-import { signOut, useSession } from 'next-auth/react';
+import { Badge, Flex } from '@mantine/core';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 import ButtonControlModeTheme from '../Button/ButtonControlModeTheme';
 import { GlobalSearch } from '../Search/GlobalSearch';
+import UserSection from '../UserSection';
 
 export default function Header() {
-  const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { data: session } = useSession();
-
   return (
     <Flex
       justify='space-between'
@@ -44,58 +41,7 @@ export default function Header() {
       <Flex align={'center'} gap={'md'} className='hidden lg:flex'>
         <GlobalSearch width={{ base: '100%', sm: 350, md: 300, lg: 400 }} />
         <ButtonControlModeTheme />
-        <Menu
-          radius={'md'}
-          width={260}
-          position='bottom-end'
-          transitionProps={{ transition: 'pop-top-right' }}
-          onClose={() => setUserMenuOpened(false)}
-          onOpen={() => setUserMenuOpened(true)}
-          withinPortal
-        >
-          <Menu.Target>
-            <UnstyledButton
-              className={`flex items-center ${userMenuOpened ? 'bg-[rgba(0,0,0,0.1)]' : ''} rounded-full p-2 transition-colors duration-200 hover:bg-[rgba(0,0,0,0.1)] hover:dark:bg-gray-800/30`}
-            >
-              <Group gap={7}>
-                <Image
-                  src={session?.user?.image || '/images/webp/user-default.webp'}
-                  alt='User avatar'
-                  className='rounded-full'
-                  width={30}
-                  height={30}
-                />
-                <Box className='hidden text-left sm:block'>
-                  <Text fw={700} size='sm' lh={1}>
-                    {session?.user?.name}
-                  </Text>
-                  <Text size='xs' fw={500} c={'dimmed'}>
-                    {session?.user?.email}
-                  </Text>
-                </Box>
-                <IconChevronDown
-                  style={{ width: 12, height: 12 }}
-                  stroke={1.5}
-                  className='hidden text-gray-500 dark:text-dark-text sm:block'
-                />
-              </Group>
-            </UnstyledButton>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item leftSection={<IconUser style={{ width: 16, height: 16 }} stroke={1.5} />}>Profile</Menu.Item>
-            <Menu.Item leftSection={<IconSettings style={{ width: 16, height: 16 }} stroke={1.5} />}>
-              Settings
-            </Menu.Item>
-            <Divider />
-            <Menu.Item
-              leftSection={<IconLogout style={{ width: 16, height: 16 }} stroke={1.5} />}
-              color='red'
-              onClick={() => signOut({ callbackUrl: 'https://www.facebook.com/' })}
-            >
-              Đăng xuất
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+        <UserSection />
       </Flex>
     </Flex>
   );

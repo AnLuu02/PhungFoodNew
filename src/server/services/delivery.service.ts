@@ -1,17 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import { TRPCError } from '@trpc/server';
 import { DeliveryInput } from '~/shared/schema/delivery.schema';
 
 export const upsertDeliveryService = async (db: PrismaClient, input: DeliveryInput) => {
-  const existingDelivery = await db.delivery.findFirst({
-    where: {
-      id: input.id
-    }
-  });
+  const { id, ...data } = input;
 
-  if (!existingDelivery || (existingDelivery && existingDelivery?.id == input?.id)) {
-    const { id, ...data } = input;
-    const delivery = await db.delivery.upsert({
+  const result = await db.$transaction(async tx => {
+    const oldData = id ? await tx.delivery.findUnique({ where: { id } }) : null;
+    const newData = await tx.delivery.upsert({
       where: { id: id || '' },
       create: {
         ...data,
@@ -45,11 +40,12 @@ export const upsertDeliveryService = async (db: PrismaClient, input: DeliveryInp
         }
       }
     });
-    return delivery;
-  }
-
-  throw new TRPCError({
-    code: 'CONFLICT',
-    message: 'Danh mục đã tồn tại. Hãy thử lại.'
+    return { oldData, newData };
   });
+  return {
+    metaData: {
+      before: result.oldData ?? {},
+      after: result.newData
+    }
+  };
 };

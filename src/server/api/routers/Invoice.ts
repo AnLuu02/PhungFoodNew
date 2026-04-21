@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deleteInvoiceService,
   findInvoiceService,
@@ -21,6 +21,7 @@ export const invoiceRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await findInvoiceService(ctx.db, input)),
   delete: publicProcedure
     .use(requirePermission('delete:invoice'))
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()
@@ -40,6 +41,7 @@ export const invoiceRouter = createTRPCRouter({
   upsert: publicProcedure
     .use(requirePermission('update:invoice'))
     .use(requirePermission('create:invoice'))
+    .use(activityLogger)
     .input(baseInvoiceSchema)
     .mutation(async ({ ctx, input }) => await upsertInvoiceService(ctx.db, input))
 });

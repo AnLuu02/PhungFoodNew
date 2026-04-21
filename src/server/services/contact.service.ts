@@ -71,8 +71,12 @@ export const deleteContactService = async (db: PrismaClient, input: { id: string
   const contact = await db.contact.delete({
     where: { id: input.id }
   });
-
-  return contact;
+  return {
+    metaData: {
+      before: contact ?? {},
+      after: {}
+    }
+  };
 };
 
 export const getAllContactService = async (db: PrismaClient) => {
@@ -81,12 +85,24 @@ export const getAllContactService = async (db: PrismaClient) => {
 
 export const upsertContactService = async (db: PrismaClient, input: ContactInput) => {
   const { id, ...data } = input;
-  const contact = await db.contact.upsert({
-    where: {
-      id: id || 'DEFAULT_ID'
-    },
-    create: data,
-    update: data
+  const result = await db.$transaction(async tx => {
+    const oldData = id
+      ? await tx.contact.findUnique({
+          where: { id }
+        })
+      : null;
+    const newData = await tx.contact.upsert({
+      where: { id: id || 'NON_EXISTENT_ID' },
+      create: data,
+      update: data
+    });
+
+    return { oldData, newData };
   });
-  return contact;
+  return {
+    metaData: {
+      before: result.oldData ?? {},
+      after: result.newData
+    }
+  };
 };

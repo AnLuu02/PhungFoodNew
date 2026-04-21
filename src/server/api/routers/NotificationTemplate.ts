@@ -1,14 +1,17 @@
 import { NotificationType } from '@prisma/client';
 import { z } from 'zod';
 import { notificationTemplateSchema } from '~/lib/ZodSchema/schema';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const notificationTemplateRouter = createTRPCRouter({
-  create: publicProcedure.input(notificationTemplateSchema).mutation(async ({ ctx, input }) => {
-    const data = await ctx.db.notificationTemplate.create({ data: input });
-    return { code: 'OK', message: 'Tạo template thành công.', data };
-  }),
+  create: publicProcedure
+    .use(activityLogger)
+    .input(notificationTemplateSchema)
+    .mutation(async ({ ctx, input }) => {
+      const data = await ctx.db.notificationTemplate.create({ data: input });
+      return { code: 'OK', message: 'Tạo template thành công.', data };
+    }),
 
   getAll: publicProcedure.query(async ({ ctx }): Promise<ResponseTRPC> => {
     const data = await ctx.db.notificationTemplate.findMany({ orderBy: { createdAt: 'desc' } });
@@ -88,14 +91,18 @@ export const notificationTemplateRouter = createTRPCRouter({
   }),
 
   update: publicProcedure
+    .use(activityLogger)
     .input(z.object({ id: z.string(), data: notificationTemplateSchema.partial() }))
     .mutation(async ({ ctx, input }) => {
       const updated = await ctx.db.notificationTemplate.update({ where: { id: input.id }, data: input.data });
       return { code: 'OK', message: 'Cập nhật template thành công.', data: updated };
     }),
 
-  delete: publicProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
-    await ctx.db.notificationTemplate.delete({ where: { id: input } });
-    return { code: 'OK', message: 'Xóa template thành công.' };
-  })
+  delete: publicProcedure
+    .use(activityLogger)
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.notificationTemplate.delete({ where: { id: input } });
+      return { code: 'OK', message: 'Xóa template thành công.' };
+    })
 });

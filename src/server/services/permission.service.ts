@@ -86,13 +86,22 @@ export const createManyPermissionService = async (db: PrismaClient, input: { dat
 export const upsertPermissionService = async (db: PrismaClient, input: PermissionInput) => {
   try {
     const { id, ...data } = input;
-    const role = await db.permission.upsert({
-      where: { id: id || '' },
-      create: data,
-      update: data
+    const result = await db.$transaction(async tx => {
+      const oldData = id ? await tx.permission.findUnique({ where: { id } }) : null;
+      const newData = await tx.permission.upsert({
+        where: { id: id || '' },
+        create: data,
+        update: data
+      });
+      return { oldData, newData };
     });
 
-    return role;
+    return {
+      metaData: {
+        before: result.oldData ?? {},
+        after: result.newData
+      }
+    };
   } catch {
     throw new TRPCError({
       code: 'CONFLICT',
@@ -101,10 +110,15 @@ export const upsertPermissionService = async (db: PrismaClient, input: Permissio
   }
 };
 export const deletePermissionService = async (db: PrismaClient, input: any) => {
-  const permission = await db.permission.delete({
+  const deleted = await db.permission.delete({
     where: { id: input.id || '' }
   });
-  return permission;
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };
 export const getAllPermissionService = async (db: PrismaClient) => {
   let permissions = await db.permission.findMany({
@@ -120,15 +134,29 @@ export const updateUserPermissionsService = async (
     granted: boolean;
   }[]
 ) => {
-  const userPermissions = await db.$transaction(
-    input.map(item =>
-      db.userPermission.upsert({
-        where: { userId_permissionId: { userId: item.userId, permissionId: item.permissionId } },
+  const results = await db.$transaction(async tx => {
+    const changes = [];
+
+    for (const item of input) {
+      const where = {
+        userId_permissionId: { userId: item.userId, permissionId: item.permissionId }
+      };
+      const oldData = await tx.userPermission.findUnique({ where });
+      const newData = await tx.userPermission.upsert({
+        where,
         update: { granted: item.granted },
         create: { userId: item.userId, permissionId: item.permissionId, granted: item.granted }
-      })
-    )
-  );
+      });
 
-  return userPermissions;
+      changes.push({ oldData, newData });
+    }
+
+    return changes;
+  });
+  return results?.map(u => ({
+    metaData: {
+      before: u?.oldData ?? {},
+      after: u?.newData ?? {}
+    }
+  }));
 };

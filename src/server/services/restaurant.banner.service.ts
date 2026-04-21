@@ -153,10 +153,15 @@ export const setDefaultBannerService = async (db: PrismaClient, input: { id: str
 };
 export const deleteBannerService = async (db: PrismaClient, input: { id: string; otherId?: string }) => {
   try {
-    let result = await db.banner.delete({
+    let deleted = await db.banner.delete({
       where: { id: input.id }
     });
-    return result;
+    return {
+      metaData: {
+        before: deleted ?? {},
+        after: {}
+      }
+    };
   } catch (error) {
     throw new TRPCError({
       code: 'BAD_REQUEST',

@@ -31,7 +31,7 @@ export const ButtonCheckout = ({
   const mutationOrder = api.Order.upsert.useMutation({
     onSuccess: resp => {
       onClick?.();
-      window.location.href = `/thanh-toan/${resp.id}`;
+      window.location.href = `/thanh-toan/${resp?.metaData?.after?.id}`;
     },
     onError: e => {
       setLoading(false);

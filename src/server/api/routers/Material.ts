@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   createManyMaterialService,
   deleteMaterialService,
@@ -48,6 +48,7 @@ export const materialRouter = createTRPCRouter({
   upsert: publicProcedure
     .use(requirePermission('update:material'))
     .use(requirePermission('create:material'))
+    .use(activityLogger)
     .input(baseMaterialSchema)
     .mutation(async ({ ctx, input }) => await upsertMaterialService(ctx.db, input))
 });

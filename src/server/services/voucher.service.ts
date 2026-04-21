@@ -48,11 +48,16 @@ export const findVoucherService = async (db: PrismaClient, input: { skip: number
   };
 };
 export const deleteVoucherService = async (db: PrismaClient, input: { id: string }) => {
-  const voucher = await db.voucher.delete({
+  const deleted = await db.voucher.delete({
     where: { id: input.id }
   });
 
-  return voucher;
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };
 export const getAllVoucherService = async (db: PrismaClient) => {
   return await db.voucher.findMany({});
@@ -188,16 +193,21 @@ export const useVoucherService = async (db: PrismaClient, input: { userId: strin
 };
 export const upsertVoucherService = async (db: PrismaClient, input: { where: any; data: any }) => {
   try {
-    const existingVoucher: any = await db.voucher.findFirst({
+    const existed: any = await db.voucher.findFirst({
       where: input.where
     });
 
-    if (!existingVoucher || (existingVoucher && existingVoucher?.id == input?.where?.id)) {
+    if (!existed || (existed && existed?.id == input?.where?.id)) {
       const updateVoucher = await db.voucher.update({
         where: input.where as Prisma.VoucherWhereUniqueInput,
         data: input.data as Prisma.VoucherUpdateInput
       });
-      return updateVoucher;
+      return {
+        metaData: {
+          before: existed ?? {},
+          after: updateVoucher
+        }
+      };
     }
 
     throw new TRPCError({
@@ -211,19 +221,23 @@ export const upsertVoucherService = async (db: PrismaClient, input: { where: any
     });
   }
 };
-
 export const updateVoucherService = async (db: PrismaClient, input: { where: any; data: any }) => {
   try {
-    const existingVoucher: any = await db.voucher.findFirst({
+    const existed: any = await db.voucher.findFirst({
       where: input.where
     });
 
-    if (!existingVoucher || (existingVoucher && existingVoucher?.id == input?.where?.id)) {
+    if (!existed || (existed && existed?.id == input?.where?.id)) {
       const updateVoucher = await db.voucher.update({
         where: input.where as Prisma.VoucherWhereUniqueInput,
         data: input.data as Prisma.VoucherUpdateInput
       });
-      return updateVoucher;
+      return {
+        metaData: {
+          before: existed ?? {},
+          after: updateVoucher
+        }
+      };
     }
 
     throw new TRPCError({
@@ -239,7 +253,13 @@ export const updateVoucherService = async (db: PrismaClient, input: { where: any
 };
 
 export const createVoucherService = async (db: PrismaClient, input: VoucherInput) => {
-  return await db.voucher.create({
+  const result = await db.voucher.create({
     data: input
   });
+  return {
+    metaData: {
+      before: {},
+      after: result
+    }
+  };
 };

@@ -27,22 +27,38 @@ export const deleteImageService = async (db: PrismaClient, input: { publicId: st
       .destroy(deleted?.publicId)
       .catch(() => console.error('Xóa ảnh khỏi cloudinary không thành công. Hãy kiểm tra lại.'));
   }
-  return deleted;
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };
 
 export const upsertImageService = async (db: PrismaClient, input: ImageFromDb) => {
   const { id, ...data } = input;
-  return await db.image.upsert({
-    where: {
-      id: id || 'Default_image_id'
-    },
-    create: {
-      ...data,
-      url: data?.url || '',
-      type: ImageType.OTHER
-    },
-    update: data
+  const result = await db.$transaction(async tx => {
+    const oldData = id ? await tx.image.findUnique({ where: { id } }) : null;
+    const newData = await tx.image.upsert({
+      where: {
+        id: id || 'Default_image_id'
+      },
+      create: {
+        ...data,
+        url: data?.url || '',
+        type: ImageType.OTHER
+      },
+      update: data
+    });
+    return { oldData, newData };
   });
+
+  return {
+    metaData: {
+      before: result.oldData ?? {},
+      after: result.newData
+    }
+  };
 };
 
 export const bulkUpsertImageService = async (db: PrismaClient, input: ImageFromDb[]) => {

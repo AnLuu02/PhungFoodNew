@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deleteBannerService,
   getAllBannerService,
@@ -26,6 +26,7 @@ export const restaurantRouter = createTRPCRouter({
   getOneActiveClient: publicProcedure.query(async ({ ctx }) => await getOneActiveClientService(ctx.db)),
   upsert: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(restaurantInputSchema)
     .mutation(async ({ ctx, input }) => await upsertRestaurantService(ctx.db, input)),
   /////////////////////////////// theme//////////////////////////////////
@@ -41,6 +42,7 @@ export const restaurantRouter = createTRPCRouter({
   getAllBanner: publicProcedure.query(async ({ ctx }) => await getAllBannerService(ctx.db)),
 
   upsertBanner: publicProcedure
+    .use(activityLogger)
     .input(bannerReqSchemaCloudinary)
     .mutation(async ({ ctx, input }) => await upsertBannerService(ctx.db, input)),
   getOneBanner: publicProcedure
@@ -52,6 +54,7 @@ export const restaurantRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await getOneBannerService(ctx.db, input)),
 
   setDefaultBanner: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()
@@ -59,6 +62,7 @@ export const restaurantRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await setDefaultBannerService(ctx.db, input)),
   deleteBanner: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()
@@ -70,9 +74,11 @@ export const restaurantRouter = createTRPCRouter({
   ///////////////////////////////socials//////////////////////////////////
 
   upsertSocial: publicProcedure
+    .use(activityLogger)
     .input(socialSchemaWithRestaurantId)
     .mutation(async ({ ctx, input }) => await upsertSocialService(ctx.db, input)),
   deleteSocial: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string(),
@@ -82,6 +88,7 @@ export const restaurantRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => await deleteSocialService(ctx.db, input)),
   ///////////////////////////////   opening hour //////////////////////////////////
   updateOpeningHours: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         data: z.array(baseOpeningHourSchema)

@@ -108,9 +108,15 @@ export const findInvoiceService = async (db: PrismaClient, input: { skip: number
   };
 };
 export const deleteInvoiceService = async (db: PrismaClient, input: { id: string }) => {
-  return await db.invoice.delete({
+  const deleted = await db.invoice.delete({
     where: { id: input.id }
   });
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };
 
 export const getOneInvoiceService = async (db: PrismaClient, input: { id: string }) => {
@@ -137,13 +143,22 @@ export const getAllInvoiceService = async (db: PrismaClient) => {
 
 export const upsertInvoiceService = async (db: PrismaClient, input: InvoiceInput) => {
   const { id, ...data } = input;
-  const invoice = await db.invoice.upsert({
-    where: {
-      id: id || ''
-    },
-    create: data,
-    update: data
+  const result = await db.$transaction(async tx => {
+    const oldData = id ? await tx.invoice.findUnique({ where: { id } }) : null;
+    const newData = await tx.invoice.upsert({
+      where: {
+        id: id || ''
+      },
+      create: data,
+      update: data
+    });
+    return { oldData, newData };
   });
 
-  return invoice;
+  return {
+    metaData: {
+      before: result.oldData ?? {},
+      after: result.newData
+    }
+  };
 };

@@ -24,7 +24,7 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
       >
         <Link href={'/'}>
           <Center>
-            <Logo width={190} />
+            <Logo width={190} height={70} />
           </Center>
         </Link>
         <Box w={{ base: '100%', md: 400, lg: 550 }}>

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deleteSubCategoryService,
   findSubCategoryService,
@@ -22,7 +22,7 @@ export const subCategoryRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await findSubCategoryService(ctx.db, input)),
   delete: publicProcedure
     .use(requirePermission('delete:subCategory'))
-
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()
@@ -40,6 +40,7 @@ export const subCategoryRouter = createTRPCRouter({
   upsert: publicProcedure
     .use(requirePermission('update:subCategory'))
     .use(requirePermission('create:subCategory'))
+    .use(activityLogger)
     .input(subCategoryInputSchema)
     .mutation(async ({ ctx, input }) => await upsertSubCategoryService(ctx.db, input))
 });

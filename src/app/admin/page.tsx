@@ -1,8 +1,6 @@
 import {
   ActionIcon,
-  Avatar,
   Box,
-  Button,
   Card,
   Divider,
   Flex,
@@ -26,7 +24,8 @@ import {
   IconUserPlus
 } from '@tabler/icons-react';
 import Link from 'next/link';
-import { formatMoneyShort, formatTimeAgo } from '~/lib/FuncHandler/Format';
+import TimelineRecentActivity from '~/components/TimelineRecentActivity';
+import { formatMoneyShort } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/server';
 import { ChangeRate } from './(dashboard)/reports/components/ChangeRate';
 
@@ -70,7 +69,7 @@ const recentControl = [
 
 export default async function Dashboard() {
   const data = await api.Page.getInitAdmin();
-  const recentActivities = data.recentActivities || [];
+  const recentActivities = data.recentActivities?.items || [];
   const revenue = data.revenue || [];
   const dataRevenue = [
     {
@@ -146,8 +145,8 @@ export default async function Dashboard() {
                   </Flex>
 
                   <ChangeRate
-                    currentValue={item.currentValue}
-                    previousValue={item.previousValue}
+                    currentValue={Number(item.currentValue)}
+                    previousValue={Number(item.previousValue)}
                     changeRate={item.changeRate}
                   />
                 </Stack>
@@ -202,49 +201,7 @@ export default async function Dashboard() {
             </Paper>
           </GridCol>
           <GridCol span={4}>
-            <Paper radius={'lg'} withBorder shadow='md' pb={'md'}>
-              <Box px={'xl'} py={'md'}>
-                <Title order={4} className='font-quicksand'>
-                  Hoạt động gần đây
-                </Title>
-                <Text c={'dimmed'} size='sm'>
-                  Các sự kiện mới đây trong hệ thống
-                </Text>
-              </Box>
-              <Divider />
-              <SimpleGrid cols={1} mt={'md'} px={'md'} pb={'md'}>
-                {recentActivities?.length > 0 ? (
-                  recentActivities.slice(0, 5).map((item: any, index: number) => {
-                    return (
-                      <Flex align={'flex-start'} gap={'md'} key={index}>
-                        <Avatar
-                          className='border-1 border-solid border-mainColor'
-                          src={item?.imageForEntity?.image?.url}
-                          radius={'xl'}
-                        />
-                        <Box>
-                          <Text size='sm'>
-                            <b>{item?.actor}</b> {item?.action} <b>{item?.target || ''}</b>
-                          </Text>
-                          <Text size='xs' c={'dimmed'}>
-                            {formatTimeAgo(item?.timezone)}
-                          </Text>
-                        </Box>
-                      </Flex>
-                    );
-                  })
-                ) : (
-                  <Text size='sm' ta={'center'} c={'dimmed'}>
-                    Không có hoạt động 7 ngày gần đây
-                  </Text>
-                )}
-              </SimpleGrid>
-              {recentActivities?.length > 5 && (
-                <Button variant='subtle' rightSection={<IconArrowRight size={16} />}>
-                  Xem tất cả hoạt động
-                </Button>
-              )}
-            </Paper>
+            <TimelineRecentActivity recentActivities={recentActivities} />
           </GridCol>
         </Grid>
       </Stack>

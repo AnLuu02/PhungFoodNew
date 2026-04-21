@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deletePaymentService,
   findPaymentService,
@@ -23,6 +23,7 @@ export const paymentRouter = createTRPCRouter({
 
   delete: publicProcedure
     .use(requirePermission('delete:payment'))
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()
@@ -41,6 +42,7 @@ export const paymentRouter = createTRPCRouter({
   upsert: publicProcedure
     .use(requirePermission('update:payment'))
     .use(requirePermission('create:payment'))
+    .use(activityLogger)
     .input(basePaymentSchema)
     .mutation(async ({ ctx, input }) => await upsertPaymentService(ctx.db, input))
 });

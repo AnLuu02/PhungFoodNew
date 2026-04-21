@@ -102,20 +102,14 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
   };
 };
 export const deleteSubCategoryService = async (db: PrismaClient, input: any) => {
-  const subCategory = await db.subCategory.findUnique({
-    where: { id: input.id }
-  });
-
-  if (!subCategory) {
-    throw new TRPCError({
-      code: 'NOT_FOUND',
-      message: 'Danh mục con không tồn tại.'
-    });
-  }
-
   const deletedSubCategory = await db.subCategory.delete({ where: { id: input.id } });
   ManageTagVi('delete', { oldTag: deletedSubCategory.tag });
-  return deletedSubCategory;
+  return {
+    metaData: {
+      before: deletedSubCategory ?? {},
+      after: {}
+    }
+  };
 };
 export const getOneSubCategoryService = async (db: PrismaClient, input: { s?: string }) => {
   const searchQuery = input.s?.trim();
@@ -168,22 +162,19 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
     imageDb = rest;
     statusFromReq = status;
   }
-  const existingSubCategory = id
+  const existed = id
     ? await db.subCategory.findUnique({
         where: { id },
         include: {
           imageForEntity: {
             include: {
-              image: true,
-              subCategory: {
-                select: { id: true }
-              }
+              image: true
             }
           }
         }
       })
     : null;
-  if (!id || (existingSubCategory && existingSubCategory.tag !== data.tag)) {
+  if (!id || (existed && existed.tag !== data.tag)) {
     const duplicateTag = await db.subCategory.findUnique({
       where: { tag_categoryId: { tag: data.tag, categoryId } }
     });
@@ -192,7 +183,7 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
     }
   }
 
-  const updatedSubCategory = await db.subCategory.upsert({
+  const upserted = await db.subCategory.upsert({
     where: { id: id ?? 'default_upsert_id' },
     create: {
       ...data,
@@ -290,12 +281,17 @@ export const upsertSubCategoryService = async (db: PrismaClient, input: SubCateg
     include: { imageForEntity: { include: { image: true } } }
   });
 
-  if (updatedSubCategory.tag) {
+  if (upserted.tag) {
     ManageTagVi('upsert', {
-      oldTag: existingSubCategory?.tag,
-      newTag: updatedSubCategory.tag,
-      newName: updatedSubCategory.name
+      oldTag: existed?.tag,
+      newTag: upserted.tag,
+      newName: upserted.name
     });
   }
-  return updatedSubCategory;
+  return {
+    metaData: {
+      before: existed ?? {},
+      after: upserted ?? {}
+    }
+  };
 };

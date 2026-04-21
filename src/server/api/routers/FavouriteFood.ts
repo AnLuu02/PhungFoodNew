@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import {
   createFavouriteFoodService,
   deleteFavouriteFoodService,
@@ -9,6 +9,7 @@ import {
 
 export const favouriteFoodRouter = createTRPCRouter({
   create: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         productId: z.string(),
@@ -17,6 +18,7 @@ export const favouriteFoodRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await createFavouriteFoodService(ctx.db, input)),
   delete: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         userId: z.string(),

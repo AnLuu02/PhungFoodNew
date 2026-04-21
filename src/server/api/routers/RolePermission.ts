@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   createManyPermissionService,
   deletePermissionService,
@@ -40,10 +40,12 @@ export const rolePermissionRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await getOnePermissionService(ctx.db, input)),
   upsertRole: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(baseRoleSchema)
     .mutation(async ({ ctx, input }) => await upsertRoleService(ctx.db, input)),
   createManyRole: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(
       z.object({
         data: z.array(baseRoleSchema)
@@ -52,6 +54,7 @@ export const rolePermissionRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => await createManyRoleService(ctx.db, input)),
   deleteRole: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => await deleteRoleService(ctx.db, input)),
 
@@ -66,6 +69,7 @@ export const rolePermissionRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await findPermissionService(ctx.db, input)),
   createManyPermission: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(
       z.object({
         data: z.array(basePermissionSchema)
@@ -75,16 +79,19 @@ export const rolePermissionRouter = createTRPCRouter({
 
   upsertPermission: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(basePermissionSchema)
     .mutation(async ({ ctx, input }) => await upsertPermissionService(ctx.db, input)),
   deletePermission: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => await deletePermissionService(ctx.db, input)),
   getAllPermission: publicProcedure.query(async ({ ctx }) => await getAllPermissionService(ctx.db)),
   //user permision
   updateUserPermissions: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
     .input(z.array(z.object({ userId: z.string(), permissionId: z.string(), granted: z.boolean() })))
     .mutation(async ({ ctx, input }) => await updateUserPermissionsService(ctx.db, input))
 });

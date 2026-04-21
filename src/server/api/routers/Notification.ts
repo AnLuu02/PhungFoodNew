@@ -3,34 +3,39 @@ import { z } from 'zod';
 import { getOnlineUserIds } from '~/lib/PusherConfig/handler';
 import { pusherServer } from '~/lib/PusherConfig/server';
 import { notificationSchema } from '~/lib/ZodSchema/schema';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 export const notificationRouter = createTRPCRouter({
-  create: publicProcedure.input(notificationSchema).mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
-    const notification = await ctx.db.notification.create({
-      data: {
-        title: input.title,
-        message: input.message,
-        type: input.type,
-        recipient: input.recipient,
-        status: input.status,
-        priority: input.priority,
-        channels: input.channels,
-        createdAt: new Date(),
-        template: input.templateId
-          ? {
-              connect: { id: input.templateId }
-            }
-          : undefined,
-        scheduledAt: input.scheduledAt,
-        tags: input.tags,
-        analytics: input.analytics,
-        recipients:
-          input.recipient !== 'all' ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) } : undefined
-      }
-    });
-    return { code: 'OK', message: 'Tạo thông báo thành công.', data: notification };
-  }),
+  create: publicProcedure
+    .use(activityLogger)
+    .input(notificationSchema)
+    .mutation(async ({ ctx, input }): Promise<ResponseTRPC> => {
+      const notification = await ctx.db.notification.create({
+        data: {
+          title: input.title,
+          message: input.message,
+          type: input.type,
+          recipient: input.recipient,
+          status: input.status,
+          priority: input.priority,
+          channels: input.channels,
+          createdAt: new Date(),
+          template: input.templateId
+            ? {
+                connect: { id: input.templateId }
+              }
+            : undefined,
+          scheduledAt: input.scheduledAt,
+          tags: input.tags,
+          analytics: input.analytics,
+          recipients:
+            input.recipient !== 'all'
+              ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) }
+              : undefined
+        }
+      });
+      return { code: 'OK', message: 'Tạo thông báo thành công.', data: notification };
+    }),
 
   getAll: publicProcedure.query(async ({ ctx }): Promise<ResponseTRPC> => {
     const data = await ctx.db.notification.findMany({
@@ -165,6 +170,7 @@ export const notificationRouter = createTRPCRouter({
   }),
 
   update: publicProcedure
+    .use(activityLogger)
     .input(z.object({ id: z.string(), data: notificationSchema.partial() }))
     .mutation(async ({ ctx, input }) => {
       const updated = await ctx.db.notification.update({
@@ -181,6 +187,7 @@ export const notificationRouter = createTRPCRouter({
       return { code: 'OK', message: 'Cập nhật thành công.', data: updated };
     }),
   updateActionUser: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         where: z.record(z.any()),
@@ -194,12 +201,16 @@ export const notificationRouter = createTRPCRouter({
       });
       return { code: 'OK', message: 'Cập nhật thành công.', data: updated };
     }),
-  delete: publicProcedure.input(z.array(z.string())).mutation(async ({ ctx, input }) => {
-    await ctx.db.notification.deleteMany({ where: { id: { in: input } } });
-    return { code: 'OK', message: 'Xóa thành công.' };
-  }),
+  delete: publicProcedure
+    .use(activityLogger)
+    .input(z.array(z.string()))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.notification.deleteMany({ where: { id: { in: input } } });
+      return { code: 'OK', message: 'Xóa thành công.' };
+    }),
 
   deleteFilter: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         where: z.record(z.any())

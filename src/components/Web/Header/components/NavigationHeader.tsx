@@ -6,15 +6,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
+import { navigationClientItem } from '~/lib/ConfigUI';
 
-const navigationItem = [
-  { label: 'Trang chủ', href: '/' },
-  { label: 'Thực đơn', href: '/thuc-don' },
-  { label: 'Về PhungFood', href: '/gioi-thieu' },
-  { label: 'Liên Hệ', href: '/lien-he' },
-  { label: 'Tin tức', href: '/tin-tuc' },
-  { label: 'Mua nhanh', href: '/goi-mon-nhanh' }
-];
 function NavigationHeader({ categories }: { categories: any }) {
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
@@ -22,7 +15,7 @@ function NavigationHeader({ categories }: { categories: any }) {
 
   return (
     <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }} className='hidden md:flex'>
-      {navigationItem.map((item, index) =>
+      {navigationClientItem.map((item, index) =>
         item.href === '/thuc-don' ? (
           <Menu
             radius={'md'}

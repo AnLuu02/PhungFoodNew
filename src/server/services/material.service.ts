@@ -99,13 +99,18 @@ export const createManyMaterialService = async (db: PrismaClient, input: { data:
 };
 
 export const deleteMaterialService = async (db: PrismaClient, input: { id: string }) => {
-  const material = await db.material.delete({
+  const deleted = await db.material.delete({
     where: { id: input.id }
   });
-  if (material) {
-    await ManageTagVi('delete', { oldTag: material.tag });
+  if (deleted) {
+    ManageTagVi('delete', { oldTag: deleted.tag });
   }
-  return material;
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };
 
 export const getOneMaterialService = async (db: PrismaClient, input: { s: string }) => {
@@ -144,20 +149,25 @@ export const upsertMaterialService = async (db: PrismaClient, input: MaterialInp
 
   if (!existedTag || (existedTag && existedTag?.id == input?.id)) {
     const { id, ...data } = input;
-    const updateMaterial = await db.material.upsert({
+    const upserted = await db.material.upsert({
       where: { id: input?.id || '' },
       create: { ...data, tag: data.tag || '' },
       update: data
     });
 
-    if (updateMaterial?.tag) {
-      await ManageTagVi('upsert', {
+    if (upserted?.tag) {
+      ManageTagVi('upsert', {
         oldTag: existed?.tag,
-        newTag: updateMaterial.tag,
-        newName: updateMaterial.name
+        newTag: upserted.tag,
+        newName: upserted.name
       });
     }
-    return updateMaterial;
+    return {
+      metaData: {
+        before: existed ?? {},
+        after: upserted
+      }
+    };
   }
 
   throw new TRPCError({

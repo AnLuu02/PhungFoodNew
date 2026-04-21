@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   createVoucherService,
   deleteVoucherService,
@@ -25,10 +25,12 @@ export const voucherRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await findVoucherService(ctx.db, input)),
   create: publicProcedure
     .use(requirePermission('create:voucher'))
+    .use(activityLogger)
     .input(baseVoucherSchema)
     .mutation(async ({ ctx, input }) => await createVoucherService(ctx.db, input)),
   delete: publicProcedure
     .use(requirePermission('delete:voucher'))
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()
@@ -53,6 +55,7 @@ export const voucherRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => await getVoucherForUserService(ctx.db, input)),
   useVoucher: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         userId: z.string(),
@@ -63,6 +66,7 @@ export const voucherRouter = createTRPCRouter({
 
   update: publicProcedure
     .use(requirePermission('update:voucher'))
+    .use(activityLogger)
     .input(
       z.object({
         where: z.record(z.any()),

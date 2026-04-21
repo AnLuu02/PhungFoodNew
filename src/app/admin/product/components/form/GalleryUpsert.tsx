@@ -115,71 +115,9 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
                     </AspectRatio>
                   </Box>
                 </Stack>
-
-                {/* <Paper
-                withBorder
-                radius={'md'}
-                key={index}
-                w={100}
-                h={100}
-                styles={{
-                  root: {
-                    borderStyle: 'dashed',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    gap: '2px',
-                    overflow: 'hidden'
-                  }
-                }}
-                pos={'relative'}
-              >
-                <Image
-                  loading='lazy'
-                  key={index}
-                  src={curUrl}
-                  alt='Product Image'
-                  className='mb-4'
-                  onLoad={() => (file && curUrl ? URL.revokeObjectURL(curUrl) : null)}
-                  w={100}
-                  h={100}
-                />
-                <IconTrash
-                  color='red'
-                  onClick={() => handleDeleteGalleryItem(index, publicId)}
-                  className='absolute right-0 top-0'
-                />
-              </Paper>   */}
               </>
             );
           })}
-        {/* <label htmlFor='galleryInput'>
-          <Paper
-            withBorder
-            radius={'md'}
-            w={100}
-            h={100}
-            styles={{
-              root: {
-                borderStyle: 'dashed',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }
-            }}
-          >
-            <Text size='xl' fw={200}>
-              +
-            </Text>
-            <Text size='xs' fw={200}>
-              Tải lên
-            </Text>
-          </Paper>
-        </label> */}
 
         <Controller
           name='galleryInput'
@@ -226,40 +164,6 @@ export default function GalleryUpsert({ onDeleted }: { onDeleted: (imgIds: strin
           )}
         />
       </Flex>
-      {/* <Box hidden>
-        <Controller
-          name='galleryInput'
-          control={formFields.control}
-          rules={{
-            required: 'File hoặc URL là bắt buộc',
-            validate: files =>
-              files && files.every((file: File) => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type))
-                ? true
-                : 'Only PNG, JPEG, or JPG files are allowed'
-          }}
-          render={({ field, formState: { errors } }) => (
-            <FileInput
-              id='galleryInput'
-              leftSection={<ActionIcon size='xs' color='gray' variant='transparent' component={IconFile} />}
-              label='Ảnh bổ sung'
-              placeholder='Chọn một file'
-              leftSectionPointerEvents='none'
-              value={field.value as unknown as File[]}
-              onChange={value => {
-                field.onChange(value);
-                setImageAddition(valueCurrent => [
-                  ...(valueCurrent ?? []),
-                  ...(value ? value.map(file => ({ file })) : [])
-                ]);
-              }}
-              onBlur={field.onBlur}
-              error={errors.root?.message}
-              accept='image/png,image/jpeg,image/jpg'
-              multiple
-            />
-          )}
-        />
-      </Box> */}
     </Stack>
   );
 }

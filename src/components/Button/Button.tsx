@@ -1,8 +1,9 @@
-import { Button, ElementProps, type ButtonProps } from '@mantine/core';
+import { Button, ButtonVariant, ElementProps, type ButtonProps } from '@mantine/core';
 import React from 'react';
 
 export interface IBButton extends ButtonProps, ElementProps<'button', keyof ButtonProps> {
   active?: boolean;
+  variant?: ButtonVariant;
 }
 
 const BButton: React.FC<IBButton> = ({
@@ -29,7 +30,7 @@ const BButton: React.FC<IBButton> = ({
       disabled={disabled}
       loading={loading}
       onClick={onClick}
-      className={`relative transition-all duration-200 ease-in-out ${
+      className={`relative transition-all duration-200 ease-in-out hover:scale-105 ${
         variant === 'outline' && !disabled && !loading
           ? 'border-mainColor text-mainColor hover:border-mainColor hover:bg-mainColor hover:text-white'
           : variant === 'filled' && !disabled && !loading

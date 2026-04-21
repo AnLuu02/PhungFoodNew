@@ -48,7 +48,7 @@ export default function ImageFilters({
         />
         <MultiSelect
           radius={'xl'}
-          placeholder='Tất cả các thực thể'
+          placeholder='Tất cả đối tượng'
           data={entityTypeOptions}
           value={filters.entityTypes}
           onChange={val => onFilters('entityTypes', val)}

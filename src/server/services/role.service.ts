@@ -128,34 +128,44 @@ export const createManyRoleService = async (db: PrismaClient, input: { data: Rol
 export const upsertRoleService = async (db: PrismaClient, input: RoleInput) => {
   const { id, permissionIds, ...data } = input;
   try {
-    return await db.role.upsert({
-      where: { id: input.id || '' },
-      create: {
-        ...data,
-        permissions: {
-          connect: permissionIds.map(id => ({ id }))
-        }
-      },
-      update: {
-        ...data,
-        permissions: {
-          connect: permissionIds.map(id => ({ id })),
-          disconnect: (
-            await db.permission.findMany({
-              where: {
-                roles: {
-                  some: { id: input.id || '' }
+    const result = await db.$transaction(async tx => {
+      const oldData = id ? await tx.role.findUnique({ where: { id } }) : null;
+      const newData = await db.role.upsert({
+        where: { id: input.id || '' },
+        create: {
+          ...data,
+          permissions: {
+            connect: permissionIds.map(id => ({ id }))
+          }
+        },
+        update: {
+          ...data,
+          permissions: {
+            connect: permissionIds.map(id => ({ id })),
+            disconnect: (
+              await db.permission.findMany({
+                where: {
+                  roles: {
+                    some: { id: input.id || '' }
+                  },
+                  id: {
+                    notIn: permissionIds
+                  }
                 },
-                id: {
-                  notIn: permissionIds
-                }
-              },
-              select: { id: true }
-            })
-          ).map(p => ({ id: p.id }))
+                select: { id: true }
+              })
+            ).map(p => ({ id: p.id }))
+          }
         }
-      }
+      });
+      return { oldData, newData };
     });
+    return {
+      metaData: {
+        before: result.oldData ?? {},
+        after: result.newData ?? {}
+      }
+    };
   } catch {
     throw new TRPCError({
       code: 'CONFLICT',
@@ -164,8 +174,13 @@ export const upsertRoleService = async (db: PrismaClient, input: RoleInput) => {
   }
 };
 export const deleteRoleService = async (db: PrismaClient, input: any) => {
-  const role = await db.role.delete({
+  const deleted = await db.role.delete({
     where: { id: input.id }
   });
-  return role;
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };

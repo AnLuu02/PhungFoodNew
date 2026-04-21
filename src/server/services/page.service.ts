@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import { UserRole } from '~/shared/constants/user';
+import { getAllActivitiesService } from './activityLogger.service';
 import {
   findProductService,
   getAllProductService,
   getFilterProductService,
   getOneProductService
 } from './product.service';
-import { getRecentActivityAppService } from './recentActivity.service';
 import { getOneBannerService } from './restaurant.banner.service';
 import {
   getDistributionProductsService,
@@ -101,7 +101,14 @@ export const getInitAdminPageService = async (db: PrismaClient) => {
   const results: any = await Promise.allSettled([
     getAllProductService(db, { userRole: UserRole.ADMIN }),
     getOverviewRevenueService(db, {}),
-    getRecentActivityAppService(db, {})
+    // getRecentActivityAppService(db, {}),
+    getAllActivitiesService(db, {
+      limit: 10
+      // filters: {
+      //   dateFrom: dayjs(queryOverview?.startTime).toDate(),
+      //   dateTo: dayjs(queryOverview?.endTime).toDate()
+      // }
+    })
   ]);
 
   const [products, revenue, recentActivities] = results.map((item: any) =>
@@ -123,7 +130,14 @@ export const getInitReportPageService = async (db: PrismaClient, input: { startT
     getTopProductsService(db, queryOverview),
     getRevenueOrderStatusService(db, queryOverview),
     getDistributionProductsService(db, queryOverview),
-    getRecentActivityAppService(db, queryOverview)
+    // getRecentActivityAppService(db, queryOverview),
+    getAllActivitiesService(db, {
+      limit: 10
+      // filters: {
+      //   dateFrom: dayjs(queryOverview?.startTime).toDate(),
+      //   dateTo: dayjs(queryOverview?.endTime).toDate()
+      // }
+    })
   ]);
 
   const [

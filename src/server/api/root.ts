@@ -1,3 +1,4 @@
+import { activityRouter } from './routers/Activity';
 import { categoryRouter } from './routers/Category';
 import { contactRouter } from './routers/Contact';
 import { deliveryRouter } from './routers/Delivery';
@@ -46,7 +47,8 @@ export const appRouter = createTRPCRouter({
   Restaurant: restaurantRouter,
   Notification: notificationRouter,
   NotificationTemplate: notificationTemplateRouter,
-  Images: imagesRouter
+  Images: imagesRouter,
+  Activity: activityRouter
 });
 
 export type AppRouter = typeof appRouter;

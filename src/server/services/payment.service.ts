@@ -32,11 +32,16 @@ export const findPaymentService = async (db: PrismaClient, input: { skip: number
   };
 };
 export const deletePaymentService = async (db: PrismaClient, input: { id: string }) => {
-  const payment = await db.payment.delete({
+  const deleted = await db.payment.delete({
     where: { id: input.id }
   });
 
-  return payment;
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };
 
 export const getOnePaymentService = async (db: PrismaClient, input: { id: string }) => {
@@ -67,12 +72,21 @@ export const getAllPaymentService = async (db: PrismaClient) => {
 export const upsertPaymentService = async (db: PrismaClient, input: PaymentInput) => {
   const { id, ...data } = input;
   try {
-    const payment = await db.payment.upsert({
-      where: { id: id || '' },
-      create: data,
-      update: data
+    const result = await db.$transaction(async tx => {
+      const oldData = id ? await tx.payment.findUnique({ where: { id } }) : null;
+      const newData = await tx.payment.upsert({
+        where: { id: id || '' },
+        create: data,
+        update: data
+      });
+      return { oldData, newData };
     });
-    return payment;
+    return {
+      metaData: {
+        before: result.oldData ?? {},
+        after: result.newData
+      }
+    };
   } catch {
     throw new TRPCError({
       code: 'CONFLICT',

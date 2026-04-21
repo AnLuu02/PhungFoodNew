@@ -79,7 +79,6 @@ export default function HeroSectionImages({
           <Text className='mb-4 text-xs font-bold uppercase tracking-widest text-[#3730a3]'>Xem nhanh</Text>
 
           <div className='flex flex-1 items-end justify-center gap-8 pb-2'>
-            {/* Cột Linked Assets */}
             <Tooltip
               label={`Đã liên kết: ${linked}`}
               withArrow
@@ -90,7 +89,6 @@ export default function HeroSectionImages({
                 className='group relative flex cursor-pointer flex-col items-center gap-2'
                 style={{ height: '100%', justifyContent: 'flex-end' }}
               >
-                {/* Thanh biểu đồ */}
                 <div
                   className='w-10 rounded-t-lg bg-[#6366f1] transition-all duration-500 group-hover:shadow-lg group-hover:brightness-110'
                   style={{ height: `${linkedHeight}%` }}
@@ -99,7 +97,6 @@ export default function HeroSectionImages({
               </div>
             </Tooltip>
 
-            {/* Cột Unused Assets */}
             <Tooltip
               label={`Chưa liên kết: ${unused}`}
               withArrow
@@ -110,7 +107,6 @@ export default function HeroSectionImages({
                 className='group relative flex cursor-pointer flex-col items-center gap-2'
                 style={{ height: '100%', justifyContent: 'flex-end' }}
               >
-                {/* Thanh biểu đồ */}
                 <div
                   className='w-10 rounded-t-lg bg-[#d1d5db] transition-all duration-500 group-hover:bg-[#9ca3af] group-hover:shadow-lg'
                   style={{ height: `${unusedHeight}%` }}

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import {
   deleteContactService,
   findContactService,
@@ -19,6 +19,7 @@ export const contactRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await findContactService(ctx.db, input)),
 
   delete: publicProcedure
+    .use(activityLogger)
     .input(
       z.object({
         id: z.string()
@@ -27,6 +28,7 @@ export const contactRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => await deleteContactService(ctx.db, input)),
   getAll: publicProcedure.query(async ({ ctx }) => await getAllContactService(ctx.db)),
   upsert: publicProcedure
+    .use(activityLogger)
     .input(baseContactSchema)
     .mutation(async ({ ctx, input }) => await upsertContactService(ctx.db, input))
 });

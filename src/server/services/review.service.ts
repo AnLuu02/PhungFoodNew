@@ -143,17 +143,17 @@ export const findReviewService = async (
 };
 export const deleteReviewService = async (db: PrismaClient, input: { id: string }) => {
   try {
-    const review = await db.review.delete({
+    const deleted = await db.review.delete({
       where: { id: input.id }
     });
     const starReview = await db.review.findMany({
-      where: { productId: review.productId }
+      where: { productId: deleted.productId }
     });
 
     const averageRating = starReview.reduce((acc, review) => acc + review.rating, 0) / starReview.length || 0;
 
     await db.product.update({
-      where: { id: review.productId },
+      where: { id: deleted.productId },
       data: {
         totalRating: {
           decrement: 1
@@ -161,7 +161,12 @@ export const deleteReviewService = async (db: PrismaClient, input: { id: string 
         rating: averageRating
       }
     });
-    return review;
+    return {
+      metaData: {
+        before: deleted ?? {},
+        after: {}
+      }
+    };
   } catch {
     throw new TRPCError({
       code: 'BAD_REQUEST',
@@ -224,10 +229,14 @@ export const getAllReviewService = async (db: PrismaClient) => {
 };
 export const upsertReviewService = async (db: PrismaClient, input: ReviewInput) => {
   const { id, ...data } = input;
-  const review = await db.review.upsert({
-    where: { id: id || '' },
-    create: data,
-    update: data
+  const result = await db.$transaction(async tx => {
+    const oldData = id ? await tx.review.findUnique({ where: { id } }) : null;
+    const newData = await db.review.upsert({
+      where: { id: id || '' },
+      create: data,
+      update: data
+    });
+    return { oldData, newData };
   });
 
   const starReview = await db.review.findMany({
@@ -244,5 +253,10 @@ export const upsertReviewService = async (db: PrismaClient, input: ReviewInput) 
     }
   });
 
-  return review;
+  return {
+    metaData: {
+      before: result.oldData ?? {},
+      after: result.newData ?? {}
+    }
+  };
 };

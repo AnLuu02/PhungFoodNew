@@ -23,35 +23,38 @@ export const upsertSocialService = async (db: PrismaClient, input: SocialWithRes
     });
   }
 
-  const [, , updated] = await Promise.all([
-    delCache('getOneActive'),
-    delCache('get-one-active-client'),
-    db.social.upsert({
-      where: { id: id || 'default_id_socials' },
-      create: {
-        ...data,
-        restaurant: restaurantId
-          ? {
-              connect: {
-                id: restaurantId
-              }
+  const upserted = await db.social.upsert({
+    where: { id: id || 'default_id_socials' },
+    create: {
+      ...data,
+      restaurant: restaurantId
+        ? {
+            connect: {
+              id: restaurantId
             }
-          : undefined
-      },
-      update: {
-        ...data,
-        restaurant: restaurantId
-          ? {
-              connect: {
-                id: restaurantId
-              }
+          }
+        : undefined
+    },
+    update: {
+      ...data,
+      restaurant: restaurantId
+        ? {
+            connect: {
+              id: restaurantId
             }
-          : undefined
-      }
-    })
-  ]);
+          }
+        : undefined
+    }
+  });
 
-  return updated;
+  await Promise.all([delCache('getOneActive'), delCache('get-one-active-client')]);
+
+  return {
+    metaData: {
+      before: oldSocial ?? {},
+      after: upserted ?? {}
+    }
+  };
 };
 export const deleteSocialService = async (db: PrismaClient, input: { id: string; platform: string }) => {
   if (['messenger', 'zalo', 'phone', 'email'].includes(input.platform)) {
@@ -60,13 +63,14 @@ export const deleteSocialService = async (db: PrismaClient, input: { id: string;
       message: 'Đây là liên kết tiêu chuẩn. Không thể xóa liên kết xã hội này.'
     });
   }
-  const [deleted] = await Promise.all([
-    await db.social.delete({
-      where: { id: input.id }
-    }),
-    delCache('getOneActive'),
-    delCache('get-one-active-client')
-  ]);
-
-  return deleted;
+  const deleted = await db.social.delete({
+    where: { id: input.id }
+  });
+  await Promise.all([delCache('getOneActive'), delCache('get-one-active-client')]);
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };

@@ -57,7 +57,7 @@ const Header3 = ({ categories, subCategories }: any) => {
             <Menu.Target>
               <Button
                 className='bg-subColor text-black duration-200 hover:bg-mainColor hover:text-white'
-                radius={'sm'}
+                radius={'xl'}
                 size='sm'
                 px={0}
                 mx={0}

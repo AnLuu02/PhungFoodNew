@@ -1,5 +1,5 @@
 'use client';
-import { Badge, Box, Button, Center, Drawer, Flex, Text } from '@mantine/core';
+import { Badge, Box, Button, Center, Divider, Drawer, Flex, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown } from '@tabler/icons-react';
 import Image from 'next/image';
@@ -8,17 +8,10 @@ import { usePathname } from 'next/navigation';
 import { memo } from 'react';
 import Logo from '~/components/Logo';
 import UserSection from '~/components/UserSection';
+import { navigationClientItem } from '~/lib/ConfigUI';
 import CartButton from './CartButton';
 import PromotionButton from './PromotionButton';
 
-const navigationItem = [
-  { label: 'Trang chủ', href: '/' },
-  { label: 'Thực đơn', href: '/thuc-don' },
-  { label: 'Về PhungFood', href: '/gioi-thieu' },
-  { label: 'Liên Hệ', href: '/lien-he' },
-  { label: 'Tin tức', href: '/tin-tuc' },
-  { label: 'Mua nhanh', href: '/goi-mon-nhanh' }
-];
 function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: () => void }) {
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1025px)');
@@ -32,7 +25,12 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
         close?.();
       }}
       size={'xs'}
+      zIndex={10001}
       pos={'relative'}
+      classNames={{
+        close:
+          'absolute right-[10px] top-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-full bg-mainColor text-white'
+      }}
     >
       <Drawer.Overlay />
       <Drawer.Content>
@@ -40,19 +38,20 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
           <Drawer.Title>
             <Link href={'/'}>
               <Center w={'100%'} flex={1}>
-                <Logo width={200} />
+                <Logo width={100} height={50} />
               </Center>
             </Link>
           </Drawer.Title>
           <Drawer.CloseButton />
         </Drawer.Header>
+        <Divider size={1} w={'100%'} pb={'md'} />
         <Drawer.Body pb={0}>
           <Box mb={20}>
             <UserSection width={'100%'} />
           </Box>
 
           <Flex gap={'md'} align={'center'} direction={{ base: 'column', md: 'row' }} mb={20}>
-            {navigationItem.map((item, index) => (
+            {navigationClientItem.map((item, index) => (
               <Link
                 key={index}
                 onClick={() => {

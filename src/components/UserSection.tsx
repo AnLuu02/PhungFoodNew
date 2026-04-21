@@ -68,6 +68,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
       transitionProps={{ transition: 'fade-down' }}
       offset={0}
       withinPortal
+      zIndex={10002}
     >
       <Menu.Target>
         <UnstyledButton

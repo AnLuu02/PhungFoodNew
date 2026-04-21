@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { Session } from 'next-auth';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { CategoryInput } from '~/shared/schema/category.schema';
 
@@ -67,7 +68,7 @@ export const findCategoryService = async (db: PrismaClient, input: { skip: numbe
   };
 };
 
-export const deleteCategoryService = async (db: PrismaClient, input: { id: string }) => {
+export const deleteCategoryService = async (db: PrismaClient, input: { id: string }, session: Session | null) => {
   const category = await db.category.delete({
     where: { id: input.id }
   });
@@ -78,9 +79,15 @@ export const deleteCategoryService = async (db: PrismaClient, input: { id: strin
       message: 'Đã có lỗi xảy ra. Hãy thử lại sau.'
     });
   }
-  await ManageTagVi('delete', { oldTag: category.tag });
 
-  return category;
+  ManageTagVi('delete', { oldTag: category.tag });
+
+  return {
+    metaData: {
+      before: category ?? {},
+      after: {}
+    }
+  };
 };
 
 export const getFilterCategoryService = async (db: PrismaClient, input: { s?: string }) => {
@@ -145,12 +152,17 @@ export const upsertCategoryService = async (db: PrismaClient, input: CategoryInp
     update: data
   });
 
-  await ManageTagVi('upsert', {
+  ManageTagVi('upsert', {
     oldTag: existed?.tag,
     newTag: upserted.tag,
     newName: upserted.name
   });
-  return upserted;
+  return {
+    metaData: {
+      before: existed ?? {},
+      after: upserted
+    }
+  };
 };
 
 export const createManyCategoryService = async (db: PrismaClient, input: { data: CategoryInput[] }) => {

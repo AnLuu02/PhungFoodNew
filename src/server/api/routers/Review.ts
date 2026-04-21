@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deleteReviewService,
   findReviewService,
@@ -24,6 +24,7 @@ export const reviewRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => await findReviewService(ctx.db, input)),
 
   delete: publicProcedure
+    .use(activityLogger)
     .use(requirePermission('delete:review'))
     .input(
       z.object({
@@ -51,6 +52,7 @@ export const reviewRouter = createTRPCRouter({
   upsert: publicProcedure
     .use(requirePermission('update:review'))
     .use(requirePermission('create:review'))
+    .use(activityLogger)
     .input(baseReviewSchema)
     .mutation(async ({ ctx, input }) => await upsertReviewService(ctx.db, input))
 });

@@ -160,64 +160,29 @@ export const findOrderService = async (
 
 export const upsertOrderService = async (db: PrismaClient, input: OrderInput) => {
   const { id, userId, paymentId, voucherIds, orderItems, delivery, ...data } = input;
-  const order = await db.order.upsert({
-    where: { id: id || 'new-item-' + Math.random() },
-    create: {
-      ...data,
-      user: {
-        connect: {
-          id: userId ?? ''
-        }
-      },
-      vouchers: {
-        connect: voucherIds.map(id => ({
-          id
-        }))
-      },
-      payment: paymentId ? { connect: { id: paymentId } } : undefined,
-      orderItems: {
-        createMany: {
-          data: orderItems.map(({ id, orderId, ...rest }) => ({ ...rest }))
-        }
-      },
-      delivery: {
-        create: {
-          ...delivery,
-          id: undefined,
-          address: {
-            create: delivery
-              ? {
-                  ...delivery.address,
-                  id: undefined,
-                  type: AddressType.DELIVERY
-                }
-              : undefined
-          }
-        }
-      }
-    },
-    update: {
-      ...data,
-      payment: paymentId ? { connect: { id: paymentId } } : undefined,
-      orderItems: {
-        deleteMany: {
-          id: {
-            notIn: orderItems?.map(({ id }: any) => id).filter(Boolean) || []
+  const result = await db.$transaction(async tx => {
+    const oldData = id ? await tx.order.findUnique({ where: { id }, include: { orderItems: true } }) : null;
+    const newData = await tx.order.upsert({
+      where: { id: id || 'new-item-' + Math.random() },
+      create: {
+        ...data,
+        user: {
+          connect: {
+            id: userId ?? ''
           }
         },
-        upsert: orderItems?.map(({ id, orderId, ...item }) => ({
-          where: {
-            id: id || 'new-item-' + Math.random() * 100
-          },
-          create: item,
-          update: item
-        }))
-      },
-      delivery: {
-        upsert: {
-          where: {
-            id: delivery?.id || ''
-          },
+        vouchers: {
+          connect: voucherIds.map(id => ({
+            id
+          }))
+        },
+        payment: paymentId ? { connect: { id: paymentId } } : undefined,
+        orderItems: {
+          createMany: {
+            data: orderItems.map(({ id, orderId, ...rest }) => ({ ...rest }))
+          }
+        },
+        delivery: {
           create: {
             ...delivery,
             id: undefined,
@@ -230,52 +195,97 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
                   }
                 : undefined
             }
+          }
+        }
+      },
+      update: {
+        ...data,
+        payment: paymentId ? { connect: { id: paymentId } } : undefined,
+        orderItems: {
+          deleteMany: {
+            id: {
+              notIn: orderItems?.map(({ id }: any) => id).filter(Boolean) || []
+            }
           },
-          update: {
-            ...delivery,
-            address: {
-              upsert: {
-                where: {
-                  id: delivery?.address?.id || ''
-                },
-                create: {
-                  ...delivery?.address,
-                  type: AddressType.DELIVERY,
-                  id: undefined
-                },
-                update: {
-                  ...delivery?.address,
-                  type: AddressType.DELIVERY,
-                  id: delivery?.address?.id || ''
+          upsert: orderItems?.map(({ id, orderId, ...item }) => ({
+            where: {
+              id: id || 'new-item-' + Math.random() * 100
+            },
+            create: item,
+            update: item
+          }))
+        },
+        delivery: {
+          upsert: {
+            where: {
+              id: delivery?.id || ''
+            },
+            create: {
+              ...delivery,
+              id: undefined,
+              address: {
+                create: delivery
+                  ? {
+                      ...delivery.address,
+                      id: undefined,
+                      type: AddressType.DELIVERY
+                    }
+                  : undefined
+              }
+            },
+            update: {
+              ...delivery,
+              address: {
+                upsert: {
+                  where: {
+                    id: delivery?.address?.id || ''
+                  },
+                  create: {
+                    ...delivery?.address,
+                    type: AddressType.DELIVERY,
+                    id: undefined
+                  },
+                  update: {
+                    ...delivery?.address,
+                    type: AddressType.DELIVERY,
+                    id: delivery?.address?.id || ''
+                  }
                 }
               }
             }
           }
         }
+      },
+      include: {
+        orderItems: true
       }
-    },
-    include: {
-      orderItems: true
-    }
+    });
+    return { oldData, newData };
   });
-  if (!order) {
+  if (result?.oldData && result?.oldData?.id != result.newData?.id) {
+    db.order.deleteMany({ where: { id: result.newData?.id } });
     throw new TRPCError({
       code: 'NOT_FOUND',
-      message: 'Rất tiêc đơn hàng không tồn tại.'
+      message: 'Rất tiêc đơn hàng không hợp lệ.'
     });
   }
 
   //test admin
-  if (order && order.status === OrderStatus.COMPLETED) {
+  if (result.newData && result.newData.status === OrderStatus.COMPLETED) {
     updatepointUser(db, input.userId, Number(input.finalTotal) || 0);
-    updateRevenue(db, order.status, input.userId, order);
+    updateRevenue(db, result.newData.status, input.userId, result.newData);
     await Promise.all(
-      order?.orderItems?.map((orderItem: any) => {
-        return updateSales(db, order.status, orderItem.productId, orderItem?.quantity);
+      result.newData?.orderItems?.map((orderItem: any) => {
+        return updateSales(db, result.newData.status, orderItem.productId, orderItem?.quantity);
       })
     );
   }
-  return order;
+  return {
+    metaData: {
+      before: result.oldData ?? {},
+      after: result.newData
+    }
+  };
 };
 export const updateOrderService = async (
   db: PrismaClient,
@@ -304,22 +314,27 @@ export const updateOrderService = async (
   return order;
 };
 export const deleteOrderService = async (db: PrismaClient, input: { id: string }) => {
-  const order = await db.order.update({
+  const deleted = await db.order.update({
     where: { id: input.id },
     data: {
       status: OrderStatus.CANCELLED
     }
   });
-  const invoice = await db.invoice.update({
+  await db.invoice.update({
     where: {
-      orderId: order.id
+      orderId: deleted.id
     },
     data: {
       status: InvoiceStatus.CANCELLED
     }
   });
 
-  return order;
+  return {
+    metaData: {
+      before: deleted ?? {},
+      after: {}
+    }
+  };
 };
 
 export const getFilterOrderService = async (db: PrismaClient, input: { s: string; period?: number }) => {

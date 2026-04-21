@@ -203,7 +203,12 @@ export const deleteProductService = async (db: PrismaClient, input: { id: string
       imageForEntities: { include: { image: true } }
     }
   });
-  return productDeleted;
+  return {
+    metaData: {
+      before: productDeleted ?? {},
+      after: {}
+    }
+  };
 };
 export const getFilterProductService = async (db: PrismaClient, input: ServiceOptions) => {
   const { s, hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
@@ -340,14 +345,14 @@ export const getAllProductService = async (db: PrismaClient, input: ServiceOptio
 
 export const upsertProductToCloudinaryService = async (db: PrismaClient, input1: ProductFromDb) => {
   const { id, subCategoryId, imageForEntities, ...data } = input1;
-  const existingProduct = id
+  const existed = id
     ? await db.product.findUnique({
         where: { id },
         include: { imageForEntities: { include: { image: true } } }
       })
     : null;
 
-  if (!id || (existingProduct && existingProduct.tag !== data.tag)) {
+  if (!id || (existed && existed.tag !== data.tag)) {
     const duplicateProduct = await db.product.findUnique({
       where: { tag_subCategoryId: { tag: data.tag, subCategoryId } }
     });
@@ -360,7 +365,7 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
   const inputImageForEntities = [...(imageForEntities || [])];
   const newImages = inputImageForEntities.filter(i => i?.status === StatusImage.NEW) || [];
   const deleteImages = inputImageForEntities.filter(i => i?.status === StatusImage.DELETED) || [];
-  const updatedProduct = await db.product.upsert({
+  const upserted = await db.product.upsert({
     where: {
       id: id || ''
     },
@@ -457,12 +462,17 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
     include: { imageForEntities: { include: { image: true } } }
   });
 
-  if (updatedProduct?.tag) {
+  if (upserted?.tag) {
     ManageTagVi('upsert', {
-      oldTag: existingProduct?.tag,
-      newTag: updatedProduct.tag,
-      newName: updatedProduct.name
+      oldTag: existed?.tag,
+      newTag: upserted.tag,
+      newName: upserted.name
     });
   }
-  return updatedProduct;
+  return {
+    metaData: {
+      before: existed ?? {},
+      after: upserted ?? {}
+    }
+  };
 };

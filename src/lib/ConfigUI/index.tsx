@@ -4,9 +4,14 @@ import {
   IconCheese,
   IconCreditCardPay,
   IconDatabaseDollar,
+  IconDevicesQuestion,
+  IconHomeFilled,
   IconLayoutDashboard,
   IconLock,
+  IconMenu,
   IconMenuOrder,
+  IconNews,
+  IconPhone,
   IconReport,
   IconSettings,
   IconShoppingBag,
@@ -77,4 +82,13 @@ export const menuUserInfo = [
     icon: IconShoppingBag
   },
   { label: 'Đổi mật khẩu', des: 'Đổi mật khẩu người dùng', href: '/password/change-password', icon: IconLock }
+];
+
+export const navigationClientItem = [
+  { label: 'Trang chủ', href: '/', icon: IconHomeFilled, order: 1 },
+  { label: 'Thực đơn', href: '/thuc-don', icon: IconMenu, order: 2 },
+  { label: 'Về PhungFood', href: '/gioi-thieu', icon: IconDevicesQuestion, order: 3 },
+  { label: 'Liên Hệ', href: '/lien-he', icon: IconPhone, order: 4 },
+  { label: 'Tin tức', href: '/tin-tuc', icon: IconNews, order: 6 },
+  { label: 'Mua nhanh', href: '/goi-mon-nhanh', icon: IconShoppingBag, order: 5 }
 ];
