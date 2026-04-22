@@ -20,23 +20,13 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <HydrateClient>
       <>
-        <Box className='w-full pb-[70px] sm:p-0'>
-          <>
-            <HeaderClient />
-            <HeaderWeb />
-          </>
-          {/* <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>
+        <HeaderClient />
+        <HeaderWeb />
+        <Box className='relative w-full overflow-x-hidden pb-[70px] sm:pb-0'>
+          <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>
             {children}
-          </Box> */}
-          <Box className='w-[100vw] overflow-x-hidden'>
-            <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>
-              {children}
-            </Box>
-            {/* <Container px={{ base: 10, lg: 30 }} size='xl'>
-              {children}
-            </Container> */}
           </Box>
-          <Box pl={{ base: 20, lg: 130 }} pr={{ base: 20, lg: 130 }}>
+          <Box px={{ base: 20, lg: 130 }}>
             <ServiceComponent />
           </Box>
           <FloatingWidget restaurant={restaurant} />
