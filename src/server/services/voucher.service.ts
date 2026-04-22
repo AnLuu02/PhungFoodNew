@@ -4,6 +4,7 @@ import { VoucherInput } from '~/shared/schema/voucher.schema';
 
 export const findVoucherService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
   const { skip, take, s } = input;
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const [totalVouchers, totalVouchersQuery, vouchers] = await db.$transaction([
     db.voucher.count(),
@@ -11,10 +12,10 @@ export const findVoucherService = async (db: PrismaClient, input: { skip: number
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           }
         ]
       }
@@ -25,17 +26,17 @@ export const findVoucherService = async (db: PrismaClient, input: { skip: number
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           }
         ]
       }
     })
   ]);
   const totalPages = Math.ceil(
-    s?.trim() ? (totalVouchersQuery == 0 ? 1 : totalVouchersQuery / take) : totalVouchers / take
+    searchQuery ? (totalVouchersQuery == 0 ? 1 : totalVouchersQuery / take) : totalVouchers / take
   );
   const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 

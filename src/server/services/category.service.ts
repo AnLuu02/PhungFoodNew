@@ -6,6 +6,7 @@ import { CategoryInput } from '~/shared/schema/category.schema';
 
 export const findCategoryService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
   const { skip, take, s } = input;
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const [totalCategories, totalCategoriesQuery, categories] = await db.$transaction([
     db.category.count(),
@@ -13,13 +14,13 @@ export const findCategoryService = async (db: PrismaClient, input: { skip: numbe
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           }
         ]
       }
@@ -30,13 +31,13 @@ export const findCategoryService = async (db: PrismaClient, input: { skip: numbe
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           }
         ]
       },

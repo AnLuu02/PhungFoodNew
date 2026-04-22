@@ -6,6 +6,7 @@ import { SubCategoryInput } from '~/shared/schema/subCategory.schema';
 
 export const findSubCategoryService = async (db: PrismaClient, input: any) => {
   const { skip, take, s } = input;
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const [totalSubCategory, totalSubCategoryQuery, subCategories] = await db.$transaction([
     db.subCategory.count(),
@@ -13,20 +14,20 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           },
           {
             category: {
               OR: [
-                { tag: { contains: s?.trim(), mode: 'insensitive' } },
+                { tag: { contains: searchQuery, mode: 'insensitive' } },
                 {
-                  name: { contains: s?.trim(), mode: 'insensitive' }
+                  name: { contains: searchQuery, mode: 'insensitive' }
                 }
               ]
             }
@@ -40,20 +41,20 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           },
           {
             category: {
               OR: [
-                { tag: { contains: s?.trim(), mode: 'insensitive' } },
+                { tag: { contains: searchQuery, mode: 'insensitive' } },
                 {
-                  name: { contains: s?.trim(), mode: 'insensitive' }
+                  name: { contains: searchQuery, mode: 'insensitive' }
                 }
               ]
             }
@@ -89,7 +90,7 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
     })
   ]);
   const totalPages = Math.ceil(
-    s?.trim() ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / take) : totalSubCategory / take
+    searchQuery ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / take) : totalSubCategory / take
   );
   const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 

@@ -4,7 +4,7 @@ import { RoleInput } from '~/shared/schema/role.schema';
 
 export const findRoleService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
   const { skip, take, s } = input;
-
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
   const [totalRoles, totalRolesQuery, roles] = await db.$transaction([
@@ -12,17 +12,17 @@ export const findRoleService = async (db: PrismaClient, input: { skip: number; t
     db.role.count({
       where: {
         OR: [
-          { name: { contains: s?.trim(), mode: 'insensitive' } },
-          { id: { contains: s?.trim(), mode: 'insensitive' } },
-          { viName: { contains: s?.trim(), mode: 'insensitive' } },
+          { name: { contains: searchQuery, mode: 'insensitive' } },
+          { id: { contains: searchQuery, mode: 'insensitive' } },
+          { viName: { contains: searchQuery, mode: 'insensitive' } },
           {
             permissions: {
               some: {
                 OR: [
-                  { id: { contains: s?.trim(), mode: 'insensitive' } },
-                  { name: { contains: s?.trim(), mode: 'insensitive' } },
-                  { viName: { contains: s?.trim(), mode: 'insensitive' } },
-                  { description: { contains: s?.trim(), mode: 'insensitive' } }
+                  { id: { contains: searchQuery, mode: 'insensitive' } },
+                  { name: { contains: searchQuery, mode: 'insensitive' } },
+                  { viName: { contains: searchQuery, mode: 'insensitive' } },
+                  { description: { contains: searchQuery, mode: 'insensitive' } }
                 ]
               }
             }
@@ -35,17 +35,17 @@ export const findRoleService = async (db: PrismaClient, input: { skip: number; t
       take,
       where: {
         OR: [
-          { name: { contains: s?.trim(), mode: 'insensitive' } },
-          { id: { contains: s?.trim(), mode: 'insensitive' } },
-          { viName: { contains: s?.trim(), mode: 'insensitive' } },
+          { name: { contains: searchQuery, mode: 'insensitive' } },
+          { id: { contains: searchQuery, mode: 'insensitive' } },
+          { viName: { contains: searchQuery, mode: 'insensitive' } },
           {
             permissions: {
               some: {
                 OR: [
-                  { id: { contains: s?.trim(), mode: 'insensitive' } },
-                  { name: { contains: s?.trim(), mode: 'insensitive' } },
-                  { viName: { contains: s?.trim(), mode: 'insensitive' } },
-                  { description: { contains: s?.trim(), mode: 'insensitive' } }
+                  { id: { contains: searchQuery, mode: 'insensitive' } },
+                  { name: { contains: searchQuery, mode: 'insensitive' } },
+                  { viName: { contains: searchQuery, mode: 'insensitive' } },
+                  { description: { contains: searchQuery, mode: 'insensitive' } }
                 ]
               }
             }
@@ -58,7 +58,7 @@ export const findRoleService = async (db: PrismaClient, input: { skip: number; t
     })
   ]);
 
-  const totalPages = Math.ceil(s?.trim() ? (totalRolesQuery === 0 ? 1 : totalRolesQuery / take) : totalRoles / take);
+  const totalPages = Math.ceil(searchQuery ? (totalRolesQuery === 0 ? 1 : totalRolesQuery / take) : totalRoles / take);
   const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {

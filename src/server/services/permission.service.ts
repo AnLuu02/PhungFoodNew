@@ -10,7 +10,7 @@ export const getOnePermissionService = async (db: PrismaClient, input: { id: str
 
 export const findPermissionService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
   const { skip, take, s } = input;
-
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
   const [totalPermissions, totalPermissionsQuery, permissions] = await db.$transaction([
@@ -18,10 +18,10 @@ export const findPermissionService = async (db: PrismaClient, input: { skip: num
     db.permission.count({
       where: {
         OR: [
-          { id: { contains: s?.trim(), mode: 'insensitive' } },
-          { name: { contains: s?.trim(), mode: 'insensitive' } },
-          { viName: { contains: s?.trim(), mode: 'insensitive' } },
-          { description: { contains: s?.trim(), mode: 'insensitive' } }
+          { id: { contains: searchQuery, mode: 'insensitive' } },
+          { name: { contains: searchQuery, mode: 'insensitive' } },
+          { viName: { contains: searchQuery, mode: 'insensitive' } },
+          { description: { contains: searchQuery, mode: 'insensitive' } }
         ]
       }
     }),
@@ -30,10 +30,10 @@ export const findPermissionService = async (db: PrismaClient, input: { skip: num
       take,
       where: {
         OR: [
-          { id: { contains: s?.trim(), mode: 'insensitive' } },
-          { name: { contains: s?.trim(), mode: 'insensitive' } },
-          { viName: { contains: s?.trim(), mode: 'insensitive' } },
-          { description: { contains: s?.trim(), mode: 'insensitive' } }
+          { id: { contains: searchQuery, mode: 'insensitive' } },
+          { name: { contains: searchQuery, mode: 'insensitive' } },
+          { viName: { contains: searchQuery, mode: 'insensitive' } },
+          { description: { contains: searchQuery, mode: 'insensitive' } }
         ]
       },
       include: {
@@ -49,7 +49,7 @@ export const findPermissionService = async (db: PrismaClient, input: { skip: num
   ]);
 
   const totalPages = Math.ceil(
-    s?.trim() ? (totalPermissionsQuery === 0 ? 1 : totalPermissionsQuery / take) : totalPermissions / take
+    searchQuery ? (totalPermissionsQuery === 0 ? 1 : totalPermissionsQuery / take) : totalPermissions / take
   );
   const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 

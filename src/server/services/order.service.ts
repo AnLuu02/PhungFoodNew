@@ -15,7 +15,7 @@ export const findOrderService = async (
   }
 ) => {
   const { skip, take, s, filter, sort } = input;
-
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const [totalOrders, totalOrdersQuery, orders] = await db.$transaction([
     db.order.count(),
@@ -27,7 +27,7 @@ export const findOrderService = async (
               OR: [
                 {
                   name: {
-                    contains: s?.trim(),
+                    contains: searchQuery,
                     mode: 'insensitive'
                   }
                 }
@@ -37,24 +37,24 @@ export const findOrderService = async (
           {
             user: {
               name: {
-                contains: s?.trim(),
+                contains: searchQuery,
                 mode: 'insensitive'
               }
             }
           },
           {
             originalTotal: {
-              equals: Number(s?.trim()) || 0
+              equals: Number(searchQuery) || 0
             }
           },
           {
             discountAmount: {
-              equals: Number(s?.trim()) || 0
+              equals: Number(searchQuery) || 0
             }
           },
           {
             finalTotal: {
-              equals: Number(s?.trim()) || 0
+              equals: Number(searchQuery) || 0
             }
           }
         ],
@@ -80,7 +80,7 @@ export const findOrderService = async (
               OR: [
                 {
                   name: {
-                    contains: s?.trim(),
+                    contains: searchQuery,
                     mode: 'insensitive'
                   }
                 }
@@ -90,24 +90,24 @@ export const findOrderService = async (
           {
             user: {
               name: {
-                contains: s?.trim(),
+                contains: searchQuery,
                 mode: 'insensitive'
               }
             }
           },
           {
             originalTotal: {
-              equals: Number(s?.trim()) || 0
+              equals: Number(searchQuery) || 0
             }
           },
           {
             discountAmount: {
-              equals: Number(s?.trim()) || 0
+              equals: Number(searchQuery) || 0
             }
           },
           {
             finalTotal: {
-              equals: Number(s?.trim()) || 0
+              equals: Number(searchQuery) || 0
             }
           }
         ],

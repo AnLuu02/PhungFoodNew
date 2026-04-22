@@ -56,7 +56,7 @@ export const searchGlobalService = async (
   }
 ) => {
   const { skip, take, s } = input;
-
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const [products, categories, subCategories, users] = await db.$transaction([
     db.product.findMany({
@@ -87,13 +87,13 @@ export const searchGlobalService = async (
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           }
         ]
       },
@@ -112,20 +112,20 @@ export const searchGlobalService = async (
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           },
           {
             category: {
               OR: [
-                { tag: { contains: s?.trim(), mode: 'insensitive' } },
+                { tag: { contains: searchQuery, mode: 'insensitive' } },
                 {
-                  name: { contains: s?.trim(), mode: 'insensitive' }
+                  name: { contains: searchQuery, mode: 'insensitive' }
                 }
               ]
             }

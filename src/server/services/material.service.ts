@@ -5,7 +5,7 @@ import { MaterialInput } from '~/shared/schema/material.schema';
 
 export const findMaterialService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
   const { skip, take, s } = input;
-
+  const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const [totalMaterials, totalMaterialsQuery, materials] = await db.$transaction([
     db.material.count(),
@@ -13,17 +13,17 @@ export const findMaterialService = async (db: PrismaClient, input: { skip: numbe
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           },
           {
             category: {
-              contains: s?.trim(),
+              contains: searchQuery,
               mode: 'insensitive'
             }
           }
@@ -36,17 +36,17 @@ export const findMaterialService = async (db: PrismaClient, input: { skip: numbe
       where: {
         OR: [
           {
-            name: { contains: s?.trim(), mode: 'insensitive' }
+            name: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            tag: { contains: s?.trim(), mode: 'insensitive' }
+            tag: { contains: searchQuery, mode: 'insensitive' }
           },
           {
-            description: { contains: s?.trim(), mode: 'insensitive' }
+            description: { contains: searchQuery, mode: 'insensitive' }
           },
           {
             category: {
-              contains: s?.trim(),
+              contains: searchQuery,
               mode: 'insensitive'
             }
           }

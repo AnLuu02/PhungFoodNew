@@ -8,6 +8,7 @@ export const findReviewService = async (
   input: { skip: number; take: number; s?: string; sort?: string[] }
 ) => {
   const { skip, take, s, sort } = input;
+  const searchQuery = s?.trim();
   const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const [totalReviews, totalReviewsQuery, reviews] = await db.$transaction([
@@ -34,14 +35,14 @@ export const findReviewService = async (
           : [
               {
                 comment: {
-                  contains: s?.trim(),
+                  contains: searchQuery,
                   mode: 'insensitive'
                 }
               },
               {
                 user: {
                   name: {
-                    contains: s?.trim(),
+                    contains: searchQuery,
                     mode: 'insensitive'
                   }
                 }
@@ -49,7 +50,7 @@ export const findReviewService = async (
               {
                 product: {
                   name: {
-                    contains: s?.trim(),
+                    contains: searchQuery,
                     mode: 'insensitive'
                   }
                 }
@@ -82,14 +83,14 @@ export const findReviewService = async (
           : [
               {
                 comment: {
-                  contains: s?.trim(),
+                  contains: searchQuery,
                   mode: 'insensitive'
                 }
               },
               {
                 user: {
                   name: {
-                    contains: s?.trim(),
+                    contains: searchQuery,
                     mode: 'insensitive'
                   }
                 }
@@ -97,7 +98,7 @@ export const findReviewService = async (
               {
                 product: {
                   name: {
-                    contains: s?.trim(),
+                    contains: searchQuery,
                     mode: 'insensitive'
                   }
                 }
