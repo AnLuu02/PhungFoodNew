@@ -1,7 +1,7 @@
 import { NotificationType } from '@prisma/client';
 import { z } from 'zod';
-import { notificationTemplateSchema } from '~/lib/ZodSchema/schema';
 import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { notificationTemplateSchema } from '~/shared/schema/notification.schema';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 
 export const notificationTemplateRouter = createTRPCRouter({

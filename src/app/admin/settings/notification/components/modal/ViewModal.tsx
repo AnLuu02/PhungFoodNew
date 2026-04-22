@@ -17,8 +17,8 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import BButton from '~/components/Button/Button';
+import { NotificationClient } from '~/shared/schema/notification.schema';
 import { notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
-import { NotificationClient } from '../../types';
 
 interface ViewModalProps {
   opened: boolean;

@@ -93,3 +93,22 @@ export const notificationPreferenceSchema = z.object({
     .default({ enabled: false, start: '22:00', end: '07:00' }),
   updatedAt: z.date().default(() => new Date())
 });
+
+//types
+export type Notification = z.infer<typeof notificationSchema>;
+
+export type NotificationRecipient = z.infer<typeof notificationRecipientSchema>;
+
+export type NotificationTemplate = z.infer<typeof notificationTemplateSchema>;
+
+export type NotificationPreference = z.infer<typeof notificationPreferenceSchema>;
+
+export type NotificationClient = Notification & {
+  recipients: NotificationRecipient[] &
+    Partial<{
+      user: {
+        id: string;
+        email: string;
+      };
+    }>;
+} & NotificationTemplate;

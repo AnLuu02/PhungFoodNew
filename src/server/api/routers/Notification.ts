@@ -2,8 +2,8 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { getOnlineUserIds } from '~/lib/PusherConfig/handler';
 import { pusherServer } from '~/lib/PusherConfig/server';
-import { notificationSchema } from '~/lib/ZodSchema/schema';
 import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { notificationSchema } from '~/shared/schema/notification.schema';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 export const notificationRouter = createTRPCRouter({
   create: publicProcedure

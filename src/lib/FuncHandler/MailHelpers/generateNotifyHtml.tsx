@@ -1,5 +1,5 @@
 import { notificationPriorityInfo } from '~/app/admin/settings/notification/helpers';
-import { Notification } from '~/app/admin/settings/notification/types';
+import { Notification } from '~/shared/schema/notification.schema';
 const colors = {
   SYSTEM: {
     primary: '#3b82f6',

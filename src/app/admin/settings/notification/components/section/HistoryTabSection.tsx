@@ -21,10 +21,10 @@ import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotificationClient } from '~/shared/schema/notification.schema';
 import { api } from '~/trpc/react';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
-import { NotificationClient } from '../../types';
 
 export const HistoryTabSection = ({
   notifications,

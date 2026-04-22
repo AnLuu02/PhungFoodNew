@@ -18,10 +18,9 @@ import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { generateNotifyHtml } from '~/lib/FuncHandler/MailHelpers/generateNotifyHtml';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { notificationSchema } from '~/lib/ZodSchema/schema';
+import { Notification, NotificationClient, notificationSchema } from '~/shared/schema/notification.schema';
 import { api } from '~/trpc/react';
 import { notificationTypeOptions } from '../../helpers';
-import { Notification, NotificationClient } from '../../types';
 
 interface NotificationModalProps {
   opened: boolean;

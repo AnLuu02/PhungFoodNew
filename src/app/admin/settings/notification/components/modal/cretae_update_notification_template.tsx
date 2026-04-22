@@ -5,10 +5,9 @@ import { useEffect, useMemo } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { notificationTemplateSchema } from '~/lib/ZodSchema/schema';
+import { NotificationTemplate, notificationTemplateSchema } from '~/shared/schema/notification.schema';
 import { api } from '~/trpc/react';
 import { notificationTypeOptions } from '../../helpers';
-import { NotificationTemplate } from '../../types';
 import { TemplateTextarea } from '../TemplateTextarea';
 
 interface Props {

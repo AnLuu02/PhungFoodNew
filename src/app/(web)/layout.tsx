@@ -1,4 +1,4 @@
-import { Box, Container } from '@mantine/core';
+import { Box } from '@mantine/core';
 import FloatingWidget from '~/components/FloatingWidget';
 import FooterWeb from '~/components/Web/Footer/FooterWeb';
 import { NavigationFixed } from '~/components/Web/Header/components/NavigationFIxed';
@@ -29,9 +29,12 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
             {children}
           </Box> */}
           <Box className='w-[100vw] overflow-x-hidden'>
-            <Container px={{ base: 10, lg: 0 }} size='xl'>
+            <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>
               {children}
-            </Container>
+            </Box>
+            {/* <Container px={{ base: 10, lg: 30 }} size='xl'>
+              {children}
+            </Container> */}
           </Box>
           <Box pl={{ base: 20, lg: 130 }} pr={{ base: 20, lg: 130 }}>
             <ServiceComponent />

@@ -8,7 +8,7 @@ import {
   IconEye,
   IconInfoCircle
 } from '@tabler/icons-react';
-import { NotificationClient } from '../types';
+import { NotificationClient } from '~/shared/schema/notification.schema';
 
 export const getTypeIcon = (type: string) => {
   switch (type) {

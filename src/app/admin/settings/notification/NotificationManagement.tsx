@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import { NotificationClient } from '~/shared/schema/notification.schema';
 import { api } from '~/trpc/react';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { NotificationModal } from './components/modal/cretae_update_notification';
@@ -14,7 +15,6 @@ import { HistoryTabSection } from './components/section/HistoryTabSection';
 import { SendTabSection } from './components/section/SendTabSection';
 import { SettingsTabSection } from './components/section/SettingsTabSection';
 import { TemplatesTabSection } from './components/section/TemplatesTabSection';
-import { NotificationClient } from './types';
 export interface SendNotificationStateProps {
   open: boolean;
   typeAction: 'create' | 'update' | 'template';
