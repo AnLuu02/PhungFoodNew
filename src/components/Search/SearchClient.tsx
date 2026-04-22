@@ -253,11 +253,13 @@ export default function SearchComponentClient({ subCategories }: any) {
                       </Text>
                       <Button
                         variant='transparent'
-                        color='blue'
                         style={{ height: 'auto' }}
                         p={0}
                         m={0}
                         w={'max-content'}
+                        classNames={{
+                          root: 'text-mainColor'
+                        }}
                         onClick={() => setHistorySearch([])}
                       >
                         Xóa tất cả
@@ -271,6 +273,9 @@ export default function SearchComponentClient({ subCategories }: any) {
                             leftSection={<IconClock size={16} />}
                             onClick={() => {
                               router.push(`/thuc-don?s=${encodeURIComponent(item)}`, { scroll: false });
+                            }}
+                            classNames={{
+                              root: 'text-mainColor'
                             }}
                             styles={{
                               root: {
@@ -288,6 +293,9 @@ export default function SearchComponentClient({ subCategories }: any) {
                           <ActionIcon
                             variant='transparent'
                             size='sm'
+                            classNames={{
+                              icon: 'text-mainColor'
+                            }}
                             onClick={() => {
                               setHistorySearch((prev: string[]) => prev.filter((_, i) => index !== i));
                             }}
@@ -374,7 +382,13 @@ export default function SearchComponentClient({ subCategories }: any) {
                               align={'center'}
                               className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
                             >
-                              <Flex key={product.id} p='md' gap='md' align={'flex-start'} w={'70%'}>
+                              <Flex
+                                key={product.id}
+                                p='md'
+                                gap='md'
+                                align={'flex-start'}
+                                w={{ base: '100%', sm: '70%' }}
+                              >
                                 <Card
                                   radius={'lg'}
                                   withBorder
@@ -390,8 +404,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                                       '/images/png/momo.png'
                                     }
                                     alt={product.name}
-                                    width={60}
-                                    height={60}
+                                    fill
                                     className='rounded-md object-cover'
                                   />
                                 </Card>
@@ -422,7 +435,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                                   )}
                                 </Box>
                               </Flex>
-                              <Stack gap={5}>
+                              <Stack gap={5} className='hidden sm:block'>
                                 <Text size='xs' className='text-mainColor'>
                                   Danh mục: <b>{product.subCategory?.name || 'Đang cập nhật'}</b>
                                 </Text>

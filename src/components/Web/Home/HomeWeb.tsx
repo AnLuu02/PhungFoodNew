@@ -30,8 +30,13 @@ const HomeWeb = ({
 }) => {
   return (
     <>
-      {data.banner?.id && <BannerSection banner={data.banner} />}
-      <Space h='xl' />
+      {data.banner?.id && (
+        <>
+          <BannerSection banner={data.banner} />
+          <Space h='xl' />
+        </>
+      )}
+
       <Reveal z={50}>
         <ReusablePromoBanner
           title='🎉 Ưu đãi đặc biệt 🎉'

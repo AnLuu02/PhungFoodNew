@@ -1,7 +1,7 @@
 'use client';
-import { Box, Burger, Button, Flex, Menu, ScrollAreaAutosize, Text } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Menu, ScrollAreaAutosize, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconCategory, IconChevronCompactDown } from '@tabler/icons-react';
+import { IconCategory, IconChevronCompactDown, IconMenu3 } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -25,7 +25,19 @@ const Header3 = ({ categories, subCategories }: any) => {
       className='sticky top-0 z-[100] bg-white text-black dark:bg-dark-background dark:text-dark-text'
       direction={{ base: 'row', md: 'row' }}
     >
-      <Burger opened={opened} onClick={toggle} aria-label='Toggle navigation' className='md:hidden' />
+      {/* <Burger  opened={opened} onClick={toggle} aria-label='Toggle navigation' className='md:hidden' /> */}
+      <ActionIcon
+        variant='default'
+        size='xl'
+        radius={'md'}
+        onClick={toggle}
+        className='border border-gray-100 bg-gray-50 shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] transition-all hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1)] active:translate-y-0.5 active:shadow-inner md:hidden'
+        classNames={{
+          icon: 'text-mainColor'
+        }}
+      >
+        <IconMenu3 size={32} />
+      </ActionIcon>
       <Flex gap={{ base: 'md', lg: 0, xl: 'md' }} direction={{ base: 'row-reverse', xl: 'row' }} align={'center'}>
         <Box className='hidden sm:order-3 sm:block md:hidden'>
           <Link href={'/goi-mon-nhanh'}>

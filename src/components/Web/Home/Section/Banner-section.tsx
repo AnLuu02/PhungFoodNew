@@ -104,7 +104,7 @@ export default function BannerSection({ banner }: any) {
       </Flex>
 
       <Box mt='md'>
-        <SimpleGrid cols={{ base: 2, sm: 3, md: 6 }} spacing='md'>
+        <SimpleGrid cols={{ base: 3, sm: 3, md: 6 }} spacing={{ base: 'xs', sm: 'md' }}>
           {[
             { icon: '🍽️', title: 'Gọi món', href: '/thuc-don' },
             { icon: '👨‍🍳', title: 'Tư vấn' },
@@ -123,13 +123,12 @@ export default function BannerSection({ banner }: any) {
                 key={index}
                 className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-dark-text'
                 radius={'md'}
-                p={'sm'}
                 h={'100%'}
                 shadow='xs'
               >
                 <Flex align={'center'} gap={'xs'}>
-                  <Text size='2rem'>{service.icon}</Text>
-                  <Text fw={700} className='text-gray-800 dark:text-gray-500' size='md'>
+                  <Text className='text-[1rem] sm:text-[2rem]'>{service.icon}</Text>
+                  <Text fw={700} className='text-[8px] text-gray-800 dark:text-gray-500 sm:text-base'>
                     {service.title}
                   </Text>
                 </Flex>
