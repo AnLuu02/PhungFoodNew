@@ -1,4 +1,4 @@
-import { Container, Space } from '@mantine/core';
+import { Space } from '@mantine/core';
 import Reveal from '~/components/Reveal';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { recipes } from '~/lib/HardData/recipe';
@@ -53,127 +53,126 @@ const HomeWeb = ({
         />
       </Reveal>
       <Space h='xl' />
-      <Container pl={0} pr={0} size='xl'>
-        {data.category?.anVat && (
-          <Reveal z={50}>
-            <CategoryCarouselHorizontal data={data.category} />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
-        {data.productBestSaler?.products?.length > 0 && (
-          <Reveal z={50}>
-            <LayoutProductCarouselWithImage
-              imageUrl='/images/jpg/best-saller.jpg'
-              data={data.productBestSaler?.products}
-              loai='san-pham-ban-chay'
-            />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
+      {data.category?.anVat && (
         <Reveal z={50}>
-          <LayoutGrid3Col />
+          <CategoryCarouselHorizontal data={data.category} />
           <Space h='xl' />
         </Reveal>
+      )}
 
-        {data.productDiscount?.products?.length > 0 && (
-          <Reveal z={50}>
-            <LayoutPromotion data={data.productDiscount?.products} />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
-        {data.productHot?.products?.length > 0 && (
-          <Reveal z={50}>
-            <LayoutProductCarouselWithImage
-              imageUrl='/images/jpg/hot.jpg'
-              data={data.productHot?.products}
-              reverseGrid={true}
-              title='Sản phẩm nổi bật trong cửa hàng'
-              content='Ưu đãi độc quyền - Giảm giá cho hóa đơn trên 100.000 VNĐ'
-              loai='san-pham-hot'
-            />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
-        {data.productHot?.products?.length > 0 && (
-          <Reveal z={50}>
-            <LayoutGridCarouselOnly
-              title='Sản phẩm nổi bật'
-              data={data.productHot?.products}
-              navigation={{
-                href: '/thuc-don?loai=san-pham-hot',
-                label: 'Xem tất cả'
-              }}
-              CardElement={ProductCardCarouselVertical}
-            />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
-        {data.productNew?.products?.length > 0 && (
-          <Reveal z={50}>
-            <LayoutGridCarouselOnly
-              title='Sản phẩm mới'
-              data={data.productNew?.products}
-              navigation={{
-                href: '/thuc-don?loai=san-pham-moi',
-                label: 'Xem tất cả'
-              }}
-              CardElement={ProductCardCarouselVertical}
-            />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
-        {data.materials?.rauCu?.products?.length > 0 && (
-          <Reveal z={50}>
-            <LayoutProductCarouselWithImage2
-              data={{ 'rau-cu': data.materials.rauCu, 'cac-loai-nam': data.materials.cacLoaiNam }}
-              title='Thanh đạm'
-              navbar={[
-                { label: 'Rau củ', key: 'rau-cu', url: 'rau-cu' },
-                { label: 'Các loại nấm', key: 'cac-loai-nam', url: 'cac-loai-nam' }
-              ]}
-            />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
-        {data.materials?.thitTuoi?.products?.length > 0 && (
-          <Reveal z={50}>
-            <LayoutProductCarouselWithImage2
-              data={{ 'hai-san': data.materials.haiSan, 'thit-tuoi': data.materials.thitTuoi }}
-              title='Tươi ngon'
-              imgaePositon={'right'}
-              navbar={[
-                { label: 'Thịt tươi', key: 'thit-tuoi', url: 'thit-tuoi' },
-                { label: 'Hải sản', key: 'hai-san', url: 'hai-san' }
-              ]}
-            />
-            <Space h='xl' />
-          </Reveal>
-        )}
-
+      {data.productBestSaler?.products?.length > 0 && (
         <Reveal z={50}>
-          <LayoutGridCarouselOnly
-            title='Video hướng dẫn'
-            data={recipes}
-            configs={{
-              slideSize: { base: '100%', sm: '50%', md: '25%' },
-              h: 'max-content'
-            }}
-            navigation={{
-              href: '/',
-              label: 'Xem tất cả'
-            }}
-            CardElement={RecipeCard}
+          <LayoutProductCarouselWithImage
+            imageUrl='/images/jpg/best-saller.jpg'
+            data={data.productBestSaler?.products}
+            loai='san-pham-ban-chay'
           />
           <Space h='xl' />
         </Reveal>
-        {/* <>
+      )}
+
+      <Reveal z={50}>
+        <LayoutGrid3Col />
+        <Space h='xl' />
+      </Reveal>
+
+      {data.productDiscount?.products?.length > 0 && (
+        <Reveal z={50}>
+          <LayoutPromotion data={data.productDiscount?.products} />
+          <Space h='xl' />
+        </Reveal>
+      )}
+
+      {data.productHot?.products?.length > 0 && (
+        <Reveal z={50}>
+          <LayoutProductCarouselWithImage
+            imageUrl='/images/jpg/hot.jpg'
+            data={data.productHot?.products}
+            reverseGrid={true}
+            title='Sản phẩm nổi bật trong cửa hàng'
+            content='Ưu đãi độc quyền - Giảm giá cho hóa đơn trên 100.000 VNĐ'
+            loai='san-pham-hot'
+          />
+          <Space h='xl' />
+        </Reveal>
+      )}
+
+      {data.productHot?.products?.length > 0 && (
+        <Reveal z={50}>
+          <LayoutGridCarouselOnly
+            title='Sản phẩm nổi bật'
+            data={data.productHot?.products}
+            navigation={{
+              href: '/thuc-don?loai=san-pham-hot',
+              label: 'Xem tất cả'
+            }}
+            CardElement={ProductCardCarouselVertical}
+          />
+          <Space h='xl' />
+        </Reveal>
+      )}
+
+      {data.productNew?.products?.length > 0 && (
+        <Reveal z={50}>
+          <LayoutGridCarouselOnly
+            title='Sản phẩm mới'
+            data={data.productNew?.products}
+            navigation={{
+              href: '/thuc-don?loai=san-pham-moi',
+              label: 'Xem tất cả'
+            }}
+            CardElement={ProductCardCarouselVertical}
+          />
+          <Space h='xl' />
+        </Reveal>
+      )}
+
+      {data.materials?.rauCu?.products?.length > 0 && (
+        <Reveal z={50}>
+          <LayoutProductCarouselWithImage2
+            data={{ 'rau-cu': data.materials.rauCu, 'cac-loai-nam': data.materials.cacLoaiNam }}
+            title='Thanh đạm'
+            navbar={[
+              { label: 'Rau củ', key: 'rau-cu', url: 'rau-cu' },
+              { label: 'Các loại nấm', key: 'cac-loai-nam', url: 'cac-loai-nam' }
+            ]}
+          />
+          <Space h='xl' />
+        </Reveal>
+      )}
+
+      {data.materials?.thitTuoi?.products?.length > 0 && (
+        <Reveal z={50}>
+          <LayoutProductCarouselWithImage2
+            data={{ 'hai-san': data.materials.haiSan, 'thit-tuoi': data.materials.thitTuoi }}
+            title='Tươi ngon'
+            imgaePositon={'right'}
+            navbar={[
+              { label: 'Thịt tươi', key: 'thit-tuoi', url: 'thit-tuoi' },
+              { label: 'Hải sản', key: 'hai-san', url: 'hai-san' }
+            ]}
+          />
+          <Space h='xl' />
+        </Reveal>
+      )}
+
+      <Reveal z={50}>
+        <LayoutGridCarouselOnly
+          title='Video hướng dẫn'
+          data={recipes}
+          configs={{
+            slideSize: { base: '100%', sm: '50%', md: '25%' },
+            h: 'max-content'
+          }}
+          navigation={{
+            href: '/',
+            label: 'Xem tất cả'
+          }}
+          CardElement={RecipeCard}
+        />
+        <Space h='xl' />
+      </Reveal>
+      {/* <>
           <LayoutGridCarouselOnly
             title='Tin tức tiêu dùng'
             data={data.news?.news}
@@ -190,31 +189,30 @@ const HomeWeb = ({
           <Space h='xl' />
         </> */}
 
-        {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (
-          <Reveal z={50}>
-            <FastMenuSection
-              data={{
-                anVat: data.category.anVat,
-                thucUong: data.category.thucUong,
-                monChinh: data.category.monChinh
-              }}
-            />
-          </Reveal>
-        )}
+      {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (
         <Reveal z={50}>
-          <Space h='xl' />
-          <LayoutGridCarouselOnly
-            title='Đối tác của chúng tôi'
-            data={Array.from({ length: 7 }, (_, i) => `/images/webp/img_brand_${i + 1}.webp`)}
-            configs={{
-              slideSize: { base: '100%', sm: '50%', md: '16.6666667%' },
-              h: 'max-content'
+          <FastMenuSection
+            data={{
+              anVat: data.category.anVat,
+              thucUong: data.category.thucUong,
+              monChinh: data.category.monChinh
             }}
-            minHeight={180}
-            CardElement={PartnerCard}
           />
         </Reveal>
-      </Container>
+      )}
+      <Reveal z={50}>
+        <Space h='xl' />
+        <LayoutGridCarouselOnly
+          title='Đối tác của chúng tôi'
+          data={Array.from({ length: 7 }, (_, i) => `/images/webp/img_brand_${i + 1}.webp`)}
+          configs={{
+            slideSize: { base: '100%', sm: '50%', md: '16.6666667%' },
+            h: 'max-content'
+          }}
+          minHeight={180}
+          CardElement={PartnerCard}
+        />
+      </Reveal>
     </>
   );
 };
