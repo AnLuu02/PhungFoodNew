@@ -13,7 +13,6 @@ import { orderRouter } from './routers/Order';
 import { pageRouter } from './routers/Page';
 import { paymentRouter } from './routers/Payment';
 import { productRouter } from './routers/Product';
-import { recentActivityRouter } from './routers/RecentActivity';
 import { restaurantRouter } from './routers/Restaurant';
 import { revenueRouter } from './routers/Revenue';
 import { reviewRouter } from './routers/Review';
@@ -28,7 +27,6 @@ export const appRouter = createTRPCRouter({
   Page: pageRouter,
   Invoice: invoiceRouter,
   Search: searchRouter,
-  RecentActivity: recentActivityRouter,
   Category: categoryRouter,
   SubCategory: subCategoryRouter,
   Delivery: deliveryRouter,

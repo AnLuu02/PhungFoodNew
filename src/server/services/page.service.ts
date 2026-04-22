@@ -101,7 +101,6 @@ export const getInitAdminPageService = async (db: PrismaClient) => {
   const results: any = await Promise.allSettled([
     getAllProductService(db, { userRole: UserRole.ADMIN }),
     getOverviewRevenueService(db, {}),
-    // getRecentActivityAppService(db, {}),
     getAllActivitiesService(db, {
       limit: 10
       // filters: {
@@ -130,7 +129,6 @@ export const getInitReportPageService = async (db: PrismaClient, input: { startT
     getTopProductsService(db, queryOverview),
     getRevenueOrderStatusService(db, queryOverview),
     getDistributionProductsService(db, queryOverview),
-    // getRecentActivityAppService(db, queryOverview),
     getAllActivitiesService(db, {
       limit: 10
       // filters: {
