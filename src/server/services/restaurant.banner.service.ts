@@ -123,7 +123,12 @@ export const upsertBannerService = async (db: PrismaClient, input: BannerReqClou
     });
   }
 
-  return banner;
+  return {
+    metaData: {
+      before: {},
+      after: banner ?? {}
+    }
+  };
 };
 
 export const getOneBannerService = async (db: PrismaClient, input: { isActive?: boolean }) => {

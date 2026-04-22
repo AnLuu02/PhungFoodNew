@@ -85,24 +85,29 @@ export const activityLogger = t.middleware(async opts => {
       const logsToProcess = Array.isArray(responseData) ? responseData : [responseData];
       if (logsToProcess && logsToProcess?.length > 0) {
         Promise.all(
-          logsToProcess.map(async item => {
-            const logContent = item?.metaData || {
-              before: {},
-              after: item?.metaData
-            };
-            const action =
-              logContent?.before?.id === logContent?.after?.id?.id ? 'update' : !logContent?.before ? 'create' : path;
-            return logActivity({
-              action,
-              entityType: path?.split('.')?.[0]?.toLowerCase() || 'OTHER',
-              entityId: logContent?.before?.id || logContent?.after?.id || (input as any)?.id,
-              userId: user?.id,
-              metadata: {
-                before: logContent.before ?? {},
-                after: logContent.after ?? {}
-              }
-            });
-          })
+          logsToProcess
+            .map(async item => {
+              const logContent = item?.metaData || {
+                before: {},
+                after: item?.metaData
+              };
+              const action =
+                logContent?.before?.id === logContent?.after?.id?.id ? 'update' : !logContent?.before ? 'create' : path;
+              const entityId = logContent?.before?.id || logContent?.after?.id || (input as any)?.id;
+              return entityId
+                ? logActivity({
+                    action,
+                    entityType: path?.split('.')?.[0]?.toLowerCase() || 'OTHER',
+                    entityId: logContent?.before?.id || logContent?.after?.id || (input as any)?.id,
+                    userId: user?.id,
+                    metadata: {
+                      before: logContent.before ?? {},
+                      after: logContent.after ?? {}
+                    }
+                  })
+                : undefined;
+            })
+            .filter(Boolean)
         );
       }
     } catch (err) {

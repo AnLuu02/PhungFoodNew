@@ -1,9 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Badge, Flex, Group, Paper, Stack, Switch } from '@mantine/core';
+import { Badge, Card, Flex, Group, Paper, Stack, Switch } from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
 import { EntityType, ImageType } from '@prisma/client';
-import { IconPlus } from '@tabler/icons-react';
+import { IconCalendarClock, IconPlus } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import BButton from '~/components/Button/Button';
@@ -236,6 +237,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
 
     await mutationUpsert.mutateAsync({
       ...formData,
+      restaurantId,
       imageForEntities: imageReq
     });
   };
@@ -296,12 +298,44 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
           </BButton>
         </Group>
         <ListBannerTemplate onSetDefaultBanner={handleSetDefaultBanner} onDeletedBanner={handleDeleteBanner} />
-        <Stack mb={'xl'}>
-          <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
-            <CarouselGallery onDeleted={galleryPublicIds => setGalleryDeleted(galleryPublicIds)} />
-            <BannerInputSection />
-          </Flex>
-        </Stack>
+        <Card radius={'lg'} padding={'sm'} className='bg-backgroundAdmin'>
+          <Stack mb={'xl'}>
+            <Group align='flex-end' gap='xs'>
+              <Controller
+                name='startDate'
+                control={formFields.control}
+                render={({ field }) => (
+                  <DatePickerInput
+                    leftSection={<IconCalendarClock size={18} />}
+                    radius={'md'}
+                    label='Có hiệu lực từ'
+                    placeholder='Từ ngày'
+                    {...field}
+                    style={{ flex: 1 }}
+                  />
+                )}
+              />
+              <Controller
+                name='endDate'
+                control={formFields.control}
+                render={({ field }) => (
+                  <DatePickerInput
+                    leftSection={<IconCalendarClock size={18} />}
+                    radius={'md'}
+                    label='Đến ngày'
+                    placeholder='Đến ngày'
+                    {...field}
+                    style={{ flex: 1 }}
+                  />
+                )}
+              />
+            </Group>
+            <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
+              <CarouselGallery onDeleted={galleryPublicIds => setGalleryDeleted(galleryPublicIds)} />
+              <BannerInputSection />
+            </Flex>
+          </Stack>
+        </Card>
       </form>
     </FormProvider>
   );

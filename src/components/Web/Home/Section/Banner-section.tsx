@@ -30,7 +30,7 @@ export default function BannerSection({ banner }: any) {
       <Flex gap='md' direction={{ base: 'column', lg: 'row' }}>
         <Box
           w={{ base: '100%', lg: '66.666667%' }}
-          className='h-fit animate-fadeUp'
+          className='animate-fadeUp sm:h-fit'
           style={{ animationDuration: '0.5s' }}
         >
           <Carousel
@@ -38,22 +38,24 @@ export default function BannerSection({ banner }: any) {
             withIndicators
             loop
             plugins={[autoplay.current]}
-            nextControlIcon={<IconChevronRight size={30} />}
-            previousControlIcon={<IconChevronLeft size={30} />}
+            nextControlIcon={<IconChevronRight />}
+            previousControlIcon={<IconChevronLeft />}
             controlSize={40}
             color='black'
             classNames={{
-              control: 'border-none bg-white/80 text-sm font-bold text-mainColor',
-              indicators: 'bottom-4',
-              indicator: 'mx-[6px] h-[8px] w-[20px] rounded-full bg-mainColor transition'
+              root: 'group duration-200',
+              control: 'border-none text-sm font-bold text-mainColor group-hover:bg-subColor/10',
+              controls: 'opacity-50 duration-200 group-hover:opacity-100',
+              indicators: 'bottom-4 opacity-50 duration-200 group-hover:opacity-100',
+              indicator: 'mx-[6px] h-[8px] w-[20px] rounded-full bg-mainColor transition duration-200'
             }}
           >
             {(gallery?.length > 0 ? gallery : [{ url: '/images/jpg/empty-300x240.jpg', altText: 'empty' }])?.map(
               (slide: any) => (
                 <Carousel.Slide key={slide.id} className='rounded-md'>
-                  <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
+                  <Box className='relative h-[160px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4] sm:h-[400px]'>
                     <Image
-                      style={{ objectFit: 'cover' }}
+                      style={{ objectFit: 'fill' }}
                       src={slide.url || '/images/jpg/empty-300x240.jpg'}
                       alt={slide.altText}
                       fill
