@@ -30,6 +30,7 @@ import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { api } from '~/trpc/react';
+import BButton from '../Button/Button';
 import VoiceSearchModal from './SearchAsVoice';
 
 export default function SearchComponentClient({ subCategories }: any) {
@@ -88,7 +89,6 @@ export default function SearchComponentClient({ subCategories }: any) {
           }
           styles={{
             input: {
-              height: 48,
               fontSize: 16
             },
             section: {
@@ -251,19 +251,19 @@ export default function SearchComponentClient({ subCategories }: any) {
                       <Text size='sm' fw={700} className='text-black dark:text-dark-text'>
                         Lịch sử tìm kiếm
                       </Text>
-                      <Button
+                      <BButton
                         variant='transparent'
                         style={{ height: 'auto' }}
                         p={0}
                         m={0}
                         w={'max-content'}
-                        classNames={{
-                          root: 'text-mainColor'
+                        className='text-red-600 hover:text-red-400'
+                        onClick={() => {
+                          setHistorySearch([]);
                         }}
-                        onClick={() => setHistorySearch([])}
                       >
                         Xóa tất cả
-                      </Button>
+                      </BButton>
                     </Flex>
                     <Stack gap={8}>
                       {historySearchRender.map((item: any, index: number) => (
@@ -309,27 +309,30 @@ export default function SearchComponentClient({ subCategories }: any) {
                 )}
 
                 {!searchQuery && (
-                  <Box p='md' style={{ borderTop: '1px solid var(--mantine-color-gray-2)' }}>
-                    <Text fw={700} className='text-black dark:text-dark-text' mb={8}>
-                      Tra cứu hàng đầu
-                    </Text>
-                    <Flex gap={8} wrap='wrap'>
-                      {subCategories &&
-                        subCategories.map((term: any, index: number) => (
-                          <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`} key={index}>
-                            <Badge
-                              key={index}
-                              variant='outline'
-                              color='gray'
-                              radius='xl'
-                              className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
-                            >
-                              {term?.name}
-                            </Badge>
-                          </Link>
-                        ))}
-                    </Flex>
-                  </Box>
+                  <>
+                    <Divider className={`${historySearch ? 'block' : 'hidden'}`} />
+                    <Box p='md'>
+                      <Text fw={700} className='text-black dark:text-dark-text' mb={8}>
+                        Tra cứu hàng đầu
+                      </Text>
+                      <Flex gap={8} wrap='wrap'>
+                        {subCategories &&
+                          subCategories.map((term: any, index: number) => (
+                            <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`} key={index}>
+                              <Badge
+                                key={index}
+                                variant='outline'
+                                color='gray'
+                                radius='xl'
+                                className='cursor-pointer hover:bg-mainColor/10 dark:hover:bg-mainColor/10'
+                              >
+                                {term?.name}
+                              </Badge>
+                            </Link>
+                          ))}
+                      </Flex>
+                    </Box>
+                  </>
                 )}
 
                 {categoryData.length > 0 && (

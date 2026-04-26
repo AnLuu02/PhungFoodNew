@@ -24,10 +24,11 @@ export function SidebarMenu({ categories, materials }: any) {
         </Flex>
         <Drawer
           opened={drawerOpened}
+          zIndex={10001}
           onClose={() => setDrawerOpened(false)}
           size='100%'
           title={
-            <Title order={3} className='font-quicksand'>
+            <Title order={4} className='font-quicksand'>
               Danh mục & Bộ lọc
             </Title>
           }

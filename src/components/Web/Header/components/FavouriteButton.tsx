@@ -1,10 +1,11 @@
 'use client';
-import { Box, Button } from '@mantine/core';
+import { Box, Paper } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconHeart } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import BButton from '~/components/Button/Button';
 import { api } from '~/trpc/react';
 
 const LikeButton = () => {
@@ -25,10 +26,10 @@ const LikeButton = () => {
 
   return (
     <Link href={`/yeu-thich`}>
-      <Button
+      <BButton
         variant='outline'
         radius={'xl'}
-        className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
+        className='sm:hidden md:block'
         leftSection={
           <Box className='relative inline-block'>
             <IconHeart size={20} />
@@ -39,7 +40,19 @@ const LikeButton = () => {
         }
       >
         Yêu thích
-      </Button>
+      </BButton>
+      <Paper
+        w={40}
+        h={40}
+        radius={'lg'}
+        withBorder
+        className='relative hidden items-center justify-center text-mainColor sm:flex md:hidden'
+      >
+        <IconHeart size={24} />
+        <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
+          {dataRender?.length || 0}
+        </span>
+      </Paper>
     </Link>
   );
 };

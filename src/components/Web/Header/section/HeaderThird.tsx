@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
-import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 import DynamicCartButton from '../components/DynamicCartButton';
 import NavigationHeader from '../components/NavigationHeader';
 import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
@@ -18,41 +17,32 @@ const Header3 = ({ categories, subCategories }: any) => {
   const [opened, { close, toggle }] = useDisclosure();
   return (
     <Flex
-      px={{ base: 10, sm: 30, md: 30, lg: 130 }}
+      px={{ base: 10, sm: 30, lg: 130 }}
       align={'center'}
       justify={'space-between'}
       py={'md'}
+      gap={{ base: 0, sm: 'md', lg: 0 }}
       className='sticky top-0 z-[100] bg-white text-black dark:bg-dark-background dark:text-dark-text'
       direction={{ base: 'row', md: 'row' }}
     >
-      {/* <Burger  opened={opened} onClick={toggle} aria-label='Toggle navigation' className='md:hidden' /> */}
       <ActionIcon
         variant='default'
         size='xl'
         radius={'md'}
         onClick={toggle}
-        className='border border-gray-100 bg-gray-50 shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] transition-all hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1)] active:translate-y-0.5 active:shadow-inner md:hidden'
+        className='border border-gray-100 bg-gray-50 shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] transition-all hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1)] active:translate-y-0.5 active:shadow-inner dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-[4px_4px_12px_rgba(0,0,0,0.5),-1px_-1px_10px_rgba(255,255,255,0.02)] dark:hover:shadow-[2px_2px_8px_rgba(0,0,0,0.6)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7)] md:hidden'
         classNames={{
           icon: 'text-mainColor'
         }}
       >
         <IconMenu3 size={32} />
       </ActionIcon>
-      <Flex gap={{ base: 'md', lg: 0, xl: 'md' }} direction={{ base: 'row-reverse', xl: 'row' }} align={'center'}>
-        <Box className='hidden sm:order-3 sm:block md:hidden'>
-          <Link href={'/goi-mon-nhanh'}>
-            <Button size='sm' radius={'xl'} variant='subtle' px={'md'} className='bg-red-600 text-white'>
-              <Text fw={700} size='sm'>
-                Mua nhanh
-              </Text>
-            </Button>
-          </Link>
-        </Box>
-        <Box className='hidden sm:order-2 sm:block md:hidden'>
-          <Button variant='outline' className='border-mainColor text-mainColor' radius={'xl'} leftSection='Chế độ'>
-            <ButtonControlModeTheme />
-          </Button>
-        </Box>
+      <Flex
+        gap={{ base: 'md', lg: 0, xl: 'md' }}
+        className='order-3 md:order-1'
+        direction={{ base: 'row-reverse', xl: 'row' }}
+        align={'center'}
+      >
         <Box className='sm:order-1' p={0} m={0}>
           <Menu
             radius={'md'}
@@ -62,7 +52,7 @@ const Header3 = ({ categories, subCategories }: any) => {
               item: 'hover:bg-mainColor hover:text-white'
             }}
             onOpen={() => setImgMounted(true)}
-            width={200}
+            width={180}
             offset={0}
             transitionProps={{ transition: 'rotate-right', duration: 500 }}
           >
@@ -73,7 +63,7 @@ const Header3 = ({ categories, subCategories }: any) => {
                 size='sm'
                 px={0}
                 mx={0}
-                w={{ base: 150, sm: 200 }}
+                w={{ base: 150, sm: 180 }}
                 leftSection={<IconCategory size={20} />}
                 rightSection={<IconChevronCompactDown size={20} />}
               >
@@ -124,8 +114,10 @@ const Header3 = ({ categories, subCategories }: any) => {
         </Box>
       </Flex>
 
-      <NavigationHeader categories={categoriesData} />
-      <NavigationHeaderMobile opened={opened} close={close} />
+      <Box className='order-2 hidden sm:block md:order-3'>
+        <NavigationHeader categories={categoriesData} />
+      </Box>
+      <NavigationHeaderMobile opened={opened} close={close} categories={categoriesData} />
     </Flex>
   );
 };

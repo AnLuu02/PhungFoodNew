@@ -37,6 +37,11 @@ export default {
         quicksand: ['var(--font-quicksand)', ...fontFamily.sans]
       },
       keyframes: {
+        typing: {
+          '0%, 100%': { width: '0%' },
+          '40%, 60%': { width: '100%' }
+        },
+
         wiggle: {
           '0%, 100%': { transform: 'rotate(0deg) scale(0.9) ' },
           '10%': { transform: 'rotate(0deg) scale(1)' },
@@ -86,7 +91,8 @@ export default {
         pulse: 'pulse 1.5s ease-in-out infinite',
         slideRightPulse: 'slideRightPulse 2s ease-in-out infinite',
         scaleIn: 'scaleIn 0.3s ease-out forwards',
-        bounceSlow: 'bounceSlow 2s infinite ease-in-out'
+        bounceSlow: 'bounceSlow 2s infinite ease-in-out',
+        typing: 'typing 4s steps(30) infinite'
       }
     },
     screens: {

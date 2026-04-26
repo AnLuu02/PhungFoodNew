@@ -43,6 +43,22 @@ export const BreadcrumbsComponent = ({ subCategories }: any) => {
             previousControlIcon={<IconChevronLeft size={30} />}
             nextControlIcon={<IconChevronRight size={30} />}
             className='w-full'
+            styles={{
+              controls: {
+                left: -50,
+                right: -50,
+                top: 50,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                pointerEvents: 'none'
+              },
+              control: {
+                pointerEvents: 'all'
+              },
+              root: { overflow: 'visible' },
+              viewport: { overflow: 'hidden' }
+            }}
             classNames={{
               control: 'h-[40px] w-[40px] rounded-full bg-mainColor text-white'
             }}

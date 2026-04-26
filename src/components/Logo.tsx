@@ -1,14 +1,14 @@
 'use client';
-export default function Logo({ width, height }: { width?: number; height?: number }) {
+
+export default function Logo({ className }: { className?: string }) {
   return (
     <svg
       version='1.0'
       xmlns='http://www.w3.org/2000/svg'
-      width={width ? `${width}pt` : '300.000000pt'}
-      height={height ? `${height}pt` : '105.000000pt'}
       viewBox='0 0 300.000000 105.000000'
       preserveAspectRatio='xMidYMid meet'
-      className={`text-green-600`}
+      className={className}
+      fill='currentColor'
     >
       <metadata>Phung food restaurant</metadata>
       <g transform='translate(0.000000,105.000000) scale(0.100000,-0.100000)' fill='currentColor' stroke='none'>

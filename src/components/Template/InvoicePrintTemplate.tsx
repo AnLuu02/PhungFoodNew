@@ -47,7 +47,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
   return (
     <Box ref={printRef} p={'xl'}>
       <Box display={'flex'} style={{ flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <Logo width={190} />
+        <Logo className='w-[300px] text-mainColor' />
         <Text c={'dark'} fz={18}>
           Đầu lộ Tân Thành, khóm 9, phường 6, Cà Mau
         </Text>

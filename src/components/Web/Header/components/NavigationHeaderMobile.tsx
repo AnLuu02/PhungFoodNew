@@ -1,10 +1,9 @@
 'use client';
-import { Badge, Box, Button, Center, Divider, Drawer, Flex, Text } from '@mantine/core';
+import { Badge, Box, Center, Divider, Drawer, Flex, Grid, GridCol, Group, Image, NavLink, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconCaretDown } from '@tabler/icons-react';
-import Image from 'next/image';
+import { IconHome2, IconSoup } from '@tabler/icons-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { memo } from 'react';
 import Logo from '~/components/Logo';
 import UserSection from '~/components/UserSection';
@@ -12,12 +11,22 @@ import { navigationClientItem } from '~/lib/ConfigUI';
 import CartButton from './CartButton';
 import PromotionButton from './PromotionButton';
 
-function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: () => void }) {
+function NavigationHeaderMobile({
+  opened,
+  categories,
+  close
+}: {
+  opened?: boolean;
+  categories?: any;
+  close?: () => void;
+}) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const isDesktop = useMediaQuery('(min-width: 1025px)');
   if (isDesktop) {
     return;
   }
+  const categoryForMenu = categories ?? [];
   return (
     <Drawer.Root
       opened={opened || false}
@@ -26,6 +35,7 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
       }}
       size={'xs'}
       zIndex={10001}
+      pb={'md'}
       pos={'relative'}
       classNames={{
         close:
@@ -34,82 +44,170 @@ function NavigationHeaderMobile({ opened, close }: { opened?: boolean; close?: (
     >
       <Drawer.Overlay />
       <Drawer.Content>
-        <Drawer.Header py={0}>
+        <Drawer.Header py={0} pt={'xs'}>
           <Drawer.Title>
             <Link href={'/'}>
-              <Center w={'100%'} flex={1}>
-                <Logo width={100} height={50} />
-              </Center>
+              <div className='flex h-16 items-center justify-center'>
+                <Logo className='h-4/5 w-auto text-mainColor' />
+              </div>
             </Link>
           </Drawer.Title>
           <Drawer.CloseButton />
         </Drawer.Header>
-        <Divider size={1} w={'100%'} pb={'md'} />
+        <Center mt={'sm'} mb={'md'}>
+          <Divider
+            variant='dashed'
+            size={'sm'}
+            w={'100%'}
+            classNames={{
+              root: 'border-mainColor'
+            }}
+            labelPosition='center'
+            label={
+              <>
+                <IconHome2 size={12} className='italic' />
+                <Box ml={5} className='italic'>
+                  PhungFoodRes
+                </Box>
+              </>
+            }
+          />
+        </Center>
         <Drawer.Body pb={0}>
           <Box mb={20}>
             <UserSection width={'100%'} />
           </Box>
 
-          <Flex gap={'md'} align={'center'} direction={{ base: 'column', md: 'row' }} mb={20}>
-            {navigationClientItem.map((item, index) => (
-              <Link
-                key={index}
-                onClick={() => {
-                  close?.();
-                }}
-                href={item.href}
-                style={{ transition: 'all 0.3s' }}
-                className='duration-600 h-[max-content] rounded-t-lg transition ease-in-out'
-              >
-                <Button
-                  size='sm'
-                  radius={'xl'}
-                  variant='subtle'
-                  px={'md'}
-                  className={`transition hover:bg-mainColor hover:text-white ${
-                    pathname === item.href
-                      ? 'bg-mainColor text-white'
-                      : 'bg-[#f1faf6] text-mainColor dark:bg-dark-card dark:hover:bg-mainColor'
-                  } `}
-                  rightSection={item.href === '/thuc-don' && <IconCaretDown size={18} />}
+          <Flex direction='column' gap='xs' className='mb-8'>
+            {navigationClientItem.map((item, index) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+
+              return item.href === '/thuc-don' ? (
+                <Box key={item?.href}>
+                  <NavLink
+                    key={item?.href}
+                    label={
+                      <Text fw={isActive ? 700 : 500} size='sm'>
+                        {item.label}
+                      </Text>
+                    }
+                    leftSection={<Icon size={16} />}
+                    className={`group flex w-full items-center justify-between rounded-xl px-4 py-3 transition-all duration-200 ease-in-out ${
+                      isActive
+                        ? 'bg-mainColor/20 text-mainColor dark:bg-mainColor/10'
+                        : 'text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    <Box className={`border-0 border-l border-solid border-gray-300 pl-2`}>
+                      {categoryForMenu.map((child: any) => (
+                        <Link key={child?.tag} href={`/thuc-don?danh-muc=${child?.tag}`} onClick={() => close?.()}>
+                          <Box
+                            key={child?.tag}
+                            py={'xs'}
+                            pl={'md'}
+                            w={'100%'}
+                            className={`${child?.tag === searchParams.get('danh-muc') ? 'bg-mainColor/10' : ''} my-1 rounded-md hover:bg-mainColor/10`}
+                          >
+                            <Text size='sm' fw={700}>
+                              {child?.name || 'Đang cập nhật'}
+                            </Text>
+                          </Box>
+                        </Link>
+                      ))}
+                    </Box>
+                  </NavLink>
+                </Box>
+              ) : (
+                <Link
+                  key={index}
+                  href={item.href}
+                  onClick={() => close?.()}
+                  className={`group flex w-full items-center justify-between rounded-xl px-4 py-3 transition-all duration-200 ease-in-out ${
+                    isActive
+                      ? 'bg-mainColor/20 text-mainColor dark:bg-mainColor/10'
+                      : 'text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-dark-card'
+                  }`}
                 >
-                  <Text fw={700} size='sm'>
-                    {item.label}
-                  </Text>
-                </Button>
-              </Link>
-            ))}
-            <Box pos={'relative'}>
+                  <Group>
+                    <Icon size={16} />
+                    <Text fw={isActive ? 700 : 500} size='sm'>
+                      {item.label}
+                    </Text>
+                  </Group>
+
+                  {item.href === '/goi-mon-nhanh' && <IconSoup size={18} className='animate-wiggle text-red-600' />}
+                </Link>
+              );
+            })}
+          </Flex>
+
+          <Flex gap='md'>
+            <Box className='relative flex-1'>
               <PromotionButton />
-              <Badge color='red' size='sm' className='absolute right-[-6px] top-[-8px] animate-wiggle'>
+              <Badge color='red' size='sm' variant='filled' className='absolute -right-2 -top-2 animate-wiggle'>
                 Hot
               </Badge>
             </Box>
-            <CartButton />
+            <Box className='flex-1'>
+              <CartButton notResponsive={true} />
+            </Box>
           </Flex>
 
-          <Box className='flex justify-center gap-4 md:justify-start'>
-            <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80'>
-              <Image
-                loading='lazy'
-                src='/images/png/logo_playstore.png'
-                alt='Google Play'
-                width={140}
-                height={42}
-                style={{ objectFit: 'cover' }}
-              />
-            </Link>
-            <Link href='#' className='rounded-sm text-white hover:underline hover:opacity-80'>
-              <Image
-                loading='lazy'
-                src='/images/png/logo_appstore.png'
-                alt='App Store'
-                width={140}
-                height={42}
-                style={{ objectFit: 'cover' }}
-              />
-            </Link>
-          </Box>
+          <Flex direction={'column'} justify={'center'} align={'center'} mt={'lg'}>
+            <Divider
+              variant='dashed'
+              size={'sm'}
+              w={'80%'}
+              classNames={{
+                root: 'border-mainColor'
+              }}
+              mb={'md'}
+              labelPosition='center'
+              label={
+                <>
+                  <Box ml={5} className='italic'>
+                    Tải ứng dụng ngay
+                  </Box>
+                </>
+              }
+            />
+            <Grid p={0} w={'100%'}>
+              <GridCol span={6}>
+                <Link
+                  href='#'
+                  className='relative h-[36px] w-full overflow-hidden rounded-md transition-transform hover:scale-105'
+                >
+                  <Image
+                    loading='lazy'
+                    src='/images/png/logo_playstore.png'
+                    alt='Google Play'
+                    w={'100%'}
+                    h={36}
+                    className='rounded-md object-cover'
+                  />
+                </Link>
+              </GridCol>
+              <GridCol span={6}>
+                <Link
+                  href='#'
+                  className='relative h-[36px] w-full overflow-hidden rounded-md transition-transform hover:scale-105'
+                >
+                  <Image
+                    loading='lazy'
+                    src='/images/png/logo_appstore.png'
+                    alt='App Store'
+                    w={'100%'}
+                    h={36}
+                    className='rounded-md object-cover'
+                  />
+                </Link>
+              </GridCol>
+            </Grid>
+          </Flex>
+          <Text ta='center' size='xs' c='dimmed' mt='xl' mb={'xs'}>
+            © 2026 Phung Food. Design by An Luu
+          </Text>
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>

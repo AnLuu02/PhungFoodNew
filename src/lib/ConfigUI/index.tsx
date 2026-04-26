@@ -1,20 +1,21 @@
 import {
+  IconBrandAirbnb,
   IconBrandPolymer,
   IconCategory,
   IconCheese,
   IconCreditCardPay,
   IconDatabaseDollar,
-  IconDevicesQuestion,
-  IconHomeFilled,
+  IconHome,
   IconLayoutDashboard,
   IconLock,
-  IconMenu,
+  IconMailForward,
   IconMenuOrder,
   IconNews,
-  IconPhone,
   IconReport,
   IconSettings,
   IconShoppingBag,
+  IconShoppingCartBolt,
+  IconSoup,
   IconTicket,
   IconUser
 } from '@tabler/icons-react';
@@ -85,10 +86,10 @@ export const menuUserInfo = [
 ];
 
 export const navigationClientItem = [
-  { label: 'Trang chủ', href: '/', icon: IconHomeFilled, order: 1 },
-  { label: 'Thực đơn', href: '/thuc-don', icon: IconMenu, order: 2 },
-  { label: 'Về PhungFood', href: '/gioi-thieu', icon: IconDevicesQuestion, order: 3 },
-  { label: 'Liên Hệ', href: '/lien-he', icon: IconPhone, order: 4 },
+  { label: 'Trang chủ', href: '/', icon: IconHome, order: 1 },
+  { label: 'Thực đơn', href: '/thuc-don', icon: IconSoup, order: 2 },
+  { label: 'Về PhungFood', href: '/gioi-thieu', icon: IconBrandAirbnb, order: 5 },
+  { label: 'Liên Hệ', href: '/lien-he', icon: IconMailForward, order: 4 },
   { label: 'Tin tức', href: '/tin-tuc', icon: IconNews, order: 6 },
-  { label: 'Mua nhanh', href: '/goi-mon-nhanh', icon: IconShoppingBag, order: 5 }
+  { label: 'Mua nhanh', href: '/goi-mon-nhanh', icon: IconShoppingCartBolt, order: 3 }
 ];

@@ -1,16 +1,36 @@
+'use client';
 import { Box, Button, Center, Menu, MenuDropdown, MenuItem, MenuTarget } from '@mantine/core';
-import { IconChevronCompactLeft, IconLink, IconMessageCircle } from '@tabler/icons-react';
+import { useLocalStorage } from '@mantine/hooks';
+import { IconChevronCompactLeft, IconLink, IconMessageCircle, IconShoppingBagCheck } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
 import Chatbox from './Chatbox';
 
-export default async function FloatingWidget({ restaurant }: { restaurant: any }) {
+export default function FloatingWidget({ restaurant }: { restaurant: any }) {
+  const [cart] = useLocalStorage({ key: 'cart', defaultValue: [] });
   const messager = restaurant?.socials?.find((social: any) => {
     return social?.platform === 'messenger';
   });
   return (
     <>
+      <Box pos={'fixed'} bottom={250} right={20} className='z-[200] flex flex-col space-y-4'>
+        <Link href='/gio-hang' className='hidden text-white md:block lg:hidden'>
+          <Center
+            className='relative hidden h-16 w-16 animate-wiggle cursor-pointer items-center justify-center rounded-full bg-mainColor text-white duration-200 ease-in-out hover:opacity-80 sm:flex'
+            w={50}
+            h={50}
+          >
+            <IconShoppingBagCheck size={40} />
+            <span className='absolute -right-2 -top-2 z-[100] flex h-[25px] w-[25px] items-center justify-center rounded-full bg-mainColor text-[14px] font-bold text-white'>
+              {cart.length || 0}
+            </span>
+            <span className='absolute z-[-1] h-full w-full animate-ping rounded-full bg-mainColor opacity-10'></span>
+            <span className='absolute z-[-1] h-[80%] w-[80%] animate-ping rounded-full bg-mainColor opacity-20'></span>
+            <span className='absolute z-[-1] h-[60%] w-[60%] animate-ping rounded-full bg-mainColor opacity-30'></span>
+          </Center>
+        </Link>
+      </Box>
       <Box pos={'fixed'} bottom={100} left={20} className='z-[200] flex flex-col space-y-4'>
         <Menu shadow='md' width={'max-content'} position='top-start' offset={0} zIndex={10000} radius={'md'}>
           <MenuTarget>

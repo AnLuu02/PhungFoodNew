@@ -1,5 +1,5 @@
 'use client';
-import { Box, Button, Divider, Flex, Group, Menu, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
+import { Box, Divider, Flex, Group, Menu, Paper, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconShoppingBag } from '@tabler/icons-react';
@@ -11,7 +11,7 @@ import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
 
-const CartButton = () => {
+const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
   const isDesktop = useMediaQuery(`(min-width: 1024px)`);
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
@@ -40,9 +40,9 @@ const CartButton = () => {
     >
       <Menu.Target>
         <Link href='/gio-hang' className='text-white'>
-          <Button
+          <BButton
             variant='outline'
-            className='cart-btn border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
+            className={`cart-btn ${!notResponsive ? 'sm:hidden md:block' : ''}`}
             radius={'xl'}
             leftSection={
               <Box className='relative inline-block'>
@@ -54,7 +54,20 @@ const CartButton = () => {
             }
           >
             Giỏ hàng
-          </Button>
+          </BButton>
+
+          <Paper
+            w={40}
+            h={40}
+            radius={'lg'}
+            withBorder
+            className={`cart-btn relative hidden items-center justify-center text-mainColor ${!notResponsive ? 'sm:flex md:hidden' : ''}`}
+          >
+            <IconShoppingBag size={24} />
+            <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
+              {cart?.length || 0}
+            </span>
+          </Paper>
         </Link>
       </Menu.Target>
       <Menu.Dropdown>

@@ -14,7 +14,7 @@ function NavigationHeader({ categories }: { categories: any }) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   return (
-    <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }} className='hidden md:flex'>
+    <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }}>
       {navigationClientItem.map((item, index) =>
         item.href === '/thuc-don' ? (
           <Menu
@@ -62,7 +62,11 @@ function NavigationHeader({ categories }: { categories: any }) {
             </Menu.Dropdown>
           </Menu>
         ) : (
-          <Link key={index} href={item.href} className='h-[max-content]'>
+          <Link
+            key={index}
+            href={item.href}
+            className={`hidden ${item.order <= 3 ? 'sm' : 'md'}:block h-[max-content]`}
+          >
             <Button
               size='sm'
               radius={'xl'}

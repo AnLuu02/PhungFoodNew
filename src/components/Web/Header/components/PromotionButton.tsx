@@ -1,18 +1,13 @@
-import { Button } from '@mantine/core';
 import { IconGift } from '@tabler/icons-react';
 import Link from 'next/link';
+import BButton from '~/components/Button/Button';
 
 const PromotionButton = () => {
   return (
     <Link href={`/khuyen-mai`}>
-      <Button
-        variant='outline'
-        className='border-mainColor text-mainColor hover:bg-mainColor hover:text-white'
-        radius={'xl'}
-        leftSection={<IconGift size={20} />}
-      >
+      <BButton variant='outline' radius={'xl'} leftSection={<IconGift size={20} />}>
         Khuyến mãi
-      </Button>
+      </BButton>
     </Link>
   );
 };

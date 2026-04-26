@@ -23,7 +23,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
         <Grid className='w-full overflow-hidden' columns={24}>
           <GridCol span={{ base: 24, sm: 12, md: 9 }} className='mb-4 sm:mb-0'>
             <Box className='space-y-2'>
-              <Logo width={200} height={80} />
+              <Logo className='w-[300px] text-mainColor lg:w-[300px]' />
               <Text className='text-xl font-bold' tt={'uppercase'}>
                 {restaurant?.name || 'NHÀ HÀNG PHUNGFOOD'}
               </Text>

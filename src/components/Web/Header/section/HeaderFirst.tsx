@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Box, Button, Center, Flex, Group, Menu, Skeleton, Text } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Group, Menu, Skeleton, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconClock, IconWorld } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
@@ -40,15 +40,15 @@ export const HeaderClient = () => {
         justify={{ base: 'flex-start', sm: 'space-between', md: 'space-between' }}
         className='z-[100] bg-mainColor text-white'
       >
-        <Center py={{ base: 'md' }}>
+        <Box>
           <Text
             size='sm'
-            lineClamp={2}
-            className='white-space-nowrap line-clamp-1 animate-bounceSlow overflow-hidden duration-1000'
+            className='animate-typing inline-block overflow-hidden whitespace-nowrap'
+            style={{ maxWidth: 'fit-content' }}
           >
             Phụng Food! xin chào quý khách!
           </Text>
-        </Center>
+        </Box>
 
         <Group align={'center'} justify='center' gap={0}>
           <Group gap='md' align={'center'} justify='center' h={{ base: 40, sm: 'max-content' }}>
