@@ -10,7 +10,7 @@ export const MenuList = ({ responseData, isLoading }: { responseData: any; isLoa
   return (
     <>
       {products?.length > 0 && (
-        <Center mt={'sm'} mb={'md'}>
+        <Center my={'md'}>
           <Divider
             variant='dashed'
             size={'sm'}
@@ -35,13 +35,13 @@ export const MenuList = ({ responseData, isLoading }: { responseData: any; isLoa
         <Grid w={'100%'} p={0}>
           {isLoading ? (
             [...Array(12)].map((_, index) => (
-              <GridCol key={index} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+              <GridCol key={index} span={{ base: 6, md: 4, lg: 3 }}>
                 <CardSkeleton />
               </GridCol>
             ))
           ) : products?.length > 0 ? (
             products.map((item: any) => (
-              <GridCol key={item.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+              <GridCol key={item.id} span={{ base: 6, md: 4, lg: 3 }}>
                 <ProductCardCarouselVertical key={item.id} data={item} />
               </GridCol>
             ))

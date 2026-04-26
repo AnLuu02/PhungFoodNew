@@ -108,7 +108,7 @@ export default function BannerSection({ banner }: any) {
           {[
             { icon: '🍽️', title: 'Gọi món', href: '/thuc-don' },
             { icon: '👨‍🍳', title: 'Tư vấn' },
-            { icon: '📍', title: 'Tìm nhà hàng', href: '/lien-he' },
+            { icon: '📍', title: 'Vị trí', href: '/lien-he' },
             { icon: '🛒', title: 'Đơn hàng', href: '/don-hang-cua-toi' },
             { icon: '📜', title: 'Chính sách', href: '/chinh-sach' },
             { icon: '⭐', title: 'Đánh giá' }
@@ -121,14 +121,15 @@ export default function BannerSection({ banner }: any) {
             >
               <Paper
                 key={index}
-                className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:shadow-md dark:bg-dark-background dark:text-dark-text'
+                className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:scale-105 hover:shadow-md dark:bg-dark-background dark:text-dark-text'
                 radius={'md'}
                 h={'100%'}
                 shadow='xs'
+                py={'xs'}
               >
                 <Flex align={'center'} gap={'xs'}>
-                  <Text className='text-[1rem] sm:text-[2rem]'>{service.icon}</Text>
-                  <Text fw={700} className='text-[8px] text-gray-800 dark:text-gray-500 sm:text-base'>
+                  <Text className='text-[1rem] sm:text-[1.5rem]'>{service.icon}</Text>
+                  <Text fw={700} className='text-xs text-gray-800 dark:text-gray-500 sm:text-base'>
                     {service.title}
                   </Text>
                 </Flex>

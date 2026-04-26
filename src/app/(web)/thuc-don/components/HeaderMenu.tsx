@@ -36,8 +36,8 @@ export default function HeaderMenu({ totalProducts, isLoading }: { totalProducts
                     </Group>
                   ) : (
                     <Group gap={'xs'}>
-                      <Title className='font-quicksand text-mainColor'>{activeTag}</Title>
-                      <Title order={2} className='font-quicksand text-mainColor'>
+                      <Title className='font-quicksand text-2xl text-mainColor sm:text-3xl'>{activeTag}</Title>
+                      <Title className='font-quicksand text-2xl text-mainColor sm:text-3xl'>
                         ({totalProducts || 0})
                       </Title>
                     </Group>
