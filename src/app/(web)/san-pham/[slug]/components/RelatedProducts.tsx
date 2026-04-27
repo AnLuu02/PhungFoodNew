@@ -8,7 +8,6 @@ import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 export default function RelatedProducts({ data }: any) {
   return (
     <Paper
-      radius='md'
       withBorder
       mah={400}
       pos={'sticky'}

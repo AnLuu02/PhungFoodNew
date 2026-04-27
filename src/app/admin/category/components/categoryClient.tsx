@@ -89,7 +89,7 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
               }}
             >
               <Flex align={'center'} gap={'md'}>
-                <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
+                <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
                 </ActionIcon>
                 <Box>
@@ -142,7 +142,6 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
                 <>
                   <Select
                     allowDeselect={false}
-                    radius='md'
                     value={searchParams.get('s') || 'all'}
                     onChange={value => {
                       if (value === 'all') params.delete('s');

@@ -138,7 +138,6 @@ export default async function Dashboard() {
                       style={{
                         backgroundColor: item.color + '22'
                       }}
-                      radius={'md'}
                     >
                       <IconR size={16} color={item.color} />
                     </Paper>
@@ -180,7 +179,7 @@ export default async function Dashboard() {
                         className='cursor-pointer hover:opacity-90 hover:shadow-md'
                       >
                         <Flex align={'center'} gap={'md'}>
-                          <ActionIcon size={'xl'} radius={'md'} color={item.color}>
+                          <ActionIcon size={'xl'} color={item.color}>
                             <IconR size={20} />
                           </ActionIcon>
                           <Box>

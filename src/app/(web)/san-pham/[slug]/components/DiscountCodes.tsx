@@ -6,7 +6,7 @@ import VoucherTemplate from '~/components/Template/VoucherTemplate';
 
 export default function DiscountCodes({ data }: { data: any }) {
   return (
-    <Paper p='md' radius='md' className='bg-green-50 dark:bg-dark-background'>
+    <Paper p='md' className='bg-green-50 dark:bg-dark-background'>
       <Group align='center' mb={'xs'}>
         <ThemeIcon
           size='xl'

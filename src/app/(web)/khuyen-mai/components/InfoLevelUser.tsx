@@ -88,19 +88,19 @@ export default function InfoLevelUser() {
                 <Box className='space-y-4'>
                   <Box className='flex items-center justify-between rounded-lg border border-solid border-green-200 bg-green-50 p-4'>
                     <span className='text-lg font-semibold'>🎉 Đơn hàng cuối tuần</span>
-                    <Badge size='lg' py={'sm'} radius={'md'} className='bg-green-500 text-white'>
+                    <Badge size='lg' py={'sm'} className='bg-green-500 text-white'>
                       x2 điểm
                     </Badge>
                   </Box>
                   <Box className='flex items-center justify-between rounded-lg border border-solid border-orange-200 bg-orange-50 p-4'>
                     <span className='text-lg font-semibold'>🎂 Tháng sinh nhật</span>
-                    <Badge size='lg' py={'sm'} radius={'md'} className='bg-orange-500 text-white'>
+                    <Badge size='lg' py={'sm'} className='bg-orange-500 text-white'>
                       x3 điểm
                     </Badge>
                   </Box>
                   <Box className='flex items-center justify-between rounded-lg border border-solid border-purple-200 bg-purple-50 p-4'>
                     <span className='text-lg font-semibold'>🎪 Sự kiện đặc biệt</span>
-                    <Badge size='lg' py={'sm'} radius={'md'} className='bg-purple-500 text-white'>
+                    <Badge size='lg' py={'sm'} className='bg-purple-500 text-white'>
                       x5 điểm
                     </Badge>
                   </Box>
@@ -116,7 +116,6 @@ export default function InfoLevelUser() {
                   <Title className='flex items-center justify-between font-quicksand text-2xl'>
                     Tiến độ
                     <Badge
-                      radius={'md'}
                       size='xl'
                       py={'lg'}
                       className={`text-lg text-white`}

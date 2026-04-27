@@ -1,11 +1,10 @@
 'use client';
 
-import { ActionIcon, Box, Flex, Group, List, Modal, Stack, Text, Title } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Group, List, Modal, Stack, Text, Title } from '@mantine/core';
 import { IconDots, IconLighter, IconMicrophone, IconSquare, IconTrash, IconVolume } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import BButton from '../Button/Button';
 
 const initialState: any = {
   searchState: 'initial',
@@ -259,7 +258,7 @@ export default function VoiceSearchModal() {
           </Stack>
 
           <Link href={`/thuc-don?s=${state.transcript}`}>
-            <BButton
+            <Button
               fullWidth
               size='md'
               disabled={state.searchState !== 'completed'}

@@ -51,7 +51,6 @@ export default async function FoodPromotionPage() {
           </Text>
           <Box className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
             <Button
-              radius={'md'}
               size='lg'
               className='h-auto animate-fadeUp bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
               style={{ animationDuration: '2s' }}
@@ -60,7 +59,6 @@ export default async function FoodPromotionPage() {
             </Button>
 
             <Button
-              radius={'md'}
               size='lg'
               variant='outline'
               style={{ animationDuration: '2.5s' }}

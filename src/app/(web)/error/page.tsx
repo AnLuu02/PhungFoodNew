@@ -1,7 +1,6 @@
-import { Center, Group, Paper, Stack, Text, Title } from '@mantine/core';
+import { Button, Center, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { IconAlertTriangle, IconHome, IconLock, IconLogin2 } from '@tabler/icons-react';
 import Link from 'next/link';
-import BButton from '~/components/Button/Button';
 const messages: Record<
   string,
   { title: string; desc: string; icon: React.ReactNode; color: string; retryUrl: string }
@@ -67,24 +66,19 @@ export default function AuthErrorPage({
             </Text>
             <Group mt='md'>
               <Link href={retryUrl}>
-                <BButton
+                <Button
                   w={'max-content'}
                   leftSection={<IconLogin2 size={16} />}
-                  bg={'#DC2626'}
-                  c={'white'}
+                  variant='danger'
                   className={`hover:scale-[1.09]`}
                 >
                   Thử lại
-                </BButton>
+                </Button>
               </Link>
               <Link href={'/'}>
-                <BButton
-                  variant='outline'
-                  leftSection={<IconHome size={16} />}
-                  className={`border-[${color}] hover:scale-[1.09]`}
-                >
+                <Button variant='outline' leftSection={<IconHome size={16} />} className={`border-[${color}]`}>
                   Trang chủ
-                </BButton>
+                </Button>
               </Link>
             </Group>
           </Stack>

@@ -43,7 +43,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         <Button
           size='xs'
           variant='subtle'
-          radius='md'
           onClick={() => setOpened(true)}
           classNames={{
             root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
@@ -55,7 +54,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         <Button
           size='xs'
           variant='subtle'
-          radius='md'
           onClick={() => setVideoOpened(true)}
           classNames={{
             root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
@@ -77,7 +75,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         <Stack>
           <TextInput
             label='URL ảnh online'
-            radius='md'
             placeholder='https://example.com/image.jpg'
             value={imageUrl}
             onChange={e => setImageUrl(e.currentTarget.value)}
@@ -112,7 +109,6 @@ export function MediaButtons({ editor }: { editor: Editor | null }) {
         <Stack>
           <TextInput
             label='URL video online (YouTube hoặc MP4)'
-            radius='md'
             placeholder='https://example.com/video.mp4 hoặc https://youtu.be/...'
             value={videoUrl}
             onChange={e => setVideoUrl(e.currentTarget.value)}

@@ -57,7 +57,6 @@ const OrderItemForm = ({ index }: { index: number }) => {
               <Select
                 label='Chọn món'
                 searchable
-                radius='md'
                 {...field}
                 placeholder='Select products'
                 data={products?.map((product: any) => ({
@@ -78,7 +77,6 @@ const OrderItemForm = ({ index }: { index: number }) => {
             defaultValue={1}
             render={({ field, fieldState: { error } }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 thousandSeparator=','
                 label={`Số lượng (còn: ${Number(productOrderItem?.availableQuantity) || 100})`}
@@ -95,14 +93,7 @@ const OrderItemForm = ({ index }: { index: number }) => {
             name={`orderItems.${index}.price`}
             control={control}
             render={({ field, fieldState: { error } }) => (
-              <NumberInput
-                radius={'md'}
-                thousandSeparator=','
-                label={`Giá (chỉ đọc)`}
-                readOnly
-                error={error?.message}
-                {...field}
-              />
+              <NumberInput thousandSeparator=',' label={`Giá (chỉ đọc)`} readOnly error={error?.message} {...field} />
             )}
           />
         </Grid.Col>

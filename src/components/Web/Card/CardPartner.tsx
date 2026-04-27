@@ -7,7 +7,6 @@ export function PartnerCard({ data }: { data: string }) {
     <Card
       padding={0}
       shadow='xl'
-      radius={'md'}
       pos={'relative'}
       className='group w-full cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg'
       h={80}

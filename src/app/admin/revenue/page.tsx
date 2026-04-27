@@ -16,7 +16,7 @@ export default async function RevenueManagementPage({
 }) {
   const revenues = await api.Revenue.getAll();
   return (
-    <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
+    <Card shadow='sm' padding='lg' withBorder mt='md'>
       <Title mb='xs' className='font-quicksand'>
         Quản lý doanh thu
       </Title>

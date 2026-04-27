@@ -42,7 +42,6 @@ export default function SearchLocal({ setValue }: { setValue: (value: string) =>
           /
         </Box>
       }
-      radius='md'
     />
   );
 }

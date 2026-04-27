@@ -12,7 +12,7 @@ export const ThemeLayout = ({ theme, setTheme }: { theme: ThemeConfig; setTheme:
     { name: 'Casual', value: 'casual', description: 'Friendly and approachable' }
   ];
   return (
-    <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+    <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Box mb={'md'}>
         <Title order={4} className='flex items-center gap-2 font-quicksand'>
           <IconLayout className='h-5 w-5' />
@@ -26,7 +26,6 @@ export const ThemeLayout = ({ theme, setTheme }: { theme: ThemeConfig; setTheme:
         <Box className='grid gap-4 sm:grid-cols-2'>
           {layoutOptions.map(layout => (
             <Button
-              radius={'md'}
               key={layout.value}
               variant={theme.layout === layout.value ? 'default' : 'outline'}
               className='h-20 flex-col gap-2 p-4'

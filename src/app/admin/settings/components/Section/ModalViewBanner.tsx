@@ -36,7 +36,6 @@ export default function ModalViewBanner({
     <>
       <Modal
         size={'70%'}
-        radius={'md'}
         opened={viewBanner.isOpened}
         onClose={() => setViewBanner({ isOpened: false, activeBanner: {} })}
         title={<Text fw={700}>Quản lý banner</Text>}

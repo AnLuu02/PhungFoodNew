@@ -19,7 +19,6 @@ function ModalImageLibrary({ type, opened, onClose }: ModalProps<ConnectedModalP
       <Modal
         scrollAreaComponent={ScrollAreaAutosize}
         opened={opened && type === 'images_library'}
-        radius={'md'}
         onClose={onClose}
         size={!isDesktop ? '100%' : '90%'}
         fullScreen
@@ -28,7 +27,7 @@ function ModalImageLibrary({ type, opened, onClose }: ModalProps<ConnectedModalP
         zIndex={151}
         title={
           <Group gap='md'>
-            <ThemeIcon size={40} radius='md' variant='light' color='teal'>
+            <ThemeIcon size={40} variant='light' color='teal'>
               <IconPictureInPicture style={{ width: 24, height: 24 }} />
             </ThemeIcon>
             <Title order={2} className='font-quicksand'>

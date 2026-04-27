@@ -1,9 +1,8 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { TypeContact } from '@prisma/client';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseContactSchema, ContactInput } from '~/shared/schema/contact.schema';
 import { api } from '~/trpc/react';
@@ -64,7 +63,7 @@ export const FormContact = () => {
             control={control}
             name='fullName'
             render={({ field, fieldState }) => (
-              <TextInput {...field} radius='md' placeholder='Tên' withAsterisk error={fieldState.error?.message} />
+              <TextInput {...field} placeholder='Tên' withAsterisk error={fieldState.error?.message} />
             )}
           />
         </GridCol>
@@ -73,13 +72,7 @@ export const FormContact = () => {
             control={control}
             name='phone'
             render={({ field, fieldState }) => (
-              <TextInput
-                {...field}
-                radius='md'
-                placeholder='Số điện thoại'
-                withAsterisk
-                error={fieldState.error?.message}
-              />
+              <TextInput {...field} placeholder='Số điện thoại' withAsterisk error={fieldState.error?.message} />
             )}
           />
         </GridCol>
@@ -91,7 +84,6 @@ export const FormContact = () => {
             render={({ field, fieldState }) => (
               <Select
                 {...field}
-                radius={'md'}
                 data={Object.entries(ContactTypeOptions).map(([key, value]) => ({ value: key, label: value.viName }))}
                 placeholder='Loại'
                 withAsterisk
@@ -105,7 +97,7 @@ export const FormContact = () => {
             control={control}
             name='email'
             render={({ field, fieldState }) => (
-              <TextInput {...field} radius='md' placeholder='E-mail' withAsterisk error={fieldState.error?.message} />
+              <TextInput {...field} placeholder='E-mail' withAsterisk error={fieldState.error?.message} />
             )}
           />
         </GridCol>
@@ -119,14 +111,13 @@ export const FormContact = () => {
                 resize='vertical'
                 placeholder='Tin nhắn'
                 withAsterisk
-                radius={'md'}
                 error={fieldState.error?.message}
               />
             )}
           />
         </GridCol>
         <GridCol span={12}>
-          <BButton type='submit' radius={'xl'} children={' Gửi thông tin'} loading={isSubmitting} disabled={!isDirty} />
+          <Button type='submit' radius={'xl'} children={' Gửi thông tin'} loading={isSubmitting} disabled={!isDirty} />
         </GridCol>
       </Grid>
     </form>

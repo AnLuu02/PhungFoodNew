@@ -1,9 +1,8 @@
 'use client';
 
-import { ActionIcon, Group, Select, Text } from '@mantine/core';
+import { ActionIcon, Button, Group, Select, Text } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import { IconTrash, IconX } from '@tabler/icons-react';
-import BButton from '~/components/Button/Button';
 
 interface BulkActionsBarProps {
   selectedCount: number;
@@ -44,9 +43,9 @@ export default function BulkActionsBar({
           disabled={bulkUpdateTypeMutation.isPending}
         />
 
-        <BButton radius={'lg'} className='bg-red-500' onClick={onDelete} leftSection={<IconTrash size={16} />}>
+        <Button radius={'lg'} variant='danger' onClick={onDelete} leftSection={<IconTrash size={16} />}>
           Xóa bỏ
-        </BButton>
+        </Button>
 
         <ActionIcon variant='default' radius={'lg'} onClick={onClearSelection}>
           <IconX size={16} />

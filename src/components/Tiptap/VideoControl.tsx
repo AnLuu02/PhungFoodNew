@@ -44,7 +44,6 @@ export const FontFamilyControl = ({ editor }: { editor: Editor | null }) => {
           pointer
           type='button'
           size='xs'
-          radius={'md'}
           w={150}
           style={{ textAlign: 'left' }}
           onClick={() => combobox.toggleDropdown()}

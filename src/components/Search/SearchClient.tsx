@@ -30,7 +30,6 @@ import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { api } from '~/trpc/react';
-import BButton from '../Button/Button';
 import VoiceSearchModal from './SearchAsVoice';
 
 export default function SearchComponentClient({ subCategories }: any) {
@@ -177,7 +176,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       }
                     }}
                   >
-                    <Skeleton width={60} height={60} radius='md' />
+                    <Skeleton width={60} height={60} />
                     <Box flex={1}>
                       <Skeleton height={15} width='90%' radius='xl' />
                       <Skeleton height={15} mt={6} width='40%' radius='xl' />
@@ -195,7 +194,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       }
                     }}
                   >
-                    <Skeleton width={60} height={60} radius='md' />
+                    <Skeleton width={60} height={60} />
                     <Box flex={1}>
                       <Skeleton height={15} width='60%' radius='xl' />
                       <Skeleton height={15} mt={6} width='40%' radius='xl' />
@@ -213,7 +212,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       }
                     }}
                   >
-                    <Skeleton width={60} height={60} radius='md' />
+                    <Skeleton width={60} height={60} />
                     <Box flex={1}>
                       <Skeleton height={15} width='50%' radius='xl' />
                       <Skeleton height={15} mt={6} width='80%' radius='xl' />
@@ -251,7 +250,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       <Text size='sm' fw={700} className='text-black dark:text-dark-text'>
                         Lịch sử tìm kiếm
                       </Text>
-                      <BButton
+                      <Button
                         variant='transparent'
                         style={{ height: 'auto' }}
                         p={0}
@@ -263,7 +262,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                         }}
                       >
                         Xóa tất cả
-                      </BButton>
+                      </Button>
                     </Flex>
                     <Stack gap={8}>
                       {historySearchRender.map((item: any, index: number) => (

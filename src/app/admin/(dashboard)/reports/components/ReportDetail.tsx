@@ -137,7 +137,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
               key={index}
             >
               <Flex gap={3} direction={'column'} justify={'space-between'} align={'flex-start'} h={'100%'}>
-                <ActionIcon w={30} h={30} radius={'md'} my={'md'} styles={{ root: { backgroundColor: item.color } }}>
+                <ActionIcon w={30} h={30} my={'md'} styles={{ root: { backgroundColor: item.color } }}>
                   <item.icon size={20} />
                 </ActionIcon>
                 <Text fw={700}>{item.label}</Text>

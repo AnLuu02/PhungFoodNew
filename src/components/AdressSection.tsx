@@ -46,7 +46,6 @@ export default function AddressSection({
           render={({ field, fieldState: { error } }) => (
             <Select
               {...field}
-              radius={'md'}
               searchable
               label='Tỉnh thành'
               placeholder='Tỉnh thành'
@@ -65,7 +64,6 @@ export default function AddressSection({
           name={`${validName}.districtId`}
           render={({ field, fieldState: { error } }) => (
             <Select
-              radius={'md'}
               {...field}
               searchable
               label='Quận huyện'
@@ -87,7 +85,6 @@ export default function AddressSection({
           render={({ field, fieldState: { error } }) => (
             <Select
               {...field}
-              radius={'md'}
               label='Phường xã'
               searchable
               placeholder='Phường xã'
@@ -108,7 +105,6 @@ export default function AddressSection({
         render={({ field, fieldState: { error } }) => (
           <Textarea
             {...field}
-            radius={'md'}
             label='Địa chỉ'
             placeholder='Địa chỉ cụ thể (số nhà, đường, phường,...)'
             resize='block'

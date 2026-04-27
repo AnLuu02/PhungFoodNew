@@ -6,57 +6,57 @@ export const ModalUpsertSkeleton = () => {
       <GridCol span={9}>
         <Grid gutter='md'>
           <GridCol span={12}>
-            <Skeleton height={50} radius='md' />
+            <Skeleton height={50} />
           </GridCol>
 
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='30%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='30%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='30%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
 
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='30%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='30%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='30%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
 
           <GridCol span={12}>
             <Grid>
               <GridCol span={4}>
-                <Skeleton height={36} radius='md' />
+                <Skeleton height={36} />
               </GridCol>
               <GridCol span={4}>
-                <Skeleton height={36} radius='md' />
+                <Skeleton height={36} />
               </GridCol>
               <GridCol span={4}>
-                <Skeleton height={36} radius='md' />
+                <Skeleton height={36} />
               </GridCol>
             </Grid>
           </GridCol>
@@ -64,19 +64,19 @@ export const ModalUpsertSkeleton = () => {
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='40%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='40%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
           <GridCol span={4}>
             <Stack gap={4}>
               <Skeleton height={15} width='40%' radius='xl' />
-              <Skeleton height={36} radius='md' />
+              <Skeleton height={36} />
             </Stack>
           </GridCol>
 
@@ -88,12 +88,12 @@ export const ModalUpsertSkeleton = () => {
           </GridCol>
 
           <GridCol span={12}>
-            <Skeleton height={42} radius='md' mt='md' />
+            <Skeleton height={42} mt='md' />
           </GridCol>
         </Grid>
       </GridCol>
       <GridCol span={3}>
-        <Skeleton height={200} width='100%' radius='md' />
+        <Skeleton height={200} width='100%' />
       </GridCol>
     </Grid>
   );

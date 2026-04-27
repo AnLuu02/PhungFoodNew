@@ -1,11 +1,10 @@
 'use client';
 
-import { Alert, Box, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
+import { Alert, Box, Button, Center, Group, Modal, PinInput, Stack, Text, Title } from '@mantine/core';
 import { TokenType } from '@prisma/client';
 import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import PeriodControl from '~/app/(web)/(auth)/components/PeriodControl';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 const formatTime = (seconds: number) => {
@@ -87,7 +86,6 @@ export default function OtpModal({
         <Alert
           variant='light'
           color='yellow'
-          radius={'md'}
           title='Mã OTP đã hết hạn. Vui lòng thử lại.'
           icon={<IconInfoCircle />}
           mb={'md'}
@@ -112,18 +110,19 @@ export default function OtpModal({
           <PinInput length={6} value={otp} onChange={setOtp} error={timeLeft === 0} />
         </Center>
 
-        <BButton
+        <Button
           fullWidth
           size='md'
           onClick={handleSubmit}
           disabled={timeLeft === 0}
           loading={loading?.type === 'submit' && loading.value}
-          children={' Xác nhận'}
+          children={'Xác nhận'}
         />
         <Group justify='center' gap={'xs'} align='center'>
           <Text size='sm'>Không nhận được mã OTP?</Text>
-          <BButton
+          <Button
             w={'max-content'}
+            variant='transparent'
             size='xs'
             disabled={timeLeft !== 0}
             loading={loading?.type === 'resend' && loading.value}
@@ -133,7 +132,7 @@ export default function OtpModal({
             }}
           >
             Gửi lại
-          </BButton>
+          </Button>
         </Group>
       </Stack>
     </Modal>

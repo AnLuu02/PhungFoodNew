@@ -1,13 +1,25 @@
 'use client';
 
-import { Box, Divider, Flex, Group, Menu, Paper, Skeleton, Stack, Text, Title, UnstyledButton } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Group,
+  Menu,
+  Paper,
+  Skeleton,
+  Stack,
+  Text,
+  Title,
+  UnstyledButton
+} from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconChevronDown, IconMail, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { menuUserInfo } from '~/lib/ConfigUI';
-import BButton from './Button/Button';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -142,13 +154,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
         {menuUserInfo.map((item, index) => (
           <Link href={item.href} key={index}>
             <Box key={index} className='flex items-center gap-4 hover:bg-mainColor/10' px={'lg'} py={'sm'}>
-              <Paper
-                withBorder
-                className='flex items-center justify-center bg-mainColor/10'
-                w={40}
-                h={40}
-                radius={'md'}
-              >
+              <Paper withBorder className='flex items-center justify-center bg-mainColor/10' w={40} h={40}>
                 <item.icon size={20} />
               </Paper>
               <Stack gap={2}>
@@ -164,10 +170,9 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
           <Divider />
         </Box>
         <Box px={'lg'} mt={'md'}>
-          <BButton
+          <Button
             fullWidth
-            radius={'md'}
-            className='bg-red-600 text-white'
+            variant='danger'
             onClick={() => {
               resetCart();
               resetSelectedVouchers();
@@ -175,7 +180,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
             }}
           >
             Đăng xuất
-          </BButton>
+          </Button>
         </Box>
       </Menu.Dropdown>
     </Menu>

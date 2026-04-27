@@ -20,7 +20,7 @@ export const ThemeTypography = ({
   ];
 
   return (
-    <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+    <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Box mb={'md'}>
         <Title order={4} className='flex items-center gap-2 font-quicksand'>
           <IconTypography className='h-5 w-5' />
@@ -33,7 +33,6 @@ export const ThemeTypography = ({
       <Box className='space-y-6'>
         <Box className='space-y-2'>
           <Select
-            radius='md'
             value={theme.fontFamily}
             label='Font Family'
             onChange={value => setTheme({ ...theme, fontFamily: value! })}
@@ -60,7 +59,7 @@ export const ThemeTypography = ({
 
         <ColorInput label='Text Color' value={theme.textColor} />
 
-        <Paper withBorder radius={'md'} p={'lg'}>
+        <Paper withBorder p={'lg'}>
           <Title
             className='mb-2 font-quicksand text-lg'
             style={{ fontFamily: theme.fontFamily, fontSize: theme.fontSize + 4, color: theme.textColor }}

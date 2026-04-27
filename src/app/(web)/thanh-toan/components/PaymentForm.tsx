@@ -7,7 +7,7 @@ export const PaymentForm = ({ control }: any) => {
     enabled: !!control
   });
   return (
-    <Paper withBorder p='md' radius='md' mb='md'>
+    <Paper withBorder p='md' mb='md'>
       <Box mb='md'>
         <Title order={5} mb='md' fw={700} className='font-quicksand'>
           PHƯƠNG THỨC THANH TOÁN
@@ -16,9 +16,9 @@ export const PaymentForm = ({ control }: any) => {
         <Stack>
           {isLoading ? (
             <Stack mt='sm' className='mb-4'>
-              <Skeleton height={57} radius='md' />
-              <Skeleton height={57} radius='md' />
-              <Skeleton height={57} radius='md' />
+              <Skeleton height={57} />
+              <Skeleton height={57} />
+              <Skeleton height={57} />
             </Stack>
           ) : (
             <Controller
@@ -37,7 +37,7 @@ export const PaymentForm = ({ control }: any) => {
                 >
                   <Stack>
                     {payment?.map((item: any, index: number) => (
-                      <Paper withBorder p='md' radius='md'>
+                      <Paper withBorder p='md'>
                         <Radio
                           label={
                             <Flex align='center' gap='md'>

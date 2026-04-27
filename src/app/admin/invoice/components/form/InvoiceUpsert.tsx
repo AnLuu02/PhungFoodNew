@@ -1,10 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, GridCol, NumberInput, Select, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, NumberInput, Select, TextInput } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { generateInvoiceNumber } from '~/lib/FuncHandler/generateInvoiceNumber';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseInvoiceSchema, InvoiceInput } from '~/shared/schema/invoice.schema';
@@ -121,7 +120,6 @@ export default function InvoiceUpsert({
                 label='Đơn hàng'
                 placeholder='Chọn Đơn hàng'
                 searchable
-                radius='md'
                 data={orders?.map(order => ({
                   value: order.id,
                   label: `DH-${order.id}`
@@ -143,7 +141,6 @@ export default function InvoiceUpsert({
                 label='Saler'
                 placeholder='Chọn Saler'
                 searchable
-                radius='md'
                 data={salers?.map(sale => ({
                   value: sale.id,
                   label: sale.name + `  (${sale?.role?.name})`
@@ -165,7 +162,6 @@ export default function InvoiceUpsert({
                 {...field}
                 label='Số hóa đơn'
                 placeholder='INV-YYYYMMDD-XXX'
-                radius='md'
                 error={errors.invoiceNumber?.message}
               />
             )}
@@ -181,7 +177,6 @@ export default function InvoiceUpsert({
                 {...field}
                 label='Tên khách hàng / Công ty'
                 placeholder='Nhập tên người mua hàng'
-                radius='md'
                 error={errors.buyerName?.message}
               />
             )}
@@ -198,7 +193,6 @@ export default function InvoiceUpsert({
                 value={field.value ?? ''}
                 label='Email'
                 placeholder='example@gmail.com'
-                radius='md'
                 error={errors.buyerEmail?.message}
               />
             )}
@@ -215,7 +209,6 @@ export default function InvoiceUpsert({
                 value={field.value ?? ''}
                 label='Số điện thoại'
                 placeholder='09xxx...'
-                radius='md'
                 error={errors.buyerPhone?.message}
               />
             )}
@@ -232,7 +225,6 @@ export default function InvoiceUpsert({
                 value={field.value ?? ''}
                 label='Mã số thuế'
                 placeholder='MST cá nhân/doanh nghiệp'
-                radius='md'
                 error={errors.buyerTaxCode?.message}
               />
             )}
@@ -248,7 +240,6 @@ export default function InvoiceUpsert({
                 label='Tạm tính'
                 thousandSeparator=','
                 suffix=' ₫'
-                radius='md'
                 value={field.value}
                 onChange={val => field.onChange(Number(val))}
                 error={errors.subTotal?.message}
@@ -266,7 +257,6 @@ export default function InvoiceUpsert({
                 label='Giảm giá'
                 thousandSeparator=','
                 suffix=' ₫'
-                radius='md'
                 value={field.value}
                 onChange={val => field.onChange(Number(val))}
                 error={errors.discountAmount?.message}
@@ -284,7 +274,6 @@ export default function InvoiceUpsert({
                 label='Thuế (VAT)'
                 thousandSeparator=','
                 suffix=' ₫'
-                radius='md'
                 value={field.value}
                 onChange={val => field.onChange(Number(val))}
                 error={errors.taxAmount?.message}
@@ -304,7 +293,6 @@ export default function InvoiceUpsert({
                 variant='filled'
                 thousandSeparator=','
                 suffix=' ₫'
-                radius='md'
                 value={field.value}
                 onChange={val => field.onChange(Number(val))}
                 error={errors.totalAmount?.message}
@@ -321,7 +309,6 @@ export default function InvoiceUpsert({
               <Select
                 {...field}
                 label='Phương thức thanh toán'
-                radius='md'
                 data={[
                   { value: 'VNPAY', label: 'VNPAY (Online)' },
                   { value: 'CASH', label: 'Tiền mặt (COD)' },
@@ -342,16 +329,15 @@ export default function InvoiceUpsert({
                 {...field}
                 label='Hạn thanh toán'
                 placeholder='Chọn ngày'
-                radius='md'
                 error={errors.dueDate?.message}
               />
             )}
           />
         </GridCol>
       </Grid>
-      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <Button type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới / Cập nhật
-      </BButton>
+      </Button>
     </form>
   );
 }

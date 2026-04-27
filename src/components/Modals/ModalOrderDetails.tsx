@@ -36,7 +36,6 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
       <Modal
         scrollAreaComponent={ScrollAreaAutosize}
         opened={opened && type === 'orders'}
-        radius={'md'}
         onClose={onClose}
         size={!isDesktop ? '100%' : '70%'}
         h={'max-content'}
@@ -44,7 +43,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
         padding='md'
         title={
           <Group gap='md'>
-            <ThemeIcon size={40} radius='md' variant='light' color='teal'>
+            <ThemeIcon size={40} variant='light' color='teal'>
               <IconPackage style={{ width: 24, height: 24 }} />
             </ThemeIcon>
             <Box>
@@ -71,7 +70,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
             <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 5 }}>
               <ScrollAreaAutosize scrollbarSize={5} mah={540}>
                 <Stack mr={'xs'}>
-                  <Card withBorder radius='md'>
+                  <Card withBorder>
                     <Group justify='space-between' mb='md'>
                       <Text fw={700} size='md'>
                         Chi tiết
@@ -98,9 +97,9 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                     </Stack>
                   </Card>
 
-                  <Card withBorder radius='md'>
+                  <Card withBorder>
                     <Group gap='md'>
-                      <ThemeIcon size={40} radius='md' variant='light' color='blue'>
+                      <ThemeIcon size={40} variant='light' color='blue'>
                         <IconCreditCard style={{ width: 24, height: 24 }} />
                       </ThemeIcon>
                       <Box>
@@ -114,7 +113,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                     </Group>
                   </Card>
 
-                  <Card withBorder radius='md'>
+                  <Card withBorder>
                     <Group justify='space-between' mb='md'>
                       <Text fw={700} size='md'>
                         Chi tiết thanh toán
@@ -140,11 +139,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                             <Box key={voucher.id} className='ml-6 space-y-1'>
                               <Box className='flex items-center justify-between'>
                                 <Box className='flex items-center gap-2'>
-                                  <Badge
-                                    variant='outline'
-                                    radius={'md'}
-                                    className='border-red-200 bg-red-50 text-xs text-red-600'
-                                  >
+                                  <Badge variant='outline' className='border-red-200 bg-red-50 text-xs text-red-600'>
                                     {voucher.name}
                                   </Badge>
                                   <span className='text-sm text-gray-600 dark:text-dark-text'>
@@ -188,9 +183,9 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                     </Stack>
                   </Card>
 
-                  <Card withBorder radius='md'>
+                  <Card withBorder>
                     <Group gap='md' mb='md'>
-                      <ThemeIcon size={40} radius='md' variant='light' color='grape'>
+                      <ThemeIcon size={40} variant='light' color='grape'>
                         <IconTruck style={{ width: 24, height: 24 }} />
                       </ThemeIcon>
                       <Text fw={700} size='md'>
@@ -233,9 +228,9 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
 
             <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 7 }}>
               <ScrollAreaAutosize scrollbarSize={5} mah={540}>
-                <Card withBorder radius='md'>
+                <Card withBorder>
                   <Group gap='md' mb='md'>
-                    <ThemeIcon size={40} radius='md' variant='light' color='teal'>
+                    <ThemeIcon size={40} variant='light' color='teal'>
                       <IconPackage style={{ width: 24, height: 24 }} />
                     </ThemeIcon>
                     <Text fw={700} size='md'>
@@ -263,7 +258,6 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                                 getImageProduct(item?.product?.imageForEntities || [], ImageType.THUMBNAIL) ||
                                 '/images/jpg/empty-300x240.jpg'
                               }
-                              radius={'md'}
                             />
                           </Table.Td>
 

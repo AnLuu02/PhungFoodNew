@@ -5,7 +5,6 @@ import { useDebouncedValue } from '@mantine/hooks';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseRoleSchema, RoleInput } from '~/shared/schema/role.schema';
@@ -110,7 +109,6 @@ export default function RoleUpsert({
                 label='Tên vai trò'
                 required
                 size='sm'
-                radius='md'
                 placeholder='Nhập tên vai trò'
                 error={errors.name?.message}
               />
@@ -127,7 +125,6 @@ export default function RoleUpsert({
                 label='Tên phiên âm vai trò'
                 required
                 size='sm'
-                radius='md'
                 placeholder='Nhập tên phiên âm vai trò'
                 error={errors.viName?.message}
               />
@@ -168,7 +165,6 @@ export default function RoleUpsert({
       <Group align='center' justify='flex-end' className='mt-4'>
         <Button
           variant='outline'
-          radius={'md'}
           size='xs'
           onClick={() => {
             setSeletedPermissions([]);
@@ -179,13 +175,13 @@ export default function RoleUpsert({
         >
           Đặt lại
         </Button>
-        <BButton
+        <Button
           type='submit'
           loading={isSubmitting}
           disabled={!isDirty && seletedPermissions.length === permissions.length}
         >
           Tạo mới / Cập nhật
-        </BButton>
+        </Button>
       </Group>
     </form>
   );

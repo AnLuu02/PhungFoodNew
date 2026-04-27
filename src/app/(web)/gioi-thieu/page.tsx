@@ -1,9 +1,21 @@
-import { Avatar, Badge, Box, Card, Flex, Group, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Group,
+  SimpleGrid,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title
+} from '@mantine/core';
 import { IconChefHat, IconMail, IconMapPin, IconPhone, IconStar } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import BButton from '~/components/Button/Button';
 import Reveal from '~/components/Reveal';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api } from '~/trpc/server';
@@ -51,7 +63,7 @@ export default async function AboutPage() {
               Từ năm 2010, chúng tôi đã mang đến những món ăn nhanh chất lượng cao với hương vị đậm đà Việt Nam
             </Text>
             <Link href={'/thuc-don'} className='animate-fadeUp' style={{ animationDuration: '1.25s' }}>
-              <BButton size='lg' w={'max-content'} children={'Xem thực đơn'} />
+              <Button size='lg' w={'max-content'} children={'Xem thực đơn'} />
             </Link>
           </Box>
         </Box>
@@ -489,11 +501,11 @@ export default async function AboutPage() {
             </Text>
             <Box className='flex flex-col justify-center gap-4 sm:flex-row'>
               <Link href={'/dang-ky'}>
-                <BButton size='lg' w={'max-content'} children={' Đăng ký ngay'} />
+                <Button size='lg' w={'max-content'} children={'Đăng ký ngay'} />
               </Link>
 
               <Link href={'/thuc-don'}>
-                <BButton size='lg' w={'max-content'} variant='outline' children={'Xem thực đơn'} />
+                <Button size='lg' w={'max-content'} variant='outline' children={'Xem thực đơn'} />
               </Link>
             </Box>
           </Box>

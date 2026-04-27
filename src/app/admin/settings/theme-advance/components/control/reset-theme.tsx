@@ -1,5 +1,5 @@
+import { Button } from '@mantine/core';
 import { IconRotateClockwise } from '@tabler/icons-react';
-import BButton from '~/components/Button/Button';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ThemeConfig, ThemeTemplate } from '~/types/theme';
 
@@ -17,9 +17,9 @@ export const ResetTheme = ({
 
   return (
     <>
-      <BButton variant='outline' leftSection={<IconRotateClockwise size={16} />} onClick={handleReset}>
+      <Button variant='outline' leftSection={<IconRotateClockwise size={16} />} onClick={handleReset}>
         Reset
-      </BButton>
+      </Button>
     </>
   );
 };

@@ -1,6 +1,17 @@
 'use client';
 
-import { ActionIcon, Badge, Divider, Group, Modal, Paper, ScrollAreaAutosize, SimpleGrid, Title } from '@mantine/core';
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Divider,
+  Group,
+  Modal,
+  Paper,
+  ScrollAreaAutosize,
+  SimpleGrid,
+  Title
+} from '@mantine/core';
 import {
   IconCalendar,
   IconCreditCard,
@@ -17,7 +28,6 @@ import { api } from '~/trpc/react';
 
 import { Box, Card, Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
-import BButton from '~/components/Button/Button';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import InvoiceUpsert from './form/InvoiceUpsert';
@@ -26,11 +36,10 @@ export function CreateInvoiceButton({ allData }: any) {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
-        radius={'md'}
         opened={opened}
         closeOnClickOutside={false}
         zIndex={150}
@@ -56,7 +65,6 @@ export function UpdateInvoiceButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
-        radius={'md'}
         size={'xl'}
         opened={opened}
         zIndex={150}
@@ -201,7 +209,7 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                 </Title>
                 <Stack gap='xs'>
                   {data.order?.orderItems?.map((item: any, idx: number) => (
-                    <Card key={idx} withBorder radius='md' p='sm' className='transition-colors hover:bg-gray-50'>
+                    <Card key={idx} withBorder p='sm' className='transition-colors hover:bg-gray-50'>
                       <Flex justify='space-between' align='center'>
                         <Group>
                           <Image
@@ -237,7 +245,7 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                 </Stack>
               </Box>
 
-              <Paper withBorder radius='md' p='md' bg='gray.0' className='ml-auto max-w-sm'>
+              <Paper withBorder p='md' bg='gray.0' className='ml-auto max-w-sm'>
                 <Stack gap='sm'>
                   <Flex justify='space-between'>
                     <Text size='sm' c='dimmed'>
@@ -280,7 +288,7 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                   <Text size='xs' fw={700} c='dimmed' className='mb-1 uppercase'>
                     Ghi chú hóa đơn
                   </Text>
-                  <Paper p='sm' withBorder radius='md' className='bg-yellow-50/50 italic text-gray-600'>
+                  <Paper p='sm' withBorder className='bg-yellow-50/50 italic text-gray-600'>
                     <Text size='sm'>"{data.note}"</Text>
                   </Paper>
                 </Box>
@@ -288,9 +296,9 @@ export function ViewInvoiceButton({ data }: { data: any }) {
             </Box>
 
             <Box p='md' className='flex justify-end gap-3 rounded-b-lg border-t bg-gray-50'>
-              <BButton variant='outline' onClick={() => setOpened(false)}>
+              <Button variant='danger' onClick={() => setOpened(false)}>
                 Đóng
-              </BButton>
+              </Button>
               {data.pdfUrl && (
                 <a
                   href={data.pdfUrl}

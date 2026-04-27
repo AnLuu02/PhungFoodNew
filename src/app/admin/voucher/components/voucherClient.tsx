@@ -103,7 +103,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
               style={{ backgroundColor: item.color + 10 }}
             >
               <Flex align={'center'} gap={'md'}>
-                <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
+                <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
                 </ActionIcon>
                 <Box>
@@ -124,7 +124,6 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
           <SearchInput width={500} />
           <Group>
             <Select
-              radius='md'
               allowDeselect={false}
               value={statusFilter}
               onChange={value => setStatusFilter(value as string)}
@@ -137,7 +136,6 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
             />
 
             <Select
-              radius='md'
               value={typeFilter}
               allowDeselect={false}
               onChange={value => setTypeFilter(value as string)}

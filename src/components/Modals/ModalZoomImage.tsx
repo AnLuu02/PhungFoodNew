@@ -271,7 +271,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
                 w={60}
                 h={60}
                 withBorder
-                radius='md'
                 onClick={() =>
                   handleThumbnailClick(totalImages[displayImages.length] as ImageType, displayImages.length)
                 }

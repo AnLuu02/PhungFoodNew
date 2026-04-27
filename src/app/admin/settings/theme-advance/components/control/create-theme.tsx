@@ -3,7 +3,6 @@
 import { Box, Button, Modal, Select, Text, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ThemeConfig, ThemeTemplate } from '~/types/theme';
 
@@ -46,9 +45,9 @@ export const CreateTheme = ({
   };
   return (
     <>
-      <BButton variant='outline' leftSection={<IconPlus size={16} />} onClick={() => setIsCreateDialogOpen(true)}>
+      <Button variant='outline' leftSection={<IconPlus size={16} />} onClick={() => setIsCreateDialogOpen(true)}>
         Tạo mẫu
-      </BButton>
+      </Button>
       <Modal
         opened={isCreateDialogOpen}
         onClose={() => setIsCreateDialogOpen(false)}
@@ -68,7 +67,6 @@ export const CreateTheme = ({
             </label>
             <TextInput
               id='template-name'
-              radius='md'
               value={newTemplateName}
               onChange={e => setNewTemplateName(e.currentTarget.value)}
               placeholder='My Custom Theme'
@@ -80,7 +78,6 @@ export const CreateTheme = ({
               Mô tả (Tùy chọn)
             </label>
             <TextInput
-              radius='md'
               id='template-description'
               value={newTemplateDescription}
               onChange={e => setNewTemplateDescription(e.currentTarget.value)}
@@ -94,7 +91,6 @@ export const CreateTheme = ({
             </label>
             <Select
               id='template-category'
-              radius='md'
               value={newTemplateCategory}
               onChange={e => setNewTemplateCategory(e as string)}
               placeholder='Select category'

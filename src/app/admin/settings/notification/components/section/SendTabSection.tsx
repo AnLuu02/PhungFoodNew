@@ -1,9 +1,8 @@
 'use client';
 
-import { Badge, Box, Card, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
+import { Badge, Box, Button, Card, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { IconUser, IconUsers } from '@tabler/icons-react';
 import { Dispatch, SetStateAction } from 'react';
-import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { NotificationClient } from '~/shared/schema/notification.schema';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo } from '../../helpers';
@@ -69,9 +68,9 @@ export const SendTabSection = ({
               </Text>
               <Text size='sm'>Thông báo mới nhất của bạn đã gửi</Text>
             </Box>
-            <BButton onClick={() => changeTab('history')} disabled={notifications?.length <= 5}>
+            <Button onClick={() => changeTab('history')} disabled={notifications?.length <= 5}>
               Xem thêm
-            </BButton>
+            </Button>
           </Group>
           <Box className='space-y-4'>
             {notifications?.length > 0 ? (
@@ -103,12 +102,12 @@ export const SendTabSection = ({
                         {priority?.viName}
                       </Badge>
                     </Box>
-                    <BButton
+                    <Button
                       variant='outline'
                       onClick={() => setShowSendDialog({ open: true, typeAction: 'update', notification })}
                     >
                       Gửi lại
-                    </BButton>
+                    </Button>
                   </Paper>
                 );
               })

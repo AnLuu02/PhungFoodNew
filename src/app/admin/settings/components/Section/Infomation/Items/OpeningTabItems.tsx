@@ -11,7 +11,6 @@ export const OpeningTabItems = ({ item, index }: { item: any; index: number }) =
         component='label'
         htmlFor={`openingTime_${index}`}
         withBorder
-        radius={'md'}
         key={index}
         className='flex items-center gap-4 bg-gray-100 p-4 dark:bg-dark-card'
         mih={83}
@@ -25,7 +24,7 @@ export const OpeningTabItems = ({ item, index }: { item: any; index: number }) =
           control={control}
           name={`${name}.viNameDay`}
           render={({ field, fieldState }) => (
-            <TextInput {...field} className='hidden' error={fieldState.error?.message} radius='md' />
+            <TextInput {...field} className='hidden' error={fieldState.error?.message} />
           )}
         />
         <Controller
@@ -54,7 +53,7 @@ export const OpeningTabItems = ({ item, index }: { item: any; index: number }) =
               control={control}
               name={`${name}.openTime`}
               render={({ field, fieldState }) => (
-                <TextInput {...field} type='time' className='w-32' error={fieldState.error?.message} radius='md' />
+                <TextInput {...field} type='time' className='w-32' error={fieldState.error?.message} />
               )}
             />
             <Text size='sm' fw={700}>
@@ -64,7 +63,7 @@ export const OpeningTabItems = ({ item, index }: { item: any; index: number }) =
               control={control}
               name={`${name}.closeTime`}
               render={({ field, fieldState }) => (
-                <TextInput type='time' {...field} className='w-32' error={fieldState.error?.message} radius='md' />
+                <TextInput type='time' {...field} className='w-32' error={fieldState.error?.message} />
               )}
             />
           </Box>
@@ -73,7 +72,6 @@ export const OpeningTabItems = ({ item, index }: { item: any; index: number }) =
         <Box className='ml-auto'>
           <Badge
             size='lg'
-            radius={'md'}
             bg={watchedOpeningHour?.isClosed ? 'red' : ''}
             variant={watchedOpeningHour?.isClosed ? 'filled' : 'default'}
           >

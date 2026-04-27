@@ -1,9 +1,8 @@
 'use client';
 
-import { Box, Flex, Paper, TabsPanel, Text, Title } from '@mantine/core';
+import { Box, Button, Flex, Paper, TabsPanel, Text, Title } from '@mantine/core';
 import { IconGlobe, IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { SocialLinkModal } from '../../../Modal/ModalCreateSocial';
 import { SocialTabItem } from '../Items/SocialTabItems';
 export const SocialTab = ({ socials, restaurantId }: { socials: any; restaurantId: string }) => {
@@ -11,7 +10,7 @@ export const SocialTab = ({ socials, restaurantId }: { socials: any; restaurantI
   return (
     <>
       <TabsPanel value='social' className='space-y-6'>
-        <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+        <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
           <Flex align={'center'} justify={'space-between'}>
             <Box mb={'md'}>
               <Title order={4} className='flex items-center gap-2 font-quicksand'>
@@ -22,7 +21,7 @@ export const SocialTab = ({ socials, restaurantId }: { socials: any; restaurantI
                 Kết nối các tài khoản mạng xã hội của bạn để tăng khả năng hiển thị
               </Text>
             </Box>
-            <BButton
+            <Button
               variant='outline'
               leftSection={<IconPlus size={16} />}
               onClick={() => {
@@ -30,7 +29,7 @@ export const SocialTab = ({ socials, restaurantId }: { socials: any; restaurantI
               }}
             >
               Thêm
-            </BButton>
+            </Button>
           </Flex>
           <Box className='space-y-4'>
             {socials && socials?.length > 0 && (

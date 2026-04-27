@@ -5,7 +5,7 @@ import { ThemeConfig } from '~/types/theme';
 
 export const ThemeCustom = ({ theme, setTheme }: { theme: ThemeConfig; setTheme: (theme: ThemeConfig) => void }) => {
   return (
-    <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+    <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Box mb={'md'}>
         <Title order={4} className='font-quicksand'>
           Custom CSS

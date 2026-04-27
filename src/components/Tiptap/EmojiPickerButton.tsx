@@ -22,7 +22,6 @@ export function EmojiPickerButton({ editor }: { editor: Editor | null }) {
         <Button
           size='xs'
           variant='subtle'
-          radius='md'
           onClick={() => setOpened(o => !o)}
           classNames={{
             root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`

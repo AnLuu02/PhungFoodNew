@@ -1,11 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, Group, NumberInput, Select, TextInput } from '@mantine/core';
+import { Button, Grid, Group, NumberInput, Select, TextInput } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
@@ -82,9 +81,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
         <Controller
           name='id'
           control={control}
-          render={({ field }) => (
-            <TextInput hidden {...field} error={errors.id?.message} className='hidden' radius='md' />
-          )}
+          render={({ field }) => <TextInput hidden {...field} error={errors.id?.message} className='hidden' />}
         />
         <Grid.Col span={6}>
           <Controller
@@ -94,7 +91,6 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
               <Select
                 label='Khách hàng'
                 searchable
-                radius='md'
                 placeholder='Chọn khách hàng'
                 data={users?.map((user: any) => ({ value: user.id, label: user.name }))}
                 {...field}
@@ -109,7 +105,6 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='totalSpent'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Tổng chi'
                 required
@@ -126,7 +121,6 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='totalOrders'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Tổng đơn hàng'
                 required
@@ -143,7 +137,6 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='day'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Ngày'
                 required
@@ -162,7 +155,6 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='month'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Tháng'
                 min={1}
@@ -181,7 +173,6 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
             name='year'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Năm'
                 required
@@ -197,9 +188,9 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
       </Grid>
 
       <Group align='center' justify='flex-end' className='mt-4'>
-        <BButton type='submit' loading={isSubmitting} disabled={!isDirty}>
+        <Button type='submit' loading={isSubmitting} disabled={!isDirty}>
           Cập nhật
-        </BButton>
+        </Button>
       </Group>
     </form>
   );

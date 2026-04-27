@@ -47,7 +47,7 @@ export const RevenuesDashboard = ({ dataRevenue, period, startTimeToNum, endTime
             {dataRevenue.map((item: any, index: number) => {
               const IconR = item.icon;
               return (
-                <Card key={index} radius={'md'} withBorder shadow='md'>
+                <Card key={index} withBorder shadow='md'>
                   <Stack gap={'xs'}>
                     <Text size='sm' fw={700} c={'dimmed'}>
                       {item.label}
@@ -64,7 +64,6 @@ export const RevenuesDashboard = ({ dataRevenue, period, startTimeToNum, endTime
                         style={{
                           backgroundColor: item.color + '22'
                         }}
-                        radius={'md'}
                       >
                         <IconR size={16} color={item.color} />
                       </Paper>

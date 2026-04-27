@@ -4,6 +4,7 @@ import {
   ActionIcon,
   Badge,
   Box,
+  Button,
   Card,
   Center,
   Divider,
@@ -25,7 +26,6 @@ import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { useModalActions } from '~/contexts/ModalContext';
@@ -116,10 +116,10 @@ export function OrderList({ orders }: { orders: any }) {
           </Text>
         </Box>
         <Link href={'/gio-hang'}>
-          <BButton>Tạo đơn hàng mới</BButton>
+          <Button>Tạo đơn hàng mới</Button>
         </Link>
       </Flex>
-      <Card shadow='sm' padding='lg' radius='md' withBorder>
+      <Card shadow='sm' padding='lg' withBorder>
         <SimpleGrid cols={{ base: 2, sm: 2, md: 3, xl: 5 }} mb={'lg'}>
           {ORDER_STATUS_UI.map(status => (
             <Box
@@ -166,12 +166,11 @@ export function OrderList({ orders }: { orders: any }) {
           </Stack>
         </Flex>
       </Card>
-      <Card shadow='sm' padding='lg' radius='md' withBorder>
+      <Card shadow='sm' padding='lg' withBorder>
         <Tabs
           variant='pills'
           content='center'
           value={activeTab}
-          radius={'md'}
           onChange={(value: any) => setActiveTab(value)}
           styles={{
             tab: {
@@ -278,7 +277,7 @@ export function OrderList({ orders }: { orders: any }) {
                               {order?.status === OrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Tiếp tục thanh toán'>
-                                    <BButton size='xs'>Thanh toán</BButton>
+                                    <Button size='xs'>Thanh toán</Button>
                                   </Tooltip>
                                 </Link>
                               )}
@@ -286,19 +285,19 @@ export function OrderList({ orders }: { orders: any }) {
                               {order?.status === OrderStatus.CANCELLED && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Đặt lại đơn hàng'>
-                                    <BButton size='xs'>Đặt lại</BButton>
+                                    <Button size='xs'>Đặt lại</Button>
                                   </Tooltip>
                                 </Link>
                               )}
                               <Tooltip label='Chi tiết'>
-                                <BButton
+                                <Button
                                   size='xs'
                                   onClick={() => {
                                     openModal('orders', null, order);
                                   }}
                                 >
                                   Chi tiết
-                                </BButton>
+                                </Button>
                               </Tooltip>
                             </Group>
                           </Table.Td>
@@ -334,7 +333,6 @@ export function OrderList({ orders }: { orders: any }) {
           <Select
             value={String(perPage)}
             w={100}
-            radius='md'
             onChange={value => {
               setPerPage(Number(value));
               setPage(1);

@@ -1,10 +1,9 @@
 'use client';
 
-import { Alert, Group, Modal, Select, SimpleGrid, Switch, Text, TextInput, Title } from '@mantine/core';
+import { Alert, Button, Group, Modal, Select, SimpleGrid, Switch, Text, TextInput, Title } from '@mantine/core';
 import { IconAlertCircle } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { TEMPLATE_OPTIONS } from '~/lib/FuncHandler/generateSocial';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -80,7 +79,7 @@ export function SocialLinkModal({
       size='lg'
     >
       {selectedTemplate?.value === 'custom' && (
-        <Alert icon={<IconAlertCircle size={18} />} mb={'xs'} color='yellow' radius={'md'} title='Cảnh báo hành động'>
+        <Alert icon={<IconAlertCircle size={18} />} mb={'xs'} color='yellow' title='Cảnh báo hành động'>
           <Text size='sm'>
             <strong>Lưu ý:</strong> Đây là lựa chọn không khuyến cáo. Hãy liên hệ kĩ thuật viên hoặc nếu bạn là người
             hiểu nguyên tắc hoạt đông./
@@ -89,7 +88,6 @@ export function SocialLinkModal({
       )}
       <SimpleGrid cols={2} mb={'md'}>
         <Select
-          radius='md'
           label='Mẫu liên kết'
           defaultValue={opened?.social?.platform || ''}
           placeholder='Chọn mẫu có sẵn'
@@ -99,36 +97,32 @@ export function SocialLinkModal({
         <Controller
           control={control}
           name={`socials.${currentIndex}.platform`}
-          render={({ field }) => <TextInput radius='md' placeholder='vd: facebook' label='Platform' {...field} />}
+          render={({ field }) => <TextInput placeholder='vd: facebook' label='Platform' {...field} />}
         />
 
         <Controller
           control={control}
           name={`socials.${currentIndex}.label`}
-          render={({ field }) => <TextInput placeholder='vd: Facebook' radius='md' label='Label' {...field} />}
+          render={({ field }) => <TextInput placeholder='vd: Facebook' label='Label' {...field} />}
         />
 
         <Controller
           control={control}
           name={`socials.${currentIndex}.value`}
-          render={({ field }) => (
-            <TextInput radius='md' label='Value' placeholder='Số điện thoại hoặc username...' {...field} />
-          )}
+          render={({ field }) => <TextInput label='Value' placeholder='Số điện thoại hoặc username...' {...field} />}
         />
 
         <Controller
           control={control}
           name={`socials.${currentIndex}.pattern`}
-          render={({ field }) => (
-            <TextInput radius='md' label='Pattern' placeholder='Ví dụ: https://zalo.me/{value}' {...field} />
-          )}
+          render={({ field }) => <TextInput label='Pattern' placeholder='Ví dụ: https://zalo.me/{value}' {...field} />}
         />
 
         <Controller
           control={control}
           name={`socials.${currentIndex}.icon`}
           render={({ field }) => (
-            <TextInput radius='md' placeholder='vd: brand-facebook' label='Icon (https://tabler.io/icons)' {...field} />
+            <TextInput placeholder='vd: brand-facebook' label='Icon (https://tabler.io/icons)' {...field} />
           )}
         />
       </SimpleGrid>
@@ -138,7 +132,6 @@ export function SocialLinkModal({
           name={`socials.${currentIndex}.isActive`}
           render={({ field }) => (
             <Switch
-              radius='md'
               label='Kích hoạt'
               checked={field.value}
               className='border-1 rounded-md border border-solid border-mainColor/50 p-2 hover:bg-mainColor/10'
@@ -149,12 +142,12 @@ export function SocialLinkModal({
           )}
         />
         <Group justify='flex-end' mt='md'>
-          <BButton variant='outline' onClick={onClose}>
+          <Button variant='danger' onClick={onClose}>
             Hủy
-          </BButton>
-          <BButton type='submit' loading={loading} onClick={onSubmit}>
+          </Button>
+          <Button type='submit' loading={loading} onClick={onSubmit}>
             {isEdit ? 'Cập nhật' : 'Tạo mới'}
-          </BButton>
+          </Button>
         </Group>
       </Group>
     </Modal>

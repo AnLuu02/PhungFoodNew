@@ -1,9 +1,8 @@
 'use client';
 
-import { ActionIcon, Modal, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Button, Modal, Title, Tooltip } from '@mantine/core';
 import { IconCopy, IconEdit, IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import CreateRevenue from './form/CreateRevenue';
@@ -13,9 +12,9 @@ export function CreateRevenueButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
         zIndex={150}
         closeOnClickOutside={false}

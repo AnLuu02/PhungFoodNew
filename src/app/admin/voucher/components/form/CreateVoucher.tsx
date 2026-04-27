@@ -22,7 +22,6 @@ import { VoucherType } from '@prisma/client';
 import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseVoucherSchema, VoucherInput } from '~/shared/schema/voucher.schema';
 import { api } from '~/trpc/react';
@@ -98,7 +97,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 name='name'
                 render={({ field }) => (
                   <TextInput
-                    radius='md'
                     {...field}
                     required
                     label='Tên voucher'
@@ -118,7 +116,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                     <TextInput
                       {...field}
                       required
-                      radius='md'
                       flex={1}
                       onKeyDown={e => {
                         if (e.key === ' ') {
@@ -133,7 +130,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 />
                 <Button
                   size='sm'
-                  radius={'md'}
                   variant='subtle'
                   onClick={generatePromotionCode}
                   styles={{
@@ -166,7 +162,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 name='type'
                 render={({ field }) => (
                   <Select
-                    radius='md'
                     label='Hình thức khuyến mãi'
                     searchable
                     placeholder='Chọn phương thức'
@@ -188,7 +183,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 name='discountValue'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     leftSection={watch('type') === VoucherType.PERCENTAGE ? '%' : '$'}
                     thousandSeparator=','
@@ -214,7 +208,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 name='minOrderPrice'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Giá trị đơn hàng tối thiểu'
@@ -232,7 +225,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 name='maxDiscount'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Giảm giá tối đa'
@@ -285,7 +277,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 name='quantity'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Số lượng voucher'
@@ -301,7 +292,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                 name='quantityForUser'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Số lượng cho người dùng'
@@ -381,7 +371,6 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
                       name='pointUser'
                       render={({ field }) => (
                         <NumberInput
-                          radius={'md'}
                           {...field}
                           thousandSeparator=','
                           label='Giá trị điểm tối thiểu'
@@ -399,9 +388,9 @@ export default function CreateVoucher({ setOpened }: { setOpened: Dispatch<SetSt
         </Grid.Col>
       </Grid>
 
-      <BButton type='submit' className='mt-8' loading={isSubmitting} disabled={!isDirty} fullWidth>
+      <Button type='submit' className='mt-8' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Tạo mới
-      </BButton>
+      </Button>
     </form>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
+import { Button, ButtonProps } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import BButton, { IBButtonProps } from '~/components/Button/Button';
 import { flyToCart, getVisibleToEl } from '~/lib/ButtonHandler/FlyToCart';
 
 export function ButtonAddToCart({
@@ -11,14 +11,14 @@ export function ButtonAddToCart({
   notify
 }: {
   product: any;
-  style: IBButtonProps;
+  style: ButtonProps;
   handleAfterAdd: () => void;
   notify: (title?: string, message?: string) => void;
 }) {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
 
   return (
-    <BButton
+    <Button
       radius={'xl'}
       size={'xs'}
       onClick={() => {

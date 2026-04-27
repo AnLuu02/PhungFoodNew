@@ -34,12 +34,7 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Avatar
-                      src={item.imageForEntity?.image?.url}
-                      alt={item?.imageForEntity?.altText}
-                      size={40}
-                      radius='md'
-                    />
+                    <Avatar src={item.imageForEntity?.image?.url} alt={item?.imageForEntity?.altText} size={40} />
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -52,7 +47,7 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Badge p='sm' radius='md' color={item.isActive ? '#195EFE' : 'red'}>
+                    <Badge p='sm' color={item.isActive ? '#195EFE' : 'red'}>
                       {item.isActive ? 'Hoạt động' : 'Bị cấm'}
                     </Badge>
                   </Table.Td>

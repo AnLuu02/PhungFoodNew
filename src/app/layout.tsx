@@ -21,6 +21,7 @@ import { ModalProvider } from '~/contexts/ModalContext';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 import { api } from '~/trpc/server';
+import { mainTheme } from './theme';
 
 const quickSandFont = Quicksand({
   subsets: ['latin'],
@@ -105,7 +106,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </head>
       <body className={`${quickSandFont.className}`}>
         <TRPCReactProvider>
-          <MantineProvider defaultColorScheme={defaultScheme}>
+          <MantineProvider defaultColorScheme={defaultScheme} theme={mainTheme}>
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>

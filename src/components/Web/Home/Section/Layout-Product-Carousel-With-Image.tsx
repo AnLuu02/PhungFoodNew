@@ -2,6 +2,7 @@
 import {
   BackgroundImage,
   Box,
+  Button,
   Card,
   Flex,
   Overlay,
@@ -15,7 +16,6 @@ import {
 } from '@mantine/core';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import TabsPanelCarousel from './TabsPanel';
 const LayoutProductCarouselWithImage = ({
   title,
@@ -62,7 +62,7 @@ const LayoutProductCarouselWithImage = ({
           w={{ base: '100%', md: '25%' }}
           pos={'relative'}
         >
-          <Overlay color='#000' opacity={0.5} zIndex={1} radius='md' />
+          <Overlay color='#000' opacity={0.5} zIndex={1} />
           <Stack pos={'absolute'} className='inset-0 z-10' p={'lg'}>
             <Box pos='absolute' className='z-[-1]' left={0} top={0} h='100%' w='100%' bg='black' opacity={0.2} />
             <Title order={2} className='font-quicksand text-white'>
@@ -78,7 +78,7 @@ const LayoutProductCarouselWithImage = ({
             <Text size='md' className='text-white' fw={700}>
               Chỉ trong tuần này. Đừng bỏ lỡ...
             </Text>
-            <BButton children={'Mua ngay'} radius='xl' w={'max-content'} />
+            <Button children={'Mua ngay'} radius='xl' w={'max-content'} />
           </Stack>
         </BackgroundImage>
         <Tabs
@@ -133,7 +133,7 @@ const LayoutProductCarouselWithImage = ({
 
           <Flex align={'center'} justify={'center'} mt={30}>
             <Link href={`/thuc-don?loai=${loai}`}>
-              <BButton children={'Xem tất cả'} variant='outline' radius={'xl'} />
+              <Button children={'Xem tất cả'} variant='outline' radius={'xl'} />
             </Link>
           </Flex>
         </Tabs>

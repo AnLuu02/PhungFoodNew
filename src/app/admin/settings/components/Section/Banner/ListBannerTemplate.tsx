@@ -1,10 +1,9 @@
 'use client';
 
-import { ActionIcon, Badge, Box, Card, Group, Image, SimpleGrid, Stack } from '@mantine/core';
+import { ActionIcon, Badge, Box, Button, Card, Group, Image, SimpleGrid, Stack } from '@mantine/core';
 import { IconEye, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -89,7 +88,6 @@ export default function ListBannerTemplate({
               <Card
                 key={banner.id}
                 pos='relative'
-                radius={'md'}
                 h={320}
                 p={0}
                 withBorder
@@ -110,13 +108,13 @@ export default function ListBannerTemplate({
                       Mặc định
                     </Badge>
                   ) : (
-                    <BButton
+                    <Button
                       size='xs'
                       loading={loading?.type === 'set-default' && loading.value}
                       onClick={() => handleSetDefault(banner.id)}
                     >
                       Đặt mặc định
-                    </BButton>
+                    </Button>
                   )}
                 </Box>
 
@@ -138,18 +136,17 @@ export default function ListBannerTemplate({
                   </Badge>
 
                   <Group justify='space-between' gap='xs'>
-                    <BButton
+                    <Button
                       leftSection={<IconEye size={16} />}
                       onClick={() => setViewBanner({ isOpened: true, activeBanner: banner })}
                       flex={1}
                     >
                       Xem
-                    </BButton>
+                    </Button>
 
                     <ActionIcon
                       variant='light'
                       color='red'
-                      radius='md'
                       loading={loading?.type === 'delete' && loading.value}
                       onClick={() => {
                         handleDeleteBanner(banner.id);

@@ -28,7 +28,6 @@ const Header3 = ({ categories, subCategories }: any) => {
       <ActionIcon
         variant='default'
         size='xl'
-        radius={'md'}
         onClick={toggle}
         className='border border-gray-100 bg-gray-50 shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] transition-all hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1)] active:translate-y-0.5 active:shadow-inner dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-[4px_4px_12px_rgba(0,0,0,0.5),-1px_-1px_10px_rgba(255,255,255,0.02)] dark:hover:shadow-[2px_2px_8px_rgba(0,0,0,0.6)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7)] md:hidden'
         classNames={{
@@ -45,7 +44,6 @@ const Header3 = ({ categories, subCategories }: any) => {
       >
         <Box className='sm:order-1' p={0} m={0}>
           <Menu
-            radius={'md'}
             shadow='md'
             classNames={{
               dropdown: 'border-mainColor bg-white',

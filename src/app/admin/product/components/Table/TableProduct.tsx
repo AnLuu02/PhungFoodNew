@@ -89,7 +89,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
               p={'md'}
             >
               <Flex align={'center'} gap={'md'}>
-                <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
+                <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
                 </ActionIcon>
                 <Box>
@@ -112,7 +112,6 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
             <Select
               allowDeselect={false}
               value={searchParams.get('filter') || 'all'}
-              radius='md'
               onChange={value => {
                 if (value === 'all') params.delete('filter');
                 else {
@@ -130,7 +129,6 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
             />
             <Select
               allowDeselect={false}
-              radius='md'
               value={searchParams.get('s') || 'all'}
               disabled={isLoading}
               onChange={value => {
@@ -182,7 +180,6 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                       src={getImageProduct(item?.imageForEntities ?? [], ImageType.THUMBNAIL)}
                       alt={item.name}
                       size={40}
-                      radius='md'
                     />
                   </Table.Td>
 
@@ -191,9 +188,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                     {item?.materials?.length > 0
                       ? item?.materials?.map((i: any, index: number) => (
                           <Tooltip label={i?.name} key={index}>
-                            <Badge radius={'md'} bg={randomColorHex(index + 20)}>
-                              {i?.name}
-                            </Badge>
+                            <Badge bg={randomColorHex(index + 20)}>{i?.name}</Badge>
                           </Tooltip>
                         ))
                       : 'Đang cập nhật'}

@@ -9,7 +9,6 @@ export const ViewVoucherModal = ({ selectedPromotion, setSelectedPromotion }: an
   return (
     <Modal
       padding={'lg'}
-      radius={'md'}
       opened={selectedPromotion !== null && selectedPromotion.type === 'view'}
       onClose={() => setSelectedPromotion(null)}
       title={

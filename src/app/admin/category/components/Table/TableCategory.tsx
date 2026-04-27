@@ -47,7 +47,7 @@ export default function TableCategory({ data, s, user }: { s: string; data: any;
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Badge p='sm' radius='md' color={row.isActive ? '#195EFE' : 'red'}>
+                    <Badge p='sm' color={row.isActive ? '#195EFE' : 'red'}>
                       {row.isActive ? 'Hoạt động' : 'Bị cấm'}
                     </Badge>
                   </Table.Td>

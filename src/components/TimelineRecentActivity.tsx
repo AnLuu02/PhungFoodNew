@@ -1,8 +1,20 @@
-import { Avatar, Badge, Box, Divider, Group, Paper, Stack, Text, Timeline, TimelineItem, Title } from '@mantine/core';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Divider,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  Timeline,
+  TimelineItem,
+  Title
+} from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { formatTimeAgo } from '~/lib/FuncHandler/Format';
-import BButton from './Button/Button';
 
 export default function TimelineRecentActivity({ recentActivities }: { recentActivities: any }) {
   return (
@@ -24,7 +36,7 @@ export default function TimelineRecentActivity({ recentActivities }: { recentAct
                 key={index}
                 bullet={<Avatar src={item?.user?.imageForEntity?.image?.url} radius='xl' size={34} />}
               >
-                <Paper p='xs' radius='md' withBorder shadow='none' bg='gray.0'>
+                <Paper p='xs' withBorder shadow='none' bg='gray.0'>
                   <Group justify='space-between' align='flex-start' wrap='nowrap'>
                     <Stack gap={4}>
                       <Box size='sm' style={{ fontSize: '12px', lineHeight: 1.5 }}>
@@ -56,7 +68,7 @@ export default function TimelineRecentActivity({ recentActivities }: { recentAct
             ))}
           </Timeline>
         ) : (
-          <Paper withBorder p='xl' radius='md' style={{ borderStyle: 'dashed' }}>
+          <Paper withBorder p='xl' style={{ borderStyle: 'dashed' }}>
             <Stack align='center' gap='xs'>
               <Text size='sm' c='dimmed' fw={500}>
                 Chưa có hoạt động nào trong 7 ngày qua
@@ -67,9 +79,9 @@ export default function TimelineRecentActivity({ recentActivities }: { recentAct
       </Stack>
       <Box px={'md'} ta={'end'}>
         <Link href={'/admin/activities'}>
-          <BButton variant='outline' rightSection={<IconArrowRight size={16} />}>
+          <Button variant='outline' rightSection={<IconArrowRight size={16} />}>
             Chi tiết
-          </BButton>
+          </Button>
         </Link>
       </Box>
     </Paper>

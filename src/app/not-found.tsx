@@ -1,7 +1,6 @@
-import { Box, Group } from '@mantine/core';
+import { Box, Button, Group } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
 import Link from 'next/link';
-import BButton from '~/components/Button/Button';
 
 export const dynamic = 'force-static';
 
@@ -29,9 +28,9 @@ export default function NotFound() {
 
         <Box className='flex flex-col justify-center gap-4 sm:flex-row sm:pt-4'>
           <Link href='/'>
-            <BButton leftSection={<IconArrowLeft className='h-5 w-5' />} radius={'lg'} size='lg'>
+            <Button leftSection={<IconArrowLeft className='h-5 w-5' />} radius={'lg'} size='lg'>
               Back to Home
-            </BButton>
+            </Button>
           </Link>
           <Link
             href='/lien-he'

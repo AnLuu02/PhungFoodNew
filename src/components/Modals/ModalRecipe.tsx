@@ -49,7 +49,6 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
 
   return (
     <Modal
-      radius={'md'}
       opened={opened && type === 'recipe'}
       onClose={onClose}
       size={'90%'}
@@ -324,7 +323,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                   </Box>
                 </TabsPanel>
                 <TabsPanel value='videos'>
-                  <Card shadow='sm' radius='md' withBorder>
+                  <Card shadow='sm' withBorder>
                     <AspectRatio ratio={16 / 9}>
                       <iframe
                         src={`https://www.youtube.com/watch?v=sE-NgFQdHrg&list=RDsE-NgFQdHrg&start_radio=1`}

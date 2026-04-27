@@ -14,7 +14,6 @@ function ModalProductComments({ type, opened, onClose, data }: ModalProps<any>) 
       transitionProps={{ transition: 'fade-down', duration: 200 }}
       opened={opened && type === 'comments'}
       onClose={onClose}
-      radius={'md'}
       pos={'relative'}
       title={
         <Group align='center'>
@@ -26,7 +25,6 @@ function ModalProductComments({ type, opened, onClose, data }: ModalProps<any>) 
               color='yellow'
               variant='light'
               p='xs'
-              radius={'md'}
               title={
                 <Flex align={'center'} gap={5}>
                   <IconAlertSquareRounded /> Vui lý đăng nhập để đánh giá sản phẩm.

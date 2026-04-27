@@ -1,8 +1,7 @@
 'use client';
-import { Flex, Grid, GridCol } from '@mantine/core';
+import { Button, Flex, Grid, GridCol } from '@mantine/core';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { api } from '~/trpc/react';
@@ -37,12 +36,12 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
     <>
       <Flex align={'center'} gap={'xs'} mb={20} className='w-full overflow-x-auto pb-3'>
         <Link href={`/goi-mon-nhanh`}>
-          <BButton active={!searchParams?.['danh-muc']} children={'Tất cả'} variant='outline' radius={'xl'} />
+          <Button active={!searchParams?.['danh-muc']} children={'Tất cả'} variant='outline' radius={'xl'} />
         </Link>
         {categories?.map((item: any, index: number) => (
           <>
             <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`}>
-              <BButton
+              <Button
                 active={item.tag === searchParams?.['danh-muc']}
                 key={index}
                 children={item.name}
@@ -72,7 +71,7 @@ export const QuickMenu = ({ categories, searchParams, totalPages, initProducts }
         </Grid>
 
         <Flex align={'center'} justify={'center'} mt={30}>
-          <BButton
+          <Button
             radius={'xl'}
             children={'Xem thêm'}
             variant='outline'

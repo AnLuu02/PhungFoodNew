@@ -1,8 +1,7 @@
 'use client';
 
-import { Box, Card, Paper, Switch, Text, TextInput } from '@mantine/core';
+import { Box, Button, Card, Paper, Switch, Text, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
-import BButton from '~/components/Button/Button';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
 
 export const SettingsTabSection = () => {
@@ -74,13 +73,13 @@ export const SettingsTabSection = () => {
           </Box>
           <Box className='space-y-4'>
             <Box className='space-y-2'>
-              <TextInput radius={'md'} type='number' label='Giới hạn hàng ngày cho mỗi người dùng' />
+              <TextInput type='number' label='Giới hạn hàng ngày cho mỗi người dùng' />
             </Box>
             <Box className='space-y-2'>
-              <TextInput radius={'md'} type='number' label='Giới hạn theo giờ cho mỗi người dùng' />
+              <TextInput type='number' label='Giới hạn theo giờ cho mỗi người dùng' />
             </Box>
             <Box className='space-y-2'>
-              <TextInput radius={'md'} label='Khoảng cách tối thiểu (phút)' type='number' />
+              <TextInput label='Khoảng cách tối thiểu (phút)' type='number' />
             </Box>
           </Box>
         </Card>
@@ -101,7 +100,7 @@ export const SettingsTabSection = () => {
                 { id: 'inApp', label: 'In-App', key: 'inApp' }
               ].map(({ id, label, key }) => (
                 <Box key={id} className='flex items-center space-x-2'>
-                  <Switch label={label} radius={'md'} />
+                  <Switch label={label} />
                 </Box>
               ))}
             </Box>
@@ -117,14 +116,14 @@ export const SettingsTabSection = () => {
           </Box>
           <Box className='space-y-4'>
             <Box className='flex items-center space-x-2'>
-              <Switch radius={'md'} label='Bật Giờ Yên Tĩnh' />
+              <Switch label='Bật Giờ Yên Tĩnh' />
             </Box>
             <Box className='grid grid-cols-2 gap-4'>
               <Box className='space-y-2'>
-                <TextInput label=' Thời gian bắt đầu' radius={'md'} type='time' />
+                <TextInput label=' Thời gian bắt đầu' type='time' />
               </Box>
               <Box className='space-y-2'>
-                <TextInput label='Thời gian kết thúc' radius={'md'} type='time' />
+                <TextInput label='Thời gian kết thúc' type='time' />
               </Box>
             </Box>
           </Box>
@@ -140,7 +139,7 @@ export const SettingsTabSection = () => {
               </Text>
               <Text size='sm'>Tự động gửi thông báo dựa trên sự kiện</Text>
             </Box>
-            <BButton leftSection={<IconPlus size={18} />}>Thêm thông báo tự động</BButton>
+            <Button leftSection={<IconPlus size={18} />}>Thêm thông báo tự động</Button>
           </Box>
         </Box>
         <Box>
@@ -158,12 +157,12 @@ export const SettingsTabSection = () => {
                   </Box>
                 </Box>
                 <Box className='flex gap-2'>
-                  <BButton size='sm' onClick={() => handleEditAutoRule(rule)}>
+                  <Button size='sm' onClick={() => handleEditAutoRule(rule)}>
                     Chỉnh sửa
-                  </BButton>
-                  <BButton size='sm' className='bg-red-500' onClick={() => handleDeleteAutoRule(rule.id)}>
+                  </Button>
+                  <Button size='sm' className='bg-red-500' onClick={() => handleDeleteAutoRule(rule.id)}>
                     Xóa
-                  </BButton>
+                  </Button>
                 </Box>
               </Paper>
             ))}
@@ -172,10 +171,10 @@ export const SettingsTabSection = () => {
       </Card>
 
       <Box className='flex justify-end gap-3'>
-        <BButton variant='outline' onClick={handleResetSettings}>
+        <Button variant='danger' onClick={handleResetSettings}>
           Đặt lại
-        </BButton>
-        <BButton onClick={handleSaveSettings}>Lưu cài đặt</BButton>
+        </Button>
+        <Button onClick={handleSaveSettings}>Lưu cài đặt</Button>
       </Box>
     </>
   );

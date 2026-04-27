@@ -1,9 +1,8 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { basePermissionSchema, PermissionInput } from '~/shared/schema/permission.schema';
 import { api } from '~/trpc/react';
@@ -72,7 +71,6 @@ export default function PermissionUpsert({
                 label='Tên quyền'
                 size='sm'
                 placeholder='vd: create:user or update:user or delete:user or ...'
-                radius='md'
                 error={errors.name?.message}
               />
             )}
@@ -88,7 +86,6 @@ export default function PermissionUpsert({
                 label='Tên phiên âm quyền'
                 size='sm'
                 placeholder='vd: Cập nhật sản phẩm'
-                radius='md'
                 error={errors.viName?.message}
               />
             )}
@@ -110,9 +107,9 @@ export default function PermissionUpsert({
           />
         </Grid.Col>
       </Grid>
-      <BButton type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
+      <Button type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Cập nhật
-      </BButton>
+      </Button>
     </form>
   );
 }

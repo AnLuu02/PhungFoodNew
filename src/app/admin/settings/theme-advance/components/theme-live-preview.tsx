@@ -11,7 +11,7 @@ export const ThemeLivePreview = ({ theme }: { theme: ThemeConfig }) => {
   return (
     <>
       <Box className='space-y-6'>
-        <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+        <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
           <Stack gap={2} mb='md'>
             <Group gap='sm'>
               <IconEye className='h-5 w-5' />

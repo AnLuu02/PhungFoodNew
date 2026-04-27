@@ -4,7 +4,6 @@ import { Box, Button, Card } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import BButton from '~/components/Button/Button';
 
 type ReusablePromoBannerProps = {
   title: string;
@@ -58,7 +57,7 @@ export default function ReusablePromoBanner({
                 {buttonText && (
                   <Box className='pt-4'>
                     <Link href={buttonLink}>
-                      <BButton size='lg' children={buttonText} radius={'xl'} />
+                      <Button size='lg' children={buttonText} radius={'xl'} />
                     </Link>
                   </Box>
                 )}

@@ -93,7 +93,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
               style={{ backgroundColor: item.color + 10 }}
             >
               <Flex align={'center'} gap={'md'}>
-                <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
+                <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
                 </ActionIcon>
                 <Box>
@@ -116,7 +116,6 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
             <Select
               allowDeselect={false}
               placeholder='Sắp xếp'
-              radius='md'
               value={searchParams.get('sort') || 'all'}
               onChange={value => {
                 if (value === 'all') params.delete('sort');
@@ -137,7 +136,6 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
             <Select
               allowDeselect={false}
               placeholder='Bộ lọc'
-              radius='md'
               value={searchParams.get('s') || 'all'}
               onChange={value => {
                 if (value === 'all') params.delete('s');

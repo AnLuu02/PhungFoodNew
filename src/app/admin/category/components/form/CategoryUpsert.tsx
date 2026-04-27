@@ -1,9 +1,8 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Switch, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseCategorySchema, CategoryInput } from '~/shared/schema/category.schema';
 import { api } from '~/trpc/react';
@@ -71,7 +70,6 @@ export default function CategoryUpsert({
             name='name'
             render={({ field }) => (
               <TextInput
-                radius={'md'}
                 {...field}
                 size='sm'
                 label='Tên danh mục'
@@ -108,9 +106,9 @@ export default function CategoryUpsert({
           />
         </GridCol>
       </Grid>
-      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <Button type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới / Cập nhật
-      </BButton>
+      </Button>
     </form>
   );
 }

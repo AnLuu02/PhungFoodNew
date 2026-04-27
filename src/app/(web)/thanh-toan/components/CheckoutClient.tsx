@@ -16,10 +16,10 @@ import {
 import { VoucherType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { baseDeliverySchema, DeliveryInput } from '~/shared/schema/delivery.schema';
@@ -153,7 +153,7 @@ export default function CheckoutClient({ order }: { order: any }) {
           <PaymentForm control={control} />
         </GridCol>
         <GridCol span={{ base: 12, sm: 6, md: 4, lg: 4 }} className='sticky top-[80px] h-fit'>
-          <Card shadow='sm' radius='md' withBorder>
+          <Card shadow='sm' withBorder>
             <Stack gap={'md'}>
               <Title order={2} className='font-quicksand text-xl'>
                 Đơn hàng ({order?.orderItems?.length || 0} sản phẩm)
@@ -213,10 +213,10 @@ export default function CheckoutClient({ order }: { order: any }) {
               </Stack>
 
               <Flex gap={0} justify='space-between' wrap={'nowrap'}>
-                <Button variant='subtle' leftSection={<IconArrowLeft size={16} />} component='a' href='/gio-hang'>
+                <Button variant='subtle' leftSection={<IconArrowLeft size={16} />} component={Link} href='/gio-hang'>
                   Giỏ hàng
                 </Button>
-                <BButton size='md' type='submit' loading={loading} children={'THANH TOÁN'} />
+                <Button size='md' type='submit' loading={loading} children={'THANH TOÁN'} />
               </Flex>
             </Stack>
           </Card>

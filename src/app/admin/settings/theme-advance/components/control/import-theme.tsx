@@ -1,6 +1,6 @@
+import { Button } from '@mantine/core';
 import { IconUpload } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ThemeConfig } from '~/types/theme';
 
@@ -34,10 +34,10 @@ export const ImportTheme = ({
   };
   return (
     <>
-      <BButton variant='outline' disabled={isImporting} leftSection={<IconUpload size={16} />}>
+      <Button variant='outline' disabled={isImporting} leftSection={<IconUpload size={16} />}>
         Import
         <input type='file' accept='.json' hidden onChange={e => handleImportTheme(e)} />
-      </BButton>
+      </Button>
     </>
   );
 };

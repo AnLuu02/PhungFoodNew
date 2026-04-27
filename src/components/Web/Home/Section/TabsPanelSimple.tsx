@@ -86,7 +86,6 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
             <CarouselSlide key={item.id}>
               <Reveal key={item.id + index} x={(index + 1) * 2} delay={index * 0.01}>
                 <Card
-                  radius={'md'}
                   padding='lg'
                   component='a'
                   withBorder

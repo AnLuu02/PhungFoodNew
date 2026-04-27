@@ -50,7 +50,7 @@ export default function ReportOrderPageClient({ overviews }: any) {
   }, [overviews]);
   return (
     <>
-      <Paper radius={'md'} withBorder shadow='md' py={'xl'} px={'xl'}>
+      <Paper withBorder shadow='md' py={'xl'} px={'xl'}>
         <Title order={4} mb={'lg'} className='font-quicksand'>
           Phân tích đơn hàng
         </Title>

@@ -1,7 +1,6 @@
 'use client';
 import { Box, Button, Flex, Group, Paper, Switch, Text } from '@mantine/core';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -93,11 +92,7 @@ export default function UpdatePermissionForRole({
 
       {role && (
         <Box className='space-y-6'>
-          <Paper
-            p={'lg'}
-            radius={'md'}
-            className='sticky left-0 top-[65px] z-10 flex items-center justify-between bg-gray-100'
-          >
+          <Paper p={'lg'} className='sticky left-0 top-[65px] z-10 flex items-center justify-between bg-gray-100'>
             <Box>
               <Text fw={600}>{role.viName || 'Đang cập nhật'}</Text>
               <Text size='sm'>{role?.permissions?.length || 0} quyền được chỉ định</Text>
@@ -115,13 +110,12 @@ export default function UpdatePermissionForRole({
                   }
                 }}
               />
-              <BButton type='submit' disabled={!hasChange} loading={loading}>
+              <Button type='submit' disabled={!hasChange} loading={loading}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
               <Button
                 variant='outline'
                 size='xs'
-                radius={'md'}
                 onClick={() => {
                   setSeletedPermissions([...initPermissions]);
                 }}

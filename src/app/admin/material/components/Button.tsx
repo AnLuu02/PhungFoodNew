@@ -14,7 +14,6 @@ import {
 } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -123,18 +122,17 @@ export function CreateManyMaterialButton() {
       <Group>
         <FileButton disabled={opened} onChange={file => file && handleFileUpload(file)} accept='xlsx,xls'>
           {props => (
-            <BButton disabled={opened} variant='outline' {...props}>
+            <Button disabled={opened} variant='outline' {...props}>
               Import dữ liệu
-            </BButton>
+            </Button>
           )}
         </FileButton>
-        <Button bg={'red'} radius={'md'} onClick={handleExport} disabled={fetchMaterials?.data?.length === 0}>
+        <Button variant='danger' onClick={handleExport} disabled={fetchMaterials?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>
 
       <Modal
-        radius={'md'}
         size={'xl'}
         zIndex={150}
         opened={opened}
@@ -203,11 +201,10 @@ export function CreateMaterialButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
-        radius={'md'}
         zIndex={150}
         opened={opened}
         closeOnClickOutside={false}
@@ -232,7 +229,6 @@ export function UpdateMaterialButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
-        radius={'md'}
         opened={opened}
         zIndex={150}
         closeOnClickOutside={false}

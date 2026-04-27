@@ -1,12 +1,26 @@
 'use client';
 
 import { LineChart } from '@mantine/charts';
-import { Box, Card, Center, Divider, Flex, Progress, Select, Space, Stack, Text, Title, Tooltip } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  Center,
+  Divider,
+  Flex,
+  Progress,
+  Select,
+  Space,
+  Stack,
+  Text,
+  Title,
+  Tooltip
+} from '@mantine/core';
 import { UserLevel } from '@prisma/client';
+import { IconArrowRight } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { getInfoLevelUser } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
@@ -64,11 +78,13 @@ export function UserStatistics() {
           </Text>
         </Box>
         <Link href={'/don-hang-cua-toi'}>
-          <BButton>Chi tiết các đơn hàng</BButton>
+          <Button variant='transparent' rightSection={<IconArrowRight size={16} />}>
+            Chi tiết các đơn hàng
+          </Button>
         </Link>
       </Flex>
 
-      <Card shadow='sm' padding='lg' radius='md' withBorder>
+      <Card shadow='sm' padding='lg' withBorder>
         <Stack gap='md'>
           <Box>
             <Text fw={700} mb='xs' size='xl'>
@@ -77,7 +93,6 @@ export function UserStatistics() {
             <Flex align={'center'} justify={'space-between'} mb='xl'>
               <Select
                 value={selectedYear}
-                radius='md'
                 onChange={value => setSelectedYear(value || '2023')}
                 data={Object.keys({
                   '2025': 3280,

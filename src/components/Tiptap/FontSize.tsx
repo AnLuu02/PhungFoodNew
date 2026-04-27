@@ -57,14 +57,7 @@ function FontSizeControl({ editor }: { editor: Editor | null }) {
         }}
       >
         <ComboboxTarget>
-          <InputBase
-            component='button'
-            pointer
-            type='button'
-            size='xs'
-            radius='md'
-            onClick={() => combobox.toggleDropdown()}
-          >
+          <InputBase component='button' pointer type='button' size='xs' onClick={() => combobox.toggleDropdown()}>
             {`${mantineSize} (${MANTINE_FONT_SIZES[mantineSize]})`}
           </InputBase>
         </ComboboxTarget>

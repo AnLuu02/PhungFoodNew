@@ -113,7 +113,7 @@ export const ThemeTemplateSection = ({
   const categories = ['All', ...Array.from(new Set(templates.map(t => t.category)))];
 
   return (
-    <Paper shadow='md' radius='md' p='lg' withBorder>
+    <Paper shadow='md' p='lg' withBorder>
       <Group justify='space-between' mb='md'>
         <Group>
           <IconPalette size={20} />
@@ -130,7 +130,6 @@ export const ThemeTemplateSection = ({
         <Group gap='xs'>
           <Text size='sm'>Category:</Text>
           <Select
-            radius='md'
             value={filterCategory}
             onChange={value => setFilterCategory(value || '')}
             data={categories.map(c => ({ value: c, label: c }))}
@@ -148,7 +147,6 @@ export const ThemeTemplateSection = ({
             key={template.id}
             withBorder
             shadow={currentTemplate === template.id ? 'md' : 'xs'}
-            radius='md'
             onClick={() => handleSelectTemplate(template.id)}
             className={`cursor-pointer ${currentTemplate === template.id ? 'border-2 border-blue-600' : ''} `}
           >

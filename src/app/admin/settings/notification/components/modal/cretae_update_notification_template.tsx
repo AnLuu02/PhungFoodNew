@@ -1,9 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Group, Modal, MultiSelect, Select, Stack, TextInput, Title } from '@mantine/core';
+import { Button, Group, Modal, MultiSelect, Select, Stack, TextInput, Title } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect, useMemo } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { NotificationTemplate, notificationTemplateSchema } from '~/shared/schema/notification.schema';
 import { api } from '~/trpc/react';
@@ -91,7 +90,6 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
   return (
     <Modal
       opened={opened}
-      radius={'md'}
       onClose={onClose}
       size='lg'
       title={
@@ -106,20 +104,14 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
             name='name'
             control={control}
             render={({ field }) => (
-              <TextInput
-                radius={'md'}
-                placeholder='Tên Template'
-                label='Tên Template'
-                {...field}
-                error={errors.name?.message}
-              />
+              <TextInput placeholder='Tên Template' label='Tên Template' {...field} error={errors.name?.message} />
             )}
           />
           <Controller
             name='title'
             control={control}
             render={({ field }) => (
-              <TextInput radius={'md'} placeholder='Tiêu đề' label='Tiêu đề' {...field} error={errors.title?.message} />
+              <TextInput placeholder='Tiêu đề' label='Tiêu đề' {...field} error={errors.title?.message} />
             )}
           />
 
@@ -129,7 +121,6 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
             control={control}
             render={({ field }) => (
               <Select
-                radius={'md'}
                 label='Loại thông báo'
                 placeholder='Chọn loại...'
                 data={Object.entries(notificationTypeOptions).map(([key, value]) => ({
@@ -146,7 +137,6 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
             control={control}
             render={({ field }) => (
               <TextInput
-                radius={'md'}
                 placeholder='Danh mục: Giới thiệu, Lời chào hệ thống,...'
                 label='Danh mục'
                 {...field}
@@ -159,7 +149,6 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
             control={control}
             render={({ field }) => (
               <MultiSelect
-                radius={'md'}
                 readOnly
                 label='Biến (ngăn cách bằng dấu phẩy)'
                 placeholder='Ví dụ: userName, orderId'
@@ -169,12 +158,12 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
             )}
           />
           <Group justify='flex-end'>
-            <BButton variant='outline' onClick={onClose}>
+            <Button variant='danger' onClick={onClose}>
               Hủy
-            </BButton>
-            <BButton loading={isSubmitting} type='submit'>
+            </Button>
+            <Button loading={isSubmitting} type='submit'>
               {mode === 'create' ? 'Tạo mới' : 'Cập nhật'}
-            </BButton>
+            </Button>
           </Group>
         </Stack>
       </form>

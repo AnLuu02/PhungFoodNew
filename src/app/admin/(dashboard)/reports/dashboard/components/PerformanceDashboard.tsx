@@ -9,7 +9,7 @@ export function PerformanceDashboard({ dataRevenue, period, startTimeToNum, endT
   return (
     <>
       <Stack>
-        <Card withBorder shadow='sm' radius={'md'}>
+        <Card withBorder shadow='sm'>
           <Flex align={'center'} justify={'space-between'} mb={'xl'}>
             <Box>
               <Title order={5} className='font-quicksand'>
@@ -67,7 +67,7 @@ export function PerformanceDashboard({ dataRevenue, period, startTimeToNum, endT
           {dataRevenue.map((item: any, index: number) => {
             const IconR = item.icon;
             return (
-              <Card key={index} radius={'md'} withBorder shadow='md'>
+              <Card key={index} withBorder shadow='md'>
                 <Stack gap={'xs'}>
                   <Text size='sm' fw={700} c={'dimmed'}>
                     {item.label}
@@ -84,7 +84,6 @@ export function PerformanceDashboard({ dataRevenue, period, startTimeToNum, endT
                       style={{
                         backgroundColor: item.color + '22'
                       }}
-                      radius={'md'}
                     >
                       <IconR size={16} color={item.color} />
                     </Paper>

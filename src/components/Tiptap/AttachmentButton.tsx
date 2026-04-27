@@ -19,7 +19,6 @@ export function AttachmentButton({ files, setFiles }: { files: File[]; setFiles:
               size='xs'
               variant='subtle'
               leftSection={<IconPaperclip size={14} />}
-              radius='md'
               classNames={{
                 root: `!rounded-md !border-gray-300 !font-bold text-black hover:bg-mainColor/10 dark:text-dark-text`
               }}

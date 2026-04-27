@@ -2,6 +2,7 @@
 import {
   Badge,
   Box,
+  Button,
   Card,
   Center,
   Divider,
@@ -25,7 +26,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
-import BButton from '~/components/Button/Button';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
@@ -95,7 +95,6 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                   <Image src={`/images/png/${levelInfo.thumbnail}`} width={120} height={40} alt='vip' />
                   <Badge
                     size='md'
-                    radius='md'
                     pos={'absolute'}
                     bottom={10}
                     bg={levelInfo.color}
@@ -105,7 +104,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                   </Badge>
                 </Box>
 
-                <Badge size='md' radius='md' ml={5} variant='outline' color={levelInfo.color}>
+                <Badge size='md' ml={5} variant='outline' color={levelInfo.color}>
                   {userInfor?.pointUser} điểm
                 </Badge>
               </Flex>
@@ -154,7 +153,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
               </Text>
             </Grid.Col>
             <Grid.Col span={12}>
-              <Paper withBorder p='md' radius='md' shadow='xs' bg={`${levelInfo.color}10`}>
+              <Paper withBorder p='md' shadow='xs' bg={`${levelInfo.color}10`}>
                 <Text size='sm' fw={700} mb={8}>
                   Đặc quyền hạng {levelInfo.viName}
                 </Text>
@@ -196,9 +195,9 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                 Tổng quan các đơn hàng
               </Text>
               <Link href='/don-hang-cua-toi'>
-                <BButton size='xs' variant='subtle'>
+                <Button size='xs' variant='transparent'>
                   Chi tiết
-                </BButton>
+                </Button>
               </Link>
             </Flex>
             <SimpleGrid cols={2}>

@@ -28,14 +28,12 @@ export default function FilterSection({
       <TextInput
         leftSection={<IconSearch size={16} className='text-gray-300 dark:text-dark-text' />}
         size='sm'
-        radius={'md'}
         value={searchValue}
         onChange={event => setSearchValue(event.currentTarget.value)}
         placeholder='Tìm kiếm'
       />
       <Select
         size='sm'
-        radius={'md'}
         data={[
           { value: 'view:', label: 'Quyền xem' },
           { value: 'create:', label: 'Quền tạo mới' },

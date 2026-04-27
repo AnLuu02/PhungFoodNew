@@ -50,7 +50,7 @@ export const SocialTabItem = ({ item, index, setOpenedSocial }: { item: any; ind
 
   return (
     <>
-      <Card withBorder radius='md' shadow='sm' p='md' className='transition hover:shadow-md'>
+      <Card withBorder shadow='sm' p='md' className='transition hover:shadow-md'>
         <Group justify='space-between' align='center'>
           <Stack gap={2}>
             <Group align='center' gap={'xs'}>
@@ -67,7 +67,7 @@ export const SocialTabItem = ({ item, index, setOpenedSocial }: { item: any; ind
               control={control}
               name={`socials.${index}.id`}
               render={({ field, fieldState }) => (
-                <TextInput {...field} className='hidden' error={fieldState.error?.message} radius='md' />
+                <TextInput {...field} className='hidden' error={fieldState.error?.message} />
               )}
             />
             <Controller

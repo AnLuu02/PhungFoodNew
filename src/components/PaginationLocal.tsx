@@ -29,7 +29,6 @@ function PaginationLocal({
         }}
       />
       <Select
-        radius='md'
         value={String(initPerpage)}
         w={100}
         onChange={value => {

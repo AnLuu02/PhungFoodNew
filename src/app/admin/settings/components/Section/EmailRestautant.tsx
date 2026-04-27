@@ -2,6 +2,7 @@
 
 import {
   Box,
+  Button,
   Divider,
   Grid,
   GridCol,
@@ -16,7 +17,6 @@ import {
 } from '@mantine/core';
 import { IconMail, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 
 export default function EmailSettingsManagement({ data }: { data: any }) {
   const [subject, setSubject] = useState('Chào mừng bạn đến với PhungFood');
@@ -27,7 +27,7 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
   };
   return (
     <>
-      <Paper withBorder p='md' radius='md'>
+      <Paper withBorder p='md'>
         <form>
           <Stack gap={'xl'}>
             <Group justify='space-between'>
@@ -40,19 +40,18 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
                   Quản lý cài đặt email
                 </Text>
               </Box>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
 
-            <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb={'md'}>
                 Cấu hình SMTP
               </Title>
               <Grid>
                 <GridCol span={6}>
                   <TextInput
-                    radius={'md'}
                     label='SMTP Host'
                     size='sm'
                     withAsterisk
@@ -62,7 +61,6 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
                 </GridCol>
                 <GridCol span={6}>
                   <TextInput
-                    radius={'md'}
                     label='SMTP Port'
                     size='sm'
                     withAsterisk
@@ -71,18 +69,10 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
                   />
                 </GridCol>
                 <GridCol span={6}>
-                  <TextInput
-                    radius={'md'}
-                    label='Email'
-                    size='sm'
-                    withAsterisk
-                    placeholder='Nhập email nhà hàng'
-                    defaultValue={''}
-                  />
+                  <TextInput label='Email' size='sm' withAsterisk placeholder='Nhập email nhà hàng' defaultValue={''} />
                 </GridCol>
                 <GridCol span={6}>
                   <TextInput
-                    radius={'md'}
                     label='Mật khẩu'
                     size='sm'
                     withAsterisk
@@ -101,7 +91,7 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
               </Grid>
             </Paper>
 
-            <Paper radius='md' shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb='md'>
                 Mẫu email gửi khách hàng
               </Title>
@@ -109,7 +99,6 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
               <Grid>
                 <GridCol span={12}>
                   <TextInput
-                    radius='md'
                     label='Tiêu đề email'
                     size='sm'
                     placeholder='Nhập tiêu đề email'
@@ -120,7 +109,6 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
 
                 <GridCol span={12}>
                   <Textarea
-                    radius='md'
                     label='Nội dung email'
                     size='sm'
                     placeholder='Nhập nội dung email'
@@ -140,7 +128,7 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
                 <Text fw={700} mb='xs'>
                   Xem trước email
                 </Text>
-                <Paper p='md' radius='md' className='border border-gray-200'>
+                <Paper p='md' className='border border-gray-200'>
                   <Text fw={600} size='lg' mb='sm'>
                     {subject}
                   </Text>
@@ -152,9 +140,9 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
             </Paper>
 
             <Group justify='flex-start'>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
           </Stack>
         </form>

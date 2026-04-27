@@ -1,9 +1,8 @@
 'use client';
-import { Badge, Box, Card, Text, Title, Tooltip } from '@mantine/core';
+import { Badge, Box, Button, Card, Text, Title, Tooltip } from '@mantine/core';
 import { IconClock } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import BButton from '~/components/Button/Button';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 
 export function ConsumerCard({ data }: { data: any }) {
@@ -13,7 +12,6 @@ export function ConsumerCard({ data }: { data: any }) {
         padding={0}
         withBorder
         shadow='xl'
-        radius={'md'}
         className='group w-full cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg'
       >
         <Box className='relative overflow-hidden' w={'100%'} h={200}>
@@ -48,7 +46,7 @@ export function ConsumerCard({ data }: { data: any }) {
             </Tooltip>
           </Box>
 
-          <BButton children='Đọc thêm' variant='outline' fullWidth />
+          <Button children='Đọc thêm' variant='outline' fullWidth />
         </Box>
       </Card>
     </Link>

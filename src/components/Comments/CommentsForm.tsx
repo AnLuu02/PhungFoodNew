@@ -1,11 +1,10 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Flex, Rating, Text, Textarea } from '@mantine/core';
+import { Button, Flex, Rating, Text, Textarea } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
 import { api } from '~/trpc/react';
@@ -74,7 +73,6 @@ export const CommentsForm = ({ product }: { product: any }) => {
         name='comment'
         render={({ field }) => (
           <Textarea
-            radius={'md'}
             placeholder='Chúng tôi hoan nghênh mọi góp ý của bạn.'
             flex={1}
             {...field}
@@ -82,7 +80,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
           />
         )}
       />
-      <BButton type='submit' fullWidth loading={isSubmitting} disabled={isSubmitting} children='Đánh giá' />
+      <Button type='submit' fullWidth loading={isSubmitting} disabled={isSubmitting} children='Đánh giá' />
     </form>
   );
 };

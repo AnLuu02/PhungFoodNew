@@ -1,6 +1,19 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Card, Center, Grid, GridCol, PasswordInput, Select, Text, TextInput, Title } from '@mantine/core';
+import {
+  Alert,
+  Anchor,
+  Button,
+  Card,
+  Center,
+  Grid,
+  GridCol,
+  PasswordInput,
+  Select,
+  Text,
+  TextInput,
+  Title
+} from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
 import { Gender, UserLevel } from '@prisma/client';
@@ -8,7 +21,6 @@ import { IconCalendar, IconInfoCircle, IconKey, IconMail, IconPhone } from '@tab
 import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import OtpModal from '~/components/Modals/ModalOtp';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
@@ -90,7 +102,6 @@ export default function Page() {
             h={'max-content'}
             py={'xs'}
             shadow='xl'
-            radius={'md'}
           >
             <Card.Section p='md'>
               <Grid w={'100%'}>
@@ -101,20 +112,22 @@ export default function Page() {
                 </GridCol>
                 {error.code && (
                   <GridCol span={12} className='flex justify-center'>
-                    <Alert
-                      w={'100%'}
-                      radius={'md'}
-                      variant='light'
-                      color='yellow'
-                      title='Cảnh báo'
-                      icon={<IconInfoCircle />}
-                    >
-                      {error.message}{' '}
-                      {error.code === 'NOT_IMPLEMENTED' && (
-                        <Link href={`/password/verify-email?email=${getValues('email')}`}>
-                          <BButton variant='outline'>Kích hoạt</BButton>
-                        </Link>
-                      )}
+                    <Alert w={'100%'} variant='outline' color='yellow' icon={<IconInfoCircle />}>
+                      <Text size='sm' component='div'>
+                        {error.message}.{' '}
+                        {error.code === 'NOT_IMPLEMENTED' && (
+                          <Anchor
+                            component={Link}
+                            href={`/password/verify-email?email=${getValues('email')}`}
+                            fw={600}
+                            ml={'6px'}
+                            underline='always'
+                            c='yellow.9'
+                          >
+                            Kích hoạt tài khoản tại đây
+                          </Anchor>
+                        )}
+                      </Text>
                     </Alert>
                   </GridCol>
                 )}
@@ -124,7 +137,6 @@ export default function Page() {
                     name='name'
                     render={({ field }) => (
                       <TextInput
-                        radius={'md'}
                         withAsterisk
                         label='Họ tên'
                         placeholder='Họ tên'
@@ -141,7 +153,6 @@ export default function Page() {
                     name='email'
                     render={({ field }) => (
                       <TextInput
-                        radius={'md'}
                         withAsterisk
                         leftSection={<IconMail size={18} stroke={1.5} />}
                         placeholder='E-mail'
@@ -159,7 +170,6 @@ export default function Page() {
                     name='phone'
                     render={({ field }) => (
                       <TextInput
-                        radius={'md'}
                         {...field}
                         withAsterisk
                         label='Số điện thoại'
@@ -176,7 +186,6 @@ export default function Page() {
                     name='password'
                     render={({ field }) => (
                       <PasswordInput
-                        radius={'md'}
                         label='Mật khẩu'
                         withAsterisk
                         leftSection={<IconKey size={18} stroke={1.5} />}
@@ -195,7 +204,6 @@ export default function Page() {
                       const dateValue = field.value ? new Date(field.value) : null;
                       return (
                         <DateTimePicker
-                          radius={'md'}
                           valueFormat='DD-MM-YYYY'
                           leftSection={<IconCalendar size={18} stroke={1.5} />}
                           dropdownType='modal'
@@ -216,7 +224,6 @@ export default function Page() {
                       <Select
                         label='Giới tính'
                         searchable
-                        radius={'md'}
                         placeholder='Giới tính'
                         {...field}
                         data={[
@@ -244,7 +251,7 @@ export default function Page() {
                   </Link>
                 </GridCol>
                 <GridCol span={12}>
-                  <BButton
+                  <Button
                     disabled={!isDirty}
                     loading={isSubmitting}
                     type='submit'

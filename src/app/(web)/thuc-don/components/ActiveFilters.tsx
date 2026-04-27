@@ -1,9 +1,8 @@
 'use client';
 
-import { Group, InputBase, Pill, Text } from '@mantine/core';
+import { Button, Group, InputBase, Pill, Text } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getViTag } from '~/lib/FuncHandler/generateTag';
 const IGNORED_PARAMS = ['page', 'limit', 'maxPrice', 'minPrice', 's'];
@@ -73,8 +72,9 @@ export default function ActiveFilters() {
             ))}
           </Pill.Group>
           {activeFilters?.length > 1 && (
-            <BButton
+            <Button
               children='Xóa tất cả'
+              variant='danger'
               size='xs'
               h={22}
               onClick={() => router.push('/thuc-don', { scroll: false })}

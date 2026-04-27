@@ -1,10 +1,9 @@
 'use client';
 
-import { Grid, GridCol, Group, Modal, Select, Stack, Text, Textarea, Title } from '@mantine/core';
+import { Button, Grid, GridCol, Group, Modal, Select, Stack, Text, Textarea, Title } from '@mantine/core';
 
 import { EntityType, ImageType } from '@prisma/client';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ImageInfoInput } from '~/shared/schema/image.info.schema';
@@ -79,7 +78,6 @@ export function ImageConnectedInfoModal({ connectedState, onClose }: UploadModal
       }}
       size={'lg'}
       zIndex={152}
-      radius={'md'}
     >
       <FormProvider {...formFields}>
         <form onSubmit={formFields.handleSubmit(onSubmit)}>
@@ -120,12 +118,12 @@ export function ImageConnectedInfoModal({ connectedState, onClose }: UploadModal
             </Stack>
           )}
           <Group mt='lg' grow>
-            <BButton variant='default' onClick={onClose}>
+            <Button variant='danger' onClick={onClose}>
               Hủy bỏ
-            </BButton>
-            <BButton type='submit' loading={formFields.formState.isSubmitting}>
+            </Button>
+            <Button type='submit' loading={formFields.formState.isSubmitting}>
               {connectedState.mode === 'connect' ? 'Kết nối' : 'Ngắt kết nối'}
-            </BButton>
+            </Button>
           </Group>
         </form>
       </FormProvider>

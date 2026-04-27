@@ -1,7 +1,6 @@
-import { Badge, Box, Divider, Flex, Popover, PopoverDropdown, PopoverTarget } from '@mantine/core';
+import { ActionIcon, Badge, Box, Divider, Flex, Popover, PopoverDropdown, PopoverTarget } from '@mantine/core';
 import { IconHome2, IconSearch } from '@tabler/icons-react';
 import Link from 'next/link';
-import BButton from '~/components/Button/Button';
 import Logo from '~/components/Logo';
 import SearchComponentClient from '~/components/Search/SearchClient';
 import CartButton from '../components/CartButton';
@@ -62,9 +61,9 @@ const Header2 = ({ subCategories }: { subCategories: any }) => {
             zIndex={10007}
           >
             <PopoverTarget>
-              <BButton iconOnly={true} size={'xl'} radius={'xl'} variant='outline' className='sm:hidden'>
+              <ActionIcon size={'xl'} radius={'xl'} variant='outline' className='sm:hidden'>
                 <IconSearch size={20} />
-              </BButton>
+              </ActionIcon>
             </PopoverTarget>
             <PopoverDropdown className='rounded-xl' p={0}>
               <SearchComponentClient subCategories={dataSubCategories} />

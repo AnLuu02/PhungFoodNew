@@ -1,9 +1,8 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
+import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserRole } from '~/shared/constants/user';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
@@ -74,7 +73,6 @@ export default function ReviewUpsert({
             render={({ field }) => (
               <Select
                 searchable
-                radius='md'
                 label='Product'
                 placeholder=' Chọn sản phẩm'
                 data={products?.map((product: any) => ({ value: product.id, label: product.name })) || []}
@@ -94,7 +92,6 @@ export default function ReviewUpsert({
               <Select
                 searchable
                 label='user'
-                radius='md'
                 placeholder=' Chọn khách hàng'
                 data={users?.map((user: any) => ({ value: user.id, label: user.name })) || []}
                 value={field.value}
@@ -115,7 +112,7 @@ export default function ReviewUpsert({
             }}
             render={({ field }) => (
               <Flex align={'center'} justify={'space-between'}>
-                <NumberInput label='Đánh giá' {...field} min={0} max={5} error={errors.rating?.message} radius={'md'} />
+                <NumberInput label='Đánh giá' {...field} min={0} max={5} error={errors.rating?.message} />
                 <Rating size={'lg'} {...field} fractions={4} color={'#FFC522'} />
               </Flex>
             )}
@@ -129,9 +126,9 @@ export default function ReviewUpsert({
           />
         </Grid.Col>
       </Grid>
-      <BButton type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
+      <Button type='submit' className='mt-4' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Cập nhật
-      </BButton>
+      </Button>
     </form>
   );
 }

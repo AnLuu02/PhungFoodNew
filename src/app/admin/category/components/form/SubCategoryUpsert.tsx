@@ -1,10 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, GridCol, Paper, Select, Stack, Switch, Text, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Paper, Select, Stack, Switch, Text, Textarea, TextInput } from '@mantine/core';
 import { EntityType, ImageType } from '@prisma/client';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { useModalActions } from '~/contexts/ModalContext';
@@ -121,7 +120,6 @@ export default function SubCategoryUpsert({
                           data={categoryData?.map(c => ({ value: c.id, label: c.name }))}
                           {...field}
                           error={errors.categoryId?.message}
-                          radius='md'
                         />
                       )}
                     />
@@ -138,7 +136,6 @@ export default function SubCategoryUpsert({
                           label='Tên danh mục'
                           placeholder='Ví dụ: Đồ gia dụng'
                           error={errors.name?.message}
-                          radius='md'
                         />
                       )}
                     />
@@ -155,7 +152,6 @@ export default function SubCategoryUpsert({
                           rows={3}
                           {...field}
                           error={errors.description?.message}
-                          radius='md'
                         />
                       )}
                     />
@@ -166,7 +162,7 @@ export default function SubCategoryUpsert({
                       name='isActive'
                       control={formFields.control}
                       render={({ field, formState: { errors } }) => (
-                        <Paper withBorder p='xs' radius='md'>
+                        <Paper withBorder p='xs'>
                           <Switch
                             label='Trạng thái hoạt động'
                             description='Cho phép hiển thị danh mục này ngoài cửa hàng'
@@ -186,7 +182,7 @@ export default function SubCategoryUpsert({
                 </Text>
                 <Stack>
                   <ThumbnailUpsert nameField='imageForEntity.image' size={'100%'} />
-                  <BButton
+                  <Button
                     variant='outline'
                     size='sm'
                     fullWidth
@@ -202,13 +198,13 @@ export default function SubCategoryUpsert({
                     }
                   >
                     Chọn ảnh từ thư viện
-                  </BButton>
+                  </Button>
                 </Stack>
               </Grid.Col>
             </Grid>
           </GridCol>
           <GridCol>
-            <BButton
+            <Button
               type='submit'
               className='mt-4'
               loading={formFields.formState.isSubmitting}
@@ -216,7 +212,7 @@ export default function SubCategoryUpsert({
               disabled={!formFields.formState.isDirty}
             >
               Tạo mới / Cập nhật
-            </BButton>
+            </Button>
           </GridCol>
         </Grid>
       </form>

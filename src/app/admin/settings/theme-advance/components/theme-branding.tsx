@@ -12,7 +12,7 @@ export const ThemeBranding = ({ theme, setTheme }: { theme: ThemeConfig; setThem
   ];
 
   return (
-    <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+    <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Box mb={'md'}>
         <Title order={4} className='flex items-center gap-2 font-quicksand'>
           <IconBrush className='h-5 w-5' />
@@ -24,7 +24,6 @@ export const ThemeBranding = ({ theme, setTheme }: { theme: ThemeConfig; setThem
       </Box>
       <Box className='grid grid-cols-2 gap-4'>
         <TextInput
-          radius='md'
           label='Logo URL'
           value={theme.logoUrl}
           onChange={e => setTheme({ ...theme, logoUrl: e.target.value })}
@@ -33,7 +32,6 @@ export const ThemeBranding = ({ theme, setTheme }: { theme: ThemeConfig; setThem
 
         <TextInput
           label='Favicon URL'
-          radius='md'
           value={theme.favicon}
           onChange={e => setTheme({ ...theme, favicon: e.target.value })}
           placeholder='https://example.com/favicon.ico'
@@ -42,7 +40,6 @@ export const ThemeBranding = ({ theme, setTheme }: { theme: ThemeConfig; setThem
         <Select
           label='Logo Position'
           value={theme.logoPosition}
-          radius='md'
           onChange={value => setTheme({ ...theme, logoPosition: value! })}
           data={[
             { value: 'left', label: 'Left' },
@@ -54,7 +51,6 @@ export const ThemeBranding = ({ theme, setTheme }: { theme: ThemeConfig; setThem
         <Select
           label='Navigation Style'
           value={theme.navigationStyle}
-          radius='md'
           onChange={value => setTheme({ ...theme, navigationStyle: value! })}
           data={navigationStyleOptions.map((option: any) => ({
             value: option.value,

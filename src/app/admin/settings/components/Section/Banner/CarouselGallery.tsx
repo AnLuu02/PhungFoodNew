@@ -122,7 +122,7 @@ export const CarouselGallery = ({
             })}
           </Carousel>
         ) : (
-          <Paper radius={'md'} className='relative h-[400px] overflow-hidden hover:bg-[rgba(0,0,0,0.1)]' withBorder>
+          <Paper className='relative h-[400px] overflow-hidden hover:bg-[rgba(0,0,0,0.1)]' withBorder>
             <label htmlFor='galleryInput' className='cursor-pointer'>
               <Flex w={'100%'} h={'100%'} align={'center'} justify={'center'} direction={'column'} gap={10}>
                 <IconPlus size={20} />

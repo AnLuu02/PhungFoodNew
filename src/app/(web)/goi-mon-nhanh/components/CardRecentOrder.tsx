@@ -1,11 +1,10 @@
 'use client';
 
-import { Badge, Box, Card, Divider, Group, Stack, Text } from '@mantine/core';
+import { Badge, Box, Button, Card, Divider, Group, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
 import { IconCalendarEvent, IconPackage, IconReceipt } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 
@@ -20,7 +19,6 @@ export default function CardRecentOrder({ order }: { order: any }) {
       <Card
         bg={statusInfo.color + 10}
         withBorder
-        radius='md'
         shadow='sm'
         key={order.id}
         className='bg-white transition-shadow hover:shadow-md dark:bg-dark-card'
@@ -100,7 +98,7 @@ export default function CardRecentOrder({ order }: { order: any }) {
           </Box>
 
           <Group justify='flex-end' gap='sm' mt='xs'>
-            <BButton
+            <Button
               loading={loading}
               variant='outline'
               onClick={() => {
@@ -116,9 +114,8 @@ export default function CardRecentOrder({ order }: { order: any }) {
               }}
             >
               Tùy chỉnh
-            </BButton>
-            <BButton
-              radius='md'
+            </Button>
+            <Button
               loading={loading}
               onClick={() => {
                 setLoading(true);
@@ -126,7 +123,7 @@ export default function CardRecentOrder({ order }: { order: any }) {
               }}
             >
               Đặt lại đơn hàng
-            </BButton>
+            </Button>
           </Group>
         </Stack>
       </Card>

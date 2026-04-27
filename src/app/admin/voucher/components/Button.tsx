@@ -1,18 +1,17 @@
 'use client';
 
-import { Modal, ScrollAreaAutosize, Title } from '@mantine/core';
+import { Button, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import CreateVoucher from './form/CreateVoucher';
 
 export function CreateVoucherButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
         closeOnClickOutside={false}
         scrollAreaComponent={ScrollAreaAutosize}

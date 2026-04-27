@@ -22,12 +22,11 @@ import {
   IconSpacingVertical,
   IconUpload
 } from '@tabler/icons-react';
-import BButton from '~/components/Button/Button';
 
 export default function SecuritySettingsManagement({ data }: { data: any }) {
   return (
     <>
-      <Paper withBorder p='md' radius='md'>
+      <Paper withBorder p='md'>
         <form>
           <Stack gap={'xl'}>
             <Group justify='space-between'>
@@ -40,19 +39,18 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                   Quản lý cài đặt bảo mật
                 </Text>
               </Box>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
 
-            <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb={'md'}>
                 Phiên làm việc
               </Title>
               <Grid>
                 <GridCol span={6}>
                   <NumberInput
-                    radius={'md'}
                     label={`Thời gian hết hạn phiên (phút)`}
                     size='sm'
                     min={5}
@@ -61,18 +59,10 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                   />
                 </GridCol>
                 <GridCol span={6}>
-                  <NumberInput
-                    radius={'md'}
-                    label={`Số lần đăng nhập tối đa`}
-                    size='sm'
-                    min={5}
-                    withAsterisk
-                    defaultValue={5}
-                  />
+                  <NumberInput label={`Số lần đăng nhập tối đa`} size='sm' min={5} withAsterisk defaultValue={5} />
                 </GridCol>
                 <GridCol span={6}>
                   <NumberInput
-                    radius={'md'}
                     label={`Thời gian khóa tài khoản (phút)`}
                     size='sm'
                     min={15}
@@ -83,7 +73,7 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
               </Grid>
             </Paper>
 
-            <Paper withBorder radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper withBorder shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Box mb={'md'}>
                 <Title className='flex items-center gap-4 font-quicksand' order={4}>
                   <IconShield size={20} /> Cài đặt bảo mật
@@ -94,7 +84,6 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                 <Stack gap='md'>
                   <Stack gap='xs'>
                     <NumberInput
-                      radius={'md'}
                       label={'Thời gian chờ của phiên (phút)'}
                       id='sessionTimeout'
                       defaultValue={30}
@@ -106,7 +95,6 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                     <Select
                       defaultValue='medium'
                       label='Chính sách mật khẩu'
-                      radius='md'
                       data={[
                         { value: 'low', label: 'Thấp (8+ ký tự)' },
                         { value: 'medium', label: 'Trung bình (8+ ký tự, số)' },
@@ -142,7 +130,7 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
               </Box>
             </Paper>
 
-            <Paper shadow='md' radius='md' p='lg' withBorder>
+            <Paper shadow='md' p='lg' withBorder>
               <Stack gap='md'>
                 <Stack gap={2}>
                   <Group gap={8}>
@@ -159,7 +147,6 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                     <Select
                       label='Tần suất dự phòng'
                       defaultValue='daily'
-                      radius='md'
                       data={[
                         { value: 'hourly', label: 'Hourly' },
                         { value: 'daily', label: 'Daily' },
@@ -170,13 +157,7 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
                   </Stack>
 
                   <Stack gap={4}>
-                    <NumberInput
-                      radius={'md'}
-                      label='Thời gian lưu giữ (ngày)'
-                      id='retention'
-                      defaultValue={30}
-                      min={1}
-                    />
+                    <NumberInput label='Thời gian lưu giữ (ngày)' id='retention' defaultValue={30} min={1} />
                   </Stack>
 
                   <Group>
@@ -202,9 +183,9 @@ export default function SecuritySettingsManagement({ data }: { data: any }) {
             </Paper>
 
             <Group justify='flex-start'>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
           </Stack>
         </form>

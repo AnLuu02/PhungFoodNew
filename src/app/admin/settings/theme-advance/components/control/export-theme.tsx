@@ -1,6 +1,6 @@
+import { Button } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ThemeConfig } from '~/types/theme';
 
@@ -30,14 +30,14 @@ export const ExportTheme = ({ theme }: { theme: ThemeConfig }) => {
   };
   return (
     <>
-      <BButton
+      <Button
         variant='outline'
         leftSection={<IconDownload size={16} />}
         loading={isExporting}
         onClick={() => handleExportTheme()}
       >
         Export
-      </BButton>
+      </Button>
     </>
   );
 };

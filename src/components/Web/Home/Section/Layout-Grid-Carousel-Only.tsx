@@ -1,11 +1,10 @@
 'use client';
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Card, Flex, Space, StyleProp, Text, Title } from '@mantine/core';
+import { ActionIcon, Button, Card, Flex, Space, StyleProp, Text, Title } from '@mantine/core';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
-import BButton from '~/components/Button/Button';
 
 const LayoutGridCarouselOnly = ({
   data,
@@ -129,7 +128,7 @@ const LayoutGridCarouselOnly = ({
             {navigation && (
               <Flex align={'center'} justify={'center'} my={30}>
                 <Link href={navigation.href || `/thuc-don?loai=san-pham-moi`}>
-                  <BButton children={navigation.label || 'Xem tất cả'} variant='outline' radius={'xl'} />
+                  <Button children={navigation.label || 'Xem tất cả'} variant='outline' radius={'xl'} />
                 </Link>
               </Flex>
             )}

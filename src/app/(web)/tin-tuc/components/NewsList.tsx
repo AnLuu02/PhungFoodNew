@@ -52,7 +52,6 @@ export const NewsList = () => {
             h={{ base: '100%', sm: 180, md: 180, lg: 158 }}
           >
             <Paper
-              radius={'md'}
               className='overflow-hidden'
               pos={'relative'}
               w={{ base: '100%', sm: 190, md: 190, lg: 250 }}

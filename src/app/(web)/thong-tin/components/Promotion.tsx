@@ -1,6 +1,5 @@
-import { Box, Card, Flex, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Card, Flex, Stack, Text, Title } from '@mantine/core';
 import Link from 'next/link';
-import BButton from '~/components/Button/Button';
 import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
 
 export function Promotions({ vouchers }: { vouchers: any }) {
@@ -16,10 +15,10 @@ export function Promotions({ vouchers }: { vouchers: any }) {
           </Text>
         </Box>
         <Link href={'/thuc-don'}>
-          <BButton>Mua hàng ngay</BButton>
+          <Button>Mua hàng ngay</Button>
         </Link>
       </Flex>
-      <Card withBorder shadow='sm' padding='lg' radius='md'>
+      <Card withBorder shadow='sm' padding='lg'>
         <PromotionTabLayout vouchers={vouchers} />
       </Card>
     </Stack>

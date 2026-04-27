@@ -1,12 +1,11 @@
 'use client';
 
-import { Center, Grid, GridCol, Modal, TextInput, Title } from '@mantine/core';
+import { Button, Center, Grid, GridCol, Modal, TextInput, Title } from '@mantine/core';
 import { TokenType } from '@prisma/client';
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 const OtpModal = dynamic(() => import('~/components/Modals/ModalOtp'), {
@@ -65,7 +64,6 @@ export const ModalChangePassword = ({ opened, setOpened }: { opened: boolean; se
               <GridCol span={12}>
                 <TextInput
                   type='email'
-                  radius='md'
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
@@ -76,7 +74,7 @@ export const ModalChangePassword = ({ opened, setOpened }: { opened: boolean; se
               </GridCol>
 
               <GridCol span={12}>
-                <BButton loading={loading} type='submit' fullWidth size='md' children={'Gửi mã OTP'} />
+                <Button loading={loading} type='submit' fullWidth size='md' children={'Gửi mã OTP'} />
               </GridCol>
             </Grid>
           </Center>

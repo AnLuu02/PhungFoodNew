@@ -1,10 +1,9 @@
 'use client';
 
-import { Card, Center, Grid, GridCol, PasswordInput, TextInput, Title } from '@mantine/core';
+import { Button, Card, Center, Grid, GridCol, PasswordInput, TextInput, Title } from '@mantine/core';
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import PeriodControl from '../../components/PeriodControl';
@@ -44,13 +43,7 @@ export default function FormResetPassword({ email, token }: { email: string; tok
   return (
     <form onSubmit={handleSubmit}>
       <Center my={'md'}>
-        <Card
-          w={{ base: '100%', sm: '50vw', md: '40vw', lg: '25vw' }}
-          h={'max-content'}
-          py={'xs'}
-          shadow='xl'
-          radius={'md'}
-        >
+        <Card w={{ base: '100%', sm: '50vw', md: '40vw', lg: '25vw' }} h={'max-content'} py={'xs'} shadow='xl'>
           <Card.Section p={'md'}>
             <Grid>
               <GridCol span={12} className='flex justify-center'>
@@ -66,7 +59,6 @@ export default function FormResetPassword({ email, token }: { email: string; tok
                 <TextInput
                   type='email'
                   value={email}
-                  radius={'md'}
                   readOnly
                   placeholder='E-mail'
                   label='E-mail'
@@ -81,7 +73,6 @@ export default function FormResetPassword({ email, token }: { email: string; tok
                   onChange={e => setPassword(e.target.value)}
                   required
                   label='Mật khẩu mới'
-                  radius={'md'}
                   placeholder='Mật khẩu mới'
                 />
               </GridCol>
@@ -89,7 +80,6 @@ export default function FormResetPassword({ email, token }: { email: string; tok
                 <PasswordInput
                   type='password'
                   value={confirmPassword}
-                  radius={'md'}
                   label='Xác nhận mật khẩu'
                   onChange={e => setConfirmPassword(e.target.value)}
                   required
@@ -99,7 +89,7 @@ export default function FormResetPassword({ email, token }: { email: string; tok
               </GridCol>
 
               <GridCol span={12}>
-                <BButton
+                <Button
                   loading={loading}
                   type='submit'
                   fullWidth

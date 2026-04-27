@@ -2,9 +2,8 @@
 
 import { IconCloudUpload, IconSearch } from '@tabler/icons-react';
 
-import { Group, MultiSelect, TextInput } from '@mantine/core';
+import { Button, Group, MultiSelect, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import BButton from '~/components/Button/Button';
 import { api } from '~/trpc/react';
 import { ImageFilterOptions } from '../types/image.types';
 import { UploadModal } from './ImageUploadModal';
@@ -56,7 +55,7 @@ export default function ImageFilters({
           clearable
         />
 
-        <BButton
+        <Button
           onClick={openUploader}
           size='sm'
           leftSection={<IconCloudUpload size={16} />}
@@ -64,7 +63,7 @@ export default function ImageFilters({
           variant='outline'
         >
           Tải ảnh lên
-        </BButton>
+        </Button>
       </Group>
       <UploadModal opened={uploaderOpened} onClose={closeUploader} onSuccess={refetch} />
     </>

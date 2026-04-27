@@ -1,10 +1,9 @@
 'use client';
 import { Carousel } from '@mantine/carousel';
-import { Box, Card, Flex, Grid, GridCol, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
+import { Box, Button, Card, Flex, Grid, GridCol, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
 
@@ -153,7 +152,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                       </Carousel>
                       <Flex align={'center'} justify={'center'} mt={30}>
                         <Link href={`/thuc-don?s=${tab}`}>
-                          <BButton children={'Xem tất cả'} variant='outline' radius={'xl'} />
+                          <Button children={'Xem tất cả'} variant='outline' radius={'xl'} />
                         </Link>
                       </Flex>
                     </Flex>

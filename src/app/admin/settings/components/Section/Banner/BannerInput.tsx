@@ -49,13 +49,7 @@ export default function BannerInputSection({
   return (
     <>
       <Flex direction='column' align='center' justify='space-between' w={{ base: '100%', lg: '33.333333%' }}>
-        <Paper
-          w={'100%'}
-          h={190}
-          radius={'md'}
-          className='relative h-[400px] overflow-hidden hover:bg-[rgba(0,0,0,0.1)]'
-          withBorder
-        >
+        <Paper w={'100%'} h={190} className='relative h-[400px] overflow-hidden hover:bg-[rgba(0,0,0,0.1)]' withBorder>
           {previewBanner1 ? (
             <>
               <Image src={previewBanner1} w={'100%'} h='100%' className='object-fill' />
@@ -102,13 +96,7 @@ export default function BannerInputSection({
           )}
         </Paper>
 
-        <Paper
-          w={'100%'}
-          h={190}
-          radius={'md'}
-          className='relative h-[400px] overflow-hidden hover:bg-[rgba(0,0,0,0.1)]'
-          withBorder
-        >
+        <Paper w={'100%'} h={190} className='relative h-[400px] overflow-hidden hover:bg-[rgba(0,0,0,0.1)]' withBorder>
           {previewBanner2 ? (
             <>
               <Image src={previewBanner2} w={'100%'} h='100%' className='object-fill' />

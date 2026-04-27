@@ -1,11 +1,10 @@
 'use client';
-import { Box, Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { VoucherType } from '@prisma/client';
 import { IconPercentage30 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { ApplyVoucher } from '../app/(web)/thanh-toan/components/ApplyVoucher';
@@ -55,7 +54,7 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
   if (!isMounted) return <RecapCartSkeleton />;
   return (
     <>
-      <Card shadow='sm' radius='md' withBorder>
+      <Card shadow='sm' withBorder>
         <Stack gap={'md'}>
           <Flex
             align={{ base: 'flex-start', md: 'center' }}
@@ -66,7 +65,7 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
               Đơn hàng ({cart?.length || 0} món)
             </Title>
             {quickOrder && session?.user?.id && (
-              <BButton
+              <Button
                 leftSection={<IconPercentage30 size={16} />}
                 variant='outline'
                 className='mb-2 md:mb-0'

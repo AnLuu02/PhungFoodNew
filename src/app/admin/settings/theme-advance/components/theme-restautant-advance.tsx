@@ -27,7 +27,7 @@ export default function ThemeManagementAdvance() {
     templates.find(t => t.id === currentTemplate)?.theme || templates[0]?.theme!
   );
   return (
-    <Paper withBorder p='md' radius='md'>
+    <Paper withBorder p='md'>
       <Box className='flex items-center justify-between'>
         <Box mb={'xl'}>
           <Title className='flex items-center gap-2 font-quicksand' order={3}>

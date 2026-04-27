@@ -1,8 +1,8 @@
+import { Button, ButtonProps } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import BButton, { IBButtonProps } from '~/components/Button/Button';
 import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -15,7 +15,7 @@ export const ButtonCheckout = ({
   discountAmount,
   onClick
 }: {
-  stylesButtonCheckout: IBButtonProps;
+  stylesButtonCheckout: ButtonProps;
   data: any;
   finalTotal: number;
   originalTotal: number;
@@ -84,7 +84,7 @@ export const ButtonCheckout = ({
   };
 
   return (
-    <BButton
+    <Button
       loading={loading}
       disabled={loading || orderItems?.length === 0}
       {...stylesButtonCheckout}

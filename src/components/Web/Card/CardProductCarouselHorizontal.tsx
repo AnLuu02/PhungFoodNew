@@ -27,7 +27,6 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   };
   return (
     <Card
-      radius={'md'}
       withBorder
       onMouseEnter={handlePrefectData}
       className='group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:shadow-lg dark:bg-dark-card'
@@ -151,7 +150,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
         ''
       )}
 
-      <Badge color='red' radius={'md'} pos={'absolute'} top={0} right={0} className='animate-wiggle'>
+      <Badge color='red' pos={'absolute'} top={0} right={0} className='animate-wiggle'>
         {data?.rating !== 0 ? data?.rating.toFixed(1) : Number(5).toFixed(1)} ⭐
       </Badge>
     </Card>

@@ -44,7 +44,7 @@ export default function ReportSnapshotChart() {
         <SimpleGrid cols={4}>
           {overview.map((item, index) => (
             <>
-              <Card radius={'md'} h={80} px={'md'} py={'xs'} style={{ backgroundColor: item.color }}>
+              <Card h={80} px={'md'} py={'xs'} style={{ backgroundColor: item.color }}>
                 <Flex direction={'column'} justify={'space-between'} align={'flex-start'} h={'100%'}>
                   <Text className='dark:text-black' size='sm' fw={600}>
                     {item.title}

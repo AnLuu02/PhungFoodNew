@@ -19,7 +19,7 @@ export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme
   ];
   return (
     <>
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Box mb={'xl'}>
           <Title order={4} className='flex items-center gap-2 font-quicksand'>
             <IconSettings className='h-5 w-5' />
@@ -71,7 +71,7 @@ export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme
         </Box>
       </Paper>
 
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Box mb={'xl'}>
           <Title order={4} className='font-quicksand'>
             Hiệu ứng hình ảnh
@@ -85,7 +85,6 @@ export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme
             <Select
               label='Card Shadow'
               value={theme.cardShadow}
-              radius='md'
               onChange={value => setTheme({ ...theme, cardShadow: value! })}
               data={shadowOptions.map((option: any) => ({
                 value: option.value,
@@ -97,7 +96,6 @@ export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme
           <Box className='space-y-2'>
             <Select
               value={theme.buttonStyle}
-              radius='md'
               label='Button Style'
               onChange={value => setTheme({ ...theme, buttonStyle: value! })}
               data={buttonStyleOptions.map((option: any) => ({

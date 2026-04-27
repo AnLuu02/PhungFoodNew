@@ -74,7 +74,7 @@ export default function SettingPageClient() {
           tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
         }}
       >
-        <Paper radius={'md'} withBorder shadow='md' p={'sm'} mr={'md'} className='sticky top-[80px] h-fit'>
+        <Paper withBorder shadow='md' p={'sm'} mr={'md'} className='sticky top-[80px] h-fit'>
           <Text size='md' fw={700} mb={'sm'}>
             Danh mục cài đặt
           </Text>

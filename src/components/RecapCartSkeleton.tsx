@@ -2,7 +2,7 @@ import { Box, Card, Divider, Flex, Group, Skeleton, Stack } from '@mantine/core'
 
 export function RecapCartSkeleton() {
   return (
-    <Card shadow='sm' radius='md' withBorder>
+    <Card shadow='sm' withBorder>
       <Stack gap='md'>
         <Flex
           align={{ base: 'flex-start', md: 'center' }}
@@ -11,7 +11,7 @@ export function RecapCartSkeleton() {
         >
           <Skeleton height={28} width={180} radius='sm' />
 
-          <Skeleton height={36} width={140} radius='md' className='mb-2 md:mb-0' />
+          <Skeleton height={36} width={140} className='mb-2 md:mb-0' />
         </Flex>
 
         <Box className='bg-gray-100 dark:bg-dark-card' mx='-16px'>
@@ -29,7 +29,7 @@ export function RecapCartSkeleton() {
           </Stack>
         </Box>
 
-        <Skeleton height={42} width='100%' radius='md' />
+        <Skeleton height={42} width='100%' />
 
         <Stack gap='xs'>
           {[1, 2, 3, 4].map(i => (
@@ -48,7 +48,7 @@ export function RecapCartSkeleton() {
         </Stack>
 
         <Flex gap={0} justify='space-between' wrap='nowrap'>
-          <Skeleton height={42} width='100%' radius='md' />
+          <Skeleton height={42} width='100%' />
         </Flex>
       </Stack>
     </Card>

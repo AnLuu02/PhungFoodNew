@@ -87,7 +87,6 @@ export default function BannerSection({ banner }: any) {
                 w={'100%'}
                 h={190}
                 className='relative animate-fadeUp overflow-hidden'
-                radius={'md'}
                 style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
               >
                 <Link href={'/thuc-don'}>
@@ -122,7 +121,6 @@ export default function BannerSection({ banner }: any) {
               <Paper
                 key={index}
                 className='flex cursor-pointer items-center justify-center bg-gray-100 transition-shadow hover:scale-105 hover:shadow-md dark:bg-dark-background dark:text-dark-text'
-                radius={'md'}
                 h={'100%'}
                 shadow='xs'
                 py={'xs'}

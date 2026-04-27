@@ -1,4 +1,4 @@
-import { Box, Group, NavLink, ScrollArea, Stack, Text } from '@mantine/core';
+import { Box, Button, Divider, Group, NavLink, ScrollArea, Stack, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconLogout } from '@tabler/icons-react';
 import { signOut } from 'next-auth/react';
@@ -75,15 +75,10 @@ export default function Navbar() {
             );
           })}
 
-          <div
-            className='mb-4 flex cursor-pointer items-center rounded-md p-2 transition-colors duration-300 hover:bg-red-500 hover:text-white'
-            onClick={() => signOut()}
-          >
-            <IconLogout style={{ width: 20, height: 20, marginRight: '8px' }} />
-            <Text size='sm' fw={700}>
-              Đăng xuất
-            </Text>
-          </div>
+          <Divider />
+          <Button variant='danger' className='mb-4' onClick={() => signOut()} leftSection={<IconLogout size={16} />}>
+            Đăng xuất
+          </Button>
         </Stack>
       </ScrollArea.Autosize>
     </>

@@ -3,7 +3,6 @@
 import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -124,18 +123,17 @@ export function CreateManyRoleButton() {
       <Group>
         <FileButton disabled={opened} onChange={file => file && handleFileUpload(file)} accept='xlsx,xls'>
           {props => (
-            <BButton disabled={opened} variant='outline' {...props}>
+            <Button disabled={opened} variant='outline' {...props}>
               Import dữ liệu
-            </BButton>
+            </Button>
           )}
         </FileButton>
-        <Button bg={'red'} radius={'md'} onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
+        <Button variant='danger' onClick={handleExport} disabled={fetchRole?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>
 
       <Modal
-        radius={'md'}
         zIndex={150}
         size={'xl'}
         opened={opened}
@@ -199,12 +197,11 @@ export function CreateRoleButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
         zIndex={150}
-        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         size={'80%'}
@@ -350,19 +347,18 @@ export function CreateManyPermissionButton() {
       <Group>
         <FileButton disabled={opened} onChange={file => file && handleFileUpload(file)} accept='xlsx,xls'>
           {props => (
-            <BButton disabled={opened} variant='outline' {...props}>
+            <Button disabled={opened} variant='outline' {...props}>
               Import dữ liệu
-            </BButton>
+            </Button>
           )}
         </FileButton>
-        <Button radius={'md'} bg={'red'} onClick={handleExport}>
+        <Button variant='danger' onClick={handleExport}>
           Export Excel
         </Button>
       </Group>
 
       <Modal
         zIndex={150}
-        radius={'md'}
         size={'xl'}
         opened={opened}
         onClose={() => {
@@ -425,11 +421,10 @@ export function CreatePermissionButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
-        radius={'md'}
         closeOnClickOutside={false}
         zIndex={150}
         opened={opened}
@@ -454,7 +449,6 @@ export function UpdatePermissionButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
-        radius={'md'}
         closeOnClickOutside={false}
         zIndex={150}
         opened={opened}

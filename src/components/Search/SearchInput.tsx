@@ -62,7 +62,6 @@ export function SearchInput({ width }: { width?: string | number | undefined }) 
           /
         </Box>
       }
-      radius='md'
     />
   );
 }

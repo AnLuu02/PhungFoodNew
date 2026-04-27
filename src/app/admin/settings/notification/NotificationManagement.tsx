@@ -69,27 +69,27 @@ export default function NotificationManagement({
           <Text>Gửi và quản lý thông báo cho khách hàng của bạn</Text>
         </Stack>
         <Box className='flex gap-2'>
-          {/* <BButton
+          {/* <Button
             leftSection={<IconBell size={20} />}
             variant='outline'
             // onClick={() => setShowPreferencesDialog(true)}
           >
             Ưu tiên
-          </BButton>
-          <BButton
+          </Button>
+          <Button
             leftSection={<IconBrandZapier size={20} />}
             variant='outline'
             onClick={() => setShowAutoRulesDialog(true)}
           >
             Quy tắc tự động
-          </BButton> */}
+          </Button> */}
           {/* {selectedNotifications.length > 0 && (
-            <BButton
+            <Button
               variant='outline'
               //  onClick={() => setShowBulkDialog(true)}
             >
               Hành động hàng loạt ({selectedNotifications.length})
-            </BButton>
+            </Button>
           )} */}
 
           <NotificationModal

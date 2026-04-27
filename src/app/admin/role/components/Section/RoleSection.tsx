@@ -33,7 +33,7 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
         <>
           <Box mt={'md'} className='grid gap-4 md:grid-cols-3'>
             {currentItems.map((item: any, index: number) => (
-              <Card key={item.id} withBorder radius={'md'} mih={200}>
+              <Card key={item.id} withBorder mih={200}>
                 <Box className='flex items-center justify-between'>
                   <Box className='flex items-center gap-2'>
                     <IconShield
@@ -115,7 +115,6 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
               </Card>
             ))}
             <Modal
-              radius={'md'}
               closeOnClickOutside={false}
               opened={selectedRole !== null}
               onClose={() => setSelectedRole(null)}

@@ -3,6 +3,7 @@
 import {
   ActionIcon,
   Box,
+  Button,
   Grid,
   GridCol,
   Group,
@@ -16,7 +17,6 @@ import {
 } from '@mantine/core';
 import { IconCreditCard, IconSettings, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { api } from '~/trpc/react';
 
 export default function PaymentSettingsManagement() {
@@ -24,7 +24,7 @@ export default function PaymentSettingsManagement() {
   const [selectedPayment, setSelectedPayment] = useState('vnpay');
   return (
     <>
-      <Paper withBorder p='md' radius='md'>
+      <Paper withBorder p='md'>
         <form>
           <Stack gap={'xl'}>
             <Group justify='space-between'>
@@ -37,12 +37,12 @@ export default function PaymentSettingsManagement() {
                   Quản lý cài đặt thanh toán
                 </Text>
               </Box>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
 
-            <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb={'md'}>
                 Cổng thanh toán
               </Title>
@@ -71,7 +71,6 @@ export default function PaymentSettingsManagement() {
                       {selectedPayment === item.provider && (
                         <>
                           <TextInput
-                            radius={'md'}
                             label={`${item.name} Merchant ID`}
                             size='sm'
                             withAsterisk
@@ -80,7 +79,6 @@ export default function PaymentSettingsManagement() {
                           />
 
                           <TextInput
-                            radius={'md'}
                             label={`${item.name} Secret Key`}
                             size='sm'
                             withAsterisk
@@ -95,7 +93,7 @@ export default function PaymentSettingsManagement() {
               </Grid>
             </Paper>
 
-            <Paper radius='md' shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb='md'>
                 Cài đặt giá
               </Title>
@@ -103,7 +101,6 @@ export default function PaymentSettingsManagement() {
               <Grid>
                 <GridCol span={6}>
                   <Select
-                    radius='md'
                     label='Đơn vị tiền tệ'
                     size='sm'
                     data={[
@@ -116,7 +113,6 @@ export default function PaymentSettingsManagement() {
                 </GridCol>
                 <GridCol span={6}>
                   <TextInput
-                    radius={'md'}
                     label={`Thuế VAT (%)`}
                     size='sm'
                     withAsterisk
@@ -128,9 +124,9 @@ export default function PaymentSettingsManagement() {
             </Paper>
 
             <Group justify='flex-start'>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
           </Stack>
         </form>

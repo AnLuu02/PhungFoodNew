@@ -1,13 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Badge, Card, Flex, Group, Paper, Stack, Switch } from '@mantine/core';
+import { Badge, Button, Card, Flex, Group, Paper, Stack, Switch } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { EntityType, ImageType } from '@prisma/client';
 import { IconCalendarClock, IconPlus } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
@@ -254,7 +253,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
     <FormProvider {...formFields}>
       <form onSubmit={formFields.handleSubmit(onSubmit)}>
         <Group justify='flex-end' mb='md'>
-          <BButton
+          <Button
             leftSection={<IconPlus size={16} />}
             onClick={() => {
               formFields.reset(bannerdefaultValues);
@@ -262,10 +261,9 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
             }}
           >
             Tạo mới
-          </BButton>
+          </Button>
           <Paper
             withBorder
-            radius='md'
             p='md'
             miw={154}
             onClick={() => !activeBanner && NotifyWarning('Hãy chọn 1 mẫu banner làm mặc định.')}
@@ -289,13 +287,13 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
               )}
             />
           </Paper>
-          <BButton
+          <Button
             loading={formFields.formState.isSubmitting}
             type='submit'
             disabled={!formFields.formState.isDirty && !activeBanner}
           >
             Lưu thay đổi
-          </BButton>
+          </Button>
         </Group>
         <ListBannerTemplate onSetDefaultBanner={handleSetDefaultBanner} onDeletedBanner={handleDeleteBanner} />
         <Card radius={'lg'} padding={'sm'} className='bg-backgroundAdmin'>
@@ -307,7 +305,6 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
                 render={({ field }) => (
                   <DatePickerInput
                     leftSection={<IconCalendarClock size={18} />}
-                    radius={'md'}
                     label='Có hiệu lực từ'
                     placeholder='Từ ngày'
                     {...field}
@@ -321,7 +318,6 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
                 render={({ field }) => (
                   <DatePickerInput
                     leftSection={<IconCalendarClock size={18} />}
-                    radius={'md'}
                     label='Đến ngày'
                     placeholder='Đến ngày'
                     {...field}

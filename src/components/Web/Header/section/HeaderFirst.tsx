@@ -43,7 +43,7 @@ export const HeaderClient = () => {
         <Box>
           <Text
             size='sm'
-            className='animate-typing inline-block overflow-hidden whitespace-nowrap'
+            className='inline-block animate-typing overflow-hidden whitespace-nowrap'
             style={{ maxWidth: 'fit-content' }}
           >
             Phụng Food! xin chào quý khách!
@@ -71,7 +71,7 @@ export const HeaderClient = () => {
               </Button>
             )}
 
-            <Menu radius={'md'} position='bottom-end' shadow='md'>
+            <Menu position='bottom-end' shadow='md'>
               <Menu.Target>
                 <ActionIcon variant='subtle' color='gray.0' radius='xl' className='hidden md:block'>
                   <IconWorld size={18} />

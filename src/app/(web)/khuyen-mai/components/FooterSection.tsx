@@ -20,7 +20,6 @@ export default function FooterSection() {
           {session?.user?.id ? (
             <Box className='flex flex-col items-center justify-center gap-8 sm:flex-row'>
               <Button
-                radius={'md'}
                 size='lg'
                 className='h-auto bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
               >
@@ -28,7 +27,6 @@ export default function FooterSection() {
               </Button>
 
               <Button
-                radius={'md'}
                 size='lg'
                 variant='outline'
                 className='h-auto border-subColor px-6 py-3 text-lg text-white shadow-xl duration-300 hover:scale-105 hover:border-mainColor hover:text-subColor'
@@ -39,7 +37,6 @@ export default function FooterSection() {
           ) : (
             <Box className='flex flex-col items-center justify-center gap-8 sm:flex-row'>
               <Button
-                radius={'md'}
                 size='lg'
                 className='h-auto bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
               >
@@ -47,7 +44,6 @@ export default function FooterSection() {
               </Button>
 
               <Button
-                radius={'md'}
                 size='lg'
                 variant='outline'
                 className='h-auto border-subColor px-6 py-3 text-lg text-white shadow-xl duration-300 hover:scale-105 hover:border-mainColor hover:text-subColor'

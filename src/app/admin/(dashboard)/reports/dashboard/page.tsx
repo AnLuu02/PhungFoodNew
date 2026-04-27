@@ -174,7 +174,7 @@ export default function ReportPageClient({ overview }: any) {
 
   return (
     <Stack mb={'xl'}>
-      <Card radius={'md'} withBorder shadow='md' py={'xl'} px={'xl'}>
+      <Card withBorder shadow='md' py={'xl'} px={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
           <Box>
             <Title className='flex items-center gap-2 font-quicksand' order={3}>
@@ -188,7 +188,6 @@ export default function ReportPageClient({ overview }: any) {
           <Group>
             <Select
               allowDeselect={false}
-              radius={'md'}
               value={valueSelect}
               onChange={(value: any) => {
                 let url = '';
@@ -215,7 +214,6 @@ export default function ReportPageClient({ overview }: any) {
                 value={value}
                 onChange={setValue}
                 miw={200}
-                radius={'md'}
               />
             </Group>
 
@@ -223,7 +221,7 @@ export default function ReportPageClient({ overview }: any) {
           </Group>
         </Flex>
       </Card>
-      <Card radius={'md'} withBorder shadow='md' py={'xl'} px={'xl'}>
+      <Card withBorder shadow='md' py={'xl'} px={'xl'}>
         <Tabs defaultValue='overview'>
           <Tabs.List mb={'md'}>
             <Tabs.Tab value='overview' leftSection={<IconPhoto size={12} />}>

@@ -16,7 +16,7 @@ interface CartItemProps {
 export default function CartItemFastMenu({ image, name, price, quantity, onQuantityChange, onDelete }: CartItemProps) {
   return (
     <Group wrap='nowrap' className='w-full gap-4 p-4'>
-      <Paper radius='md' w={80} h={80}>
+      <Paper w={80} h={80}>
         <Image
           loading='lazy'
           src={image || '/images/jpg/empty-300x240.jpg'}
@@ -51,7 +51,6 @@ export default function CartItemFastMenu({ image, name, price, quantity, onQuant
             onChange={value => onQuantityChange(Number(value))}
             min={1}
             max={99}
-            radius={'md'}
             className='w-[100px]'
             rightSection={null}
             size='xs'

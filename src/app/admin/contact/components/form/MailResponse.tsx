@@ -14,7 +14,6 @@ import Youtube from '@tiptap/extension-youtube';
 import { Editor, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Dispatch, SetStateAction, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { AttachmentButton } from '~/components/Tiptap/AttachmentButton';
 import { EmojiPickerButton } from '~/components/Tiptap/EmojiPickerButton';
 import { FontFamily } from '~/components/Tiptap/extensions/FontFamilyExtension';
@@ -232,7 +231,7 @@ export default function MailResponse({
             <AttachmentButton files={files} setFiles={setFiles} />
             <EmojiPickerButton editor={editor} />
 
-            <BButton children={'Trả lời tự động'} loading={loading} onClick={() => handleSendEmail({ type: 'auto' })} />
+            <Button children={'Trả lời tự động'} loading={loading} onClick={() => handleSendEmail({ type: 'auto' })} />
           </Group>
           <ActionIcon color='red' variant='subtle' radius='xl' size={'lg'} onClick={() => setOpenedModal(false)}>
             <IconTrash size={20} />

@@ -1,6 +1,5 @@
-import { Box, Card, Grid, GridCol, Title } from '@mantine/core';
+import { Box, Button, Card, Grid, GridCol, Title } from '@mantine/core';
 import Link from 'next/link';
-import BButton from '~/components/Button/Button';
 
 const LayoutGrid3Col = () => {
   return (
@@ -23,7 +22,7 @@ const LayoutGrid3Col = () => {
           </Title>
           <Box mt={'xs'}>
             <Link href={`/thuc-don`}>
-              <BButton children={'Xem ngay'} w={'max-content'} />
+              <Button children={'Xem ngay'} w={'max-content'} />
             </Link>
           </Box>
         </Card>
@@ -47,7 +46,7 @@ const LayoutGrid3Col = () => {
 
           <Box mt={'xs'}>
             <Link href={`/thuc-don?danh-muc=danh-muc-do-uong`}>
-              <BButton children={'Xem ngay'} w={'max-content'} />
+              <Button children={'Xem ngay'} w={'max-content'} />
             </Link>
           </Box>
         </Card>
@@ -71,7 +70,7 @@ const LayoutGrid3Col = () => {
 
           <Box mt={'xs'}>
             <Link href={`/thuc-don`}>
-              <BButton children={'Xem ngay'} w={'max-content'} />
+              <Button children={'Xem ngay'} w={'max-content'} />
             </Link>
           </Box>
         </Card>

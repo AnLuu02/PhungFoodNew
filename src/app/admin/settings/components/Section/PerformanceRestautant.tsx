@@ -1,9 +1,8 @@
 'use client';
 
-import { Box, Grid, GridCol, Group, NumberInput, Paper, Stack, Switch, Text, Title } from '@mantine/core';
+import { Box, Button, Grid, GridCol, Group, NumberInput, Paper, Stack, Switch, Text, Title } from '@mantine/core';
 import { IconBell, IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 
 export default function PerformanceSettingsManagement({ data }: { data: any }) {
   const [notifications, setNotifications] = useState({
@@ -16,7 +15,7 @@ export default function PerformanceSettingsManagement({ data }: { data: any }) {
   const [isCache, setIsCache] = useState(false);
   return (
     <>
-      <Paper withBorder p='md' radius='md'>
+      <Paper withBorder p='md'>
         <form onSubmit={e => e.preventDefault()}>
           <Stack gap={'xl'}>
             <Group justify='space-between'>
@@ -29,12 +28,12 @@ export default function PerformanceSettingsManagement({ data }: { data: any }) {
                   Quản lý cài đặt hiệu suất
                 </Text>
               </Box>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
 
-            <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb={'md'}>
                 Bộ nhớ đệm
               </Title>
@@ -56,7 +55,6 @@ export default function PerformanceSettingsManagement({ data }: { data: any }) {
                     {isCache && (
                       <>
                         <NumberInput
-                          radius={'md'}
                           label={`Thời gian cache (milisecond)`}
                           size='sm'
                           withAsterisk
@@ -81,7 +79,7 @@ export default function PerformanceSettingsManagement({ data }: { data: any }) {
               </Grid>
             </Paper>
 
-            <Paper withBorder radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper withBorder shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Box mb={'md'}>
                 <Title className='flex items-center gap-4 font-quicksand' order={4}>
                   <IconBell size={20} /> Cài đặt thông báo
@@ -167,9 +165,9 @@ export default function PerformanceSettingsManagement({ data }: { data: any }) {
             </Paper>
 
             <Group justify='flex-start'>
-              <BButton type='submit' leftSection={<IconSpacingVertical size={16} />}>
+              <Button type='submit' leftSection={<IconSpacingVertical size={16} />}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
           </Stack>
         </form>

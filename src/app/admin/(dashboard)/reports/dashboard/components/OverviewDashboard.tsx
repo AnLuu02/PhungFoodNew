@@ -22,7 +22,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
                       {formatMoneyShort(item.currentValue)}
                     </Title>
                   </Stack>
-                  <ActionIcon w={50} h={50} color={'black'} variant='light' radius={'md'}>
+                  <ActionIcon w={50} h={50} color={'black'} variant='light'>
                     <IconR size={24} color={'white'} />
                   </ActionIcon>
                 </Flex>
@@ -44,7 +44,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
                       {formatMoneyShort(item.currentValue)}
                     </Title>
                   </Stack>
-                  <ActionIcon w={50} h={50} color={item.color} variant='light' radius={'md'}>
+                  <ActionIcon w={50} h={50} color={item.color} variant='light'>
                     <IconR size={24} color={item.color} />
                   </ActionIcon>
                 </Flex>

@@ -2,6 +2,7 @@
 import {
   Badge,
   Box,
+  Button,
   Flex,
   Grid,
   Group,
@@ -16,7 +17,6 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotificationClient } from '~/shared/schema/notification.schema';
 import { notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
 
@@ -142,9 +142,9 @@ export const ViewModal = ({ opened, onClose, selectedNotification, role = 'clien
                         : selectedNotification?.recipients?.length + ' người dùng'}
                     </Text>
                     {selectedNotification.recipient !== 'all' && (
-                      <BButton variant='subtle' size='xs' onClick={() => setViewDetail(!viewDetail)}>
+                      <Button variant='subtle' size='xs' onClick={() => setViewDetail(!viewDetail)}>
                         Chi tiết
-                      </BButton>
+                      </Button>
                     )}
                   </Group>
                 </Grid.Col>
@@ -154,7 +154,7 @@ export const ViewModal = ({ opened, onClose, selectedNotification, role = 'clien
                       <Text fw={500} size='sm'>
                         Phân tích
                       </Text>
-                      <Paper withBorder radius='md' p='md' mt='sm'>
+                      <Paper withBorder p='md' mt='sm'>
                         <Grid>
                           {[
                             { key: 'sent', label: 'Đã gửi' },
@@ -202,9 +202,9 @@ export const ViewModal = ({ opened, onClose, selectedNotification, role = 'clien
                 <Title order={5} className='font-quicksand'>
                   Danh sách người dùng
                 </Title>
-                <BButton size='xs' variant='outline' onClick={() => setViewDetail(false)}>
+                <Button size='xs' variant='outline' onClick={() => setViewDetail(false)}>
                   Ẩn
-                </BButton>
+                </Button>
               </Group>
               <ScrollAreaAutosize scrollbarSize={5} mah={200}>
                 <Table striped highlightOnHover withTableBorder withColumnBorders>

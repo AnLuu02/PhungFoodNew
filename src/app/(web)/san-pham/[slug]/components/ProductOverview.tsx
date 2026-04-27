@@ -88,7 +88,6 @@ export const ProductOverview = ({ product }: { product: any }) => {
       <ViewingUser productId={product?.id || ''} />
 
       <Card
-        radius={'md'}
         withBorder
         className='border-0 border-l-2 border-mainColor bg-gray-100 dark:bg-dark-card'
         p={'xs'}
@@ -120,7 +119,6 @@ export const ProductOverview = ({ product }: { product: any }) => {
       <Flex align='flex-end' gap={'md'} wrap={{ base: 'wrap', md: 'nowrap' }}>
         <Group gap='xs'>
           <NumberInput
-            radius={'md'}
             label={
               <Text size='sm' fw={700}>
                 Số lượng:
@@ -138,7 +136,6 @@ export const ProductOverview = ({ product }: { product: any }) => {
         <Group gap='xs'>
           <Select
             disabled
-            radius='md'
             label={
               <Text size='sm' fw={700}>
                 Kích cỡ:

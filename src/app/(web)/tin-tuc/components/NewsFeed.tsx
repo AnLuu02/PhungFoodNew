@@ -33,7 +33,7 @@ export const NewsFeed = () => {
   if (isLoading)
     return (
       <Stack gap={'md'}>
-        <Skeleton h={42} radius='md' />
+        <Skeleton h={42} />
         <Paper withBorder className='h-[max-content] rounded-md border-mainColor' mb={20}>
           <Box className='rounded-t-md bg-mainColor p-2 text-white'>
             <Text size='sm' fw={700}>

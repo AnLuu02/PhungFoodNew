@@ -1,10 +1,9 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, Switch, TextInput } from '@mantine/core';
+import { Button, Grid, Switch, TextInput } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { basePaymentSchema, PaymentInput } from '~/shared/schema/payment.schema';
 import { api } from '~/trpc/react';
@@ -81,14 +80,7 @@ export default function PaymentUpsert({
           control={control}
           name='id'
           render={({ field }) => (
-            <TextInput
-              radius='md'
-              {...field}
-              label='id'
-              placeholder='Nhập id'
-              error={errors.id?.message}
-              className='hidden'
-            />
+            <TextInput {...field} label='id' placeholder='Nhập id' error={errors.id?.message} className='hidden' />
           )}
         />
         <Grid.Col span={6}>
@@ -98,7 +90,6 @@ export default function PaymentUpsert({
             render={({ field }) => (
               <TextInput
                 {...field}
-                radius='md'
                 label='Nhà cung cấp'
                 placeholder='Nhập Nhà cung cấp'
                 error={errors.provider?.message}
@@ -113,7 +104,6 @@ export default function PaymentUpsert({
             render={({ field }) => (
               <TextInput
                 {...field}
-                radius='md'
                 label='Tên phương thức'
                 placeholder='Nhập Tên phương thức'
                 error={errors.name?.message}
@@ -126,13 +116,7 @@ export default function PaymentUpsert({
             control={control}
             name='apiKey'
             render={({ field }) => (
-              <TextInput
-                radius='md'
-                {...field}
-                label='API Key'
-                placeholder='Nhập API Key'
-                error={errors.apiKey?.message}
-              />
+              <TextInput {...field} label='API Key' placeholder='Nhập API Key' error={errors.apiKey?.message} />
             )}
           />
         </Grid.Col>
@@ -142,7 +126,6 @@ export default function PaymentUpsert({
             name='secretKey'
             render={({ field }) => (
               <TextInput
-                radius='md'
                 {...field}
                 label='Secret Key'
                 placeholder='Nhập Secret Key'
@@ -156,13 +139,7 @@ export default function PaymentUpsert({
             control={control}
             name='clientId'
             render={({ field }) => (
-              <TextInput
-                radius='md'
-                {...field}
-                label='Client ID'
-                placeholder='Nhập Client ID'
-                error={errors.clientId?.message}
-              />
+              <TextInput {...field} label='Client ID' placeholder='Nhập Client ID' error={errors.clientId?.message} />
             )}
           />
         </Grid.Col>
@@ -172,7 +149,6 @@ export default function PaymentUpsert({
             name='clientSecret'
             render={({ field }) => (
               <TextInput
-                radius='md'
                 {...field}
                 label=' Client Secret'
                 placeholder='Nhập   Client Secret'
@@ -187,7 +163,6 @@ export default function PaymentUpsert({
             name='webhookUrl'
             render={({ field }) => (
               <TextInput
-                radius='md'
                 {...field}
                 label='Webhook Url'
                 placeholder='Nhập  Webhook Url'
@@ -202,7 +177,6 @@ export default function PaymentUpsert({
             name='webhookSecret'
             render={({ field }) => (
               <TextInput
-                radius='md'
                 {...field}
                 label='Webhook Secret'
                 placeholder='Nhập  Webhook Secret'
@@ -260,9 +234,9 @@ export default function PaymentUpsert({
           />
         </Grid.Col>
       </Grid>
-      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <Button type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Cập nhật
-      </BButton>
+      </Button>
     </form>
   );
 }

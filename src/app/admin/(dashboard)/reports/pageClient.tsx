@@ -133,7 +133,6 @@ export default function ReportPageClient({
           <Group>
             <Select
               allowDeselect={false}
-              radius={'md'}
               value={valueSelect}
               onChange={(value: any) => {
                 let url = '';
@@ -165,7 +164,6 @@ export default function ReportPageClient({
                 value={value}
                 onChange={setValue}
                 miw={200}
-                radius={'md'}
               />
             </Group>
 
@@ -195,7 +193,6 @@ export default function ReportPageClient({
                     style={{
                       backgroundColor: item.color + '22'
                     }}
-                    radius={'md'}
                   >
                     <IconR size={16} color={item.color} />
                   </Paper>

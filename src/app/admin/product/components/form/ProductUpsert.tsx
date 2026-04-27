@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  Button,
   Grid,
   GridCol,
   MultiSelect,
@@ -17,7 +18,6 @@ import { EntityType, ImageType } from '@prisma/client';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
@@ -213,7 +213,7 @@ export default function ProductUpsert({
           <GridCol span={6}>
             <Stack>
               <ThumbnailUpsert nameField='thumbnail.image' />
-              <BButton
+              <Button
                 variant='outline'
                 size='sm'
                 fullWidth
@@ -230,13 +230,13 @@ export default function ProductUpsert({
                 }
               >
                 Chọn ảnh từ thư viện
-              </BButton>
+              </Button>
             </Stack>
           </GridCol>
           <GridCol span={12}>
             <Stack>
               <GalleryUpsert onDeleted={imgPublicIds => setImageDeleted(imgPublicIds)} />
-              <BButton
+              <Button
                 variant='outline'
                 className='w-[max-content]'
                 size='sm'
@@ -253,7 +253,7 @@ export default function ProductUpsert({
                 }
               >
                 Chọn ảnh từ thư viện
-              </BButton>
+              </Button>
             </Stack>
           </GridCol>
           <Grid.Col span={6}>
@@ -263,7 +263,6 @@ export default function ProductUpsert({
               render={({ field, formState: { errors } }) => (
                 <TextInput
                   {...field}
-                  radius='md'
                   label='Tên sản phẩm'
                   placeholder='Nhập tên sản phẩm'
                   error={errors.name?.message}
@@ -278,7 +277,6 @@ export default function ProductUpsert({
               render={({ field, formState: { errors } }) => (
                 <Select
                   label='Danh mục'
-                  radius='md'
                   placeholder=' Chọn danh mục'
                   searchable
                   data={categories?.map(category => ({
@@ -322,7 +320,6 @@ export default function ProductUpsert({
               name='price'
               render={({ field, formState: { errors } }) => (
                 <NumberInput
-                  radius={'md'}
                   thousandSeparator=','
                   hideControls
                   label='Giá tiền'
@@ -339,7 +336,6 @@ export default function ProductUpsert({
               name='discount'
               render={({ field, formState: { errors } }) => (
                 <NumberInput
-                  radius={'md'}
                   thousandSeparator=','
                   hideControls
                   label='Giảm giá'
@@ -357,7 +353,6 @@ export default function ProductUpsert({
               render={({ field, formState: { errors } }) => (
                 <Select
                   label='Vùng miền'
-                  radius='md'
                   placeholder='Chọn vùng miền'
                   searchable
                   data={seedRegions?.map(region => ({
@@ -379,7 +374,6 @@ export default function ProductUpsert({
               name='availableQuantity'
               render={({ field, formState: { errors } }) => (
                 <NumberInput
-                  radius={'md'}
                   thousandSeparator=','
                   hideControls
                   label='Số lượng khả dụng'
@@ -398,7 +392,6 @@ export default function ProductUpsert({
               defaultValue={0}
               render={({ field, formState: { errors } }) => (
                 <NumberInput
-                  radius={'md'}
                   {...field}
                   thousandSeparator=','
                   hideControls
@@ -476,9 +469,9 @@ export default function ProductUpsert({
               )}
             />
           </Grid.Col>
-          <BButton type='submit' className='mt-4' loading={formFields.formState.isSubmitting} fullWidth>
+          <Button type='submit' className='mt-4' loading={formFields.formState.isSubmitting} fullWidth>
             Tạo mới / Cập nhật
-          </BButton>
+          </Button>
         </Grid>
       </form>
     </FormProvider>

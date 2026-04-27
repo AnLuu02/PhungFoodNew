@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } f
 import FilterSection from '~/app/admin/role/components/Section/FilterSection';
 import PermissionSection from '~/app/admin/role/components/Section/PermissionSection';
 import { FilterPermission } from '~/app/admin/role/components/types';
-import BButton from '~/components/Button/Button';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -92,7 +91,6 @@ export default function UpdatePermissionUser({
         <Box className='space-y-6'>
           <Paper
             p={'lg'}
-            radius={'md'}
             className='sticky left-0 top-[65px] z-10 flex items-center justify-between bg-gray-100 dark:bg-dark-card'
           >
             <Box>
@@ -103,12 +101,11 @@ export default function UpdatePermissionUser({
               </Text>
             </Box>
             <Group>
-              <BButton type='submit' disabled={!hasChange} loading={loading}>
+              <Button type='submit' disabled={!hasChange} loading={loading}>
                 Lưu thay đổi
-              </BButton>
+              </Button>
               <Button
                 variant='outline'
-                radius={'md'}
                 size='xs'
                 onClick={() => {
                   setSeletedPermissions([...initPermissions]);

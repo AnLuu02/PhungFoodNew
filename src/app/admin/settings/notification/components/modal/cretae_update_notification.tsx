@@ -1,6 +1,7 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  Button,
   Group,
   InputBase,
   Modal,
@@ -14,7 +15,6 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { generateNotifyHtml } from '~/lib/FuncHandler/MailHelpers/generateNotifyHtml';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -160,7 +160,6 @@ export const NotificationModal = ({
   return (
     <Modal
       opened={opened}
-      radius={'md'}
       closeOnClickOutside={false}
       onClose={() => {
         reset({});
@@ -184,13 +183,7 @@ export const NotificationModal = ({
             name='title'
             control={control}
             render={({ field }) => (
-              <TextInput
-                radius={'md'}
-                label='Tiêu đề'
-                placeholder='Nhập tiêu đề...'
-                {...field}
-                error={errors.title?.message}
-              />
+              <TextInput label='Tiêu đề' placeholder='Nhập tiêu đề...' {...field} error={errors.title?.message} />
             )}
           />
 
@@ -199,7 +192,6 @@ export const NotificationModal = ({
             control={control}
             render={({ field }) => (
               <Textarea
-                radius={'md'}
                 label='Nội dung'
                 placeholder='Nhập nội dung thông báo...'
                 minRows={3}
@@ -215,7 +207,6 @@ export const NotificationModal = ({
               control={control}
               render={({ field }) => (
                 <Select
-                  radius={'md'}
                   label='Loại thông báo'
                   placeholder='Chọn loại...'
                   data={Object.entries(notificationTypeOptions).map(([key, value]) => ({
@@ -234,7 +225,6 @@ export const NotificationModal = ({
               control={control}
               render={({ field }) => (
                 <Select
-                  radius={'md'}
                   label='Mức ưu tiên'
                   placeholder='Chọn mức...'
                   data={[
@@ -257,7 +247,6 @@ export const NotificationModal = ({
             render={({ field }) => (
               <Select
                 label='Đối tượng nhận'
-                radius={'md'}
                 placeholder='Chọn đối tượng...'
                 data={[
                   {
@@ -300,7 +289,6 @@ export const NotificationModal = ({
             defaultValue={['in_app']}
             render={({ field }) => (
               <MultiSelect
-                radius={'md'}
                 clearable
                 label='Kênh gửi thông báo'
                 placeholder='Chọn kênh gửi...'
@@ -323,7 +311,6 @@ export const NotificationModal = ({
             control={control}
             render={({ field }) => (
               <InputBase
-                radius={'md'}
                 label='Lên lịch (tùy chọn)'
                 type='datetime-local'
                 value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ''}
@@ -338,7 +325,6 @@ export const NotificationModal = ({
             render={({ field }) => (
               <Select
                 label='Mẫu có sẵn'
-                radius={'md'}
                 placeholder='Chọn mẫu có sẵn...'
                 disabled={templateData.length === 0 || isLoadingTemplate}
                 data={templateData?.map((t: any) => ({ value: t.id, label: t.name }))}
@@ -357,12 +343,12 @@ export const NotificationModal = ({
           />
 
           <Group justify='flex-end' mt='md'>
-            <BButton variant='outline' onClick={onClose}>
+            <Button variant='danger' onClick={onClose}>
               Hủy
-            </BButton>
-            <BButton loading={isSubmitting} type='submit'>
+            </Button>
+            <Button loading={isSubmitting} type='submit'>
               {mode === 'create' ? 'Tạo mới và gửi' : 'Cập nhật và gửi'}
-            </BButton>
+            </Button>
           </Group>
         </Stack>
       </form>

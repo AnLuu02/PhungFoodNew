@@ -32,7 +32,6 @@ export function ActivityTimelineChart() {
 
         <Select
           size='xs'
-          radius={'md'}
           value={days}
           onChange={v => setDays(v || '7')}
           data={[

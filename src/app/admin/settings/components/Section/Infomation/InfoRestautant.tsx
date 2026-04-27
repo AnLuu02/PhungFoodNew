@@ -1,12 +1,24 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Group, Paper, Stack, Switch, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Group,
+  Paper,
+  Stack,
+  Switch,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab,
+  Text,
+  Title
+} from '@mantine/core';
 import { EntityType, ImageType } from '@prisma/client';
 import { IconHome, IconSpacingVertical } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -111,7 +123,7 @@ export default function RestaurantInfoSettings() {
   return (
     <FormProvider {...formFields}>
       <form onSubmit={formFields.handleSubmit(onSubmit)}>
-        <Paper withBorder p='md' radius='md'>
+        <Paper withBorder p='md'>
           <Group justify='space-between' align='center' mb='lg'>
             <Box mb={'md'}>
               <Title className='flex items-center gap-2 font-quicksand' order={3}>
@@ -146,14 +158,14 @@ export default function RestaurantInfoSettings() {
                 )}
               />
 
-              <BButton
+              <Button
                 type='submit'
                 disabled={!formFields.formState.isDirty}
                 loading={formFields.formState.isSubmitting}
                 leftSection={<IconSpacingVertical size={16} />}
               >
                 Lưu toàn bộ
-              </BButton>
+              </Button>
             </Group>
           </Group>
           <Stack gap={'xl'}>

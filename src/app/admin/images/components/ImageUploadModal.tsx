@@ -1,11 +1,10 @@
 'use client';
 
-import { Grid, GridCol, Group, Modal, Select, Textarea } from '@mantine/core';
+import { Button, Grid, GridCol, Group, Modal, Select, Textarea } from '@mantine/core';
 
 import { EntityType, ImageType } from '@prisma/client';
 import { useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { handleUploadFromClient } from '~/lib/Cloudinary/client';
@@ -89,7 +88,6 @@ export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
         title: 'font-quicksand text-2xl font-bold'
       }}
       size='lg'
-      radius={'md'}
     >
       <FormProvider {...formFields}>
         <form onSubmit={formFields.handleSubmit(onSubmit)}>
@@ -137,12 +135,12 @@ export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
           </Grid>
 
           <Group mt='lg' grow>
-            <BButton variant='default' onClick={onClose} disabled={isUploading}>
+            <Button variant='danger' onClick={onClose} disabled={isUploading}>
               Hủy bỏ
-            </BButton>
-            <BButton type='submit' loading={isUploading} disabled={!file}>
+            </Button>
+            <Button type='submit' loading={isUploading} disabled={!file}>
               Tải lên
-            </BButton>
+            </Button>
           </Group>
         </form>
       </FormProvider>

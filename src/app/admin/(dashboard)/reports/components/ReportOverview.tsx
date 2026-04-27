@@ -137,7 +137,7 @@ export default function ReportOverviewPageClient({ overviews }: any) {
       </SimpleGrid>
 
       {overviews.orders && overviews.orders?.length > 0 && (
-        <Card radius={'md'} withBorder shadow='sm'>
+        <Card withBorder shadow='sm'>
           <Box mb={'md'}>
             <Title order={5} className='font-quicksand'>
               Đơn hàng gần đây

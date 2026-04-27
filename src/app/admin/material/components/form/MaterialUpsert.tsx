@@ -1,9 +1,8 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
+import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { categoryMaterials } from '~/constants';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseMaterialSchema, MaterialInput } from '~/shared/schema/material.schema';
@@ -74,7 +73,6 @@ export default function MaterialUpsert({
                 {...field}
                 label='Tên nguyên liệu'
                 size='sm'
-                radius={'md'}
                 placeholder='Nhập tên nguyên liệu'
                 error={errors.name?.message}
               />
@@ -89,7 +87,6 @@ export default function MaterialUpsert({
             render={({ field }) => (
               <Select
                 label='Loại nguyên liệu'
-                radius='md'
                 placeholder='Chọn loại nguyên liệu'
                 searchable
                 data={Object.entries(categoryMaterials)?.map(([value, label]) => ({
@@ -120,9 +117,9 @@ export default function MaterialUpsert({
           />
         </GridCol>
       </Grid>
-      <BButton type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
+      <Button type='submit' className='mt-4' loading={isSubmitting} fullWidth disabled={!isDirty}>
         Tạo mới
-      </BButton>
+      </Button>
     </form>
   );
 }

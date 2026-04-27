@@ -1,6 +1,5 @@
 'use client';
 import { Box, Button, Card, Flex, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
-import BButton from '~/components/Button/Button';
 import TabsPanelCarousel from './TabsPanel';
 
 const LayoutHotProduct = ({ data }: any) => {
@@ -49,7 +48,7 @@ const LayoutHotProduct = ({ data }: any) => {
             <TabsPanelCarousel data={data} />
           </TabsPanel>
           <Flex align={'center'} justify={'center'} mt={30}>
-            <BButton children={'Xem tất cả'} variant='outline' radius={'xl'} />
+            <Button children={'Xem tất cả'} variant='outline' radius={'xl'} />
           </Flex>
         </Tabs>
 

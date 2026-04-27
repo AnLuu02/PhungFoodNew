@@ -15,7 +15,7 @@ export const ShoppingCartMobile = () => {
     );
   };
   return cart.map((item: any) => (
-    <Paper shadow='xs' radius='md' p={'xs'} mb={'xs'} withBorder key={item.id}>
+    <Paper shadow='xs' p={'xs'} mb={'xs'} withBorder key={item.id}>
       <Stack gap={'4'}>
         <Group>
           <Paper
@@ -52,7 +52,6 @@ export const ShoppingCartMobile = () => {
             </Group>
             <Group m={0} p={0}>
               <NumberInput
-                radius={'md'}
                 thousandSeparator=','
                 clampBehavior='strict'
                 size='xs'

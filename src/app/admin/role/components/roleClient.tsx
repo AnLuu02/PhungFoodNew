@@ -95,7 +95,7 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
               }}
             >
               <Flex align={'center'} gap={'md'}>
-                <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
+                <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
                 </ActionIcon>
                 <Box>
@@ -162,7 +162,6 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
             <Select
               allowDeselect={false}
               placeholder='Bộ lọc'
-              radius='md'
               value={searchParams.get('s') || 'all'}
               onChange={value => {
                 if (value === 'all') params.delete('s');

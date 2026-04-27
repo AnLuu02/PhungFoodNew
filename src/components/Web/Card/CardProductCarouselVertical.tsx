@@ -25,7 +25,6 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
   return (
     <Card
       h={320}
-      radius='md'
       padding={0}
       onMouseEnter={handlePrefectData}
       shadow='sm'

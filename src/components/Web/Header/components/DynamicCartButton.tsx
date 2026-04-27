@@ -1,7 +1,6 @@
 'use client';
-import { Box } from '@mantine/core';
+import { Box, Button } from '@mantine/core';
 import { IconShoppingBag } from '@tabler/icons-react';
-import BButton from '~/components/Button/Button';
 import useScrollPosition from '~/components/Hooks/use-on-scroll';
 import { HEIGHT_HEADER } from '~/constants';
 import CartButton from './CartButton';
@@ -16,7 +15,7 @@ export default function DynamicCartButton({ heightShow }: { heightShow?: number 
     </Box>
   ) : (
     <>
-      <BButton
+      <Button
         variant='outline'
         className='hidden md:invisible md:block'
         radius={'xl'}
@@ -27,7 +26,7 @@ export default function DynamicCartButton({ heightShow }: { heightShow?: number 
         }
       >
         Giỏ hàng
-      </BButton>
+      </Button>
       <Box className='relative hidden text-mainColor sm:invisible sm:block md:hidden'>
         <IconShoppingBag size={40} />
       </Box>

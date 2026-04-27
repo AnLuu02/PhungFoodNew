@@ -9,7 +9,7 @@ export function OpeningHourTab({ openingHours }: { openingHours: any }) {
     return openingHours?.sort((item1: any, item2: any) => item1?.dayOfWeek - item2?.dayOfWeek) || [];
   }, [openingHours]);
   return (
-    <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+    <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Flex align={'center'} justify={'space-between'}>
         <Box mb={'xl'}>
           <Title order={4} className='flex items-center gap-2 font-quicksand'>

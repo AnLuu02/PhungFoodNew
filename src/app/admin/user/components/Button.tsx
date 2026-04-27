@@ -1,8 +1,7 @@
 'use client';
-import { ActionIcon, Modal, Title, Tooltip } from '@mantine/core';
+import { ActionIcon, Button, Modal, Title, Tooltip } from '@mantine/core';
 import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -13,14 +12,13 @@ export function CreateUserButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
         closeOnClickOutside={false}
         size='100%'
         opened={opened}
-        radius={'md'}
         zIndex={150}
         onClose={() => setOpened(false)}
         title={
@@ -49,7 +47,6 @@ export function UpdatePermissions({ email }: { email: any }) {
         size='70%'
         opened={opened}
         zIndex={150}
-        radius={'md'}
         onClose={() => setOpened(false)}
         title={
           <Title order={2} className='font-quicksand'>
@@ -90,7 +87,6 @@ export function UpdateUserButton({
         size='100%'
         opened={opened}
         zIndex={150}
-        radius={'md'}
         onClose={() => {
           setOpened(false);
           openedFromClient && setOpenedFromClient?.(false);

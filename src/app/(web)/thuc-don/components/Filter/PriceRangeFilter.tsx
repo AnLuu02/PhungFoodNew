@@ -2,7 +2,6 @@ import { Box, Button, Divider, Flex, Grid, GridCol, NumberInput, Popover, RangeS
 import { IconMoneybag } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 export function PriceRangeFilter() {
@@ -37,11 +36,10 @@ export function PriceRangeFilter() {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
   return (
-    <Popover width={300} position='bottom' radius={'md'} arrowSize={10} withArrow shadow='lg'>
+    <Popover width={300} position='bottom' arrowSize={10} withArrow shadow='lg'>
       <Popover.Target>
         <Button
           variant='subtle'
-          radius={'md'}
           className='border-1 border-mainColor text-mainColor hover:bg-mainColor/10 hover:text-mainColor'
           leftSection={<IconMoneybag size={16} />}
           w={'max-content'}
@@ -74,7 +72,6 @@ export function PriceRangeFilter() {
           <GridCol span={12}>
             <RangeSlider
               min={0}
-              radius={'md'}
               max={500000}
               step={20000}
               label={value => formatPriceLocaleVi(value)}
@@ -92,7 +89,6 @@ export function PriceRangeFilter() {
           <GridCol span={12}>
             <Flex align={'center'} justify={'space-between'} gap={'md'}>
               <NumberInput
-                radius={'md'}
                 thousandSeparator=','
                 clampBehavior='strict'
                 label='Giá từ'
@@ -107,7 +103,6 @@ export function PriceRangeFilter() {
               />
               <NumberInput
                 label='Đến'
-                radius={'md'}
                 thousandSeparator=','
                 clampBehavior='strict'
                 value={maxPrice}
@@ -129,7 +124,7 @@ export function PriceRangeFilter() {
             </Box>
           </GridCol>
           <GridCol span={12}>
-            <BButton children={'Áp dụng'} onClick={onHandleFilter} fullWidth />
+            <Button children={'Áp dụng'} onClick={onHandleFilter} fullWidth />
           </GridCol>
         </Grid>
       </Popover.Dropdown>

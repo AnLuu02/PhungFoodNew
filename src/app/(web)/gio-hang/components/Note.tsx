@@ -1,8 +1,7 @@
 'use client';
-import { Group, Stack, Textarea } from '@mantine/core';
+import { Button, Group, Stack, Textarea } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
-import BButton from '~/components/Button/Button';
 export const Note = ({ productId }: any) => {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [note, setNote] = useState<any>('');
@@ -25,7 +24,7 @@ export const Note = ({ productId }: any) => {
         flex={1}
       />
       <Stack gap={'xs'}>
-        <BButton
+        <Button
           disabled={!note}
           w={'max-content'}
           size='xs'
@@ -34,13 +33,12 @@ export const Note = ({ productId }: any) => {
           }}
         >
           Áp dụng
-        </BButton>
-        <BButton
+        </Button>
+        <Button
           disabled={!note}
-          w={'100%'}
-          bg={'red'}
+          fullWidth
+          variant='danger'
           size='xs'
-          className='text-white'
           onClick={() => {
             const productExist = cart.find((item: any) => item.id === productId);
             if (productExist) {
@@ -51,7 +49,7 @@ export const Note = ({ productId }: any) => {
           }}
         >
           Xóa
-        </BButton>
+        </Button>
       </Stack>
     </Group>
   );

@@ -25,7 +25,6 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { pusherClient } from '~/lib/PusherConfig/client';
 import { NotificationClient, NotificationRecipient } from '~/shared/schema/notification.schema';
 import { api } from '~/trpc/react';
-import BButton from './Button/Button';
 import { useRealtimeNotification } from './Hooks/use-realtime-notification';
 
 declare global {
@@ -122,7 +121,6 @@ function NotificationDialog() {
       <Box pos={'fixed'} top={6} right={12} className='z-[200] rounded-full' w={30} h={30} bg={'white'}>
         <Box style={{ position: 'relative' }}>
           <Menu
-            radius={'md'}
             opened={isOpen}
             offset={-6}
             withArrow
@@ -190,7 +188,7 @@ function NotificationDialog() {
                         Xóa ({selectedIds.length})
                       </Button>
                     )}
-                    <BButton
+                    <Button
                       variant='subtle'
                       size='xs'
                       onClick={async () => {
@@ -219,7 +217,7 @@ function NotificationDialog() {
                       className='text-mainColor hover:bg-mainColor/10 hover:text-mainColor'
                     >
                       Xóa tất cả
-                    </BButton>
+                    </Button>
                   </Group>
                 </Group>
 
@@ -398,7 +396,7 @@ function NotificationDialog() {
                               </Group>
 
                               <Flex justify='flex-end'>
-                                <BButton
+                                <Button
                                   size='xs'
                                   onClick={async () => {
                                     setShowViewDialog({ open: true, notification });
@@ -414,7 +412,7 @@ function NotificationDialog() {
                                   }}
                                 >
                                   Chi tiết
-                                </BButton>
+                                </Button>
                               </Flex>
                             </UnstyledButton>
 
@@ -436,7 +434,6 @@ function NotificationDialog() {
         {isNotify && (
           <Paper
             shadow='md'
-            radius='md'
             onClick={() => setIsNotify(false)}
             p='sm'
             withBorder

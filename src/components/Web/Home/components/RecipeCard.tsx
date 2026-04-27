@@ -14,7 +14,6 @@ export default function RecipeCard({ data }: { data: any }) {
   return (
     <Card
       shadow='sm'
-      radius='md'
       padding={0}
       className='group transform cursor-pointer transition-all duration-300 hover:shadow-xl'
       pos={'relative'}

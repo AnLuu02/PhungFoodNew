@@ -23,7 +23,7 @@ export const CommentsList = ({ data }: { data: any[] }) => {
   }
 
   return data.map((comment: any) => (
-    <Paper shadow='sm' p='sm' radius='md' withBorder key={comment.id} className='mb-4' pos={'relative'}>
+    <Paper shadow='sm' p='sm' withBorder key={comment.id} className='mb-4' pos={'relative'}>
       <Flex direction={'column'} gap={'md'} align={'flex-start'} justify={'flex-start'}>
         <Group gap={7}>
           <Image

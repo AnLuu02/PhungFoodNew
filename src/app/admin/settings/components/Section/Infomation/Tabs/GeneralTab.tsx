@@ -1,9 +1,8 @@
 'use client';
 
-import { Box, Group, Paper, Stack, Text, Textarea, TextInput, Title } from '@mantine/core';
+import { Box, Button, Group, Paper, Stack, Text, Textarea, TextInput, Title } from '@mantine/core';
 import { IconRestore, IconSpacingVertical } from '@tabler/icons-react';
 import { Controller, useFormContext } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 export default function GeneralTab() {
   const {
@@ -12,7 +11,7 @@ export default function GeneralTab() {
   } = useFormContext();
   return (
     <>
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Box mb={'md'}>
           <Title order={4} className='flex items-center gap-2 font-quicksand'>
             <IconRestore className='h-5 w-5' />
@@ -31,7 +30,6 @@ export default function GeneralTab() {
                 render={({ field, fieldState }) => (
                   <TextInput
                     {...field}
-                    radius={'md'}
                     label='Tên nhà hàng'
                     size='sm'
                     placeholder='Nhập tên nhà hàng'
@@ -46,7 +44,6 @@ export default function GeneralTab() {
                 render={({ field, fieldState }) => (
                   <Textarea
                     {...field}
-                    radius={'md'}
                     label='Mô tả nhà hàng'
                     placeholder='Enter restaurant description'
                     minRows={4}
@@ -66,7 +63,7 @@ export default function GeneralTab() {
         </Box>
       </Paper>
 
-      {/* <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      {/* <Paper  shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Box mb={'md'}>
           <Title order={4} className='flex items-center gap-2 font-quicksand'>
             <IconSettings className='h-5 w-5' />
@@ -132,14 +129,14 @@ export default function GeneralTab() {
           </Box>
         </Box>
       </Paper>
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      <Paper  shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Title className='font-quicksand' order={4} mb={'md'}>
           Cài đặt khu vực
         </Title>
         <Grid>
           <GridCol span={6}>
             <Select
-              radius={'md'}
+              
               label='Cài đặt múi giờ'
               size='sm'
               defaultValue={'7'}
@@ -162,7 +159,7 @@ export default function GeneralTab() {
           </GridCol>
           <GridCol span={6}>
             <Select
-              radius={'md'}
+              
               label='Ngôn ngữ mặc định'
               size='sm'
               placeholder='Nhập tên nhà hàng'
@@ -189,7 +186,7 @@ export default function GeneralTab() {
           </GridCol>
           <GridCol span={6}>
             <Select
-              radius={'md'}
+              
               label='Định dạng ngày'
               size='sm'
               defaultValue={'dd/mm/yyyy'}
@@ -213,7 +210,7 @@ export default function GeneralTab() {
         </Grid>
       </Paper>
 
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      <Paper  shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Title className='font-quicksand' order={4} mb={'md'}>
           Trạng thái hệ thống
         </Title>
@@ -255,14 +252,14 @@ export default function GeneralTab() {
       </Paper> */}
 
       <Group justify='flex-start'>
-        <BButton
+        <Button
           type='submit'
           leftSection={<IconSpacingVertical size={16} />}
           disabled={!isDirty}
           loading={isSubmitting}
         >
           Lưu thay đổi
-        </BButton>
+        </Button>
       </Group>
     </>
   );

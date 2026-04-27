@@ -281,7 +281,6 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
 
         <Modal
           opened={deleteConfirmOpened}
-          radius={'md'}
           onClose={closeDeleteConfirm}
           title={`
               Xác nhận xóa hàng loạt

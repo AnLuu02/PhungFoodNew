@@ -78,7 +78,7 @@ export function UsersDashboard({ dataClient, period, startTimeToNum, endTimeToNu
           {dataRevenue.map((item: any, index: number) => {
             const IconR = item.icon;
             return (
-              <Card key={index} radius={'md'} withBorder shadow='md' style={{ backgroundColor: item.color }}>
+              <Card key={index} withBorder shadow='md' style={{ backgroundColor: item.color }}>
                 <Stack gap={'xs'}>
                   <Flex align={'center'} justify={'space-between'}>
                     <Box>
@@ -97,7 +97,6 @@ export function UsersDashboard({ dataClient, period, startTimeToNum, endTimeToNu
                       style={{
                         backgroundColor: item.color + '22'
                       }}
-                      radius={'md'}
                     >
                       <IconR size={16} color={item.color} />
                     </Paper>

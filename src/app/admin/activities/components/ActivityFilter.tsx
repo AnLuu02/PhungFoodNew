@@ -36,12 +36,11 @@ export default function ActivityFilter({
               leftSection={<IconSearch size={18} />}
               value={filters.search || ''}
               onChange={e => setFilters({ ...filters, search: e.target.value || undefined })}
-              radius='md'
               size='sm'
               flex={1}
               py={'xs'}
               classNames={{
-                input: 'bg-cardAdmin border-none dark:bg-dark-card'
+                input: 'border-none bg-cardAdmin dark:bg-dark-card'
               }}
             />
             <Divider w={1} size={30} c={'red'} />
@@ -54,12 +53,11 @@ export default function ActivityFilter({
                   { value: 'User', label: 'Người dùng' }
                 ]}
                 classNames={{
-                  input: 'bg-cardAdmin border-none dark:bg-dark-card'
+                  input: 'border-none bg-cardAdmin dark:bg-dark-card'
                 }}
                 value={filters.entityType || null}
                 onChange={v => setFilters({ ...filters, entityType: v || undefined })}
                 clearable
-                radius='md'
               />
               <Select
                 placeholder='Hành động'
@@ -70,12 +68,11 @@ export default function ActivityFilter({
                   { value: 'view', label: 'Xem' }
                 ]}
                 classNames={{
-                  input: 'bg-cardAdmin border-none dark:bg-dark-card'
+                  input: 'border-none bg-cardAdmin dark:bg-dark-card'
                 }}
                 value={filters.action || null}
                 onChange={v => setFilters({ ...filters, action: v || undefined })}
                 clearable
-                radius='md'
               />
             </SimpleGrid>
 
@@ -83,7 +80,6 @@ export default function ActivityFilter({
               <Button
                 variant='subtle'
                 onClick={() => setFilters({})}
-                radius='md'
                 color={Object.values(filters).length > 0 ? '' : 'gray'}
               >
                 Xóa tất cả bộ lọc

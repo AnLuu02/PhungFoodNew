@@ -22,7 +22,6 @@ import { VoucherType } from '@prisma/client';
 import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseVoucherSchema, VoucherInput } from '~/shared/schema/voucher.schema';
 import { api } from '~/trpc/react';
@@ -132,7 +131,6 @@ export default function UpdateVoucher({
                 render={({ field }) => (
                   <TextInput
                     {...field}
-                    radius='md'
                     required
                     label='Tên voucher'
                     placeholder='Nhập tên voucher'
@@ -151,7 +149,6 @@ export default function UpdateVoucher({
                     <TextInput
                       {...field}
                       required
-                      radius='md'
                       flex={1}
                       onKeyDown={e => {
                         if (e.key === ' ') {
@@ -166,7 +163,6 @@ export default function UpdateVoucher({
                 />
                 <Button
                   size='sm'
-                  radius={'md'}
                   variant='subtle'
                   onClick={generatePromotionCode}
                   styles={{
@@ -199,7 +195,6 @@ export default function UpdateVoucher({
                 name='type'
                 render={({ field }) => (
                   <Select
-                    radius='md'
                     label='Hình thức khuyến mãi'
                     searchable
                     placeholder='Chọn phương thức'
@@ -221,7 +216,6 @@ export default function UpdateVoucher({
                 name='discountValue'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     leftSection={watch('type') === VoucherType.PERCENTAGE ? '%' : '$'}
                     thousandSeparator=','
@@ -247,7 +241,6 @@ export default function UpdateVoucher({
                 name='minOrderPrice'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Giá trị đơn hàng tối thiểu'
@@ -265,7 +258,6 @@ export default function UpdateVoucher({
                 name='maxDiscount'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Giảm giá tối đa'
@@ -318,7 +310,6 @@ export default function UpdateVoucher({
                 name='quantity'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Số lượng voucher'
@@ -334,7 +325,6 @@ export default function UpdateVoucher({
                 name='quantityForUser'
                 render={({ field }) => (
                   <NumberInput
-                    radius={'md'}
                     {...field}
                     thousandSeparator=','
                     label='Số lượng cho người dùng'
@@ -414,7 +404,6 @@ export default function UpdateVoucher({
                       name='pointUser'
                       render={({ field }) => (
                         <NumberInput
-                          radius={'md'}
                           {...field}
                           thousandSeparator=','
                           label='Giá trị điểm tối thiểu'
@@ -432,9 +421,9 @@ export default function UpdateVoucher({
         </Grid.Col>
       </Grid>
 
-      <BButton type='submit' className='mt-8' loading={isSubmitting} disabled={!isDirty} fullWidth>
+      <Button type='submit' className='mt-8' loading={isSubmitting} disabled={!isDirty} fullWidth>
         Cập nhật
-      </BButton>
+      </Button>
     </form>
   );
 }

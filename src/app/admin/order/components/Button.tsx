@@ -4,7 +4,6 @@ import { ActionIcon, Button, Group, Modal, Text, Title, Tooltip } from '@mantine
 import { OrderStatus } from '@prisma/client';
 import { IconCopy, IconEdit, IconPlus, IconPrinter, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { handleConfirm } from '~/lib/ButtonHandler/ButtonHandleConfirm';
@@ -19,9 +18,9 @@ export function CreateOrderButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
         closeOnClickOutside={false}
         zIndex={150}
@@ -190,9 +189,9 @@ export function SendMessageAllUserAdvanced() {
   return (
     <>
       <Tooltip label={<Text size='sm'>Gửi thông báo hàng loạt</Text>}>
-        <BButton variant='outline' onClick={() => setOpened(true)}>
+        <Button variant='outline' onClick={() => setOpened(true)}>
           Gửi thông báo hàng loạt
-        </BButton>
+        </Button>
       </Tooltip>
 
       <NotificationModal opened={opened} onClose={() => setOpened(false)} recipient='all' />
@@ -205,9 +204,9 @@ export function SendMessageOrderButton({ user }: { user: any }) {
   return (
     <>
       <Tooltip label='Nhắc nhở thanh toán.'>
-        <BButton variant='outline' onClick={() => setOpened(true)} disabled={regexCheckGuest.test(user?.email)}>
+        <Button variant='outline' onClick={() => setOpened(true)} disabled={regexCheckGuest.test(user?.email)}>
           Gửi thông báo
-        </BButton>
+        </Button>
       </Tooltip>
 
       <NotificationModal
@@ -232,7 +231,7 @@ export function HandleStateOrderButton({ id, status, title }: { id: string; stat
   return (
     <>
       <Tooltip label={title || 'Giao hàng'}>
-        <BButton
+        <Button
           variant='outline'
           onClick={() => {
             handleConfirm(
@@ -256,7 +255,7 @@ export function HandleStateOrderButton({ id, status, title }: { id: string; stat
           }}
         >
           {title || 'Giao hàng'}
-        </BButton>
+        </Button>
       </Tooltip>
     </>
   );

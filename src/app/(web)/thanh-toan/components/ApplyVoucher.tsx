@@ -123,7 +123,6 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
           <Box className='flex gap-2'>
             <TextInput
               placeholder='Nhập mã giảm giá'
-              radius={'md'}
               value={voucherCode}
               onChange={e => setVoucherCode(e.target.value)}
               className='flex-1 text-sm'
@@ -132,7 +131,6 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
             <Button
               variant='outline'
               size='sm'
-              radius={'md'}
               onClick={() => handleApplyVoucher()}
               disabled={!voucherCode.trim()}
               className='border-[#E7EAED] bg-transparent px-3 dark:border-[#383838]'

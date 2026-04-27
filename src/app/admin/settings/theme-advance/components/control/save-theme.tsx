@@ -1,6 +1,6 @@
+import { Button } from '@mantine/core';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ThemeConfig } from '~/types/theme';
 
@@ -26,9 +26,9 @@ export const SaveTheme = ({
 
   return (
     <>
-      <BButton onClick={handleSave} leftSection={<IconDeviceFloppy size={16} />} loading={isSaving}>
+      <Button onClick={handleSave} leftSection={<IconDeviceFloppy size={16} />} loading={isSaving}>
         Lưu thay đổi
-      </BButton>
+      </Button>
     </>
   );
 };

@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Badge,
   Box,
+  Button,
   Card,
   Center,
   Flex,
@@ -23,7 +24,6 @@ import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
@@ -272,21 +272,21 @@ export default function MyOrderPageClient({ session }: { session: any }) {
                               {order.status === OrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Tiếp tục thanh toán'>
-                                    <BButton size='xs'>Thanh toán</BButton>
+                                    <Button size='xs'>Thanh toán</Button>
                                   </Tooltip>
                                 </Link>
                               )}
                               {order.status === OrderStatus.CANCELLED && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Đặt lại đơn hàng'>
-                                    <BButton size='xs'>Đặt lại</BButton>
+                                    <Button size='xs'>Đặt lại</Button>
                                   </Tooltip>
                                 </Link>
                               )}
                               <Tooltip label='Chi tiết'>
-                                <BButton size='xs' onClick={() => openModal('orders', null, order)}>
+                                <Button size='xs' onClick={() => openModal('orders', null, order)}>
                                   Chi tiết
-                                </BButton>
+                                </Button>
                               </Tooltip>
                             </Group>
                           </Table.Td>
@@ -310,7 +310,6 @@ export default function MyOrderPageClient({ session }: { session: any }) {
               <Select
                 value={String(perPage)}
                 w={100}
-                radius='md'
                 onChange={value => {
                   setPerPage(Number(value));
                   setPage(1);

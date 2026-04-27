@@ -5,7 +5,6 @@ import { IconHeadphones, IconHome, IconReload } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import BButton from '~/components/Button/Button';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -44,14 +43,14 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         <Group justify='center' gap='md' className='pt-4' wrap='nowrap'>
-          <BButton size='md' onClick={reset} leftSection={<IconReload size={20} />}>
+          <Button variant='danger' size='md' onClick={reset} leftSection={<IconReload size={20} />}>
             Try Again
-          </BButton>
+          </Button>
 
           <Link href={'/'}>
-            <BButton size='md' variant='outline' leftSection={<IconHome size={20} />}>
+            <Button size='md' variant='outline' leftSection={<IconHome size={20} />}>
               Back to Home
-            </BButton>
+            </Button>
           </Link>
         </Group>
 

@@ -26,7 +26,6 @@ import { EntityType, ImageType } from '@prisma/client';
 import { IconCopy, IconDownload, IconEdit, IconTrash, IconUnlink } from '@tabler/icons-react';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
@@ -163,7 +162,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
       >
         <Grid columns={24}>
           <GridCol span={9}>
-            <Image src={image.url} alt={image.altText || 'Image preview'} radius='md' />
+            <Image src={image.url} alt={image.altText || 'Image preview'} />
           </GridCol>
           <GridCol span={15}>
             <ScrollAreaAutosize mah={540} w={'100%'} scrollbarSize={5} className='overflow-x-hidden'>
@@ -251,7 +250,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                   </Stack>
                 </Box>
 
-                <Card radius={'md'} withBorder>
+                <Card withBorder>
                   <Group justify='space-between' mb='xs'>
                     <Text size='sm' fw={600}>
                       THUỘC ({image.associations.length})
@@ -305,12 +304,12 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                     ĐƯỜNG DẪN HÌNH ẢNH
                   </Text>
                   <Group w={'100%'} className='overflow-hidden' px={'xs'}>
-                    <TextInput value={image.url} readOnly flex={1} size='sm' radius={'md'} />
+                    <TextInput value={image.url} readOnly flex={1} size='sm' />
                     <CopyButton value={image.url}>
                       {({ copied, copy }) => (
-                        <BButton size='sm' onClick={copy} leftSection={<IconCopy size={14} />} w={150}>
+                        <Button size='sm' onClick={copy} leftSection={<IconCopy size={14} />} w={150}>
                           {copied ? 'Đã sao chép' : 'Sao chép'}
-                        </BButton>
+                        </Button>
                       )}
                     </CopyButton>
                   </Group>
@@ -329,25 +328,24 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
           px={'xl'}
           className='bg-gray-100'
         >
-          <BButton
+          <Button
             size='sm'
-            variant='subtle'
-            c={'red'}
+            variant='danger'
             loading={deleteMutation.isPending}
             disabled={!image?.publicId}
             leftSection={<IconTrash size={14} />}
             onClick={() => image?.publicId && handleDeleteImage(image?.publicId)}
           >
             Xóa
-          </BButton>
+          </Button>
           <Group>
-            <BButton size='sm' variant='subtle' onClick={onClose}>
+            <Button size='sm' variant='danger' onClick={onClose}>
               Hủy bỏ
-            </BButton>
+            </Button>
             <a href={image.url} download={true} target='_blank'>
-              <BButton size='sm' leftSection={<IconDownload size={14} />}>
+              <Button size='sm' leftSection={<IconDownload size={14} />}>
                 Tải xuống
-              </BButton>
+              </Button>
             </a>
           </Group>
         </Group>
@@ -356,7 +354,6 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
       <Modal
         opened={editOpened}
         onClose={closeEdit}
-        radius={'md'}
         title={'Chỉnh sửa Metadata ảnh'}
         classNames={{
           title: 'font-quicksand text-2xl font-bold'
@@ -367,9 +364,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
             <Controller
               name='altText'
               control={control}
-              render={({ field }) => (
-                <Textarea radius={'md'} label='Alt Text' placeholder='Describe this image...' {...field} />
-              )}
+              render={({ field }) => <Textarea label='Alt Text' placeholder='Describe this image...' {...field} />}
             />
 
             <Controller
@@ -377,7 +372,6 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
               control={control}
               render={({ field }) => (
                 <Select
-                  radius={'md'}
                   label='Image Type'
                   placeholder='Select type'
                   data={Object.values(ImageType).map(t => ({
@@ -390,12 +384,12 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
             />
 
             <Group justify='flex-end'>
-              <BButton variant='default' onClick={closeEdit}>
+              <Button variant='danger' onClick={closeEdit}>
                 Hủy bỏ
-              </BButton>
-              <BButton loading={updateMutation.isPending} type='submit'>
+              </Button>
+              <Button loading={updateMutation.isPending} type='submit'>
                 Lưu
-              </BButton>
+              </Button>
             </Group>
           </Stack>
         </form>

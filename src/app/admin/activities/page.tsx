@@ -8,7 +8,6 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { useCallback, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import { ActivityFeed } from './components/ActivityFeed';
@@ -91,7 +90,7 @@ export default function SystemActivityPage() {
               </div>
             </Group>
           </div>
-          <Badge size='lg' radius='md' variant='light' color='green' className='font-mono'>
+          <Badge size='lg' variant='light' color='green' className='font-mono'>
             Trực tiếp
           </Badge>
         </Group>
@@ -199,7 +198,8 @@ export default function SystemActivityPage() {
             </Text>
             <Group>
               {selectedItem?.length > 0 && (
-                <BButton
+                <Button
+                  variant='danger'
                   loading={deleteMutation.isPending}
                   disabled={!selectedItem || selectedItem?.length === 0}
                   onClick={() => {
@@ -209,7 +209,7 @@ export default function SystemActivityPage() {
                   }}
                 >
                   Xóa tất cả
-                </BButton>
+                </Button>
               )}
               <Button
                 onClick={handleRefresh}

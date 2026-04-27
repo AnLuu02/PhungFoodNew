@@ -24,7 +24,7 @@ export const ThemeColors = ({ theme, setTheme }: { theme: ThemeConfig; setTheme:
   };
   return (
     <>
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Box mb={'xl'}>
           <Title order={4} className='flex items-center gap-2 font-quicksand'>
             <IconPalette className='h-5 w-5' />
@@ -57,7 +57,7 @@ export const ThemeColors = ({ theme, setTheme }: { theme: ThemeConfig; setTheme:
         </Box>
       </Paper>
 
-      <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+      <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
         <Box mb={'xl'}>
           <Title order={4} className='font-quicksand'>
             Màu tùy chỉnh

@@ -1,10 +1,9 @@
 'use client';
 
-import { Badge, Box, Card, Text } from '@mantine/core';
+import { Badge, Box, Button, Card, Text } from '@mantine/core';
 import { NotificationTemplate } from '@prisma/client';
 import { IconPlus } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -58,12 +57,12 @@ export const TemplatesTabSection = ({
             </Text>
             <Text size='sm'>Các mẫu được xây dựng sẵn cho các thông báo phổ biến</Text>
           </Box>
-          <BButton
+          <Button
             leftSection={<IconPlus className='mr-2 h-4 w-4' />}
             onClick={() => setshowTemplateModal({ open: true, typeAction: 'create' })}
           >
             Thêm bản mẫu
-          </BButton>
+          </Button>
         </Box>
         <Box>
           {templates?.length > 0 ? (
@@ -104,27 +103,28 @@ export const TemplatesTabSection = ({
                       </Box>
                     )}
                     <Box className='flex gap-2'>
-                      <BButton
+                      <Button
                         className='w-2/5'
                         onClick={() =>
                           setShowSendDialog({ open: true, notification: template, typeAction: 'template' })
                         }
                       >
                         Sử dụng mẫu
-                      </BButton>
-                      <BButton
+                      </Button>
+                      <Button
                         className='w-2/5'
                         onClick={() => setshowTemplateModal({ open: true, typeAction: 'update', template })}
                       >
                         Chỉnh sửa
-                      </BButton>
-                      <BButton
+                      </Button>
+                      <Button
                         loading={loading}
-                        className='w-1/5 bg-red-500'
+                        className='w-1/5'
+                        variant='danger'
                         onClick={() => handleDeleteNotificationTemplate(template.id)}
                       >
                         Xóa
-                      </BButton>
+                      </Button>
                     </Box>
                   </Box>
                 </Card>

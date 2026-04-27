@@ -46,7 +46,7 @@ export default function CardVoucher({
 
   return (
     <>
-      <Card withBorder radius={'md'} key={promotion.id} className='overflow-hidden bg-gray-100 dark:bg-dark-card'>
+      <Card withBorder key={promotion.id} className='overflow-hidden bg-gray-100 dark:bg-dark-card'>
         <Stack>
           <Box>
             <Box className='flex items-start justify-between'>
@@ -58,7 +58,7 @@ export default function CardVoucher({
                   {promotion.description}
                 </Highlight>
               </Box>
-              <Badge variant='light' radius={'md'} className={getStatusColor(status.name)}>
+              <Badge variant='light' className={getStatusColor(status.name)}>
                 {status.viName}
               </Badge>
             </Box>

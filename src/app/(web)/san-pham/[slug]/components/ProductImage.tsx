@@ -60,7 +60,6 @@ export default function ProductImage({
                 h={110}
                 withBorder
                 key={index}
-                radius='md'
                 onClick={() => handleThumbnailClick(item?.image?.url, index)}
                 className={`cursor-pointer overflow-hidden ${
                   item?.image?.url === currentImage ? 'border-2 border-mainColor' : ''
@@ -84,7 +83,6 @@ export default function ProductImage({
                 w={110}
                 h={110}
                 withBorder
-                radius='md'
                 className={`cursor-pointer overflow-hidden`}
               >
                 <Box pos='relative'>
@@ -105,7 +103,7 @@ export default function ProductImage({
           </Flex>
         )}
 
-        <Paper radius='md' className='relative mb-4' w='100%'>
+        <Paper className='relative mb-4' w='100%'>
           <Flex direction='column' align='center' justify='center' w='100%'>
             <Box pos={'relative'} w={'100%'} mih={{ base: 300, md: 470 }} className='overflow-hidden'>
               <Image

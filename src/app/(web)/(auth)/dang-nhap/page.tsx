@@ -1,7 +1,20 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Box, Card, Center, Flex, Grid, GridCol, PasswordInput, Text, TextInput, Title } from '@mantine/core';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Center,
+  Flex,
+  Grid,
+  GridCol,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title
+} from '@mantine/core';
 import { IconCheck, IconKey, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -9,7 +22,6 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import BButton from '~/components/Button/Button';
 import { checkLoginCooldown, setLoginCooldown } from '~/lib/FuncHandler/HandleLockedUser/loginLimiter';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import LoginServices from '../components/LoginServices';
@@ -90,7 +102,6 @@ export default function Page() {
             h={'max-content'}
             py={'lg'}
             shadow='xl'
-            radius={'md'}
             className='animate-fadeUp'
           >
             <Card.Section p={'md'}>
@@ -102,14 +113,7 @@ export default function Page() {
                 </GridCol>
                 {status && (
                   <GridCol span={12} className='flex justify-center'>
-                    <Alert
-                      w={'100%'}
-                      radius={'md'}
-                      variant='light'
-                      color='green'
-                      title='Thành công'
-                      icon={<IconCheck />}
-                    >
+                    <Alert w={'100%'} variant='light' color='green' title='Thành công' icon={<IconCheck />}>
                       Tài khoản của bạn đã được kích hoạt. Nhập mật khẩu để đăng nhập.
                     </Alert>
                   </GridCol>
@@ -122,7 +126,6 @@ export default function Page() {
                       <TextInput
                         {...field}
                         placeholder='E-mail'
-                        radius='md'
                         type='email'
                         label='E-mail'
                         leftSection={<IconMail size={18} stroke={1.5} />}
@@ -144,7 +147,6 @@ export default function Page() {
                         {...field}
                         placeholder='Mật khẩu'
                         label='Mật khẩu'
-                        radius='md'
                         leftSection={<IconKey size={18} stroke={1.5} />}
                         onChange={e => {
                           field.onChange(e.target.value);
@@ -176,7 +178,7 @@ export default function Page() {
 
               <Grid>
                 <GridCol span={12} className=''>
-                  <BButton
+                  <Button
                     disabled={!isDirty || cooldown > 0}
                     loading={isSubmitting}
                     type='submit'

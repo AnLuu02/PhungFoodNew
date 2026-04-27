@@ -1,13 +1,12 @@
 'use client';
 
-import { Card, Center, Divider, Grid, GridCol, Text, TextInput, Title } from '@mantine/core';
+import { Button, Card, Center, Divider, Grid, GridCol, Text, TextInput, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { TokenType } from '@prisma/client';
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import OtpModal from '~/components/Modals/ModalOtp';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -60,7 +59,6 @@ export default function ForgotPassword() {
             py={'xs'}
             pt={'xl'}
             shadow='xl'
-            radius={'md'}
             withBorder
           >
             <Card.Section p={'md'}>
@@ -82,7 +80,6 @@ export default function ForgotPassword() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     required
-                    radius={'md'}
                     placeholder='E-mail'
                     leftSection={<IconMail size={18} stroke={1.5} />}
                   />
@@ -96,7 +93,7 @@ export default function ForgotPassword() {
                   <Divider />
                 </GridCol>
                 <GridCol span={12}>
-                  <BButton disabled={!email} loading={loading} type='submit' fullWidth size='md' children={'Gửi mã'} />
+                  <Button disabled={!email} loading={loading} type='submit' fullWidth size='md' children={'Gửi mã'} />
                 </GridCol>
               </Grid>
             </Card.Section>

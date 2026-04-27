@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Alert,
   Box,
+  Button,
   Card,
   Grid,
   GridCol,
@@ -19,7 +20,6 @@ import { IconInfoCircle, IconMail, IconPhone } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import AddressSection from '~/components/AdressSection';
-import BButton from '~/components/Button/Button';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -126,12 +126,12 @@ export default function OrderUpsert({
       <form onSubmit={formFields.handleSubmit(onSubmit)}>
         <Grid>
           <GridCol span={6}>
-            <Card shadow='sm' padding='lg' radius='md' withBorder>
+            <Card shadow='sm' padding='lg' withBorder>
               <Group justify='space-between' align='center'>
                 <Title order={2} className='mb-4 font-quicksand text-xl'>
                   Thông tin vận chuyển
                 </Title>
-                <BButton
+                <Button
                   variant='outline'
                   disabled={Boolean(formFields.watch('userId'))}
                   onClick={() => {
@@ -165,7 +165,7 @@ export default function OrderUpsert({
                 >
                   {' '}
                   Data test
-                </BButton>
+                </Button>
               </Group>
               <Stack gap='md'>
                 <Group grow>
@@ -176,7 +176,6 @@ export default function OrderUpsert({
                       <TextInput
                         label='Email'
                         placeholder='Email'
-                        radius={'md'}
                         type='email'
                         leftSection={<IconMail size={18} stroke={1.5} />}
                         {...field}
@@ -189,7 +188,6 @@ export default function OrderUpsert({
                     control={formFields.control}
                     render={({ field, fieldState }) => (
                       <TextInput
-                        radius={'md'}
                         label='Họ và tên'
                         placeholder='Họ và tên'
                         {...field}
@@ -207,7 +205,6 @@ export default function OrderUpsert({
                     render={({ field, fieldState }) => (
                       <TextInput
                         {...field}
-                        radius={'md'}
                         label='Số điện thoại'
                         leftSection={<IconPhone size={18} stroke={1.5} />}
                         placeholder='Số điện thoại (tùy chọn)'
@@ -242,7 +239,6 @@ export default function OrderUpsert({
                     <Select
                       label='Khách hàng'
                       searchable
-                      radius='md'
                       placeholder=' Chọn khách hàng'
                       data={users?.map(user => ({ value: user.id, label: user.name }))}
                       {...field}
@@ -260,7 +256,6 @@ export default function OrderUpsert({
                       {...field}
                       label='Phương thức thanh toán'
                       searchable
-                      radius='md'
                       placeholder=' Chọn phương thức thanh toán'
                       data={payments?.map(payment => ({ value: payment.id, label: payment.name }))}
                       error={formFields.formState.errors.paymentId?.message}
@@ -274,7 +269,6 @@ export default function OrderUpsert({
                   name='finalTotal'
                   render={({ field: { onChange, onBlur, value, name } }) => (
                     <NumberInput
-                      radius={'md'}
                       thousandSeparator=','
                       hideControls
                       clampBehavior='strict'
@@ -297,7 +291,6 @@ export default function OrderUpsert({
                   render={({ field }) => (
                     <Select
                       label='Trạng thái (chỉ đọc)'
-                      radius='md'
                       placeholder=' Chọn trạng thái'
                       data={Object.values(OrderStatus).map(status => ({
                         value: status,
@@ -314,14 +307,7 @@ export default function OrderUpsert({
               </Title>
               <GridCol span={12}>
                 {formFields.formState.errors.orderItems?.message && (
-                  <Alert
-                    w={'100%'}
-                    radius={'md'}
-                    variant='light'
-                    color='yellow'
-                    title='Cảnh báo'
-                    icon={<IconInfoCircle />}
-                  >
+                  <Alert w={'100%'} variant='light' color='yellow' title='Cảnh báo' icon={<IconInfoCircle />}>
                     {formFields.formState.errors.orderItems?.message}
                   </Alert>
                 )}
@@ -329,7 +315,7 @@ export default function OrderUpsert({
               {orderItemFields.map((field, index) => (
                 <OrderItemForm key={field.id} {...field} index={index} />
               ))}
-              <BButton
+              <Button
                 type='button'
                 onClick={() =>
                   appendOrderItem({
@@ -344,11 +330,11 @@ export default function OrderUpsert({
                 m={10}
               >
                 Thêm món
-              </BButton>
+              </Button>
             </Grid>
           </GridCol>
         </Grid>
-        <BButton
+        <Button
           type='submit'
           className='mt-4'
           loading={formFields.formState.isSubmitting}
@@ -356,7 +342,7 @@ export default function OrderUpsert({
           disabled={!formFields.formState.isDirty}
         >
           Cập nhật
-        </BButton>
+        </Button>
       </form>
     </FormProvider>
   );

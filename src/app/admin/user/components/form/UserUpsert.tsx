@@ -2,6 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Alert,
+  Button,
   Grid,
   GridCol,
   NumberInput,
@@ -21,7 +22,6 @@ import { usePathname } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import AddressSection from '~/components/AdressSection';
-import BButton from '~/components/Button/Button';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { infoUserLevel } from '~/constants';
@@ -162,14 +162,7 @@ export default function UserUpsert({
             <Grid gutter='md'>
               {error.code && (
                 <GridCol span={12} className='flex justify-center'>
-                  <Alert
-                    w={'100%'}
-                    radius={'md'}
-                    variant='light'
-                    color='yellow'
-                    title='Cảnh báo'
-                    icon={<IconInfoCircle />}
-                  >
+                  <Alert w={'100%'} variant='light' color='yellow' title='Cảnh báo' icon={<IconInfoCircle />}>
                     {error.message}
                   </Alert>
                 </GridCol>
@@ -180,7 +173,6 @@ export default function UserUpsert({
                   name='name'
                   render={({ field, formState: { errors } }) => (
                     <TextInput
-                      radius='md'
                       {...field}
                       required
                       label='Tên'
@@ -199,7 +191,6 @@ export default function UserUpsert({
                     <TextInput
                       {...field}
                       type='email'
-                      radius='md'
                       required
                       leftSection={<IconMail size={18} stroke={1.5} />}
                       label='Email'
@@ -216,7 +207,6 @@ export default function UserUpsert({
                   name='phone'
                   render={({ field, formState: { errors } }) => (
                     <TextInput
-                      radius='md'
                       {...field}
                       label='Số điện thoại'
                       leftSection={<IconPhone size={18} stroke={1.5} />}
@@ -234,7 +224,6 @@ export default function UserUpsert({
                   render={({ field, formState: { errors } }) => (
                     <Select
                       label='Vai trò'
-                      radius='md'
                       searchable
                       disabled={session?.user.role !== UserRole.ADMIN}
                       placeholder='Chọn vai trò'
@@ -278,7 +267,6 @@ export default function UserUpsert({
                   name='gender'
                   render={({ field, formState: { errors } }) => (
                     <Select
-                      radius='md'
                       placeholder='Giới tính'
                       searchable
                       label='Giới tính'
@@ -302,7 +290,6 @@ export default function UserUpsert({
                   defaultValue={0}
                   render={({ field, formState: { errors } }) => (
                     <NumberInput
-                      radius={'md'}
                       {...field}
                       disabled={session?.user.role !== UserRole.ADMIN}
                       defaultValue={0}
@@ -320,7 +307,6 @@ export default function UserUpsert({
                   name={`level`}
                   render={({ field, formState: { errors } }) => (
                     <Select
-                      radius='md'
                       {...field}
                       disabled={session?.user.role !== UserRole.ADMIN}
                       data={
@@ -373,8 +359,7 @@ export default function UserUpsert({
               )}
 
               <GridCol span={12}>
-                <BButton
-                  w-full
+                <Button
                   type='submit'
                   className='mt-4'
                   loading={formFields.formState.isSubmitting}
@@ -382,7 +367,7 @@ export default function UserUpsert({
                   fullWidth
                 >
                   Tạo mới / Cập nhật
-                </BButton>
+                </Button>
               </GridCol>
             </Grid>
           </GridCol>
@@ -392,7 +377,7 @@ export default function UserUpsert({
             </Text>
             <Stack>
               <ThumbnailUpsert nameField={'imageForEntity.image'} size={'100%'} />
-              <BButton
+              <Button
                 variant='outline'
                 size='sm'
                 fullWidth
@@ -408,7 +393,7 @@ export default function UserUpsert({
                 }
               >
                 Chọn ảnh từ thư viện
-              </BButton>
+              </Button>
             </Stack>
           </GridCol>
         </Grid>

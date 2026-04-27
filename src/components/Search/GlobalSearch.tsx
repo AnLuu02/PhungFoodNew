@@ -123,7 +123,6 @@ export const GlobalSearch = ({ width }: any) => {
         leftSection={<IconSearch size={24} className='text-gray-300 dark:text-dark-text' />}
         rightSectionWidth={80}
         pointer
-        radius='md'
         w={width}
         rightSection={
           <Box
@@ -148,7 +147,6 @@ export const GlobalSearch = ({ width }: any) => {
         padding={0}
         opened={opened}
         transitionProps={{ transition: 'scale', duration: 200, timingFunction: 'ease-in-out' }}
-        radius={'md'}
         overlayProps={{ opacity: 1, blur: 10 }}
         onClose={close}
         size='lg'
@@ -170,7 +168,6 @@ export const GlobalSearch = ({ width }: any) => {
           style={{ width: '100%' }}
           onClick={open}
           m={0}
-          radius='md'
           size='lg'
           variant='unstyled'
         />

@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
+  Button,
   ColorInput,
   Grid,
   GridCol,
@@ -18,7 +19,6 @@ import {
 import { IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { themeSchemaWithRestaurantId, ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
 import { api } from '~/trpc/react';
@@ -74,7 +74,7 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
   };
   return (
     <>
-      <Paper withBorder p='md' radius='md'>
+      <Paper withBorder p='md'>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack gap={'xl'}>
             <Group justify='space-between'>
@@ -87,17 +87,17 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
                   Quản lý cài đặt giao diện
                 </Text>
               </Box>
-              <BButton
+              <Button
                 type='submit'
                 loading={isSubmitting}
                 disabled={!isDirty}
                 leftSection={<IconSpacingVertical size={16} />}
               >
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
 
-            <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb={'md'}>
                 Chủ đề
               </Title>
@@ -108,7 +108,6 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
                     name='themeMode'
                     render={({ field }) => (
                       <Select
-                        radius={'md'}
                         label='Chủ đề mặc định'
                         size='sm'
                         placeholder='Chủ đề mặc định'
@@ -138,7 +137,6 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
                       <ColorInput
                         {...field}
                         label='Màu chủ đạo'
-                        radius={'md'}
                         placeholder='Input placeholder'
                         error={errors.primaryColor?.message}
                       />
@@ -154,7 +152,6 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
                       <ColorInput
                         {...field}
                         label='Màu phụ'
-                        radius={'md'}
                         placeholder='Input placeholder'
                         error={errors.secondaryColor?.message}
                       />
@@ -164,7 +161,7 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
               </Grid>
             </Paper>
 
-            <Paper radius='md' shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+            <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
               <Title className='font-quicksand' order={4} mb='md'>
                 Bố cục
               </Title>
@@ -187,27 +184,20 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
                   </Stack>
                 </GridCol>
                 <GridCol span={6}>
-                  <NumberInput
-                    radius={'md'}
-                    label={`Số item mỗi trang`}
-                    size='sm'
-                    min={20}
-                    withAsterisk
-                    defaultValue={20}
-                  />
+                  <NumberInput label={`Số item mỗi trang`} size='sm' min={20} withAsterisk defaultValue={20} />
                 </GridCol>
               </Grid>
             </Paper>
 
             <Group justify='flex-start'>
-              <BButton
+              <Button
                 type='submit'
                 leftSection={<IconSpacingVertical size={16} />}
                 loading={isSubmitting}
                 disabled={!isDirty}
               >
                 Lưu thay đổi
-              </BButton>
+              </Button>
             </Group>
           </Stack>
         </form>

@@ -6,7 +6,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 export default function ContactTab() {
   const { control } = useFormContext();
   return (
-    <Paper radius={'md'} shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
+    <Paper shadow='md' p={'lg'} className='bg-gray-100 dark:bg-dark-card'>
       <Box mb={'md'}>
         <Title order={4} className='flex items-center gap-2 font-quicksand'>
           <IconPhone className='h-5 w-5' />
@@ -27,7 +27,6 @@ export default function ContactTab() {
                   {...field}
                   type='email'
                   label='Email'
-                  radius='md'
                   placeholder='restaurant@example.com'
                   error={fieldState.error?.message}
                 />
@@ -42,7 +41,6 @@ export default function ContactTab() {
                 <TextInput
                   {...field}
                   label='Số điện thoại'
-                  radius='md'
                   placeholder='+1 (555) 123-4567'
                   error={fieldState.error?.message}
                 />
@@ -57,7 +55,6 @@ export default function ContactTab() {
                 <TextInput
                   {...field}
                   label='Địa chỉ'
-                  radius='md'
                   placeholder='123 Main Street, City, State 12345'
                   error={fieldState.error?.message}
                 />
@@ -72,7 +69,6 @@ export default function ContactTab() {
                 <TextInput
                   {...field}
                   label='Website'
-                  radius='md'
                   placeholder='https://yourrestaurant.com'
                   error={fieldState.error?.message}
                 />

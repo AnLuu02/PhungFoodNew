@@ -3,6 +3,7 @@
 import {
   Badge,
   Box,
+  Button,
   Card,
   Checkbox,
   Group,
@@ -17,7 +18,6 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconEdit, IconEye, IconSearch, IconTrash, IconUser, IconUsers } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import BButton from '~/components/Button/Button';
 import Empty from '~/components/Empty';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -84,13 +84,11 @@ export const HistoryTabSection = ({
                 placeholder='Search notifications...'
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.currentTarget.value)}
-                radius={'md'}
               />
             </Box>
           </Box>
           <Select
             w={200}
-            radius={'md'}
             placeholder='Select status'
             value={filterStatus}
             onChange={(value: any) => setFilterStatus(value || 'all')}
@@ -106,7 +104,6 @@ export const HistoryTabSection = ({
 
           <Select
             w={150}
-            radius={'md'}
             placeholder='Select type'
             value={filterType}
             onChange={(value: any) => setFilterType(value || 'all')}
@@ -131,18 +128,17 @@ export const HistoryTabSection = ({
           </Box>
           <Group>
             {selectedNotifications?.length > 0 && (
-              <BButton
-                variant='outline'
-                className='border-red-500 text-red-500 hover:border-red-500 hover:bg-red-500 hover:text-white'
+              <Button
+                variant='danger'
                 onClick={() => {
                   handleDeleteNotification(selectedNotifications);
                 }}
                 loading={loading}
               >
                 Xóa
-              </BButton>
+              </Button>
             )}
-            <BButton
+            <Button
               variant='outline'
               onClick={() => {
                 if (isSelectAll || selectedNotifications?.length > 0) {
@@ -157,7 +153,7 @@ export const HistoryTabSection = ({
                 : selectedNotifications?.length > 0
                   ? `Bỏ chọn ${selectedNotifications?.length}`
                   : 'Chọn tất cả'}
-            </BButton>
+            </Button>
           </Group>
         </Box>
 
@@ -223,13 +219,7 @@ export const HistoryTabSection = ({
                           { key: 'read', label: 'Đã đọc' },
                           { key: 'clicked', label: 'Đã truy cập' }
                         ].map(({ key, label }) => (
-                          <Paper
-                            key={key + label}
-                            withBorder
-                            radius='md'
-                            p='md'
-                            className='flex items-center justify-center'
-                          >
+                          <Paper key={key + label} withBorder p='md' className='flex items-center justify-center'>
                             <Stack className='text-center' gap={4}>
                               <Text fw={700}>
                                 {notification.analytics?.[key as 'sent' | 'delivered' | 'read' | 'clicked'] || 0}
@@ -251,7 +241,6 @@ export const HistoryTabSection = ({
                             classNames={{
                               root: 'bg-mainColor'
                             }}
-                            radius={'md'}
                           >
                             {tag}
                           </Badge>
@@ -282,28 +271,28 @@ export const HistoryTabSection = ({
                         </label>
                       </Box>
                       <Box className='flex gap-2'>
-                        <BButton
+                        <Button
                           leftSection={<IconEye className='mr-1 h-4 w-4' />}
                           onClick={() => setShowViewDialog({ open: true, notification: notification })}
                         >
                           Xem
-                        </BButton>
-                        <BButton
+                        </Button>
+                        <Button
                           leftSection={<IconEdit className='mr-1 h-4 w-4' />}
                           onClick={() =>
                             setShowSendDialog({ open: true, typeAction: 'update', notification: notification })
                           }
                         >
                           Chỉnh sửa
-                        </BButton>
-                        <BButton
+                        </Button>
+                        <Button
                           className='bg-red-500'
                           loading={loading}
                           onClick={() => handleDeleteNotification([notification?.id])}
                           leftSection={<IconTrash className='mr-1 h-4 w-4' />}
                         >
                           Xóa
-                        </BButton>
+                        </Button>
                       </Box>
                     </Box>
                   </Paper>

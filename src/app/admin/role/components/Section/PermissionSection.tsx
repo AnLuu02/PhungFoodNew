@@ -50,14 +50,7 @@ export default function PermissionSection({
       {permissionsRender.map((item: any) => {
         return (
           <label htmlFor={`${item.id}`}>
-            <Paper
-              p={'md'}
-              withBorder
-              radius={'md'}
-              shadow='md'
-              key={item.id}
-              className='flex items-center justify-between'
-            >
+            <Paper p={'md'} withBorder shadow='md' key={item.id} className='flex items-center justify-between'>
               <Box>
                 <Text fw={600}>{item.name}</Text>
                 <Text className='text-muted-foreground text-sm'>{item.description}</Text>

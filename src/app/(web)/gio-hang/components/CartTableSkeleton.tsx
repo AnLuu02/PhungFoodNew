@@ -27,7 +27,7 @@ export function CartTableSkeleton() {
                     h={80}
                     className='hidden items-center justify-center overflow-hidden rounded-lg sm:flex'
                   >
-                    <Skeleton height={60} width={60} radius='md' />
+                    <Skeleton height={60} width={60} />
                   </Paper>
 
                   <Stack gap={6} align='start' flex={1}>
@@ -52,7 +52,7 @@ export function CartTableSkeleton() {
               </Table.Td>
 
               <Table.Td>
-                <Skeleton height={36} width={80} radius='md' />
+                <Skeleton height={36} width={80} />
               </Table.Td>
 
               <Table.Td>

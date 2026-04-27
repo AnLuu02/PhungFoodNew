@@ -27,7 +27,7 @@ export default function ShoppingCart() {
           {isMobile ? (
             <ShoppingCartMobile />
           ) : (
-            <Paper shadow='xs' radius='md' className='p-0 lg:p-6'>
+            <Paper shadow='xs' className='p-0 lg:p-6'>
               <CartTableSkeleton />
               <Divider mb={10} />
             </Paper>
@@ -59,7 +59,7 @@ export default function ShoppingCart() {
         {isMobile ? (
           <ShoppingCartMobile />
         ) : (
-          <Paper shadow='xs' radius='md' className='p-0 lg:p-6'>
+          <Paper shadow='xs' className='p-0 lg:p-6'>
             <CartTable
               updateQuantity={(id: string, quantity: number) => {
                 setCart(items =>

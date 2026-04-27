@@ -105,7 +105,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
               p={'md'}
             >
               <Flex align={'center'} gap={'md'}>
-                <ActionIcon variant='light' size={'xl'} radius={'md'} color={item.color}>
+                <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
                 </ActionIcon>
                 <Box>
@@ -127,7 +127,6 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
           <Group>
             <Select
               allowDeselect={false}
-              radius='md'
               placeholder='Sắp xếp'
               value={searchParams.get('sort') || 'all'}
               onChange={value => {
@@ -150,7 +149,6 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
 
             <Select
               allowDeselect={false}
-              radius='md'
               placeholder='Bộ lọc'
               value={searchParams.get('filter') || 'all'}
               onChange={value => {
@@ -217,12 +215,12 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
                       </Highlight>
                     </Table.Td>
                     <Table.Td className='text-sm'>
-                      <Badge p='sm' radius='md' color={item.role?.name !== UserRole.ADMIN ? '#195EFE' : 'red'}>
+                      <Badge p='sm' color={item.role?.name !== UserRole.ADMIN ? '#195EFE' : 'red'}>
                         {item.role?.viName || 'Đang cập nhật...'}
                       </Badge>
                     </Table.Td>
                     <Table.Td className='text-sm'>
-                      <Badge p='sm' radius='md' color={item.isActive ? '#195EFE' : 'red'}>
+                      <Badge p='sm' color={item.isActive ? '#195EFE' : 'red'}>
                         {item.isActive ? 'Hoạt động' : 'Bị cấm'}
                       </Badge>
                     </Table.Td>

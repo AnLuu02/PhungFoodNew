@@ -51,7 +51,6 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
         }
       }}
       padding={0}
-      radius='md'
       size='md'
       withCloseButton={false}
       centered
@@ -131,7 +130,6 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 }
                 onClose();
               }}
-              radius='md'
               size='xs'
             >
               Tiếp tục mua hàng

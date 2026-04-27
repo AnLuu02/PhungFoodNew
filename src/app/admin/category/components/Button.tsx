@@ -3,7 +3,6 @@
 import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import BButton from '~/components/Button/Button';
 import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -109,24 +108,17 @@ export function CreateManyCategoryButton() {
       <Group>
         <FileButton disabled={opened} onChange={file => file && handleFileUpload(file)} accept='xlsx,xls'>
           {props => (
-            <BButton disabled={opened} variant='outline' {...props}>
+            <Button disabled={opened} variant='outline' {...props}>
               Import dữ liệu
-            </BButton>
+            </Button>
           )}
         </FileButton>
-        <Button
-          bg={'red'}
-          radius={'md'}
-          size='sm'
-          onClick={handleExport}
-          disabled={fetchCategories?.data?.length === 0}
-        >
+        <Button variant='danger' size='sm' onClick={handleExport} disabled={fetchCategories?.data?.length === 0}>
           Export Excel
         </Button>
       </Group>
 
       <Modal
-        radius={'md'}
         size={'xl'}
         opened={opened}
         onClose={() => {
@@ -188,11 +180,10 @@ export function CreateCategoryButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
-        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -214,7 +205,6 @@ export function UpdateCategoryButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
-        radius={'md'}
         closeOnClickOutside={false}
         opened={opened}
         onClose={() => setOpened(false)}
@@ -266,11 +256,10 @@ export function CreateSubCategoryButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
-      <BButton leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
+      <Button leftSection={<IconPlus size={16} />} onClick={() => setOpened(true)}>
         Tạo mới
-      </BButton>
+      </Button>
       <Modal
-        radius={'md'}
         closeOnClickOutside={false}
         size={'xl'}
         opened={opened}
@@ -294,7 +283,6 @@ export function UpdateSubCategoryButton({ id }: { id: string }) {
         <IconEdit size={24} />
       </ActionIcon>
       <Modal
-        radius={'md'}
         closeOnClickOutside={false}
         size={'xl'}
         opened={opened}

@@ -1,10 +1,9 @@
 'use client';
 
-import { Center, Text } from '@mantine/core';
+import { Button, Center, Text } from '@mantine/core';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import BButton from './Button/Button';
 
 type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -59,10 +58,10 @@ export default function Empty({
         {content}
       </Text>
       {hasButton && (
-        <BButton
+        <Button
           size={size}
           mt={'xs'}
-          className='bg-red-500'
+          variant='danger'
           loading={loadingEmpty}
           onClick={() => {
             onClick?.();
@@ -75,7 +74,7 @@ export default function Empty({
           }}
         >
           {btnText}
-        </BButton>
+        </Button>
       )}
     </Center>
   );

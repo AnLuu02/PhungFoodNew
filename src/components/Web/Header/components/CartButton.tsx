@@ -1,12 +1,11 @@
 'use client';
-import { Box, Divider, Flex, Group, Menu, Paper, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
+import { Box, Button, Divider, Flex, Group, Menu, Paper, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
-import BButton from '~/components/Button/Button';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
@@ -34,13 +33,12 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
       trigger='hover'
       offset={16}
       withArrow
-      radius={'md'}
       disabled={!isDesktop}
       transitionProps={{ transition: 'fade-down', duration: 300, exitDelay: 300, enterDelay: 300 }}
     >
       <Menu.Target>
         <Link href='/gio-hang' className='text-white'>
-          <BButton
+          <Button
             variant='outline'
             className={`cart-btn ${!notResponsive ? 'sm:hidden md:block' : ''}`}
             radius={'xl'}
@@ -54,7 +52,7 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
             }
           >
             Giỏ hàng
-          </BButton>
+          </Button>
 
           <Paper
             w={40}
@@ -108,7 +106,7 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
                 {cart?.length || 0} sản phẩm
               </Text>
               <Link href='/gio-hang' className='text-white'>
-                <BButton children={'Xem giỏ hàng'} radius='xl' w={'max-content'} />
+                <Button children={'Xem giỏ hàng'} radius='xl' w={'max-content'} />
               </Link>
             </Group>
           </Stack>

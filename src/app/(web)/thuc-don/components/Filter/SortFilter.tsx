@@ -1,7 +1,6 @@
 import { Button, Checkbox, Grid, GridCol, Popover, Text } from '@mantine/core';
 import { IconSort09 } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import BButton from '~/components/Button/Button';
 import { dataSort } from '~/constants';
 
 export function SortFilter() {
@@ -12,11 +11,10 @@ export function SortFilter() {
   const valueSort = params.getAll('sort') || [];
 
   return (
-    <Popover width={250} position='bottom' radius={'md'} arrowSize={10} withArrow shadow='lg'>
+    <Popover width={250} position='bottom' arrowSize={10} withArrow shadow='lg'>
       <Popover.Target>
         <Button
           variant='outline'
-          radius={'md'}
           className='border-1 border-mainColor text-mainColor hover:bg-mainColor/10 hover:text-mainColor'
           leftSection={<IconSort09 size={16} />}
           w={'max-content'}
@@ -68,8 +66,10 @@ export function SortFilter() {
           </GridCol>
 
           <GridCol span={12}>
-            <BButton
+            <Button
               children={'Hủy lọc'}
+              variant='danger'
+              disabled={!Boolean(params.getAll('sort'))}
               fullWidth
               onClick={() => {
                 s.delete('sort');

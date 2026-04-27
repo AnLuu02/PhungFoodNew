@@ -1,11 +1,10 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Grid, Group, NumberInput, Select } from '@mantine/core';
+import { Button, Grid, Group, NumberInput, Select } from '@mantine/core';
 import type { Dispatch, SetStateAction } from 'react';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import BButton from '~/components/Button/Button';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 
@@ -70,7 +69,6 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             render={({ field }) => (
               <Select
                 label='Khách hàng'
-                radius='md'
                 onClick={async () => {
                   const usersData = await utils.User.getAll.fetch();
                   setUsers(usersData);
@@ -90,7 +88,6 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='totalSpent'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Tổng chi'
                 required
@@ -107,7 +104,6 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='totalOrders'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Tổng đơn hàng'
                 required
@@ -124,7 +120,6 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='day'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Ngày'
                 required
@@ -141,7 +136,6 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='month'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Tháng'
                 required
@@ -158,7 +152,6 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
             name='year'
             render={({ field }) => (
               <NumberInput
-                radius={'md'}
                 {...field}
                 label='Năm'
                 required
@@ -172,9 +165,9 @@ export default function CreateRevenue({ setOpened }: { setOpened: Dispatch<SetSt
       </Grid>
 
       <Group align='center' justify='flex-end' className='mt-4'>
-        <BButton type='submit' loading={isSubmitting} disabled={!isDirty}>
+        <Button type='submit' loading={isSubmitting} disabled={!isDirty}>
           Tạo mới
-        </BButton>
+        </Button>
       </Group>
     </form>
   );
