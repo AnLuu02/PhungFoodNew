@@ -8,7 +8,7 @@ export const dynamic = 'force-static';
 export const revalidate = 60 * 60;
 
 const getProduct = async (slug: string) => {
-  const redisKey = `product-detail:${slug}`;
+  const redisKey = `product:detail:${slug}`;
   return withRedisCache(
     redisKey,
     async () => {

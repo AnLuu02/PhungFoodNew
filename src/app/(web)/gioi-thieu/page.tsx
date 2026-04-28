@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 const getInitRestaurant = async () => {
-  return await withRedisCache('get-one-active-client', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+  return await withRedisCache('restaurant:getOneActiveClient', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
 };
 
 export default async function AboutPage() {

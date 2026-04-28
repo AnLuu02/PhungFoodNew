@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import {
   activityLogger,
   createTRPCRouter,
@@ -51,7 +52,9 @@ export const categoryRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getOneCategoryService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllCategoryService(ctx.db)),
+  getAll: publicProcedure.query(
+    async ({ ctx }) => await withRedisCache('category:getAll', () => getAllCategoryService(ctx.db), 60 * 60 * 24)
+  ),
   createMany: publicProcedure
     .use(requirePermission('create:category'))
     .input(

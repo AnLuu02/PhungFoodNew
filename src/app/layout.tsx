@@ -64,7 +64,7 @@ export const metadata: Metadata = {
 };
 
 const getInitTheme = async () => {
-  return await withRedisCache('theme-default', () => api.Restaurant.getTheme(), 60 * 60 * 24);
+  return await withRedisCache('theme:default', () => api.Restaurant.getTheme(), 60 * 60 * 24);
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

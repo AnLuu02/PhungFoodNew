@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 const getInit = async () => {
-  return await withRedisCache('home-web', () => api.Page.getInit(), 60 * 60);
+  return await withRedisCache('page:homeWeb', () => api.Page.getInit(), 60 * 60);
 };
 
 const HomePage = async () => {

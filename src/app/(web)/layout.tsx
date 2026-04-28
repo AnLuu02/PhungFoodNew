@@ -9,7 +9,7 @@ import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { api, HydrateClient } from '~/trpc/server';
 
 const getInitRestaurant = async () => {
-  return await withRedisCache('get-one-active-client', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+  return await withRedisCache('restaurant:getOneActiveClient', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
 };
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {

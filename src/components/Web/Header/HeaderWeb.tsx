@@ -5,7 +5,7 @@ import Header2 from './section/HeaderSecond';
 import Header3 from './section/HeaderThird';
 const getStaticData = async () => {
   return await withRedisCache(
-    'header-web-static',
+    'page:headerWebStatic',
     async () => {
       const [categories, subCategories] = await Promise.all([api.Category.getAll(), api.SubCategory.getAll()]);
       return [categories, subCategories];
