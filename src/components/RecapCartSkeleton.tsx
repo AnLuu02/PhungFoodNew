@@ -9,7 +9,7 @@ export function RecapCartSkeleton() {
           justify='space-between'
           direction={{ base: 'column-reverse', md: 'row' }}
         >
-          <Skeleton height={28} width={180} radius='sm' />
+          <Skeleton height={28} width={180} />
 
           <Skeleton height={36} width={140} className='mb-2 md:mb-0' />
         </Flex>
@@ -18,7 +18,7 @@ export function RecapCartSkeleton() {
           <Stack gap='md' py='sm' px={16}>
             {[1, 2, 3].map((_, index) => (
               <Group key={index} wrap='nowrap' align='center'>
-                <Skeleton height={60} width={60} radius='sm' />
+                <Skeleton height={60} width={60} />
                 <Stack gap={4} className='flex-1'>
                   <Skeleton height={14} width='60%' radius='xl' />
                   <Skeleton height={12} width='30%' radius='xl' />

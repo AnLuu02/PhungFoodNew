@@ -119,7 +119,7 @@ export default function ReportPageClient({
 
   return (
     <Stack mb={'xl'}>
-      <Paper radius={'lg'} withBorder shadow='md' py={'xl'} px={'xl'}>
+      <Paper withBorder shadow='md' py={'xl'} px={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
           <Box>
             <Title className='flex items-center gap-2 font-quicksand' order={3}>
@@ -176,7 +176,7 @@ export default function ReportPageClient({
         {dataRevenue.map((item, index) => {
           const IconR = item.icon;
           return (
-            <Card key={index} radius={'lg'} withBorder shadow='md'>
+            <Card key={index} withBorder shadow='md'>
               <Stack gap={'xs'}>
                 <Text size='sm' fw={700} c={'dimmed'}>
                   {item.label}

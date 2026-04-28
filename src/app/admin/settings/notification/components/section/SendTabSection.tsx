@@ -22,7 +22,6 @@ export const SendTabSection = ({
       <SimpleGrid cols={2} m={0} p={0}>
         <Card
           withBorder
-          radius={'lg'}
           className='cursor-pointer transition duration-200 hover:scale-[1.01] hover:border-mainColor hover:shadow-md'
           onClick={() => setShowSendDialog({ open: true, typeAction: 'create', recipient: 'all' })}
         >
@@ -41,7 +40,6 @@ export const SendTabSection = ({
 
         <Card
           withBorder
-          radius={'lg'}
           className='cursor-pointer transition duration-200 hover:scale-[1.01] hover:border-mainColor hover:shadow-md'
           onClick={() => setShowSendDialog({ open: true, typeAction: 'create', recipient: 'individual' })}
         >
@@ -59,7 +57,7 @@ export const SendTabSection = ({
         </Card>
       </SimpleGrid>
 
-      <Card withBorder radius={'lg'}>
+      <Card withBorder>
         <Stack>
           <Group justify='space-between'>
             <Box>
@@ -79,12 +77,7 @@ export const SendTabSection = ({
                   notificationPriorityInfo?.[notification?.priority as 'low' | 'medium' | 'high' | 'urgent'];
 
                 return (
-                  <Paper
-                    withBorder
-                    radius={'lg'}
-                    key={notification?.id}
-                    className='flex items-center justify-between p-4'
-                  >
+                  <Paper withBorder key={notification?.id} className='flex items-center justify-between p-4'>
                     <Box className='flex items-center gap-3'>
                       {getTypeIcon(notification?.type)}
                       <Box>

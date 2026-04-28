@@ -6,6 +6,7 @@ import {
   Card,
   Flex,
   Group,
+  Paper,
   SimpleGrid,
   Stack,
   Text,
@@ -120,7 +121,7 @@ export default async function AboutPage() {
             </Stack>
           </Reveal>
           <Reveal x={20}>
-            <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
+            <Paper p={0} m={0} w={'100%'} h={300} pos={'relative'} className='overflow-hidden'>
               <Image
                 loading='lazy'
                 src='/images/jpg/cooking-1.jpg'
@@ -128,7 +129,7 @@ export default async function AboutPage() {
                 fill
                 className='object-cover'
               />
-            </Box>
+            </Paper>
           </Reveal>
         </SimpleGrid>
         <Reveal z={50}>
@@ -180,7 +181,6 @@ export default async function AboutPage() {
                 ].map((value, index) => (
                   <Card
                     key={index}
-                    radius={'lg'}
                     shadow='xl'
                     className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-mainColor/10 p-8 text-center transition-all duration-300 hover:shadow-lg sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
                   >
@@ -247,7 +247,6 @@ export default async function AboutPage() {
                   }
                 ].map((member, index) => (
                   <Card
-                    radius='lg'
                     shadow='xl'
                     key={index}
                     className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden transition-all duration-300 hover:shadow-xl sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
@@ -268,9 +267,9 @@ export default async function AboutPage() {
         </Reveal>
         <Reveal z={50}>
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' className='py-4 md:py-8'>
-            <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
+            <Paper p={0} m={0} w={'100%'} h={300} pos={'relative'} className='overflow-hidden'>
               <Image loading='lazy' src='/images/jpg/cooking-2.jpg' alt='Chef portrait' fill className='object-cover' />
-            </Box>
+            </Paper>
             <Stack gap='md'>
               <Title className='font-quicksand text-3xl text-mainColor sm:text-3xl'>Gặp gỡ đầu bếp của chúng tôi</Title>
               <Text>
@@ -317,7 +316,6 @@ export default async function AboutPage() {
                 <Card
                   shadow='xl'
                   padding={'lg'}
-                  radius={'lg'}
                   className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
                 >
                   <Box mb={'md'}>
@@ -354,7 +352,6 @@ export default async function AboutPage() {
                 <Card
                   shadow='xl'
                   padding={'lg'}
-                  radius={'lg'}
                   className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
                 >
                   <Box mb={'md'}>
@@ -388,7 +385,6 @@ export default async function AboutPage() {
                 <Card
                   shadow='xl'
                   padding={'lg'}
-                  radius={'lg'}
                   className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
                 >
                   <Box mb={'md'}>
@@ -478,9 +474,9 @@ export default async function AboutPage() {
                 </Group>
               </Box>
 
-              <Box w={'100%'} h={300} pos={'relative'} className='overflow-hidden rounded-md'>
+              <Paper p={0} m={0} w={'100%'} h={300} pos={'relative'} className='overflow-hidden'>
                 <Image loading='lazy' src='/images/jpg/map.jpg' alt='Map' fill className='object-cover' />
-              </Box>
+              </Paper>
             </SimpleGrid>
           </Box>
         </Reveal>

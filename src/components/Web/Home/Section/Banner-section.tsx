@@ -52,16 +52,19 @@ export default function BannerSection({ banner }: any) {
           >
             {(gallery?.length > 0 ? gallery : [{ url: '/images/jpg/empty-300x240.jpg', altText: 'empty' }])?.map(
               (slide: any) => (
-                <Carousel.Slide key={slide.id} className='rounded-md'>
-                  <Box className='relative h-[160px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4] sm:h-[400px]'>
+                <Carousel.Slide key={slide.id}>
+                  <Paper
+                    m={0}
+                    p={0}
+                    className='relative h-[160px] overflow-hidden bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4] sm:h-[400px]'
+                  >
                     <Image
                       style={{ objectFit: 'fill' }}
                       src={slide.url || '/images/jpg/empty-300x240.jpg'}
                       alt={slide.altText}
                       fill
-                      className='rounded-md'
                     />
-                  </Box>
+                  </Paper>
                 </Carousel.Slide>
               )
             )}

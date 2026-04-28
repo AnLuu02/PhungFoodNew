@@ -50,7 +50,6 @@ export const ModalForgotPassword = ({ opened, setOpened }: { opened: boolean; se
         centered
         withCloseButton={false}
         onClose={() => setOpened(false)}
-        className='rounded-lg'
         transitionProps={{ duration: 300, transition: 'fade-up' }}
       >
         <form onSubmit={handleSubmit}>

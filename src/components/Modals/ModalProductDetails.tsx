@@ -4,7 +4,6 @@ import { Carousel } from '@mantine/carousel';
 import {
   ActionIcon,
   Badge,
-  Box,
   Card,
   Flex,
   Grid,
@@ -12,6 +11,7 @@ import {
   Group,
   Modal,
   NumberInput,
+  Paper,
   Rating,
   ScrollAreaAutosize,
   Select,
@@ -61,7 +61,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
         {type === 'details' && (
           <Grid>
             <GridCol span={{ base: 12, lg: 5 }}>
-              <Box w={'100%'} h={350} pos={'relative'}>
+              <Paper w={'100%'} h={350} pos={'relative'}>
                 <Image
                   loading='lazy'
                   src={
@@ -69,14 +69,14 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                     '/images/png/delicious-burger-fries.png'
                   }
                   alt={data?.name}
-                  className='cursor-pointer rounded-md object-cover'
+                  className='cursor-pointer object-cover'
                   fill
                   onClick={() => {
                     setCurrentImage(getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '');
                     setShowfullImage(true);
                   }}
                 />
-              </Box>
+              </Paper>
               <Carousel
                 w={'100%'}
                 slideSize={{ base: '100%', sm: '50%', md: '25%' }}
@@ -92,7 +92,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                   if (item?.type === ImageType.GALLERY) {
                     return (
                       <Carousel.Slide key={index}>
-                        <Card withBorder radius={'sm'}>
+                        <Card withBorder>
                           <Card.Section
                             className='cursor-pointer'
                             onClick={() => {
@@ -100,7 +100,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                               setShowfullImage(true);
                             }}
                           >
-                            <Box w={'100%'} h={74} className='overflow-hidden rounded-sm' pos={'relative'}>
+                            <Paper p={0} m={0} w={'100%'} h={74} className='overflow-hidden' pos={'relative'}>
                               <Image
                                 loading='lazy'
                                 className='border-2 border-mainColor object-cover'
@@ -109,7 +109,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                                 alt='Product Image'
                                 src={item?.url}
                               />
-                            </Box>
+                            </Paper>
                           </Card.Section>
                         </Card>
                       </Carousel.Slide>
@@ -121,7 +121,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
             <GridCol span={{ base: 12, lg: 7 }}>
               <Stack gap='md'>
                 <Flex align='center' gap={'xs'}>
-                  <Badge className={`${inStock ? 'bg-mainColor' : 'bg-red-500'}`} radius={'sm'}>
+                  <Badge className={`${inStock ? 'bg-mainColor' : 'bg-red-500'}`}>
                     {inStock ? 'Còn hàng' : 'Hết hàng'}
                   </Badge>
                   <Rating value={data?.rating?.toFixed(1)} readOnly size='sm' color={'#FFC522'} />

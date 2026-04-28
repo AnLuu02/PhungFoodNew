@@ -67,8 +67,8 @@ export default function ThemeManagementAdvance() {
                 }
               }}
               classNames={{
-                tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`,
-                list: 'rounded-md bg-gray-100 p-1 dark:bg-dark-card'
+                tab: `!border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`,
+                list: 'bg-gray-100 p-1 dark:bg-dark-card'
               }}
             >
               <TabsList className='grid w-full grid-cols-6'>

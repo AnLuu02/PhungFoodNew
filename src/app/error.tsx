@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Group, Stack, Text } from '@mantine/core';
+import { Box, Button, Group, Paper, Stack, Text } from '@mantine/core';
 import { IconHeadphones, IconHome, IconReload } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -37,10 +37,10 @@ export default function Error({ error, reset }: ErrorProps) {
           <Text className='text-lg text-gray-600'>Sorry, an unexpected error occurred. We're working to fix it.</Text>
         </Stack>
 
-        <div className='rounded-lg border border-gray-200 bg-gray-50 p-4'>
+        <Paper withBorder className='bg-gray-50 p-4'>
           <Text className='text-sm font-medium text-gray-700'>Error Message:</Text>
           <Text className='mt-1 truncate text-sm text-red-600'>{error?.message || 'Unknown error occurred'}</Text>
-        </div>
+        </Paper>
 
         <Group justify='center' gap='md' className='pt-4' wrap='nowrap'>
           <Button variant='danger' size='md' onClick={reset} leftSection={<IconReload size={20} />}>

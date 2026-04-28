@@ -150,7 +150,7 @@ export function CreateManyRoleButton() {
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
           <Box className={`tableAdmin w-full overflow-x-auto`}>
             <Table striped highlightOnHover withTableBorder withColumnBorders>
-              <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+              <Table.Thead className='text-sm uppercase leading-normal'>
                 <Table.Tr>
                   <Table.Th className='text-sm' style={{ minWidth: 100 }}>
                     STT
@@ -374,7 +374,7 @@ export function CreateManyPermissionButton() {
         <ScrollAreaAutosize mah={480} scrollbarSize={5}>
           <Box className={`tableAdmin w-full overflow-x-auto`}>
             <Table striped highlightOnHover withTableBorder withColumnBorders>
-              <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+              <Table.Thead className='text-sm uppercase leading-normal'>
                 <Table.Tr>
                   <Table.Th className='text-sm' style={{ minWidth: 100 }}>
                     STT

@@ -53,8 +53,9 @@ export const ThemeLayout = ({ theme, setTheme }: { theme: ThemeConfig; setTheme:
         </Box>
 
         <Box className='grid gap-4 sm:grid-cols-3'>
-          <Box
-            className='border-1 rounded-lg border border-solid border-gray-400 bg-gray-200 p-4'
+          <Paper
+            withBorder
+            className='border-1 border border-solid border-gray-400 bg-gray-200 p-4'
             style={{ borderRadius: theme.borderRadius }}
           >
             <Box
@@ -62,16 +63,18 @@ export const ThemeLayout = ({ theme, setTheme }: { theme: ThemeConfig; setTheme:
               style={{ borderRadius: theme.borderRadius / 2 }}
             ></Box>
             <Box className='h-3 w-3/4 rounded bg-mainColor/80' style={{ borderRadius: theme.borderRadius / 2 }}></Box>
-          </Box>
-          <Box
-            className='border-1 rounded-lg border border-solid border-gray-400 bg-gray-200 p-4'
+          </Paper>
+          <Paper
+            withBorder
+            className='border-1 border border-solid border-gray-400 bg-gray-200 p-4'
             style={{ borderRadius: theme.borderRadius }}
           >
             <Box className='mb-2 h-4 w-full rounded bg-subColor' style={{ borderRadius: theme.borderRadius / 2 }}></Box>
             <Box className='h-3 w-2/3 rounded bg-subColor/80' style={{ borderRadius: theme.borderRadius / 2 }}></Box>
-          </Box>
-          <Box
-            className='border-1 rounded-lg border border-solid border-gray-400 bg-gray-200 p-4'
+          </Paper>
+          <Paper
+            withBorder
+            className='border-1 border border-solid border-gray-400 bg-gray-200 p-4'
             style={{ borderRadius: theme.borderRadius }}
           >
             <Box
@@ -79,7 +82,7 @@ export const ThemeLayout = ({ theme, setTheme }: { theme: ThemeConfig; setTheme:
               style={{ borderRadius: theme.borderRadius / 2 }}
             ></Box>
             <Box className='h-3 w-1/2 rounded bg-subColor' style={{ borderRadius: theme.borderRadius / 2 }}></Box>
-          </Box>
+          </Paper>
         </Box>
       </Box>
     </Paper>

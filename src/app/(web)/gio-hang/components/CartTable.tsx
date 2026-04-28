@@ -44,20 +44,21 @@ export const CartTable = ({ updateQuantity }: any) => {
                   withBorder
                   w={80}
                   h={80}
-                  className='hidden items-center justify-center overflow-hidden rounded-lg border-mainColor/70 sm:flex'
+                  className='hidden items-center justify-center border-mainColor/70 sm:flex'
                   pos={'relative'}
                 >
-                  <Image
-                    loading='lazy'
-                    src={
-                      getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                      '/images/jpg/empty-300x240.jpg'
-                    }
-                    width={60}
-                    height={60}
-                    className='rounded-md object-cover'
-                    alt={item.name}
-                  />
+                  <Paper withBorder w={65} h={65} className='overflow-hidden' pos={'relative'}>
+                    <Image
+                      loading='lazy'
+                      src={
+                        getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) ||
+                        '/images/jpg/empty-300x240.jpg'
+                      }
+                      fill
+                      className='object-cover'
+                      alt={item.name}
+                    />
+                  </Paper>
                 </Paper>
                 <Stack gap='6' align='start' flex={1}>
                   <Tooltip label={item.name}>

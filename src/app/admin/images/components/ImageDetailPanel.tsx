@@ -13,6 +13,7 @@ import {
   Image,
   Loader,
   Modal,
+  Paper,
   ScrollAreaAutosize,
   Select,
   Stack,
@@ -173,29 +174,29 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                   </Text>
                   <Grid gutter={'lg'} px={'xs'}>
                     <GridCol span={6}>
-                      <Stack className='rounded-md bg-gray-100' p={'xs'} pl={'md'} gap={0}>
+                      <Paper className='bg-gray-100 dark:bg-dark-card' p={'xs'} pl={'md'}>
                         <Text size='sm' c='dimmed'>
                           Kích thước
                         </Text>
                         <Text size='md' fw={700} className='text-mainColor'>
                           {image.width} × {image.height} px
                         </Text>
-                      </Stack>
+                      </Paper>
                     </GridCol>
 
                     <GridCol span={6}>
-                      <Stack className='rounded-md bg-gray-100' p={'xs'} pl={'md'} gap={0}>
+                      <Paper className='bg-gray-100 dark:bg-dark-card' p={'xs'} pl={'md'}>
                         <Text size='sm' c='dimmed'>
                           Định dạng
                         </Text>
                         <Text size='md' fw={700} className='text-mainColor'>
                           {image.format || 'Unknown'}
                         </Text>
-                      </Stack>
+                      </Paper>
                     </GridCol>
 
                     <GridCol span={12}>
-                      <Stack className='rounded-md bg-gray-100' p={'xs'} pl={'md'} gap={0}>
+                      <Paper className='bg-gray-100 dark:bg-dark-card' p={'xs'} pl={'md'}>
                         <Group justify='space-between'>
                           <Box>
                             <Text size='sm' c='dimmed'>
@@ -207,7 +208,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                           </Box>
                           <Badge> {image.type || 'Unknown'}</Badge>
                         </Group>
-                      </Stack>
+                      </Paper>
                     </GridCol>
                   </Grid>
                 </Box>
@@ -231,13 +232,13 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                     <Text size='xs' fw={600}>
                       Văn bản thay thế
                     </Text>
-                    <Box className='relative w-full overflow-hidden rounded-md bg-gray-100' p={'xs'} pl={'md'}>
+                    <Paper className='relative w-full overflow-hidden bg-gray-100 dark:bg-dark-card' p={'xs'} pl={'md'}>
                       <Text size='sm' className='w-full whitespace-normal break-words'>
                         {image.altText || 'Not provided'}
                       </Text>
-                    </Box>
+                    </Paper>
 
-                    <Box className='rounded-md bg-gray-100' p={'xs'} pl={'md'}>
+                    <Paper className='bg-gray-100 dark:bg-dark-card' p={'xs'} pl={'md'}>
                       <Group justify='space-between'>
                         <Text size='xs' fw={600}>
                           Ngày tạo:
@@ -246,7 +247,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                           {image.createdAt ? new Date(image.createdAt).toDateString() : 'Unknown'}
                         </Text>
                       </Group>
-                    </Box>
+                    </Paper>
                   </Stack>
                 </Box>
 
@@ -270,30 +271,32 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                   ) : (
                     <Stack gap='sm' px={'xs'}>
                       {image.associations.map(assoc => (
-                        <Group
-                          key={`${assoc.type}-${assoc.id}`}
-                          justify='space-between'
-                          p='sm'
-                          className='rounded-md bg-gray-100'
-                        >
-                          <Box>
-                            <Text size='sm' fw={500}>
-                              {assoc.label}
-                            </Text>
-                            <Text size='xs' c='dimmed'>
-                              ID: {assoc.id}
-                            </Text>
-                          </Box>
-                          <Button
-                            size='xs'
-                            color='red'
-                            variant='outline'
-                            loading={detachMutation.isPending}
-                            onClick={() => handleDetachImage(imageId, assoc.type, assoc.id)}
+                        <Paper>
+                          <Group
+                            key={`${assoc.type}-${assoc.id}`}
+                            justify='space-between'
+                            p='sm'
+                            className='bg-gray-100 dark:bg-dark-card'
                           >
-                            Gỡ
-                          </Button>
-                        </Group>
+                            <Box>
+                              <Text size='sm' fw={500}>
+                                {assoc.label}
+                              </Text>
+                              <Text size='xs' c='dimmed'>
+                                ID: {assoc.id}
+                              </Text>
+                            </Box>
+                            <Button
+                              size='xs'
+                              color='red'
+                              variant='outline'
+                              loading={detachMutation.isPending}
+                              onClick={() => handleDetachImage(imageId, assoc.type, assoc.id)}
+                            >
+                              Gỡ
+                            </Button>
+                          </Group>
+                        </Paper>
                       ))}
                     </Stack>
                   )}

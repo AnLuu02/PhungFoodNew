@@ -36,7 +36,6 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
           <Checkbox
             checked={isSelected}
             onChange={onSelect}
-            radius='sm'
             styles={{ input: { cursor: 'pointer', width: 20, height: 20 } }}
           />
         </div>

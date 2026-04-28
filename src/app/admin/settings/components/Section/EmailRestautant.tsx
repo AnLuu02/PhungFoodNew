@@ -124,7 +124,7 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
 
               <Divider my='md' />
 
-              <Box className='rounded-lg bg-white p-4 shadow dark:bg-dark-background'>
+              <Paper className='bg-white p-4 shadow dark:bg-dark-background'>
                 <Text fw={700} mb='xs'>
                   Xem trước email
                 </Text>
@@ -136,7 +136,7 @@ export default function EmailSettingsManagement({ data }: { data: any }) {
                     {renderPreview()}
                   </Text>
                 </Paper>
-              </Box>
+              </Paper>
             </Paper>
 
             <Group justify='flex-start'>

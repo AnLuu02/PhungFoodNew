@@ -47,13 +47,7 @@ const LayoutProductCarouselWithImage = ({
     return data.filter((i: any) => i.subCategory.category.tag === tag);
   }, [active]);
   return (
-    <Card
-      mih={500}
-      h={{ base: 'max-content', md: 500 }}
-      radius={'lg'}
-      className='bg-gray-100 dark:bg-dark-background'
-      p={0}
-    >
+    <Card mih={500} h={{ base: 'max-content', md: 500 }} className='bg-gray-100 dark:bg-dark-background' p={0}>
       <Flex h={'100%'} direction={{ base: 'column', md: reverseGrid ? 'row-reverse' : 'row' }}>
         <BackgroundImage
           src={imageUrl || '/images/jpg/best-saller.jpg'}

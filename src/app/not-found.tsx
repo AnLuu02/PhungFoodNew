@@ -28,15 +28,14 @@ export default function NotFound() {
 
         <Box className='flex flex-col justify-center gap-4 sm:flex-row sm:pt-4'>
           <Link href='/'>
-            <Button leftSection={<IconArrowLeft className='h-5 w-5' />} radius={'lg'} size='lg'>
+            <Button leftSection={<IconArrowLeft className='h-5 w-5' />} size='lg'>
               Back to Home
             </Button>
           </Link>
-          <Link
-            href='/lien-he'
-            className='border-border text-foreground inline-flex items-center justify-center rounded-lg border px-8 py-3 font-semibold transition-colors hover:bg-subColor'
-          >
-            Contact Support
+          <Link href='/lien-he'>
+            <Button variant='transparent' leftSection={<IconArrowLeft className='h-5 w-5' />} size='lg'>
+              Contact Support
+            </Button>
           </Link>
         </Box>
 

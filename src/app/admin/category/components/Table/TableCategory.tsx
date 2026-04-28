@@ -12,7 +12,7 @@ export default function TableCategory({ data, s, user }: { s: string; data: any;
     <>
       <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+          <Table.Thead className='text-sm uppercase leading-normal'>
             <Table.Tr>
               <Table.Th className='text-sm' style={{ width: 100 }}>
                 Tên

@@ -8,6 +8,7 @@ import {
   Card,
   Image,
   Modal,
+  Paper,
   ScrollAreaAutosize,
   Tabs,
   TabsList,
@@ -122,7 +123,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                     }
                   }}
                   classNames={{
-                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
+                    root: `!border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   <IconHeart className='mr-2 h-4 w-4' />
@@ -136,7 +137,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                     }
                   }}
                   classNames={{
-                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
+                    root: `!border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   <IconShare2 className='mr-2 h-4 w-4' />
@@ -150,7 +151,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                     }
                   }}
                   classNames={{
-                    root: `!rounded-md !border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
+                    root: `!border-[#e5e5e5] !font-bold text-gray-600 hover:bg-mainColor/10 hover:text-gray-600 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                   }}
                 >
                   <IconShoppingCart className='mr-2 h-4 w-4' />
@@ -170,7 +171,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                   }
                 }}
                 classNames={{
-                  tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
+                  tab: `!border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
                 }}
               >
                 <TabsList className='mb-8 grid w-full grid-cols-5'>
@@ -183,21 +184,21 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
 
                 <TabsPanel value='overview' className='space-y-6'>
                   <Box className='grid gap-6 md:grid-cols-3'>
-                    <Card radius={'lg'} withBorder className='border-emerald-200 bg-emerald-50'>
+                    <Card withBorder className='border-emerald-200 bg-emerald-50'>
                       <Box className='p-6 text-center'>
                         <IconTimeDuration0 className='mx-auto mb-3 h-8 w-8 text-emerald-600' />
                         <Title className='mb-2 font-quicksand font-semibold'>Thời gian chuẩn bị</Title>
                         <Text className='text-2xl font-bold text-emerald-600'>{data.prepTime}</Text>
                       </Box>
                     </Card>
-                    <Card radius={'lg'} withBorder className='border-amber-200 bg-amber-50'>
+                    <Card withBorder className='border-amber-200 bg-amber-50'>
                       <Box className='p-6 text-center'>
                         <IconChefHat className='mx-auto mb-3 h-8 w-8 text-amber-600' />
                         <Title className='mb-2 font-quicksand font-semibold'>Thời gian nấu</Title>
                         <Text className='text-2xl font-bold text-amber-600'>{data.cookTime}</Text>
                       </Box>
                     </Card>
-                    <Card radius={'lg'} withBorder className='border-rose-200 bg-rose-50'>
+                    <Card withBorder className='border-rose-200 bg-rose-50'>
                       <Box className='p-6 text-center'>
                         <IconBowFilled className='mx-auto mb-3 h-8 w-8 text-rose-600' />
                         <Title className='mb-2 font-quicksand font-semibold'>Tổng thời gian</Title>
@@ -206,7 +207,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                     </Card>
                   </Box>
 
-                  <Card radius={'lg'} withBorder shadow='sm' className='border-emerald-200'>
+                  <Card withBorder shadow='sm' className='border-emerald-200'>
                     <Box className='p-6'>
                       <Title className='mb-4 font-quicksand text-xl font-semibold'>Thông tin dinh dưỡng</Title>
                       <Box className='grid grid-cols-2 gap-4 md:grid-cols-5'>
@@ -238,13 +239,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                 <TabsPanel value='ingredients' className='space-y-6'>
                   <Box className='grid gap-6 md:grid-cols-3'>
                     {Object.entries(data.ingredients).map(([category, items]) => (
-                      <Card
-                        key={category}
-                        padding={0}
-                        className='border-emerald-200 bg-emerald-50'
-                        withBorder
-                        radius={'lg'}
-                      >
+                      <Card key={category} padding={0} className='border-emerald-200 bg-emerald-50' withBorder>
                         <Box className='p-6'>
                           <Title className='mb-4 font-quicksand text-lg font-semibold text-emerald-700'>
                             {category}
@@ -269,12 +264,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                 <TabsPanel value='instructions' className='space-y-6'>
                   <Box className='space-y-6'>
                     {data.instructions.map(instruction => (
-                      <Card
-                        key={instruction.step}
-                        className='border-l-4 border-l-emerald-500 bg-emerald-50'
-                        withBorder
-                        radius={'lg'}
-                      >
+                      <Card key={instruction.step} className='border-l-4 border-l-emerald-500 bg-emerald-50' withBorder>
                         <Box className='p-6'>
                           <Box className='flex items-start gap-4'>
                             <Button
@@ -311,7 +301,7 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                                   <Image
                                     src={instruction.image || '/images/png/403.png'}
                                     alt={instruction.title}
-                                    className='h-40 w-full rounded-lg object-cover'
+                                    className='h-40 w-full object-cover'
                                   />
                                 </Box>
                               </Box>
@@ -336,20 +326,21 @@ export default function ModalRecipe({ type, opened, onClose, data }: ModalProps<
                 </TabsPanel>
 
                 <TabsPanel value='tips' className='space-y-6'>
-                  <Card className='border-amber-200 bg-amber-50' withBorder radius={'lg'}>
+                  <Card className='border-amber-200 bg-amber-50' withBorder>
                     <Box className='p-6'>
                       <Title className='mb-6 font-quicksand text-xl font-semibold'>Mẹo nấu ăn hay</Title>
                       <Box className='space-y-4'>
                         {data.tips.map((tip, index) => (
-                          <Box
+                          <Paper
                             key={index}
-                            className='flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4'
+                            withBorder
+                            className='flex items-start gap-3 border border-amber-200 bg-amber-50 p-4'
                           >
                             <Box className='flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-500 text-sm font-semibold text-white'>
                               {index + 1}
                             </Box>
                             <Text className='leading-relaxed text-gray-700'>{tip}</Text>
-                          </Box>
+                          </Paper>
                         ))}
                       </Box>
                     </Box>

@@ -114,7 +114,6 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
                   </Text>
                   <Progress
                     value={Math.floor((voucher?.usedQuantity / voucher?.quantity) * 100)}
-                    radius='xs'
                     mt={8}
                     mb={8}
                     styles={{}}

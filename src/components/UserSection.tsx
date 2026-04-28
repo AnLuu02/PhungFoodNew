@@ -72,10 +72,6 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
       offset={0}
       withinPortal
       zIndex={10002}
-      radius={'lg'}
-      classNames={{
-        dropdown: 'rounded-lg'
-      }}
     >
       <Menu.Target>
         <UnstyledButton
@@ -117,8 +113,9 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
             Tài khoản cá nhân
           </Title>
           <Flex align={'flex-start'} gap={'md'}>
-            <Box
+            <Paper
               w={80}
+              withBorder
               h={80}
               className='overflow-hidden rounded-full border border-solid border-mainColor'
               pos={'relative'}
@@ -127,9 +124,9 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
                 src={session?.user?.image || '/images/png/403.png'}
                 alt='User avatar'
                 fill
-                className='rounded-md object-cover'
+                className='object-cover'
               />
-            </Box>
+            </Paper>
             <Stack gap={2}>
               <Text fw={700}> {session?.user?.name}</Text>
               <Text size='xs' py={2} px={8} className='w-fit rounded-full bg-mainColor/10 text-mainColor' fw={700}>

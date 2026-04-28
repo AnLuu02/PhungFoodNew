@@ -23,7 +23,7 @@ export default function TableRevenue({ revenues }: { revenues: any }) {
 
       <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover>
-          <TableThead className='rounded-lg text-sm uppercase leading-normal'>
+          <TableThead className='text-sm uppercase leading-normal'>
             <TableTr>
               <TableTh>Mã </TableTh>
               <TableTh>Tổng chi</TableTh>

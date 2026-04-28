@@ -1,11 +1,11 @@
 'use client';
 
-import { Box, Text } from '@mantine/core';
+import { Box, Paper, Text } from '@mantine/core';
 export const DiffChange = ({ expanded, log }: any) => {
   return (
     expanded &&
     log.metadata && (
-      <Box className='mt-3 rounded-lg border bg-gray-50 p-3'>
+      <Paper className='mt-3 border bg-gray-50 p-3 dark:bg-dark-card'>
         <Text ff='monospace' size='xs'>
           {log.metadata.changes && (
             <Box className='mb-3'>
@@ -54,7 +54,7 @@ export const DiffChange = ({ expanded, log }: any) => {
             </details>
           )}
         </Text>
-      </Box>
+      </Paper>
     )
   );
 };

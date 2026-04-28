@@ -72,7 +72,7 @@ export function SendOrderButton({ order }: any) {
     <>
       <Button
         leftSection={<IconPrinter size={16} />}
-        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-dark-text`}
+        className={`!border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-dark-text`}
         variant='subtle'
         loading={loading}
         onClick={() => {

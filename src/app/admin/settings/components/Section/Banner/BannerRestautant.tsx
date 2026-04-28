@@ -296,7 +296,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
           </Button>
         </Group>
         <ListBannerTemplate onSetDefaultBanner={handleSetDefaultBanner} onDeletedBanner={handleDeleteBanner} />
-        <Card radius={'lg'} padding={'sm'} className='bg-backgroundAdmin'>
+        <Card padding={'sm'} className='bg-backgroundAdmin'>
           <Stack mb={'xl'}>
             <Group align='flex-end' gap='xs'>
               <Controller

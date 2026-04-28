@@ -9,7 +9,7 @@ export default function HeaderSearchResults({ s, totalProducts, isLoading }: any
   }, []);
   if (!isMounted) return null;
   return s ? (
-    <Paper className='bg-gray-100 dark:bg-dark-card' mb='lg' p={'md'} radius={'lg'}>
+    <Paper className='bg-gray-100 dark:bg-dark-card' mb='lg' p={'md'}>
       <Group mb='xs'>
         <Flex align='center' justify='center' w={24} h={24} style={{ borderRadius: '50%' }} bg='blue'>
           <Text c='white' size='sm'>
@@ -25,7 +25,7 @@ export default function HeaderSearchResults({ s, totalProducts, isLoading }: any
           Tìm thấy
         </Text>
         {isLoading ? (
-          <Skeleton height={16} width='20px' radius='sm' />
+          <Skeleton height={16} width='20px' />
         ) : (
           <Text c='dimmed' fw={600}>
             {totalProducts || 0}
@@ -35,7 +35,7 @@ export default function HeaderSearchResults({ s, totalProducts, isLoading }: any
           sản phẩm với từ khóa
         </Text>
         {isLoading ? (
-          <Skeleton height={16} width='10%' radius='sm' />
+          <Skeleton height={16} width='10%' />
         ) : (
           <Text c='dimmed' fw={600} className='italic'>
             "{s}"

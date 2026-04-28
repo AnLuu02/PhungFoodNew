@@ -85,14 +85,7 @@ export default function TableInvoice({ s, data, allData }: { s: string; data: an
         {dataFilter?.map((item, index) => {
           const IconR = item.icon;
           return (
-            <Card
-              style={{ backgroundColor: item.color + 10 }}
-              shadow='md'
-              radius={'lg'}
-              pos={'relative'}
-              key={index}
-              p={'md'}
-            >
+            <Card style={{ backgroundColor: item.color + 10 }} shadow='md' pos={'relative'} key={index} p={'md'}>
               <Flex align={'center'} gap={'md'}>
                 <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />

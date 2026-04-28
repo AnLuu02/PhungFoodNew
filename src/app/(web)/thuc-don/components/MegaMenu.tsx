@@ -46,7 +46,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
       value={activeTab}
       onChange={setActiveTab}
       classNames={{
-        tab: 'data-[active=true]:text-maincolor w-full justify-start rounded-md p-3 data-[active=true]:bg-mainColor/10 dark:data-[active=true]:bg-dark-card dark:data-[active=true]:text-white'
+        tab: 'data-[active=true]:text-maincolor w-full justify-start p-3 data-[active=true]:bg-mainColor/10 dark:data-[active=true]:bg-dark-card dark:data-[active=true]:text-white'
       }}
     >
       <Box h={'70vh'} className='flex bg-gray-100 dark:bg-dark-background'>
@@ -104,7 +104,6 @@ export default function MegaMenu({ categories }: { categories: any }) {
                       style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
                     >
                       <Card
-                        radius={'lg'}
                         withBorder
                         w={60}
                         h={60}
@@ -165,7 +164,6 @@ export default function MegaMenu({ categories }: { categories: any }) {
                               withBorder
                               w={'100%'}
                               h={120}
-                              radius={'lg'}
                               pos={'relative'}
                               className='overflow-hidden border border-transparent p-1 transition-all hover:border-red-500'
                             >

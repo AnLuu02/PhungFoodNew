@@ -31,8 +31,8 @@ export default function HeaderMenu({ totalProducts, isLoading }: { totalProducts
                   </Text>
                   {isLoading ? (
                     <Group gap='xs' align='center' mih={45}>
-                      <Skeleton height={28} width='120px' radius='sm' />
-                      <Skeleton height={24} width='40px' radius='sm' />
+                      <Skeleton height={28} width='120px' />
+                      <Skeleton height={24} width='40px' />
                     </Group>
                   ) : (
                     <Group gap={'xs'}>

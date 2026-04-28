@@ -75,7 +75,7 @@ export const HistoryTabSection = ({
 
   return (
     <>
-      <Card withBorder radius={'lg'}>
+      <Card withBorder>
         <Box className='flex flex-col gap-4 sm:flex-row'>
           <Box className='flex-1'>
             <Box className='relative'>
@@ -118,7 +118,7 @@ export const HistoryTabSection = ({
         </Box>
       </Card>
 
-      <Card withBorder radius={'lg'}>
+      <Card withBorder>
         <Box className='flex flex-row items-center justify-between' mb={'md'}>
           <Box>
             <Text fw={700} size='xl'>
@@ -167,7 +167,7 @@ export const HistoryTabSection = ({
                   notificationStatusInfo?.[notification?.status as 'draft' | 'scheduled' | 'sent' | 'delivered'];
 
                 return (
-                  <Paper withBorder radius={'lg'} key={notification?.id} className='space-y-3 p-4'>
+                  <Paper withBorder key={notification?.id} className='space-y-3 p-4'>
                     <Box className='flex items-start justify-between'>
                       <Box className='flex items-start gap-3'>
                         {getTypeIcon(notification?.type)}
@@ -286,7 +286,7 @@ export const HistoryTabSection = ({
                           Chỉnh sửa
                         </Button>
                         <Button
-                          className='bg-red-500'
+                          variant='danger'
                           loading={loading}
                           onClick={() => handleDeleteNotification([notification?.id])}
                           leftSection={<IconTrash className='mr-1 h-4 w-4' />}

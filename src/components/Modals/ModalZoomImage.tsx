@@ -172,7 +172,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
         setIndex(0);
       }}
       size={'100%'}
-      radius={'lg'}
       withCloseButton={false}
       padding={0}
       className='overflow-hidden'
@@ -231,15 +230,18 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
           </Button>
         </Box>
 
-        <Box className='absolute bottom-28 left-[50%] z-50 translate-x-[-50%] rounded-md border border-white/20 bg-black/50 px-3 py-2 text-white sm:bottom-4 sm:left-4 sm:translate-x-0'>
+        <Paper className='absolute bottom-28 left-[50%] z-50 translate-x-[-50%] border border-white/20 bg-black/50 px-3 py-2 text-white sm:bottom-4 sm:left-4 sm:translate-x-0'>
           <Text size='sm'>{Math.round(scale * 100)}%</Text>
-        </Box>
+        </Paper>
 
         {scale > 1 && (
-          <Box className='absolute right-4 top-16 z-50 flex items-center gap-2 rounded-lg border border-white/20 bg-black/50 px-3 py-2 text-white'>
+          <Paper
+            withBorder
+            className='absolute right-4 top-16 z-50 flex items-center gap-2 border border-white/20 bg-black/50 px-3 py-2 text-white'
+          >
             <IconHandMove className='h-4 w-4' />
             <Text size='sm'>Kéo để di chuyển</Text>
-          </Box>
+          </Paper>
         )}
 
         <Box className='absolute bottom-4 right-4 z-50 flex items-center gap-2'>
@@ -261,7 +263,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
                     w={60}
                     h={60}
                     alt={item.alt}
-                    className='rounded-md object-cover'
+                    className='object-cover'
                   />
                 </UnstyledButton>
               );
@@ -270,6 +272,7 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
               <Paper
                 w={60}
                 h={60}
+                pos={'relative'}
                 withBorder
                 onClick={() =>
                   handleThumbnailClick(totalImages[displayImages.length] as ImageType, displayImages.length)
@@ -281,21 +284,19 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
                     : 'border-none opacity-60'
                 } `}
               >
-                <Box pos='relative'>
-                  <Image
-                    loading='lazy'
-                    src={totalImages[index]?.src || '/images/jpg/empty-300x240.jpg'}
-                    width={60}
-                    height={60}
-                    className='rounded-md object-cover'
-                    alt='Thumbnail'
-                  />
-                  <Box
-                    className={`absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md`}
-                  >
-                    +{remainingCount}
-                  </Box>
-                </Box>
+                <Image
+                  loading='lazy'
+                  src={totalImages[index]?.src || '/images/jpg/empty-300x240.jpg'}
+                  w={'100%'}
+                  h={'100%'}
+                  className='object-cover'
+                  alt='Thumbnail'
+                />
+                <Paper
+                  className={`absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-2xl font-bold text-white backdrop-blur-md`}
+                >
+                  +{remainingCount}
+                </Paper>
               </Paper>
             )}
           </Flex>
@@ -325,12 +326,15 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
           />
         </Box>
 
-        <Box className='absolute bottom-4 left-1/2 z-50 hidden -translate-x-1/2 transform rounded-lg border border-white/20 bg-black/50 px-4 py-2 text-white xl:block'>
+        <Paper
+          withBorder
+          className='absolute bottom-4 left-1/2 z-50 hidden -translate-x-1/2 transform border border-white/20 bg-black/50 px-4 py-2 text-white xl:block'
+        >
           <Box className='space-y-1 text-center text-xs'>
             <Box>Cuộn chuột để zoom • Kéo để di chuyển</Box>
             <Box className='text-white/70'>ESC để đóng</Box>
           </Box>
-        </Box>
+        </Paper>
       </Box>
     </Modal>
   );

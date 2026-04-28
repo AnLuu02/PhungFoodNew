@@ -75,7 +75,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
               withBorder
               w={60}
               h={60}
-              className='flex items-center justify-center overflow-hidden rounded-lg border-mainColor/70'
+              className='flex items-center justify-center overflow-hidden border-mainColor/70'
               pos={'relative'}
             >
               <Image
@@ -86,7 +86,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 alt={data?.name || 'Hành tây'}
                 fill
                 style={{ objectFit: 'cover' }}
-                className='rounded-md object-cover'
+                className='object-cover'
               />
             </Paper>
 

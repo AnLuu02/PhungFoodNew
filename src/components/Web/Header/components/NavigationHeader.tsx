@@ -76,7 +76,6 @@ function NavigationHeader({ categories }: { categories: any }) {
                   ? 'bg-mainColor text-white'
                   : 'bg-[#f1faf6] text-mainColor dark:bg-dark-card dark:hover:bg-mainColor'
               } ${item.href === '/goi-mon-nhanh' ? 'animate-wiggle bg-red-600 text-white dark:bg-red-600' : ''} `}
-              rightSection={item.href === '/thuc-don' && <IconCaretDown size={18} />}
             >
               <Text fw={700} size='sm'>
                 {item.label}
@@ -85,6 +84,7 @@ function NavigationHeader({ categories }: { categories: any }) {
           </Link>
         )
       )}
+      <Box w={50} className='hidden sm:block md:hidden' />
     </Flex>
   );
 }

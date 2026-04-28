@@ -78,9 +78,9 @@ export default function ActivityFilter({
 
             <Group justify='flex-end'>
               <Button
-                variant='subtle'
+                variant='danger'
                 onClick={() => setFilters({})}
-                color={Object.values(filters).length > 0 ? '' : 'gray'}
+                disabled={Boolean(Object.values(filters).length <= 0)}
               >
                 Xóa tất cả bộ lọc
               </Button>

@@ -68,7 +68,7 @@ export default function ReportOverviewPageClient({ overviews }: any) {
   return (
     <>
       <SimpleGrid cols={2}>
-        <Card radius={'lg'} withBorder shadow='md'>
+        <Card withBorder shadow='md'>
           <Flex align={'center'} justify={'space-between'} mb={'xl'}>
             <Box>
               <Title order={5} className='font-quicksand'>
@@ -104,7 +104,7 @@ export default function ReportOverviewPageClient({ overviews }: any) {
             valueFormatter={value => formatPriceLocaleVi(value)}
           />
         </Card>
-        <Card withBorder shadow='sm' radius={'lg'}>
+        <Card withBorder shadow='sm'>
           <Flex align={'center'} justify={'space-between'} mb={'xl'}>
             <Box>
               <Title order={5} className='font-quicksand'>

@@ -33,7 +33,7 @@ export default function Header() {
             style={{ objectFit: 'cover' }}
           />
         </Link>
-        <Badge bg={'red'} radius={'sm'} className='hidden lg:block'>
+        <Badge bg={'red'} className='hidden lg:block'>
           {session?.user?.role || 'Admin'}
         </Badge>
       </Flex>

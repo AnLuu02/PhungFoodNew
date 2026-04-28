@@ -94,9 +94,13 @@ export default function ProductImage({
                     className='object-cover'
                     alt='Thumbnail'
                   />
-                  <Box className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-black/50 text-2xl font-bold text-white backdrop-blur-md'>
+                  <Paper
+                    p={0}
+                    m={0}
+                    className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-2xl font-bold text-white backdrop-blur-md'
+                  >
                     +{remainingCount}
-                  </Box>
+                  </Paper>
                 </Box>
               </Paper>
             )}
@@ -105,16 +109,16 @@ export default function ProductImage({
 
         <Paper className='relative mb-4' w='100%'>
           <Flex direction='column' align='center' justify='center' w='100%'>
-            <Box pos={'relative'} w={'100%'} mih={{ base: 300, md: 470 }} className='overflow-hidden'>
+            <Paper p={0} m={0} pos={'relative'} w={'100%'} mih={{ base: 300, md: 470 }} className='overflow-hidden'>
               <Image
                 loading='lazy'
                 src={thumbnail || currentImage}
                 alt='Product'
-                className='cursor-pointer rounded-md object-cover'
+                className='cursor-pointer object-cover'
                 fill
                 onClick={() => setShowFullImage(true)}
               />
-            </Box>
+            </Paper>
             <Box mt='md'>
               <ShareSocials data={{ tag }} />
             </Box>

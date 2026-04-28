@@ -188,7 +188,7 @@ export default function MailResponse({
                   align='center'
                   w={'max-content'}
                   justify='space-between'
-                  className='rounded-md border px-2 py-1 text-sm dark:border-dark-dimmed'
+                  className='border px-2 py-1 text-sm dark:border-dark-dimmed'
                 >
                   <Text size='sm' truncate>
                     {file.name} ({(file.size / 1024).toFixed(1)} KB)

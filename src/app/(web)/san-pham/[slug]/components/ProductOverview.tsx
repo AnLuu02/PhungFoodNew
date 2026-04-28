@@ -34,7 +34,7 @@ export const ProductOverview = ({ product }: { product: any }) => {
   return (
     <Stack gap='md'>
       <Flex align='center' gap={'xs'}>
-        <Badge className={`${inStock ? 'bg-mainColor' : 'bg-red-500'}`} radius={'sm'} size='md'>
+        <Badge className={`${inStock ? 'bg-mainColor' : 'bg-red-500'}`} size='md'>
           {inStock ? 'Còn hàng' : 'Hết hàng'}
         </Badge>
         <Rating value={product?.rating?.toFixed(1)} readOnly size='md' color={'#FFC522'} />

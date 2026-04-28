@@ -56,8 +56,8 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
 
           <Paper
             w={40}
-            h={40}
             radius={'lg'}
+            h={40}
             withBorder
             className={`cart-btn relative hidden items-center justify-center text-mainColor ${!notResponsive ? 'sm:flex md:hidden' : ''}`}
           >

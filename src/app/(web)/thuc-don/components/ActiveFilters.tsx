@@ -59,7 +59,7 @@ export default function ActiveFilters() {
 
   return activeFilters.length === 0 ? null : (
     <>
-      <InputBase component='div' multiline radius={'lg'} w={'100%'} px={'xs'}>
+      <InputBase component='div' multiline w={'100%'} px={'xs'}>
         <Group gap={4}>
           <Text fw={700} size='sm'>
             Lọc:

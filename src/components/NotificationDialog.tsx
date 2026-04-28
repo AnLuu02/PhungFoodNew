@@ -189,7 +189,7 @@ function NotificationDialog() {
                       </Button>
                     )}
                     <Button
-                      variant='subtle'
+                      variant='danger'
                       size='xs'
                       onClick={async () => {
                         try {
@@ -214,7 +214,6 @@ function NotificationDialog() {
                       }}
                       disabled={notifications.length === 0}
                       leftSection={<IconTrashX size={16} />}
-                      className='text-mainColor hover:bg-mainColor/10 hover:text-mainColor'
                     >
                       Xóa tất cả
                     </Button>

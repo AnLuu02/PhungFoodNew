@@ -48,9 +48,10 @@ export const ThemeLivePreview = ({ theme }: { theme: ThemeConfig }) => {
               </Button>
             </Box>
 
-            <Box className='border-1 rounded-lg border border-solid border-gray-400 bg-gray-200 p-4'>
-              <Box
-                className='space-y-4 rounded-lg p-4'
+            <Paper withBorder className='border-1 border border-solid border-gray-400 bg-gray-200 p-4'>
+              <Paper
+                withBorder
+                className='space-y-4 p-4'
                 style={{
                   backgroundColor: theme.backgroundColor,
                   fontFamily: theme.fontFamily,
@@ -97,8 +98,8 @@ export const ThemeLivePreview = ({ theme }: { theme: ThemeConfig }) => {
                     Xem thực đơn
                   </Box>
                 </Box>
-              </Box>
-            </Box>
+              </Paper>
+            </Paper>
 
             <Box className='text-center'>
               <Badge variant='outline'>Chế độ xem trước</Badge>

@@ -52,7 +52,7 @@ const LayoutGridCarouselOnly = ({
   }, [embla, onSelect]);
 
   return (
-    <Card mih={minHeight || 500} h={'max-content'} radius={'lg'} className='bg-gray-100 dark:bg-dark-background' p={0}>
+    <Card mih={minHeight || 500} h={'max-content'} className='bg-gray-100 dark:bg-dark-background' p={0}>
       <Flex direction={'column'} className='relative' h={'100%'} w={'100%'} p={'lg'}>
         <Flex
           align={'center'}

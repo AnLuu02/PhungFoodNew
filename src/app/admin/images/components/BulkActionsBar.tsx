@@ -29,7 +29,6 @@ export default function BulkActionsBar({
           placeholder='Thay đổi kiểu'
           data={imageTypeOptions}
           searchable
-          radius={'lg'}
           onChange={value => {
             if (value) {
               bulkUpdateTypeMutation.mutate({
@@ -43,11 +42,11 @@ export default function BulkActionsBar({
           disabled={bulkUpdateTypeMutation.isPending}
         />
 
-        <Button radius={'lg'} variant='danger' onClick={onDelete} leftSection={<IconTrash size={16} />}>
+        <Button variant='danger' onClick={onDelete} leftSection={<IconTrash size={16} />}>
           Xóa bỏ
         </Button>
 
-        <ActionIcon variant='default' radius={'lg'} onClick={onClearSelection}>
+        <ActionIcon variant='default' onClick={onClearSelection}>
           <IconX size={16} />
         </ActionIcon>
       </Group>

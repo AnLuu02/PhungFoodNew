@@ -281,7 +281,6 @@ export default function Chatbox() {
                 <Box maw='80%'>
                   <Paper
                     p='sm'
-                    radius='lg'
                     classNames={{
                       root: `${message.sender === 'Bot' ? 'rounded-[16px] rounded-bl-[4px] bg-mainColor text-white' : 'rounded-[16px] rounded-br-[4px] bg-subColor text-black'}`
                     }}
@@ -301,7 +300,7 @@ export default function Chatbox() {
                   <IconRobot size='1rem' />
                 </Avatar>
                 <Box>
-                  <Paper p='sm' radius='lg' bg='gray.1' style={{ borderRadius: '1rem 1rem 1rem 0.25rem' }}>
+                  <Paper p='sm' bg='gray.1' style={{ borderRadius: '1rem 1rem 1rem 0.25rem' }}>
                     <TypingIndicator />
                   </Paper>
                   <Text size='xs' c='dimmed' mt={4} px='sm'>

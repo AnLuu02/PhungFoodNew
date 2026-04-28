@@ -46,11 +46,7 @@ export default function FloatingWidget({ restaurant }: { restaurant: any }) {
             </Center>
           </MenuTarget>
 
-          <MenuDropdown
-            className='overflow-hidden rounded-md bg-white shadow-md'
-            ml={{ base: 0, sm: 40, md: 40, lg: 40 }}
-            p={0}
-          >
+          <MenuDropdown className='overflow-hidden bg-white shadow-md' ml={{ base: 0, sm: 40, md: 40, lg: 40 }} p={0}>
             <Chatbox />
           </MenuDropdown>
         </Menu>
@@ -88,12 +84,13 @@ export default function FloatingWidget({ restaurant }: { restaurant: any }) {
                 className='border-mainColor text-mainColor sm:hidden'
                 p={4}
                 size='md'
+                children={''}
                 leftSection={<IconChevronCompactLeft size={24} className='' />}
               ></Button>
             </Box>
           </MenuTarget>
 
-          <MenuDropdown className='rounded-lg bg-white shadow-md dark:bg-dark-background' py={5}>
+          <MenuDropdown className='bg-white shadow-md dark:bg-dark-background' py={5}>
             {restaurant?.socials &&
               restaurant.socials?.map((item: any, index: number) => {
                 const { icon: IconComponent, color } = iconMap[item?.platform] || { icon: IconLink, color: '#000000' };

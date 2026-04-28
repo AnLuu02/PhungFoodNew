@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Group, Loader, Stack, Text } from '@mantine/core';
+import { Box, Group, Loader, Paper, Stack, Text } from '@mantine/core';
 import { useInViewport } from '@mantine/hooks';
 import { IconActivity, IconAlertCircle, IconCalendar } from '@tabler/icons-react';
 
@@ -47,10 +47,10 @@ export const ActivityFeed = ({
 
   if (error)
     return (
-      <Box className='flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700'>
+      <Paper className='flex items-center gap-2 border border-red-200 bg-red-50 p-4 text-red-700'>
         <IconAlertCircle size={18} />
         {error.message}
-      </Box>
+      </Paper>
     );
 
   const logs = data?.pages.flatMap(p => p.items) || [];

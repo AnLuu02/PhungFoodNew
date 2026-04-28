@@ -13,7 +13,6 @@ export default function PromotionSection() {
       <Box>
         <Box className='mb-12 text-center'>
           <Badge
-            radius={'sm'}
             size='md'
             leftSection={<IconReceiptDollarFilled className='h-4 w-4' />}
             className='mb-4 bg-orange-50 text-xs text-orange-600'
@@ -28,7 +27,7 @@ export default function PromotionSection() {
           </Text>
         </Box>
 
-        <Card withBorder shadow='sm' padding='lg' radius='lg'>
+        <Card withBorder shadow='sm' padding='lg'>
           <PromotionTabLayout vouchers={voucherData} />
         </Card>
       </Box>

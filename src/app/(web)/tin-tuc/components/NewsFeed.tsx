@@ -34,7 +34,7 @@ export const NewsFeed = () => {
     return (
       <Stack gap={'md'}>
         <Skeleton h={42} />
-        <Paper withBorder className='h-[max-content] rounded-md border-mainColor' mb={20}>
+        <Paper withBorder className='h-[max-content] border-mainColor' mb={20}>
           <Box className='rounded-t-md bg-mainColor p-2 text-white'>
             <Text size='sm' fw={700}>
               BÀI VIẾT MỚI
@@ -48,8 +48,8 @@ export const NewsFeed = () => {
                   <Skeleton width={100} height={64} radius={0} className='flex-shrink-0' />
 
                   <Stack gap={6} flex={1} pt={4}>
-                    <Skeleton height={14} width='100%' radius='sm' />
-                    <Skeleton height={14} width='70%' radius='sm' />
+                    <Skeleton height={14} width='100%' />
+                    <Skeleton height={14} width='70%' />
                   </Stack>
                 </Flex>
               ))}
@@ -60,7 +60,7 @@ export const NewsFeed = () => {
   return (
     <Stack gap={'md'}>
       <SearchInput />
-      <Paper withBorder className='h-[max-content] rounded-md border-mainColor' mb={20}>
+      <Paper withBorder className='h-[max-content] border-mainColor' mb={20}>
         <Box className='rounded-t-md bg-mainColor p-2 text-white'>
           <Text size='sm' fw={700}>
             BÀI VIẾT MỚI

@@ -1,12 +1,12 @@
 'use client';
-import { Accordion, Box, Button, Card, Text } from '@mantine/core';
+import { Accordion, Box, Button, Card, Paper, Text } from '@mantine/core';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 export const MenuCategoryFilter = ({ categories }: any) => {
   const params = useSearchParams();
   return (
-    <Card p={0} className='rounded-md bg-gray-100 dark:bg-dark-card' mt={{ base: 'xs', md: 0 }} mb={20}>
+    <Card p={0} className='bg-gray-100 dark:bg-dark-card' mt={{ base: 'xs', md: 0 }} mb={20}>
       <Box className='rounded-t-md bg-mainColor p-2 text-white'>
         <Text size='sm' fw={700}>
           DANH MỤC SẢN PHẨM
@@ -52,17 +52,17 @@ export const MenuCategoryFilter = ({ categories }: any) => {
                 {category.subCategory?.length > 0 ? (
                   category.subCategory.map((item: any) => (
                     <Link key={item.name} href={`/thuc-don?danh-muc=${category.tag}&loai-san-pham=${item.tag}`}>
-                      <Box
+                      <Paper
                         key={item.name}
                         py={'xs'}
                         pl={'md'}
                         w={'100%'}
-                        className={`${item.tag === params.get('loai-san-pham') ? 'bg-mainColor/10' : ''} my-1 rounded-md hover:bg-mainColor/10`}
+                        className={`${item.tag === params.get('loai-san-pham') ? 'bg-mainColor/10' : ''} m-0 my-1 hover:bg-mainColor/10`}
                       >
                         <Text size='sm' fw={700}>
                           {item?.name} ({item?.product?.length || 0})
                         </Text>
-                      </Box>
+                      </Paper>
                     </Link>
                   ))
                 ) : (

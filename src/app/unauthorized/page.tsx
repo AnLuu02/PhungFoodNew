@@ -24,7 +24,7 @@ export default function UnauthorizedPage() {
         403 - Không có quyền truy cập
       </Title>
       <Text className='mt-2 text-gray-600 dark:text-dark-text'>Bạn không có quyền truy cập vào trang này.</Text>
-      <Link href='/' className='mt-4 rounded-sm text-black hover:underline'>
+      <Link href='/' className='mt-4 text-black hover:underline'>
         <Button>Quay lại trang chủ</Button>
       </Link>
     </Center>

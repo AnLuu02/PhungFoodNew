@@ -6,7 +6,6 @@ const LayoutGrid3Col = () => {
     <Grid>
       <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
         <Card
-          radius={'lg'}
           className='relative bg-[url(/images/webp/img_3banner_1.webp)] bg-cover bg-no-repeat'
           h={238}
           w={'100%'}
@@ -29,7 +28,6 @@ const LayoutGrid3Col = () => {
       </GridCol>
       <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
         <Card
-          radius={'lg'}
           className='relative bg-[url(/images/webp/img_3banner_2.webp)] bg-cover bg-no-repeat'
           h={238}
           w={'100%'}
@@ -53,7 +51,6 @@ const LayoutGrid3Col = () => {
       </GridCol>
       <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
         <Card
-          radius={'lg'}
           className='relative bg-[url(/images/webp/img_3banner_3.webp)] bg-cover bg-no-repeat'
           h={238}
           w={'100%'}

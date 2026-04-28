@@ -15,17 +15,20 @@ export function CartItemPayment({ item }: any) {
           withBorder
           w={60}
           h={60}
-          className='flex items-center justify-center rounded-lg border-mainColor/70'
+          className='flex items-center justify-center border-mainColor/70'
           pos={'relative'}
         >
-          <Image
-            loading='lazy'
-            src={getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-            width={50}
-            height={50}
-            className='rounded-md object-cover'
-            alt={item.name}
-          />
+          <Paper w={45} h={45} className='overflow-hidden' pos={'relative'}>
+            <Image
+              loading='lazy'
+              src={
+                getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+              }
+              fill
+              className='object-cover'
+              alt={item.name}
+            />
+          </Paper>
           <Badge className='absolute -right-2 -top-2 bg-mainColor' radius='xl' size='sm'>
             {item.quantity}
           </Badge>

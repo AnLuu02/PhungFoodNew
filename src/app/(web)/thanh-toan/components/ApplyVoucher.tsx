@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Divider, Text, TextInput } from '@mantine/core';
+import { Badge, Box, Button, Divider, Paper, Text, TextInput } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { VoucherType } from '@prisma/client';
 import { IconGift, IconPlus, IconTag, IconX } from '@tabler/icons-react';
@@ -93,9 +93,10 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
         {appliedVouchers.length > 0 && (
           <Box className='space-y-2'>
             {appliedVouchers.map(voucher => (
-              <Box
+              <Paper
+                m={0}
                 key={voucher.code}
-                className='flex items-center justify-between rounded-md border border-green-200 bg-green-50 p-2'
+                className='flex items-center justify-between border border-green-200 bg-green-50 p-2'
               >
                 <Box className='flex items-center gap-2'>
                   <Badge className='bg-green-100 text-xs text-green-700'>{voucher.code}</Badge>
@@ -114,7 +115,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
                 >
                   <IconX className='h-3 w-3' />
                 </Button>
-              </Box>
+              </Paper>
             ))}
           </Box>
         )}

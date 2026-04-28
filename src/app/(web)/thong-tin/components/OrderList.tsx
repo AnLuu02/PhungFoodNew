@@ -11,6 +11,7 @@ import {
   Flex,
   Group,
   Pagination,
+  Paper,
   Progress,
   Select,
   SimpleGrid,
@@ -122,9 +123,10 @@ export function OrderList({ orders }: { orders: any }) {
       <Card shadow='sm' padding='lg' withBorder>
         <SimpleGrid cols={{ base: 2, sm: 2, md: 3, xl: 5 }} mb={'lg'}>
           {ORDER_STATUS_UI.map(status => (
-            <Box
+            <Paper
+              m={0}
               bg={`${status.color}10`}
-              className={`flex min-w-[120px] items-center gap-[10px] rounded-md px-4 py-3 shadow-md`}
+              className={`flex min-w-[120px] items-center gap-[10px] px-4 py-3 shadow-md`}
               key={status.key}
             >
               <ThemeIcon size={32} radius='xl' color={status.color} variant='light'>
@@ -138,7 +140,7 @@ export function OrderList({ orders }: { orders: any }) {
                   {status.label}
                 </Text>
               </Box>
-            </Box>
+            </Paper>
           ))}
         </SimpleGrid>
 
@@ -179,7 +181,7 @@ export function OrderList({ orders }: { orders: any }) {
             }
           }}
           classNames={{
-            tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
+            tab: `!border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed`
           }}
         >
           <Tabs.List mb={'md'} p={0}>
@@ -216,7 +218,7 @@ export function OrderList({ orders }: { orders: any }) {
           <Tabs.Panel value={activeTab || 'all'}>
             <Box className={`tableAdmin w-full overflow-x-auto`}>
               <Table striped highlightOnHover withTableBorder withColumnBorders>
-                <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+                <Table.Thead className='text-sm uppercase leading-normal'>
                   <Table.Tr>
                     <Table.Th className='text-sm' style={{ minWidth: 100 }}>
                       Mã đơn

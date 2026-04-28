@@ -55,7 +55,7 @@ export default function AuthErrorPage({
   return (
     <Center>
       <div className='animate-fadeUp'>
-        <Paper shadow='xl' radius='lg' p='xl' withBorder className='animate-scaleIn' bg={color + 10}>
+        <Paper shadow='xl' p='xl' withBorder className='animate-scaleIn' bg={color + 10}>
           <Stack align='center' gap='md' maw={400}>
             <div className='animate-bounceSlow'>{icon}</div>
             <Title order={3} ta='center' className='font-quicksand'>

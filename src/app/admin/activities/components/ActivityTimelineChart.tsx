@@ -23,7 +23,7 @@ export function ActivityTimelineChart() {
   const avg = chartData.length ? Math.round(total / chartData.length) : 0;
 
   return (
-    <Card className='shadow-lg' radius={'lg'}>
+    <Card className='shadow-lg'>
       <Group justify='space-between' mb='md'>
         <Group gap='xs'>
           <IconTrendingUp size={18} />

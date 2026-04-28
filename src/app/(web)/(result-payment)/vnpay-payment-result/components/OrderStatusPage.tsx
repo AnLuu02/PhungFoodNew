@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, Button, Card, Center, Flex, Text, Title } from '@mantine/core';
+import { Badge, Box, Button, Card, Center, Flex, Paper, Text, Title } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconArrowBack, IconCreditCard } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -61,7 +61,6 @@ export function OrderStatusPage({
   return (
     <Card
       withBorder
-      radius={'lg'}
       shadow='xl'
       className={`mx-auto w-full max-w-md`}
       style={{
@@ -112,7 +111,7 @@ export function OrderStatusPage({
         </Box>
 
         {orderId || amount ? (
-          <Box className='space-y-2 rounded-lg bg-gray-50 p-3 dark:bg-dark-card'>
+          <Paper className='space-y-2 bg-gray-50 p-3 dark:bg-dark-card'>
             {orderId ? (
               <Box>
                 <Text size='sm' c={'dimmed'}>
@@ -133,26 +132,18 @@ export function OrderStatusPage({
                 </Text>
               </Flex>
             ) : null}
-          </Box>
+          </Paper>
         ) : null}
 
         <Box className='space-y-3'>
           {status === 'PAYMENT_FAILED' && onRetryPayment && (
-            <Button
-              onClick={onRetryPayment}
-              leftSection={<IconCreditCard className='h-4 w-4' />}
-              className='flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 font-semibold text-white transition-colors hover:bg-red-700'
-            >
+            <Button onClick={onRetryPayment} variant='danger' leftSection={<IconCreditCard className='h-4 w-4' />}>
               Thử thanh toán lại
             </Button>
           )}
 
           {status === 'UNPAID' && onRetryPayment && (
-            <Button
-              onClick={onRetryPayment}
-              leftSection={<IconCreditCard className='h-4 w-4' />}
-              className='flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 font-semibold text-white transition-colors hover:bg-red-700'
-            >
+            <Button onClick={onRetryPayment} variant='danger' leftSection={<IconCreditCard className='h-4 w-4' />}>
               <Link href={`/thanh-toan/${orderId}`}> Tiếp tục thanh toán</Link>
             </Button>
           )}
@@ -160,7 +151,7 @@ export function OrderStatusPage({
           <Button
             onClick={handleBackToHome}
             leftSection={<IconArrowBack className='h-4 w-4' />}
-            className={`w-full ${isErrorState ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'} gap-2 rounded-lg font-semibold text-white transition-colors`}
+            className={`w-full ${isErrorState ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'} gap-2 font-semibold text-white transition-colors`}
           >
             Quay về trang chủ
           </Button>

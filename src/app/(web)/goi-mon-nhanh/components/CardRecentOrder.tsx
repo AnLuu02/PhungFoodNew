@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, Button, Card, Divider, Group, Stack, Text } from '@mantine/core';
+import { Badge, Box, Button, Card, Divider, Group, Paper, Stack, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
 import { IconCalendarEvent, IconPackage, IconReceipt } from '@tabler/icons-react';
@@ -32,7 +32,7 @@ export default function CardRecentOrder({ order }: { order: any }) {
                 {order?.id?.slice(-8).toUpperCase() || 'ĐANG CẬP NHẬT'}
               </Text>
             </Group>
-            <Badge color={statusInfo.color} variant='light' radius='sm'>
+            <Badge color={statusInfo.color} variant='light'>
               {statusInfo.label || 'Đang cập nhật'}
             </Badge>
           </Group>
@@ -69,7 +69,7 @@ export default function CardRecentOrder({ order }: { order: any }) {
             </Group>
           </Box>
 
-          <Box className='dark:bg-dark-body rounded-lg p-3' bg={statusInfo.color + 20}>
+          <Paper className='dark:bg-dark-body p-3' bg={statusInfo.color + 20}>
             <Group justify='space-between' mb={4}>
               <Text size='sm' c='dimmed' fw={600}>
                 Tạm tính
@@ -95,7 +95,7 @@ export default function CardRecentOrder({ order }: { order: any }) {
                 {formatPriceLocaleVi(order?.finalTotal || 0)}
               </Text>
             </Group>
-          </Box>
+          </Paper>
 
           <Group justify='flex-end' gap='sm' mt='xs'>
             <Button

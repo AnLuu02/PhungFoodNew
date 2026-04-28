@@ -73,7 +73,7 @@ export default function SystemActivityPage() {
   }, []);
   return (
     <Box className='mx-auto mb-10 max-w-7xl space-y-8'>
-      <Paper shadow='sm' radius='lg' p='lg' withBorder className='bg-white/80 backdrop-blur-sm dark:bg-dark-background'>
+      <Paper shadow='sm' p='lg' withBorder className='bg-white/80 backdrop-blur-sm dark:bg-dark-background'>
         <Group justify='space-between' wrap='wrap' gap='md'>
           <div>
             <Group gap='xs' align='center'>
@@ -100,7 +100,6 @@ export default function SystemActivityPage() {
         <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing='md'>
           <Card
             shadow='sm'
-            radius='lg'
             padding='lg'
             withBorder
             className='bg-backgroundAdmin transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card'
@@ -122,7 +121,6 @@ export default function SystemActivityPage() {
 
           <Card
             shadow='sm'
-            radius='lg'
             padding='lg'
             withBorder
             className='bg-backgroundAdmin transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card'
@@ -144,7 +142,6 @@ export default function SystemActivityPage() {
 
           <Card
             shadow='sm'
-            radius='lg'
             padding='lg'
             withBorder
             className='bg-backgroundAdmin transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card'
@@ -166,7 +163,6 @@ export default function SystemActivityPage() {
 
           <Card
             shadow='sm'
-            radius='lg'
             padding='lg'
             withBorder
             className='bg-backgroundAdmin transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card'
@@ -190,7 +186,7 @@ export default function SystemActivityPage() {
 
       <ActivityFilter showFilters={showFilters} onFilters={handleFilters} />
 
-      <Card shadow='lg' radius='lg' padding='xl' withBorder className='bg-cardAdmin dark:bg-dark-card'>
+      <Card shadow='lg' padding='xl' withBorder className='bg-cardAdmin dark:bg-dark-card'>
         <Stack gap='lg'>
           <Group justify='space-between'>
             <Text fw={700} size='lg' className='tracking-tight'>

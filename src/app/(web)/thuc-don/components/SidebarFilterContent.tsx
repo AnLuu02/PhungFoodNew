@@ -9,7 +9,7 @@ export function SidebarFilterContent({ categories, materials }: any) {
   return (
     <>
       <MenuCategoryFilter categories={categories} materials={materials} />
-      <Card p={0} className='rounded-md bg-gray-100 dark:bg-dark-card'>
+      <Card p={0} className='bg-gray-100 dark:bg-dark-card'>
         <Box className='rounded-t-md bg-mainColor p-2 text-white'>
           <Text size='sm' fw={700}>
             BỘ LỌC SẢN PHẨM

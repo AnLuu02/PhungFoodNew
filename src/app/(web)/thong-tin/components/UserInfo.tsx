@@ -49,14 +49,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
   return (
     <Grid p={0} grow>
       <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
-        <Card
-          shadow='lg'
-          radius='lg'
-          withBorder
-          pos='relative'
-          bg={`${levelInfo.color}22`}
-          className='h-full pt-10 sm:p-7'
-        >
+        <Card shadow='lg' withBorder pos='relative' bg={`${levelInfo.color}22`} className='h-full pt-10 sm:p-7'>
           <Box pos='absolute' top={10} right={4}>
             <UpdateUserButton
               email={userInfor?.email || ''}
@@ -188,7 +181,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
       </GridCol>
 
       <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-        <Card shadow='sm' className='sm:p-7' radius='lg' withBorder>
+        <Card shadow='sm' className='sm:p-7' withBorder>
           <Stack gap='md'>
             <Flex align='center' justify='space-between'>
               <Text fw={700} size='md' mb={4}>
@@ -202,9 +195,10 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
             </Flex>
             <SimpleGrid cols={2}>
               {ORDER_STATUS_UI.map(status => (
-                <Box
+                <Paper
+                  m={0}
                   bg={`${status.color}10`}
-                  className={`flex min-w-[120px] items-center gap-[10px] rounded-md px-4 py-3 shadow-md`}
+                  className={`flex min-w-[120px] items-center gap-[10px] px-4 py-3 shadow-md`}
                   key={status.key}
                 >
                   <ThemeIcon size={32} radius='xl' color={status.color} variant='light'>
@@ -218,7 +212,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                       {status.label}
                     </Text>
                   </Box>
-                </Box>
+                </Paper>
               ))}
             </SimpleGrid>
             <Divider my={12} />
@@ -235,7 +229,7 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
         </Card>
       </GridCol>
       <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-        <Card shadow='sm' className='sm:p-7' radius='lg' withBorder mt={'md'}>
+        <Card shadow='sm' className='sm:p-7' withBorder mt={'md'}>
           <Text fw={700} size='md' mb={4}>
             Tiến trình cấp độ thành viên
           </Text>

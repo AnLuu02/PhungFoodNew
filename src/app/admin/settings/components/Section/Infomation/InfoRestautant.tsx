@@ -152,7 +152,7 @@ export default function RestaurantInfoSettings() {
                     onChange={event => field.onChange(!event.currentTarget.checked)}
                     onBlur={field.onBlur}
                     name={field.name}
-                    className='rounded-md border-[0.5px] border-solid border-mainColor p-2'
+                    className='border-[0.5px] border-solid border-mainColor p-2'
                     error={fieldState.error?.message}
                   />
                 )}
@@ -181,8 +181,8 @@ export default function RestaurantInfoSettings() {
                 }
               }}
               classNames={{
-                tab: `!rounded-md !border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`,
-                list: 'rounded-md bg-gray-100 p-1 dark:bg-dark-card'
+                tab: `!border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`,
+                list: 'bg-gray-100 p-1 dark:bg-dark-card'
               }}
             >
               <TabsList className='grid w-full grid-cols-4'>

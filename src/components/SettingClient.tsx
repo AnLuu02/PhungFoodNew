@@ -96,7 +96,7 @@ export const SettingClient = () => {
               <Paper
                 withBorder
                 onClick={() => setColorScheme('light')}
-                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${!isDark && 'border-mainColor text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${!isDark && 'border-mainColor text-mainColor'}`}
               >
                 <IconBrightnessUp className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -106,7 +106,7 @@ export const SettingClient = () => {
               <Paper
                 withBorder
                 onClick={() => setColorScheme('dark')}
-                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${isDark && 'border-mainColor text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${isDark && 'border-mainColor text-mainColor'}`}
               >
                 <IconMoon className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -124,7 +124,7 @@ export const SettingClient = () => {
               <Paper
                 withBorder
                 onClick={() => setThemeClient({ ...(themeClient as ThemeClient), direction: 'ltr' })}
-                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.direction === 'ltr' && 'border-mainColor text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.direction === 'ltr' && 'border-mainColor text-mainColor'}`}
               >
                 <IconTextDirectionLtr className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -134,7 +134,7 @@ export const SettingClient = () => {
               <Paper
                 withBorder
                 onClick={() => setThemeClient({ ...(themeClient as ThemeClient), direction: 'rtl' })}
-                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.direction === 'rtl' && 'border-mainColor text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.direction === 'rtl' && 'border-mainColor text-mainColor'}`}
               >
                 <IconTextDirectionRtl className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -209,7 +209,7 @@ export const SettingClient = () => {
             <Group align='center' gap={'md'} wrap='nowrap'>
               <Paper
                 withBorder
-                className='flex cursor-pointer items-center gap-2 rounded-md px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'
+                className='flex cursor-pointer items-center gap-2 px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'
               >
                 <IconLayoutSidebar className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -218,7 +218,7 @@ export const SettingClient = () => {
               </Paper>
               <Paper
                 withBorder
-                className='flex cursor-pointer items-center gap-2 rounded-md px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'
+                className='flex cursor-pointer items-center gap-2 px-4 py-3 duration-200 hover:scale-105 hover:text-mainColor'
               >
                 <IconLayoutNavbar className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -235,7 +235,7 @@ export const SettingClient = () => {
             <Group align='center' gap={'md'}>
               <Paper
                 withBorder
-                className='flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'
+                className='flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'
               >
                 <IconLayoutSidebar className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -244,7 +244,7 @@ export const SettingClient = () => {
               </Paper>
               <Paper
                 withBorder
-                className='flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'
+                className='flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor'
               >
                 <Text size='md' fw={700}>
                   Collapse
@@ -269,7 +269,7 @@ export const SettingClient = () => {
                     }
                   })
                 }
-                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.card?.withBorder && 'border-mainColor text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.card?.withBorder && 'border-mainColor text-mainColor'}`}
               >
                 <IconBorderOuter className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -287,7 +287,7 @@ export const SettingClient = () => {
                     }
                   })
                 }
-                className={`flex cursor-pointer items-center gap-2 rounded-md px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.card?.withShadow && 'border-mainColor text-mainColor'}`}
+                className={`flex cursor-pointer items-center gap-2 px-6 py-2 duration-200 hover:scale-105 hover:text-mainColor ${themeClient?.card?.withShadow && 'border-mainColor text-mainColor'}`}
               >
                 <IconBorderNone className='h-5 w-5' />
                 <Text size='md' fw={700}>
@@ -302,7 +302,7 @@ export const SettingClient = () => {
         pos={'fixed'}
         bottom={230}
         right={{ base: -15, sm: 20 }}
-        className='animate-bounceSlow z-[200] flex flex-col space-y-4'
+        className='z-[200] flex animate-bounceSlow flex-col space-y-4'
       >
         <Center
           className='relative hidden cursor-pointer items-center justify-center text-mainColor duration-200 ease-in-out hover:opacity-80 sm:flex'

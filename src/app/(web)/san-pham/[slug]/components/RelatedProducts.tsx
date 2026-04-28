@@ -25,7 +25,7 @@ export default function RelatedProducts({ data }: any) {
         <Stack p='md'>
           {data?.map((product: any) => (
             <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
-              <Box w={60} h={60} pos={'relative'} className='overflow-hidden'>
+              <Paper p={0} m={0} w={60} h={60} pos={'relative'} className='overflow-hidden'>
                 <Image
                   loading='lazy'
                   src={
@@ -34,9 +34,9 @@ export default function RelatedProducts({ data }: any) {
                   }
                   fill
                   alt='Hình ảnh sản phẩm'
-                  className='rounded-md object-cover'
+                  className='object-cover'
                 />
-              </Box>
+              </Paper>
               <Box>
                 <Link href={`/san-pham/${product?.tag}`}>
                   <Tooltip label={product?.name}>

@@ -84,14 +84,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
         {dataFilter?.map((item, index) => {
           const IconR = item.icon;
           return (
-            <Card
-              shadow='md'
-              radius={'lg'}
-              pos={'relative'}
-              key={index}
-              p={'md'}
-              style={{ backgroundColor: item.color + 10 }}
-            >
+            <Card shadow='md' pos={'relative'} key={index} p={'md'} style={{ backgroundColor: item.color + 10 }}>
               <Flex align={'center'} gap={'md'}>
                 <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
@@ -109,7 +102,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
           );
         })}
       </SimpleGrid>
-      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
+      <Paper withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>

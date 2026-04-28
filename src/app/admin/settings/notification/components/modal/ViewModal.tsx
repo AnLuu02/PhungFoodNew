@@ -37,7 +37,6 @@ export const ViewModal = ({ opened, onClose, selectedNotification, role = 'clien
 
   return (
     <Modal
-      radius='lg'
       opened={opened}
       onClose={onClose}
       size='lg'

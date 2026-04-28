@@ -24,7 +24,7 @@ export default function InvoiceToPrint({ id }: any) {
         size='sm'
         variant='subtle'
         loading={isLoading}
-        className={`!rounded-md !border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-dark-text`}
+        className={`!border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-dark-text`}
       >
         In hóa đơn
       </Button>

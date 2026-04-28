@@ -80,7 +80,6 @@ export default function OtpModal({
         </Text>
       }
       onClose={onClose}
-      radius={'lg'}
     >
       {timeLeft === 0 && (
         <Alert

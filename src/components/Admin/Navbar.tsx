@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Group, NavLink, ScrollArea, Stack, Text } from '@mantine/core';
+import { Box, Button, Divider, Group, NavLink, Paper, ScrollArea, Stack, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconLogout } from '@tabler/icons-react';
 import { signOut } from 'next-auth/react';
@@ -41,17 +41,17 @@ export default function Navbar() {
                   <Box className={`border-0 border-l border-solid border-gray-300 pl-2`}>
                     {item.children.map(child => (
                       <Link key={child.label} href={child.href}>
-                        <Box
+                        <Paper
                           key={child.label}
                           py={'xs'}
                           pl={'md'}
                           w={'100%'}
-                          className={`${child.href === pathname ? 'bg-mainColor/10' : ''} my-1 rounded-md hover:bg-mainColor/10`}
+                          className={`${child.href === pathname ? 'bg-mainColor/10' : ''} my-1 hover:bg-mainColor/10`}
                         >
                           <Text size='sm' fw={700}>
                             {child.label}
                           </Text>
-                        </Box>
+                        </Paper>
                       </Link>
                     ))}
                   </Box>

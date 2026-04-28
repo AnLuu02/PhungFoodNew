@@ -127,19 +127,19 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                 Chính sách & Hỗ trợ
               </Title>
               <Flex direction={'column'} className='space-y-3 text-sm'>
-                <Link href='/lien-he' className='rounded-sm hover:underline'>
+                <Link href='/lien-he' className='hover:underline'>
                   Thông tin liên hệ
                 </Link>
-                <Link href='/chinh-sach#payment' className='rounded-sm hover:underline'>
+                <Link href='/chinh-sach#payment' className='hover:underline'>
                   Phương thức thanh toán
                 </Link>
-                <Link href='/chinh-sach#general' className='rounded-sm hover:underline'>
+                <Link href='/chinh-sach#general' className='hover:underline'>
                   Chính sách chung
                 </Link>
-                <Link href='/chinh-sach#delivery' className='rounded-sm hover:underline'>
+                <Link href='/chinh-sach#delivery' className='hover:underline'>
                   Chính sách giao hàng
                 </Link>
-                <Link href='/chinh-sach#order-guide' className='rounded-sm hover:underline'>
+                <Link href='/chinh-sach#order-guide' className='hover:underline'>
                   Hướng dẫn đặt món
                 </Link>
               </Flex>
@@ -161,7 +161,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                           href={generateSocialUrl(item.pattern, item.value)}
                           target='_blank'
                           aria-label={item.key}
-                          className='cursor-pointer rounded-sm hover:underline hover:opacity-80'
+                          className='cursor-pointer hover:underline hover:opacity-80'
                         >
                           <Tooltip label={item.label}>
                             <Box

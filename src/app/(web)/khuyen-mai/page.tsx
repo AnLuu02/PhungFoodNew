@@ -99,11 +99,7 @@ export default async function FoodPromotionPage() {
       <Box className='space-y-24 py-20' px={{ base: 10, sm: 30, md: 30, lg: 130 }}>
         <Box>
           <Box className='mb-12 text-center'>
-            <Badge
-              radius={'sm'}
-              leftSection={<IconGiftFilled className='h-4 w-4' />}
-              className='mb-4 bg-mainColor/20 text-mainColor'
-            >
+            <Badge leftSection={<IconGiftFilled className='h-4 w-4' />} className='mb-4 bg-mainColor/20 text-mainColor'>
               Ưu Đãi Nóng
             </Badge>
             <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-mainColor sm:text-5xl'>
@@ -125,11 +121,7 @@ export default async function FoodPromotionPage() {
 
         <Box>
           <Box className='mb-12 text-center'>
-            <Badge
-              radius={'sm'}
-              leftSection={<IconAward className='h-4 w-4' />}
-              className='mb-4 bg-purple-100 text-purple-700'
-            >
+            <Badge leftSection={<IconAward className='h-4 w-4' />} className='mb-4 bg-purple-100 text-purple-700'>
               Cấp Độ Thành Viên
             </Badge>
             <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-purple-600 sm:text-5xl'>
@@ -162,7 +154,6 @@ export default async function FoodPromotionPage() {
                 return (
                   <Card
                     key={i}
-                    radius='lg'
                     padding={0}
                     withBorder
                     className={`relative overflow-hidden px-4 py-10 text-center shadow-xl transition-all duration-300 hover:shadow-2xl ${level.className}`}
@@ -211,11 +202,7 @@ export default async function FoodPromotionPage() {
 
         <Box>
           <Box className='mb-12 text-center'>
-            <Badge
-              radius={'sm'}
-              leftSection={<IconHeart className='h-4 w-4' />}
-              className='mb-4 bg-red-100 text-red-700'
-            >
+            <Badge leftSection={<IconHeart className='h-4 w-4' />} className='mb-4 bg-red-100 text-red-700'>
               Khách hàng yêu thích
             </Badge>
             <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-pink-600 sm:text-5xl'>
@@ -246,7 +233,6 @@ export default async function FoodPromotionPage() {
               <Card
                 shadow='xl'
                 padding={'lg'}
-                radius={'lg'}
                 className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
@@ -281,7 +267,6 @@ export default async function FoodPromotionPage() {
               <Card
                 shadow='xl'
                 padding={'lg'}
-                radius={'lg'}
                 className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>
@@ -315,7 +300,6 @@ export default async function FoodPromotionPage() {
               <Card
                 shadow='xl'
                 padding={'lg'}
-                radius={'lg'}
                 className='sm:max-w-auto group max-w-[80vw] flex-shrink-0 overflow-hidden bg-white p-8 text-center transition-all duration-300 hover:shadow-2xl dark:bg-dark-card sm:min-w-[45%] sm:flex-shrink lg:min-w-[32%]'
               >
                 <Box mb={'md'}>

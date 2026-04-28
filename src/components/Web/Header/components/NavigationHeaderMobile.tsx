@@ -1,5 +1,19 @@
 'use client';
-import { Badge, Box, Center, Divider, Drawer, Flex, Grid, GridCol, Group, Image, NavLink, Text } from '@mantine/core';
+import {
+  Badge,
+  Box,
+  Center,
+  Divider,
+  Drawer,
+  Flex,
+  Grid,
+  GridCol,
+  Group,
+  Image,
+  NavLink,
+  Paper,
+  Text
+} from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconHome2, IconSoup } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -102,17 +116,17 @@ function NavigationHeaderMobile({
                     <Box className={`border-0 border-l border-solid border-gray-300 pl-2`}>
                       {categoryForMenu.map((child: any) => (
                         <Link key={child?.tag} href={`/thuc-don?danh-muc=${child?.tag}`} onClick={() => close?.()}>
-                          <Box
+                          <Paper
                             key={child?.tag}
                             py={'xs'}
                             pl={'md'}
                             w={'100%'}
-                            className={`${child?.tag === searchParams.get('danh-muc') ? 'bg-mainColor/10' : ''} my-1 rounded-md hover:bg-mainColor/10`}
+                            className={`${child?.tag === searchParams.get('danh-muc') ? 'bg-mainColor/10' : ''} my-1 hover:bg-mainColor/10`}
                           >
                             <Text size='sm' fw={700}>
                               {child?.name || 'Đang cập nhật'}
                             </Text>
-                          </Box>
+                          </Paper>
                         </Link>
                       ))}
                     </Box>
@@ -174,32 +188,26 @@ function NavigationHeaderMobile({
             />
             <Grid p={0} w={'100%'}>
               <GridCol span={6}>
-                <Link
-                  href='#'
-                  className='relative h-[36px] w-full overflow-hidden rounded-md transition-transform hover:scale-105'
-                >
+                <Link href='#' className='relative w-full'>
                   <Image
                     loading='lazy'
                     src='/images/png/logo_playstore.png'
                     alt='Google Play'
                     w={'100%'}
                     h={36}
-                    className='rounded-md object-cover'
+                    className='relative object-cover transition-transform hover:scale-105'
                   />
                 </Link>
               </GridCol>
               <GridCol span={6}>
-                <Link
-                  href='#'
-                  className='relative h-[36px] w-full overflow-hidden rounded-md transition-transform hover:scale-105'
-                >
+                <Link href='#' className='relative w-full'>
                   <Image
                     loading='lazy'
                     src='/images/png/logo_appstore.png'
                     alt='App Store'
                     w={'100%'}
                     h={36}
-                    className='rounded-md object-cover'
+                    className='relative object-cover transition-transform hover:scale-105'
                   />
                 </Link>
               </GridCol>

@@ -28,7 +28,7 @@ const ServiceComponent = () => {
     <Grid py={50}>
       {serviceData.map((service, index) => (
         <GridCol span={{ base: 12, xs: 6, xl: 3 }}>
-          <Card radius={'lg'} className='bg-gray-100 dark:bg-dark-card' py='xs'>
+          <Card className='bg-gray-100 dark:bg-dark-card' py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
               <Box mr={20}>
                 <Image

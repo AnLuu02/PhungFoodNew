@@ -141,7 +141,6 @@ export default function SearchComponentClient({ subCategories }: any) {
       {showDropdown && (
         <Paper
           shadow='md'
-          radius='lg'
           withBorder
           pos='absolute'
           top={52}
@@ -392,7 +391,6 @@ export default function SearchComponentClient({ subCategories }: any) {
                                 w={{ base: '100%', sm: '70%' }}
                               >
                                 <Card
-                                  radius={'lg'}
                                   withBorder
                                   w={80}
                                   h={80}
@@ -407,7 +405,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                                     }
                                     alt={product.name}
                                     fill
-                                    className='rounded-md object-cover'
+                                    className='object-cover'
                                   />
                                 </Card>
                                 <Box>

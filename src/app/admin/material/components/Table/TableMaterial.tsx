@@ -64,14 +64,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
           const IconR = item.icon;
           return (
             <Link href={`/admin/material?s=${item.tag}`}>
-              <Card
-                style={{ backgroundColor: item.color + 10 }}
-                shadow='md'
-                radius={'lg'}
-                pos={'relative'}
-                key={index}
-                p={'md'}
-              >
+              <Card style={{ backgroundColor: item.color + 10 }} shadow='md' pos={'relative'} key={index} p={'md'}>
                 <Flex align={'center'} gap={'md'}>
                   <ActionIcon variant='light' size={'xl'} color={item.color}>
                     <IconR size={20} />
@@ -90,7 +83,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
           );
         })}
       </SimpleGrid>
-      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
+      <Paper withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={400} />
           <Group>
@@ -121,7 +114,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
       </Paper>
       <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+          <Table.Thead className='text-sm uppercase leading-normal'>
             <Table.Tr>
               <Table.Th className='text-sm' style={{ minWidth: 100 }}>
                 Tên

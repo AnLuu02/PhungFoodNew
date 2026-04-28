@@ -120,8 +120,7 @@ const OrderItemForm = ({ index }: { index: number }) => {
             NotifyError('Không hợp lệ.', 'Đơn hàng phải có ít nhất 1 sản phẩm.');
           }
         }}
-        variant='outline'
-        color='red'
+        variant='danger'
         mt='md'
       >
         Xóa món

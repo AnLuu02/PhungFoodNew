@@ -157,7 +157,6 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
                 value={Math.floor((voucher?.usedQuantity / voucher?.quantity) * 100)}
                 color='red'
                 bg={'#DCDCDC'}
-                radius='xs'
               />
               <Flex align={'center'} gap={4} justify={'end'}>
                 <Text size='xs' c='dimmed' lineClamp={1}>

@@ -12,7 +12,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
           {dataRevenue.map((item: any, index: number) => {
             const IconR = item.icon;
             return (
-              <Card key={index} radius={'lg'} withBorder shadow='md' py={'lg'} style={{ backgroundColor: item.color }}>
+              <Card key={index} withBorder shadow='md' py={'lg'} style={{ backgroundColor: item.color }}>
                 <Flex align={'center'} justify={'space-between'}>
                   <Stack gap={3}>
                     <Text size='sm' fw={700} className='text-white'>
@@ -34,7 +34,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
           {dataRevenue.map((item: any, index: number) => {
             const IconR = item.icon;
             return (
-              <Card key={index} radius={'lg'} withBorder shadow='md' py={'lg'}>
+              <Card key={index} withBorder shadow='md' py={'lg'}>
                 <Flex align={'center'} justify={'space-between'}>
                   <Stack gap={3}>
                     <Text size='sm' fw={700}>
@@ -53,7 +53,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
           })}
         </SimpleGrid>
         <SimpleGrid cols={2}>
-          <Card radius={'lg'} withBorder shadow='md'>
+          <Card withBorder shadow='md'>
             <Flex align={'center'} justify={'space-between'} mb={'xl'}>
               <Box>
                 <Title order={5} className='font-quicksand'>
@@ -89,7 +89,7 @@ export function OverviewDashboard({ dataRevenue, period, startTimeToNum, endTime
               valueFormatter={value => formatPriceLocaleVi(value)}
             />
           </Card>
-          <Card withBorder shadow='sm' radius={'lg'}>
+          <Card withBorder shadow='sm'>
             <Flex align={'center'} justify={'space-between'} mb={'xl'}>
               <Box>
                 <Title order={5} className='font-quicksand'>

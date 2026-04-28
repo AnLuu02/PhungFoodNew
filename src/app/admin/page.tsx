@@ -121,7 +121,7 @@ export default async function Dashboard() {
           {dataRevenue.map((item, index) => {
             const IconR = item.icon;
             return (
-              <Card key={index} radius={'lg'} withBorder shadow='md'>
+              <Card key={index} withBorder shadow='md'>
                 <Stack gap={'xs'}>
                   <Text size='sm' fw={700} c={'dimmed'}>
                     {item.label}
@@ -156,7 +156,7 @@ export default async function Dashboard() {
 
         <Grid>
           <GridCol span={8}>
-            <Paper radius={'lg'} withBorder shadow='md'>
+            <Paper withBorder shadow='md'>
               <Box px={'xl'} py={'md'}>
                 <Title order={4} className='font-quicksand'>
                   Thao tác nhanh
@@ -172,7 +172,6 @@ export default async function Dashboard() {
                   return (
                     <Link href={item.href} key={index}>
                       <Card
-                        radius={'lg'}
                         pos={'relative'}
                         key={index}
                         px={'xl'}

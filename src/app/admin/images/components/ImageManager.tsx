@@ -302,10 +302,10 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
             />
 
             <Group justify='flex-end'>
-              <Button variant='default' onClick={closeDeleteConfirm}>
+              <Button variant='outline' onClick={closeDeleteConfirm}>
                 Hủy bỏ
               </Button>
-              <Button color='red' loading={bulkDeleteMutation.isPending} onClick={handleBulkDelete}>
+              <Button variant='danger' loading={bulkDeleteMutation.isPending} onClick={handleBulkDelete}>
                 Xóa bỏ
               </Button>
             </Group>

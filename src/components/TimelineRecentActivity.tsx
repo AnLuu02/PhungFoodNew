@@ -18,7 +18,7 @@ import { formatTimeAgo } from '~/lib/FuncHandler/Format';
 
 export default function TimelineRecentActivity({ recentActivities }: { recentActivities: any }) {
   return (
-    <Paper radius={'lg'} withBorder shadow='md' pb={'md'}>
+    <Paper withBorder shadow='md' pb={'md'}>
       <Box px={'xl'} py={'md'}>
         <Title order={4} className='font-quicksand'>
           Hoạt động gần đây
@@ -52,7 +52,6 @@ export default function TimelineRecentActivity({ recentActivities }: { recentAct
                           variant='light'
                           color='blue'
                           size='sm'
-                          radius='sm'
                           styles={{ root: { textTransform: 'none', verticalAlign: 'middle' } }}
                         >
                           {item.entityId || ''}

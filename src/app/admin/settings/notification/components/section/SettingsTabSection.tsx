@@ -48,7 +48,7 @@ export const SettingsTabSection = () => {
   return (
     <>
       <Box className='grid gap-6 md:grid-cols-2'>
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box mb={'md'}>
             <Text size='xl' fw={700}>
               Cập nhật theo thời gian thực
@@ -64,7 +64,7 @@ export const SettingsTabSection = () => {
           </Box>
         </Card>
 
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box mb={'md'}>
             <Text size='xl' fw={700}>
               Giới hạn tỷ lệ
@@ -84,7 +84,7 @@ export const SettingsTabSection = () => {
           </Box>
         </Card>
 
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box mb={'md'}>
             <Text size='xl' fw={700}>
               Cài đặt mặc định
@@ -107,7 +107,7 @@ export const SettingsTabSection = () => {
           </Box>
         </Card>
 
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box mb={'md'}>
             <Text size='xl' fw={700}>
               Giờ yên tĩnh toàn cầu
@@ -130,7 +130,7 @@ export const SettingsTabSection = () => {
         </Card>
       </Box>
 
-      <Card withBorder radius={'lg'}>
+      <Card withBorder>
         <Box mb={'md'}>
           <Box className='flex items-center justify-between'>
             <Box>
@@ -145,7 +145,7 @@ export const SettingsTabSection = () => {
         <Box>
           <Box className='space-y-4'>
             {autoRules.map((rule: any) => (
-              <Paper withBorder radius={'lg'} key={rule.id} className='flex items-center justify-between p-4'>
+              <Paper withBorder key={rule.id} className='flex items-center justify-between p-4'>
                 <Box className='flex items-center gap-3'>
                   <Switch checked={rule.enabled} />
                   <Box>
@@ -160,7 +160,7 @@ export const SettingsTabSection = () => {
                   <Button size='sm' onClick={() => handleEditAutoRule(rule)}>
                     Chỉnh sửa
                   </Button>
-                  <Button size='sm' className='bg-red-500' onClick={() => handleDeleteAutoRule(rule.id)}>
+                  <Button size='sm' variant='danger' onClick={() => handleDeleteAutoRule(rule.id)}>
                     Xóa
                   </Button>
                 </Box>

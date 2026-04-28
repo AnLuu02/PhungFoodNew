@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Box, Button, Flex, Group, List, Modal, Stack, Text, Title } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Group, List, Modal, Paper, Stack, Text, Title } from '@mantine/core';
 import { IconDots, IconLighter, IconMicrophone, IconSquare, IconTrash, IconVolume } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useReducer, useRef, useState } from 'react';
@@ -141,11 +141,10 @@ export default function VoiceSearchModal() {
           </Title>
         }
         size='md'
-        radius={'lg'}
         padding='lg'
       >
         <Stack>
-          <Box className='space-y-2 rounded-lg bg-amber-50 p-2 dark:bg-dark-background'>
+          <Paper className='space-y-2 bg-amber-50 p-2 dark:bg-dark-background'>
             <Group>
               <IconLighter size={24} className='text-amber-500' />
               <Text fw={500}>Mẹo để tìm kiếm chính xác hơn</Text>
@@ -154,7 +153,7 @@ export default function VoiceSearchModal() {
               <List.Item>Nói to, rõ ràng, không bị nhiễu âm.</List.Item>
               <List.Item>Đọc đúng tên sản phẩm hoặc thành phần chính.</List.Item>
             </List>
-          </Box>
+          </Paper>
 
           <Stack align='center' gap='lg' py={'md'}>
             {state.searchState === 'initial' && (

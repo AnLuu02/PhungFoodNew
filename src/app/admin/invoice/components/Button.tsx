@@ -118,7 +118,6 @@ export function ViewInvoiceButton({ data }: { data: any }) {
         onClose={() => setOpened(false)}
         size='xl'
         zIndex={150}
-        radius='lg'
         padding={0}
         withCloseButton={false}
         transitionProps={{ transition: 'fade', duration: 200 }}
@@ -212,16 +211,17 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                     <Card key={idx} withBorder p='sm' className='transition-colors hover:bg-gray-50'>
                       <Flex justify='space-between' align='center'>
                         <Group>
-                          <Image
-                            src={
-                              getImageProduct(item?.product?.imageForEntities, 'THUMBNAIL') ||
-                              '/images/png/empty_cart.png'
-                            }
-                            width={50}
-                            alt='Anh mon an'
-                            height={50}
-                            className='rounded-md'
-                          />
+                          <Paper className='overflow-hidden'>
+                            <Image
+                              src={
+                                getImageProduct(item?.product?.imageForEntities, 'THUMBNAIL') ||
+                                '/images/png/empty_cart.png'
+                              }
+                              width={50}
+                              alt='Anh mon an'
+                              height={50}
+                            />
+                          </Paper>
                           <Box>
                             <Text fw={600} size='sm'>
                               {item.product.name}
@@ -300,13 +300,14 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                 Đóng
               </Button>
               {data.pdfUrl && (
-                <a
+                <Button
+                  component='a'
                   href={data.pdfUrl}
                   target='_blank'
-                  className='flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm text-white shadow-sm hover:bg-blue-700'
+                  className='flex items-center gap-2 px-4 py-2 text-sm shadow-sm'
                 >
                   <IconEye size={16} /> Xem bản PDF
-                </a>
+                </Button>
               )}
             </Box>
           </ScrollAreaAutosize>

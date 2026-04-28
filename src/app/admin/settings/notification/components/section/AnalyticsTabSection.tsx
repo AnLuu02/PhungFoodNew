@@ -7,7 +7,7 @@ export const AnalyticsTabSection = () => {
   return (
     <>
       <Box className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <Text className='text-sm font-medium'>Tổng số đã gửi</Text>
             <IconSend className='h-4 w-4' />
@@ -17,7 +17,7 @@ export const AnalyticsTabSection = () => {
             <Text className='text-xs'>+12% từ tháng trước</Text>
           </Box>
         </Card>
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <Text className='text-sm font-medium'>Tỷ lệ chuyển tiếp</Text>
             <IconCircleCheck className='h-4 w-4' />
@@ -27,7 +27,7 @@ export const AnalyticsTabSection = () => {
             <Text className='text-xs'>+2.1% từ tháng trước</Text>
           </Box>
         </Card>
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <Text className='text-sm font-medium'>Tỉ lệ đọc</Text>
             <IconEye className='h-4 w-4' />
@@ -37,7 +37,7 @@ export const AnalyticsTabSection = () => {
             <Text className='text-xs'>+5.2% từ tháng trước</Text>
           </Box>
         </Card>
-        <Card withBorder radius={'lg'}>
+        <Card withBorder>
           <Box className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <Text className='text-sm font-medium'>Tỷ lệ truy cập</Text>
             <IconMessages className='h-4 w-4' />
@@ -49,7 +49,7 @@ export const AnalyticsTabSection = () => {
         </Card>
       </Box>
 
-      <Card withBorder radius={'lg'}>
+      <Card withBorder>
         <Box mb={'md'}>
           <Text fw={700} size='xl'>
             Hiệu suất theo Loại thông báo
@@ -96,7 +96,7 @@ export const AnalyticsTabSection = () => {
                 color: 'bg-blue-500'
               }
             ].map((item, index) => (
-              <Card withBorder radius={'lg'} key={index} className='space-y-2'>
+              <Card withBorder key={index} className='space-y-2'>
                 <Box className='flex items-center justify-between'>
                   <Box className='flex items-center gap-2'>
                     <Box className={`h-3 w-3 rounded-full ${item.color}`}></Box>

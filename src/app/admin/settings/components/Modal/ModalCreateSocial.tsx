@@ -134,7 +134,7 @@ export function SocialLinkModal({
             <Switch
               label='Kích hoạt'
               checked={field.value}
-              className='border-1 rounded-md border border-solid border-mainColor/50 p-2 hover:bg-mainColor/10'
+              className='border-1 border border-solid border-mainColor/50 p-2 hover:bg-mainColor/10'
               onChange={e => {
                 field.onChange(e.currentTarget.checked);
               }}

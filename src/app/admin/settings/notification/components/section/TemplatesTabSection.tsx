@@ -49,7 +49,7 @@ export const TemplatesTabSection = ({
 
   return (
     <>
-      <Card withBorder radius={'lg'}>
+      <Card withBorder>
         <Box className='flex items-center justify-between' mb={'md'}>
           <Box>
             <Text fw={700} size='xl'>
@@ -68,12 +68,7 @@ export const TemplatesTabSection = ({
           {templates?.length > 0 ? (
             <Box className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
               {templates.map((template: any) => (
-                <Card
-                  withBorder
-                  radius={'lg'}
-                  key={template.id}
-                  className='cursor-pointer transition-shadow hover:shadow-md'
-                >
+                <Card withBorder key={template.id} className='cursor-pointer transition-shadow hover:shadow-md'>
                   <Box className='pb-3'>
                     <Box className='flex items-center justify-between'>
                       <Box className='flex items-center gap-2'>

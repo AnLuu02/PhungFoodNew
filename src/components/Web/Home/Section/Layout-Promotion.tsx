@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Flex, Grid, GridCol, Group, Text, Title } from '@mantine/core';
+import { Card, Flex, Grid, GridCol, Group, Paper, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import React, { useEffect, useMemo } from 'react';
 import Reveal from '~/components/Reveal';
@@ -37,7 +37,6 @@ const LayoutPromotion = ({ data }: any) => {
     <Card
       mih={270}
       h={'max-content'}
-      radius={'lg'}
       withBorder
       className='border-2 border-dashed border-mainColor bg-gray-200 dark:bg-dark-background'
       p={0}
@@ -69,13 +68,12 @@ const LayoutPromotion = ({ data }: any) => {
 
           <Flex align={'center'} gap={'lg'}>
             <Group gap={'xs'}>
-              <Flex
+              <Paper
+                m={0}
+                p={0}
                 w={50}
                 h={60}
-                direction={'column'}
-                align={'center'}
-                justify={'center'}
-                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
               >
                 <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.day < 10 ? `0${timeExpire.day}` : timeExpire.day}
@@ -83,14 +81,13 @@ const LayoutPromotion = ({ data }: any) => {
                 <Text size='xs' className='text-white'>
                   Ngày
                 </Text>
-              </Flex>
-              <Flex
+              </Paper>
+              <Paper
+                m={0}
+                p={0}
                 w={50}
                 h={60}
-                direction={'column'}
-                align={'center'}
-                justify={'center'}
-                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
               >
                 <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.hour < 10 ? `0${timeExpire.hour}` : timeExpire.hour}
@@ -98,14 +95,13 @@ const LayoutPromotion = ({ data }: any) => {
                 <Text size='xs' className='text-white'>
                   Giờ
                 </Text>
-              </Flex>
-              <Flex
+              </Paper>
+              <Paper
+                m={0}
+                p={0}
                 w={50}
                 h={60}
-                direction={'column'}
-                align={'center'}
-                justify={'center'}
-                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
               >
                 <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.minute < 10 ? `0${timeExpire.minute}` : timeExpire.minute}
@@ -113,14 +109,13 @@ const LayoutPromotion = ({ data }: any) => {
                 <Text size='xs' className='text-white'>
                   Phút
                 </Text>
-              </Flex>
-              <Flex
+              </Paper>
+              <Paper
+                m={0}
+                p={0}
                 w={50}
                 h={60}
-                direction={'column'}
-                align={'center'}
-                justify={'center'}
-                className='rounded-md bg-[rgba(255,255,255,0.1)]'
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
               >
                 <Text size='lg' className='text-white' fw={700}>
                   {timeExpire.second < 10 ? `0${timeExpire.second}` : timeExpire.second}
@@ -128,7 +123,7 @@ const LayoutPromotion = ({ data }: any) => {
                 <Text size='xs' className='text-white'>
                   Giây
                 </Text>
-              </Flex>
+              </Paper>
             </Group>
           </Flex>
         </Flex>

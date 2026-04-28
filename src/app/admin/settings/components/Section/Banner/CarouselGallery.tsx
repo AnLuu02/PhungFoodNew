@@ -90,15 +90,15 @@ export const CarouselGallery = ({
               const curUrl = file ? URL.createObjectURL(file) : url;
 
               return (
-                <Carousel.Slide key={index} className='rounded-md'>
-                  <Box className='relative h-[400px] overflow-hidden rounded-md bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
+                <Carousel.Slide key={index}>
+                  <Paper className='relative h-[400px] overflow-hidden bg-gradient-to-b from-[#E1F5FE] to-[#FFF9C4]'>
                     <Image
                       src={curUrl}
                       onLoad={() => (curUrl && file ? URL.revokeObjectURL(curUrl) : null)}
                       alt={`gallery-${index}`}
                       w={'100%'}
                       h='100%'
-                      className='rounded-md object-fill'
+                      className='object-fill'
                     />
                     {mode === 'edit' && (
                       <Tooltip label={'Xóa'} withArrow>
@@ -116,7 +116,7 @@ export const CarouselGallery = ({
                         </ActionIcon>
                       </Tooltip>
                     )}
-                  </Box>
+                  </Paper>
                 </Carousel.Slide>
               );
             })}

@@ -22,13 +22,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
   const products = useMemo(() => data?.[tab]?.products || [], [data, tab]);
 
   return (
-    <Card
-      mih={500}
-      h={{ base: 'max-content', md: 500 }}
-      radius={'lg'}
-      className='bg-gray-100 dark:bg-dark-background'
-      p={0}
-    >
+    <Card mih={500} h={{ base: 'max-content', md: 500 }} className='bg-gray-100 dark:bg-dark-background' p={0}>
       <Tabs
         defaultValue='rau-cu'
         value={tab}

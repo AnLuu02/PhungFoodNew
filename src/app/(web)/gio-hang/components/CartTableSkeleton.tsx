@@ -25,30 +25,30 @@ export function CartTableSkeleton() {
                     withBorder
                     w={80}
                     h={80}
-                    className='hidden items-center justify-center overflow-hidden rounded-lg sm:flex'
+                    className='hidden items-center justify-center overflow-hidden sm:flex'
                   >
-                    <Skeleton height={60} width={60} />
+                    <Skeleton height={65} width={65} />
                   </Paper>
 
                   <Stack gap={6} align='start' flex={1}>
-                    <Skeleton height={18} width='80%' radius='sm' />
+                    <Skeleton height={18} width='80%' />
 
                     <Group>
                       <Skeleton height={20} width={20} circle />
-                      <Skeleton height={16} width={80} radius='sm' className='lg:hidden' />
-                      <Skeleton height={16} width={50} radius='sm' />
+                      <Skeleton height={16} width={80} className='lg:hidden' />
+                      <Skeleton height={16} width={50} />
                     </Group>
 
                     <Flex justify='space-between' w='100%' align='center'>
                       <Skeleton height={14} width={100} radius='xl' />
-                      <Skeleton height={24} width={60} radius='sm' />
+                      <Skeleton height={24} width={60} />
                     </Flex>
                   </Stack>
                 </Group>
               </Table.Td>
 
               <Table.Td className='hidden lg:table-cell'>
-                <Skeleton height={18} width={80} radius='sm' />
+                <Skeleton height={18} width={80} />
               </Table.Td>
 
               <Table.Td>
@@ -56,11 +56,11 @@ export function CartTableSkeleton() {
               </Table.Td>
 
               <Table.Td>
-                <Skeleton height={18} width={80} radius='sm' />
+                <Skeleton height={18} width={80} />
               </Table.Td>
 
               <Table.Td>
-                <Skeleton height={18} width={80} radius='sm' />
+                <Skeleton height={18} width={80} />
               </Table.Td>
             </Table.Tr>
           ))}

@@ -4,7 +4,7 @@ import TabsPanelCarousel from './TabsPanel';
 
 const LayoutHotProduct = ({ data }: any) => {
   return (
-    <Card h={{ base: 'max-content', md: 900 }} radius={'lg'} className='bg-gray-100 dark:bg-dark-card' p={0}>
+    <Card h={{ base: 'max-content', md: 900 }} className='bg-gray-100 dark:bg-dark-card' p={0}>
       <Flex h={'100%'} direction={{ base: 'column', md: 'row' }}>
         <Tabs
           defaultValue='danh-muc-an-vat-trang-mieng'

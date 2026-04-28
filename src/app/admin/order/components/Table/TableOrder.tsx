@@ -95,14 +95,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
         {dataFilter?.map((item, index) => {
           const IconR = item.icon;
           return (
-            <Card
-              shadow='md'
-              radius={'lg'}
-              pos={'relative'}
-              key={index}
-              p={'md'}
-              style={{ backgroundColor: item.color + 10 }}
-            >
+            <Card shadow='md' pos={'relative'} key={index} p={'md'} style={{ backgroundColor: item.color + 10 }}>
               <Flex align={'center'} gap={'md'}>
                 <ActionIcon variant='light' size={'xl'} color={item.color}>
                   <IconR size={20} />
@@ -120,7 +113,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
           );
         })}
       </SimpleGrid>
-      <Paper radius={'lg'} withBorder shadow='md' p={'md'}>
+      <Paper withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>
@@ -171,7 +164,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
       </Paper>
       <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+          <Table.Thead className='text-sm uppercase leading-normal'>
             <Table.Tr>
               <Table.Th>Mã hóa đơn</Table.Th>
               <Table.Th>Khách hàng</Table.Th>

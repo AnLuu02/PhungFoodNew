@@ -19,7 +19,7 @@ export default function TablePayment({ s, data, allData }: { s: string; data: an
     <>
       <Box className={`tableAdmin w-full overflow-x-auto`}>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='rounded-lg text-sm uppercase leading-normal'>
+          <Table.Thead className='text-sm uppercase leading-normal'>
             <Table.Tr>
               <Table.Th>ID</Table.Th>
               <Table.Th>Provider</Table.Th>

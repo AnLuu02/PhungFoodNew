@@ -8,14 +8,14 @@ const ActivityItemSkeleton = () => {
           <Group gap='sm' mb={6}>
             <Skeleton height={24} width={24} radius='xl' />
             <Skeleton height={20} width={60} radius='xl' />
-            <Skeleton height={14} width={80} radius='sm' />
+            <Skeleton height={14} width={80} />
           </Group>
 
           <Box mb={4}>
             <Group gap={4}>
               <Skeleton height={16} width='30%' />
               <Skeleton height={16} width='20%' />
-              <Skeleton height={20} width='15%' radius='xs' />
+              <Skeleton height={20} width='15%' />
             </Group>
           </Box>
 
@@ -26,7 +26,7 @@ const ActivityItemSkeleton = () => {
           </Box>
         </Box>
 
-        <Skeleton height={28} width={28} radius='sm' />
+        <Skeleton height={28} width={28} />
       </Group>
     </Box>
   );
