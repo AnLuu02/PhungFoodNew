@@ -61,7 +61,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
         {type === 'details' && (
           <Grid>
             <GridCol span={{ base: 12, lg: 5 }}>
-              <Paper w={'100%'} h={350} pos={'relative'}>
+              <Paper w={'100%'} h={350} pos={'relative'} className='overflow-hidden'>
                 <Image
                   loading='lazy'
                   src={
@@ -214,8 +214,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                     style={{
                       children: 'Mua hàng',
                       size: 'md',
-                      fullWidth: true,
-                      radius: 'md'
+                      fullWidth: true
                     }}
                     handleAfterAdd={onClose}
                     notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}

@@ -150,7 +150,7 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
               originalTotal={originalTotal}
               discountAmount={discountAmountByVoucher + discount}
               data={cart}
-              stylesButtonCheckout={{ children: 'Thanh toán', fullWidth: true, size: 'md', radius: 'md' }}
+              stylesButtonCheckout={{ children: 'Thanh toán', fullWidth: true, size: 'md' }}
             />
           </Flex>
         </Stack>

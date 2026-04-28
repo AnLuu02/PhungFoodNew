@@ -2,7 +2,9 @@
 
 import { Badge, Button, createTheme, MantineColorsTuple } from '@mantine/core';
 
-// Định nghĩa hệ màu 10 tone dựa trên mã màu bạn cung cấp
+//Default
+const defaultRadius = 'lg';
+
 const primaryColor: MantineColorsTuple = [
   '#ebfbee',
   '#d3f9d8',
@@ -35,7 +37,7 @@ export const mainTheme = createTheme({
     secondary: secondaryColor
   },
   primaryColor: 'primary',
-  defaultRadius: 'md',
+  defaultRadius,
   components: {
     Button: Button.extend({
       defaultProps: {
@@ -103,7 +105,7 @@ export const mainTheme = createTheme({
     }),
     Badge: Badge.extend({
       defaultProps: {
-        radius: 'md'
+        radius: defaultRadius
       }
     })
   }

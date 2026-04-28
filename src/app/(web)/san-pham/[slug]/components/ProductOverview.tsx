@@ -151,8 +151,7 @@ export const ProductOverview = ({ product }: { product: any }) => {
           style={{
             children: 'Mua hàng',
             size: 'md',
-            fullWidth: true,
-            radius: 'md'
+            fullWidth: true
           }}
           handleAfterAdd={() => {}}
           notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}
