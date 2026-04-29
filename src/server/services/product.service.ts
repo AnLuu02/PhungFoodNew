@@ -476,3 +476,46 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
     }
   };
 };
+
+export const findInfiniteProductService = async (
+  db: PrismaClient,
+  input: {
+    limit?: number | null;
+    cursor?: string | null;
+    filters?: {
+      search?: string;
+      'danh-muc'?: string | null;
+    };
+  }
+) => {
+  const danhMuc = input.filters?.['danh-muc'];
+  const search = input.filters?.search?.trim() ?? '';
+  const limit = input.limit ?? 50;
+  const { cursor } = input;
+  const items = await db.product.findMany({
+    take: limit + 1,
+    where: {
+      subCategory: danhMuc
+        ? {
+            tag: {
+              equals: danhMuc
+            }
+          }
+        : undefined
+    },
+    cursor: cursor ? { id: cursor } : undefined,
+    orderBy: {
+      createdAt: 'asc'
+    }
+  });
+  let nextCursor: typeof cursor | undefined = undefined;
+  if (items.length > limit) {
+    const nextItem = items.pop();
+    nextCursor = nextItem!.id;
+  }
+
+  return {
+    items,
+    nextCursor
+  };
+};

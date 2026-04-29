@@ -73,7 +73,7 @@ export default function SystemActivityPage() {
   }, []);
   return (
     <Box className='mx-auto mb-10 max-w-7xl space-y-8'>
-      <Paper shadow='sm' p='lg' withBorder className='bg-white/80 backdrop-blur-sm dark:bg-dark-background'>
+      <Paper shadow='sm' p='lg' withBorder className='bg-white/80 backdrop-blur-sm dark:bg-dark-card'>
         <Group justify='space-between' wrap='wrap' gap='md'>
           <div>
             <Group gap='xs' align='center'>

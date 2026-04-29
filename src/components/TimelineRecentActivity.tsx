@@ -36,11 +36,11 @@ export default function TimelineRecentActivity({ recentActivities }: { recentAct
                 key={index}
                 bullet={<Avatar src={item?.user?.imageForEntity?.image?.url} radius='xl' size={34} />}
               >
-                <Paper p='xs' withBorder shadow='none' bg='gray.0'>
+                <Paper p='xs' withBorder shadow='none' className='bg-gray-50 dark:bg-dark-background'>
                   <Group justify='space-between' align='flex-start' wrap='nowrap'>
                     <Stack gap={4}>
                       <Box size='sm' style={{ fontSize: '12px', lineHeight: 1.5 }}>
-                        <Text size='sm' fw={700} component='span' c='dark.4'>
+                        <Text size='sm' fw={700} component='span'>
                           {item.user.name || item.user.email}
                         </Text>
 

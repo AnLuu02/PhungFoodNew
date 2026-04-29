@@ -4,15 +4,24 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
 import { navigationClientItem } from '~/lib/ConfigUI';
+import { api } from '~/trpc/react';
 
 function NavigationHeader({ categories }: { categories: any }) {
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-
+  const utils = api.useUtils();
+  const handlePrefetch = useCallback(() => {
+    void utils.Product.findInfiniteProduct.prefetchInfinite({
+      limit: 8,
+      filters: {
+        'danh-muc': undefined
+      }
+    });
+  }, []);
   return (
     <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }}>
       {navigationClientItem.map((item, index) =>
@@ -70,6 +79,7 @@ function NavigationHeader({ categories }: { categories: any }) {
               size='sm'
               radius={'xl'}
               variant='subtle'
+              onMouseEnter={() => item.href === '/goi-mon-nhanh' && handlePrefetch()}
               px={'md'}
               className={`text-mainColor duration-200 ease-in-out hover:bg-mainColor hover:text-white ${
                 pathname === item.href

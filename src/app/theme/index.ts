@@ -52,9 +52,9 @@ export const mainTheme = createTheme({
           case 'danger':
             return {
               root: {
-                '--button-bg': theme.colors.red[6],
+                '--button-bg': theme.colors.red[7],
                 '--button-color': theme.white,
-                '--button-hover': theme.colors.red[7]
+                '--button-hover': theme.colors.red[6]
               }
             };
           case 'outline':

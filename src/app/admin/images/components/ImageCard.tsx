@@ -25,7 +25,9 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
         padding={0}
         radius='xl'
         className={`group relative border-2 transition-all duration-300 hover:-translate-y-1 ${
-          isSelected || isLinked ? 'border-blue-500 shadow-lg' : 'border-transparent bg-white shadow-sm'
+          isSelected || isLinked
+            ? 'border-mainColor shadow-lg'
+            : 'border-transparent bg-white shadow-sm dark:bg-dark-card'
         }`}
       >
         <div
@@ -53,7 +55,7 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
 
           <div className='absolute left-4 top-4 z-10 flex flex-col gap-2'>
             {!image.isOrphaned ? (
-              <Badge className='h-6 rounded-full bg-blue-600 px-3 text-[10px] font-black shadow-lg'>
+              <Badge className='h-6 rounded-full bg-mainColor px-3 text-[10px] font-black shadow-lg'>
                 {image.usageCount} đã liên kết
               </Badge>
             ) : (
@@ -70,7 +72,7 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
           <div className='absolute right-4 top-4 z-10 flex flex-col gap-2'>
             {isLinked && (
               <Badge
-                className={`h-6 rounded-full ${linkedPayload.type === 'THUMBNAIL' ? 'bg-blue-600' : linkedPayload.type === 'GALLERY' ? 'bg-red-600' : 'bg-gray-300'} px-3 text-[10px] font-black shadow-lg`}
+                className={`h-6 rounded-full ${linkedPayload.type === 'THUMBNAIL' ? 'bg-mainColor' : linkedPayload.type === 'GALLERY' ? 'bg-red-600' : 'bg-gray-300'} px-3 text-[10px] font-black shadow-lg`}
               >
                 {linkedPayload?.type}
               </Badge>
@@ -85,7 +87,7 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
               size={42}
               radius='xl'
               onClick={onEdit}
-              className='text-gray-900 shadow-xl transition-all hover:bg-blue-600 hover:text-white'
+              className='text-gray-900 shadow-xl transition-all hover:bg-mainColor hover:text-white'
             >
               <IconPencil size={20} />
             </ActionIcon>
@@ -121,7 +123,7 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
             <Box className='flex-1'>
               <Tooltip label={image.altText || 'Chưa có mô tả.'}>
                 <Text
-                  className={`line-clamp-1 text-base font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-600`}
+                  className={`line-clamp-1 text-base font-bold transition-colors duration-300 group-hover:text-mainColor`}
                 >
                   {image.altText || 'Chưa có mô tả.'}
                 </Text>
@@ -140,7 +142,12 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
               </Group>
             </Box>
 
-            <ActionIcon variant='subtle' color='gray' radius='xl' className='hover:bg-gray-100'>
+            <ActionIcon
+              variant='subtle'
+              color='gray'
+              radius='xl'
+              className='hover:bg-gray-100 dark:hover:bg-dark-dimmed'
+            >
               <IconDotsVertical size={18} />
             </ActionIcon>
           </Group>

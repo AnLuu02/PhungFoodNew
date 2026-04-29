@@ -275,7 +275,13 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
                 <Switch
                   label={
                     <Group>
-                      <Badge color={field.value ? '#195EFE' : 'red'}>{field.value ? 'Hiển thị' : 'Ẩn'}</Badge>
+                      <Badge
+                        classNames={{
+                          root: `${field.value ? 'bg-mainColor' : 'bg-red-600'}`
+                        }}
+                      >
+                        {field.value ? 'Hiển thị' : 'Ẩn'}
+                      </Badge>
                     </Group>
                   }
                   disabled={!activeBanner}
@@ -296,7 +302,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
           </Button>
         </Group>
         <ListBannerTemplate onSetDefaultBanner={handleSetDefaultBanner} onDeletedBanner={handleDeleteBanner} />
-        <Card padding={'sm'} className='bg-backgroundAdmin'>
+        <Card padding={'sm'} className='bg-backgroundAdmin dark:bg-dark-card'>
           <Stack mb={'xl'}>
             <Group align='flex-end' gap='xs'>
               <Controller

@@ -19,7 +19,7 @@ export function ChangeRate({ currentValue, previousValue, changeRate }: Props) {
 
   if (previousValue === 0) {
     return (
-      <Text size='sm' c='blue' fw={600}>
+      <Text size='sm' className='text-mainColor' fw={600}>
         Tất cả số liệu
       </Text>
     );

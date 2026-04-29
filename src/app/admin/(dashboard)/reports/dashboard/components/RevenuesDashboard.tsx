@@ -70,8 +70,8 @@ export const RevenuesDashboard = ({ dataRevenue, period, startTimeToNum, endTime
                     </Flex>
 
                     <ChangeRate
-                      currentValue={item.currentValue}
-                      previousValue={item.previousValue}
+                      currentValue={Number(item.currentValue)}
+                      previousValue={Number(item.previousValue)}
                       changeRate={item.changeRate}
                     />
                   </Stack>

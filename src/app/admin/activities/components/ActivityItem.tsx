@@ -21,7 +21,7 @@ export const ActivityItem = ({ log, checked, onCheckboxChange }: ActivityItemPro
 
   return (
     <Box
-      className='transition-colors hover:bg-gray-50'
+      className='transition-colors hover:bg-gray-50 dark:hover:bg-dark-background'
       style={{
         borderLeft: `4px solid var(--mantine-color-${actionDetail.color}-5)`,
         paddingTop: 'var(--mantine-spacing-md)',

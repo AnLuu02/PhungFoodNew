@@ -163,7 +163,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
           <ImageFilters filters={filters} onFilters={handleFilterChange} refetch={refetch} />
           <Box className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center'>
             <Group gap={12} wrap='wrap'>
-              <Box className='flex w-fit rounded-full bg-[#f3f4f6] p-1'>
+              <Box className='flex w-fit rounded-full bg-[#f3f4f6] p-1 dark:bg-dark-card'>
                 {TABS.map(tab => {
                   const isActive =
                     tab.value === 'all' && filters.imageTypes.length === 0
@@ -175,7 +175,9 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
                       key={tab.value}
                       onClick={() => handleFilterChange('imageTypes', tab.value === 'all' ? [] : [tab.value])}
                       className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
-                        isActive ? 'text-primary bg-white font-bold shadow-sm' : 'text-gray-600 hover:text-black'
+                        isActive
+                          ? 'text-primary bg-white font-bold shadow-sm dark:bg-dark-background'
+                          : 'text-gray-600 hover:text-black dark:text-dark-text dark:hover:bg-dark-dimmed'
                       } `}
                     >
                       {tab.label}
@@ -192,7 +194,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
                   component='label'
                   htmlFor='select_all_image_delete'
                   gap={'sm'}
-                  className='h-[42px] flex-1 cursor-pointer rounded-full border border-solid border-gray-200 px-6 text-sm font-bold text-gray-800 hover:bg-gray-200 hover:font-bold lg:flex-none'
+                  className='h-[42px] flex-1 cursor-pointer rounded-full border border-solid border-gray-200 px-6 text-sm font-bold text-gray-800 hover:bg-gray-200 hover:font-bold dark:border-dark-card dark:hover:bg-dark-background lg:flex-none'
                 >
                   <Checkbox
                     id='select_all_image_delete'
@@ -202,7 +204,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
                     m={0}
                     className='h-4 w-4 rounded border-gray-300'
                   />
-                  <Text className='text-sm text-gray-600'>
+                  <Text size='sm' c={'dimmed'}>
                     {selectedImages.size > 0 ? `${selectedImages.size} ảnh đã chọn` : 'Chọn tất cả'}
                   </Text>
                 </Flex>
@@ -212,8 +214,6 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
                   variant={filters.showOrphanedOnly ? 'filled' : 'outline'}
                   onClick={() => handleFilterChange('showOrphanedOnly', !filters.showOrphanedOnly)}
                   leftSection={<IconFilter size={16} />}
-                  className={`h-[42px] flex-1 rounded-full border-gray-200 px-6 text-sm font-bold text-gray-800 lg:flex-none ${filters.showOrphanedOnly ? 'bg-gray-800 text-white' : ''}`}
-                  color='gray'
                 >
                   Ảnh chưa sử dụng
                 </Button>

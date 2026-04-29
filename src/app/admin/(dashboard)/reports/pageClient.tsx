@@ -199,8 +199,8 @@ export default function ReportPageClient({
                 </Flex>
 
                 <ChangeRate
-                  currentValue={item.currentValue}
-                  previousValue={item.previousValue}
+                  currentValue={Number(item.currentValue)}
+                  previousValue={Number(item.previousValue)}
                   changeRate={item.changeRate}
                 />
               </Stack>

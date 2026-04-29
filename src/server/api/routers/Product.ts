@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deleteProductService,
+  findInfiniteProductService,
   findProductService,
   getAllProductService,
   getOneProductService,
@@ -74,5 +75,19 @@ export const productRouter = createTRPCRouter({
         userRole: z.string().optional()
       })
     )
-    .query(async ({ ctx, input }) => await getAllProductService(ctx.db, input))
+    .query(async ({ ctx, input }) => await getAllProductService(ctx.db, input)),
+  findInfiniteProduct: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+        filters: z
+          .object({
+            search: z.string().optional(),
+            'danh-muc': z.string().nullish()
+          })
+          .optional()
+      })
+    )
+    .query(async ({ ctx, input }) => await findInfiniteProductService(ctx.db, input))
 });

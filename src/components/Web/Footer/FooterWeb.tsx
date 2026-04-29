@@ -50,13 +50,19 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                   <Box>
                     <Box className='font-medium'>
                       Hotline:{' '}
-                      <a href={`tel:${restaurant?.phone || '09180646181'}`} className='hover:underline'>
+                      <a
+                        href={`tel:${restaurant?.phone || '09180646181'}`}
+                        className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'
+                      >
                         {restaurant?.phone || '09180646181'}
                       </a>
                     </Box>
                     <Box className='text-gray-400 dark:text-dark-text'>
                       Đặt món:{' '}
-                      <a href={`tel:${restaurant?.phone || '09180646181'}`} className='hover:underline'>
+                      <a
+                        href={`tel:${restaurant?.phone || '09180646181'}`}
+                        className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'
+                      >
                         {restaurant?.phone || '09180646181'}
                       </a>
                     </Box>
@@ -65,7 +71,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                 <Box className='flex items-start gap-3'>
                   <Box className='mt-0.5 h-4 w-4 text-green-400'>📧</Box>
                   <Box>
-                    <Box className='hover:underline'>
+                    <Box className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'>
                       <a href={`mailto:${restaurant?.email || 'anluu099@gmail'}`}>
                         {restaurant?.email || 'anluu099@gmail'}
                       </a>
@@ -127,19 +133,31 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                 Chính sách & Hỗ trợ
               </Title>
               <Flex direction={'column'} className='space-y-3 text-sm'>
-                <Link href='/lien-he' className='hover:underline'>
+                <Link href='/lien-he' className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'>
                   Thông tin liên hệ
                 </Link>
-                <Link href='/chinh-sach#payment' className='hover:underline'>
+                <Link
+                  href='/chinh-sach#payment'
+                  className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'
+                >
                   Phương thức thanh toán
                 </Link>
-                <Link href='/chinh-sach#general' className='hover:underline'>
+                <Link
+                  href='/chinh-sach#general'
+                  className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'
+                >
                   Chính sách chung
                 </Link>
-                <Link href='/chinh-sach#delivery' className='hover:underline'>
+                <Link
+                  href='/chinh-sach#delivery'
+                  className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'
+                >
                   Chính sách giao hàng
                 </Link>
-                <Link href='/chinh-sach#order-guide' className='hover:underline'>
+                <Link
+                  href='/chinh-sach#order-guide'
+                  className='duration-150 hover:ml-2 hover:font-bold hover:text-mainColor'
+                >
                   Hướng dẫn đặt món
                 </Link>
               </Flex>
@@ -161,7 +179,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                           href={generateSocialUrl(item.pattern, item.value)}
                           target='_blank'
                           aria-label={item.key}
-                          className='cursor-pointer hover:underline hover:opacity-80'
+                          className='group cursor-pointer duration-150 hover:opacity-85'
                         >
                           <Tooltip label={item.label}>
                             <Box
@@ -170,7 +188,9 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                               bg={color}
                               className='flex items-center justify-center overflow-hidden rounded-full'
                             >
-                              {IconComponent && <IconComponent size={24} stroke={1.5} />}
+                              {IconComponent && (
+                                <IconComponent className={`group-hover:scale-105`} size={24} stroke={1.5} />
+                              )}
                             </Box>
                           </Tooltip>
                         </a>

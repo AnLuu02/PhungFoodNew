@@ -20,8 +20,8 @@ export default function BulkActionsBar({
   imageTypeOptions
 }: BulkActionsBarProps) {
   return (
-    <Group p='xs' mb='lg' justify='space-between' className='flex rounded-full bg-[#f3f4f6] p-1'>
-      <Text fw={500} className='w-[max-content] rounded-full bg-white' p={'sm'}>
+    <Group p='xs' mb='lg' justify='space-between' className='flex rounded-full bg-[#f3f4f6] p-1 dark:bg-dark-card'>
+      <Text fw={500} className='w-[max-content] rounded-full bg-white dark:bg-dark-dimmed' p={'sm'}>
         {selectedCount} hình ảnh đã được chọn
       </Text>
       <Group px={'md'}>

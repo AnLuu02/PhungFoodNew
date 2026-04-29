@@ -271,31 +271,28 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                   ) : (
                     <Stack gap='sm' px={'xs'}>
                       {image.associations.map(assoc => (
-                        <Paper>
-                          <Group
-                            key={`${assoc.type}-${assoc.id}`}
-                            justify='space-between'
-                            p='sm'
-                            className='bg-gray-100 dark:bg-dark-card'
+                        <Paper
+                          key={`${assoc.type}-${assoc.id}`}
+                          p='sm'
+                          className='flex w-full items-center justify-between bg-gray-100 dark:bg-dark-background'
+                        >
+                          <Box>
+                            <Text size='sm' fw={500}>
+                              {assoc.label}
+                            </Text>
+                            <Text size='xs' c='dimmed'>
+                              ID: {assoc.id}
+                            </Text>
+                          </Box>
+                          <Button
+                            size='xs'
+                            color='red'
+                            variant='subtle'
+                            loading={detachMutation.isPending}
+                            onClick={() => handleDetachImage(imageId, assoc.type, assoc.id)}
                           >
-                            <Box>
-                              <Text size='sm' fw={500}>
-                                {assoc.label}
-                              </Text>
-                              <Text size='xs' c='dimmed'>
-                                ID: {assoc.id}
-                              </Text>
-                            </Box>
-                            <Button
-                              size='xs'
-                              color='red'
-                              variant='outline'
-                              loading={detachMutation.isPending}
-                              onClick={() => handleDetachImage(imageId, assoc.type, assoc.id)}
-                            >
-                              Gỡ
-                            </Button>
-                          </Group>
+                            Gỡ
+                          </Button>
                         </Paper>
                       ))}
                     </Stack>
@@ -329,7 +326,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
           justify='space-between'
           p={'md'}
           px={'xl'}
-          className='bg-gray-100'
+          className='bg-gray-100 dark:bg-dark-card'
         >
           <Button
             size='sm'
@@ -342,7 +339,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
             Xóa
           </Button>
           <Group>
-            <Button size='sm' variant='danger' onClick={onClose}>
+            <Button size='sm' color='red' variant='subtle' onClick={onClose}>
               Hủy bỏ
             </Button>
             <a href={image.url} download={true} target='_blank'>

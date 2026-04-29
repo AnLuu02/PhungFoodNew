@@ -32,7 +32,7 @@ export default function HeroSectionImages({
   return (
     <>
       <Box className='grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-6'>
-        <Card radius='xl' className='relative col-span-3 flex justify-center bg-gray-100 p-8'>
+        <Card radius='xl' className='relative col-span-3 flex justify-center bg-gray-100 p-8 dark:bg-dark-card'>
           <Stack gap={4}>
             <Title order={1} className='font-quicksand'>
               Thư viện hình ảnh
@@ -45,29 +45,29 @@ export default function HeroSectionImages({
           <IconPhoto size={80} className='absolute right-6 top-6 opacity-10' />
         </Card>
 
-        <Card radius='xl' p='lg' h={200} className='bg-[#e0e7ff]/40'>
+        <Card radius='xl' p='lg' h={200} className='bg-[#e0e7ff]/40 dark:bg-dark-card'>
           <Flex direction={'column'} justify={'space-between'} h={'100%'}>
             <Text size='md' fw={700} c='dimmed'>
               Tổng lưu trữ
             </Text>
             <Box>
-              <Title order={1} className='font-quicksand' c='blue'>
+              <Title order={1} className='font-quicksand text-mainColor'>
                 1,284
               </Title>
-              <Text size='sm' c='blue'>
+              <Text size='sm' className='text-mainColor'>
                 +12 trong tuần này
               </Text>
             </Box>
           </Flex>
         </Card>
 
-        <Card radius='xl' p='lg' h={200} className='bg-[#e0e7ff]/40'>
+        <Card radius='xl' p='lg' h={200} className='bg-[#e0e7ff]/40 dark:bg-dark-card'>
           <Flex direction={'column'} justify={'space-between'} h={'100%'}>
             <Text size='md' fw={700} c='dimmed'>
               Kho
             </Text>
             <Box>
-              <Title order={1} className='font-quicksand' c='blue'>
+              <Title order={1} className='font-quicksand text-mainColor'>
                 84%
               </Title>
               <Progress value={84} mt='xs' />
@@ -75,8 +75,8 @@ export default function HeroSectionImages({
           </Flex>
         </Card>
 
-        <div className='flex h-[200px] w-full max-w-[250px] flex-col justify-between rounded-xl border border-[#6366f1]/10 bg-[#e0e7ff]/60 p-6 md:col-span-full lg:col-span-1'>
-          <Text className='mb-4 text-xs font-bold uppercase tracking-widest text-[#3730a3]'>Xem nhanh</Text>
+        <div className='flex h-[200px] w-full max-w-[250px] flex-col justify-between rounded-xl border border-mainColor/10 bg-[#e0e7ff]/60 p-6 dark:bg-dark-card md:col-span-full lg:col-span-1'>
+          <Text className='mb-4 text-xs font-bold uppercase tracking-widest text-mainColor'>Xem nhanh</Text>
 
           <div className='flex flex-1 items-end justify-center gap-8 pb-2'>
             <Tooltip
@@ -90,7 +90,7 @@ export default function HeroSectionImages({
                 style={{ height: '100%', justifyContent: 'flex-end' }}
               >
                 <div
-                  className='w-10 rounded-t-lg bg-[#6366f1] transition-all duration-500 group-hover:shadow-lg group-hover:brightness-110'
+                  className='w-10 rounded-t-lg bg-mainColor transition-all duration-500 group-hover:shadow-lg group-hover:brightness-110'
                   style={{ height: `${linkedHeight}%` }}
                 />
                 <span className='text-[10px] font-bold text-gray-500'>LINKED</span>
