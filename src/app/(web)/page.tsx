@@ -1,3 +1,4 @@
+import { Box } from '@mantine/core';
 import { Metadata } from 'next';
 import HomeWeb from '~/components/Web/Home/HomeWeb';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
@@ -17,7 +18,11 @@ const getInit = async () => {
 
 const HomePage = async () => {
   const data = await getInit();
-  return <HomeWeb data={data} />;
+  return (
+    <Box className='relative w-full overflow-x-hidden'>
+      <HomeWeb data={data} />;
+    </Box>
+  );
 };
 
 export default HomePage;

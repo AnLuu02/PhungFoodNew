@@ -36,7 +36,7 @@ const getInitRestaurant = async () => {
 export default async function AboutPage() {
   const restaurant = await getInitRestaurant();
   return (
-    <>
+    <Box className='relative w-full overflow-x-hidden'>
       <Box pos={'relative'} mx={{ base: -10, sm: -30, md: -30, lg: -130 }} mt={-16}>
         <Box className='from-primary/20 to-accent/10 relative flex h-[60vh] items-center justify-center overflow-hidden bg-gradient-to-br md:h-[70vh]'>
           <Box className='z-2 absolute inset-0 bg-black/40'></Box>
@@ -507,6 +507,6 @@ export default async function AboutPage() {
           </Box>
         </Box>
       </Reveal>
-    </>
+    </Box>
   );
 }
