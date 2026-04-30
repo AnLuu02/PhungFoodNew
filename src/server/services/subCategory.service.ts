@@ -74,7 +74,7 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
             }
           }
         },
-        product: {
+        products: {
           where: {
             isActive: true
           },

@@ -6,9 +6,9 @@ import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizon
 
 const FastMenuSection = ({ data }: { data: { anVat: any; thucUong: any; monChinh: any } }) => {
   const getRandomItems = (arr: any[], count: number) => arr.sort(() => 0.5 - Math.random()).slice(0, count);
-  const anVatFilter = getRandomItems(data.anVat?.flatMap((i: any) => i.product) || [], 3);
-  const thucUongFilter = getRandomItems(data.thucUong?.flatMap((i: any) => i.product) || [], 3);
-  const monChinhFilter = getRandomItems(data.monChinh?.flatMap((i: any) => i.product) || [], 3);
+  const anVatFilter = getRandomItems(data.anVat?.flatMap((i: any) => i.products) || [], 3);
+  const thucUongFilter = getRandomItems(data.thucUong?.flatMap((i: any) => i.products) || [], 3);
+  const monChinhFilter = getRandomItems(data.monChinh?.flatMap((i: any) => i.products) || [], 3);
   return (
     <Grid
       mt={{

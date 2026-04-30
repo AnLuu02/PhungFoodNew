@@ -62,7 +62,7 @@ model SubCategory {
   categoryId     String
   description    String?
   imageForEntity ImageForEntity?
-  product        Product[]
+  products       Product[]
   category       Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   createdAt      DateTime?       @default(now())
   updatedAt      DateTime?       @updatedAt

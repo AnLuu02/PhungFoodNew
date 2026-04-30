@@ -120,7 +120,7 @@ export const getDistributionProductsService = async (
       subCategory: {
         select: {
           name: true,
-          product: {
+          products: {
             select: {
               id: true,
               name: true

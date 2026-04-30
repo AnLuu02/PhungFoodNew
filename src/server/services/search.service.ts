@@ -135,7 +135,7 @@ export const searchGlobalService = async (
       include: {
         category: true,
         imageForEntity: { include: { image: true } },
-        product: {
+        products: {
           where: {
             isActive: true
           },
