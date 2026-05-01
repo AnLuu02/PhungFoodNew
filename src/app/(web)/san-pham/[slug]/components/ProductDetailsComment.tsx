@@ -8,14 +8,17 @@ export default function ProductDetails({ product }: { product: any }) {
   return (
     <Paper withBorder p='md'>
       <Stack>
-        <Image
-          loading='lazy'
-          src={getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
-          width={300}
-          height={300}
-          alt='Hình ảnh sản phẩm'
-          className='object-cover'
-        />
+        <Paper w={300} h={300} pos={'relative'} className='overflow-hidden'>
+          <Image
+            loading='lazy'
+            src={
+              getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
+            }
+            fill
+            alt='Hình ảnh sản phẩm'
+            className='object-cover'
+          />
+        </Paper>
         <Title order={2} className='font-quicksand'>
           {product.name}
         </Title>

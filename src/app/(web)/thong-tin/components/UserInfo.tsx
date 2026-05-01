@@ -273,7 +273,9 @@ export function UserInfo({ userInfor }: { userInfor: any }) {
                       className={`relative overflow-hidden rounded-full transition-all duration-300`}
                     >
                       <Tooltip label={`Tối thiểu: ${level.minPoint} điểm`}>
-                        <Image src={`/images/png/${level.thumbnail}`} width={60} height={40} alt='vip' />
+                        <Paper w={60} h={40} pos={'relative'} className='overflow-hidden'>
+                          <Image src={`/images/png/${level.thumbnail}`} fill alt='vip' />
+                        </Paper>
                       </Tooltip>
                     </Center>
                   );

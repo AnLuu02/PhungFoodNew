@@ -9,9 +9,9 @@ export const NavigationFixed = () => {
   const pathname = usePathname();
   return (
     <Card
-      className='bg-backgroundAdmin fixed bottom-0 left-0 right-0 z-[10000] w-full dark:bg-dark-background sm:hidden'
-      px={'sm'}
-      py={'sm'}
+      className='fixed bottom-0 left-0 right-0 z-[10000] w-full bg-backgroundAdmin dark:bg-dark-background sm:hidden'
+      p={'sm'}
+      radius={0}
     >
       <Flex align={'center'} justify={'space-between'} w={'100%'}>
         {navigationClientItem.map(item => {

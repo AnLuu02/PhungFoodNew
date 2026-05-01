@@ -1,4 +1,4 @@
-import { Box, Card, Flex, Grid, GridCol, Text } from '@mantine/core';
+import { Card, Flex, Grid, GridCol, Paper, Text } from '@mantine/core';
 import Image from 'next/image';
 
 const serviceData = [
@@ -30,16 +30,9 @@ const ServiceComponent = () => {
         <GridCol span={{ base: 12, xs: 6, xl: 3 }}>
           <Card className='bg-gray-100 dark:bg-dark-card' py='xs'>
             <Flex align={'center'} justify={'center'} w={'100%'}>
-              <Box mr={20}>
-                <Image
-                  loading='lazy'
-                  src={service.icon}
-                  width={40}
-                  height={40}
-                  alt={'empty'}
-                  style={{ objectFit: 'cover' }}
-                />
-              </Box>
+              <Paper pos={'relative'} w={40} h={40} className='overflow-hidden' mr={20}>
+                <Image loading='lazy' src={service.icon} fill alt={'empty'} style={{ objectFit: 'cover' }} />
+              </Paper>
               <Flex direction={'column'} align='flex-start'>
                 <Text size='md' className='text-mainColor' fw={700}>
                   {service.title}

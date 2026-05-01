@@ -59,22 +59,20 @@ export default function ProductImage({
                 w={110}
                 h={110}
                 withBorder
+                pos={'relative'}
                 key={index}
                 onClick={() => handleThumbnailClick(item?.image?.url, index)}
                 className={`cursor-pointer overflow-hidden ${
                   item?.image?.url === currentImage ? 'border-2 border-mainColor' : ''
                 }`}
               >
-                <Box pos='relative'>
-                  <Image
-                    loading='lazy'
-                    src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
-                    width={110}
-                    height={110}
-                    className='object-cover'
-                    alt='Thumbnail'
-                  />
-                </Box>
+                <Image
+                  loading='lazy'
+                  src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                  fill
+                  className='object-cover'
+                  alt='Thumbnail'
+                />
               </Paper>
             ))}
             {remainingCount > 0 && (
@@ -82,26 +80,24 @@ export default function ProductImage({
                 onClick={() => handleThumbnailClick(currentImage, remainingCount - 1)}
                 w={110}
                 h={110}
+                pos={'relative'}
                 withBorder
                 className={`cursor-pointer overflow-hidden`}
               >
-                <Box pos='relative'>
-                  <Image
-                    loading='lazy'
-                    src={currentImage || '/images/jpg/empty-300x240.jpg'}
-                    width={110}
-                    height={110}
-                    className='object-cover'
-                    alt='Thumbnail'
-                  />
-                  <Paper
-                    p={0}
-                    m={0}
-                    className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-2xl font-bold text-white backdrop-blur-md'
-                  >
-                    +{remainingCount}
-                  </Paper>
-                </Box>
+                <Image
+                  loading='lazy'
+                  src={currentImage || '/images/jpg/empty-300x240.jpg'}
+                  fill
+                  className='object-cover'
+                  alt='Thumbnail'
+                />
+                <Paper
+                  p={0}
+                  m={0}
+                  className='absolute left-0 top-0 flex h-full w-full cursor-pointer items-center justify-center bg-black/50 text-2xl font-bold text-white backdrop-blur-md'
+                >
+                  +{remainingCount}
+                </Paper>
               </Paper>
             )}
           </Flex>
@@ -109,7 +105,7 @@ export default function ProductImage({
 
         <Paper className='relative mb-4' w='100%'>
           <Flex direction='column' align='center' justify='center' w='100%'>
-            <Paper p={0} m={0} pos={'relative'} w={'100%'} mih={{ base: 300, md: 470 }} className='overflow-hidden'>
+            <Paper pos={'relative'} w={'100%'} mih={{ base: 300, md: 470 }} className='overflow-hidden'>
               <Image
                 loading='lazy'
                 src={thumbnail || currentImage}

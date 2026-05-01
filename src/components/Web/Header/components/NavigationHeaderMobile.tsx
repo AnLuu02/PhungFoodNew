@@ -49,7 +49,6 @@ function NavigationHeaderMobile({
       }}
       size={'xs'}
       zIndex={10001}
-      pb={'md'}
       pos={'relative'}
       classNames={{
         close:

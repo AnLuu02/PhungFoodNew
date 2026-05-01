@@ -111,7 +111,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
                       </Text>
                     </Tooltip>
                     <Text c='dimmed' size='xs'>
-                      {item?.product?.length || 0} sản phẩm
+                      {item?.products?.length || 0} sản phẩm
                     </Text>
                   </Stack>
                 </Card>

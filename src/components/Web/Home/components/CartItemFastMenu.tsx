@@ -16,7 +16,7 @@ interface CartItemProps {
 export default function CartItemFastMenu({ image, name, price, quantity, onQuantityChange, onDelete }: CartItemProps) {
   return (
     <Group wrap='nowrap' className='w-full gap-4 overflow-hidden p-4'>
-      <Paper w={80} h={80} pos={'relative'}>
+      <Paper w={80} h={80} pos={'relative'} className='overflow-hidden'>
         <Image loading='lazy' src={image || '/images/jpg/empty-300x240.jpg'} alt={name} fill className='object-cover' />
       </Paper>
 

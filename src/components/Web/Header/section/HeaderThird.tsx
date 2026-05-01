@@ -1,5 +1,5 @@
 'use client';
-import { ActionIcon, Box, Button, Flex, Menu, ScrollAreaAutosize, Text } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Menu, Paper, ScrollAreaAutosize, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCategory, IconChevronCompactDown, IconMenu3 } from '@tabler/icons-react';
 import Image from 'next/image';
@@ -79,15 +79,16 @@ const Header3 = ({ categories, subCategories }: any) => {
                           <Menu.Item
                             key={index}
                             leftSection={
-                              <Image
-                                key={index}
-                                loading='lazy'
-                                src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
-                                style={{ objectFit: 'cover' }}
-                                alt={item?.imageForEntity?.altText || 'Ảnh minh họa'}
-                                width={30}
-                                height={30}
-                              />
+                              <Paper w={30} h={30} pos={'relative'} className='overflow-hidden'>
+                                <Image
+                                  key={index}
+                                  loading='lazy'
+                                  src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                                  style={{ objectFit: 'cover' }}
+                                  alt={item?.imageForEntity?.altText || 'Ảnh minh họa'}
+                                  fill
+                                />
+                              </Paper>
                             }
                           >
                             <Text size='sm' fw={700} className='dark:text-dark-text' key={index}>

@@ -16,7 +16,7 @@ export function PartnerCard({ data }: { data: string }) {
         src={data || `/images/webp/img_brand_1.webp`}
         alt={data}
         fill
-        className='object-contain transition-transform duration-300 group-hover:scale-105'
+        className='transition-transform duration-300 group-hover:scale-105'
       />
     </Card>
   );

@@ -1,6 +1,20 @@
 'use client';
 import { Carousel } from '@mantine/carousel';
-import { Box, Button, Card, Flex, Grid, GridCol, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  GridCol,
+  Paper,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab,
+  Text,
+  Title
+} from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -76,13 +90,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                 w={{ base: 0, sm: 0, md: '40%', lg: '25%' }}
                 className={`${imgaePositon && 'order-2'} hidden overflow-hidden md:block`}
               >
-                <Box
-                  mb={'xs'}
-                  w={'100%'}
-                  h={190}
-                  className='cursor-pointer overflow-hidden rounded-xl'
-                  pos={'relative'}
-                >
+                <Paper mb={'xs'} w={'100%'} h={190} className='cursor-pointer overflow-hidden' pos={'relative'}>
                   <Image
                     style={{ objectFit: 'cover' }}
                     loading='lazy'
@@ -91,14 +99,8 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                     fill
                     className='cursor-pointer transition-all duration-500 ease-in-out hover:scale-105'
                   />
-                </Box>
-                <Box
-                  mb={'xs'}
-                  w={'100%'}
-                  h={190}
-                  className='cursor-pointer overflow-hidden rounded-xl'
-                  pos={'relative'}
-                >
+                </Paper>
+                <Paper mb={'xs'} w={'100%'} h={190} className='cursor-pointer overflow-hidden' pos={'relative'}>
                   <Image
                     style={{ objectFit: 'cover' }}
                     loading='lazy'
@@ -107,7 +109,7 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                     fill
                     className='cursor-pointer transition-all duration-500 ease-in-out hover:scale-105'
                   />
-                </Box>
+                </Paper>
               </Flex>
 
               <Box w={{ base: '100%', sm: '100%', md: '60%', lg: '75%' }} className='overflow-hidden'>

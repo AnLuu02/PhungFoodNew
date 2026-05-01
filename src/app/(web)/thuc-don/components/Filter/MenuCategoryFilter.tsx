@@ -60,7 +60,7 @@ export const MenuCategoryFilter = ({ categories }: any) => {
                         className={`${item.tag === params.get('loai-san-pham') ? 'bg-mainColor/10' : ''} m-0 my-1 hover:bg-mainColor/10`}
                       >
                         <Text size='sm' fw={700}>
-                          {item?.name} ({item?.product?.length || 0})
+                          {item?.name} ({item?.products?.length || 0})
                         </Text>
                       </Paper>
                     </Link>

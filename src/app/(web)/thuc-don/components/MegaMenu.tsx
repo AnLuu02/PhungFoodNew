@@ -33,7 +33,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
   const [bestSellerProducts, categoriesItem] = useMemo(() => {
     if (categories && Array.isArray(categories)) {
       const bestSellerProducts = categories.flatMap((item: any) =>
-        activeTab === item?.tag ? item?.subCategory.flatMap((subItem: any) => subItem?.product) : []
+        activeTab === item?.tag ? item?.subCategory.flatMap((subItem: any) => subItem?.products) : []
       );
       const categoriesItem = categories.flatMap((item: any) => (activeTab === item?.tag ? item?.subCategory : []));
       return [bestSellerProducts, categoriesItem];
@@ -77,7 +77,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
                         alt={item?.imageForEntity?.altText || 'Ảnh minh họa'}
                         width={30}
                         height={30}
-                        style={{ objectFit: 'cover' }}
+                        className='rounded-md object-cover'
                       />
                     }
                   >
@@ -124,7 +124,7 @@ export default function MegaMenu({ categories }: { categories: any }) {
                           {category.name}
                         </Text>
                         <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
-                          Số lượng: {category.product.length || 0}
+                          Số lượng: {category.products.length || 0}
                         </Text>
                       </Stack>
                     </Link>

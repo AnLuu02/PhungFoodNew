@@ -13,13 +13,17 @@ export const metadata: Metadata = {
 };
 
 const getInit = async () => {
-  return await withRedisCache('page:homeWeb', () => api.Page.getInit(), 60 * 60);
+  try {
+    return await withRedisCache('page:homeWeb', () => api.Page.getInit(), 60 * 60);
+  } catch {
+    return await api.Page.getInit();
+  }
 };
 
 const HomePage = async () => {
   const data = await getInit();
   return (
-    <Box className='relative w-full overflow-x-hidden'>
+    <Box className='relative w-full overflow-hidden'>
       <HomeWeb data={data} />;
     </Box>
   );

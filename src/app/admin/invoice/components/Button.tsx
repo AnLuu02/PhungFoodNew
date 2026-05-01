@@ -211,15 +211,14 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                     <Card key={idx} withBorder p='sm' className='transition-colors hover:bg-gray-50'>
                       <Flex justify='space-between' align='center'>
                         <Group>
-                          <Paper className='overflow-hidden'>
+                          <Paper w={50} h={50} pos={'relative'} className='overflow-hidden'>
                             <Image
                               src={
                                 getImageProduct(item?.product?.imageForEntities, 'THUMBNAIL') ||
                                 '/images/png/empty_cart.png'
                               }
-                              width={50}
+                              fill
                               alt='Anh mon an'
-                              height={50}
                             />
                           </Paper>
                           <Box>
