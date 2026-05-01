@@ -1,12 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { UserRole } from '~/shared/constants/user';
 import { getAllActivitiesService } from './activityLogger.service';
-import {
-  findProductService,
-  getAllProductService,
-  getFilterProductService,
-  getOneProductService
-} from './product.service';
+import { getAllProductService, getFilterProductService, getOneProductService } from './product.service';
 import { getOneBannerService } from './restaurant.banner.service';
 import {
   getDistributionProductsService,
@@ -16,62 +11,99 @@ import {
   getTopProductsService,
   getTopUsersService
 } from './revenue.service';
-import { findSubCategoryService } from './subCategory.service';
 import { getVoucherAppliedAllService } from './voucher.service';
 
 export const getInitPageService = async (db: PrismaClient) => {
-  const categories = ['danh-muc-an-vat-trang-mieng', 'danh-muc-mon-chinh', 'danh-muc-mon-chay', 'danh-muc-do-uong'];
-  const productFilters = [
-    { key: 'discount', value: true },
-    { key: 'bestSaler', value: true },
-    { key: 'newProduct', value: true },
-    { key: 'hotProduct', value: true }
-  ];
-  const materials = ['thit-tuoi', 'hai-san', 'rau-cu', 'cac-loai-nam'];
+  const last7Days = new Date();
+  last7Days.setDate(last7Days.getDate() - 7);
 
-  const promises = [
+  const categoryTags = ['danh-muc-an-vat-trang-mieng', 'danh-muc-mon-chinh', 'danh-muc-mon-chay', 'danh-muc-do-uong'];
+  const materialsTags = ['thit-tuoi', 'hai-san', 'rau-cu', 'cac-loai-nam'];
+  const productConditions = [
+    { discount: { gt: 0 } },
+    { soldQuantity: { gt: 20 } },
+    { updatedAt: { gte: last7Days } },
+    { rating: { gte: 4 } },
+    ...materialsTags.map(m => {
+      return { materials: { some: { tag: m } } };
+    })
+  ];
+
+  const [banner, subCategories, products] = await Promise.all([
     getOneBannerService(db, { isActive: true }),
-    ...categories.map(category => findSubCategoryService(db, { skip: 0, take: 10, s: category })),
-    ...productFilters.map(filter => findProductService(db, { skip: 0, take: 10, [filter.key]: filter.value })),
-    ...materials.map(material => findProductService(db, { skip: 0, take: 10, s: material }))
-  ];
 
-  const results: any = await Promise.allSettled(promises);
-  const getValue = (idx: number, fallback: any = []) =>
-    results[idx].status === 'fulfilled' ? results[idx].value : fallback;
+    db.subCategory.findMany({
+      where: {
+        category: { tag: { in: categoryTags } }
+      },
+      include: {
+        category: true,
+        imageForEntity: {
+          select: {
+            altText: true,
+            image: {
+              select: {
+                publicId: true,
+                url: true
+              }
+            }
+          }
+        },
+        products: {
+          where: {
+            isActive: true
+          },
+          include: {
+            favouriteFood: true,
+            imageForEntities: { include: { image: true } }
+          }
+        }
+      }
+    }),
 
-  const banner = getValue(0, {});
-  const anVat = getValue(1);
-  const monChinh = getValue(2);
-  const monChay = getValue(3);
-  const thucUong = getValue(4);
-  const productDiscount = getValue(5);
-  const productBestSaler = getValue(6);
-  const productNew = getValue(7);
-  const productHot = getValue(8);
-  const thitTuoi = getValue(9);
-  const haiSan = getValue(10);
-  const rauCu = getValue(11);
-  const cacLoaiNam = getValue(12);
+    db.product.findMany({
+      where: {
+        isActive: true,
+        OR: productConditions
+      },
+      take: 200,
+      include: {
+        imageForEntities: { include: { image: true } },
+        materials: true,
+        subCategory: { include: { category: true } },
+        review: true,
+        favouriteFood: true
+      }
+    })
+  ]);
+
+  const pick = (fn: (p: any) => boolean) => products.filter(fn).slice(0, 10);
+
+  const byMaterial = (tag: string) => pick(p => p.materials?.some((m: any) => m.tag === tag));
+
+  const category = (tag: string) => subCategories.filter(sc => sc.category?.tag === tag).slice(0, 10);
 
   return {
     banner: banner || {},
+
     category: {
-      anVat: anVat?.subCategories || [],
-      monChinh: monChinh?.subCategories || [],
-      monChay: monChay?.subCategories || [],
-      thucUong: thucUong?.subCategories || []
+      anVat: category('danh-muc-an-vat-trang-mieng'),
+      monChinh: category('danh-muc-mon-chinh'),
+      monChay: category('danh-muc-mon-chay'),
+      thucUong: category('danh-muc-do-uong')
     },
+
     materials: {
-      thitTuoi: thitTuoi || [],
-      haiSan: haiSan || [],
-      rauCu: rauCu || [],
-      cacLoaiNam: cacLoaiNam || []
+      thitTuoi: { products: byMaterial('thit-tuoi') },
+      haiSan: { products: byMaterial('hai-san') },
+      rauCu: { products: byMaterial('rau-cu') },
+      cacLoaiNam: { products: byMaterial('cac-loai-nam') }
     },
-    productDiscount: productDiscount || [],
-    productBestSaler: productBestSaler || [],
-    productNew: productNew || [],
-    productHot: productHot || []
+
+    productDiscount: { products: pick(p => p.discount > 0) },
+    productBestSaler: { products: pick(p => p.soldQuantity > 20) },
+    productNew: { products: pick(p => new Date(p.updatedAt) >= last7Days) },
+    productHot: { products: pick(p => p.rating >= 4) }
   };
 };
 export const getInitProductDetailPageService = async (db: PrismaClient, input: { slug: string }) => {
