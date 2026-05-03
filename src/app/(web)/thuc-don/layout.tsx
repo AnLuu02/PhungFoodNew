@@ -1,6 +1,7 @@
 import { Box, Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
+import { defaultProductFilters } from '~/shared/schema/product.filter.schema';
+import { api, HydrateClient } from '~/trpc/server';
 import { CartFloating } from './components/CartFloating';
 import { SidebarMenu } from './components/SidebarMenu';
 
@@ -13,10 +14,14 @@ export const metadata: Metadata = {
 };
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const [categories, materials] = await Promise.allSettled([api.Category.getAll(), api.Material.getAll()]);
+  const [categories, materials] = await Promise.allSettled([
+    api.Category.getAll(),
+    api.Material.getAll(),
+    api.Product.find.prefetch(defaultProductFilters, { staleTime: 30_000 })
+  ]);
 
   return (
-    <>
+    <HydrateClient>
       <Box className='relative' w={'100%'}>
         <Grid columns={24}>
           <GridCol span={{ base: 24, sm: 8, lg: 6 }} className='h-fit animate-fadeUp overflow-hidden'>
@@ -35,7 +40,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
         </Grid>
       </Box>
       <CartFloating />
-    </>
+    </HydrateClient>
   );
 };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionIcon, Box, Button, Flex, Group, Menu, Skeleton, Text } from '@mantine/core';
+import { ActionIcon, Box, Button, Flex, Group, Menu, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { IconClock, IconWorld } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
@@ -8,11 +8,9 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 import NotificationDialog from '~/components/NotificationDialog';
 import UserSection from '~/components/UserSection';
-import { api } from '~/trpc/react';
 import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 
-export const HeaderClient = () => {
-  const { data: restaurant, isLoading } = api.Restaurant.getOneActiveClient.useQuery();
+export const HeaderClient = ({ restaurant }: { restaurant: any }) => {
   const restaurantData: any = restaurant ?? {};
   const [language, setLanguage] = useLocalStorage<any>({ key: 'language', defaultValue: 'vn' });
   const timeOpen = useMemo(() => {
@@ -52,24 +50,20 @@ export const HeaderClient = () => {
 
         <Group align={'center'} justify='center' gap={0}>
           <Group gap='md' align={'center'} justify='center' h={{ base: 40, sm: 'max-content' }}>
-            {isLoading ? (
-              <Skeleton width={200} height={20} radius={'xl'} />
-            ) : (
-              <Button
-                size='xs'
-                radius='xl'
-                variant='transparent'
-                className='hover:text-subColor'
-                leftSection={<IconClock size={16} />}
-                classNames={{
-                  root: `font-quicksand hover:text-subColor ${!timeOpen?.isClosed ? 'text-white' : 'text-subColor'}`
-                }}
-              >
-                {!timeOpen?.isClosed && timeOpen?.openTime && timeOpen?.closeTime
-                  ? `MỞ CỬA: ${timeOpen?.openTime} ĐẾN ${timeOpen?.closeTime}`
-                  : `ĐÃ ĐÓNG CỬA`}
-              </Button>
-            )}
+            <Button
+              size='xs'
+              radius='xl'
+              variant='transparent'
+              className='hover:text-subColor'
+              leftSection={<IconClock size={16} />}
+              classNames={{
+                root: `font-quicksand hover:text-subColor ${!timeOpen?.isClosed ? 'text-white' : 'text-subColor'}`
+              }}
+            >
+              {!timeOpen?.isClosed && timeOpen?.openTime && timeOpen?.closeTime
+                ? `MỞ CỬA: ${timeOpen?.openTime} ĐẾN ${timeOpen?.closeTime}`
+                : `ĐÃ ĐÓNG CỬA`}
+            </Button>
 
             <Menu position='bottom-end' shadow='md'>
               <Menu.Target>

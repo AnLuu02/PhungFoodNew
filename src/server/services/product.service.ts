@@ -5,26 +5,21 @@ import { TRPCError } from '@trpc/server';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { UserRole } from '~/shared/constants/user';
 import { StatusImage } from '~/shared/schema/image.info.schema';
-import {
-  FilterProductInput,
-  FilterProductOptions,
-  ProductFromDb,
-  ServiceOptions
-} from '~/shared/schema/product.schema';
+import { FilterProductOptions } from '~/shared/schema/product.filter.schema';
+import { ProductFromDb, ServiceOptions } from '~/shared/schema/product.schema';
 
-const buildFilter = (input: FilterProductOptions, userRole: any) => {
+const buildFilter = (input: FilterProductOptions) => {
   const {
     s,
     filter,
-    discount,
-    bestSaler,
-    newProduct,
-    hotProduct,
     rating,
     'nguyen-lieu': nguyenLieu,
-    price,
+    minPrice,
+    maxPrice,
+    loai,
     'danh-muc': danhMuc,
-    'loai-san-pham': loaiSanPham
+    'loai-san-pham': loaiSanPham,
+    userRole
   } = input;
   const search = s?.trim();
   return [
@@ -85,10 +80,10 @@ const buildFilter = (input: FilterProductOptions, userRole: any) => {
           isActive: filter === 'ACTIVE@#@$@@' ? true : filter === 'INACTIVE@#@$@@' ? false : undefined
         }
       : undefined,
-    discount ? { discount: { gt: 0 } } : undefined,
-    bestSaler ? { soldQuantity: { gt: 20 } } : undefined,
-    newProduct ? { updatedAt: { gte: new Date(new Date().setDate(new Date().getDate() - 7)) } } : undefined,
-    hotProduct ? { rating: { gte: 4 } } : undefined,
+    loai == 'san-pham-giam-gia' ? { discount: { gt: 0 } } : undefined,
+    loai == 'san-pham-ban-chay' ? { soldQuantity: { gt: 20 } } : undefined,
+    loai == 'san-pham-moi' ? { updatedAt: { gte: new Date(new Date().setDate(new Date().getDate() - 7)) } } : undefined,
+    loai == 'san-pham-hot' ? { rating: { gte: 4 } } : undefined,
     rating ? { rating: { gte: rating } } : undefined,
     nguyenLieu && nguyenLieu?.length > 0
       ? {
@@ -101,52 +96,21 @@ const buildFilter = (input: FilterProductOptions, userRole: any) => {
           }
         }
       : undefined,
-    price
+    minPrice || maxPrice
       ? {
           price: {
-            gte: price.min,
-            lte: price.max
+            gte: minPrice ?? 0,
+            lte: maxPrice ?? 0
           }
         }
       : undefined
   ].filter(Boolean);
 };
 
-export const findProductService = async (db: PrismaClient, input: FilterProductInput) => {
-  const {
-    skip,
-    take,
-    s,
-    filter,
-    sort,
-    price,
-    discount,
-    bestSaler,
-    newProduct,
-    rating,
-    hotProduct,
-    'nguyen-lieu': nguyenLieu,
-    'danh-muc': danhMuc,
-    'loai-san-pham': loaiSanPham
-  } = input;
+export const findProductService = async (db: PrismaClient, input: FilterProductOptions) => {
+  const { page, limit, sort } = input;
 
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-  const filterParams = buildFilter(
-    {
-      s,
-      filter,
-      discount,
-      bestSaler,
-      newProduct,
-      rating,
-      hotProduct,
-      price,
-      'nguyen-lieu': nguyenLieu,
-      'danh-muc': danhMuc,
-      'loai-san-pham': loaiSanPham
-    },
-    input.userRole
-  );
+  const filterParams = buildFilter(input);
   const [totalProducts, totalProductsQuery, products] = await db.$transaction([
     db.product.count(),
     db.product.count({
@@ -155,8 +119,8 @@ export const findProductService = async (db: PrismaClient, input: FilterProductI
       } as any
     }),
     db.product.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where: {
         AND: filterParams.length > 0 ? filterParams : undefined
       } as any,
@@ -182,14 +146,17 @@ export const findProductService = async (db: PrismaClient, input: FilterProductI
     })
   ]);
   const totalPages = Math.ceil(
-    Object.entries(input).length > 2 ? (totalProductsQuery == 0 ? 1 : totalProductsQuery / take) : totalProducts / take
+    Object.entries(input).length > 2
+      ? totalProductsQuery == 0
+        ? 1
+        : totalProductsQuery / limit
+      : totalProducts / limit
   );
 
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
   return {
     products,
     pagination: {
-      currentPage,
+      currentPage: page,
       totalPages,
       totalProducts: totalProductsQuery
     }

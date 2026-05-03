@@ -11,6 +11,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 export async function POST(req: Request) {
   const { message } = await req.json();
   const restaurant = await api.Restaurant.getOneActiveClient();
+  // cần sử đổi theo new filter product
   const subPrompt = `
       Đây là câu hỏi của khách hàng: ${message}
      
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
   let keywordsJSON = response.text;
   keywordsJSON = keywordsJSON?.replace(/```(javascript|json|plaintext)?\n?/g, '').trim();
   const keywords = JSON.parse(keywordsJSON || '{}');
-  const products = await api.Product.find({ skip: 0, take: 4, ...keywords });
+  const products = await api.Product.find({ page: 1, limit: 4, ...keywords });
 
   let prompt = `Bạn là trợ lý bán hàng chuyên nghiệp của cửa hàng Phụng Food (Mama Reastaurant). Cửa hàng chỉ bán online.`;
   const productHTML = products?.products

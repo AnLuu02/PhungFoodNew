@@ -6,7 +6,7 @@ import { IconEye } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { memo, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
@@ -22,9 +22,9 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const totalQuantityProduct = useMemo(() => {
     return (data?.availableQuantity || 0) + (data?.soldQuantity || 0);
   }, [data]);
-  const handlePrefectData = async () => {
-    utils.Page.getInitProductDetail.prefetch({ slug: data.id });
-  };
+  const handlePrefectData = useCallback(() => {
+    void utils.Page.getInitProductDetail.prefetch({ slug: data.id });
+  }, []);
   return (
     <Card
       withBorder

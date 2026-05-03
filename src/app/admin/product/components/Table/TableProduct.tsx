@@ -25,7 +25,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Product.find.useQuery(
-    { skip: +page, take: +limit, s, userRole: UserRole.ADMIN, filter: searchParams?.get('filter') + '@#@$@@' },
+    { page: +page, limit: +limit, s, userRole: UserRole.ADMIN, filter: searchParams?.get('filter') + '@#@$@@' },
     { initialData: data }
   );
   const { data: allDataClient } = api.Product.getAll.useQuery({ userRole: UserRole.ADMIN }, { initialData: allData });

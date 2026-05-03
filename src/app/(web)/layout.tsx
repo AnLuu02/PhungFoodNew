@@ -14,13 +14,10 @@ const getInitRestaurant = async () => {
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
   const restaurant = await getInitRestaurant();
-  void api.Restaurant.getOneActiveClient.prefetch(undefined, {
-    initialData: restaurant
-  });
   return (
     <HydrateClient>
       <>
-        <HeaderClient />
+        <HeaderClient restaurant={restaurant} />
         <HeaderWeb />
         <Box className='relative w-full pb-[70px] sm:pb-0'>
           <Box px={{ base: 10, sm: 30, md: 30, lg: 130 }} mt={'md'}>

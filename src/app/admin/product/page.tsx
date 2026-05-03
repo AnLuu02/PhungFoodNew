@@ -23,8 +23,8 @@ export default async function ProductManagementPage({
   const [allData, data] = await Promise.all([
     api.Product.getAll({ userRole: UserRole.ADMIN }),
     api.Product.find({
-      skip: +currentPage,
-      take: +limit,
+      page: +currentPage,
+      limit: +limit,
       userRole: UserRole.ADMIN,
       s,
       filter: searchParams?.filter + '@#@$@@'

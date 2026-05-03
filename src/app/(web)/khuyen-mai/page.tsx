@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 };
 export default async function FoodPromotionPage() {
   const productData = await api.Product.find({
-    skip: 0,
-    take: 10,
-    discount: true
+    page: 1,
+    limit: 10,
+    loai: 'san-pham-giam-gia'
   });
 
   return (

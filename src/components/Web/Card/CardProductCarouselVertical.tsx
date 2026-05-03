@@ -6,7 +6,7 @@ import { IconEye } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
@@ -19,9 +19,9 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
   const utils = api.useUtils();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
-  const handlePrefectData = async () => {
-    utils.Page.getInitProductDetail.prefetch({ slug: data.id });
-  };
+  const handlePrefectData = useCallback(() => {
+    void utils.Page.getInitProductDetail.prefetch({ slug: data.id });
+  }, []);
   return (
     <Card
       h={320}

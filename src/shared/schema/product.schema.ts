@@ -10,29 +10,6 @@ export const getServiceOptionsSchema = z.object({
   userRole: z.string().optional()
 });
 
-export const filterProductInputSchema = z.object({
-  skip: z.number().nonnegative(),
-  take: z.number().positive(),
-  s: z.string().optional(),
-  filter: z.string().optional(),
-  sort: z.array(z.string()).optional(),
-  'nguyen-lieu': z.array(z.string()).optional(),
-  discount: z.boolean().optional(),
-  bestSaler: z.boolean().optional(),
-  newProduct: z.boolean().optional(),
-  rating: z.number().optional(),
-  hotProduct: z.boolean().optional(),
-  'danh-muc': z.string().optional(),
-  'loai-san-pham': z.string().optional(),
-  price: z
-    .object({
-      min: z.number().optional(),
-      max: z.number().optional()
-    })
-    .optional(),
-  userRole: z.string().optional()
-});
-
 export const baseProductSchema = z.object({
   id: z.string().optional(),
   name: z.string({ required_error: 'Tên sản phẩm là bắt buộc' }).min(1, 'Tên sản phẩm không được để trống'),
@@ -90,20 +67,5 @@ export const productFromDbSchema = baseProductSchema
 
 export type ProductInput = z.infer<typeof productInputSchema>;
 export type ProductFromDb = z.infer<typeof productFromDbSchema>;
-
-export type FilterProductInput = z.infer<typeof filterProductInputSchema>;
-export type FilterProductOptions = {
-  s?: string;
-  filter?: string;
-  discount?: boolean;
-  bestSaler?: boolean;
-  newProduct?: boolean;
-  hotProduct?: boolean;
-  price?: { min?: number; max?: number };
-  rating?: number;
-  'nguyen-lieu'?: string[];
-  'danh-muc'?: string;
-  'loai-san-pham'?: string;
-};
 
 export type ServiceOptions = z.infer<typeof getServiceOptionsSchema>;
