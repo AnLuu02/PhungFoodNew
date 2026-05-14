@@ -46,6 +46,11 @@ export const imagesRouter = createTRPCRouter({
 
       const where: Prisma.ImageWhereInput = {
         AND: [
+          {
+            url: {
+              contains: 'res.cloudinary.com'
+            }
+          },
           imageTypes?.length ? { type: { in: imageTypes } } : {},
           searchQuery
             ? {
@@ -58,7 +63,7 @@ export const imagesRouter = createTRPCRouter({
           showOrphanedOnly
             ? {
                 imageForEntities: {
-                  some: {}
+                  none: {}
                 }
               }
             : {}

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -21,6 +21,7 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
   const utils = api.useUtils();
   const mutationDeleteRole = api.RolePermission.deleteRole.useMutation({
     onSuccess: () => {
+      utils.RolePermission.invalidate();
       NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
     },
     onError: () => {}
@@ -62,14 +63,16 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
                         variant='subtle'
                         color='red'
                         onClick={() => {
-                          confirmDelete({
-                            id: item,
-                            mutationDelete: mutationDeleteRole,
-                            callback: () => {
-                              utils.RolePermission.invalidate();
-                            },
-                            entityName: 'vai trò'
-                          });
+                          item?.id &&
+                            item?.id &&
+                            onHandleModalAction({
+                              type: 'delete',
+                              customProps: {
+                                onConfirm: async () => {
+                                  await mutationDeleteRole.mutateAsync({ id: item.id });
+                                }
+                              }
+                            });
                         }}
                       >
                         <IconTrash className='h-4 w-4' />

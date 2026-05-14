@@ -29,7 +29,7 @@ import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { api } from '~/trpc/react';
@@ -94,8 +94,12 @@ export default function MyOrderPageClient({ session }: { session: any }) {
     [orders]
   );
 
-  const mutationDelete = api.Order.delete.useMutation();
   const utils = api.useUtils();
+  const mutationDelete = api.Order.delete.useMutation({
+    onSuccess: () => {
+      utils.Order.getFilter.invalidate();
+    }
+  });
   return (
     <Grid gutter='md'>
       <Grid.Col
@@ -254,16 +258,17 @@ export default function MyOrderPageClient({ session }: { session: any }) {
                               <Tooltip label='Xóa đơn hàng'>
                                 <ActionIcon
                                   color='red'
-                                  onClick={() =>
-                                    confirmDelete({
-                                      id: { id: order.id },
-                                      mutationDelete,
-                                      callback: () => {
-                                        utils.Order.getFilter.invalidate();
-                                      },
-                                      entityName: 'đơn hàng'
-                                    })
-                                  }
+                                  onClick={() => {
+                                    order?.id &&
+                                      onHandleModalAction({
+                                        type: 'delete',
+                                        customProps: {
+                                          onConfirm: async () => {
+                                            await mutationDelete.mutateAsync({ id: order.id });
+                                          }
+                                        }
+                                      });
+                                  }}
                                 >
                                   <IconTrash size={16} />
                                 </ActionIcon>

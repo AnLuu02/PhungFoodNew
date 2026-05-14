@@ -3,7 +3,7 @@
 import { ActionIcon, Button, Modal, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { api } from '~/trpc/react';
 import PaymentUpsert from './form/PaymentUpsert';
 
@@ -59,22 +59,26 @@ export function UpdatePaymentButton({ id }: { id: string }) {
 
 export function DeletePaymentButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.Payment.delete.useMutation();
-
+  const mutationDelete = api.Payment.delete.useMutation({
+    onSuccess: () => {
+      utils.Payment.invalidate();
+    }
+  });
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'hình thức thanh toán',
-            callback: () => {
-              utils.Payment.invalidate();
-            }
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />

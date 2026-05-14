@@ -3,7 +3,7 @@
 import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table, Title } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -236,11 +236,15 @@ export function DeleteRoleButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'vai trò'
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />
@@ -482,11 +486,15 @@ export function DeletePermissionButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'quyền'
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />

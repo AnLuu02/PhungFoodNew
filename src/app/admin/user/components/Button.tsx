@@ -2,7 +2,7 @@
 import { ActionIcon, Button, Modal, Title, Tooltip } from '@mantine/core';
 import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import UpdatePermissionUser from './form/UpdatePermissionUser';
@@ -106,6 +106,9 @@ export function UpdateUserButton({
 export function DeleteUserButton({ id }: { id: string }) {
   const utils = api.useUtils();
   const mutationDelete = api.User.delete.useMutation({
+    onSuccess: () => {
+      utils.User.invalidate();
+    },
     onError: e => {
       NotifyError(e?.message);
     }
@@ -118,14 +121,15 @@ export function DeleteUserButton({ id }: { id: string }) {
           variant='subtle'
           color='red'
           onClick={() => {
-            confirmDelete({
-              id: { id },
-              mutationDelete,
-              entityName: 'người dùng',
-              callback: () => {
-                utils.User.invalidate();
-              }
-            });
+            id &&
+              onHandleModalAction({
+                type: 'delete',
+                customProps: {
+                  onConfirm: async () => {
+                    await mutationDelete.mutateAsync({ id });
+                  }
+                }
+              });
           }}
         >
           <IconTrash size={24} />

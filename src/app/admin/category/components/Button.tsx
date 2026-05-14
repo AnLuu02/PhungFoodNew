@@ -3,7 +3,7 @@
 import { ActionIcon, Box, Button, FileButton, Group, Modal, ScrollAreaAutosize, Table } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -236,14 +236,15 @@ export function DeleteCategoryButton({ id }: { id: string }) {
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'danh mục',
-            callback: () => {
-              utils.Category.invalidate();
-            }
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />
@@ -301,22 +302,26 @@ export function UpdateSubCategoryButton({ id }: { id: string }) {
 
 export function DeleteSubCategoryButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.SubCategory.delete.useMutation();
-
+  const mutationDelete = api.SubCategory.delete.useMutation({
+    onSuccess: () => {
+      utils.SubCategory.invalidate();
+    }
+  });
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'danh mục con',
-            callback: () => {
-              utils.SubCategory.invalidate();
-            }
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />

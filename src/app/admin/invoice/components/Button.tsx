@@ -23,11 +23,11 @@ import {
   IconUser
 } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
 import { api } from '~/trpc/react';
 
 import { Box, Card, Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import InvoiceUpsert from './form/InvoiceUpsert';
@@ -84,21 +84,26 @@ export function UpdateInvoiceButton({ id }: { id: string }) {
 
 export function DeleteInvoiceButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.Invoice.delete.useMutation();
+  const mutationDelete = api.Invoice.delete.useMutation({
+    onSuccess: () => {
+      utils.Invoice.invalidate();
+    }
+  });
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'nguyên liệu',
-            callback: () => {
-              utils.Invoice.invalidate();
-            }
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />

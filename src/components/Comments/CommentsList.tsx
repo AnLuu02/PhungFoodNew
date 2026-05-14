@@ -3,13 +3,18 @@
 import { Box, Button, Center, Flex, Group, Paper, Rating, Space, Spoiler, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/react';
 
 export const CommentsList = ({ data }: { data: any[] }) => {
   const { data: user } = useSession();
-  const mutationDelete = api.Review.delete.useMutation();
+  const mutationDelete = api.Review.delete.useMutation({
+    onSuccess: () => {
+      utils.Review.invalidate();
+      utils.Product.invalidate();
+    }
+  });
   const utils = api.useUtils();
 
   if (!data || data.length === 0) {
@@ -65,13 +70,12 @@ export const CommentsList = ({ data }: { data: any[] }) => {
           className='absolute right-2 top-2 text-red-500'
           onClick={() => {
             if (comment.id && comment.userId === user?.user?.id) {
-              confirmDelete({
-                id: { id: comment.id },
-                mutationDelete,
-                entityName: 'đánh giá',
-                callback: () => {
-                  utils.Review.invalidate();
-                  utils.Product.invalidate();
+              onHandleModalAction({
+                type: 'delete',
+                customProps: {
+                  onConfirm: async () => {
+                    await mutationDelete.mutateAsync({ id: comment.id });
+                  }
                 }
               });
             }

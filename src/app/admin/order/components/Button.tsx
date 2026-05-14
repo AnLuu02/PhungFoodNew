@@ -5,8 +5,7 @@ import { OrderStatus } from '@prisma/client';
 import { IconCopy, IconEdit, IconPlus, IconPrinter, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
-import { handleConfirm } from '~/lib/ButtonHandler/ButtonHandleConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -118,8 +117,11 @@ export function UpdateOrderButton({ id }: { id: string }) {
 
 export function DeleteOrderButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.Order.delete.useMutation();
-
+  const mutationDelete = api.Order.delete.useMutation({
+    onSuccess: () => {
+      utils.Order.find.invalidate();
+    }
+  });
   return (
     <>
       <Tooltip label='Xóa hóa đơn'>
@@ -127,14 +129,17 @@ export function DeleteOrderButton({ id }: { id: string }) {
           variant='subtle'
           color='red'
           onClick={() => {
-            confirmDelete({
-              id: { id },
-              mutationDelete,
-              entityName: 'đơn hàng',
-              callback: () => {
-                utils.Order.invalidate();
-              }
-            });
+            id &&
+              onHandleModalAction({
+                type: 'delete',
+                customProps: {
+                  onConfirm: async () => {
+                    await mutationDelete.mutateAsync({
+                      id
+                    });
+                  }
+                }
+              });
           }}
         >
           <IconTrash size={24} />
@@ -224,6 +229,9 @@ export function SendMessageOrderButton({ user }: { user: any }) {
 export function HandleStateOrderButton({ id, status, title }: { id: string; status: OrderStatus; title: string }) {
   const utils = api.useUtils();
   const mutation = api.Order.update.useMutation({
+    onSuccess: () => {
+      utils.Order.invalidate();
+    },
     onError: e => {
       NotifyError(e.message);
     }
@@ -234,24 +242,24 @@ export function HandleStateOrderButton({ id, status, title }: { id: string; stat
         <Button
           variant='outline'
           onClick={() => {
-            handleConfirm(
-              id,
-              mutation,
-              {
-                where: {
-                  id: id
-                },
-                data: {
-                  status: status || OrderStatus.UNPAID
-                },
-                orderId: id
-              },
-              title || 'Giao hàng',
-              `Bạn chắc chắn muốn ${title || 'giao hàng'} đơn hàng này?`,
-              () => {
-                utils.Order.invalidate();
-              }
-            );
+            id &&
+              onHandleModalAction({
+                type: 'confirm',
+                customProps: {
+                  children: `Bạn chắc chắn muốn ${title || 'giao'} đơn hàng này?`,
+                  title: title || 'Giao hàng',
+                  onConfirm: async () => {
+                    await mutation.mutateAsync({
+                      where: {
+                        id
+                      },
+                      data: {
+                        status: status || OrderStatus.UNPAID
+                      }
+                    });
+                  }
+                }
+              });
           }}
         >
           {title || 'Giao hàng'}

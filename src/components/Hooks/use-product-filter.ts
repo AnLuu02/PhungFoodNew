@@ -20,8 +20,6 @@ export const useProductFilters = () => {
 
   return useMemo(() => {
     const raw = parseSearchParams(searchParams);
-    console.log('rawraw', raw);
-
     const parsed = productFilterSchema.safeParse({
       ...defaultProductFilters,
       ...raw

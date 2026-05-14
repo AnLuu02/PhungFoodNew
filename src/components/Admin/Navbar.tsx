@@ -35,7 +35,7 @@ export default function Navbar() {
                   leftSection={<item.icon size={16} />}
                   childrenOffset={28}
                   classNames={{
-                    root: `${item?.href === pathname || item.children.some(child => child.href === pathname) ? '!bg-mainColor/10' : ''} rounded-md hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white`
+                    root: `${item?.href === pathname || item.children.some(child => child.href === pathname) ? '!bg-mainColor/10' : ''} hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white`
                   }}
                 >
                   <Box className={`border-0 border-l border-solid border-gray-300 pl-2`}>

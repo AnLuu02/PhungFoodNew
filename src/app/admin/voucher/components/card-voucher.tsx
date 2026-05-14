@@ -4,7 +4,7 @@ import { Badge, Box, Button, Card, Highlight, Stack, Text } from '@mantine/core'
 import { VoucherType } from '@prisma/client';
 import { IconCopy, IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { getPromotionStatus, getStatusColor } from '~/lib/FuncHandler/vouchers-calculate';
@@ -20,9 +20,13 @@ export default function CardVoucher({
   setSelectedPromotion: any;
 }) {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
-  const mutationDelete = api.Voucher.delete.useMutation();
+  const mutationDelete = api.Voucher.delete.useMutation({
+    onSuccess: () => {
+      utils.Voucher.invalidate();
+    }
+  });
   const mutationCreate = api.Voucher.create.useMutation({
-    onSuccess: newPromotion => {
+    onSuccess: () => {
       NotifySuccess('Thao tác thành công!', 'Nhân bản thành công.');
       setLoading({ copy: false });
       utils.Voucher.invalidate();
@@ -178,14 +182,15 @@ export default function CardVoucher({
               variant='outline'
               size='xs'
               onClick={() => {
-                confirmDelete({
-                  id: { id: promotion?.id },
-                  mutationDelete,
-                  entityName: 'khuyến mãi',
-                  callback: () => {
-                    utils.Voucher.invalidate();
-                  }
-                });
+                promotion?.id &&
+                  onHandleModalAction({
+                    type: 'delete',
+                    customProps: {
+                      onConfirm: async () => {
+                        await mutationDelete.mutateAsync({ id: promotion.id });
+                      }
+                    }
+                  });
               }}
               styles={{
                 root: {

@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -247,21 +247,26 @@ export function UpdateMaterialButton({ id }: { id: string }) {
 
 export function DeleteMaterialButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.Material.delete.useMutation();
+  const mutationDelete = api.Material.delete.useMutation({
+    onSuccess: () => {
+      utils.Material.invalidate();
+    }
+  });
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'nguyên liệu',
-            callback: () => {
-              utils.Material.invalidate();
-            }
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />

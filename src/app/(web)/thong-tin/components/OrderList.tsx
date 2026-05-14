@@ -30,7 +30,7 @@ import { useEffect, useMemo, useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { useModalActions } from '~/contexts/ModalContext';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { api } from '~/trpc/react';
@@ -41,7 +41,12 @@ export function OrderList({ orders }: { orders: any }) {
   const [perPage, setPerPage] = useState(5);
   const [valueSearch, setValueSearch] = useState<string>('');
   const [debouncedSearch, setDebouncedSearch] = useState<string>('');
-  const mutationDelete = api.Order.delete.useMutation();
+  const utils = api.useUtils();
+  const mutationDelete = api.Order.delete.useMutation({
+    onSuccess: () => {
+      utils.Order.invalidate();
+    }
+  });
   const { openModal } = useModalActions();
 
   useEffect(() => {
@@ -263,11 +268,15 @@ export function OrderList({ orders }: { orders: any }) {
                                 <ActionIcon
                                   color='red'
                                   onClick={() => {
-                                    confirmDelete({
-                                      id: { id: order.id },
-                                      mutationDelete,
-                                      entityName: 'đơn hàng'
-                                    });
+                                    order?.id &&
+                                      onHandleModalAction({
+                                        type: 'delete',
+                                        customProps: {
+                                          onConfirm: async () => {
+                                            await mutationDelete.mutateAsync({ id: order.id });
+                                          }
+                                        }
+                                      });
                                   }}
                                 >
                                   <IconTrash size={16} />

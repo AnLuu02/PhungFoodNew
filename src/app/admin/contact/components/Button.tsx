@@ -3,7 +3,7 @@
 import { ActionIcon, Modal } from '@mantine/core';
 import { IconMail, IconPhone, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { confirmDelete } from '~/lib/ButtonHandler/ButtonDeleteConfirm';
+import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { ContactInput } from '~/shared/schema/contact.schema';
 import { api } from '~/trpc/react';
 import MailResponse from './form/MailResponse';
@@ -46,21 +46,26 @@ export function CallPhoneButton({ phone }: { phone: string }) {
 
 export function DeleteContactButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.Contact.delete.useMutation();
+  const mutationDelete = api.Contact.delete.useMutation({
+    onSuccess: () => {
+      utils.Contact.invalidate();
+    }
+  });
   return (
     <>
       <ActionIcon
         variant='subtle'
         color='red'
         onClick={() => {
-          confirmDelete({
-            id: { id },
-            mutationDelete,
-            entityName: 'nguyên liệu',
-            callback: () => {
-              utils.Contact.invalidate();
-            }
-          });
+          id &&
+            onHandleModalAction({
+              type: 'delete',
+              customProps: {
+                onConfirm: async () => {
+                  await mutationDelete.mutateAsync({ id });
+                }
+              }
+            });
         }}
       >
         <IconTrash size={24} />
