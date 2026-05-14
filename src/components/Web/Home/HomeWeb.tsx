@@ -166,7 +166,7 @@ const HomeWeb = ({
           title='Video hướng dẫn'
           data={recipes}
           configs={{
-            slideSize: { base: '100%', sm: '50%', md: '25%' },
+            slideSize: { base: Boolean(recipes?.length > 1) ? '70%' : '100%', sm: '50%', md: '25%' },
             h: 'max-content'
           }}
           navigation={{
@@ -211,7 +211,7 @@ const HomeWeb = ({
           title='Đối tác của chúng tôi'
           data={Array.from({ length: 7 }, (_, i) => `/images/webp/img_brand_${i + 1}.webp`)}
           configs={{
-            slideSize: { base: '100%', sm: '50%', md: '16.6666667%' },
+            slideSize: { base: '70%', sm: '50%', md: '16.6666667%' },
             h: 'max-content'
           }}
           minHeight={180}

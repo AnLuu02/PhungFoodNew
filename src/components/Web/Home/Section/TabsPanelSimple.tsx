@@ -29,7 +29,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
 
   return (
     <>
-      <Center mb={{ base: 20, md: 0 }}>
+      <Center mb={{ base: 20, md: 0 }} className='hidden sm:block'>
         <Group
           gap={5}
           pos={{ base: 'relative', sm: 'absolute', md: 'absolute' }}
@@ -72,7 +72,7 @@ const TabsPanelCarouselSimple = ({ data }: any) => {
         </Flex>
       ) : (
         <Carousel
-          slideSize={{ base: '50%', xl: '11.11%', sm: '25%', md: '20%' }}
+          slideSize={{ base: Boolean(data?.length > 1) ? '50%' : '100%', xl: '11.11%', sm: '25%', md: '20%' }}
           slideGap='4px'
           h={200}
           align='start'

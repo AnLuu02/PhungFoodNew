@@ -104,7 +104,7 @@ export function PromotionTabLayout({ userId }: { userId: string }) {
         {displayedPromotions?.length > 0 ? (
           <Grid mt='md'>
             {isLoading ? (
-              <LoadingSkeleton variant='table' />
+              <LoadingSkeleton variant='detail' />
             ) : (
               displayedPromotions.map((promo: any) => (
                 <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>

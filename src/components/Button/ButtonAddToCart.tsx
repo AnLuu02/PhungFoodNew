@@ -2,6 +2,7 @@
 
 import { Button, ButtonProps } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
+import { IconShoppingCartPlus } from '@tabler/icons-react';
 import { flyToCart, getVisibleToEl } from '~/lib/ButtonHandler/FlyToCart';
 
 export function ButtonAddToCart({
@@ -21,6 +22,10 @@ export function ButtonAddToCart({
     <Button
       radius={'xl'}
       size={'xs'}
+      leftSection={<IconShoppingCartPlus size={14} className='font-bold' />}
+      classNames={{
+        section: 'mr-[4px]'
+      }}
       onClick={() => {
         const to = getVisibleToEl('.cart-btn');
         const from = document.getElementById(`productImage-${product?.id}`);

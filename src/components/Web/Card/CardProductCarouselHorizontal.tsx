@@ -1,13 +1,13 @@
 'use client';
-import { Badge, Box, Button, Card, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
+import { Badge, Box, Card, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
-import { IconEye } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { memo, useCallback, useMemo } from 'react';
 import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
+import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -54,37 +54,10 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
               'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out sm:group-hover:visible lg:invisible'
             }
           >
-            <Button.Group className='sm:group-hover:animate-fadeDown'>
-              <Tooltip label='Xem nhanh'>
-                {isMobile ? (
-                  <Button
-                    size='xs'
-                    p={5}
-                    w={'max-content'}
-                    variant='default'
-                    className={`border-t-r-0 text-mainColor sm:hover:text-subColor`}
-                  >
-                    <Link href={`/san-pham/${data?.tag}`}>
-                      <IconEye />
-                    </Link>
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => {
-                      openModal('details', null, data);
-                    }}
-                    size='xs'
-                    p={5}
-                    w={'max-content'}
-                    variant='default'
-                    className={`text-mainColor hover:text-subColor`}
-                  >
-                    <IconEye />
-                  </Button>
-                )}
-              </Tooltip>
+            <Group gap={5} className={`mr-1 mt-1 bg-transparent sm:group-hover:animate-fadeDown md:mr-0 md:mt-0`}>
+              <ButtonViewProduct data={data} isMobile={isMobile} />
               <ButtonToggleLike data={data} />
-            </Button.Group>
+            </Group>
           </Box>
         </Box>
 

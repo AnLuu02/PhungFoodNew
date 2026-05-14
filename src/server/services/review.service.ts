@@ -73,13 +73,13 @@ export const findReviewService = async (
     db.review.count(),
     db.review.count({
       where,
-      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined
+      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : { createdAt: 'desc' }
     }),
     db.review.findMany({
       skip: startPageItem,
       take,
       where,
-      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined,
+      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : { createdAt: 'desc' },
       select: {
         id: true,
         rating: true,

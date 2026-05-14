@@ -101,71 +101,41 @@ export const findUserService = async (
 ) => {
   const { skip, take, s, sort, filter } = input;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.UserWhereInput = {
+    AND: {
+      OR: [
+        {
+          name: { contains: s, mode: 'insensitive' }
+        },
+        {
+          address: {
+            detail: { contains: s, mode: 'insensitive' }
+          }
+        },
+        {
+          phone: { contains: s, mode: 'insensitive' }
+        },
+        {
+          email: { contains: s, mode: 'insensitive' }
+        }
+      ],
+      isActive: filter?.includes('ACTIVE@#@$@@') ? true : filter?.includes('INACTIVE@#@$@@') ? false : undefined,
+      role: {
+        name: filter?.includes('STAFF@#@$@@') ? 'STAFF' : filter?.includes('CUSTOMER@#@$@@') ? 'CUSTOMER' : undefined
+      }
+    }
+  };
   const [totalUsers, totalUsersQuery, users] = await db.$transaction([
     db.user.count(),
     db.user.count({
-      where: {
-        AND: {
-          OR: [
-            {
-              name: { contains: s, mode: 'insensitive' }
-            },
-            {
-              address: {
-                detail: { contains: s, mode: 'insensitive' }
-              }
-            },
-            {
-              phone: { contains: s, mode: 'insensitive' }
-            },
-            {
-              email: { contains: s, mode: 'insensitive' }
-            }
-          ],
-          isActive: filter?.includes('ACTIVE@#@$@@') ? true : filter?.includes('INACTIVE@#@$@@') ? false : undefined,
-          role: {
-            name: filter?.includes('STAFF@#@$@@')
-              ? 'STAFF'
-              : filter?.includes('CUSTOMER@#@$@@')
-                ? 'CUSTOMER'
-                : undefined
-          }
-        }
-      },
-      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : undefined
+      where,
+      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : { createdAt: 'desc' }
     }),
     db.user.findMany({
       skip: startPageItem,
       take,
-      where: {
-        AND: {
-          OR: [
-            {
-              name: { contains: s, mode: 'insensitive' }
-            },
-            {
-              address: {
-                detail: { contains: s, mode: 'insensitive' }
-              }
-            },
-            {
-              phone: { contains: s, mode: 'insensitive' }
-            },
-            {
-              email: { contains: s, mode: 'insensitive' }
-            }
-          ],
-          isActive: filter === 'ACTIVE@#@$@@' ? true : filter === 'INACTIVE@#@$@@' ? false : undefined,
-          role: {
-            name: filter?.includes('STAFF@#@$@@')
-              ? 'STAFF'
-              : filter?.includes('CUSTOMER@#@$@@')
-                ? 'CUSTOMER'
-                : undefined
-          }
-        }
-      },
-      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : undefined,
+      where,
+      orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : { createdAt: 'desc' },
       include: {
         role: true,
         address: true

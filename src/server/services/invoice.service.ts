@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { InvoiceInput } from '~/shared/schema/invoice.schema';
 
@@ -6,61 +6,42 @@ export const findInvoiceService = async (db: PrismaClient, input: { skip: number
   const { skip, take, s } = input;
 
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.InvoiceWhereInput = {
+    OR: [
+      {
+        orderId: { contains: s, mode: 'insensitive' }
+      },
+      {
+        seller: {
+          name: {
+            contains: s,
+            mode: 'insensitive'
+          }
+        }
+      },
+      {
+        invoiceNumber: { contains: s, mode: 'insensitive' }
+      },
+
+      {
+        currency: { contains: s, mode: 'insensitive' }
+      },
+      {
+        buyerTaxCode: { contains: s, mode: 'insensitive' }
+      }
+    ]
+  };
   const [totalInvoices, totalInvoicesQuery, invoices] = await db.$transaction([
     db.invoice.count(),
     db.invoice.count({
-      where: {
-        OR: [
-          {
-            orderId: { contains: s, mode: 'insensitive' }
-          },
-          {
-            seller: {
-              name: {
-                contains: s,
-                mode: 'insensitive'
-              }
-            }
-          },
-          {
-            invoiceNumber: { contains: s, mode: 'insensitive' }
-          },
-
-          {
-            currency: { contains: s, mode: 'insensitive' }
-          },
-          {
-            buyerTaxCode: { contains: s, mode: 'insensitive' }
-          }
-        ]
-      }
+      where
     }),
     db.invoice.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          {
-            orderId: { contains: s, mode: 'insensitive' }
-          },
-          {
-            seller: {
-              name: {
-                contains: s,
-                mode: 'insensitive'
-              }
-            }
-          },
-          {
-            invoiceNumber: { contains: s, mode: 'insensitive' }
-          },
-          {
-            currency: { contains: s, mode: 'insensitive' }
-          },
-          {
-            buyerTaxCode: { contains: s, mode: 'insensitive' }
-          }
-        ]
+      where,
+      orderBy: {
+        createdAt: 'desc'
       },
       include: {
         seller: true,

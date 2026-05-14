@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { MaterialInput } from '~/shared/schema/material.schema';
@@ -7,50 +7,36 @@ export const findMaterialService = async (db: PrismaClient, input: { skip: numbe
   const { skip, take, s } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.MaterialWhereInput = {
+    OR: [
+      {
+        name: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        tag: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        description: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        category: {
+          contains: searchQuery,
+          mode: 'insensitive'
+        }
+      }
+    ]
+  };
   const [totalMaterials, totalMaterialsQuery, materials] = await db.$transaction([
     db.material.count(),
     db.material.count({
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            tag: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            category: {
-              contains: searchQuery,
-              mode: 'insensitive'
-            }
-          }
-        ]
-      }
+      where
     }),
     db.material.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            tag: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            category: {
-              contains: searchQuery,
-              mode: 'insensitive'
-            }
-          }
-        ]
+      where,
+      orderBy: {
+        createdAt: 'desc'
       },
       include: {
         products: true

@@ -15,6 +15,7 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { IconChevronRightFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -123,9 +124,15 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                     >
                       <Carousel
                         w={'100%'}
-                        slideSize={{ base: '100%', sm: '33.33333%', md: '50%', lg: '25%' }}
+                        slideSize={{
+                          base: Boolean(products?.length > 1) ? '70%' : '100%',
+                          sm: '33.33333%',
+                          md: '50%',
+                          lg: '25%'
+                        }}
                         slideGap={20}
                         h={320}
+                        py={'xs'}
                         containScroll='trimSnaps'
                         align='start'
                         withControls={false}
@@ -148,7 +155,15 @@ const LayoutProductCarouselWithImage2 = ({ data, title, imgaePositon = 'left', n
                       </Carousel>
                       <Flex align={'center'} justify={'center'} mt={30}>
                         <Link href={`/thuc-don?s=${tab}`}>
-                          <Button children={'Xem tất cả'} variant='outline' radius={'xl'} />
+                          <Button
+                            children={'Xem tất cả'}
+                            variant='outline'
+                            radius={'xl'}
+                            rightSection={<IconChevronRightFilled size={16} />}
+                            classNames={{
+                              section: 'ml-[4px]'
+                            }}
+                          />
                         </Link>
                       </Flex>
                     </Flex>

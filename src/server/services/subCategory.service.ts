@@ -1,4 +1,4 @@
-import { EntityType, ImageType, PrismaClient } from '@prisma/client';
+import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
@@ -8,59 +8,38 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
   const { skip, take, s } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.SubCategoryWhereInput = {
+    OR: [
+      {
+        name: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        tag: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        description: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        category: {
+          OR: [
+            { tag: { contains: searchQuery, mode: 'insensitive' } },
+            {
+              name: { contains: searchQuery, mode: 'insensitive' }
+            }
+          ]
+        }
+      }
+    ]
+  };
   const [totalSubCategory, totalSubCategoryQuery, subCategories] = await db.$transaction([
     db.subCategory.count(),
     db.subCategory.count({
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            tag: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            category: {
-              OR: [
-                { tag: { contains: searchQuery, mode: 'insensitive' } },
-                {
-                  name: { contains: searchQuery, mode: 'insensitive' }
-                }
-              ]
-            }
-          }
-        ]
-      }
+      where
     }),
     db.subCategory.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            tag: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            category: {
-              OR: [
-                { tag: { contains: searchQuery, mode: 'insensitive' } },
-                {
-                  name: { contains: searchQuery, mode: 'insensitive' }
-                }
-              ]
-            }
-          }
-        ]
-      },
+      where,
       include: {
         category: true,
         imageForEntity: {

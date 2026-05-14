@@ -1,5 +1,6 @@
 'use client';
 import { Box, Button, Card, Flex, Tabs, TabsList, TabsPanel, TabsTab, Text, Title } from '@mantine/core';
+import { IconChevronRightFilled } from '@tabler/icons-react';
 import TabsPanelCarousel from './TabsPanel';
 
 const LayoutHotProduct = ({ data }: any) => {
@@ -48,7 +49,15 @@ const LayoutHotProduct = ({ data }: any) => {
             <TabsPanelCarousel data={data} />
           </TabsPanel>
           <Flex align={'center'} justify={'center'} mt={30}>
-            <Button children={'Xem tất cả'} variant='outline' radius={'xl'} />
+            <Button
+              children={'Xem tất cả'}
+              variant='outline'
+              radius={'xl'}
+              rightSection={<IconChevronRightFilled size={16} />}
+              classNames={{
+                section: 'ml-[4px]'
+              }}
+            />
           </Flex>
         </Tabs>
 

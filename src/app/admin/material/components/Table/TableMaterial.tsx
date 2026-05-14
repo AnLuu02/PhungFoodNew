@@ -29,21 +29,19 @@ import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 
 export default function TableMaterial({
-  s,
+  queryParams,
   data,
   allData
 }: {
-  s: string;
+  queryParams: { s: string; page: string; limit: string };
   data: FindMaterial;
   allData: GetAllMaterial;
 }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
+  const { s, page, limit } = queryParams;
   const { data: dataClient } = api.Material.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
-
   const { data: allDataClient } = api.Material.getAll.useQuery(undefined, { initialData: allData });
   const currentItems = dataClient?.materials || [];
   const dataFilter = useMemo(() => {
@@ -52,8 +50,8 @@ export default function TableMaterial({
       keys[k] = 0;
     });
     if (!allDataClient) return [];
-    const summary = allDataClient.reduce((acc: Record<string, number>, item: GetAllMaterial[number]) => {
-      item.category && acc?.[item.category] ? (acc[item.category]! += 1) : null;
+    const summary = allDataClient.reduce((acc: any, item: GetAllMaterial[number]) => {
+      item.category ? (acc[item.category] += 1) : null;
       return acc;
     }, keys);
 
@@ -173,7 +171,7 @@ export default function TableMaterial({
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={3} className='bg-gray-100 text-center dark:bg-dark-card'>
+                <Table.Td colSpan={5} className='bg-gray-100 text-center dark:bg-dark-card'>
                   <Text size='md' c='dimmed'>
                     Không có bản ghi phù hợp.
                   </Text>

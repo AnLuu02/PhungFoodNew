@@ -16,11 +16,12 @@ export default async function MaterialManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const allData = await api.Material.getAll();
-  const data = await api.Material.find({ skip: +currentPage, take: +limit, s });
-
+  const [data, allData] = await Promise.all([
+    await api.Material.find({ skip: +page, take: +limit, s }),
+    api.Material.getAll()
+  ]);
   return (
     <>
       <Divider my={'md'} />
@@ -37,7 +38,7 @@ export default async function MaterialManagementPage({
           <CreateMaterialButton />
         </Flex>
 
-        <TableMaterial allData={allData} data={data} s={s} />
+        <TableMaterial allData={allData} data={data} queryParams={{ s, page, limit }} />
       </Stack>
     </>
   );

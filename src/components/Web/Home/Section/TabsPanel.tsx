@@ -1,7 +1,7 @@
 'use client';
 import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
-import { ActionIcon, Center, Flex, Group, Text } from '@mantine/core';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { ActionIcon, Box, Center, Divider, Flex, Group, Text } from '@mantine/core';
+import { IconCheese, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import { memo, useCallback, useEffect, useState } from 'react';
 import Reveal from '~/components/Reveal';
@@ -29,7 +29,26 @@ const TabsPanelCarousel = ({ data }: any) => {
   }, [embla, onSelect]);
   return (
     <>
-      <Center mb={{ base: 20, md: 0 }}>
+      <Center mb={'md'} className='sm:hidden'>
+        <Divider
+          variant='dashed'
+          size={'sm'}
+          w={'60%'}
+          classNames={{
+            root: 'border-mainColor'
+          }}
+          labelPosition='center'
+          label={
+            <>
+              <IconCheese size={12} className='italic' />
+              <Box ml={5} className='italic'>
+                Sản phẩm
+              </Box>
+            </>
+          }
+        />
+      </Center>
+      <Center mb={{ base: 20, md: 0 }} className='hidden sm:block'>
         <Group
           gap={5}
           pos={{ base: 'relative', sm: 'absolute', md: 'absolute' }}
@@ -73,7 +92,7 @@ const TabsPanelCarousel = ({ data }: any) => {
       ) : (
         <Carousel
           w='100%'
-          slideSize={{ base: '100%', sm: '33.33333%', md: '33.33333%', xl: '25%' }}
+          slideSize={{ base: data?.length > 1 ? '70%' : '100%', sm: '33.33333%', md: '33.33333%', xl: '25%' }}
           slideGap={20}
           h={320}
           align='start'

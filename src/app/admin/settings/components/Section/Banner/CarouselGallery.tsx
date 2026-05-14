@@ -76,6 +76,7 @@ export const CarouselGallery = ({
             withControls
             withIndicators
             loop
+            align={'start'}
             nextControlIcon={<IconChevronRight size={30} />}
             previousControlIcon={<IconChevronLeft size={30} />}
             controlSize={40}

@@ -46,13 +46,13 @@ export const ButtonToggleLike = ({ data }: any) => {
 
   return (
     <Button
-      className={`text-mainColor hover:text-subColor`}
+      className={`flex items-center justify-center rounded-full text-mainColor hover:text-subColor`}
       size='xs'
-      w={'max-content'}
-      p={5}
       variant='default'
       loading={loading}
       disabled={loading}
+      w={30}
+      h={30}
     >
       {like ? (
         <Tooltip label='Xóa khỏi yêu thích' disabled={isMobile}>

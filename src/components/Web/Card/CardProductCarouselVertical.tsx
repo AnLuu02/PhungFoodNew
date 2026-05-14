@@ -1,13 +1,13 @@
 'use client';
-import { Badge, Box, Button, Card, Flex, Group, Rating, Text, Tooltip } from '@mantine/core';
+import { Badge, Box, Card, Flex, Group, Rating, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
-import { IconEye } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { memo, useCallback } from 'react';
 import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
+import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -51,37 +51,13 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
             'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out sm:group-hover:visible lg:invisible'
           }
         >
-          <Button.Group className='sm:group-hover:animate-fadeDown'>
-            <Tooltip label='Xem nhanh'>
-              {isMobile ? (
-                <Button
-                  size='xs'
-                  p={5}
-                  w={'max-content'}
-                  variant='default'
-                  className={`border-t-r-0 text-mainColor sm:hover:text-subColor`}
-                >
-                  <Link href={`/san-pham/${data?.tag}`}>
-                    <IconEye />
-                  </Link>
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => {
-                    openModal('details', null, data);
-                  }}
-                  size='xs'
-                  p={5}
-                  w={'max-content'}
-                  variant='default'
-                  className={`text-mainColor hover:text-subColor`}
-                >
-                  <IconEye />
-                </Button>
-              )}
-            </Tooltip>
+          <Group
+            gap={5}
+            className={`mr-1 mt-1 flex-col bg-transparent sm:group-hover:animate-fadeDown md:mr-0 md:mt-0 md:flex-row`}
+          >
+            <ButtonViewProduct data={data} isMobile={isMobile} />
             <ButtonToggleLike data={data} />
-          </Button.Group>
+          </Group>
         </Box>
       </Card.Section>
       <Card.Section h={'50%'} pos={'relative'}>
@@ -123,10 +99,10 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
               {data?.totalRating || 0} đánh giá
             </Text>
           </Flex>
-          <Box>
+          <Box w={'100%'} px={'xs'}>
             <ButtonAddToCart
               product={{ ...data, quantity: 1 }}
-              style={{}}
+              style={{ fullWidth: true }}
               handleAfterAdd={() => openModal('success', null, data)}
               notify={() => {}}
             />
@@ -146,7 +122,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
             Đã bán: {data?.soldQuantity}
           </Text>
         </Badge>
-        <Badge
+        {/* <Badge
           classNames={{
             root: 'bg-mainColor'
           }}
@@ -158,7 +134,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
           <Text size='xs' fw={700} className='text-white'>
             {data?.subCategory?.name || 'Đang cập nhật'}
           </Text>
-        </Badge>
+        </Badge> */}
         {data?.discount > 0 && (
           <Badge color='red' pos={'absolute'} top={'-100%'} left={-10} pl={20}>
             Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(0) + '%' : '20%'}

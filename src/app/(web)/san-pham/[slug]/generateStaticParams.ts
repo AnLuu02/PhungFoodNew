@@ -1,13 +1,14 @@
-import { api } from '~/trpc/server';
+import { db } from '~/server/db';
 
 export const generateStaticParams = async () => {
-  const data = await api.Product.find({
-    page: 1,
-    limit: 100
+  const products = await db.product.findMany({
+    select: {
+      tag: true
+    },
+    take: 100
   });
-  const products = data.products || [];
 
-  return products.map((product: { tag: string }) => ({
-    slug: product.tag.toString()
+  return products.map(product => ({
+    slug: product.tag
   }));
 };

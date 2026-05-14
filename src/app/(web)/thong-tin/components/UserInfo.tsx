@@ -52,7 +52,7 @@ export function UserInfo({ userId }: { userId: string }) {
     return { statusObj };
   }, [userInfor]);
   const levelInfo = userInfor?.level ? getInfoLevelUser(userInfor?.level) : {};
-  if (isLoading) return <LoadingSkeleton variant='page' />;
+  if (isLoading) return <LoadingSkeleton variant='detail' />;
   return (
     <Grid p={0} grow>
       <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>

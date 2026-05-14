@@ -17,111 +17,65 @@ export const findOrderService = async (
   const { skip, take, s, filter, sort } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-  const [totalOrders, totalOrdersQuery, orders] = await db.$transaction([
-    db.order.count(),
-    db.order.count({
-      where: {
-        OR: [
-          {
-            payment: {
-              OR: [
-                {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
-                  }
-                }
-              ]
-            }
-          },
-          {
-            user: {
+  const where: Prisma.OrderWhereInput = {
+    OR: [
+      {
+        payment: {
+          OR: [
+            {
               name: {
                 contains: searchQuery,
                 mode: 'insensitive'
               }
             }
-          },
-          {
-            originalTotal: {
-              equals: Number(searchQuery) || 0
-            }
-          },
-          {
-            discountAmount: {
-              equals: Number(searchQuery) || 0
-            }
-          },
-          {
-            finalTotal: {
-              equals: Number(searchQuery) || 0
-            }
-          }
-        ],
-        status: filter
-          ? {
-              equals: filter?.trim() as OrderStatus
-            }
-          : {
-              not: {
-                equals: OrderStatus.CANCELLED
-              }
-            }
+          ]
+        }
       },
+      {
+        user: {
+          name: {
+            contains: searchQuery,
+            mode: 'insensitive'
+          }
+        }
+      },
+      {
+        originalTotal: {
+          equals: Number(searchQuery) || 0
+        }
+      },
+      {
+        discountAmount: {
+          equals: Number(searchQuery) || 0
+        }
+      },
+      {
+        finalTotal: {
+          equals: Number(searchQuery) || 0
+        }
+      }
+    ],
+    status: filter
+      ? {
+          equals: filter?.trim() as OrderStatus
+        }
+      : {
+          not: {
+            equals: OrderStatus.CANCELLED
+          }
+        }
+  };
+  const [totalOrders, totalOrdersQuery, orders] = await db.$transaction([
+    db.order.count(),
+    db.order.count({
+      where,
       orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined
     }),
     db.order.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          {
-            payment: {
-              OR: [
-                {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
-                  }
-                }
-              ]
-            }
-          },
-          {
-            user: {
-              name: {
-                contains: searchQuery,
-                mode: 'insensitive'
-              }
-            }
-          },
-          {
-            originalTotal: {
-              equals: Number(searchQuery) || 0
-            }
-          },
-          {
-            discountAmount: {
-              equals: Number(searchQuery) || 0
-            }
-          },
-          {
-            finalTotal: {
-              equals: Number(searchQuery) || 0
-            }
-          }
-        ],
-        status: filter
-          ? {
-              equals: filter?.trim() as OrderStatus
-            }
-          : {
-              not: {
-                equals: OrderStatus.CANCELLED
-              }
-            }
-      },
-      orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined,
+      where,
+      orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : { createdAt: 'desc' },
       include: {
         payment: true,
         user: {

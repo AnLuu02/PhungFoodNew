@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { RoleInput } from '~/shared/schema/role.schema';
 
@@ -7,50 +7,36 @@ export const findRoleService = async (db: PrismaClient, input: { skip: number; t
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
+  const where: Prisma.RoleWhereInput = {
+    OR: [
+      { name: { contains: searchQuery, mode: 'insensitive' } },
+      { id: { contains: searchQuery, mode: 'insensitive' } },
+      { viName: { contains: searchQuery, mode: 'insensitive' } },
+      {
+        permissions: {
+          some: {
+            OR: [
+              { id: { contains: searchQuery, mode: 'insensitive' } },
+              { name: { contains: searchQuery, mode: 'insensitive' } },
+              { viName: { contains: searchQuery, mode: 'insensitive' } },
+              { description: { contains: searchQuery, mode: 'insensitive' } }
+            ]
+          }
+        }
+      }
+    ]
+  };
   const [totalRoles, totalRolesQuery, roles] = await db.$transaction([
     db.role.count(),
     db.role.count({
-      where: {
-        OR: [
-          { name: { contains: searchQuery, mode: 'insensitive' } },
-          { id: { contains: searchQuery, mode: 'insensitive' } },
-          { viName: { contains: searchQuery, mode: 'insensitive' } },
-          {
-            permissions: {
-              some: {
-                OR: [
-                  { id: { contains: searchQuery, mode: 'insensitive' } },
-                  { name: { contains: searchQuery, mode: 'insensitive' } },
-                  { viName: { contains: searchQuery, mode: 'insensitive' } },
-                  { description: { contains: searchQuery, mode: 'insensitive' } }
-                ]
-              }
-            }
-          }
-        ]
-      }
+      where
     }),
     db.role.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          { name: { contains: searchQuery, mode: 'insensitive' } },
-          { id: { contains: searchQuery, mode: 'insensitive' } },
-          { viName: { contains: searchQuery, mode: 'insensitive' } },
-          {
-            permissions: {
-              some: {
-                OR: [
-                  { id: { contains: searchQuery, mode: 'insensitive' } },
-                  { name: { contains: searchQuery, mode: 'insensitive' } },
-                  { viName: { contains: searchQuery, mode: 'insensitive' } },
-                  { description: { contains: searchQuery, mode: 'insensitive' } }
-                ]
-              }
-            }
-          }
-        ]
+      where,
+      orderBy: {
+        createdAt: 'desc'
       },
       include: {
         permissions: true

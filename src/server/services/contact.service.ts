@@ -1,54 +1,40 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { ContactInput } from '~/shared/schema/contact.schema';
 
 export const findContactService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
   const { skip, take, s } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.ContactWhereInput = {
+    OR: [
+      {
+        fullName: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        email: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        message: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        phone: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        subject: { contains: searchQuery, mode: 'insensitive' }
+      }
+    ]
+  };
   const [totalContacts, totalContactsQuery, contacts] = await db.$transaction([
     db.contact.count(),
     db.contact.count({
-      where: {
-        OR: [
-          {
-            fullName: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            email: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            message: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            phone: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            subject: { contains: searchQuery, mode: 'insensitive' }
-          }
-        ]
-      }
+      where
     }),
     db.contact.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          {
-            fullName: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            email: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            message: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            phone: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            subject: { contains: searchQuery, mode: 'insensitive' }
-          }
-        ]
+      where,
+      orderBy: {
+        createdAt: 'desc'
       }
     })
   ]);

@@ -1,6 +1,6 @@
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 
-import { EntityType, ImageType, PrismaClient } from '@prisma/client';
+import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { UserRole } from '~/shared/constants/user';
@@ -111,19 +111,18 @@ export const findProductService = async (db: PrismaClient, input: FilterProductO
   const { page, limit, sort } = input;
 
   const filterParams = buildFilter(input);
+  const where: Prisma.ProductWhereInput = {
+    AND: filterParams.length > 0 ? filterParams : undefined
+  } as any;
   const [totalProducts, totalProductsQuery, products] = await db.$transaction([
     db.product.count(),
     db.product.count({
-      where: {
-        AND: filterParams.length > 0 ? filterParams : undefined
-      } as any
+      where
     }),
     db.product.findMany({
       skip: (page - 1) * limit,
       take: limit,
-      where: {
-        AND: filterParams.length > 0 ? filterParams : undefined
-      } as any,
+      where,
       include: {
         imageForEntities: { include: { image: true } },
         materials: true,
@@ -142,7 +141,7 @@ export const findProductService = async (db: PrismaClient, input: FilterProductO
       orderBy:
         sort && sort?.length > 0
           ? buildSortFilter(sort, ['rating', 'updatedAt', 'soldQuantity', 'price', 'name'])
-          : undefined
+          : { createdAt: 'desc' }
     })
   ]);
   const totalPages = Math.ceil(

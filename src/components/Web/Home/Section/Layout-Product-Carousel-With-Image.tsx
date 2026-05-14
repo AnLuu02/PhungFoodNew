@@ -14,6 +14,7 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { IconChevronRightFilled, IconShoppingCart } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import TabsPanelCarousel from './TabsPanel';
@@ -72,7 +73,7 @@ const LayoutProductCarouselWithImage = ({
             <Text size='md' className='text-white' fw={700}>
               Chỉ trong tuần này. Đừng bỏ lỡ...
             </Text>
-            <Button children={'Mua ngay'} radius='xl' w={'max-content'} />
+            <Button children={'Mua ngay'} radius='xl' w={'max-content'} leftSection={<IconShoppingCart size={16} />} />
           </Stack>
         </BackgroundImage>
         <Tabs
@@ -85,7 +86,7 @@ const LayoutProductCarouselWithImage = ({
           }}
           className='relative'
           h={'100%'}
-          p={'lg'}
+          p={{ base: 'xs', md: 'lg' }}
           w={{ base: '100%', md: '75%' }}
         >
           <Flex
@@ -127,7 +128,15 @@ const LayoutProductCarouselWithImage = ({
 
           <Flex align={'center'} justify={'center'} mt={30}>
             <Link href={`/thuc-don?loai=${loai}`}>
-              <Button children={'Xem tất cả'} variant='outline' radius={'xl'} />
+              <Button
+                children={'Xem tất cả'}
+                variant='outline'
+                radius={'xl'}
+                rightSection={<IconChevronRightFilled size={16} />}
+                classNames={{
+                  section: 'ml-[4px]'
+                }}
+              />
             </Link>
           </Flex>
         </Tabs>

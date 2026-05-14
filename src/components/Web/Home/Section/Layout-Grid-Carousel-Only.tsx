@@ -1,7 +1,7 @@
 'use client';
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Button, Card, Flex, Space, StyleProp, Text, Title } from '@mantine/core';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { ActionIcon, Box, Button, Card, Center, Divider, Flex, Space, StyleProp, Text, Title } from '@mantine/core';
+import { IconCheese, IconChevronLeft, IconChevronRight, IconChevronRightFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -12,7 +12,7 @@ const LayoutGridCarouselOnly = ({
   navigation,
   minHeight,
   configs = {
-    slideSize: { base: '100%', sm: '33.3333%', md: '25%', xl: '20%' },
+    slideSize: { base: Boolean(data?.length > 1) ? '70%' : '100%', sm: '33.3333%', md: '25%', xl: '20%' },
     h: 320
   },
   CardElement
@@ -67,8 +67,29 @@ const LayoutGridCarouselOnly = ({
           >
             {title || 'Sản phẩm mới'}
           </Title>
+          {Boolean(data?.[0]?.id) && (
+            <Center className='sm:hidden' w={'100%'}>
+              <Divider
+                variant='dashed'
+                size={'sm'}
+                w={'60%'}
+                classNames={{
+                  root: ''
+                }}
+                labelPosition='center'
+                label={
+                  <>
+                    <IconCheese size={12} className='italic' />
+                    <Box ml={5} className='italic'>
+                      Sản phẩm
+                    </Box>
+                  </>
+                }
+              />
+            </Center>
+          )}
 
-          <Flex align={'center'} justify={{ base: 'space-between' }}>
+          <Flex align={'center'} justify={{ base: 'space-between' }} className='hidden sm:block'>
             <ActionIcon
               radius={'50%'}
               size={'lg'}
@@ -128,7 +149,15 @@ const LayoutGridCarouselOnly = ({
             {navigation && (
               <Flex align={'center'} justify={'center'} my={30}>
                 <Link href={navigation.href || `/thuc-don?loai=san-pham-moi`}>
-                  <Button children={navigation.label || 'Xem tất cả'} variant='outline' radius={'xl'} />
+                  <Button
+                    children={navigation.label || 'Xem tất cả'}
+                    rightSection={<IconChevronRightFilled size={16} />}
+                    classNames={{
+                      section: 'ml-[4px]'
+                    }}
+                    variant='outline'
+                    radius={'xl'}
+                  />
                 </Link>
               </Flex>
             )}

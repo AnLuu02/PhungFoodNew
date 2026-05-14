@@ -6,32 +6,27 @@ export const findVoucherService = async (db: PrismaClient, input: { skip: number
   const { skip, take, s } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.VoucherWhereInput = {
+    OR: [
+      {
+        name: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        description: { contains: searchQuery, mode: 'insensitive' }
+      }
+    ]
+  };
   const [totalVouchers, totalVouchersQuery, vouchers] = await db.$transaction([
     db.voucher.count(),
     db.voucher.count({
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          }
-        ]
-      }
+      where
     }),
     db.voucher.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          }
-        ]
+      where,
+      orderBy: {
+        createdAt: 'desc'
       }
     })
   ]);

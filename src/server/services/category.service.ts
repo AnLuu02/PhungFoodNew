@@ -1,6 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { Session } from 'next-auth';
+import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { CategoryInput } from '~/shared/schema/category.schema';
 
@@ -8,38 +9,30 @@ export const findCategoryService = async (db: PrismaClient, input: { skip: numbe
   const { skip, take, s } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.CategoryWhereInput = {
+    OR: [
+      {
+        name: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        tag: { contains: searchQuery, mode: 'insensitive' }
+      },
+      {
+        description: { contains: searchQuery, mode: 'insensitive' }
+      }
+    ]
+  };
   const [totalCategories, totalCategoriesQuery, categories] = await db.$transaction([
     db.category.count(),
     db.category.count({
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            tag: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          }
-        ]
-      }
+      where
     }),
     db.category.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          {
-            name: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            tag: { contains: searchQuery, mode: 'insensitive' }
-          },
-          {
-            description: { contains: searchQuery, mode: 'insensitive' }
-          }
-        ]
+      where,
+      orderBy: {
+        createdAt: 'desc'
       },
       include: {
         subCategory: {
@@ -82,7 +75,7 @@ export const deleteCategoryService = async (db: PrismaClient, input: { id: strin
   }
 
   ManageTagVi('delete', { oldTag: category.tag });
-
+  await delCache('category:getAll');
   return {
     metaData: {
       before: category ?? {},
@@ -147,6 +140,7 @@ export const upsertCategoryService = async (db: PrismaClient, input: CategoryInp
     newTag: upserted.tag,
     newName: upserted.name
   });
+  await delCache('category:getAll');
   return {
     metaData: {
       before: existed ?? {},

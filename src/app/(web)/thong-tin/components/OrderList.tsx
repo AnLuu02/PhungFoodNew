@@ -246,7 +246,11 @@ export function OrderList({ userId }: { userId: string }) {
                 </Table.Thead>
                 <Table.Tbody>
                   {isLoading ? (
-                    <LoadingSkeleton variant='table' />
+                    <Table.Tr>
+                      <Table.Td colSpan={5}>
+                        <LoadingSkeleton cols={5} variant='table' />
+                      </Table.Td>
+                    </Table.Tr>
                   ) : displayedOrders?.length > 0 ? (
                     displayedOrders.map((order: any) => {
                       const statusInfo = getStatusInfo(order.status as OrderStatus);

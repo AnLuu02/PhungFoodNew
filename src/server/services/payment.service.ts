@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { seedPayments } from '~/lib/HardData/seed';
 import { PaymentInput } from '~/shared/schema/payment.schema';
@@ -6,18 +6,20 @@ import { PaymentInput } from '~/shared/schema/payment.schema';
 export const findPaymentService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
   const { skip, take, s } = input;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.PaymentWhereInput = {
+    name: { contains: s, mode: 'insensitive' }
+  };
   const [totalPayments, totalPaymentsQuery, payments] = await db.$transaction([
     db.payment.count(),
     db.payment.count({
-      where: {
-        name: { contains: s, mode: 'insensitive' }
-      }
+      where
     }),
     db.payment.findMany({
       skip: startPageItem,
       take,
-      where: {
-        name: { contains: s, mode: 'insensitive' }
+      where,
+      orderBy: {
+        createdAt: 'desc'
       }
     })
   ]);
