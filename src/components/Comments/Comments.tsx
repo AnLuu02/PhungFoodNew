@@ -1,36 +1,25 @@
 'use client';
 
 import { Box, Divider, ScrollAreaAutosize } from '@mantine/core';
-import { memo } from 'react';
-import LoadingComponent from '~/components/Loading/Loading';
-import { api } from '~/trpc/react';
 import { CommentsForm } from './CommentsForm';
 import { CommentsList } from './CommentsList';
 
-function Comments({ product, max_height_scroll }: any) {
-  const { data: reviews = [], isLoading } = api.Review.getFilter.useQuery({ s: product?.id });
-
+function Comments({ productId, max_height_scroll }: { productId: string; max_height_scroll?: number }) {
   return (
     <>
-      {isLoading ? (
-        <LoadingComponent />
-      ) : (
-        <>
-          <ScrollAreaAutosize
-            scrollbarSize={4}
-            mah={max_height_scroll || 400}
-            className='mb-4 max-h-[60vh] overflow-y-auto'
-          >
-            <Box mr={'xs'}>
-              <CommentsList data={reviews} />
-            </Box>
-          </ScrollAreaAutosize>
-        </>
-      )}
+      <ScrollAreaAutosize
+        scrollbarSize={4}
+        mah={max_height_scroll || 400}
+        className='mb-4 max-h-[60vh] overflow-y-auto'
+      >
+        <Box mr={'xs'}>
+          <CommentsList productId={productId} />
+        </Box>
+      </ScrollAreaAutosize>
       <Divider my={'md'} />
-      <CommentsForm product={product} />
+      <CommentsForm productId={productId} />
     </>
   );
 }
 
-export default memo(Comments);
+export default Comments;

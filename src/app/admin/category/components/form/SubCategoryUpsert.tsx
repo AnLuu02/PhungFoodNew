@@ -21,8 +21,10 @@ export default function SubCategoryUpsert({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const { openModal } = useModalActions();
-  const queryResult: any = api.SubCategory.getOne.useQuery({ s: subCategoryId || '' }, { enabled: !!subCategoryId });
-  const { data, isLoading: isLoadingDataSubCategory } = queryResult;
+  const { data, isLoading: isLoadingDataSubCategory } = api.SubCategory.getOne.useQuery(
+    { s: subCategoryId || '' },
+    { enabled: !!subCategoryId }
+  );
   const formFields = useForm<SubCategoryInput>({
     resolver: zodResolver(subCategoryInputSchema),
     defaultValues: {
@@ -37,23 +39,25 @@ export default function SubCategoryUpsert({
   });
 
   useEffect(() => {
-    formFields.reset({
-      id: data?.id,
-      name: data?.name,
-      isActive: data?.isActive,
-      tag: data?.tag,
-      description: data?.description || '',
-      categoryId: data?.categoryId as string,
-      imageForEntity: data?.imageForEntity
-        ? {
-            ...data?.imageForEntity,
-            image: data?.imageForEntity?.image ? { ...data?.imageForEntity?.image } : undefined
-          }
-        : undefined
-    });
+    if (data) {
+      formFields.reset({
+        id: data?.id,
+        name: data?.name,
+        isActive: data?.isActive,
+        tag: data?.tag,
+        description: data?.description || '',
+        categoryId: data?.categoryId as string,
+        imageForEntity: data?.imageForEntity
+          ? {
+              ...data?.imageForEntity,
+              image: data?.imageForEntity?.image ? { ...data?.imageForEntity?.image } : undefined
+            }
+          : undefined
+      } as any);
+    }
   }, [data, formFields.reset]);
 
-  const { data: categoryData, isLoading } = api.Category.getAll.useQuery();
+  const { data: categoryData = [], isLoading } = api.Category.getAll.useQuery();
   const utils = api.useUtils();
   const updateMutation = api.SubCategory.upsert.useMutation({
     onSuccess: () => {

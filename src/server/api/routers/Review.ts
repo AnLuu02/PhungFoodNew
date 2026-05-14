@@ -18,6 +18,7 @@ export const reviewRouter = createTRPCRouter({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
         s: z.string().optional(),
+        relationId: z.string().optional(),
         sort: z.array(z.string()).optional()
       })
     )

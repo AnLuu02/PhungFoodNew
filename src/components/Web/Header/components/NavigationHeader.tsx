@@ -7,8 +7,9 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
 import { navigationClientItem } from '~/lib/ConfigUI';
+import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 
-function NavigationHeader({ categories }: { categories: any }) {
+function NavigationHeader({ categories }: { categories: GetAllCategory }) {
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1024px)');

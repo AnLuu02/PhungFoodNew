@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
 const revenueSchema = z.object({
@@ -92,7 +93,7 @@ export default function UpdateRevenue({ id, setOpened }: { id: string; setOpened
                 label='Khách hàng'
                 searchable
                 placeholder='Chọn khách hàng'
-                data={users?.map((user: any) => ({ value: user.id, label: user.name }))}
+                data={users?.map((user: GetAllUser[number]) => ({ value: user.id, label: user.name }))}
                 {...field}
                 error={errors.userId?.message}
               />

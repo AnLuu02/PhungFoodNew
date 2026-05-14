@@ -6,14 +6,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
+import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import DynamicCartButton from '../components/DynamicCartButton';
 import NavigationHeader from '../components/NavigationHeader';
 import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
 
-const Header3 = ({ categories, subCategories }: any) => {
+const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; subCategories: GetAllSubCategory }) => {
   const [imgMounted, setImgMounted] = useState(false);
-  const subCategoriesData: any = subCategories || [];
-  const categoriesData: any = categories || [];
+  const subCategoriesData = subCategories || [];
+  const categoriesData = categories || [];
   const [opened, { close, toggle }] = useDisclosure();
   return (
     <Flex
@@ -73,7 +75,7 @@ const Header3 = ({ categories, subCategories }: any) => {
               {imgMounted ? (
                 <ScrollAreaAutosize mah={{ base: 300, md: 400 }} scrollbarSize={5}>
                   {subCategoriesData?.length > 0 ? (
-                    subCategoriesData?.map((item: any, index: number) => {
+                    subCategoriesData?.map((item: GetAllSubCategory[number], index: number) => {
                       return (
                         <Link href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`} key={index}>
                           <Menu.Item

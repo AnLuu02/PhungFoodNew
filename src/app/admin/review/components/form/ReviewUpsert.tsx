@@ -6,6 +6,8 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserRole } from '~/shared/constants/user';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
+import { GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
+import { GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function ReviewUpsert({
@@ -75,7 +77,9 @@ export default function ReviewUpsert({
                 searchable
                 label='Product'
                 placeholder=' Chọn sản phẩm'
-                data={products?.map((product: any) => ({ value: product.id, label: product.name })) || []}
+                data={
+                  products?.map((product: GetAllProduct[number]) => ({ value: product.id, label: product.name })) || []
+                }
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -93,7 +97,7 @@ export default function ReviewUpsert({
                 searchable
                 label='user'
                 placeholder=' Chọn khách hàng'
-                data={users?.map((user: any) => ({ value: user.id, label: user.name })) || []}
+                data={users?.map((user: GetAllUser[number]) => ({ value: user.id, label: user.name })) || []}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}

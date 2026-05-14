@@ -4,11 +4,11 @@ import { ActionIcon, Modal } from '@mantine/core';
 import { IconMail, IconPhone, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
-import { ContactInput } from '~/shared/schema/contact.schema';
+import { FindContact } from '~/shared/type-trpc/contact.type-trpc';
 import { api } from '~/trpc/react';
 import MailResponse from './form/MailResponse';
 
-export function SendMailButton({ userContactInfo }: { userContactInfo: ContactInput }) {
+export function SendMailButton({ userContactInfo }: { userContactInfo: FindContact['contacts'][number] }) {
   const [opened, setOpened] = useState(false);
   return (
     <>

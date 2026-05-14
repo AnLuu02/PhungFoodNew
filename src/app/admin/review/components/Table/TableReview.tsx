@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, Divider, Group, Highlight, Table, Text } from '@mantine/core';
+import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
@@ -10,11 +10,11 @@ import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@manti
 import { IconStar } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { CommentsList } from '~/components/Comments/CommentsList';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { FindReview, GetAllReview } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function TableReview({ s, data, allData }: { s: string; data: any; allData?: any }) {
+export default function TableReview({ s, data, allData }: { s: string; data: FindReview; allData?: GetAllReview }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
@@ -32,7 +32,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (acc: { total: number; gte4star: number; from2to4: number; poorStar: number }, item: GetAllReview[number]) => {
         acc.total += 1;
         if (item.rating > 4) {
           acc.gte4star += 1;
@@ -181,7 +181,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((item: any) => (
+              currentItems.map((item: FindReview['reviews'][number]) => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -198,7 +198,7 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
-                      {item.comment}
+                      {item.comment || 'Đang cập nhật'}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
@@ -229,11 +229,6 @@ export default function TableReview({ s, data, allData }: { s: string; data: any
         <PageSizeSelector />
         <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
-
-      <Divider my={'xl'} />
-      <SimpleGrid cols={2}>
-        <CommentsList data={currentItems} />
-      </SimpleGrid>
     </>
   );
 }

@@ -15,9 +15,11 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { UserRole } from '~/shared/constants/user';
+import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { FindProduct, GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function TableProduct({ s, data, allData }: { s: string; data: any; allData: any }) {
+export default function TableProduct({ s, data, allData }: { s: string; data: FindProduct; allData: GetAllProduct }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -33,7 +35,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (acc: { total: number; active: number; inactive: number; purchased: number }, item: GetAllProduct[number]) => {
         acc.total += 1;
         acc.purchased += item.soldQuantity || 0;
         if (item.isActive) {
@@ -135,7 +137,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
               }}
               data={[
                 { value: 'all', label: 'Tất cả danh mục' },
-                ...(categories || []).map((item: any) => ({ value: item.tag, label: item.name }))
+                ...(categories || []).map((item: GetAllCategory[number]) => ({ value: item.tag, label: item.name }))
               ]}
               nothingFoundMessage='Không tìm thấy'
             />
@@ -160,7 +162,7 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((item: any) => (
+              currentItems.map((item: FindProduct['products'][number]) => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -179,11 +181,13 @@ export default function TableProduct({ s, data, allData }: { s: string; data: an
                   <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
                   <Table.Td className='text-sm'>
                     {item?.materials?.length > 0
-                      ? item?.materials?.map((i: any, index: number) => (
-                          <Tooltip label={i?.name} key={index}>
-                            <Badge bg={randomColorHex(index + 20)}>{i?.name}</Badge>
-                          </Tooltip>
-                        ))
+                      ? item?.materials?.map(
+                          (i: FindProduct['products'][number]['materials'][number], index: number) => (
+                            <Tooltip label={i?.name} key={index}>
+                              <Badge bg={randomColorHex(index + 20)}>{i?.name}</Badge>
+                            </Tooltip>
+                          )
+                        )
                       : 'Đang cập nhật'}
                   </Table.Td>
 

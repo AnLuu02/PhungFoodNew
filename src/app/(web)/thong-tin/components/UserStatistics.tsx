@@ -18,7 +18,6 @@ import {
 } from '@mantine/core';
 import { UserLevel } from '@prisma/client';
 import { IconArrowRight } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { getInfoLevelUser } from '~/constants';
@@ -40,16 +39,15 @@ const months = [
   { month: 'Tháng 12', amount: 0 }
 ];
 export const orderCompletionRate = 85;
-export function UserStatistics() {
+export function UserStatistics({ userId }: { userId: string }) {
   const [selectedYear, setSelectedYear] = useState('2025');
-  const { data: user } = useSession();
-  const { data: userDb } = api.User.getOne.useQuery({ s: user?.user?.email || '' }, { enabled: !!user?.user?.email });
+  const { data: userDb } = api.User.getOne.useQuery({ s: userId || '' }, { enabled: !!userId });
   const { data: revenue } = api.Revenue.getTotalSpentInMonthByUser.useQuery(
     {
-      userId: user?.user?.id || '',
+      userId: userId || '',
       year: Number(selectedYear) || 2025
     },
-    { enabled: !!user?.user?.id }
+    { enabled: !!userId }
   );
 
   const { mockSpendingData, totalSpent } = useMemo(() => {

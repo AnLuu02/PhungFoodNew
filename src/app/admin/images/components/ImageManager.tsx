@@ -211,7 +211,8 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
               )}
               <Tooltip label='Bật/tắt bộ lọc'>
                 <Button
-                  variant={filters.showOrphanedOnly ? 'filled' : 'outline'}
+                  variant={'outline'}
+                  active={filters.showOrphanedOnly}
                   onClick={() => handleFilterChange('showOrphanedOnly', !filters.showOrphanedOnly)}
                   leftSection={<IconFilter size={16} />}
                 >

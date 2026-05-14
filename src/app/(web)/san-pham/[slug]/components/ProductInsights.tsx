@@ -62,7 +62,7 @@ export const ProductInsights = ({ product }: { product: any }) => {
               <RatingStatistics productId={product?.id} />
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 8 }}>
-              <Comments product={product} max_height_scroll={200} />
+              <Comments productId={product?.id} max_height_scroll={200} />
             </Grid.Col>
           </Grid>
         </Tabs.Panel>

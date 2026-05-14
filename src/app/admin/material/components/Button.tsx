@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
 import { api } from '~/trpc/react';
 import MaterialUpsert from './form/MaterialUpsert';
 const mapFields: Record<string, string> = {
@@ -103,7 +104,7 @@ export function CreateManyMaterialButton() {
     }
     const XLSX = await import('xlsx');
 
-    const exportData = fetchMaterials.data.map((item: any) => ({
+    const exportData = fetchMaterials.data.map((item: GetAllMaterial[number]) => ({
       ID: item.id,
       'Tên danh mục': item.name,
       Tag: item.tag,

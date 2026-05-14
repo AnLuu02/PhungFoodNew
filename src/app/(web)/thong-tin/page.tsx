@@ -12,20 +12,16 @@ export const metadata: Metadata = {
 
 export default async function CustomerProfile() {
   const session = await getServerSession(authOptions);
-  const [userInfor, orders, vouchers] = await Promise.allSettled([
-    api.User.getOne({ s: session?.user?.email || '', hasOrders: true }),
-    api.Order.getFilter({ s: session?.user?.email || '' }),
-    api.Voucher.getVoucherForUser({
+  await Promise.all([
+    api.User.getOne.prefetch({ s: session?.user?.email || '', hasOrders: true }),
+    api.Order.getFilter.prefetch({ s: session?.user?.email || '' }),
+    api.Voucher.getVoucherForUser.prefetch({
       userId: session?.user?.id || ''
     })
   ]);
   return (
     <Box py={{ base: 0, md: 'xs' }}>
-      <DashboardContent
-        userInfor={userInfor.status === 'fulfilled' ? userInfor.value : {}}
-        orders={orders.status === 'fulfilled' ? orders.value : []}
-        vouchers={vouchers.status === 'fulfilled' ? vouchers.value : []}
-      />
+      <DashboardContent userId={session?.user?.id || ''} />
     </Box>
   );
 }

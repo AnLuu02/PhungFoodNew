@@ -9,7 +9,7 @@ import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toa
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
 import { api } from '~/trpc/react';
 
-export const CommentsForm = ({ product }: { product: any }) => {
+export const CommentsForm = ({ productId }: { productId: string }) => {
   const { data: user } = useSession();
 
   const {
@@ -22,7 +22,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
     resolver: zodResolver(baseReviewSchema),
     defaultValues: {
       id: undefined,
-      productId: product?.id ?? '',
+      productId: productId ?? '',
       userId: user?.user?.id ?? '',
       rating: 1.0,
       comment: ''
@@ -33,7 +33,7 @@ export const CommentsForm = ({ product }: { product: any }) => {
     onSuccess: () => {
       utils.Review.invalidate();
       utils.Product.invalidate();
-      reset({ productId: product?.id, userId: user?.user?.id || '' });
+      reset({ productId, userId: user?.user?.id || '' });
       NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
     },
     onError: error => {
@@ -44,10 +44,10 @@ export const CommentsForm = ({ product }: { product: any }) => {
   useEffect(() => {
     reset({
       ...watch(),
-      productId: product?.id,
+      productId,
       userId: user?.user?.id || ''
     });
-  }, [product?.id, user?.user?.id]);
+  }, [productId, user?.user?.id]);
   const onSubmit: SubmitHandler<ReviewInput> = async formData => {
     if (!user?.user?.id) {
       NotifyWarning('Chưa đăng nhập', 'Vui lý đăng nhập để đánh giá sản phẩm.');

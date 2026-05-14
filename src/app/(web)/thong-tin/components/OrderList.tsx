@@ -28,6 +28,7 @@ import { IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
+import { LoadingSkeleton } from '~/components/Loading/LoadingSkeleton';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { useModalActions } from '~/contexts/ModalContext';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
@@ -35,7 +36,8 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { api } from '~/trpc/react';
 
-export function OrderList({ orders }: { orders: any }) {
+export function OrderList({ userId }: { userId: string }) {
+  const { data: orders, isLoading } = api.Order.getFilter.useQuery({ s: userId || '' });
   const [activeTab, setActiveTab] = useState<string>('all');
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
@@ -243,7 +245,9 @@ export function OrderList({ orders }: { orders: any }) {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {displayedOrders?.length > 0 ? (
+                  {isLoading ? (
+                    <LoadingSkeleton variant='table' />
+                  ) : displayedOrders?.length > 0 ? (
                     displayedOrders.map((order: any) => {
                       const statusInfo = getStatusInfo(order.status as OrderStatus);
                       return (

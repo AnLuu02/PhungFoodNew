@@ -4,9 +4,10 @@ import { Avatar, Badge, Box, Group, Highlight, Table, Text } from '@mantine/core
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { FindSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
-export default function TableSubCategory({ s, data, user }: { s: string; data: any; user?: any }) {
+export default function TableSubCategory({ s, data }: { s: string; data: FindSubCategory }) {
   const currentItems = data?.subCategories || [];
   return (
     <>
@@ -26,7 +27,7 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((item: any, index: number) => (
+              currentItems.map((item: FindSubCategory['subCategories'][number], index: number) => (
                 <Table.Tr key={item.id + index}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -34,7 +35,11 @@ export default function TableSubCategory({ s, data, user }: { s: string; data: a
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Avatar src={item.imageForEntity?.image?.url} alt={item?.imageForEntity?.altText} size={40} />
+                    <Avatar
+                      src={item.imageForEntity?.image?.url}
+                      alt={item?.imageForEntity?.altText || 'Đang cập nhật ảnh danh mục'}
+                      size={40}
+                    />
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>

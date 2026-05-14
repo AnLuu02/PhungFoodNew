@@ -3,9 +3,10 @@ import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { FindCategory } from '~/shared/type-trpc/category.type-trpc';
 import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';
 
-export default function TableCategory({ data, s, user }: { s: string; data: any; user: any }) {
+export default function TableCategory({ data, s }: { s: string; data: FindCategory }) {
   const currentItems = data?.categories || [];
 
   return (
@@ -34,7 +35,7 @@ export default function TableCategory({ data, s, user }: { s: string; data: any;
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((row: any, index: number) => (
+              currentItems.map((row: FindCategory['categories'][number], index: number) => (
                 <Table.Tr key={row.name + index}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -43,7 +44,7 @@ export default function TableCategory({ data, s, user }: { s: string; data: any;
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
-                      {row.description}
+                      {row.description || 'Đang cập nhật'}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>

@@ -1,8 +1,9 @@
 'use client';
 
-import { ActionIcon, Badge, Box, Card, Checkbox, Group, Image, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Box, Card, Checkbox, Group, Image, Menu, Text, Tooltip } from '@mantine/core';
 import { ImageType } from '@prisma/client';
-import { IconAlertCircle, IconDotsVertical, IconLink, IconLinkOff, IconPencil } from '@tabler/icons-react';
+import { IconAlertCircle, IconDotsVertical, IconLink, IconLinkOff, IconPencil, IconTrash } from '@tabler/icons-react';
+import Link from 'next/link';
 import { memo } from 'react';
 import { ConnectedState } from './ImageManager';
 
@@ -24,7 +25,7 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
         withBorder
         padding={0}
         radius='xl'
-        className={`group relative border-2 transition-all duration-300 hover:-translate-y-1 ${
+        className={`group relative overflow-hidden border-2 transition-all duration-300 hover:-translate-y-1 ${
           isSelected || isLinked
             ? 'border-mainColor shadow-lg'
             : 'border-transparent bg-white shadow-sm dark:bg-dark-card'
@@ -93,27 +94,29 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
             </ActionIcon>
 
             {mode === 'library' && (
-              <ActionIcon
-                variant={isLinked ? 'default' : 'white'}
-                color={isLinked ? 'gray' : 'blue'}
-                size={42}
-                radius='xl'
-                onClick={async e => {
-                  e.stopPropagation();
-                  if (image?.id) {
-                    onConnected({
-                      opened: true,
-                      mode: isLinked ? 'disconnect' : 'connect',
-                      imageId: image?.id
-                    });
-                  }
-                }}
-                className={`text-gray-900 shadow-xl transition-all hover:bg-mainColor hover:text-white ${
-                  isLinked ? 'bg-mainColor text-white' : ''
-                }`}
-              >
-                {isLinked ? <IconLinkOff size={20} /> : <IconLink size={20} />}
-              </ActionIcon>
+              <Tooltip label={isLinked ? 'Ngắt kết nối' : 'Kết nối'}>
+                <ActionIcon
+                  variant={isLinked ? 'default' : 'white'}
+                  color={isLinked ? 'gray' : 'blue'}
+                  size={42}
+                  radius='xl'
+                  onClick={async e => {
+                    e.stopPropagation();
+                    if (image?.id) {
+                      onConnected({
+                        opened: true,
+                        mode: isLinked ? 'disconnect' : 'connect',
+                        imageId: image?.id
+                      });
+                    }
+                  }}
+                  className={`text-gray-900 shadow-xl transition-all hover:bg-mainColor hover:text-white ${
+                    isLinked ? 'bg-mainColor text-white' : ''
+                  }`}
+                >
+                  {isLinked ? <IconLinkOff size={20} /> : <IconLink size={20} />}
+                </ActionIcon>
+              </Tooltip>
             )}
           </div>
         </Card.Section>
@@ -142,14 +145,37 @@ function ImageCard({ image, isSelected, mode, linkedPayload, onSelect, onConnect
               </Group>
             </Box>
 
-            <ActionIcon
-              variant='subtle'
-              color='gray'
-              radius='xl'
-              className='hover:bg-gray-100 dark:hover:bg-dark-dimmed'
+            <Menu
+              shadow='md'
+              width={200}
+              classNames={{
+                item: 'text-sm'
+              }}
             >
-              <IconDotsVertical size={18} />
-            </ActionIcon>
+              <Menu.Target>
+                <ActionIcon
+                  variant='subtle'
+                  color='gray'
+                  radius='xl'
+                  className='hover:bg-gray-100 dark:hover:bg-dark-dimmed'
+                >
+                  <IconDotsVertical size={18} />
+                </ActionIcon>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Label>Thao tác</Menu.Label>
+                <Menu.Item color='red' leftSection={<IconTrash size={14} />}>
+                  Xóa ảnh
+                </Menu.Item>
+                <Menu.Item onClick={onEdit} leftSection={<IconPencil size={14} />}>
+                  Xem chi tiết
+                </Menu.Item>
+                <Menu.Item component={Link} href={image.url} target='_blank' leftSection={<IconLink size={14} />}>
+                  Mở liên kết
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </Group>
         </div>
       </Card>

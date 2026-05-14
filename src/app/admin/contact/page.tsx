@@ -15,10 +15,9 @@ export default async function ContactManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const allData = await api.Contact.getAll();
-  const data = await api.Contact.find({ skip: +currentPage, take: +limit, s });
+  const [allData, data] = await Promise.all([api.Contact.getAll(), api.Contact.find({ skip: +page, take: +limit, s })]);
 
   return (
     <>
@@ -35,7 +34,7 @@ export default async function ContactManagementPage({
           </Box>
         </Flex>
 
-        <TableContact allData={allData} data={data} s={s} />
+        <TableContact allData={allData} data={data} queryParams={{ s, page, limit }} />
       </Stack>
     </>
   );

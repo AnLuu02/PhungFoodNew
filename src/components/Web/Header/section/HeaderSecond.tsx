@@ -3,11 +3,12 @@ import { IconHome2, IconSearch } from '@tabler/icons-react';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 import SearchComponentClient from '~/components/Search/SearchClient';
+import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import CartButton from '../components/CartButton';
 import LikeButton from '../components/FavouriteButton';
 import PromotionButton from '../components/PromotionButton';
 
-const Header2 = ({ subCategories }: { subCategories: any }) => {
+const Header2 = ({ subCategories }: { subCategories: GetAllSubCategory }) => {
   const dataSubCategories = subCategories || [];
   return (
     <>

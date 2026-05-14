@@ -12,7 +12,6 @@ import {
   deleteCategoryService,
   findCategoryService,
   getAllCategoryService,
-  getFilterCategoryService,
   getOneCategoryService,
   upsertCategoryService
 } from '~/server/services/category.service';
@@ -38,13 +37,6 @@ export const categoryRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await deleteCategoryService(ctx.db, input, ctx.session)),
 
-  getFilter: publicProcedure
-    .input(
-      z.object({
-        s: z.string()
-      })
-    )
-    .query(async ({ ctx, input }) => await getFilterCategoryService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({

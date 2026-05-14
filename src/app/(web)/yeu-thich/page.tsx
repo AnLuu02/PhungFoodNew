@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
+import { GetFilterFavouriteFood } from '~/shared/type-trpc/favouriteFood.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function FavouritePage() {
@@ -22,7 +23,7 @@ export default function FavouritePage() {
   );
 
   const dataRender = useMemo(() => {
-    if (userEmail) return favouriteFoodFromApi.map((item: any) => item.product);
+    if (userEmail) return favouriteFoodFromApi.map((item: GetFilterFavouriteFood[number]) => item.product);
     return localFavouriteFood;
   }, [userEmail, favouriteFoodFromApi, localFavouriteFood]);
 

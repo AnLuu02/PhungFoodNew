@@ -19,8 +19,14 @@ import { IconGift } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import { api } from '~/trpc/react';
+import { LoadingSkeleton } from './Loading/LoadingSkeleton';
 
-export function PromotionTabLayout({ vouchers }: { vouchers: any }) {
+export function PromotionTabLayout({ userId }: { userId: string }) {
+  const { data, isLoading } = api.Voucher.getVoucherForUser.useQuery({
+    userId: userId || ''
+  });
+  const vouchers = data || [];
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(4);
   const [activeTab, setActiveTab] = useState<string | null>('all');
@@ -97,11 +103,15 @@ export function PromotionTabLayout({ vouchers }: { vouchers: any }) {
       <Tabs.Panel value={activeTab || 'all'}>
         {displayedPromotions?.length > 0 ? (
           <Grid mt='md'>
-            {displayedPromotions.map((promo: any) => (
-              <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
-                <VoucherTemplate voucher={promo} />
-              </GridCol>
-            ))}
+            {isLoading ? (
+              <LoadingSkeleton variant='table' />
+            ) : (
+              displayedPromotions.map((promo: any) => (
+                <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
+                  <VoucherTemplate voucher={promo} />
+                </GridCol>
+              ))
+            )}
           </Grid>
         ) : (
           <Empty

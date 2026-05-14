@@ -10,7 +10,7 @@ import { Promotions } from './Promotion';
 import { UserInfo } from './UserInfo';
 import { UserStatistics } from './UserStatistics';
 
-export function DashboardContent({ userInfor, orders, vouchers }: { userInfor: any; orders: any; vouchers: any }) {
+export function DashboardContent({ userId }: { userId: string }) {
   const [activeTab, setActiveTab] = useState<string | null>('user-info');
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
 
@@ -18,15 +18,15 @@ export function DashboardContent({ userInfor, orders, vouchers }: { userInfor: a
     (activeTab: string) => {
       switch (activeTab) {
         case 'user-info':
-          return <UserInfo userInfor={userInfor} />;
+          return <UserInfo userId={userId} />;
         case 'statistics':
-          return <UserStatistics />;
+          return <UserStatistics userId={userId} />;
         case 'orders':
-          return <OrderList orders={orders} />;
+          return <OrderList userId={userId} />;
         case 'promotions':
-          return <Promotions vouchers={vouchers} />;
+          return <Promotions userId={userId} />;
         default:
-          return <UserInfo userInfor={userInfor} />;
+          return <UserInfo userId={userId} />;
       }
     },
     [activeTab]

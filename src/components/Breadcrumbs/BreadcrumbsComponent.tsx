@@ -5,9 +5,10 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import { ActiveMenuPageText } from './ActiveMenuPageText';
 import { BreadcrumbsBase } from './BreadcrumbsBase';
-export const BreadcrumbsComponent = ({ subCategories }: any) => {
+export const BreadcrumbsComponent = ({ subCategories }: { subCategories: GetAllSubCategory }) => {
   const pathname = usePathname();
   const subCategoriesData = subCategories || [];
   return pathname === '/' ? (
@@ -74,7 +75,7 @@ export const BreadcrumbsComponent = ({ subCategories }: any) => {
                     </Card>
                   </Carousel.Slide>
                 ))
-              : subCategoriesData.map((item: any, index: number) => (
+              : subCategoriesData.map((item: GetAllSubCategory[number], index: number) => (
                   <Carousel.Slide
                     key={item.id}
                     className='animate-fadeUp'

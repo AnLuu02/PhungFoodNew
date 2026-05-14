@@ -2,8 +2,9 @@
 import { Accordion, Box, Button, Card, Paper, Text } from '@mantine/core';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 
-export const MenuCategoryFilter = ({ categories }: any) => {
+export const MenuCategoryFilter = ({ categories }: { categories: GetAllCategory }) => {
   const params = useSearchParams();
   return (
     <Card p={0} className='bg-gray-100 dark:bg-dark-card' mt={{ base: 'xs', md: 0 }} mb={20}>
@@ -25,12 +26,14 @@ export const MenuCategoryFilter = ({ categories }: any) => {
             Tất cả
           </Button>
         </Link>
-        {categories.map((category: any) => (
+        {categories.map((category: GetAllCategory[number]) => (
           <Accordion.Item key={category?.id} value={category?.tag}>
             <Accordion.Control
               className={`${
                 params.get('danh-muc') === category.tag ||
-                category.subCategory.some((item: any) => item.tag === params.get('loai-san-pham'))
+                category.subCategory.some(
+                  (item: GetAllCategory[number]['subCategory'][number]) => item.tag === params.get('loai-san-pham')
+                )
                   ? 'text-mainColor'
                   : ''
               }`}
@@ -39,7 +42,9 @@ export const MenuCategoryFilter = ({ categories }: any) => {
                 size='sm'
                 fw={
                   params.get('danh-muc') === category.tag ||
-                  category.subCategory.some((item: any) => item.tag === params.get('loai-san-pham'))
+                  category.subCategory.some(
+                    (item: GetAllCategory[number]['subCategory'][number]) => item.tag === params.get('loai-san-pham')
+                  )
                     ? 900
                     : 500
                 }
@@ -50,7 +55,7 @@ export const MenuCategoryFilter = ({ categories }: any) => {
             <Accordion.Panel pl={'md'}>
               <Box className={`border-0 border-l border-solid border-gray-300 pl-2`}>
                 {category.subCategory?.length > 0 ? (
-                  category.subCategory.map((item: any) => (
+                  category.subCategory.map((item: GetAllCategory[number]['subCategory'][number]) => (
                     <Link key={item.name} href={`/thuc-don?danh-muc=${category.tag}&loai-san-pham=${item.tag}`}>
                       <Paper
                         key={item.name}

@@ -46,7 +46,7 @@ function ModalProductComments({ type, opened, onClose, data }: ModalProps<any>) 
             <RatingStatistics productId={data?.id} />
           </Grid.Col>
           <Grid.Col span={5}>
-            <Comments product={data} max_height_scroll={350} />
+            <Comments productId={data?.id} max_height_scroll={350} />
           </Grid.Col>
         </Grid>
       )}

@@ -244,7 +244,7 @@ export const getOneProductService = async (db: PrismaClient, input: ServiceOptio
             isActive: true
           }),
 
-      OR: [{ id: { equals: s } }, { tag: { equals: s?.trim() } }]
+      OR: [{ id: s }, { tag: s }]
     },
     include: {
       imageForEntities: {

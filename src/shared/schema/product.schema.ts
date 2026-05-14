@@ -5,6 +5,7 @@ import { imageInfoFromDbSchema, imageInfoInputSchema } from './image.info.schema
 export const getServiceOptionsSchema = z.object({
   s: z.string().optional(),
   hasCategory: z.boolean().default(false).optional(),
+  hasUser: z.boolean().default(false).optional(),
   hasCategoryChild: z.boolean().default(false).optional(),
   hasReview: z.boolean().default(false).optional(),
   userRole: z.string().optional()

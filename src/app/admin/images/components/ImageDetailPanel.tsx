@@ -49,7 +49,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
   const deleteMutation = api.Images.delete.useMutation({
     onSuccess: () => {
       NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
-      closeEdit();
+      onClose?.();
       onRefresh();
     }
   });
@@ -163,11 +163,13 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
       >
         <Grid columns={24}>
           <GridCol span={9}>
-            <Image src={image.url} alt={image.altText || 'Image preview'} />
+            <Paper className='overflow-hidden'>
+              <Image src={image.url} alt={image.altText || 'Image preview'} />
+            </Paper>
           </GridCol>
           <GridCol span={15}>
             <ScrollAreaAutosize mah={540} w={'100%'} scrollbarSize={5} className='overflow-x-hidden'>
-              <Stack gap='lg' w={'100%'} className='overflow-x-hidden' px={'md'}>
+              <Stack gap='lg' w={'100%'} className='overflow-x-hidden' px={'xs'}>
                 <Box>
                   <Text size='sm' fw={600} mb='xs'>
                     THÔNG TIN TỆP

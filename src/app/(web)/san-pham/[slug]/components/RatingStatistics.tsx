@@ -1,13 +1,14 @@
 'use client';
 import { Group, Paper, Progress, Stack, Text } from '@mantine/core';
 import { IconStarFilled } from '@tabler/icons-react';
+import { GetFilterReview } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
 export default function RatingStatistics({ productId }: { productId: string }) {
   const { data: reviews = [] } = api.Review.getFilter.useQuery({ s: productId });
   let ratingCountsDefault = [0, 0, 0, 0, 0];
   let ratings: number[] =
-    reviews?.reduce((acc: any, item: any) => {
-      acc[item.rating - 1] += 1;
+    reviews?.reduce((acc: number[], item: GetFilterReview[number]) => {
+      item.rating && acc[item.rating - 1] ? (acc[item.rating - 1]! += 1) : null;
       return acc;
     }, ratingCountsDefault) || ratingCountsDefault;
   let totalRating: number = ratings.reduce((sum, count) => sum + count, 0) || 0;

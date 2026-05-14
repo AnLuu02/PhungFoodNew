@@ -91,17 +91,6 @@ export const deleteCategoryService = async (db: PrismaClient, input: { id: strin
   };
 };
 
-export const getFilterCategoryService = async (db: PrismaClient, input: { s?: string }) => {
-  const searchQuery = input.s?.trim();
-  const category = await db.category.findMany({
-    where: {
-      OR: [{ id: searchQuery }, { name: searchQuery }, { tag: searchQuery }]
-    }
-  });
-
-  return category;
-};
-
 export const getOneCategoryService = async (db: PrismaClient, input: { s?: string }) => {
   const searchQuery = input.s?.trim();
   const category = await db.category.findFirst({

@@ -22,14 +22,14 @@ import { Video } from '~/components/Tiptap/extensions/VideoExtension';
 import { MediaButtons } from '~/components/Tiptap/MediaButtons';
 import { TiptapControl } from '~/components/Tiptap/TiptapControl';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { ContactInput } from '~/shared/schema/contact.schema';
+import { FindContact } from '~/shared/type-trpc/contact.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function MailResponse({
   userContactInfo,
   setOpenedModal
 }: {
-  userContactInfo: ContactInput;
+  userContactInfo: FindContact['contacts'][number];
   setOpenedModal: Dispatch<SetStateAction<boolean>>;
 }) {
   const [files, setFiles] = useState<File[]>([]);
@@ -113,7 +113,8 @@ export default function MailResponse({
           await updateMutation.mutateAsync({
             ...userContactInfo,
             id: json?.data?.idRecord,
-            responded: true
+            responded: true,
+            phone: userContactInfo?.phone || '0918064618'
           });
         }
         NotifySuccess('Thao tác thành công!', 'Phản hồi thành công! ');

@@ -3,11 +3,8 @@ import { Badge, Box, Card, Text, Title } from '@mantine/core';
 import { IconReceiptDollarFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
-import { api } from '~/trpc/react';
 export default function PromotionSection() {
   const { data: session } = useSession();
-  const { data: voucherData } = api.Voucher.getVoucherForUser.useQuery({ userId: session?.user.id || '' });
-  if (!voucherData || voucherData.length === 0) return null;
   return (
     <>
       <Box>
@@ -28,7 +25,7 @@ export default function PromotionSection() {
         </Box>
 
         <Card withBorder shadow='sm' padding='lg'>
-          <PromotionTabLayout vouchers={voucherData} />
+          <PromotionTabLayout userId={session?.user?.id} />
         </Card>
       </Box>
     </>

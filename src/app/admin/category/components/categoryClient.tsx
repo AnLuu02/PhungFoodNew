@@ -5,12 +5,24 @@ import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { FindCategory, GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { FindSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import { api } from '~/trpc/react';
 import { CreateCategoryButton, CreateSubCategoryButton } from './Button';
 import TableCategory from './Table/TableCategory';
 import TableSubCategory from './Table/TableSubCategory';
 
-export default function CategoryClientManagementPage({ s, allData, dataCategory, dataSubCategory }: any) {
+export default function CategoryClientManagementPage({
+  s,
+  allData,
+  dataCategory,
+  dataSubCategory
+}: {
+  s: string;
+  allData: GetAllCategory;
+  dataCategory: FindCategory;
+  dataSubCategory: FindSubCategory;
+}) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
@@ -28,7 +40,15 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient?.reduce(
-      (acc: any, item: any) => {
+      (
+        acc: {
+          totalCate: number;
+          activeCate: number;
+          totalSubCate: number;
+          activeSubCate: number;
+        },
+        item: GetAllCategory[number]
+      ) => {
         acc.totalCate += 1;
         acc.totalSubCate += item.subCategory?.length || 0;
         if (item.isActive) {
@@ -169,9 +189,9 @@ export default function CategoryClientManagementPage({ s, allData, dataCategory,
 
         <Tabs.Panel value={activeTab} mt={'md'}>
           {activeTab === 'category' ? (
-            <TableCategory data={dataClient} s={s} user={user} />
+            <TableCategory data={dataClient as FindCategory} s={s} />
           ) : (
-            <TableSubCategory data={dataClient} s={s} user={user} />
+            <TableSubCategory data={dataClient as FindSubCategory} s={s} />
           )}
         </Tabs.Panel>
       </Tabs>

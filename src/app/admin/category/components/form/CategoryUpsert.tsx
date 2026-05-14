@@ -20,7 +20,6 @@ export default function CategoryUpsert({
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitting, isDirty },
     reset
   } = useForm<CategoryInput>({

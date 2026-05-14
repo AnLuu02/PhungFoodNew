@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
+import { GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
 const OrderItemForm = ({ index }: { index: number }) => {
@@ -23,7 +24,7 @@ const OrderItemForm = ({ index }: { index: number }) => {
   const chooseQuantity = watch(`orderItems.${index}.quantity`);
   const orderItems = watch(`orderItems`);
   useEffect(() => {
-    const p = products?.find((product: any) => product.id === chooseProduct);
+    const p = products?.find((product: GetAllProduct[number]) => product.id === chooseProduct);
     if (p?.id) {
       setProductOrderItem(p);
       setValue(`orderItems.${index}.price`, p?.price);
@@ -59,7 +60,7 @@ const OrderItemForm = ({ index }: { index: number }) => {
                 searchable
                 {...field}
                 placeholder='Select products'
-                data={products?.map((product: any) => ({
+                data={products?.map((product: GetAllProduct[number]) => ({
                   value: product.id,
                   label: product.name,
                   disabled:

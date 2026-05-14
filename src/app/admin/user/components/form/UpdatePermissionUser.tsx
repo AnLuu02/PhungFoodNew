@@ -7,13 +7,14 @@ import { FilterPermission } from '~/app/admin/role/components/types';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { GetOneUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function UpdatePermissionUser({
   email,
   setOpened
 }: {
-  email: any;
+  email: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data: user, isLoading: isLoadingUser } = api.User.getOne.useQuery({ s: email }, { enabled: !!email });
@@ -21,7 +22,7 @@ export default function UpdatePermissionUser({
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();
   const [seletedPermissions, setSeletedPermissions] = useState<any>([]);
-  const [initPermissions, setInitPermissions] = useState<any>([]);
+  const [initPermissions, setInitPermissions] = useState<NonNullable<GetOneUser>['role']['permissions']>([]);
 
   useEffect(() => {
     const userPermission = user?.role?.permissions ?? [];
@@ -43,7 +44,7 @@ export default function UpdatePermissionUser({
       NotifyError(e.message);
     }
   });
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
@@ -67,10 +68,10 @@ export default function UpdatePermissionUser({
     }
   };
 
-  const handleFilter = useCallback((value: any) => {
+  const handleFilter = useCallback((value: FilterPermission) => {
     setFilter(value);
   }, []);
-  const handleSearch = useCallback((value: any) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
   const handleSeletedPermission = useCallback((value: any) => {

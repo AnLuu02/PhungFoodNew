@@ -24,10 +24,19 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { categoryMaterials } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
+import { FindMaterial, GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
 import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 
-export default function TableMaterial({ s, data, allData }: { s: string; data: any; allData: any }) {
+export default function TableMaterial({
+  s,
+  data,
+  allData
+}: {
+  s: string;
+  data: FindMaterial;
+  allData: GetAllMaterial;
+}) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
@@ -43,8 +52,8 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
       keys[k] = 0;
     });
     if (!allDataClient) return [];
-    const summary = allDataClient.reduce((acc: any, item: any) => {
-      acc[item.category] += 1;
+    const summary = allDataClient.reduce((acc: Record<string, number>, item: GetAllMaterial[number]) => {
+      item.category && acc?.[item.category] ? (acc[item.category]! += 1) : null;
       return acc;
     }, keys);
 
@@ -136,7 +145,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((row: any, index: number) => (
+              currentItems.map((row: FindMaterial['materials'][number], index: number) => (
                 <Table.Tr key={index}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
@@ -145,7 +154,7 @@ export default function TableMaterial({ s, data, allData }: { s: string; data: a
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
-                      {row.description}
+                      {row.description || 'Đang cập nhật'}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>

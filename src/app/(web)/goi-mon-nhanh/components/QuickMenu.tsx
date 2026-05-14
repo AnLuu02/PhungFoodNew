@@ -8,8 +8,9 @@ import { useCallback, useEffect } from 'react';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import ProductCardSkeleton from '~/components/Web/Card/CardProductSkeleton';
+import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 import { api } from '~/trpc/react';
-export const QuickMenu = ({ categories, LIMIT_DATA }: any) => {
+export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCategory; LIMIT_DATA: number }) => {
   const utils = api.useUtils();
   const searchParams = useSearchParams();
   const { ref, inViewport } = useInViewport();
@@ -54,7 +55,7 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: any) => {
         <Link href={`/goi-mon-nhanh`}>
           <Button active={!searchParams.get('danh-muc')} children={'Tất cả'} variant='outline' radius={'xl'} />
         </Link>
-        {categories?.map((item: any, index: number) => (
+        {categories?.map((item: GetAllCategory[number], index: number) => (
           <>
             <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}+${index}`}>
               <Button

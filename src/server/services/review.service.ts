@@ -1,110 +1,84 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { ReviewInput } from '~/shared/schema/review.schema';
 
 export const findReviewService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; sort?: string[] }
+  input: { skip: number; take: number; s?: string; relationId?: string; sort?: string[] }
 ) => {
-  const { skip, take, s, sort } = input;
+  const { skip, take, s, relationId, sort } = input;
   const searchQuery = s?.trim();
   const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const where: Prisma.ReviewWhereInput = {
+    OR: filterStar
+      ? [
+          {
+            AND: [
+              {
+                rating: {
+                  gte: Number(filterStar)
+                }
+              },
+              {
+                rating: {
+                  lt: Number(filterStar) + 1
+                }
+              }
+            ]
+          }
+        ]
+      : [
+          {
+            comment: {
+              contains: searchQuery,
+              mode: 'insensitive'
+            }
+          },
+          {
+            user: {
+              OR: [
+                {
+                  name: {
+                    contains: searchQuery,
+                    mode: 'insensitive'
+                  }
+                },
+                {
+                  id: relationId
+                }
+              ]
+            }
+          },
+          {
+            product: {
+              OR: [
+                {
+                  name: {
+                    contains: searchQuery,
+                    mode: 'insensitive'
+                  }
+                },
+                {
+                  id: relationId
+                }
+              ]
+            }
+          }
+        ]
+  };
   const [totalReviews, totalReviewsQuery, reviews] = await db.$transaction([
     db.review.count(),
     db.review.count({
-      where: {
-        OR: filterStar
-          ? [
-              {
-                AND: [
-                  {
-                    rating: {
-                      gte: Number(filterStar)
-                    }
-                  },
-                  {
-                    rating: {
-                      lt: Number(filterStar) + 1
-                    }
-                  }
-                ]
-              }
-            ]
-          : [
-              {
-                comment: {
-                  contains: searchQuery,
-                  mode: 'insensitive'
-                }
-              },
-              {
-                user: {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
-                  }
-                }
-              },
-              {
-                product: {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
-                  }
-                }
-              }
-            ]
-      },
+      where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined
     }),
     db.review.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: filterStar
-          ? [
-              {
-                AND: [
-                  {
-                    rating: {
-                      gte: Number(filterStar)
-                    }
-                  },
-                  {
-                    rating: {
-                      lt: Number(filterStar) + 1
-                    }
-                  }
-                ]
-              }
-            ]
-          : [
-              {
-                comment: {
-                  contains: searchQuery,
-                  mode: 'insensitive'
-                }
-              },
-              {
-                user: {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
-                  }
-                }
-              },
-              {
-                product: {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
-                  }
-                }
-              }
-            ]
-      },
+      where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : undefined,
       select: {
         id: true,
@@ -115,6 +89,7 @@ export const findReviewService = async (
           select: {
             id: true,
             name: true,
+            email: true,
             imageForEntity: { include: { image: true } }
           }
         },
@@ -246,13 +221,16 @@ export const upsertReviewService = async (db: PrismaClient, input: ReviewInput) 
 
   const averageRating = starReview.reduce((acc, review) => acc + review.rating, 0) / starReview.length;
 
-  await db.product.update({
-    where: { id: input.productId },
-    data: {
-      rating: averageRating,
-      totalRating: starReview.length
-    }
-  });
+  await Promise.all([
+    db.product.update({
+      where: { id: input.productId },
+      data: {
+        rating: averageRating,
+        totalRating: starReview.length
+      }
+    }),
+    delCache(`product:detail:${data.productId}`)
+  ]);
 
   return {
     metaData: {

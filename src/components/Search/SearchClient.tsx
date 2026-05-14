@@ -29,10 +29,11 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
 
-export default function SearchComponentClient({ subCategories }: any) {
+export default function SearchComponentClient({ subCategories }: { subCategories: GetAllSubCategory }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -107,7 +108,7 @@ export default function SearchComponentClient({ subCategories }: any) {
         left={0}
       >
         {subCategories &&
-          subCategories.map((item: any, index: number) => {
+          subCategories.map((item: GetAllSubCategory[number], index: number) => {
             return (
               index < 8 && (
                 <Tooltip
@@ -264,7 +265,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       </Button>
                     </Flex>
                     <Stack gap={8}>
-                      {historySearchRender.map((item: any, index: number) => (
+                      {historySearchRender.map((item: string, index: number) => (
                         <Flex key={index} justify='space-between' align='center'>
                           <Button
                             variant='transparent'
@@ -315,7 +316,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                       </Text>
                       <Flex gap={8} wrap='wrap'>
                         {subCategories &&
-                          subCategories.map((term: any, index: number) => (
+                          subCategories.map((term: GetAllSubCategory[number], index: number) => (
                             <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`} key={index}>
                               <Badge
                                 key={index}
@@ -417,7 +418,7 @@ export default function SearchComponentClient({ subCategories }: any) {
                                   </Text>
                                   {product.tags && product.tags.length > 0 && (
                                     <Flex gap={4} mt={'xs'}>
-                                      {product.tags.slice(0, 3)?.map((tag: any, index: number) => (
+                                      {product.tags.slice(0, 3)?.map((tag: string, index: number) => (
                                         <Tooltip key={index} label={tag}>
                                           <Badge
                                             key={index}

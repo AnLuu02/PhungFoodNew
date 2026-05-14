@@ -24,10 +24,11 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { getInfoLevelUser } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { UserRole } from '~/shared/constants/user';
+import { FindUser, GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
 
-export default function TableUser({ s, data, allData }: { s: string; data: any; allData: any }) {
+export default function TableUser({ s, data, allData }: { s: string; data: FindUser; allData: GetAllUser }) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (acc: { total: number; customers: number; staff: number; block: number }, item: GetAllUser[number]) => {
         acc.total += 1;
         if (item.role?.name === UserRole.CUSTOMER) {
           acc.customers += 1;
@@ -195,7 +196,7 @@ export default function TableUser({ s, data, allData }: { s: string; data: any; 
             </Table.Thead>
             <Table.Tbody>
               {currentItems.length > 0 ? (
-                currentItems.map((item: any) => (
+                currentItems.map((item: FindUser['users'][number]) => (
                   <Table.Tr key={item.id}>
                     <Table.Td className='text-sm'>
                       <Highlight size='sm' highlight={s}>
