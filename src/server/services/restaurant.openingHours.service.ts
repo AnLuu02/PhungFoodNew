@@ -19,7 +19,7 @@ export const updateOpeningHoursService = async (db: PrismaClient, input: { data:
     return changes;
   });
   if (result?.length > 0) {
-    await Promise.all([delCache('getOneActive'), delCache('get-one-active-client')]);
+    await Promise.all([delCache('restaurant:getOneActive'), delCache('restaurant:getOneActiveClient')]);
   }
   return result?.map(item => ({
     metaData: {

@@ -19,7 +19,11 @@ export const changeThemeService = async (db: PrismaClient, input: ThemeWithResta
       });
       return { oldData, newData };
     });
-    await Promise.all([delCache('theme-default'), delCache('getOneActive'), delCache('get-one-active-client')]);
+    await Promise.all([
+      delCache('theme:default'),
+      delCache('restaurant:getOneActive'),
+      delCache('restaurant:getOneActiveClient')
+    ]);
     return {
       metaData: {
         before: result.oldData ?? {},

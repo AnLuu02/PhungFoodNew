@@ -47,7 +47,7 @@ export const upsertSocialService = async (db: PrismaClient, input: SocialWithRes
     }
   });
 
-  await Promise.all([delCache('getOneActive'), delCache('get-one-active-client')]);
+  await Promise.all([delCache('restaurant:getOneActive'), delCache('restaurant:getOneActiveClient')]);
 
   return {
     metaData: {
@@ -66,7 +66,7 @@ export const deleteSocialService = async (db: PrismaClient, input: { id: string;
   const deleted = await db.social.delete({
     where: { id: input.id }
   });
-  await Promise.all([delCache('getOneActive'), delCache('get-one-active-client')]);
+  await Promise.all([delCache('restaurant:getOneActive'), delCache('restaurant:getOneActiveClient')]);
   return {
     metaData: {
       before: deleted ?? {},
