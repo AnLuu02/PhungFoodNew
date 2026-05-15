@@ -8,26 +8,30 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { FindVoucher, GetAllVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 import { api } from '~/trpc/react';
 import CardVoucher from './card-voucher';
 import { UpdateVoucherModal } from './Modal/UpdateVoucherModal';
 import { ViewVoucherModal } from './Modal/ViewVoucherModal';
 
-export default function VoucherClient({ s, data, allData }: { s: string; data: any; allData?: any }) {
+export default function VoucherClient({ s, data, allData }: { s: string; data: FindVoucher; allData?: GetAllVoucher }) {
   const searchParams = useSearchParams();
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Voucher.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
   const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined, { initialData: allData });
   const [selectedPromotion, setSelectedPromotion] = useState<{ type: 'edit' | 'view'; data: any } | null>(null);
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'enabled' | 'disabled'>('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
   const filteredItems = useMemo(() => {
     if (!dataClient?.vouchers) return [];
 
-    return dataClient.vouchers.filter((promotion: any) => {
-      const matchStatus = statusFilter === 'all' || promotion.status?.toLowerCase() === statusFilter?.toLowerCase();
+    return dataClient.vouchers.filter((promotion: FindVoucher['vouchers'][number]) => {
+      const matchStatus =
+        statusFilter === 'all' ||
+        (statusFilter === 'enabled' && promotion.isActive) ||
+        (statusFilter === 'disabled' && !promotion.isActive);
 
       const matchType = typeFilter === 'all' || promotion.type?.toLowerCase() === typeFilter?.toLowerCase();
 
@@ -41,7 +45,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
     const now = new Date();
 
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (acc: { total: number; enabled: number; expired: number; totalUsage: number }, item: GetAllVoucher[number]) => {
         const endDate = new Date(item.endDate);
         const used = +item.usedQuantity || 0;
 
@@ -119,7 +123,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
             <Select
               allowDeselect={false}
               value={statusFilter}
-              onChange={value => setStatusFilter(value as string)}
+              onChange={value => setStatusFilter(value as any)}
               placeholder='Status'
               data={[
                 { value: 'all', label: 'Tất cả trạng thái' },
@@ -152,7 +156,7 @@ export default function VoucherClient({ s, data, allData }: { s: string; data: a
         <Empty hasButton={false} title='Không có kết quả phù hợp' content='' />
       ) : (
         <SimpleGrid cols={3}>
-          {filteredItems.map((promotion: any) => {
+          {filteredItems.map((promotion: FindVoucher['vouchers'][number]) => {
             return (
               <CardVoucher key={promotion.id} promotion={promotion} s={s} setSelectedPromotion={setSelectedPromotion} />
             );

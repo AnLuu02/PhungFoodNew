@@ -8,14 +8,15 @@ import PageSizeSelector from '~/components/Perpage';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
+import { FindRole } from '~/shared/type-trpc/role-permission.type-trpc';
 import { api } from '~/trpc/react';
 import RoleUpsert from '../form/RoleUpsert';
 import UpdatePermissionForRole from '../form/UpdatePermissionForRole';
 
-export const RoleSection = ({ data, s }: { data: any; s: string }) => {
+export const RoleSection = ({ data, s }: { data: FindRole; s: string }) => {
   const [selectedRole, setSelectedRole] = useState<{
     mode: 'update:role' | 'update:permissionForRole';
-    data: any;
+    data: FindRole['roles'][number];
   } | null>(null);
   const currentItems = data?.roles || [];
   const utils = api.useUtils();
@@ -33,7 +34,7 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
       ) : (
         <>
           <Box mt={'md'} className='grid gap-4 md:grid-cols-3'>
-            {currentItems.map((item: any, index: number) => (
+            {currentItems.map((item: FindRole['roles'][number], index: number) => (
               <Card key={item.id} withBorder mih={200}>
                 <Box className='flex items-center justify-between'>
                   <Box className='flex items-center gap-2'>
@@ -44,7 +45,7 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
                       }}
                     />
                     <Highlight highlight={s} size='lg' fw={700}>
-                      {item?.viName}
+                      {item?.viName || 'Đang cập nhật'}
                     </Highlight>
                   </Box>
                   <Group>
@@ -94,22 +95,24 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
                     {item?.permissions?.length || 0} quyền được chỉ định
                   </Text>
                   <Box className='max-h-32 space-y-1 overflow-y-auto'>
-                    {item?.permissions?.slice(0, 6).map((permission: any, index: number) => (
-                      <Flex gap={'md'} align={'center'} key={permission}>
-                        <Box w={10}>👉🏽</Box>
-                        <Highlight
-                          highlight={s}
-                          size='sm'
-                          key={permission}
-                          style={{
-                            fontWeight: 'bold',
-                            color: randomColorHex(index)
-                          }}
-                        >
-                          {permission?.viName || 'Đang cập nhật'}
-                        </Highlight>
-                      </Flex>
-                    ))}
+                    {item?.permissions
+                      ?.slice(0, 6)
+                      .map((permission: FindRole['roles'][number]['permissions'][number], index: number) => (
+                        <Flex gap={'md'} align={'center'} key={permission.id}>
+                          <Box w={10}>👉🏽</Box>
+                          <Highlight
+                            highlight={s}
+                            size='sm'
+                            key={permission.id + index}
+                            style={{
+                              fontWeight: 'bold',
+                              color: randomColorHex(index)
+                            }}
+                          >
+                            {permission?.viName || 'Đang cập nhật'}
+                          </Highlight>
+                        </Flex>
+                      ))}
                     {item?.permissions.length > 6 && (
                       <Box className='text-muted-foreground text-sm'>+ {item?.permissions.length - 6} cái khác...</Box>
                     )}
@@ -131,7 +134,7 @@ export const RoleSection = ({ data, s }: { data: any; s: string }) => {
               {selectedRole?.mode === 'update:role' ? (
                 <RoleUpsert roleId={selectedRole?.data?.id} setOpened={setSelectedRole} />
               ) : (
-                <UpdatePermissionForRole id={selectedRole?.data?.id} setOpened={setSelectedRole} />
+                <UpdatePermissionForRole id={selectedRole?.data?.id || ''} setOpened={setSelectedRole} />
               )}
             </Modal>
           </Box>

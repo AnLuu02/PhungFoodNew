@@ -2,6 +2,87 @@ import { EntityType, ImageType, PrismaClient } from '@prisma/client';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { RestaurantInput } from '~/shared/schema/restaurant.schema';
+export const createInitRestaurant = async (db: PrismaClient) => {
+  const openingHoursData = [
+    { dayOfWeek: '0', viNameDay: 'Chủ nhật', openTime: '08:00', closeTime: '22:00' },
+    { dayOfWeek: '1', viNameDay: 'Thứ hai', openTime: '08:00', closeTime: '22:00' },
+    { dayOfWeek: '2', viNameDay: 'Thứ ba', openTime: '08:00', closeTime: '22:00' },
+    { dayOfWeek: '3', viNameDay: 'Thứ tư', openTime: '08:00', closeTime: '22:00' },
+    { dayOfWeek: '4', viNameDay: 'Thứ năm', openTime: '08:00', closeTime: '23:00' },
+    { dayOfWeek: '5', viNameDay: 'Thứ sáu', openTime: '09:00', closeTime: '23:00' },
+    { dayOfWeek: '6', viNameDay: 'Thứ bảy', openTime: '09:00', closeTime: '21:00' }
+  ];
+  await db.restaurant.create({
+    data: {
+      name: 'PhungFood',
+      isActive: true,
+      description: 'Chuyên cung cấp các món ăn đặc sản vùng miền nói chung và miền Tây sông nước nói riêng.',
+      address: '123 Đường Lê Lợi, Quận 1, TP.HCM',
+      phone: '0918064618',
+      website: 'https://phung-food-new.vercel.app/',
+      email: 'anluu099@gmail.com',
+      theme: {
+        create: {
+          primaryColor: '#008b4b',
+          secondaryColor: '#f8c144',
+          themeMode: 'light'
+        }
+      },
+      openingHours: {
+        createMany: {
+          data: openingHoursData
+        }
+      },
+      socials: {
+        createMany: {
+          data: [
+            {
+              platform: 'phone',
+              value: '0918064618',
+              label: 'Số điện thoại',
+              pattern: 'tel:{value}',
+              icon: 'icon-phone'
+            },
+            {
+              platform: 'email',
+              label: 'Email',
+              pattern: 'mailto:{value}',
+              icon: 'icon-mail',
+              value: 'anluu099@gmail.com'
+            },
+            {
+              platform: 'messenger',
+              label: 'Facebook Messenger',
+              pattern: 'https://m.me/{value}',
+              icon: 'icon-brand-messenger',
+              value: 'anluu099'
+            },
+            {
+              platform: 'zalo',
+              label: 'Zalo Chat',
+              pattern: 'https://zalo.me/{value}',
+              icon: 'icon-message-circle-2',
+              value: '0918064618'
+            }
+          ]
+        }
+      }
+    }
+  });
+  const result = await db.restaurant.findFirst({
+    where: { isActive: true },
+    include: {
+      imageForEntity: {
+        include: { image: true }
+      },
+      socials: true,
+      theme: true,
+      openingHours: true,
+      banners: { include: { imageForEntities: { include: { image: true } } } }
+    }
+  });
+  return result;
+};
 
 export const getOneActiveService = async (db: PrismaClient) => {
   const result = await db.restaurant.findFirst({
@@ -19,85 +100,7 @@ export const getOneActiveService = async (db: PrismaClient) => {
     }
   });
   if (!result) {
-    const openingHoursData = [
-      { dayOfWeek: '0', viNameDay: 'Chủ nhật', openTime: '08:00', closeTime: '22:00' },
-      { dayOfWeek: '1', viNameDay: 'Thứ hai', openTime: '08:00', closeTime: '22:00' },
-      { dayOfWeek: '2', viNameDay: 'Thứ ba', openTime: '08:00', closeTime: '22:00' },
-      { dayOfWeek: '3', viNameDay: 'Thứ tư', openTime: '08:00', closeTime: '22:00' },
-      { dayOfWeek: '4', viNameDay: 'Thứ năm', openTime: '08:00', closeTime: '23:00' },
-      { dayOfWeek: '5', viNameDay: 'Thứ sáu', openTime: '09:00', closeTime: '23:00' },
-      { dayOfWeek: '6', viNameDay: 'Thứ bảy', openTime: '09:00', closeTime: '21:00' }
-    ];
-    await db.restaurant.create({
-      data: {
-        name: 'PhungFood',
-        isActive: true,
-        description: 'Chuyên cung cấp các món ăn đặc sản vùng miền nói chung và miền Tây sông nước nói riêng.',
-        address: '123 Đường Lê Lợi, Quận 1, TP.HCM',
-        phone: '0918064618',
-        website: 'https://phung-food-new.vercel.app/',
-        email: 'anluu099@gmail.com',
-        theme: {
-          create: {
-            primaryColor: '#008b4b',
-            secondaryColor: '#f8c144',
-            themeMode: 'light'
-          }
-        },
-        openingHours: {
-          createMany: {
-            data: openingHoursData
-          }
-        },
-        socials: {
-          createMany: {
-            data: [
-              {
-                platform: 'phone',
-                value: '0918064618',
-                label: 'Số điện thoại',
-                pattern: 'tel:{value}',
-                icon: 'icon-phone'
-              },
-              {
-                platform: 'email',
-                label: 'Email',
-                pattern: 'mailto:{value}',
-                icon: 'icon-mail',
-                value: 'anluu099@gmail.com'
-              },
-              {
-                platform: 'messenger',
-                label: 'Facebook Messenger',
-                pattern: 'https://m.me/{value}',
-                icon: 'icon-brand-messenger',
-                value: 'anluu099'
-              },
-              {
-                platform: 'zalo',
-                label: 'Zalo Chat',
-                pattern: 'https://zalo.me/{value}',
-                icon: 'icon-message-circle-2',
-                value: '0918064618'
-              }
-            ]
-          }
-        }
-      }
-    });
-    const result = await db.restaurant.findFirst({
-      where: { isActive: true },
-      include: {
-        imageForEntity: {
-          include: { image: true }
-        },
-        socials: true,
-        theme: true,
-        openingHours: true,
-        banners: { include: { imageForEntities: { include: { image: true } } } }
-      }
-    });
-    return result;
+    return await createInitRestaurant(db);
   }
   return result;
 };
@@ -106,7 +109,12 @@ export const getOneActiveClientService = async (db: PrismaClient) => {
     where: { isActive: true },
     include: {
       imageForEntity: { include: { image: true } },
-      socials: { where: { isActive: true } },
+      socials: {
+        where: { isActive: true },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      },
       theme: true,
       openingHours: true,
       banners: {
@@ -117,6 +125,9 @@ export const getOneActiveClientService = async (db: PrismaClient) => {
       }
     }
   });
+  if (!result) {
+    return await createInitRestaurant(db);
+  }
   return result;
 };
 

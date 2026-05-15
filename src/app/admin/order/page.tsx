@@ -20,14 +20,16 @@ export default async function OrderManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   const filter = searchParams?.filter as OrderStatus;
-  const sortArr = (
+  const sortArr: string[] = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
-  const allData = await api.Order.getAll();
-  const data = await api.Order.find({ skip: +currentPage, take: +limit, s, filter, sort: sortArr });
+  const [allData, data] = await Promise.all([
+    api.Order.getAll(),
+    api.Order.find({ skip: +page, take: +limit, s, filter, sort: sortArr })
+  ]);
   return (
     <>
       <Divider my={'md'} />
@@ -50,7 +52,7 @@ export default async function OrderManagementPage({
             <SendMessageAllUserAdvanced />
           </Group>
         </Group>
-        <TableOrder data={data} s={s} allData={allData} />
+        <TableOrder data={data} queryParams={{ s, page, limit, filter, sortArr }} allData={allData} />
       </Stack>
     </>
   );

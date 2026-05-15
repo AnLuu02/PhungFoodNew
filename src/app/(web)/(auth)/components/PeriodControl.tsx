@@ -3,7 +3,7 @@
 import { Button, Divider, Flex } from '@mantine/core';
 import { IconCircleDashedCheck, IconMail, IconShield } from '@tabler/icons-react';
 
-export default function PeriodControl({ period }: any) {
+export default function PeriodControl({ period }: { period: 'email' | 'reset' | 'verify' }) {
   return (
     <>
       <Flex align={'center'} justify={'space-between'} w={'100%'}>

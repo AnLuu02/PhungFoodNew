@@ -22,6 +22,7 @@ import {
 } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
+import { Session } from 'next-auth';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
@@ -32,9 +33,10 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function MyOrderPageClient({ session }: { session: any }) {
+export default function MyOrderPageClient({ session }: { session: Session | null }) {
   const { data: orders = [] } = api.Order.getFilter.useQuery({ s: session?.user?.email || '' });
   const { openModal } = useModalActions();
   const [page, setPage] = useState(1);
@@ -44,13 +46,15 @@ export default function MyOrderPageClient({ session }: { session: any }) {
 
   const filteredOrders = useMemo(() => {
     if (!selectedStatus) return orders;
-    return orders.filter((order: any) => order.status.toLowerCase() === selectedStatus.toLowerCase());
+    return orders.filter(
+      (order: TGetFilterOrder[number]) => order.status.toLowerCase() === selectedStatus.toLowerCase()
+    );
   }, [orders, selectedStatus]);
 
   const filteredOrdersSearch = useMemo(() => {
     if (!valueSearch) return filteredOrders;
     const search = valueSearch.toLowerCase();
-    return filteredOrders.filter((order: any) =>
+    return filteredOrders.filter((order: TGetFilterOrder[number]) =>
       [
         order?.payment?.name,
         order?.status,
@@ -61,7 +65,7 @@ export default function MyOrderPageClient({ session }: { session: any }) {
         order?.id?.toString()
       ]
         .filter(Boolean)
-        .some((field: any) => field.toLowerCase().includes(search))
+        .some((field: string | undefined) => field && field.toLowerCase().includes(search))
     );
   }, [filteredOrders, valueSearch]);
 
@@ -76,7 +80,7 @@ export default function MyOrderPageClient({ session }: { session: any }) {
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    orders.forEach((order: any) => {
+    orders.forEach((order: TGetFilterOrder[number]) => {
       counts[order.status] = (counts[order.status] || 0) + 1;
     });
     return Object.entries(counts).map(([status, count]) => ({ status, count }));
@@ -85,7 +89,7 @@ export default function MyOrderPageClient({ session }: { session: any }) {
   const totalOrders = orders.length || 0;
   const totalAmount = useMemo(
     () =>
-      orders.reduce((sum: any, order: any) => {
+      orders.reduce((sum: number, order: TGetFilterOrder[number]) => {
         if (order.status === OrderStatus.COMPLETED) {
           return sum + order.finalTotal;
         }
@@ -222,7 +226,7 @@ export default function MyOrderPageClient({ session }: { session: any }) {
                       </Table.Td>
                     </Table.Tr>
                   ) : (
-                    displayedOrders.map((order: any) => {
+                    displayedOrders.map((order: TGetFilterOrder[number]) => {
                       const statusInfo = getStatusInfo(order.status as OrderStatus);
                       return (
                         <Table.Tr key={order.id}>

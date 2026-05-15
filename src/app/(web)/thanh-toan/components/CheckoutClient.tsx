@@ -23,6 +23,7 @@ import { z } from 'zod';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { baseDeliverySchema, DeliveryInput } from '~/shared/schema/delivery.schema';
+import { TGetOneOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
@@ -33,7 +34,7 @@ type DeliveryCheckout = {
   paymentId: string;
 };
 
-export default function CheckoutClient({ order }: { order: any }) {
+export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOrder> }) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
@@ -54,8 +55,8 @@ export default function CheckoutClient({ order }: { order: any }) {
         if (paymentUrl) {
           order.vouchers && order.vouchers.length > 0
             ? await mutationUseVoucher.mutateAsync({
-                userId: order?.user.id || '',
-                voucherIds: order.vouchers.map((v: any) => v.id)
+                userId: order?.user?.id || '',
+                voucherIds: order.vouchers.map((v: NonNullable<TGetOneOrder>['vouchers'][number]) => v.id)
               })
             : null;
           window.location.href = paymentUrl;
@@ -70,13 +71,16 @@ export default function CheckoutClient({ order }: { order: any }) {
     }
   });
   const { discountAmountByVoucher, discount, originalTotal, tax, finalTotal } = useMemo(() => {
-    const discountAmountByVoucher = (order?.vouchers ?? []).reduce((sum: any, item: any) => {
-      const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
-      return sum + value;
-    }, 0);
+    const discountAmountByVoucher = (order?.vouchers ?? []).reduce(
+      (sum: number, item: NonNullable<TGetOneOrder>['vouchers'][number]) => {
+        const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
+        return sum + value;
+      },
+      0
+    );
     const { discount, originalTotal } = order?.orderItems?.reduce(
-      (acc: { discount: number; originalTotal: number }, item: any) => {
-        acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
+      (acc: { discount: number; originalTotal: number }, item: NonNullable<TGetOneOrder>['orderItems'][number]) => {
+        acc.discount += (item.product?.discount || 0) * (item.quantity || 1);
         acc.originalTotal += (item.price || 0) * (item.quantity || 1);
         return {
           discount: acc.discount,
@@ -124,9 +128,9 @@ export default function CheckoutClient({ order }: { order: any }) {
           ...order?.delivery,
           name: order?.delivery?.name || session?.user?.name || '',
           email: order?.delivery?.email || session?.user?.email || '',
-          phone: order?.delivery?.phone,
-          note: order?.delivery?.note
-        }
+          phone: order?.delivery?.phone ?? undefined,
+          note: order?.delivery?.note ?? undefined
+        } as any
       });
     }
   }, [order]);
@@ -138,7 +142,7 @@ export default function CheckoutClient({ order }: { order: any }) {
         ...order,
         paymentId: formData.paymentId,
         delivery: formData.delivery
-      });
+      } as any);
     }
   };
 
@@ -160,7 +164,7 @@ export default function CheckoutClient({ order }: { order: any }) {
               </Title>
               <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
                 <Stack gap={'md'} py={'sm'} className='overflow-x-hidden'>
-                  {order?.orderItems?.map((item: any, index: number) => (
+                  {order?.orderItems?.map((item: NonNullable<TGetOneOrder>['orderItems'][number], index: number) => (
                     <CartItemPayment key={index} item={{ ...item.product, note: item.note, quantity: item.quantity }} />
                   ))}
                 </Stack>

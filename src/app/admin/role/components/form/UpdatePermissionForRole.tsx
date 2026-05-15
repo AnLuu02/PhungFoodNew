@@ -7,13 +7,14 @@ import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
 import FilterSection from '../Section/FilterSection';
 import PermissionSection from '../Section/PermissionSection';
-import { FilterPermission } from '../types';
+import { FilterPermission, SelectedPermissions } from '../types';
 
 export default function UpdatePermissionForRole({
   id,
   setOpened
 }: {
-  id: any;
+  id: string;
+
   setOpened: Dispatch<
     SetStateAction<{
       mode: 'update:role' | 'update:permissionForRole';
@@ -28,13 +29,14 @@ export default function UpdatePermissionForRole({
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();
-  const [seletedPermissions, setSeletedPermissions] = useState<any>([]);
-  const [initPermissions, setInitPermissions] = useState<any>([]);
+  const [seletedPermissions, setSeletedPermissions] = useState<SelectedPermissions[]>([]);
+  const [initPermissions, setInitPermissions] = useState<SelectedPermissions[]>([]);
 
   useEffect(() => {
     const rolePermission = role?.permissions ?? [];
-    setSeletedPermissions(rolePermission);
-    setInitPermissions(rolePermission);
+    const dataState = [...rolePermission.map(({ id, name, description }) => ({ id, name, description }))];
+    setSeletedPermissions(dataState);
+    setInitPermissions(dataState);
   }, [role]);
 
   const hasChange = useMemo(() => {
@@ -52,7 +54,7 @@ export default function UpdatePermissionForRole({
       NotifyError(e.message);
     }
   });
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
@@ -61,7 +63,7 @@ export default function UpdatePermissionForRole({
         name: role?.name,
         id: id || '',
         viName: role?.viName || '',
-        permissionIds: seletedPermissions.map((item: any) => item.id) ?? []
+        permissionIds: seletedPermissions.map((item: SelectedPermissions) => item.id) ?? []
       });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. ', 'Cập nhật quyền không thành công');
@@ -69,14 +71,14 @@ export default function UpdatePermissionForRole({
       setLoading(false);
     }
   };
-  const handleFilter = useCallback((value: any) => {
+  const handleFilter = useCallback((value: FilterPermission) => {
     setFilter(value);
   }, []);
-  const handleSearch = useCallback((value: any) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
-  const handleSeletedPermission = useCallback((value: any) => {
-    setSeletedPermissions(value);
+  const handleSeletedPermission = useCallback((values: SelectedPermissions[]) => {
+    setSeletedPermissions(values);
   }, []);
 
   if (isLoadingRole || isLoading) {
@@ -104,7 +106,9 @@ export default function UpdatePermissionForRole({
                 checked={seletedPermissions.length === permissions.length}
                 onChange={event => {
                   if (event.currentTarget.checked) {
-                    setSeletedPermissions([...permissions]);
+                    setSeletedPermissions([
+                      ...permissions.map(({ id, name, description }) => ({ id, name, description }))
+                    ]);
                   } else {
                     setSeletedPermissions([]);
                   }

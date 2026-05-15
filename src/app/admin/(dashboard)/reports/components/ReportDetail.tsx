@@ -86,7 +86,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
       const year = +revenue.year;
       const key = `${day}/${month}/${year}`;
       if (labels.includes(key)) {
-        summaryRevenue[key]! += Number(revenue.totalSpent);
+        summaryRevenue[key]! += Number(revenue.totalSpent || 0);
       }
     });
 

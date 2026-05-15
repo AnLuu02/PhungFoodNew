@@ -2,9 +2,10 @@
 import { Badge, Box, Flex, Group, Highlight, Table, Text } from '@mantine/core';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
+import { FindPermission } from '~/shared/type-trpc/role-permission.type-trpc';
 import { DeletePermissionButton, UpdatePermissionButton } from '../Button';
 
-export default function TablePermission({ s, data }: { s: string; data: any }) {
+export default function TablePermission({ s, data }: { s: string; data: FindPermission }) {
   const currentItems = data?.permissions || [];
 
   return (
@@ -36,7 +37,7 @@ export default function TablePermission({ s, data }: { s: string; data: any }) {
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((row: any, index: number) => (
+              currentItems.map((row: FindPermission['permissions'][number], index: number) => (
                 <Table.Tr key={index}>
                   <Table.Td className='text-sm'>{row.id}</Table.Td>
                   <Table.Td className='text-sm'>
@@ -56,7 +57,7 @@ export default function TablePermission({ s, data }: { s: string; data: any }) {
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Flex align={'center'} gap={5}>
-                      {row?.roles?.map((item: any) => {
+                      {row?.roles?.map((item: FindPermission['permissions'][number]['roles'][number]) => {
                         return (
                           <Badge bg={item.name === 'ADMIN' ? 'red' : item.name === 'CUSTOMER' ? 'green' : '#195EFE'}>
                             {item.viName}

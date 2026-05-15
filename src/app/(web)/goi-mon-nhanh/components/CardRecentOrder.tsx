@@ -7,8 +7,9 @@ import { IconCalendarEvent, IconPackage, IconReceipt } from '@tabler/icons-react
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
 
-export default function CardRecentOrder({ order }: { order: any }) {
+export default function CardRecentOrder({ order }: { order: TGetFilterOrder[number] }) {
   const [_, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [loading, setLoading] = useState(false);
   const statusInfo = useMemo(() => {
@@ -104,7 +105,7 @@ export default function CardRecentOrder({ order }: { order: any }) {
               onClick={() => {
                 setLoading(true);
                 setCart(
-                  order?.orderItems?.map((item: any) => ({
+                  order?.orderItems?.map((item: TGetFilterOrder[number]['orderItems'][number]) => ({
                     ...item?.product,
                     quantity: item?.quantity || 1,
                     note: item?.note || ''

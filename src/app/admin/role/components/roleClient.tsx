@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { UserRole } from '~/shared/constants/user';
+import { FindPermission, FindRole, GetAllRole } from '~/shared/type-trpc/role-permission.type-trpc';
 import { api } from '~/trpc/react';
 import { CreateManyPermissionButton, CreateManyRoleButton, CreatePermissionButton, CreateRoleButton } from './Button';
 import { RoleSection } from './Section/RoleSection';
@@ -16,12 +17,26 @@ const TABS: Record<string, { value: string; label: string }> = {
   permission: { value: 'permission', label: 'Quyền người dùng' }
 };
 const DEFAULT_TAB = TABS?.['role']?.value || 'role';
-export default function RoleClient({ s, allData, dataRole, dataPermission }: any) {
+export default function RoleClient({
+  queryParams,
+  allData,
+  dataRole,
+  dataPermission
+}: {
+  queryParams: {
+    s: string;
+    page: string;
+    limit: string;
+  };
+  allData: GetAllRole;
+  dataRole: FindRole;
+  dataPermission: FindPermission;
+}) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
+  const { s, page, limit } = queryParams;
+
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const { data: dataClient } =
     activeTab === TABS?.['role']?.value
@@ -33,10 +48,13 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (
+        acc: { totalRole: number; customers: number; staff: number; totlePermissions: number },
+        item: GetAllRole[number]
+      ) => {
         acc.totalRole += 1;
         acc.totlePermissions += item.permissions?.length || 0;
-        item?.users?.forEach((user: any) => {
+        item?.users?.forEach((user: GetAllRole[number]['users'][number]) => {
           if (user.role?.name === UserRole.CUSTOMER) {
             acc.customers += 1;
           } else if (user.role?.name === UserRole.STAFF) {
@@ -129,8 +147,8 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
       <Tabs
         variant='pills'
         value={activeTab}
-        onChange={(value: any) => {
-          changeTab(value);
+        onChange={value => {
+          changeTab(value as any);
         }}
         styles={{
           tab: {
@@ -205,7 +223,11 @@ export default function RoleClient({ s, allData, dataRole, dataPermission }: any
 
         <Divider my='sm' />
         <Tabs.Panel value={activeTab}>
-          {activeTab === 'role' ? <RoleSection data={dataClient} s={s} /> : <TablePermission data={dataClient} s={s} />}
+          {activeTab === 'role' ? (
+            <RoleSection data={dataClient as FindRole} s={s} />
+          ) : (
+            <TablePermission data={dataClient as FindPermission} s={s} />
+          )}
         </Tabs.Panel>
       </Tabs>
     </>

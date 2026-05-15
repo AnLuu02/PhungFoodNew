@@ -3,8 +3,9 @@
 import { Box, Button, Grid, GridCol, Group, NumberInput, Paper, Stack, Switch, Text, Title } from '@mantine/core';
 import { IconBell, IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
+import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
 
-export default function PerformanceSettingsManagement({ data }: { data: any }) {
+export default function PerformanceSettingsManagement({ restaurant }: { restaurant: NonNullable<TGetOneActive> }) {
   const [notifications, setNotifications] = useState({
     email: true,
     push: false,

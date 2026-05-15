@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { GetAllPermission, GetAllRole } from '~/shared/type-trpc/role-permission.type-trpc';
 import { api } from '~/trpc/react';
 import RoleUpsert from './form/RoleUpsert';
 import PermissionUpsert from './form/permission/PermissionUpsert';
@@ -106,7 +107,7 @@ export function CreateManyRoleButton() {
     }
     const XLSX = await import('xlsx');
 
-    const exportData = fetchRole.data.map((item: any) => ({
+    const exportData = fetchRole.data.map((item: GetAllRole[number]) => ({
       ID: item.id,
       'Vai trò': item.name
     }));
@@ -333,7 +334,7 @@ export function CreateManyPermissionButton() {
     }
 
     const XLSX = await import('xlsx');
-    const exportData = fetchPermission.data.map((item: any) => ({
+    const exportData = fetchPermission.data.map((item: GetAllPermission[number]) => ({
       ID: item.id,
       Quyền: item.name,
       'Mô tả': item.description || ''

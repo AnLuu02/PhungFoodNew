@@ -20,16 +20,22 @@ import { OrderStatus } from '@prisma/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { api, RouterOutputs } from '~/trpc/react';
+import { TFindOrder, TGetAllOrder } from '~/shared/type-trpc/order.type-trpc';
+import { api } from '~/trpc/react';
 
-export default function TableOrder({ s, data, allData }: { s: string; data: any; allData?: any }) {
+export default function TableOrder({
+  queryParams,
+  data,
+  allData
+}: {
+  queryParams: { s: string; page: string; limit: string; filter: OrderStatus; sortArr: string[] };
+  data: TFindOrder;
+  allData?: TGetAllOrder;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  const filter = searchParams.get('filter') as OrderStatus;
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
-  const sortArr = searchParams.getAll('sort');
+  const { s, page, limit, filter, sortArr } = queryParams;
   const { data: dataClient } = api.Order.find.useQuery(
     { skip: +page, take: +limit, s, filter, sort: sortArr },
     { initialData: data }
@@ -39,13 +45,25 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (
+        acc: {
+          total: number;
+          [OrderStatus.COMPLETED]: number;
+          [OrderStatus.UNPAID]: number;
+          [OrderStatus.SHIPPING]: number;
+          [OrderStatus.PENDING]: number;
+          [OrderStatus.CANCELLED]: number;
+          [OrderStatus.CONFIRMED]: number;
+        },
+        item: TGetAllOrder[number]
+      ) => {
         acc.total += 1;
-        acc[item.status] += 1;
+        item.status ? (acc[item.status as OrderStatus] += 1) : null;
         return acc;
       },
       {
         total: 0,
+        [OrderStatus.UNPAID]: 0,
         [OrderStatus.COMPLETED]: 0,
         [OrderStatus.SHIPPING]: 0,
         [OrderStatus.PENDING]: 0,
@@ -178,7 +196,7 @@ export default function TableOrder({ s, data, allData }: { s: string; data: any;
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((order: RouterOutputs['Order']['find']['orders'][number]) => {
+              currentItems.map((order: TFindOrder['orders'][number]) => {
                 const statusInfo = getStatusInfo(order.status as OrderStatus);
                 return (
                   <Table.Tr key={order.id}>

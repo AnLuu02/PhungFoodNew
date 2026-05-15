@@ -6,3 +6,9 @@ export type FilterPermission =
   | 'hasNotPermission'
   | 'hasPermission'
   | undefined;
+
+export type SelectedPermissions = {
+  id: string;
+  name: string;
+  description: string | null;
+};

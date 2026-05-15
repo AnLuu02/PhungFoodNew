@@ -21,9 +21,16 @@ import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { themeSchemaWithRestaurantId, ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
+import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function ThemeSettingsManagement({ restaurantId, data }: { restaurantId: string; data: any }) {
+export default function ThemeSettingsManagement({
+  restaurantId,
+  theme
+}: {
+  restaurantId: string;
+  theme: NonNullable<TGetOneActive>['theme'];
+}) {
   const {
     control,
     handleSubmit,
@@ -32,30 +39,30 @@ export default function ThemeSettingsManagement({ restaurantId, data }: { restau
   } = useForm<ThemeWithRestaurantId>({
     resolver: zodResolver(themeSchemaWithRestaurantId),
     defaultValues: {
-      id: data?.id,
-      primaryColor: data?.primaryColor,
-      secondaryColor: data?.secondaryColor,
-      themeMode: data?.themeMode,
-      fontFamily: data?.fontFamily,
-      borderRadius: data?.borderRadius,
-      faviconUrl: data?.faviconUrl,
+      id: theme?.id,
+      primaryColor: theme?.primaryColor,
+      secondaryColor: theme?.secondaryColor,
+      themeMode: theme?.themeMode,
+      fontFamily: theme?.fontFamily,
+      borderRadius: theme?.borderRadius,
+      faviconUrl: theme?.faviconUrl,
       restaurantId: undefined
     }
   });
 
   useEffect(() => {
-    if (data?.id) {
+    if (theme?.id) {
       reset({
-        id: data.id,
-        primaryColor: data.primaryColor,
-        secondaryColor: data.secondaryColor,
-        themeMode: data.themeMode,
-        fontFamily: data.fontFamily,
-        borderRadius: data.borderRadius,
-        faviconUrl: data.faviconUrl
+        id: theme.id,
+        primaryColor: theme.primaryColor,
+        secondaryColor: theme.secondaryColor,
+        themeMode: theme.themeMode,
+        fontFamily: theme.fontFamily,
+        borderRadius: theme.borderRadius,
+        faviconUrl: theme.faviconUrl
       });
     }
-  }, [data, reset]);
+  }, [theme, reset]);
   const utils = api.useUtils();
   const updateMutation = api.Restaurant.changeTheme.useMutation({
     onSuccess: () => {

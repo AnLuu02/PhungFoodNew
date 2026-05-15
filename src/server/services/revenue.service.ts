@@ -91,20 +91,28 @@ export const getTopProductsService = async (db: PrismaClient, input: { startTime
     }
   });
 
-  const topProducts = data.reduce((acc: any, item: any) => {
-    const existed = acc.find((it: any) => it?.product?.id === item?.product?.id);
-    if (!existed) {
-      acc.push({
-        product: item?.product,
-        soldQuantity: item?.quantity,
-        profit: item?.product?.price * item?.quantity || 0
-      });
-    } else {
-      existed.soldQuantity += item?.quantity || 0;
-      existed.profit += item?.product?.price * item?.quantity || 0;
-    }
-    return acc;
-  }, []);
+  const topProducts = data
+    .reduce(
+      (
+        acc: { product: (typeof data)[number]['product']; soldQuantity: number; profit: number }[],
+        item: (typeof data)[number]
+      ) => {
+        const existed = acc.find((it: any) => it?.product?.id === item?.product?.id);
+        if (!existed) {
+          acc.push({
+            product: item?.product,
+            soldQuantity: item?.quantity,
+            profit: item?.product?.price * item?.quantity || 0
+          });
+        } else {
+          existed.soldQuantity += item?.quantity || 0;
+          existed.profit += item?.product?.price * item?.quantity || 0;
+        }
+        return acc;
+      },
+      []
+    )
+    .sort((a, b) => b.profit - a.profit);
 
   return topProducts;
 };
@@ -113,8 +121,27 @@ export const getDistributionProductsService = async (
   input: { startTime?: number; endTime?: number }
 ) => {
   const { startTime, endTime } = input;
-  const startTimeToDate = startTime && new Date(startTime);
-  const endTimeToDate = endTime && new Date(endTime);
+  const startTimeToDate = startTime ? new Date(startTime) : undefined;
+  const endTimeToDate = endTime ? new Date(endTime) : undefined;
+
+  const result = await db.orderItem.groupBy({
+    by: ['productId'],
+    where: {
+      createdAt: {
+        gte: startTimeToDate,
+        lte: endTimeToDate
+      }
+    },
+    _sum: {
+      price: true
+    },
+    orderBy: {
+      _sum: {
+        price: 'desc'
+      }
+    },
+    take: 5
+  });
   const data = await db.category.findMany({
     include: {
       subCategory: {

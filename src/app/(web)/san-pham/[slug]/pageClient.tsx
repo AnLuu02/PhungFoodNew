@@ -12,24 +12,34 @@ import RelatedProducts from './components/RelatedProducts';
 import { ImageType } from '@prisma/client';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Carousel-Only';
+import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
 import { ProductInsights } from './components/ProductInsights';
 import { ProductOverview } from './components/ProductOverview';
 
-export default function ProductDetailClient(data: any) {
-  const { product, dataRelatedProducts, dataHintProducts, dataVouchers }: any = data?.data || {
+export default function ProductDetailClient({ data }: { data: GetInitProductDetail }) {
+  const { product, dataRelatedProducts, dataHintProducts, dataVouchers } = data || {
     product: {},
     dataRelatedProducts: [],
     dataHintProducts: [],
     dataVouchers: []
   };
   const discount = product?.discount || 0;
-  const [relatedProducts, hintProducts, inStock, gallery] = useMemo(() => {
-    return [
-      dataRelatedProducts?.filter((item: any) => item.id !== product?.id) || [],
-      dataHintProducts?.filter((item: any) => item.id !== product?.id) || [],
-      product?.availableQuantity > 0,
-      product?.imageForEntities?.filter((item: any) => item?.type !== ImageType.THUMBNAIL && item?.image?.url) || []
-    ];
+  const { relatedProducts, hintProducts, gallery } = useMemo(() => {
+    return {
+      relatedProducts:
+        dataRelatedProducts?.filter(
+          (item: NonNullable<GetInitProductDetail>['dataRelatedProducts'][number]) => item.id !== product?.id
+        ) || [],
+      hintProducts:
+        dataHintProducts?.filter(
+          (item: NonNullable<GetInitProductDetail>['dataHintProducts'][number]) => item.id !== product?.id
+        ) || [],
+      gallery:
+        product?.imageForEntities?.filter(
+          (item: NonNullable<GetInitProductDetail>['product']['imageForEntities'][number]) =>
+            item?.type !== ImageType.THUMBNAIL && item?.image?.url
+        ) || []
+    };
   }, [product]);
 
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
@@ -47,7 +57,7 @@ export default function ProductDetailClient(data: any) {
             thumbnail={
               getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
             }
-            gallery={gallery?.length > 0 ? gallery : []}
+            gallery={(gallery?.length > 0 ? gallery : []) as { image: { url: string } }[]}
             discount={discount}
             tag={product?.tag || ''}
           />

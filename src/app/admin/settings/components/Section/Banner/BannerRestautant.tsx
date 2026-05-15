@@ -7,11 +7,12 @@ import { EntityType, ImageType } from '@prisma/client';
 import { IconCalendarClock, IconPlus } from '@tabler/icons-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
+import { handleUploadFromClient, UploadedImage, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { ImageFromDb } from '~/shared/schema/image.schema';
 import { BannerInput, bannerInputSchema } from '~/shared/schema/restaurant.banner.schema';
+import { TGetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 import BannerInputSection from './BannerInput';
 import { CarouselGallery } from './CarouselGallery';
@@ -208,7 +209,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
           : []),
 
       ...(gallery_ToSave && gallery_ToSave?.length > 0
-        ? gallery_ToSave?.map((item: any, index) => ({
+        ? gallery_ToSave?.map((item: UploadedImage | undefined, index) => ({
             ...(item
               ? {
                   id: undefined,
@@ -241,7 +242,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
     });
   };
 
-  const handleSetDefaultBanner = useCallback((banner: any) => {
+  const handleSetDefaultBanner = useCallback((banner: TGetAllBanner[number]) => {
     setActiveBanner(banner);
   }, []);
   const handleDeleteBanner = useCallback(() => {

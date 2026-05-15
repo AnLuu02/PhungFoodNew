@@ -445,7 +445,7 @@ export default async function AboutPage() {
                   </Text>
                   {restaurant?.openingHours ? (
                     restaurant.openingHours.map((hours, index) => (
-                      <Text>
+                      <Text key={index}>
                         {hours.viNameDay}: <b>{hours?.openTime} Giờ</b> - <b>{hours?.closeTime} Giờ</b>
                       </Text>
                     ))

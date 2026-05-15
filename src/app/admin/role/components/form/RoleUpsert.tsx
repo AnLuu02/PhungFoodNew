@@ -11,7 +11,7 @@ import { baseRoleSchema, RoleInput } from '~/shared/schema/role.schema';
 import { api } from '~/trpc/react';
 import FilterSection from '../Section/FilterSection';
 import PermissionSection from '../Section/PermissionSection';
-import { FilterPermission } from '../types';
+import { FilterPermission, SelectedPermissions } from '../types';
 
 export default function RoleUpsert({
   setOpened,
@@ -27,7 +27,8 @@ export default function RoleUpsert({
   );
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();
-  const [seletedPermissions, setSeletedPermissions] = useState<any>([]);
+  const [seletedPermissions, setSeletedPermissions] = useState<SelectedPermissions[]>([]);
+
   const [searchDebouceValue] = useDebouncedValue(searchValue, 1000);
 
   const hasChange = useMemo(() => {
@@ -52,7 +53,13 @@ export default function RoleUpsert({
   useEffect(() => {
     if (role) {
       const rolePermission = role?.permissions ?? [];
-      setSeletedPermissions(rolePermission);
+      setSeletedPermissions([
+        ...rolePermission.map(({ id, name, description }) => ({
+          id,
+          name,
+          description
+        }))
+      ]);
       reset({
         ...role,
         viName: role?.viName || 'Đang cập nhật.'
@@ -76,21 +83,21 @@ export default function RoleUpsert({
     try {
       await createRoleMutation.mutateAsync({
         ...formData,
-        permissionIds: seletedPermissions?.map(({ id }: any) => id)?.filter(Boolean) || []
+        permissionIds: seletedPermissions?.map(({ id }) => id)?.filter(Boolean) || []
       });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
     }
   };
 
-  const handleFilter = useCallback((value: any) => {
+  const handleFilter = useCallback((value: FilterPermission) => {
     setFilter(value);
   }, []);
-  const handleSearch = useCallback((value: any) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
-  const handleSeletedPermission = useCallback((value: any) => {
-    setSeletedPermissions(value);
+  const handleSeletedPermission = useCallback((values: SelectedPermissions[]) => {
+    setSeletedPermissions(values);
   }, []);
 
   if (isLoadingRole || isLoading) {
@@ -152,7 +159,7 @@ export default function RoleUpsert({
 
             <ScrollAreaAutosize mah={320} scrollbarSize={5}>
               <PermissionSection
-                searchValue={searchValue}
+                searchValue={searchDebouceValue}
                 filter={filter}
                 seletedPermissions={seletedPermissions}
                 onSeletedPermissions={handleSeletedPermission}

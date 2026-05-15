@@ -2,7 +2,7 @@
 import { Button, Group, Stack, Textarea } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
-export const Note = ({ productId }: any) => {
+export const Note = ({ productId }: { productId: string }) => {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [note, setNote] = useState<any>('');
 

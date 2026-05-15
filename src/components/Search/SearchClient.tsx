@@ -29,6 +29,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { Search } from '~/shared/type-trpc/search.type-trpc';
 import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
@@ -336,7 +337,7 @@ export default function SearchComponentClient({ subCategories }: { subCategories
 
                 {categoryData.length > 0 && (
                   <Box my={8}>
-                    {categoryData.map((category: any) => (
+                    {categoryData.map((category: Search['categories'][number]) => (
                       <Link key={category.id} href={`/thuc-don?s=${category.tag}`}>
                         <Flex align={'center'} gap={8} px={'md'} py={5} className='hover:bg-mainColor/10'>
                           <IconSearch size={24} className='text-gray-400 dark:text-dark-text' />
@@ -356,7 +357,7 @@ export default function SearchComponentClient({ subCategories }: { subCategories
                   <>
                     <Divider />
                     <Box my={8}>
-                      {subCategoryData.map((category: any) => (
+                      {subCategoryData.map((category: Search['subCategories'][number]) => (
                         <Link key={category.id} href={`/thuc-don?s=${category.tag}`}>
                           <Flex align={'center'} gap={8} px={'md'} py={5} className='hover:bg-mainColor/10'>
                             <IconSearch size={24} className='text-gray-400 dark:text-dark-text' />
@@ -377,7 +378,7 @@ export default function SearchComponentClient({ subCategories }: { subCategories
                   <>
                     <Divider />
                     <Box>
-                      {productData.map((product: any) => (
+                      {productData.map((product: Search['products'][number]) => (
                         <Box>
                           <Link key={product.id} href={`/san-pham/${product.tag}`}>
                             <Flex

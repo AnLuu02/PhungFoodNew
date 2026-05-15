@@ -17,8 +17,9 @@ import {
 } from '@mantine/core';
 import { IconMail, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
+import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
 
-export default function EmailSettingsManagement({ data }: { data: any }) {
+export default function EmailSettingsManagement({ restaurant }: { restaurant: NonNullable<TGetOneActive> }) {
   const [subject, setSubject] = useState('Chào mừng bạn đến với PhungFood');
   const [content, setContent] = useState('Xin chào {{name}},\nCảm ơn bạn đã đăng ký với email {{email}}!');
 

@@ -15,12 +15,12 @@ export default async function RoleManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   const [allData, dataRole, dataPermissions] = await Promise.all([
     api.RolePermission.getAllRole(),
-    api.RolePermission.find({ skip: +currentPage, take: +limit, s }),
-    api.RolePermission.findPermission({ skip: +currentPage, take: +limit, s })
+    api.RolePermission.find({ skip: +page, take: +limit, s }),
+    api.RolePermission.findPermission({ skip: +page, take: +limit, s })
   ]);
 
   return (
@@ -37,7 +37,16 @@ export default async function RoleManagementPage({
             </Text>
           </Box>
         </Flex>
-        <RoleClient s={s} allData={allData} dataRole={dataRole} dataPermission={dataPermissions} />
+        <RoleClient
+          queryParams={{
+            s,
+            page,
+            limit
+          }}
+          allData={allData}
+          dataRole={dataRole}
+          dataPermission={dataPermissions}
+        />
       </Stack>
     </>
   );

@@ -41,7 +41,7 @@ export default function ReportOverviewPageClient({ overviews }: any) {
       const year = +revenue.year;
       const key = `${day}/${month}/${year}`;
       if (labels.includes(key)) {
-        summaryRevenue[key]! += Number(revenue.totalSpent);
+        summaryRevenue[key]! += Number(revenue.totalSpent || 0);
       }
     });
 

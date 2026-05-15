@@ -24,6 +24,7 @@ import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { RestaurantInput, restaurantInputSchema } from '~/shared/schema/restaurant.schema';
+import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 import RestaurantInformationSkeleton from '../Skeleton/RestaurantInformationSkeleton';
 import ContactTab from './Tabs/ContactTab';
@@ -59,7 +60,9 @@ export default function RestaurantInfoSettings() {
   const timeOpen = useMemo(() => {
     const timeIndex = new Date().getDay();
     const timeOpens = data?.openingHours ?? [];
-    const timeOpen = timeOpens?.find((item: any) => item?.dayOfWeek === timeIndex?.toString());
+    const timeOpen = timeOpens?.find(
+      (item: NonNullable<TGetOneActive>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
+    );
     return {
       ...timeOpen,
       timeIndex

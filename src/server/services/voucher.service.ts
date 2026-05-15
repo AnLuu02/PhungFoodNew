@@ -71,7 +71,7 @@ export const getOneVoucherService = async (db: PrismaClient, input: { id: string
   return voucher;
 };
 export const getVoucherForUserService = async (db: PrismaClient, input: { userId?: string }) => {
-  let users_db: any;
+  let users_db = null;
   if (input.userId && input.userId !== '') {
     users_db = await db.user.findUnique({
       where: {
@@ -189,7 +189,7 @@ export const useVoucherService = async (db: PrismaClient, input: { userId: strin
 };
 export const upsertVoucherService = async (db: PrismaClient, input: { where: any; data: any }) => {
   try {
-    const existed: any = await db.voucher.findFirst({
+    const existed = await db.voucher.findFirst({
       where: input.where
     });
 

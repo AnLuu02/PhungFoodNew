@@ -5,11 +5,12 @@ import { IconChevronCompactLeft, IconLink, IconMessageCircle, IconShoppingBagChe
 import Image from 'next/image';
 import Link from 'next/link';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
+import { TGetOneActiveClient } from '~/shared/type-trpc/restaurant.type-trpc';
 import Chatbox from './Chatbox';
 
-export default function FloatingWidget({ restaurant }: { restaurant: any }) {
+export default function FloatingWidget({ restaurant }: { restaurant: TGetOneActiveClient }) {
   const [cart] = useLocalStorage({ key: 'cart', defaultValue: [] });
-  const messager = restaurant?.socials?.find((social: any) => {
+  const messager = restaurant?.socials?.find((social: NonNullable<TGetOneActiveClient>['socials'][number]) => {
     return social?.platform === 'messenger';
   });
   return (
@@ -92,7 +93,7 @@ export default function FloatingWidget({ restaurant }: { restaurant: any }) {
 
           <MenuDropdown className='bg-white shadow-md dark:bg-dark-background' py={5}>
             {restaurant?.socials &&
-              restaurant.socials?.map((item: any, index: number) => {
+              restaurant.socials?.map((item: NonNullable<TGetOneActiveClient>['socials'][number], index: number) => {
                 const { icon: IconComponent, color } = iconMap[item?.platform] || { icon: IconLink, color: '#000000' };
                 return (
                   <MenuItem

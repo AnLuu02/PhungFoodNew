@@ -19,6 +19,7 @@ import { IconGift } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import { GetVoucherForUserVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 import { api } from '~/trpc/react';
 import { LoadingSkeleton } from './Loading/LoadingSkeleton';
 
@@ -32,7 +33,7 @@ export function PromotionTabLayout({ userId }: { userId: string }) {
   const [activeTab, setActiveTab] = useState<string | null>('all');
   const filteredPromotions = useMemo(() => {
     if (activeTab === 'all') return vouchers;
-    return vouchers.filter((promo: any) => promo.type === activeTab);
+    return vouchers.filter((promo: GetVoucherForUserVoucher[number]) => promo.type === activeTab);
   }, [activeTab, vouchers]);
 
   const totalPages = Math.ceil(filteredPromotions.length / perPage);
@@ -45,8 +46,8 @@ export function PromotionTabLayout({ userId }: { userId: string }) {
     <Tabs
       variant='pills'
       value={activeTab}
-      onChange={(value: any) => {
-        setActiveTab(value);
+      onChange={value => {
+        setActiveTab(value as any);
         setPage(1);
       }}
       styles={{
@@ -101,17 +102,15 @@ export function PromotionTabLayout({ userId }: { userId: string }) {
 
       <Divider my='sm' />
       <Tabs.Panel value={activeTab || 'all'}>
-        {displayedPromotions?.length > 0 ? (
+        {isLoading ? (
+          <LoadingSkeleton variant='detail' />
+        ) : displayedPromotions?.length > 0 ? (
           <Grid mt='md'>
-            {isLoading ? (
-              <LoadingSkeleton variant='detail' />
-            ) : (
-              displayedPromotions.map((promo: any) => (
-                <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
-                  <VoucherTemplate voucher={promo} />
-                </GridCol>
-              ))
-            )}
+            {displayedPromotions.map((promo: GetVoucherForUserVoucher[number]) => (
+              <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
+                <VoucherTemplate voucher={promo} />
+              </GridCol>
+            ))}
           </Grid>
         ) : (
           <Empty

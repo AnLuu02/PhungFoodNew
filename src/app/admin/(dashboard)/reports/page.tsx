@@ -15,24 +15,6 @@ export default async function ReportPage({
   const startTimeToNum = searchParams?.startTime ? Number(searchParams?.startTime) : undefined;
   const endTimeToNum = searchParams?.endTime ? Number(searchParams?.endTime) : undefined;
   const queryOverview = { startTime: startTimeToNum, endTime: endTimeToNum };
-  const {
-    overview,
-    topUsers,
-    revenueByCategories,
-    topProducts,
-    revenueByOrderStatus,
-    distributionProducts,
-    recentActivitiesApp
-  } = await api.Page.getInitReport(queryOverview);
-  return (
-    <ReportPageClient
-      overview={overview}
-      topUsers={topUsers}
-      revenueByCategories={revenueByCategories}
-      topProducts={topProducts}
-      revenueByOrderStatus={revenueByOrderStatus}
-      distributionProducts={distributionProducts}
-      recentActivitiesApp={recentActivitiesApp}
-    />
-  );
+  const data = await api.Page.getInitReport(queryOverview);
+  return <ReportPageClient data={data} />;
 }

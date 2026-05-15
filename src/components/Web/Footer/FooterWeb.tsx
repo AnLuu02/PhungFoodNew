@@ -3,11 +3,14 @@ import { IconLink, IconPhone, IconTruck } from '@tabler/icons-react';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
-export default async function FooterWeb({ restaurant }: { restaurant: any }) {
+import { TGetOneActiveClient } from '~/shared/type-trpc/restaurant.type-trpc';
+export default async function FooterWeb({ restaurant }: { restaurant: TGetOneActiveClient }) {
   const timeOpen = () => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurant?.openingHours ?? [];
-    const timeOpen = timeOpens?.find((item: any) => item?.dayOfWeek === timeIndex?.toString());
+    const timeOpen = timeOpens?.find(
+      (item: NonNullable<TGetOneActiveClient>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
+    );
     return {
       ...timeOpen,
       timeIndex
@@ -168,7 +171,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                 </Title>
                 <SimpleGrid cols={{ base: 7, md: 4, lg: 5 }}>
                   {restaurant?.socials &&
-                    restaurant?.socials?.map((item: any) => {
+                    restaurant?.socials?.map((item: NonNullable<TGetOneActiveClient>['socials'][number]) => {
                       const { icon: IconComponent, color } = iconMap[item?.platform] || {
                         icon: IconLink,
                         color: 'black'
@@ -178,7 +181,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: any }) {
                           key={item.platform}
                           href={generateSocialUrl(item.pattern, item.value)}
                           target='_blank'
-                          aria-label={item.key}
+                          aria-label={item.label}
                           className='group cursor-pointer duration-150 hover:opacity-85'
                         >
                           <Tooltip label={item.label}>

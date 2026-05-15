@@ -8,10 +8,12 @@ import {
   IconHome,
   IconLock,
   IconMail,
-  IconPalette
+  IconPalette,
+  IconProps
 } from '@tabler/icons-react';
-import { useCallback } from 'react';
+import { ForwardRefExoticComponent, RefAttributes, useCallback } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
+import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 import BannerManagement from './components/Section/Banner/BannerRestautant';
 import EmailSettingsManagement from './components/Section/EmailRestautant';
@@ -20,7 +22,10 @@ import PaymentSettingsManagement from './components/Section/PaymentRestautant';
 import PerformanceSettingsManagement from './components/Section/PerformanceRestautant';
 import SecuritySettingsManagement from './components/Section/SecurityRestautant';
 import ThemeSettingsManagement from './components/Section/ThemeRestautant';
-const TABS: Record<string, { value: string; label: string; icon: any }> = {
+const TABS: Record<
+  string,
+  { value: string; label: string; icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>> }
+> = {
   general: { value: 'general', label: 'Cài đặt hệ thống', icon: IconHome },
   banner: { value: 'banner', label: 'Banner', icon: IconBuildingStore },
   email: { value: 'email', label: 'Email', icon: IconMail },
@@ -41,15 +46,20 @@ export default function SettingPageClient() {
         case 'banner':
           return <BannerManagement restaurantId={restaurant?.id || ''} />;
         case 'theme':
-          return <ThemeSettingsManagement restaurantId={restaurant?.id || ''} data={restaurant?.theme} />;
+          return (
+            <ThemeSettingsManagement
+              restaurantId={restaurant?.id || ''}
+              theme={restaurant?.theme as NonNullable<TGetOneActive>['theme']}
+            />
+          );
         case 'email':
-          return <EmailSettingsManagement data={restaurant} />;
+          return <EmailSettingsManagement restaurant={restaurant as NonNullable<TGetOneActive>} />;
         case 'payment':
           return <PaymentSettingsManagement />;
         case 'security':
-          return <SecuritySettingsManagement data={restaurant} />;
+          return <SecuritySettingsManagement restaurant={restaurant as NonNullable<TGetOneActive>} />;
         case 'performance':
-          return <PerformanceSettingsManagement data={restaurant} />;
+          return <PerformanceSettingsManagement restaurant={restaurant as NonNullable<TGetOneActive>} />;
         default:
           return <RestaurantInfoSettings />;
       }

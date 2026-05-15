@@ -34,8 +34,14 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
+import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
-
+type DisplayOrder = TGetFilterOrder[number] & {
+  date: string | undefined;
+  finalTotal: number;
+  originalTotal: number;
+  discountAmount: number;
+};
 export function OrderList({ userId }: { userId: string }) {
   const { data: orders, isLoading } = api.Order.getFilter.useQuery({ s: userId || '' });
   const [activeTab, setActiveTab] = useState<string>('all');
@@ -62,7 +68,7 @@ export function OrderList({ userId }: { userId: string }) {
 
   const orderData = useMemo(
     () =>
-      orders?.map((order: any) => ({
+      orders?.map((order: TGetFilterOrder[number]) => ({
         ...order,
         date: new Date(order.createdAt || new Date()).toISOString().split('T')[0],
         finalTotal: order?.finalTotal || 0,
@@ -74,13 +80,13 @@ export function OrderList({ userId }: { userId: string }) {
 
   const filteredOrders = useMemo(() => {
     if (activeTab === 'all') return orderData;
-    return orderData.filter((order: any) => order.status === activeTab);
+    return orderData.filter(({ status }) => status === activeTab);
   }, [orderData, activeTab]);
 
   const filteredOrdersSearch = useMemo(() => {
     if (!debouncedSearch) return filteredOrders;
     const search = debouncedSearch.toLowerCase();
-    return filteredOrders.filter((order: any) =>
+    return filteredOrders.filter((order: DisplayOrder) =>
       [
         order?.payment?.name,
         order?.status,
@@ -102,9 +108,10 @@ export function OrderList({ userId }: { userId: string }) {
 
   const statusObj = useMemo(() => {
     const orderData =
-      orders?.map((order: any) => ({
+      orders?.map((order: TGetFilterOrder[number]) => ({
         id: order.id,
-        date: new Date(order.createdAt).toISOString().split('T')[0] || new Date('yyyy-mm-dd'),
+        date: new Date(order.createdAt ? order.createdAt : new Date()).toISOString().split('T')[0],
+
         finalTotal: order?.finalTotal || 0,
         status: order.status
       })) || [];
@@ -180,7 +187,7 @@ export function OrderList({ userId }: { userId: string }) {
           variant='pills'
           content='center'
           value={activeTab}
-          onChange={(value: any) => setActiveTab(value)}
+          onChange={value => setActiveTab(value as any)}
           styles={{
             tab: {
               border: '1px solid',
@@ -252,7 +259,7 @@ export function OrderList({ userId }: { userId: string }) {
                       </Table.Td>
                     </Table.Tr>
                   ) : displayedOrders?.length > 0 ? (
-                    displayedOrders.map((order: any) => {
+                    displayedOrders.map((order: DisplayOrder) => {
                       const statusInfo = getStatusInfo(order.status as OrderStatus);
                       return (
                         <Table.Tr key={order.id}>

@@ -5,18 +5,25 @@ import {
   Flex,
   Highlight,
   Loader,
+  MantineSize,
   Modal,
   NavLink,
   ScrollArea,
   Spoiler,
+  StyleProp,
   Text,
   TextInput
 } from '@mantine/core';
 import { useDebouncedValue, useDisclosure, useWindowEvent } from '@mantine/hooks';
 import { IconBrandFacebook, IconCheese, IconHome, IconListTree, IconSearch, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
+import { SearchGlobal } from '~/shared/type-trpc/search.type-trpc';
 import { api } from '~/trpc/react';
-
+type ResultSearch = {
+  type: string;
+  label: string;
+  data: any;
+};
 const defaultGlobalSearchData = [
   {
     type: 'admintrator',
@@ -61,10 +68,11 @@ const defaultGlobalSearchData = [
   }
 ];
 
-export const GlobalSearch = ({ width }: any) => {
+export const GlobalSearch = ({ width }: { width?: StyleProp<number | string> | MantineSize }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [value, setValue] = useState('');
-  const [results, setResults] = useState<{ type: string; label: string; data: any }[]>([]);
+  const [results, setResults] = useState<ResultSearch[]>([]);
+
   const [debounced] = useDebouncedValue(value, 500);
 
   const { data, isLoading } = api.Search.searchGlobal.useQuery(
@@ -80,12 +88,12 @@ export const GlobalSearch = ({ width }: any) => {
   });
   useEffect(() => {
     if (debounced) {
-      const rs: any = [];
+      const rs: ResultSearch[] = [];
       if (data && data.categories.length > 0) {
         rs.push({
           type: 'category',
           label: 'Danh mục',
-          data: data.categories.map((item: any) => ({
+          data: data.categories.map((item: SearchGlobal['categories'][number]) => ({
             ...item,
             icon: <IconListTree key={item.id} size={24} />
           }))
@@ -95,7 +103,7 @@ export const GlobalSearch = ({ width }: any) => {
         rs.push({
           type: 'product',
           label: 'Sản phẩm',
-          data: data.products.map((item: any) => ({
+          data: data.products.map((item: SearchGlobal['products'][number]) => ({
             ...item,
             icon: <IconCheese key={item.id} size={24} />
           }))
@@ -105,7 +113,7 @@ export const GlobalSearch = ({ width }: any) => {
         rs.push({
           type: 'user',
           label: 'Người dung',
-          data: data.users.map((item: any) => ({
+          data: data.users.map((item: SearchGlobal['users'][number]) => ({
             ...item,
             icon: <IconUser key={item.id} size={24} />
           }))

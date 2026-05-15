@@ -19,7 +19,7 @@ import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { Note } from './Note';
-export const CartTable = ({ updateQuantity }: any) => {
+export const CartTable = ({ updateQuantity }: { updateQuantity: (id: string, quantity: number) => void }) => {
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
 
   return (

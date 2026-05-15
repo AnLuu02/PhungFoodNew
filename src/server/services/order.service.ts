@@ -10,8 +10,8 @@ export const findOrderService = async (
     skip: number;
     take: number;
     s?: string;
-    filter?: any;
-    sort?: any;
+    filter?: string | null;
+    sort?: string[];
   }
 ) => {
   const { skip, take, s, filter, sort } = input;

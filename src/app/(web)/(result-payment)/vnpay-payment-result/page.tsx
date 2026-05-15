@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
 import { getVietnameseStatusMessage, mapOrderStatusToUIStatus } from '~/lib/FuncHandler/Payment';
+import { TGetOneOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 import OrderStatusPage from './components/OrderStatusPage';
 import { PaymentStatusCardSkeleton } from './components/SkeletonLoading';
@@ -42,7 +43,7 @@ export default function PaymentResult() {
         data &&
         !hasSent.current
       ) {
-        const order: any = data;
+        const order: TGetOneOrder = data;
         hasSent.current = true;
         const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
         fetch('/api/send-invoice', {

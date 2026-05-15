@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
 import { api } from '~/trpc/server';
 import ProductDetailClient from './pageClient';
 
@@ -29,7 +30,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 
   const { product } = productData;
-  const imageUrl = product?.imageForEntities?.map((item: any) => item?.image?.url).filter(Boolean) ?? [];
+  const imageUrl =
+    product?.imageForEntities
+      ?.map((item: NonNullable<GetInitProductDetail>['product']['imageForEntities'][number]) => item?.image?.url)
+      ?.filter(Boolean) ?? [];
 
   return {
     title: `${product.name} - Phụng Food`,
@@ -37,7 +41,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       title: product.name,
       description: product.description || '',
-      images: imageUrl
+      images: imageUrl as any
     }
   };
 }

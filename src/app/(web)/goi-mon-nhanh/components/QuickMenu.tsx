@@ -9,6 +9,7 @@ import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import ProductCardSkeleton from '~/components/Web/Card/CardProductSkeleton';
 import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCategory; LIMIT_DATA: number }) => {
   const utils = api.useUtils();
@@ -73,10 +74,10 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
       <Flex direction={'column'} w={'100%'}>
         <Grid>
           {isLoading ? (
-            [1, 2, 3, 4, 5, 6, 7, 8].map((item: any, index: number) => (
+            [1, 2, 3, 4, 5, 6, 7, 8].map((item: number, index: number) => (
               <GridCol
                 span={{ base: 12, sm: 6, md: 6, lg: 3 }}
-                key={`${item.id}+${index}`}
+                key={`${item}+${index}`}
                 className='animate-fadeUp'
                 style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
               >
@@ -84,7 +85,7 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
               </GridCol>
             ))
           ) : products?.length > 0 ? (
-            products.map((item: any, index: number) => (
+            products.map((item: FindInfiniteProduct['items'][number], index: number) => (
               <GridCol
                 span={{ base: 12, sm: 6, md: 6, lg: 3 }}
                 key={`${item.id}+${index}`}
@@ -103,10 +104,10 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
       </Flex>
       {hasNextPage && (
         <Grid ref={ref} mt={'md'}>
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((item: any, index: number) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((item: number, index: number) => (
             <GridCol
               span={{ base: 12, sm: 6, md: 6, lg: 3 }}
-              key={`${item.id}+${index}`}
+              key={`${item}+${index}`}
               className='animate-fadeUp'
               style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
             >

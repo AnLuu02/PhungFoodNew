@@ -121,7 +121,7 @@ export const getInitProductDetailPageService = async (db: PrismaClient, input: {
     getVoucherAppliedAllService(db)
   ]);
 
-  const results: any = {
+  const results = {
     product,
     dataRelatedProducts: dataRelatedProducts?.status === 'fulfilled' ? dataRelatedProducts.value : [],
     dataHintProducts: dataHintProducts?.status === 'fulfilled' ? dataHintProducts.value : [],
@@ -154,7 +154,15 @@ export const getInitAdminPageService = async (db: PrismaClient) => {
 export const getInitReportPageService = async (db: PrismaClient, input: { startTime?: number; endTime?: number }) => {
   const { startTime, endTime } = input;
   const queryOverview = { startTime, endTime };
-  const results: any = await Promise.allSettled([
+  const [
+    overview,
+    topUsers,
+    revenueByCategories,
+    topProducts,
+    revenueByOrderStatus,
+    distributionProducts,
+    recentActivitiesApp
+  ] = await Promise.all([
     getOverviewRevenueService(db, queryOverview),
     getTopUsersService(db, queryOverview),
     getRevenueByCategoryService(db, queryOverview),
@@ -170,15 +178,6 @@ export const getInitReportPageService = async (db: PrismaClient, input: { startT
     })
   ]);
 
-  const [
-    overview,
-    topUsers,
-    revenueByCategories,
-    topProducts,
-    revenueByOrderStatus,
-    distributionProducts,
-    recentActivitiesApp
-  ] = results.map((item: any) => (item.status === 'fulfilled' ? item.value : Array.isArray(item.value) ? [] : {}));
   return {
     overview,
     topUsers,

@@ -33,7 +33,7 @@ export const deleteFavouriteFoodService = async (db: PrismaClient, input: { prod
   };
 };
 
-export const getFilterFavouriteFoodService = async (db: PrismaClient, input: any) => {
+export const getFilterFavouriteFoodService = async (db: PrismaClient, input: { s: string }) => {
   const searchQuery = input.s?.trim();
   const favourite_food = await db.favouriteFood.findMany({
     where: {

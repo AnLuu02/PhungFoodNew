@@ -6,6 +6,7 @@ import { IconBrandCashapp, IconCheese, IconReport, IconShoppingCart, IconUser } 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { formatMoneyShort } from '~/lib/FuncHandler/Format';
+import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
 import { ChangeRate } from './components/ChangeRate';
 import { ExportReports } from './components/ExportReportsBtn';
 import ReportDetailPageClient from './components/ReportDetail';
@@ -38,15 +39,16 @@ const dataSelect = [
     disabled: true
   }
 ];
-export default function ReportPageClient({
-  overview,
-  topUsers,
-  revenueByCategories,
-  topProducts,
-  revenueByOrderStatus,
-  distributionProducts,
-  recentActivitiesApp
-}: any) {
+export default function ReportPageClient({ data }: { data: GetInitReport }) {
+  const {
+    overview,
+    topUsers,
+    revenueByCategories,
+    topProducts,
+    revenueByOrderStatus,
+    distributionProducts,
+    recentActivitiesApp
+  } = data;
   const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -116,7 +118,6 @@ export default function ReportPageClient({
       setValue([null, null]);
     }
   }, [period]);
-
   return (
     <Stack mb={'xl'}>
       <Paper withBorder shadow='md' py={'xl'} px={'xl'}>
@@ -134,7 +135,7 @@ export default function ReportPageClient({
             <Select
               allowDeselect={false}
               value={valueSelect}
-              onChange={(value: any) => {
+              onChange={value => {
                 let url = '';
                 if (value === 'all') {
                   params.delete('startTime');
