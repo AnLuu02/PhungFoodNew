@@ -6,8 +6,8 @@ export const newsRouter = createTRPCRouter({
   fetchNews: publicProcedure
     .input(
       z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
+        page: z.number(),
+        limit: z.number(),
         s: z.string().optional()
       })
     )

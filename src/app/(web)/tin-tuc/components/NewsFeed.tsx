@@ -2,34 +2,20 @@
 import { Box, Flex, Highlight, Image, Paper, Skeleton, Stack, Text } from '@mantine/core';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api } from '~/trpc/react';
 
 export const NewsFeed = () => {
   const searchParams = useSearchParams();
-  const { page, limit, s } = useMemo(() => {
-    return {
-      page: 1,
-      limit: 4,
-      s: searchParams.get('s') || ''
-    };
-  }, [searchParams]);
-  const {
-    data = {
-      news: [],
-      pagination: {
-        totalPage: 0,
-        currentPage: 1
-      }
-    },
-    isLoading
-  } = api.News.fetchNews.useQuery({
-    skip: (page - 1) * limit,
-    take: limit,
+  const page = Number(searchParams.get('page') || 1) + 1;
+  const limit = 5;
+  const s = searchParams.get('s') || '';
+  const { data, isLoading } = api.News.fetchNews.useQuery({
+    page,
+    limit,
     s: s
   });
-  const { news } = data || {};
+  const news = data?.news || [];
   if (isLoading)
     return (
       <Stack gap={'md'}>

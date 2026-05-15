@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 };
 const News = async () => {
   const news = await api.News.fetchNews({
-    skip: 1,
-    take: 5,
+    page: 1,
+    limit: 5,
     s: ''
   });
   return (
@@ -23,8 +23,8 @@ const News = async () => {
         order={{ base: 2, sm: 2, md: 1, lg: 1 }}
         className='h-fit animate-fadeUp'
       >
-        <NewsList />
-        <Center mt={'lg'}>
+        <NewsList initData={news} />
+        <Center mt={'xl'}>
           <CustomPagination totalPages={news.pagination.totalPage} />
         </Center>
       </GridCol>
