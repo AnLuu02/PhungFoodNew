@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import TimelineRecentActivity from '~/components/TimelineRecentActivity';
+import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
 
 const navReportDetails = [
   {
@@ -59,7 +60,13 @@ const navReportDetails = [
   }
 ];
 
-export default function ReportDetailPageClient({ overviews, recentActivitiesApp }: any) {
+export default function ReportDetailPageClient({
+  overviews,
+  recentActivitiesApp
+}: {
+  overviews: GetInitReport['overview'];
+  recentActivitiesApp: GetInitReport['recentActivitiesApp'];
+}) {
   const searchParams = useSearchParams();
   const startTime = searchParams.get('startTime');
   const endTime = searchParams.get('endTime');
@@ -80,7 +87,7 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
       summaryUsers[label] = 0;
     });
 
-    revenues.forEach((revenue: any) => {
+    revenues.forEach((revenue: NonNullable<GetInitReport['overview']['revenues']>[number]) => {
       const day = +revenue.day;
       const month = +revenue.month;
       const year = +revenue.year;
@@ -91,8 +98,8 @@ export default function ReportDetailPageClient({ overviews, recentActivitiesApp 
     });
 
     const users = overviews.users || [];
-    users.forEach((user: any) => {
-      const date = new Date(user.createdAt);
+    users.forEach((user: GetInitReport['overview']['users'][number]) => {
+      const date = user.createdAt ? new Date(user.createdAt) : new Date();
       const key = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
       if (labels.includes(key)) {
         summaryUsers[key]! += 1;

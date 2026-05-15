@@ -1,8 +1,10 @@
 import { Box, Flex, Paper, Radio, Skeleton, Stack, Text, Title } from '@mantine/core';
-import { Controller } from 'react-hook-form';
+import { Control, Controller } from 'react-hook-form';
+import { DeliveryCheckout } from '~/shared/schema/delivery.schema';
+import { GetAllPayment } from '~/shared/type-trpc/payment.type-trpc';
 import { api } from '~/trpc/react';
 
-export const PaymentForm = ({ control }: any) => {
+export const PaymentForm = ({ control }: { control: Control<DeliveryCheckout, any, DeliveryCheckout> }) => {
   const { data: payment = [], isLoading } = api.Payment.getAll.useQuery(undefined, {
     enabled: !!control
   });
@@ -36,7 +38,7 @@ export const PaymentForm = ({ control }: any) => {
                   error={fieldState.error?.message}
                 >
                   <Stack>
-                    {payment?.map((item: any, index: number) => (
+                    {payment?.map((item: GetAllPayment[number], index: number) => (
                       <Paper withBorder p='md'>
                         <Radio
                           label={

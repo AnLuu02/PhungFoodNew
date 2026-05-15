@@ -4,8 +4,15 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
+import { FindProduct } from '~/shared/type-trpc/product.type-trpc';
 
-export const MenuList = ({ responseData, isLoading }: { responseData: any; isLoading: boolean }) => {
+export const MenuList = ({
+  responseData,
+  isLoading
+}: {
+  responseData: NonNullable<FindProduct>;
+  isLoading: boolean;
+}) => {
   const products = responseData?.products || [];
   return (
     <>
@@ -40,7 +47,7 @@ export const MenuList = ({ responseData, isLoading }: { responseData: any; isLoa
               </GridCol>
             ))
           ) : products?.length > 0 ? (
-            products.map((item: any) => (
+            products.map((item: NonNullable<FindProduct>['products'][number]) => (
               <GridCol key={item.id} span={{ base: 6, md: 4, lg: 3 }}>
                 <ProductCardCarouselVertical key={item.id} data={item} />
               </GridCol>

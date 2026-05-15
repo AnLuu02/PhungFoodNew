@@ -22,6 +22,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { getInfoLevelUser } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { GetTotalSpentInMonthByUser } from '~/shared/type-trpc/revenue.type-trpc';
 import { api } from '~/trpc/react';
 
 const months = [
@@ -54,7 +55,11 @@ export function UserStatistics({ userId }: { userId: string }) {
     return {
       mockSpendingData: months.map(item => ({
         ...item,
-        amount: Number(revenue?.find((spend: any) => spend.month === months.indexOf(item) + 1)?.totalSpent) || 0
+        amount:
+          Number(
+            revenue?.find((spend: GetTotalSpentInMonthByUser[number]) => spend.month === months.indexOf(item) + 1)
+              ?.totalSpent
+          ) || 0
       })),
       totalSpent: revenue?.reduce((sum, item) => sum + Number(item?.totalSpent || 0), 0) || 0
     };

@@ -17,10 +17,10 @@ export default async function PaymentManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   const allData = await api.Payment.getAll();
-  const data = await api.Payment.find({ skip: +currentPage, take: +limit, s });
+  const data = await api.Payment.find({ skip: +page, take: +limit, s });
 
   return (
     <>
@@ -43,7 +43,7 @@ export default async function PaymentManagementPage({
             <CreatePaymentButton />
           </Group>
         </Group>
-        <TablePayment data={data} allData={allData} s={s} />
+        <TablePayment data={data} queryParams={{ s, page, limit }} />
       </Stack>
     </>
   );

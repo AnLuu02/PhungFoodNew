@@ -2,7 +2,15 @@
 import { Flex, Group, Paper, Skeleton, Text, Title } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
-export default function HeaderSearchResults({ s, totalProducts, isLoading }: any) {
+export default function HeaderSearchResults({
+  s,
+  totalProducts,
+  isLoading
+}: {
+  s: string | null;
+  totalProducts: number;
+  isLoading: boolean;
+}) {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);

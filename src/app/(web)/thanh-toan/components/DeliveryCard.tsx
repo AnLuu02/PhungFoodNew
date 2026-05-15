@@ -1,9 +1,18 @@
 import { Card, Grid, GridCol, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
-import { Controller } from 'react-hook-form';
+import { Control, Controller, UseFormSetValue } from 'react-hook-form';
 import AddressSection from '~/components/AdressSection';
+import { DeliveryCheckout } from '~/shared/schema/delivery.schema';
 
-export function DeliveryCard({ control, setValue, name }: { control: any; setValue: any; name: string }) {
+export function DeliveryCard({
+  control,
+  setValue,
+  name
+}: {
+  control: Control<DeliveryCheckout, any, DeliveryCheckout>;
+  setValue: UseFormSetValue<DeliveryCheckout>;
+  name: string;
+}) {
   return (
     <Card shadow='sm' padding='lg' withBorder>
       <Title order={2} className='mb-4 font-quicksand text-xl'>
@@ -13,7 +22,7 @@ export function DeliveryCard({ control, setValue, name }: { control: any; setVal
         <Grid>
           <GridCol span={12}>
             <Controller
-              name={`${name}.email`}
+              name={`${name}.email` as any}
               control={control}
               render={({ field, fieldState }) => (
                 <TextInput
@@ -30,7 +39,7 @@ export function DeliveryCard({ control, setValue, name }: { control: any; setVal
           </GridCol>
           <GridCol span={12}>
             <Controller
-              name={`${name}.name`}
+              name={`${name}.name` as any}
               control={control}
               render={({ field, fieldState }) => (
                 <TextInput
@@ -46,7 +55,7 @@ export function DeliveryCard({ control, setValue, name }: { control: any; setVal
           </GridCol>
           <GridCol span={12}>
             <Controller
-              name={`${name}.phone`}
+              name={`${name}.phone` as any}
               control={control}
               defaultValue=''
               render={({ field, fieldState }) => (
@@ -66,7 +75,7 @@ export function DeliveryCard({ control, setValue, name }: { control: any; setVal
           </GridCol>
           <GridCol span={12}>
             <Controller
-              name={`${name}.note`}
+              name={`${name}.note` as any}
               control={control}
               defaultValue=''
               render={({ field }) => (

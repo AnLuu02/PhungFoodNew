@@ -14,10 +14,21 @@ import CardVoucher from './card-voucher';
 import { UpdateVoucherModal } from './Modal/UpdateVoucherModal';
 import { ViewVoucherModal } from './Modal/ViewVoucherModal';
 
-export default function VoucherClient({ s, data, allData }: { s: string; data: FindVoucher; allData?: GetAllVoucher }) {
+export default function VoucherClient({
+  queryParams,
+  data,
+  allData
+}: {
+  queryParams: {
+    s: string;
+    page: string;
+    limit: string;
+  };
+  data: FindVoucher;
+  allData?: GetAllVoucher;
+}) {
   const searchParams = useSearchParams();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
+  const { s, page, limit } = queryParams;
   const { data: dataClient } = api.Voucher.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
   const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined, { initialData: allData });
   const [selectedPromotion, setSelectedPromotion] = useState<{ type: 'edit' | 'view'; data: any } | null>(null);

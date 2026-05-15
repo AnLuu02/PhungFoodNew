@@ -17,14 +17,14 @@ export default async function ReviewManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const sortArr = (
+  const sortArr: string[] = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
   const [allData, data] = await Promise.all([
     api.Review.getAll(),
-    api.Review.find({ skip: +currentPage, take: +limit, s, sort: sortArr })
+    api.Review.find({ skip: +page, take: +limit, s, sort: sortArr })
   ]);
   return (
     <>
@@ -41,7 +41,7 @@ export default async function ReviewManagementPage({
           </Box>
           <CreateReviewButton />
         </Flex>
-        <TableReview data={data} s={s} allData={allData} />
+        <TableReview data={data} queryParams={{ s, page, limit, sortArr }} allData={allData} />
       </Stack>
     </>
   );

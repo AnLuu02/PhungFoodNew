@@ -28,14 +28,25 @@ import { FindUser, GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
 
-export default function TableUser({ s, data, allData }: { s: string; data: FindUser; allData: GetAllUser }) {
+export default function TableUser({
+  queryParams,
+  data,
+  allData
+}: {
+  queryParams: {
+    s: string;
+    page: string;
+    limit: string;
+    sortArr: string[];
+    filter?: string;
+  };
+  data: FindUser;
+  allData: GetAllUser;
+}) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
-  const sortArr = searchParams.getAll('sort');
-  const filter = searchParams.get('filter');
+  const { s, page, limit, sortArr, filter } = queryParams;
 
   const { data: dataClient } = api.User.find.useQuery(
     { skip: +page, take: +limit, s, sort: sortArr, filter: filter + '@#@$@@' },

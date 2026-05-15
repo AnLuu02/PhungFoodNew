@@ -12,3 +12,8 @@ export const baseDeliverySchema = z.object({
 });
 
 export type DeliveryInput = z.infer<typeof baseDeliverySchema>;
+export type DeliveryInputWithoutOrderId = Omit<DeliveryInput, 'orderId'>;
+export type DeliveryCheckout = {
+  delivery: DeliveryInputWithoutOrderId;
+  paymentId: string;
+};

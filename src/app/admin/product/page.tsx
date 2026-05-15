@@ -18,12 +18,12 @@ export default async function ProductManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   const [allData, data] = await Promise.all([
     api.Product.getAll({ userRole: UserRole.ADMIN }),
     api.Product.find({
-      page: +currentPage,
+      page: +page,
       limit: +limit,
       userRole: UserRole.ADMIN,
       s,
@@ -47,7 +47,7 @@ export default async function ProductManagementPage({
           <CreateProductButton />
         </Flex>
 
-        <TableProduct data={data} s={s} allData={allData} />
+        <TableProduct data={data} queryParams={{ s, page, limit }} allData={allData} />
       </Stack>
     </>
   );

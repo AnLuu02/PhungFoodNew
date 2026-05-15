@@ -14,36 +14,44 @@ import {
   Tooltip
 } from '@mantine/core';
 import { IconBrandCashapp, IconDumpling, IconMeat, IconMoneybag, IconMushroomFilled } from '@tabler/icons-react';
-import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SendOrderButton } from '~/app/admin/order/components/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { FindInvoice, GetAllInvoice } from '~/shared/type-trpc/invoice.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '../Button';
 
-export default function TableInvoice({ s, data, allData }: { s: string; data: any; allData: any }) {
-  const searchParams = useSearchParams();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
+export default function TableInvoice({
+  queryParams,
+  data,
+  allData
+}: {
+  queryParams: { s: string; page: string; limit: string };
+  data: FindInvoice;
+  allData: GetAllInvoice;
+}) {
+  const { s, page, limit } = queryParams;
   const { data: dataClient } = api.Invoice.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
-
   const { data: allDataClient } = api.Invoice.getAll.useQuery(undefined, { initialData: allData });
   const currentItems = dataClient?.invoices || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: any, item: any) => {
+      (
+        acc: { PAID: number; DRAFT: number; CANCELLED: number; ForeignCurrency: number; VND: number },
+        item: GetAllInvoice[number]
+      ) => {
         item.status === 'PAID' && (acc['PAID'] += 1);
-        item.status === 'PENDING' && (acc['PENDING'] += 1);
+        item.status === 'DRAFT' && (acc['DRAFT'] += 1);
         item.status === 'CANCELLED' && (acc['CANCELLED'] += 1);
         item.currency !== 'VND' && (acc['ForeignCurrency'] += 1);
         item.currency === 'VND' && (acc['VND'] += 1);
         return acc;
       },
-      { PAID: 0, PENDING: 0, CANCELLED: 0, ForeignCurrency: 0, VND: 0 }
+      { PAID: 0, DRAFT: 0, CANCELLED: 0, ForeignCurrency: 0, VND: 0 }
     );
     return [
       {
@@ -54,7 +62,7 @@ export default function TableInvoice({ s, data, allData }: { s: string; data: an
       },
       {
         label: 'Đang chờ ',
-        value: summary['PENDING'],
+        value: summary['DRAFT'],
         icon: IconDumpling,
         color: '#499764'
       },
@@ -120,8 +128,8 @@ export default function TableInvoice({ s, data, allData }: { s: string; data: an
 
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((row: any, index: number) => (
-                <Table.Tr key={row.id}>
+              currentItems.map((row: FindInvoice['invoices'][number], index: number) => (
+                <Table.Tr key={row.id + index}>
                   <Table.Td>
                     <Text fw={700} size='sm' c='blue'>
                       {row.invoiceNumber}
@@ -154,7 +162,7 @@ export default function TableInvoice({ s, data, allData }: { s: string; data: an
                   <Table.Td>
                     <Badge
                       variant='light'
-                      color={row.status === 'PAID' ? 'green' : row.status === 'PENDING' ? 'yellow' : 'red'}
+                      color={row.status === 'PAID' ? 'green' : row.status === 'DRAFT' ? 'yellow' : 'red'}
                       fullWidth
                     >
                       {row.status}

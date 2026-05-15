@@ -1,6 +1,7 @@
 'use client';
 import { Box } from '@mantine/core';
 import { useProductFilters } from '~/components/Hooks/use-product-filter';
+import { FindProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 import HeaderMenu from './components/HeaderMenu';
 import { MenuList } from './components/MenuList';
@@ -11,7 +12,7 @@ export default function MenuSection() {
   return (
     <Box pos={'relative'}>
       <HeaderMenu totalProducts={data?.pagination?.totalProducts || 0} isLoading={isLoading} />
-      <MenuList responseData={data} isLoading={isLoading} />
+      <MenuList responseData={data as FindProduct} isLoading={isLoading} />
     </Box>
   );
 }

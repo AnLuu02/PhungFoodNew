@@ -19,18 +19,19 @@ export default async function UserManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   const allData = await api.User.getAll();
-  const sortArr = (
+  const sortArr: string[] = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
+  const filter = searchParams?.filter + '@#@$@@';
   const data = await api.User.find({
-    skip: +currentPage,
+    skip: +page,
     take: +limit,
     s,
     sort: sortArr,
-    filter: searchParams?.filter + '@#@$@@'
+    filter
   });
   return (
     <>
@@ -48,7 +49,7 @@ export default async function UserManagementPage({
           <CreateUserButton />
         </Flex>
 
-        <TableUser data={data} allData={allData} s={s} />
+        <TableUser data={data} allData={allData} queryParams={{ s, page, limit, sortArr, filter }} />
       </Stack>
     </>
   );

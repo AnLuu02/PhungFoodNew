@@ -14,14 +14,19 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { FindReview, GetAllReview } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function TableReview({ s, data, allData }: { s: string; data: FindReview; allData?: GetAllReview }) {
+export default function TableReview({
+  queryParams,
+  data,
+  allData
+}: {
+  queryParams: { s: string; page: string; limit: string; sortArr: string[] };
+  data: FindReview;
+  allData?: GetAllReview;
+}) {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
-  const sortArr = searchParams.getAll('sort');
-
+  const { s, page, limit, sortArr } = queryParams;
   const { data: dataClient } = api.Review.find.useQuery(
     { skip: +page, take: +limit, s, sort: sortArr },
     { initialData: data }

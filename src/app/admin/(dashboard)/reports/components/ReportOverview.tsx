@@ -8,7 +8,8 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-export default function ReportOverviewPageClient({ overviews }: any) {
+import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
+export default function ReportOverviewPageClient({ overviews }: { overviews: GetInitReport['overview'] }) {
   const revenues = overviews.revenues || [];
   const searchParams = useSearchParams();
   const startTime = searchParams.get('startTime');
@@ -35,7 +36,7 @@ export default function ReportOverviewPageClient({ overviews }: any) {
       summaryUsers[label] = 0;
     });
 
-    revenues.forEach((revenue: any) => {
+    revenues.forEach((revenue: NonNullable<GetInitReport['overview']['revenues']>[number]) => {
       const day = +revenue.day;
       const month = +revenue.month;
       const year = +revenue.year;
@@ -46,8 +47,8 @@ export default function ReportOverviewPageClient({ overviews }: any) {
     });
 
     const users = overviews.users || [];
-    users.forEach((user: any) => {
-      const date = new Date(user.createdAt);
+    users.forEach((user: NonNullable<GetInitReport['overview']['users']>[number]) => {
+      const date = user.createdAt ? new Date(user.createdAt) : new Date();
       const key = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
       if (labels.includes(key)) {
         summaryUsers[key]! += 1;
@@ -165,7 +166,7 @@ export default function ReportOverviewPageClient({ overviews }: any) {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {overviews.orders.map((order: any) => {
+              {overviews.orders.map((order: NonNullable<GetInitReport['overview']['orders']>[number]) => {
                 const statusInfo = getStatusInfo(order.status as OrderStatus);
                 return (
                   <Table.Tr key={order.id}>

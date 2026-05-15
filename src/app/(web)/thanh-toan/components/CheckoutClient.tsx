@@ -22,17 +22,12 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { baseDeliverySchema, DeliveryInput } from '~/shared/schema/delivery.schema';
+import { baseDeliverySchema, DeliveryCheckout } from '~/shared/schema/delivery.schema';
 import { TGetOneOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
 import { PaymentForm } from './PaymentForm';
-type DeliveryInputWithoutOrderId = Omit<DeliveryInput, 'orderId'>;
-type DeliveryCheckout = {
-  delivery: DeliveryInputWithoutOrderId;
-  paymentId: string;
-};
 
 export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOrder> }) {
   const [loading, setLoading] = useState(false);

@@ -5,6 +5,7 @@ import { Card, Grid, GridCol, Paper, Title } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
 
 const orderStatusData = [
   { name: 'Hoàn thành', value: 850, color: 'green.6' },
@@ -13,7 +14,7 @@ const orderStatusData = [
   { name: 'Đang giao', value: 195, color: 'orange.6' }
 ];
 
-export default function ReportOrderPageClient({ overviews }: any) {
+export default function ReportOrderPageClient({ overviews }: { overviews: GetInitReport['overview'] }) {
   const revenues = overviews.revenues || [];
   const searchParams = useSearchParams();
   const startTime = searchParams.get('startTime');
@@ -32,7 +33,7 @@ export default function ReportOrderPageClient({ overviews }: any) {
       summaryRevenue[label] = 0;
     });
 
-    revenues.forEach((revenue: any) => {
+    revenues.forEach((revenue: NonNullable<GetInitReport['overview']['revenues']>[number]) => {
       const day = +revenue.day;
       const month = +revenue.month;
       const year = +revenue.year;

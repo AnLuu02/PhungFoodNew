@@ -5,8 +5,13 @@ import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { TGetOneOrder } from '~/shared/type-trpc/order.type-trpc';
 
-export function CartItemPayment({ item }: any) {
+export function CartItemPayment({
+  item
+}: {
+  item: NonNullable<TGetOneOrder>['orderItems'][number]['product'] & { note: string | null; quantity: number };
+}) {
   const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   return (
     <>

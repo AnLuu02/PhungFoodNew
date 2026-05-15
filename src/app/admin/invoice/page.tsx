@@ -18,10 +18,10 @@ export default async function InvoiceManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
+  const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   const allData = await api.Invoice.getAll();
-  const data = await api.Invoice.find({ skip: +currentPage, take: +limit, s });
+  const data = await api.Invoice.find({ skip: +page, take: +limit, s });
 
   return (
     <>
@@ -49,7 +49,7 @@ export default async function InvoiceManagementPage({
           </Group>
         </Group>
 
-        <TableInvoice allData={allData} data={data} s={s} />
+        <TableInvoice allData={allData} data={data} queryParams={{ s, page, limit }} />
       </Stack>
     </>
   );

@@ -19,13 +19,20 @@ import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 import { FindProduct, GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function TableProduct({ s, data, allData }: { s: string; data: FindProduct; allData: GetAllProduct }) {
+export default function TableProduct({
+  queryParams,
+  data,
+  allData
+}: {
+  queryParams: { s: string; page: string; limit: string };
+  data: FindProduct;
+  allData: GetAllProduct;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
+  const { s, page, limit } = queryParams;
   const { data: categories, isLoading } = api.Category.getAll.useQuery();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
   const { data: dataClient } = api.Product.find.useQuery(
     { page: +page, limit: +limit, s, userRole: UserRole.ADMIN, filter: searchParams?.get('filter') + '@#@$@@' },
     { initialData: data }

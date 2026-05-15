@@ -6,10 +6,11 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import Empty from '~/components/Empty';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { api, RouterOutputs } from '~/trpc/react';
+import { FetchNews } from '~/shared/type-trpc/news.type-trpc';
+import { api } from '~/trpc/react';
 import { NewsItemSkeleton } from './NewsItemSkeleton';
 
-export const NewsList = ({ initData }: { initData: RouterOutputs['News']['fetchNews'] }) => {
+export const NewsList = ({ initData }: { initData: FetchNews }) => {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get('page') || 1);
   const limit = Number(searchParams.get('limit') || 5);
@@ -41,7 +42,7 @@ export const NewsList = ({ initData }: { initData: RouterOutputs['News']['fetchN
         {isLoading ? (
           Array.from({ length: limit }, (_, i) => <NewsItemSkeleton key={i} />)
         ) : news && news?.length > 0 ? (
-          news?.map((item: any) => (
+          news?.map((item: FetchNews['news'][number]) => (
             <Flex
               key={item.id}
               direction={{ base: 'column', sm: 'row' }}

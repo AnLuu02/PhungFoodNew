@@ -3,6 +3,7 @@ import { Box, Flex, Highlight, Image, Paper, Skeleton, Stack, Text } from '@mant
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { FetchNews } from '~/shared/type-trpc/news.type-trpc';
 import { api } from '~/trpc/react';
 
 export const NewsFeed = () => {
@@ -54,7 +55,7 @@ export const NewsFeed = () => {
         </Box>
         <Stack gap={'sm'} p={'xs'}>
           {news && news?.length > 0 ? (
-            news?.slice(0, 4).map((item: any) => (
+            news?.slice(0, 4).map((item: FetchNews['news'][number]) => (
               <Link key={item.id} className='h-full w-full' href={item.link} target='_blank'>
                 <Flex gap={'sm'} align={'flex-start'} justify={'flex-start'}>
                   <Paper radius={0} className='overflow-hidden' w={100} h={64}>

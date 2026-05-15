@@ -1,17 +1,21 @@
 'use client';
 
 import { Badge, Box, Group, Table, Text } from '@mantine/core';
-import { useSearchParams } from 'next/navigation';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { FindPayment } from '~/shared/type-trpc/payment.type-trpc';
 import { api } from '~/trpc/react';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 
-export default function TablePayment({ s, data, allData }: { s: string; data: any; allData?: any }) {
-  const searchParams = useSearchParams();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
+export default function TablePayment({
+  queryParams,
+  data
+}: {
+  queryParams: { s: string; page: string; limit: string };
+  data: FindPayment;
+}) {
+  const { s, page, limit } = queryParams;
   const { data: dataClient } = api.Payment.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
   const currentItems = dataClient?.payments || [];
 
@@ -38,7 +42,7 @@ export default function TablePayment({ s, data, allData }: { s: string; data: an
           </Table.Thead>
           <Table.Tbody>
             {currentItems.length > 0 ? (
-              currentItems.map((row: any) => (
+              currentItems.map((row: FindPayment['payments'][number]) => (
                 <Table.Tr key={row.id}>
                   <Table.Td>{row.id}</Table.Td>
                   <Table.Td>{row.provider}</Table.Td>
