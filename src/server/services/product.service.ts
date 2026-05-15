@@ -470,6 +470,21 @@ export const findInfiniteProductService = async (
         : undefined
     },
     cursor: cursor ? { id: cursor } : undefined,
+    include: {
+      imageForEntities: { include: { image: true } },
+      materials: true,
+      subCategory: {
+        select: {
+          id: true,
+          tag: true,
+          name: true,
+          category: true,
+          imageForEntity: { include: { image: true } }
+        }
+      },
+      review: true,
+      favouriteFood: true
+    },
     orderBy: {
       createdAt: 'asc'
     }
