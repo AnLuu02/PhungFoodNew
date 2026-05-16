@@ -43,7 +43,7 @@ export default function ProductUpsert({
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials } = api.Material.getAll.useQuery();
   const { data, isLoading } = api.Product.getOne.useQuery(
-    { s: productId || '', userRole: UserRole.ADMIN },
+    { key: productId || '', userRole: UserRole.ADMIN },
     { enabled: !!productId }
   );
 

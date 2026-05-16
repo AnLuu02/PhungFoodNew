@@ -18,7 +18,12 @@ export default function ReviewUpsert({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data } = api.Review.getOne.useQuery({ id: reviewId || '' }, { enabled: !!reviewId });
-  const { data: products } = api.Product.getAll.useQuery({ hasReview: true, userRole: UserRole.ADMIN });
+  const { data: products } = api.Product.getAll.useQuery({
+    include: {
+      review: true
+    },
+    userRole: UserRole.ADMIN
+  });
   const { data: users } = api.User.getAll.useQuery();
 
   const {

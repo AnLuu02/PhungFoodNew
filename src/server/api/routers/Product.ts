@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
@@ -9,12 +10,13 @@ import {
   getOneProductService,
   upsertProductToCloudinaryService
 } from '~/server/services/product.service';
+import { TUserRole } from '~/shared/constants/user';
 import { productFilterSchema } from '~/shared/schema/product.filter.schema';
 import { productFromDbSchema } from '~/shared/schema/product.schema';
 
 export const productRouter = createTRPCRouter({
   find: publicProcedure
-    .input(productFilterSchema)
+    .input(productFilterSchema.extend({ include: z.custom<Prisma.ProductInclude>().optional() }))
     .query(async ({ ctx, input }) => await findProductService(ctx.db, input)),
   upsertToCloudinary: publicProcedure
     .use(requirePermission('update:product'))
@@ -35,22 +37,17 @@ export const productRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        s: z.string(),
-        hasCategory: z.boolean().default(false).optional(),
-        hasCategoryChild: z.boolean().default(false).optional(),
-        hasReview: z.boolean().default(false).optional(),
-        hasUser: z.boolean().default(false).optional(),
-        userRole: z.string().optional()
+        key: z.string(),
+        userRole: z.custom<TUserRole>().optional(),
+        include: z.custom<Prisma.ProductInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneProductService(ctx.db, input)),
   getAll: publicProcedure
     .input(
       z.object({
-        hasCategory: z.boolean().default(false).optional(),
-        hasCategoryChild: z.boolean().default(false).optional(),
-        hasReview: z.boolean().default(false).optional(),
-        userRole: z.string().optional()
+        include: z.custom<Prisma.ProductInclude>().optional(),
+        userRole: z.custom<TUserRole>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getAllProductService(ctx.db, input)),
@@ -64,7 +61,8 @@ export const productRouter = createTRPCRouter({
             search: z.string().optional(),
             'danh-muc': z.string().nullish()
           })
-          .optional()
+          .optional(),
+        include: z.custom<Prisma.ProductInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findInfiniteProductService(ctx.db, input))

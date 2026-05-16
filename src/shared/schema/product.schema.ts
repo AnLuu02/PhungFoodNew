@@ -2,15 +2,6 @@ import z from 'zod';
 import { createTag } from '~/lib/FuncHandler/generateTag';
 import { imageInfoFromDbSchema, imageInfoInputSchema } from './image.info.schema';
 
-export const getServiceOptionsSchema = z.object({
-  s: z.string().optional(),
-  hasCategory: z.boolean().default(false).optional(),
-  hasUser: z.boolean().default(false).optional(),
-  hasCategoryChild: z.boolean().default(false).optional(),
-  hasReview: z.boolean().default(false).optional(),
-  userRole: z.string().optional()
-});
-
 export const baseProductSchema = z.object({
   id: z.string().optional(),
   name: z.string({ required_error: 'Tên sản phẩm là bắt buộc' }).min(1, 'Tên sản phẩm không được để trống'),
@@ -68,5 +59,3 @@ export const productFromDbSchema = baseProductSchema
 
 export type ProductInput = z.infer<typeof productInputSchema>;
 export type ProductFromDb = z.infer<typeof productFromDbSchema>;
-
-export type ServiceOptions = z.infer<typeof getServiceOptionsSchema>;

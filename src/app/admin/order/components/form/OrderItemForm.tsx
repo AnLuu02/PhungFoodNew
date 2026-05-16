@@ -15,9 +15,15 @@ const OrderItemForm = ({ index }: { index: number }) => {
   });
   const [productOrderItem, setProductOrderItem] = useState<any>({});
   const { data: products } = api.Product.getAll.useQuery({
-    hasCategory: true,
-    hasCategoryChild: true,
-    hasReview: true
+    include: {
+      subCategory: {
+        include: {
+          imageForEntity: { include: { image: true } },
+          category: true
+        }
+      },
+      review: true
+    }
   });
 
   const chooseProduct = watch(`orderItems.${index}.productId`);

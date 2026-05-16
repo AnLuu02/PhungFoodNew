@@ -108,9 +108,15 @@ export const getInitPageService = async (db: PrismaClient) => {
 };
 export const getInitProductDetailPageService = async (db: PrismaClient, input: { slug: string }) => {
   const product = await getOneProductService(db, {
-    s: input?.slug || '',
-    hasCategory: true,
-    hasCategoryChild: true
+    key: input?.slug || '',
+    include: {
+      subCategory: {
+        include: {
+          imageForEntity: { include: { image: true } },
+          category: true
+        }
+      }
+    }
   });
 
   if (!product) return null;

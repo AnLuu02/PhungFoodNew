@@ -3,10 +3,10 @@ import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
-import { UserRole } from '~/shared/constants/user';
+import { TUserRole, UserRole } from '~/shared/constants/user';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { FilterProductOptions } from '~/shared/schema/product.filter.schema';
-import { ProductFromDb, ServiceOptions } from '~/shared/schema/product.schema';
+import { ProductFromDb } from '~/shared/schema/product.schema';
 
 const buildFilter = (input: FilterProductOptions) => {
   const {
@@ -107,8 +107,11 @@ const buildFilter = (input: FilterProductOptions) => {
   ].filter(Boolean);
 };
 
-export const findProductService = async (db: PrismaClient, input: FilterProductOptions) => {
-  const { page, limit, sort } = input;
+export const findProductService = async (
+  db: PrismaClient,
+  input: FilterProductOptions & { include?: Prisma.ProductInclude }
+) => {
+  const { page, limit, sort, include } = input;
 
   const filterParams = buildFilter(input);
   const where: Prisma.ProductWhereInput = {
@@ -124,6 +127,7 @@ export const findProductService = async (db: PrismaClient, input: FilterProductO
       take: limit,
       where,
       include: {
+        ...(include ?? {}),
         imageForEntities: { include: { image: true } },
         materials: true,
         subCategory: {
@@ -176,8 +180,15 @@ export const deleteProductService = async (db: PrismaClient, input: { id: string
     }
   };
 };
-export const getFilterProductService = async (db: PrismaClient, input: ServiceOptions) => {
-  const { s, hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
+export const getFilterProductService = async (
+  db: PrismaClient,
+  input: {
+    s: string;
+    userRole?: TUserRole;
+    include?: Prisma.ProductInclude;
+  }
+) => {
+  const { s, include, userRole } = input;
   const search = s?.trim();
   const product = await db.product.findMany({
     where: {
@@ -219,22 +230,26 @@ export const getFilterProductService = async (db: PrismaClient, input: ServiceOp
       subCategory: {
         include: {
           imageForEntity: { include: { image: true } },
-          ...(hasCategoryChild
-            ? {
-                category: hasCategory ? true : false
-              }
-            : false)
+          category: true
         }
       },
-      review: hasReview ? true : false,
-      favouriteFood: true
+      review: true,
+      favouriteFood: true,
+      ...(include ?? {})
     }
   });
 
   return product;
 };
-export const getOneProductService = async (db: PrismaClient, input: ServiceOptions) => {
-  const { s, hasCategory, hasCategoryChild, hasReview, hasUser, userRole }: any = input;
+export const getOneProductService = async (
+  db: PrismaClient,
+  input: {
+    key: string;
+    userRole?: TUserRole;
+    include?: Prisma.ProductInclude;
+  }
+) => {
+  const { key, include, userRole } = input;
   return await db.product.findFirst({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER
@@ -243,9 +258,10 @@ export const getOneProductService = async (db: PrismaClient, input: ServiceOptio
             isActive: true
           }),
 
-      OR: [{ id: s }, { tag: s }]
+      OR: [{ id: key }, { tag: key }]
     },
     include: {
+      ...(include ?? {}),
       imageForEntities: {
         include: { image: true }
       },
@@ -253,56 +269,28 @@ export const getOneProductService = async (db: PrismaClient, input: ServiceOptio
       subCategory: {
         include: {
           imageForEntity: { include: { image: true } },
-          ...(hasCategoryChild
-            ? {
-                category: hasCategory ? true : false
-              }
-            : false)
+          category: true
         }
-      },
-      review: {
-        ...(hasReview
-          ? {
-              include: {
-                user: {
-                  ...(hasUser
-                    ? {
-                        select: {
-                          id: true,
-                          name: true,
-                          imageForEntity: { include: { image: true } }
-                        }
-                      }
-                    : false)
-                }
-              }
-            }
-          : false)
-      },
-      favouriteFood: true
+      }
     }
   });
 };
-export const getAllProductService = async (db: PrismaClient, input: ServiceOptions) => {
-  const { hasCategory, hasCategoryChild, hasReview, userRole }: any = input;
+export const getAllProductService = async (
+  db: PrismaClient,
+  input: {
+    userRole?: TUserRole;
+    include?: Prisma.ProductInclude;
+  }
+) => {
+  const { include, userRole } = input;
   const product = await db.product.findMany({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
     },
     include: {
+      ...(include ?? {}),
       imageForEntities: { include: { image: true } },
       materials: true,
-      subCategory: {
-        include: {
-          imageForEntity: { include: { image: true } },
-          ...(hasCategoryChild
-            ? {
-                category: hasCategory ? true : false
-              }
-            : undefined)
-        }
-      },
-      review: hasReview ? true : undefined,
       favouriteFood: true
     }
   });
@@ -452,6 +440,7 @@ export const findInfiniteProductService = async (
       search?: string;
       'danh-muc'?: string | null;
     };
+    include?: Prisma.ProductInclude;
   }
 ) => {
   const danhMuc = input.filters?.['danh-muc'];
@@ -471,6 +460,7 @@ export const findInfiniteProductService = async (
     },
     cursor: cursor ? { id: cursor } : undefined,
     include: {
+      ...(input?.include ?? {}),
       imageForEntities: { include: { image: true } },
       materials: true,
       subCategory: {
