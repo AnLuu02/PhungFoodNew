@@ -54,7 +54,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                 #{data?.id}
               </Text>
             </Box>
-            <InvoiceToPrint id={data?.id || ''} />
+            <InvoiceToPrint orderId={data?.id || ''} />
           </Group>
         }
         pos={'relative'}

@@ -2,8 +2,11 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { RoleInput } from '~/shared/schema/role.schema';
 
-export const findRoleService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
-  const { skip, take, s } = input;
+export const findRoleService = async (
+  db: PrismaClient,
+  input: { skip: number; take: number; s?: string; include?: Prisma.RoleInclude }
+) => {
+  const { skip, take, s, include } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
@@ -38,9 +41,7 @@ export const findRoleService = async (db: PrismaClient, input: { skip: number; t
       orderBy: {
         createdAt: 'desc'
       },
-      include: {
-        permissions: true
-      }
+      include: { ...(include ?? {}), permissions: true }
     })
   ]);
 
@@ -55,22 +56,25 @@ export const findRoleService = async (db: PrismaClient, input: { skip: number; t
     }
   };
 };
-export const getAllRoleService = async (db: PrismaClient) => {
+export const getAllRoleService = async (db: PrismaClient, input?: { include?: Prisma.RoleInclude }) => {
   let roles = await db.role.findMany({
     include: {
+      ...(input?.include ?? {}),
       permissions: true,
       users: {
-        include: { role: true }
+        include: {
+          role: true
+        }
       }
     }
   });
   return roles;
 };
-export const getOneRoleService = async (db: PrismaClient, input: { id: string }) => {
+export const getOneRoleService = async (db: PrismaClient, input: { id: string; include?: Prisma.RoleInclude }) => {
   try {
     return await db.role.findUnique({
       where: { id: input.id },
-      include: { permissions: true }
+      include: { ...(input.include ?? {}), permissions: true }
     });
   } catch {
     throw new TRPCError({

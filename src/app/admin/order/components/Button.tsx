@@ -105,7 +105,7 @@ export function UpdateOrderButton({ id }: { id: string }) {
               Cập nhật đơn hàng
             </Title>
 
-            <InvoiceToPrint id={id} />
+            <InvoiceToPrint orderId={id} />
           </Group>
         }
       >

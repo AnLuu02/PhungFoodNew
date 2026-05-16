@@ -15,7 +15,7 @@ export default function MaterialUpsert({
   materialId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data } = api.Material.getOne.useQuery({ s: materialId || '' }, { enabled: !!materialId });
+  const { data } = api.Material.getOne.useQuery({ key: materialId || '' }, { enabled: !!materialId });
 
   const {
     control,

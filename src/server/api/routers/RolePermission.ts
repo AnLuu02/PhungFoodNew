@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
@@ -26,17 +27,26 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        include: z.custom<Prisma.RoleInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findRoleService(ctx.db, input)),
 
-  getAllRole: publicProcedure.query(async ({ ctx }) => await getAllRoleService(ctx.db)),
+  getAllRole: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.RoleInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllRoleService(ctx.db, input)),
   getOne: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.string(), include: z.custom<Prisma.RoleInclude>().optional() }))
     .query(async ({ ctx, input }) => await getOneRoleService(ctx.db, input)),
   getOnePermission: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.string(), include: z.custom<Prisma.PermissionInclude>().optional() }))
     .query(async ({ ctx, input }) => await getOnePermissionService(ctx.db, input)),
   upsertRole: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
@@ -63,7 +73,8 @@ export const rolePermissionRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        include: z.custom<Prisma.PermissionInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findPermissionService(ctx.db, input)),
@@ -87,7 +98,15 @@ export const rolePermissionRouter = createTRPCRouter({
     .use(activityLogger)
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => await deletePermissionService(ctx.db, input)),
-  getAllPermission: publicProcedure.query(async ({ ctx }) => await getAllPermissionService(ctx.db)),
+  getAllPermission: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.PermissionInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllPermissionService(ctx.db, input)),
   //user permision
   updateUserPermissions: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))

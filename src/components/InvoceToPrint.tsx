@@ -5,8 +5,8 @@ import { useReactToPrint } from 'react-to-print';
 import InvoicePrintTemplate from '~/components/Template/InvoicePrintTemplate';
 import { api } from '~/trpc/react';
 
-export default function InvoiceToPrint({ id }: any) {
-  const { data, isLoading } = api.Order.getOne.useQuery({ s: id });
+export default function InvoiceToPrint({ orderId }: { orderId: string }) {
+  const { data, isLoading } = api.Order.getOne.useQuery({ key: orderId });
   const order = data || [];
   const printRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({

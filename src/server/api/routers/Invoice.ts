@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
@@ -15,7 +16,8 @@ export const invoiceRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        include: z.custom<Prisma.InvoiceInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findInvoiceService(ctx.db, input)),
@@ -32,11 +34,20 @@ export const invoiceRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        id: z.string()
+        key: z.string(),
+        include: z.custom<Prisma.InvoiceInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneInvoiceService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllInvoiceService(ctx.db)),
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.InvoiceInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllInvoiceService(ctx.db, input)),
 
   upsert: publicProcedure
     .use(requirePermission('update:invoice'))

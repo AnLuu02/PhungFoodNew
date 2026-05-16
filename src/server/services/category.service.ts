@@ -5,8 +5,11 @@ import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { CategoryInput } from '~/shared/schema/category.schema';
 
-export const findCategoryService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
-  const { skip, take, s } = input;
+export const findCategoryService = async (
+  db: PrismaClient,
+  input: { skip: number; take: number; s?: string; include?: Prisma.CategoryInclude }
+) => {
+  const { skip, take, s, include } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.CategoryWhereInput = {
@@ -35,6 +38,7 @@ export const findCategoryService = async (db: PrismaClient, input: { skip: numbe
         createdAt: 'desc'
       },
       include: {
+        ...(include ?? {}),
         subCategory: {
           select: {
             id: true,
@@ -84,19 +88,24 @@ export const deleteCategoryService = async (db: PrismaClient, input: { id: strin
   };
 };
 
-export const getOneCategoryService = async (db: PrismaClient, input: { s?: string }) => {
-  const searchQuery = input.s?.trim();
+export const getOneCategoryService = async (
+  db: PrismaClient,
+  input: { key: string; include?: Prisma.CategoryInclude }
+) => {
+  const { key, include } = input;
   const category = await db.category.findFirst({
     where: {
-      OR: [{ id: searchQuery }, { name: searchQuery }, { tag: searchQuery }]
-    }
+      OR: [{ id: key }, { tag: key }]
+    },
+    include
   });
   return category;
 };
 
-export const getAllCategoryService = async (db: PrismaClient) => {
+export const getAllCategoryService = async (db: PrismaClient, input?: { include?: Prisma.CategoryInclude }) => {
   let category = await db.category.findMany({
     include: {
+      ...(input?.include ?? {}),
       subCategory: {
         include: {
           imageForEntity: { include: { image: true } },

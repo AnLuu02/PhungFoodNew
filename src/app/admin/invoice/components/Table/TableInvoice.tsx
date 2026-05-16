@@ -188,7 +188,7 @@ export default function TableInvoice({
                         <UpdateInvoiceButton id={row.id} />
                       </Tooltip>
                       <Tooltip label='In hóa đơn'>
-                        <InvoiceToPrint id={row?.order?.id} />
+                        <InvoiceToPrint orderId={row?.order?.id || ''} />
                       </Tooltip>
                       <Tooltip label='Gửi mail'>
                         <SendOrderButton id={row?.order?.id} />

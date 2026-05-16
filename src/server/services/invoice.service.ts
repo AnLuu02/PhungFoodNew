@@ -2,8 +2,11 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { InvoiceInput } from '~/shared/schema/invoice.schema';
 
-export const findInvoiceService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
-  const { skip, take, s } = input;
+export const findInvoiceService = async (
+  db: PrismaClient,
+  input: { skip: number; take: number; s?: string; include?: Prisma.InvoiceInclude }
+) => {
+  const { skip, take, s, include } = input;
 
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.InvoiceWhereInput = {
@@ -44,6 +47,7 @@ export const findInvoiceService = async (db: PrismaClient, input: { skip: number
         createdAt: 'desc'
       },
       include: {
+        ...(include ?? {}),
         seller: true,
         customer: {
           select: {
@@ -100,12 +104,17 @@ export const deleteInvoiceService = async (db: PrismaClient, input: { id: string
   };
 };
 
-export const getOneInvoiceService = async (db: PrismaClient, input: { id: string }) => {
+export const getOneInvoiceService = async (
+  db: PrismaClient,
+  input: { key: string; include?: Prisma.InvoiceInclude }
+) => {
   try {
+    const { key, include } = input;
     return await db.invoice.findUnique({
       where: {
-        id: input.id
-      }
+        id: key
+      },
+      include
     });
   } catch {
     throw new TRPCError({
@@ -114,11 +123,9 @@ export const getOneInvoiceService = async (db: PrismaClient, input: { id: string
     });
   }
 };
-export const getAllInvoiceService = async (db: PrismaClient) => {
+export const getAllInvoiceService = async (db: PrismaClient, input?: { include?: Prisma.InvoiceInclude }) => {
   return await db.invoice.findMany({
-    include: {
-      seller: true
-    }
+    include: { ...(input?.include ?? {}), seller: true }
   });
 };
 

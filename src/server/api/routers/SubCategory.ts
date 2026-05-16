@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
@@ -16,7 +17,8 @@ export const subCategoryRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string()
+        s: z.string(),
+        include: z.custom<Prisma.SubCategoryInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findSubCategoryService(ctx.db, input)),
@@ -32,11 +34,20 @@ export const subCategoryRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        key: z.string(),
+        include: z.custom<Prisma.SubCategoryInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneSubCategoryService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllSubCategoryService(ctx.db)),
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.SubCategoryInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllSubCategoryService(ctx.db, input)),
   upsert: publicProcedure
     .use(requirePermission('update:subCategory'))
     .use(requirePermission('create:subCategory'))

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { db } from '~/server/db';
 import { getAllActivitiesService } from '~/server/services/activityLogger.service';
@@ -20,7 +21,8 @@ export const activityRouter = createTRPCRouter({
             dateTo: z.date().optional(),
             search: z.string().optional()
           })
-          .optional()
+          .optional(),
+        include: z.custom<Prisma.ActivityLogInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getAllActivitiesService(ctx.db, input)),

@@ -35,7 +35,7 @@ import { GetOneUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
 export function UserInfo({ userId }: { userId: string }) {
-  const { data: userInfor, isLoading } = api.User.getOne.useQuery({ s: userId || '', hasOrders: true });
+  const { data: userInfor, isLoading } = api.User.getOne.useQuery({ key: userId || '', include: { order: true } });
   const [opened, setOpened] = useState(false);
   const { statusObj } = useMemo(() => {
     const orderData =

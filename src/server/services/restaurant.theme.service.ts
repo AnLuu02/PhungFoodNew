@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
@@ -37,6 +37,6 @@ export const changeThemeService = async (db: PrismaClient, input: ThemeWithResta
     });
   }
 };
-export const getThemeService = async (db: PrismaClient) => {
-  return await db.theme.findFirst({});
+export const getThemeService = async (db: PrismaClient, input?: { include?: Prisma.ThemeInclude }) => {
+  return await db.theme.findFirst({ include: input?.include });
 };

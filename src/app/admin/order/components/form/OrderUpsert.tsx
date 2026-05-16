@@ -35,7 +35,7 @@ export default function OrderUpsert({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data, isLoading } = api.Order.getOne.useQuery(
-    { s: orderId || '' },
+    { key: orderId || '' },
     {
       enabled: !!orderId
     }

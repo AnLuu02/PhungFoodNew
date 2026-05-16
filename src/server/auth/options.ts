@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const { email, password } = credentials as { email: string; password: string };
-        const user = await getOneUserService(db, { s: email || '' });
+        const user = await getOneUserService(db, { key: email || '' });
         if (!user) {
           throw new Error('Người dùng không tồn tại.');
         }
@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
         if (!user?.email) return false;
         const { email, image, name } = user;
 
-        let userFromDb = await getOneUserService(db, { s: email });
+        let userFromDb = await getOneUserService(db, { key: email });
         if (!userFromDb) {
           const randomPass = randomBytes(8).toString('hex');
           await createUserService(
@@ -122,7 +122,7 @@ export const authOptions: NextAuthOptions = {
 
     async jwt({ token }) {
       try {
-        const userFromDb = await getOneUserService(db, { s: token?.email || '' });
+        const userFromDb = await getOneUserService(db, { key: token?.email || '' });
         if (userFromDb?.id) {
           token.role = userFromDb?.role?.name;
           token.id = userFromDb?.id;

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
@@ -30,7 +31,8 @@ export const favouriteFoodRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        s: z.string(),
+        include: z.custom<Prisma.FavouriteFoodInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getFilterFavouriteFoodService(ctx.db, input))

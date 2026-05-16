@@ -10,8 +10,7 @@ import {
   Stack,
   TagsInput,
   TextInput,
-  Textarea,
-  Title
+  Textarea
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -108,43 +107,45 @@ export const NotificationModal = ({
   const onSubmit: SubmitHandler<Notification> = async formData => {
     try {
       if (mode === 'create') {
-        let userPushers = watch('recipient') === 'all' ? [] : selectedUsers.map((user: any) => JSON.parse(user).id);
-
-        const createNotify = await mutationCreate.mutateAsync({
-          ...formData,
-          userIds: userPushers
-        });
-        if (createNotify.code !== 'OK') {
-          throw new Error(createNotify.message);
+        try {
+          let userPushers = watch('recipient') === 'all' ? [] : selectedUsers.map((user: any) => JSON.parse(user).id);
+          const createNotify = await mutationCreate.mutateAsync({
+            ...formData,
+            userIds: userPushers
+          });
+          await Promise.all([
+            ...formData.channels.map(async channel => {
+              channel === 'in_app' &&
+                (await mutationPushOnline.mutateAsync({
+                  notificationId: createNotify.metaData.after.id as string,
+                  userIds: userPushers
+                }));
+              if (channel === 'email') {
+                const html = generateNotifyHtml(formData);
+                const emails =
+                  watch('recipient') === 'all'
+                    ? allUsers.map(user => user.email)
+                    : selectedUsers.map((user: any) => JSON.parse(user).email);
+                fetch('/api/send-mail', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    from: 'Phụng Food Restaurant',
+                    to_n: emails,
+                    idRecord: '',
+                    subject: 'Thông báo từ hệ thông Phụng Food',
+                    data: html
+                  })
+                });
+              }
+            })
+          ]);
+        } catch (e) {
+          NotifyError('Đã có lỗi không mong muốn xảy ra. Hãy kiểm tra chi tiết trong console.');
+          console.error(e);
+        } finally {
+          onClose();
         }
-        await Promise.all([
-          ...formData.channels.map(async channel => {
-            channel === 'in_app' &&
-              (await mutationPushOnline.mutateAsync({
-                notificationId: createNotify.data.id as string,
-                userIds: userPushers
-              }));
-            if (channel === 'email') {
-              const html = generateNotifyHtml(formData);
-              const emails =
-                watch('recipient') === 'all'
-                  ? allUsers.map(user => user.email)
-                  : selectedUsers.map((user: any) => JSON.parse(user).email);
-              fetch('/api/send-mail', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  from: 'Phụng Food Restaurant',
-                  to_n: emails,
-                  idRecord: '',
-                  subject: 'Thông báo từ hệ thông Phụng Food',
-                  data: html
-                })
-              });
-            }
-          })
-        ]);
-        onClose();
       } else {
         await mutationUpdate.mutateAsync({
           id: formData.id as string,
@@ -152,8 +153,9 @@ export const NotificationModal = ({
         });
         onClose();
       }
-    } catch (err) {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    } catch (e) {
+      NotifyError('Đã có lỗi không mong muốn xảy ra. Hãy kiểm tra chi tiết trong console.');
+      console.error(e);
     }
   };
 
@@ -166,11 +168,10 @@ export const NotificationModal = ({
         onClose();
       }}
       size='lg'
-      title={
-        <Title className='font-quicksand' order={2}>
-          {mode === 'create' ? 'Tạo thông báo mới' : 'Cập nhật thông báo'}
-        </Title>
-      }
+      title={mode === 'create' ? 'Tạo thông báo mới' : 'Cập nhật thông báo'}
+      classNames={{
+        title: 'font-quicksand text-2xl font-bold'
+      }}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack>

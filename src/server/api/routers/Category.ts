@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import {
@@ -22,7 +23,8 @@ export const categoryRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        include: z.custom<Prisma.CategoryInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findCategoryService(ctx.db, input)),
@@ -40,13 +42,23 @@ export const categoryRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        key: z.string(),
+        include: z.custom<Prisma.CategoryInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneCategoryService(ctx.db, input)),
-  getAll: publicProcedure.query(
-    async ({ ctx }) => await withRedisCache('category:getAll', () => getAllCategoryService(ctx.db), 60 * 60 * 24)
-  ),
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.CategoryInclude>().optional()
+        })
+        .optional()
+    )
+    .query(
+      async ({ ctx, input }) =>
+        await withRedisCache('category:getAll', () => getAllCategoryService(ctx.db, input), 60 * 60 * 24)
+    ),
   createMany: publicProcedure
     .use(requirePermission('create:category'))
     .input(

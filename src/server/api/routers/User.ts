@@ -1,4 +1,4 @@
-import { TokenType } from '@prisma/client';
+import { Prisma, TokenType } from '@prisma/client';
 import { z } from 'zod';
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
@@ -25,7 +25,8 @@ export const userRouter = createTRPCRouter({
         take: z.number().positive(),
         s: z.string().optional(),
         sort: z.array(z.string()).optional(),
-        filter: z.string().optional()
+        filter: z.string().optional(),
+        include: z.custom<Prisma.UserInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findUserService(ctx.db, input)),
@@ -49,8 +50,8 @@ export const userRouter = createTRPCRouter({
     .use(activityLogger)
     .input(
       z.object({
-        where: z.record(z.any()),
-        data: z.record(z.any())
+        where: z.custom<Prisma.UserWhereUniqueInput>(),
+        data: z.custom<Prisma.UserUpdateInput>()
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -69,24 +70,42 @@ export const userRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        s: z.string(),
+        include: z.custom<Prisma.UserInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getFilterUserService(ctx.db, input)),
-  getSaler: publicProcedure.query(async ({ ctx }) => await getSellerService(ctx.db)),
+  getSaler: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.UserInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx }) => await getSellerService(ctx.db)),
   getOne: publicProcedure
     .input(
       z.object({
-        s: z.string().optional(),
-        hasOrders: z.boolean().optional()
+        key: z.string(),
+        include: z.custom<Prisma.UserInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneUserService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const user = await ctx.db.user.findMany({ include: { role: true } });
-    return user;
-  }),
-  getNotGuest: publicProcedure.query(async ({ ctx }) => await getNotGuestService(ctx.db)),
+  getAll: publicProcedure
+    .input(z.object({ include: z.custom<Prisma.UserInclude>().optional() }).optional())
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findMany({
+        include: {
+          ...(input?.include ?? {}),
+          role: true
+        }
+      });
+      return user;
+    }),
+  getNotGuest: publicProcedure
+    .input(z.object({ include: z.custom<Prisma.UserInclude>().optional() }).optional())
+    .query(async ({ ctx, input }) => await getNotGuestService(ctx.db, input)),
   verifyEmail: publicProcedure
     .input(
       z.object({ email: z.string().email(), timeExpiredMinutes: z.number().default(3), type: z.nativeEnum(TokenType) })

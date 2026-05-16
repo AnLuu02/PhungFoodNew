@@ -42,7 +42,7 @@ const months = [
 export const orderCompletionRate = 85;
 export function UserStatistics({ userId }: { userId: string }) {
   const [selectedYear, setSelectedYear] = useState('2025');
-  const { data: userDb } = api.User.getOne.useQuery({ s: userId || '' }, { enabled: !!userId });
+  const { data: userDb } = api.User.getOne.useQuery({ key: userId || '' }, { enabled: !!userId });
   const { data: revenue } = api.Revenue.getTotalSpentInMonthByUser.useQuery(
     {
       userId: userId || '',

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
@@ -16,7 +17,8 @@ export const materialRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        include: z.custom<Prisma.MaterialInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findMaterialService(ctx.db, input)),
@@ -40,11 +42,20 @@ export const materialRouter = createTRPCRouter({
   getOne: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        key: z.string(),
+        include: z.custom<Prisma.MaterialInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneMaterialService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllMaterialService(ctx.db)),
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.MaterialInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllMaterialService(ctx.db, input)),
   upsert: publicProcedure
     .use(requirePermission('update:material'))
     .use(requirePermission('create:material'))

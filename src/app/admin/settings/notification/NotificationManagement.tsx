@@ -1,11 +1,11 @@
 'use client';
 
 import { Box, Stack, Tabs, TabsList, TabsPanel, TabsTab, Text } from '@mantine/core';
-import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { NotificationClient } from '~/shared/schema/notification.schema';
+import { GetAllNotification } from '~/shared/type-trpc/notification.type-trpc';
 import { api } from '~/trpc/react';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { NotificationModal } from './components/modal/cretae_update_notification';
@@ -33,10 +33,8 @@ const DEFAULT_TAB = TABS?.['send']?.value || 'send';
 export default function NotificationManagement({
   initData
 }: {
-  initData: { notifications: ResponseTRPC; templates: ResponseTRPC };
+  initData: { notifications: GetAllNotification; templates: ResponseTRPC };
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
   const { data: notificationData } = api.Notification.getAll.useQuery(undefined, {
     initialData: initData.notifications
   });
@@ -44,7 +42,7 @@ export default function NotificationManagement({
     initialData: initData.templates
   });
   const [mounted, setMounted] = useState(false);
-  const notifications = notificationData.data ?? [];
+  const notifications = notificationData ?? [];
   const templates = notificationTemplateData.data ?? [];
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const [showSendDialog, setShowSendDialog] = useState<SendNotificationStateProps>({

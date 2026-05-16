@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
@@ -37,9 +38,25 @@ export const restaurantRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await changeThemeService(ctx.db, input)),
-  getTheme: publicProcedure.query(async ({ ctx }) => await getThemeService(ctx.db)),
+  getTheme: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.ThemeInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx }) => await getThemeService(ctx.db)),
   /////////////////////////////// banners//////////////////////////////////
-  getAllBanner: publicProcedure.query(async ({ ctx }) => await getAllBannerService(ctx.db)),
+  getAllBanner: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.BannerInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllBannerService(ctx.db, input)),
 
   upsertBanner: publicProcedure
     .use(activityLogger)
@@ -48,7 +65,8 @@ export const restaurantRouter = createTRPCRouter({
   getOneBanner: publicProcedure
     .input(
       z.object({
-        isActive: z.boolean().optional()
+        isActive: z.boolean().optional(),
+        include: z.custom<Prisma.BannerInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneBannerService(ctx.db, input)),
@@ -57,7 +75,8 @@ export const restaurantRouter = createTRPCRouter({
     .use(activityLogger)
     .input(
       z.object({
-        id: z.string()
+        id: z.string(),
+        include: z.custom<Prisma.BannerInclude>().optional()
       })
     )
     .mutation(async ({ ctx, input }) => await setDefaultBannerService(ctx.db, input)),

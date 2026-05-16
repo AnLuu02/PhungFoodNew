@@ -97,9 +97,10 @@ export const findUserService = async (
     s?: string;
     sort?: string[];
     filter?: string;
+    include?: Prisma.UserInclude;
   }
 ) => {
-  const { skip, take, s, sort, filter } = input;
+  const { skip, take, s, sort, filter, include } = input;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.UserWhereInput = {
     AND: {
@@ -137,6 +138,7 @@ export const findUserService = async (
       where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : { createdAt: 'desc' },
       include: {
+        ...(include ?? {}),
         role: true,
         address: true
       }
@@ -431,11 +433,14 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
   };
 };
 
-export const updateUserCustomService = async (db: PrismaClient, input: { where: any; data: any }) => {
+export const updateUserCustomService = async (
+  db: PrismaClient,
+  input: { where: Prisma.UserWhereUniqueInput; data: Prisma.UserUpdateInput }
+) => {
   const { where, data } = input;
   const user = await db.user.update({
-    where: where as Prisma.UserWhereUniqueInput,
-    data: data
+    where,
+    data
   });
   return user;
 };
@@ -460,7 +465,7 @@ export const deleteUserService = async (db: PrismaClient, input: { id: string })
     }
   };
 };
-export const getFilterUserService = async (db: PrismaClient, input: { s: string }) => {
+export const getFilterUserService = async (db: PrismaClient, input: { s: string; include?: Prisma.UserInclude }) => {
   const user = await db.user.findMany({
     where: {
       OR: [
@@ -473,11 +478,12 @@ export const getFilterUserService = async (db: PrismaClient, input: { s: string 
           }
         }
       ]
-    }
+    },
+    include: input.include
   });
   return user;
 };
-export const getSellerService = async (db: PrismaClient) => {
+export const getSellerService = async (db: PrismaClient, input?: { include?: Prisma.UserInclude }) => {
   const user = await db.user.findMany({
     where: {
       role: {
@@ -488,6 +494,7 @@ export const getSellerService = async (db: PrismaClient) => {
       }
     },
     include: {
+      ...(input?.include ? input.include : {}),
       role: {
         select: {
           id: true,
@@ -498,17 +505,14 @@ export const getSellerService = async (db: PrismaClient) => {
   });
   return user;
 };
-export const getOneUserService = async (db: PrismaClient, input: { s?: string; hasOrders?: boolean }) => {
+export const getOneUserService = async (db: PrismaClient, input: { key: string; include?: Prisma.UserInclude }) => {
+  const { key, include } = input;
   const user = await db.user.findFirst({
     where: {
-      OR: [
-        { id: { equals: input.s?.trim() } },
-        { name: { equals: input.s?.trim() } },
-        { email: { equals: input.s?.trim() } }
-      ]
+      OR: [{ id: key }, { email: key }]
     },
     include: {
-      order: input.hasOrders || false,
+      ...(include ?? {}),
       imageForEntity: { include: { image: true } },
       role: {
         include: {
@@ -555,7 +559,7 @@ export const getOneUserService = async (db: PrismaClient, input: { s?: string; h
   };
 };
 
-export const getNotGuestService = async (db: PrismaClient) => {
+export const getNotGuestService = async (db: PrismaClient, input?: { include?: Prisma.UserInclude }) => {
   const user = await db.user.findMany({
     where: {
       email: {
@@ -564,7 +568,7 @@ export const getNotGuestService = async (db: PrismaClient) => {
         }
       }
     },
-    include: { role: true }
+    include: { ...(input?.include ?? {}), role: true }
   });
   return user;
 };

@@ -3,8 +3,11 @@ import { TRPCError } from '@trpc/server';
 import { seedPayments } from '~/lib/HardData/seed';
 import { PaymentInput } from '~/shared/schema/payment.schema';
 
-export const findPaymentService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
-  const { skip, take, s } = input;
+export const findPaymentService = async (
+  db: PrismaClient,
+  input: { skip: number; take: number; s?: string; include?: Prisma.PaymentInclude }
+) => {
+  const { skip, take, s, include } = input;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.PaymentWhereInput = {
     name: { contains: s, mode: 'insensitive' }
@@ -18,6 +21,7 @@ export const findPaymentService = async (db: PrismaClient, input: { skip: number
       skip: startPageItem,
       take,
       where,
+      include,
       orderBy: {
         createdAt: 'desc'
       }
@@ -46,12 +50,16 @@ export const deletePaymentService = async (db: PrismaClient, input: { id: string
   };
 };
 
-export const getOnePaymentService = async (db: PrismaClient, input: { id: string }) => {
-  const { id } = input;
+export const getOnePaymentService = async (
+  db: PrismaClient,
+  input: { id: string; include?: Prisma.PaymentInclude }
+) => {
+  const { id, include } = input;
   const payment = await db.payment.findUnique({
     where: {
       id
-    }
+    },
+    include
   });
   if (!payment) {
     throw new TRPCError({
@@ -61,13 +69,18 @@ export const getOnePaymentService = async (db: PrismaClient, input: { id: string
   }
   return payment;
 };
-export const getAllPaymentService = async (db: PrismaClient) => {
-  let payments = await db.payment.findMany();
+export const getAllPaymentService = async (
+  db: PrismaClient,
+  input?: {
+    include?: Prisma.PaymentInclude;
+  }
+) => {
+  let payments = await db.payment.findMany({ include: input?.include });
   if (!payments?.length) {
     await db.payment.createMany({
       data: seedPayments
     });
-    payments = await db.payment.findMany();
+    payments = await db.payment.findMany({ include: input?.include });
   }
   return payments;
 };

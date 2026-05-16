@@ -18,7 +18,7 @@ export default function InvoiceUpsert({
 }) {
   const { data: orders = [] } = api.Order.getAll.useQuery(undefined, { enabled: invoiceId !== '' });
   const { data: salers = [] } = api.User.getSaler.useQuery(undefined, { enabled: invoiceId !== '' });
-  const { data: invoiceData } = api.Invoice.getOne.useQuery({ id: invoiceId || '' }, { enabled: invoiceId !== '' });
+  const { data: invoiceData } = api.Invoice.getOne.useQuery({ key: invoiceId || '' }, { enabled: invoiceId !== '' });
   const {
     control,
     handleSubmit,

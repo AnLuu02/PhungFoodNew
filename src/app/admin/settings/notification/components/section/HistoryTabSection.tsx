@@ -44,7 +44,7 @@ export const HistoryTabSection = ({
   const [loading, setLoading] = useState(false);
   const isSelectAll = useMemo(() => selectedNotifications?.length === notifications?.length, [selectedNotifications]);
   const utils = api.useUtils();
-  const mutationDelete = api.Notification.delete.useMutation({
+  const mutationDelete = api.Notification.deleteById.useMutation({
     onSuccess: () => {
       utils.Notification.invalidate();
       NotifySuccess('Thao tác thành công!');
@@ -59,7 +59,7 @@ export const HistoryTabSection = ({
   const handleDeleteNotification = async (ids: string[]) => {
     setLoading(true);
     setSelectedNotifications([]);
-    await mutationDelete.mutateAsync(ids);
+    await mutationDelete.mutateAsync({ ids });
   };
 
   const filterNotifications = useMemo(() => {

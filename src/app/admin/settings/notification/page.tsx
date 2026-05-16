@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'Cài đặt thông báo'
 };
 
-export default async function ThemeAdvancePage() {
+export default async function NotificationPage() {
   const [notifications, templates] = await Promise.all([api.Notification.getAll(), api.NotificationTemplate.getAll()]);
   return <NotificationManagement initData={{ notifications, templates }} />;
 }

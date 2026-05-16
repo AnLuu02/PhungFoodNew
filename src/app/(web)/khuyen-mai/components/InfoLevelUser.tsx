@@ -24,7 +24,12 @@ import { api } from '~/trpc/react';
 export default function InfoLevelUser() {
   const { data: session } = useSession();
   const { data: userData } = api.User.getOne.useQuery(
-    { s: session?.user.email || '', hasOrders: true },
+    {
+      key: session?.user.email || '',
+      include: {
+        order: true
+      }
+    },
     {
       enabled: !!session?.user.email
     }

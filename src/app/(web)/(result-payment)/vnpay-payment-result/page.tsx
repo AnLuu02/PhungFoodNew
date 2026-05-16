@@ -13,7 +13,7 @@ export default function PaymentResult() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('vnp_TxnRef') || searchParams.get('orderId');
   const { data, isLoading: loadingOrder } = api.Order.getOne.useQuery(
-    { s: orderId || '' },
+    { key: orderId || '' },
     {
       enabled: !!orderId
     }

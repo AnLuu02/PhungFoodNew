@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
@@ -5,8 +6,8 @@ import {
   deleteReviewService,
   findReviewService,
   getAllReviewService,
-  getFilterReviewService,
   getOneReviewService,
+  getReviewForOwnerService,
   upsertReviewService
 } from '~/server/services/review.service';
 import { baseReviewSchema } from '~/shared/schema/review.schema';
@@ -19,7 +20,8 @@ export const reviewRouter = createTRPCRouter({
         take: z.number().positive(),
         s: z.string().optional(),
         relationId: z.string().optional(),
-        sort: z.array(z.string()).optional()
+        sort: z.array(z.string()).optional(),
+        include: z.custom<Prisma.ReviewInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findReviewService(ctx.db, input)),
@@ -34,21 +36,32 @@ export const reviewRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await deleteReviewService(ctx.db, input)),
 
-  getFilter: publicProcedure
+  //getFilter
+  getForOwner: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        ownerId: z.string(),
+        include: z.custom<Prisma.ReviewInclude>().optional()
       })
     )
-    .query(async ({ ctx, input }) => await getFilterReviewService(ctx.db, input)),
+    .query(async ({ ctx, input }) => await getReviewForOwnerService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({
-        id: z.string()
+        id: z.string(),
+        include: z.custom<Prisma.ReviewInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneReviewService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllReviewService(ctx.db)),
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.ReviewInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllReviewService(ctx.db, input)),
 
   upsert: publicProcedure
     .use(requirePermission('update:review'))

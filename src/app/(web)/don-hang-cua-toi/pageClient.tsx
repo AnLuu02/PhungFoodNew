@@ -277,7 +277,7 @@ export default function MyOrderPageClient({ session }: { session: Session | null
                                   <IconTrash size={16} />
                                 </ActionIcon>
                               </Tooltip>
-                              {order.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order.id} />}
+                              {order.status === OrderStatus.COMPLETED && <InvoiceToPrint orderId={order.id} />}
                               {order.status === OrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>
                                   <Tooltip label='Tiếp tục thanh toán'>

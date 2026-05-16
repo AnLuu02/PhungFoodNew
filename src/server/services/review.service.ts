@@ -6,9 +6,16 @@ import { ReviewInput } from '~/shared/schema/review.schema';
 
 export const findReviewService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; relationId?: string; sort?: string[] }
+  input: {
+    skip: number;
+    take: number;
+    s?: string;
+    relationId?: string;
+    sort?: string[];
+    include?: Prisma.ReviewInclude;
+  }
 ) => {
-  const { skip, take, s, relationId, sort } = input;
+  const { skip, take, s, relationId, sort, include } = input;
   const searchQuery = s?.trim();
   const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
@@ -80,11 +87,8 @@ export const findReviewService = async (
       take,
       where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : { createdAt: 'desc' },
-      select: {
-        id: true,
-        rating: true,
-        comment: true,
-        createdAt: true,
+      include: {
+        ...(include ?? {}),
         user: {
           select: {
             id: true,
@@ -150,14 +154,25 @@ export const deleteReviewService = async (db: PrismaClient, input: { id: string 
     });
   }
 };
-export const getFilterReviewService = async (db: PrismaClient, input: { s: string }) => {
+export const getReviewForOwnerService = async (
+  db: PrismaClient,
+  input: { ownerId: string; include?: Prisma.ReviewInclude }
+) => {
   try {
-    const searchQuery = input?.s?.trim();
+    const { ownerId, include } = input;
     return await db.review.findMany({
       where: {
-        OR: [{ id: { equals: searchQuery } }, { productId: { equals: searchQuery } }]
+        OR: [
+          {
+            productId: ownerId
+          },
+          {
+            userId: ownerId
+          }
+        ]
       },
       include: {
+        ...(include ?? {}),
         user: {
           include: {
             imageForEntity: { include: { image: true } }
@@ -172,13 +187,14 @@ export const getFilterReviewService = async (db: PrismaClient, input: { s: strin
     });
   }
 };
-export const getOneReviewService = async (db: PrismaClient, input: { id: string }) => {
+export const getOneReviewService = async (db: PrismaClient, input: { id: string; include?: Prisma.ReviewInclude }) => {
   try {
     return await db.review.findUnique({
       where: {
         id: input.id || ''
       },
       include: {
+        ...(input.include ?? {}),
         user: {
           include: {
             imageForEntity: { include: { image: true } }
@@ -193,9 +209,14 @@ export const getOneReviewService = async (db: PrismaClient, input: { id: string 
     });
   }
 };
-export const getAllReviewService = async (db: PrismaClient) => {
+export const getAllReviewService = async (
+  db: PrismaClient,
+  input?: {
+    include?: Prisma.ReviewInclude;
+  }
+) => {
   try {
-    return await db.review.findMany();
+    return await db.review.findMany({ include: input?.include });
   } catch {
     throw new TRPCError({
       code: 'BAD_REQUEST',

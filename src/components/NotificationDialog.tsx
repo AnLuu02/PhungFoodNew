@@ -36,10 +36,13 @@ declare global {
 function NotificationDialog() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  const { data, isLoading } = api.Notification.getByUser.useQuery(session?.user?.id || '', {
-    enabled: !!session?.user?.id
-  });
-  const notificationsData = data?.data ?? [];
+  const { data, isLoading } = api.Notification.getByUser.useQuery(
+    { userId: session?.user?.id || '' },
+    {
+      enabled: !!session?.user?.id
+    }
+  );
+  const notificationsData = data ?? [];
   const [notifications, setNotifications] = useState<NotificationClient[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -57,18 +60,17 @@ function NotificationDialog() {
       NotifyError('Thất bại!', error?.message);
     }
   });
-  const deleteMutation = api.Notification.deleteFilter.useMutation({
-    onSuccess: result => {
-      NotifySuccess('Thao tác thành công!', result.message);
-    },
+  const deleteMutation = api.Notification.deleteNotificationRecipient.useMutation({
     onError: error => {
-      NotifyError('Thất bại!', error.message);
+      console.error(error.message);
+      NotifyError('Thất bại!', 'Xem chi tiết lỗi trong console browser.');
     }
   });
 
   const mutationSyncOffline = api.Notification.syncOffline.useMutation({
     onError: error => {
-      NotifyError('Thất bại!', error?.message);
+      console.error(error.message);
+      NotifyError('Thất bại!', 'Xem chi tiết lỗi trong console browser.');
     }
   });
   const unreadCount = notifications.filter(n => !n?.recipients?.[0]?.clickedAt)?.length || 0;
@@ -166,23 +168,14 @@ function NotificationDialog() {
                         color='red'
                         size='xs'
                         onClick={async () => {
-                          try {
-                            const res = await deleteMutation.mutateAsync({
-                              where: {
-                                id: { in: selectedIds }
-                              }
-                            });
-
-                            if (res.code === 'OK') {
-                              setNotifications(notifications.filter(n => !selectedIds.includes(n.id as string)));
-                              setSelectedIds([]);
-                              NotifySuccess('Thao tác thành công!', res.message);
-                            } else {
-                              NotifyError('Thất bại!', res.message || 'Không thể xóa các thông báo.');
+                          await deleteMutation.mutateAsync({
+                            where: {
+                              id: { in: selectedIds }
                             }
-                          } catch {
-                            NotifyError('Đã có lỗi không mong muốn!', 'Đã xảy ra lỗi khi xóa các thông báo.');
-                          }
+                          });
+                          setNotifications(notifications.filter(n => !selectedIds.includes(n.id as string)));
+                          setSelectedIds([]);
+                          NotifySuccess(`Chúc mừng bạn đã thao tác thành công.`);
                         }}
                       >
                         Xóa ({selectedIds.length})
@@ -192,25 +185,15 @@ function NotificationDialog() {
                       variant='danger'
                       size='xs'
                       onClick={async () => {
-                        try {
-                          const res = await deleteMutation.mutateAsync({
-                            where: {
-                              user: {
-                                some: { id: session?.user?.id }
-                              }
-                            }
-                          });
-
-                          if (res.code === 'OK') {
-                            setNotifications([]);
-                            setSelectedIds([]);
-                            NotifySuccess('Thao tác thành công!', res.message);
-                          } else {
-                            NotifyError('Thất bại!', res.message || 'Không thể xóa tất cả thông báo.');
+                        await deleteMutation.mutateAsync({
+                          where: {
+                            userId: session?.user?.id
                           }
-                        } catch {
-                          NotifyError('Đã có lỗi không mong muốn!', 'Đã xảy ra lỗi khi xóa tất cả thông báo.');
-                        }
+                        });
+
+                        setNotifications([]);
+                        setSelectedIds([]);
+                        NotifySuccess(`Chúc mừng bạn đã thao tác thành công.`);
                       }}
                       disabled={notifications.length === 0}
                       leftSection={<IconTrashX size={16} />}
@@ -373,21 +356,12 @@ function NotificationDialog() {
                                   loading={deleteMutation.isPending}
                                   onClick={async e => {
                                     e.stopPropagation();
-                                    try {
-                                      const res = await deleteMutation.mutateAsync({
-                                        where: { id: notification?.recipients?.[0]?.id as string }
-                                      });
-
-                                      if (res.code === 'OK') {
-                                        setNotifications(notifications.filter(n => n.id !== notification.id));
-                                        setSelectedIds(selectedIds.filter(id => id !== notification.id));
-                                        NotifySuccess('Thao tác thành công!', res.message);
-                                      } else {
-                                        NotifyError('Thất bại!', res.message || 'Không thể xóa thông báo.');
-                                      }
-                                    } catch {
-                                      NotifyError('Đã có lỗi không mong muốn!', 'Đã xảy ra lỗi khi xóa thông báo.');
-                                    }
+                                    await deleteMutation.mutateAsync({
+                                      where: { id: notification?.recipients?.[0]?.id as string }
+                                    });
+                                    setNotifications(notifications.filter(n => n.id !== notification.id));
+                                    setSelectedIds(selectedIds.filter(id => id !== notification.id));
+                                    NotifySuccess(`Chúc mừng bạn đã thao tác thành công.`);
                                   }}
                                 >
                                   <IconTrash size={16} color='red' />

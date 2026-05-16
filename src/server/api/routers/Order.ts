@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
@@ -51,16 +52,26 @@ export const orderRouter = createTRPCRouter({
     .input(
       z.object({
         s: z.string(),
-        period: z.number().optional()
+        period: z.number().optional(),
+        include: z.custom<Prisma.OrderInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => getFilterOrderService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({
-        s: z.string()
+        key: z.string(),
+        include: z.custom<Prisma.OrderInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneOrderService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllOrderService(ctx.db))
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.OrderInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllOrderService(ctx.db, input))
 });

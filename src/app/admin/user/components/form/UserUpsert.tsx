@@ -49,7 +49,7 @@ export default function UserUpsert({
     message: ''
   });
   const { data: session } = useSession();
-  const { data: user } = api.User.getOne.useQuery({ s: email || '' }, { enabled: !!email });
+  const { data: user } = api.User.getOne.useQuery({ key: email || '' }, { enabled: !!email });
   const pathname = usePathname();
   const formFields = useForm<UserInput>({
     resolver: zodResolver(userInputSchema),

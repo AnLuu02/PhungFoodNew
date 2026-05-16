@@ -4,7 +4,7 @@ import { Badge, Box, Button, Card, Group, Paper, SimpleGrid, Stack, Text } from 
 import { IconUser, IconUsers } from '@tabler/icons-react';
 import { Dispatch, SetStateAction } from 'react';
 import Empty from '~/components/Empty';
-import { NotificationClient } from '~/shared/schema/notification.schema';
+import { GetAllNotification } from '~/shared/type-trpc/notification.type-trpc';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
 
@@ -15,7 +15,7 @@ export const SendTabSection = ({
 }: {
   setShowSendDialog: Dispatch<SetStateAction<SendNotificationStateProps>>;
   changeTab: (tab: string) => void;
-  notifications: NotificationClient[];
+  notifications: GetAllNotification;
 }) => {
   return (
     <>

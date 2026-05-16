@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 async function CheckoutPage({ params }: { params: { slug: string } }) {
   const orderId = params?.slug;
-  const order = await api.Order.getOne({ s: orderId });
+  const order = await api.Order.getOne({ key: orderId });
   if (!order?.id) {
     redirect(
       `/vnpay-payment-result?statusOrder=${encodeURIComponent('ERROR')}${orderId ? `&orderId=${encodeURIComponent(orderId.trim())}` : ''}`

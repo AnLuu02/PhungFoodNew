@@ -14,7 +14,7 @@ export default function CategoryUpsert({
   categoryId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const queryResult = api.Category.getOne.useQuery({ s: categoryId || '' }, { enabled: !!categoryId });
+  const queryResult = api.Category.getOne.useQuery({ key: categoryId || '' }, { enabled: !!categoryId });
   const { data } = queryResult;
 
   const {

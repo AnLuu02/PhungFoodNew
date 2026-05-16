@@ -1,4 +1,4 @@
-import { EntityType, ImageType, PrismaClient } from '@prisma/client';
+import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { BannerReqCloudinary } from '~/shared/schema/restaurant.banner.schema';
@@ -131,14 +131,20 @@ export const upsertBannerService = async (db: PrismaClient, input: BannerReqClou
   };
 };
 
-export const getOneBannerService = async (db: PrismaClient, input: { isActive?: boolean }) => {
+export const getOneBannerService = async (
+  db: PrismaClient,
+  input: { isActive?: boolean; include?: Prisma.BannerInclude }
+) => {
   return await db.banner.findFirst({
     where: input.isActive ? { isActive: input.isActive } : undefined,
-    include: { imageForEntities: { include: { image: true } } }
+    include: { ...(input.include ?? {}), imageForEntities: { include: { image: true } } }
   });
 };
 
-export const setDefaultBannerService = async (db: PrismaClient, input: { id: string }) => {
+export const setDefaultBannerService = async (
+  db: PrismaClient,
+  input: { id: string; include?: Prisma.BannerInclude }
+) => {
   try {
     await db.banner.updateMany({
       where: { isActive: true },
@@ -146,7 +152,8 @@ export const setDefaultBannerService = async (db: PrismaClient, input: { id: str
     });
     const banner = await db.banner.update({
       where: { id: input.id },
-      data: { isActive: true }
+      data: { isActive: true },
+      include: input.include
     });
     return banner;
   } catch (error) {
@@ -175,9 +182,14 @@ export const deleteBannerService = async (db: PrismaClient, input: { id: string;
   }
 };
 
-export const getAllBannerService = async (db: PrismaClient) => {
+export const getAllBannerService = async (
+  db: PrismaClient,
+  input?: {
+    include?: Prisma.BannerInclude;
+  }
+) => {
   return await db.banner.findMany({
-    include: { imageForEntities: { include: { image: true } } },
+    include: { ...(input?.include ?? {}), imageForEntities: { include: { image: true } } },
     orderBy: { createdAt: 'desc' }
   });
 };

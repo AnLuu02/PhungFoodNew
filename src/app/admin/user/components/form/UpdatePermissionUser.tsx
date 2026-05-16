@@ -17,7 +17,7 @@ export default function UpdatePermissionUser({
   email: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data: user, isLoading: isLoadingUser } = api.User.getOne.useQuery({ s: email }, { enabled: !!email });
+  const { data: user, isLoading: isLoadingUser } = api.User.getOne.useQuery({ key: email }, { enabled: !!email });
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();

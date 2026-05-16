@@ -4,8 +4,16 @@ import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { SubCategoryInput } from '~/shared/schema/subCategory.schema';
 
-export const findSubCategoryService = async (db: PrismaClient, input: any) => {
-  const { skip, take, s } = input;
+export const findSubCategoryService = async (
+  db: PrismaClient,
+  input: {
+    skip: number;
+    take: number;
+    s: string;
+    include?: Prisma.SubCategoryInclude;
+  }
+) => {
+  const { skip, take, s, include } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.SubCategoryWhereInput = {
@@ -41,6 +49,7 @@ export const findSubCategoryService = async (db: PrismaClient, input: any) => {
       take,
       where,
       include: {
+        ...(include ?? {}),
         category: true,
         imageForEntity: {
           select: {
@@ -91,30 +100,25 @@ export const deleteSubCategoryService = async (db: PrismaClient, input: any) => 
     }
   };
 };
-export const getOneSubCategoryService = async (db: PrismaClient, input: { s?: string }) => {
-  const searchQuery = input.s?.trim();
+export const getOneSubCategoryService = async (
+  db: PrismaClient,
+  input: {
+    key: string;
+    include?: Prisma.SubCategoryInclude;
+  }
+) => {
+  const { key, include } = input;
   const subCategory = await db.subCategory.findFirst({
     where: {
       OR: [
-        { id: searchQuery },
+        { id: key },
         {
-          tag: searchQuery
-        },
-        {
-          category: {
-            OR: [
-              {
-                tag: searchQuery
-              },
-              {
-                name: searchQuery
-              }
-            ]
-          }
+          tag: key
         }
       ]
     },
     include: {
+      ...(include ?? {}),
       category: true,
       imageForEntity: {
         include: {
@@ -126,12 +130,14 @@ export const getOneSubCategoryService = async (db: PrismaClient, input: { s?: st
 
   return subCategory;
 };
-export const getAllSubCategoryService = async (db: PrismaClient) => {
+export const getAllSubCategoryService = async (
+  db: PrismaClient,
+  input?: {
+    include?: Prisma.SubCategoryInclude;
+  }
+) => {
   return await db.subCategory.findMany({
-    include: {
-      imageForEntity: { include: { image: true } },
-      category: true
-    }
+    include: { ...(input?.include ?? {}), imageForEntity: { include: { image: true } }, category: true }
   });
 };
 export const upsertSubCategoryService = async (db: PrismaClient, input: SubCategoryInput) => {

@@ -1,4 +1,4 @@
-import { EntityType, ImageType, PrismaClient } from '@prisma/client';
+import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { RestaurantInput } from '~/shared/schema/restaurant.schema';
@@ -84,10 +84,11 @@ export const createInitRestaurant = async (db: PrismaClient) => {
   return result;
 };
 
-export const getOneActiveService = async (db: PrismaClient) => {
+export const getOneActiveService = async (db: PrismaClient, input?: { include?: Prisma.RestaurantInclude }) => {
   const result = await db.restaurant.findFirst({
     where: { isActive: true },
     include: {
+      ...(input?.include ?? {}),
       imageForEntity: { include: { image: true } },
       socials: {
         orderBy: {
@@ -104,10 +105,11 @@ export const getOneActiveService = async (db: PrismaClient) => {
   }
   return result;
 };
-export const getOneActiveClientService = async (db: PrismaClient) => {
+export const getOneActiveClientService = async (db: PrismaClient, input?: { include?: Prisma.RestaurantInclude }) => {
   const result = await db.restaurant.findFirst({
     where: { isActive: true },
     include: {
+      ...(input?.include ?? {}),
       imageForEntity: { include: { image: true } },
       socials: {
         where: { isActive: true },

@@ -2,8 +2,11 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { VoucherInput } from '~/shared/schema/voucher.schema';
 
-export const findVoucherService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
-  const { skip, take, s } = input;
+export const findVoucherService = async (
+  db: PrismaClient,
+  input: { skip: number; take: number; s?: string; include?: Prisma.VoucherInclude }
+) => {
+  const { skip, take, s, include } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.VoucherWhereInput = {
@@ -25,6 +28,7 @@ export const findVoucherService = async (db: PrismaClient, input: { skip: number
       skip: startPageItem,
       take,
       where,
+      include,
       orderBy: {
         createdAt: 'desc'
       }
@@ -55,22 +59,29 @@ export const deleteVoucherService = async (db: PrismaClient, input: { id: string
     }
   };
 };
-export const getAllVoucherService = async (db: PrismaClient) => {
-  return await db.voucher.findMany({});
+export const getAllVoucherService = async (db: PrismaClient, input?: { include?: Prisma.VoucherInclude }) => {
+  return await db.voucher.findMany({ include: input?.include });
 };
-export const getVoucherAppliedAllService = async (db: PrismaClient) => {
-  return await db.voucher.findMany({ where: { applyAll: true } });
+export const getVoucherAppliedAllService = async (db: PrismaClient, input?: { include?: Prisma.VoucherInclude }) => {
+  return await db.voucher.findMany({ where: { applyAll: true }, include: input?.include });
 };
 
-export const getOneVoucherService = async (db: PrismaClient, input: { id: string }) => {
+export const getOneVoucherService = async (
+  db: PrismaClient,
+  input: { id: string; include?: Prisma.VoucherInclude }
+) => {
   const voucher = await db.voucher.findUnique({
     where: {
       id: input.id
-    }
+    },
+    include: input.include
   });
   return voucher;
 };
-export const getVoucherForUserService = async (db: PrismaClient, input: { userId?: string }) => {
+export const getVoucherForUserService = async (
+  db: PrismaClient,
+  input: { userId?: string; include?: Prisma.VoucherInclude }
+) => {
   let users_db = null;
   if (input.userId && input.userId !== '') {
     users_db = await db.user.findUnique({
@@ -108,6 +119,7 @@ export const getVoucherForUserService = async (db: PrismaClient, input: { userId
       ]
     },
     include: {
+      ...(input?.include ? input.include : {}),
       voucherForUser: true
     }
   });

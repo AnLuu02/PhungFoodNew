@@ -12,9 +12,10 @@ export const findOrderService = async (
     s?: string;
     filter?: string | null;
     sort?: string[];
+    include?: Prisma.OrderInclude;
   }
 ) => {
-  const { skip, take, s, filter, sort } = input;
+  const { skip, take, s, filter, sort, include } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.OrderWhereInput = {
@@ -77,6 +78,7 @@ export const findOrderService = async (
       where,
       orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : { createdAt: 'desc' },
       include: {
+        ...(include ?? {}),
         payment: true,
         user: {
           include: {
@@ -291,8 +293,11 @@ export const deleteOrderService = async (db: PrismaClient, input: { id: string }
   };
 };
 
-export const getFilterOrderService = async (db: PrismaClient, input: { s: string; period?: number }) => {
-  const { s, period } = input;
+export const getFilterOrderService = async (
+  db: PrismaClient,
+  input: { s: string; period?: number; include?: Prisma.OrderInclude }
+) => {
+  const { s, period, include } = input;
   const searchQuery = s?.trim();
   const where = {
     AND: [
@@ -323,6 +328,7 @@ export const getFilterOrderService = async (db: PrismaClient, input: { s: string
   const order = await db.order.findMany({
     where: where as any,
     include: {
+      ...(include ?? {}),
       orderItems: {
         include: {
           product: {
@@ -350,25 +356,18 @@ export const getFilterOrderService = async (db: PrismaClient, input: { s: string
 
   return order;
 };
-export const getOneOrderService = async (db: PrismaClient, input: { s: string }) => {
-  const searchQuery = input.s?.trim();
+export const getOneOrderService = async (db: PrismaClient, input: { key: string; include?: Prisma.OrderInclude }) => {
+  const { key, include } = input;
   return await db.order.findFirst({
     where: {
       OR: [
         {
-          id: searchQuery
-        },
-        {
-          user: {
-            email: {
-              contains: searchQuery,
-              mode: 'insensitive'
-            }
-          }
+          id: key
         }
       ]
     },
     include: {
+      ...(include ?? {}),
       orderItems: {
         include: {
           product: {
@@ -394,9 +393,15 @@ export const getOneOrderService = async (db: PrismaClient, input: { s: string })
     }
   });
 };
-export const getAllOrderService = async (db: PrismaClient) => {
+export const getAllOrderService = async (
+  db: PrismaClient,
+  input?: {
+    include?: Prisma.OrderInclude;
+  }
+) => {
   const order = await db.order.findMany({
     include: {
+      ...(input?.include ? input.include : {}),
       orderItems: {
         include: {
           product: true

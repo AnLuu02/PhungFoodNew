@@ -116,6 +116,7 @@ export const getAllActivitiesService = async (
       dateTo?: Date;
       search?: string;
     };
+    include?: Prisma.ActivityLogInclude;
   }
 ) => {
   const { cursor, limit, filters } = input;
@@ -150,6 +151,7 @@ export const getAllActivitiesService = async (
   const logs = await db.activityLog.findMany({
     where,
     include: {
+      ...(input.include ?? {}),
       user: {
         select: { id: true, name: true, email: true, imageForEntity: { select: { image: true } } }
       }

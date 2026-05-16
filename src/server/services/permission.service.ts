@@ -1,42 +1,43 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { PermissionInput } from '~/shared/schema/permission.schema';
-export const getOnePermissionService = async (db: PrismaClient, input: { id: string }) => {
+export const getOnePermissionService = async (
+  db: PrismaClient,
+  input: { id: string; include?: Prisma.PermissionInclude }
+) => {
+  const { id, include } = input;
   return await db.permission.findUnique({
-    where: { id: input.id },
-    include: { roles: true }
+    where: { id },
+    include: { ...(include ?? {}), roles: true }
   });
 };
 
-export const findPermissionService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
+export const findPermissionService = async (
+  db: PrismaClient,
+  input: { skip: number; take: number; s?: string; include?: Prisma.PermissionInclude }
+) => {
   const { skip, take, s } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
-
+  const where: Prisma.PermissionWhereInput = {
+    OR: [
+      { id: { contains: searchQuery, mode: 'insensitive' } },
+      { name: { contains: searchQuery, mode: 'insensitive' } },
+      { viName: { contains: searchQuery, mode: 'insensitive' } },
+      { description: { contains: searchQuery, mode: 'insensitive' } }
+    ]
+  };
   const [totalPermissions, totalPermissionsQuery, permissions] = await db.$transaction([
     db.permission.count(),
     db.permission.count({
-      where: {
-        OR: [
-          { id: { contains: searchQuery, mode: 'insensitive' } },
-          { name: { contains: searchQuery, mode: 'insensitive' } },
-          { viName: { contains: searchQuery, mode: 'insensitive' } },
-          { description: { contains: searchQuery, mode: 'insensitive' } }
-        ]
-      }
+      where
     }),
     db.permission.findMany({
       skip: startPageItem,
       take,
-      where: {
-        OR: [
-          { id: { contains: searchQuery, mode: 'insensitive' } },
-          { name: { contains: searchQuery, mode: 'insensitive' } },
-          { viName: { contains: searchQuery, mode: 'insensitive' } },
-          { description: { contains: searchQuery, mode: 'insensitive' } }
-        ]
-      },
+      where,
       include: {
+        ...(input?.include ?? {}),
         roles: {
           select: {
             id: true,
@@ -120,9 +121,17 @@ export const deletePermissionService = async (db: PrismaClient, input: any) => {
     }
   };
 };
-export const getAllPermissionService = async (db: PrismaClient) => {
+export const getAllPermissionService = async (
+  db: PrismaClient,
+  input?: {
+    include?: Prisma.PermissionInclude;
+  }
+) => {
   let permissions = await db.permission.findMany({
-    include: { roles: true }
+    include: {
+      ...(input?.include ? input.include : {}),
+      roles: true
+    }
   });
   return permissions;
 };

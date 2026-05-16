@@ -3,8 +3,11 @@ import { TRPCError } from '@trpc/server';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { MaterialInput } from '~/shared/schema/material.schema';
 
-export const findMaterialService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
-  const { skip, take, s } = input;
+export const findMaterialService = async (
+  db: PrismaClient,
+  input: { skip: number; take: number; s?: string; include?: Prisma.MaterialInclude }
+) => {
+  const { skip, take, s, include } = input;
   const searchQuery = s?.trim();
   const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.MaterialWhereInput = {
@@ -39,6 +42,7 @@ export const findMaterialService = async (db: PrismaClient, input: { skip: numbe
         createdAt: 'desc'
       },
       include: {
+        ...(include ?? {}),
         products: true
       }
     })
@@ -99,19 +103,24 @@ export const deleteMaterialService = async (db: PrismaClient, input: { id: strin
   };
 };
 
-export const getOneMaterialService = async (db: PrismaClient, input: { s: string }) => {
-  const searchQuery = input?.s?.trim();
+export const getOneMaterialService = async (
+  db: PrismaClient,
+  input: { key: string; include?: Prisma.MaterialInclude }
+) => {
+  const { key, include } = input;
   const material = await db.material.findFirst({
     where: {
-      OR: [{ id: { equals: searchQuery } }, { name: { equals: searchQuery } }, { tag: { equals: searchQuery } }]
-    }
+      OR: [{ id: key }, { tag: key }]
+    },
+    include
   });
 
   return material;
 };
-export const getAllMaterialService = async (db: PrismaClient) => {
+export const getAllMaterialService = async (db: PrismaClient, input?: { include?: Prisma.MaterialInclude }) => {
   const material = await db.material.findMany({
     include: {
+      ...(input?.include ? input.include : {}),
       products: true
     }
   });

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
@@ -19,7 +20,8 @@ export const voucherRouter = createTRPCRouter({
       z.object({
         skip: z.number().nonnegative(),
         take: z.number().positive(),
-        s: z.string().optional()
+        s: z.string().optional(),
+        include: z.custom<Prisma.VoucherInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await findVoucherService(ctx.db, input)),
@@ -38,19 +40,37 @@ export const voucherRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await deleteVoucherService(ctx.db, input)),
 
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllVoucherService(ctx.db)),
-  getVoucherAppliedAll: publicProcedure.query(async ({ ctx }) => await getVoucherAppliedAllService(ctx.db)),
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.VoucherInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllVoucherService(ctx.db, input)),
+  getVoucherAppliedAll: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.VoucherInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getVoucherAppliedAllService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({
-        id: z.string()
+        id: z.string(),
+        include: z.custom<Prisma.VoucherInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getOneVoucherService(ctx.db, input)),
   getVoucherForUser: publicProcedure
     .input(
       z.object({
-        userId: z.string().optional()
+        userId: z.string().optional(),
+        include: z.custom<Prisma.VoucherInclude>().optional()
       })
     )
     .query(async ({ ctx, input }) => await getVoucherForUserService(ctx.db, input)),

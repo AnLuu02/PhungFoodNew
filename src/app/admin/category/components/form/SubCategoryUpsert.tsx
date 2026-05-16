@@ -22,7 +22,7 @@ export default function SubCategoryUpsert({
 }) {
   const { openModal } = useModalActions();
   const { data, isLoading: isLoadingDataSubCategory } = api.SubCategory.getOne.useQuery(
-    { s: subCategoryId || '' },
+    { key: subCategoryId || '' },
     { enabled: !!subCategoryId }
   );
   const formFields = useForm<SubCategoryInput>({

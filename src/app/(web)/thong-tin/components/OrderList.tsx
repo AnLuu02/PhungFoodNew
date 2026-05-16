@@ -298,7 +298,7 @@ export function OrderList({ userId }: { userId: string }) {
                                 </ActionIcon>
                               </Tooltip>
 
-                              {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint id={order?.id || ''} />}
+                              {order?.status === OrderStatus.COMPLETED && <InvoiceToPrint orderId={order?.id || ''} />}
 
                               {order?.status === OrderStatus.UNPAID && (
                                 <Link href={`/thanh-toan/${order.id}`}>

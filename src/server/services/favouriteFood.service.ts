@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 export const createFavouriteFoodService = async (db: PrismaClient, input: { productId: string; userId: string }) => {
   const favourite_food = await db.favouriteFood.create({
@@ -33,7 +33,10 @@ export const deleteFavouriteFoodService = async (db: PrismaClient, input: { prod
   };
 };
 
-export const getFilterFavouriteFoodService = async (db: PrismaClient, input: { s: string }) => {
+export const getFilterFavouriteFoodService = async (
+  db: PrismaClient,
+  input: { s: string; include?: Prisma.FavouriteFoodInclude }
+) => {
   const searchQuery = input.s?.trim();
   const favourite_food = await db.favouriteFood.findMany({
     where: {
@@ -66,6 +69,7 @@ export const getFilterFavouriteFoodService = async (db: PrismaClient, input: { s
       ]
     },
     include: {
+      ...(input?.include ?? {}),
       product: {
         include: {
           favouriteFood: true,
