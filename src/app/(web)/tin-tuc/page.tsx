@@ -11,11 +11,18 @@ export const metadata: Metadata = {
   description: 'Chia sẻ kiến thức ẩm thực, mẹo nấu ăn và câu chuyện món ngon miền Tây tại blog Phụng Food.'
 };
 const News = async () => {
-  const news = await api.News.fetchNews({
-    page: 1,
-    limit: 5,
-    s: ''
-  });
+  const [news, _] = await Promise.all([
+    api.News.fetchNews({
+      page: 1,
+      limit: 5,
+      s: ''
+    }),
+    api.News.fetchNews.prefetch({
+      page: 2,
+      limit: 5,
+      s: ''
+    })
+  ]);
   return (
     <Grid>
       <GridCol

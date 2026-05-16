@@ -45,7 +45,7 @@ export const ORDER_STATUS_MAP: Record<
   },
   [OrderStatus.CONFIRMED]: {
     key: OrderStatus.CONFIRMED,
-    label: 'Đã xác nhận - đang chuẩn bị',
+    label: 'Đang chuẩn bị',
     color: '#155DFC',
     icon: IconClock,
     message: 'Đơn hàng của bạn đã được nhà hàng xác nhận. Đang chuẩn bị hàng.'
@@ -117,7 +117,7 @@ export const ORDER_STATUS_UI = [
   },
   {
     key: OrderStatus.CONFIRMED,
-    label: 'Đã xác nhận - Đang chuẩn bị',
+    label: 'Đang chuẩn bị',
     color: '#FF6900',
     icon: <IconClock size={22} color='#FF6900' />
   }

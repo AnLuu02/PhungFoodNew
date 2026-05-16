@@ -17,33 +17,6 @@ export const NewsFeed = () => {
     s: s
   });
   const news = data?.news || [];
-  if (isLoading)
-    return (
-      <Stack gap={'md'}>
-        <Skeleton h={42} />
-        <Paper withBorder className='h-[max-content] border-mainColor' mb={20}>
-          <Box className='rounded-t-md bg-mainColor p-2 text-white'>
-            <Text size='sm' fw={700}>
-              BÀI VIẾT MỚI
-            </Text>
-          </Box>
-          <Stack gap={'sm'} p={'xs'}>
-            {Array(4)
-              .fill(0)
-              .map((_, index) => (
-                <Flex key={index} gap={'sm'} align={'flex-start'} justify={'flex-start'}>
-                  <Skeleton width={100} height={64} radius={0} className='flex-shrink-0' />
-
-                  <Stack gap={6} flex={1} pt={4}>
-                    <Skeleton height={14} width='100%' />
-                    <Skeleton height={14} width='70%' />
-                  </Stack>
-                </Flex>
-              ))}
-          </Stack>
-        </Paper>
-      </Stack>
-    );
   return (
     <Stack gap={'md'}>
       <SearchInput />
@@ -54,7 +27,32 @@ export const NewsFeed = () => {
           </Text>
         </Box>
         <Stack gap={'sm'} p={'xs'}>
-          {news && news?.length > 0 ? (
+          {isLoading ? (
+            <Stack gap={'md'}>
+              <Skeleton h={42} />
+              <Paper withBorder className='h-[max-content] border-mainColor' mb={20}>
+                <Box className='rounded-t-md bg-mainColor p-2 text-white'>
+                  <Text size='sm' fw={700}>
+                    BÀI VIẾT MỚI
+                  </Text>
+                </Box>
+                <Stack gap={'sm'} p={'xs'}>
+                  {Array(4)
+                    .fill(0)
+                    .map((_, index) => (
+                      <Flex key={index} gap={'sm'} align={'flex-start'} justify={'flex-start'}>
+                        <Skeleton width={100} height={64} radius={0} className='flex-shrink-0' />
+
+                        <Stack gap={6} flex={1} pt={4}>
+                          <Skeleton height={14} width='100%' />
+                          <Skeleton height={14} width='70%' />
+                        </Stack>
+                      </Flex>
+                    ))}
+                </Stack>
+              </Paper>
+            </Stack>
+          ) : news && news?.length > 0 ? (
             news?.slice(0, 4).map((item: FetchNews['news'][number]) => (
               <Link key={item.id} className='h-full w-full' href={item.link} target='_blank'>
                 <Flex gap={'sm'} align={'flex-start'} justify={'flex-start'}>
