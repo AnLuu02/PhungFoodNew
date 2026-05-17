@@ -10,23 +10,22 @@ import { Promotions } from './Promotion';
 import { UserInfo } from './UserInfo';
 import { UserStatistics } from './UserStatistics';
 
-export function DashboardContent({ userId }: { userId: string }) {
+export function DashboardContent() {
   const [activeTab, setActiveTab] = useState<string | null>('user-info');
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
-
   const renderTabItem = useCallback(
     (activeTab: string) => {
       switch (activeTab) {
         case 'user-info':
-          return <UserInfo userId={userId} />;
+          return <UserInfo />;
         case 'statistics':
-          return <UserStatistics userId={userId} />;
+          return <UserStatistics />;
         case 'orders':
-          return <OrderList userId={userId} />;
+          return <OrderList />;
         case 'promotions':
-          return <Promotions userId={userId} />;
+          return <Promotions />;
         default:
-          return <UserInfo userId={userId} />;
+          return <UserInfo />;
       }
     },
     [activeTab]

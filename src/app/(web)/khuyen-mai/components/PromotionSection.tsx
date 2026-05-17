@@ -25,7 +25,7 @@ export default function PromotionSection() {
         </Box>
 
         <Card withBorder shadow='sm' padding='lg'>
-          <PromotionTabLayout userId={session?.user?.id} />
+          <PromotionTabLayout />
         </Card>
       </Box>
     </>

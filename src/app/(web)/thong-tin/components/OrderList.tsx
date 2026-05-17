@@ -25,10 +25,11 @@ import {
 } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
-import { LoadingSkeleton } from '~/components/Loading/LoadingSkeleton';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { useModalActions } from '~/contexts/ModalContext';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
@@ -42,7 +43,9 @@ type DisplayOrder = TGetFilterOrder[number] & {
   originalTotal: number;
   discountAmount: number;
 };
-export function OrderList({ userId }: { userId: string }) {
+export function OrderList() {
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
   const { data: orders, isLoading } = api.Order.getFilter.useQuery({ s: userId || '' });
   const [activeTab, setActiveTab] = useState<string>('all');
   const [page, setPage] = useState(1);
@@ -134,54 +137,58 @@ export function OrderList({ userId }: { userId: string }) {
           <Button>Tạo đơn hàng mới</Button>
         </Link>
       </Flex>
-      <Card shadow='sm' padding='lg' withBorder>
-        <SimpleGrid cols={{ base: 2, sm: 2, md: 3, xl: 5 }} mb={'lg'}>
-          {ORDER_STATUS_UI.map(status => (
-            <Paper
-              m={0}
-              bg={`${status.color}10`}
-              className={`flex min-w-[120px] items-center gap-[10px] px-4 py-3 shadow-md`}
-              key={status.key}
-            >
-              <ThemeIcon size={32} radius='xl' color={status.color} variant='light'>
-                {status.icon}
-              </ThemeIcon>
-              <Box>
-                <Text fw={700} size='md' style={{ color: status.color }}>
-                  {statusObj[status.key] ?? 0}
-                </Text>
-                <Text size='xs' c='dimmed'>
-                  {status.label}
-                </Text>
-              </Box>
-            </Paper>
-          ))}
-        </SimpleGrid>
+      {status == 'loading' || isLoading ? (
+        <CommonSkeleton.StatsGrid cols={5} />
+      ) : (
+        <Card shadow='sm' padding='lg' withBorder>
+          <SimpleGrid cols={{ base: 2, sm: 2, md: 3, xl: 5 }} mb={'lg'}>
+            {ORDER_STATUS_UI.map(status => (
+              <Paper
+                m={0}
+                bg={`${status.color}10`}
+                className={`flex min-w-[120px] items-center gap-[10px] px-4 py-3 shadow-md`}
+                key={status.key}
+              >
+                <ThemeIcon size={32} radius='xl' color={status.color} variant='light'>
+                  {status.icon}
+                </ThemeIcon>
+                <Box>
+                  <Text fw={700} size='md' style={{ color: status.color }}>
+                    {statusObj[status.key] ?? 0}
+                  </Text>
+                  <Text size='xs' c='dimmed'>
+                    {status.label}
+                  </Text>
+                </Box>
+              </Paper>
+            ))}
+          </SimpleGrid>
 
-        <Flex mt={'md'} gap={'md'} justify={'space-between'} direction={{ base: 'column', sm: 'row' }}>
-          <Stack gap={'xs'} className='w-[100%] sm:w-[45%]'>
-            <Text fw={500} size='sm'>
-              Tỷ lệ hoàn thành đơn hàng
-            </Text>
-            <Progress value={statusObj.completionRate} size='md' radius='xl' />
-            <Text size='sm' c='dimmed'>
-              {statusObj.completionRate?.toFixed(1)}% đơn đặt hàng của bạn đã được hoàn thành thành công
-            </Text>
-          </Stack>
+          <Flex mt={'md'} gap={'md'} justify={'space-between'} direction={{ base: 'column', sm: 'row' }}>
+            <Stack gap={'xs'} className='w-[100%] sm:w-[45%]'>
+              <Text fw={500} size='sm'>
+                Tỷ lệ hoàn thành đơn hàng
+              </Text>
+              <Progress value={statusObj.completionRate} size='md' radius='xl' />
+              <Text size='sm' c='dimmed'>
+                {statusObj.completionRate?.toFixed(1)}% đơn đặt hàng của bạn đã được hoàn thành thành công
+              </Text>
+            </Stack>
 
-          <Divider orientation='vertical' size={2} mx={'md'} />
+            <Divider orientation='vertical' size={2} mx={'md'} />
 
-          <Stack gap={'xs'} className='w-[100%] sm:w-[45%]'>
-            <Text fw={500} size='sm'>
-              Tỷ lệ hủy đơn
-            </Text>
-            <Progress value={statusObj.completionRate} size='md' radius='xl' />
-            <Text size='sm' c='dimmed'>
-              {statusObj.completionRate?.toFixed(1)}% đơn đặt hàng của bạn đã bị hủy
-            </Text>
-          </Stack>
-        </Flex>
-      </Card>
+            <Stack gap={'xs'} className='w-[100%] sm:w-[45%]'>
+              <Text fw={500} size='sm'>
+                Tỷ lệ hủy đơn
+              </Text>
+              <Progress value={statusObj.completionRate} size='md' radius='xl' />
+              <Text size='sm' c='dimmed'>
+                {statusObj.completionRate?.toFixed(1)}% đơn đặt hàng của bạn đã bị hủy
+              </Text>
+            </Stack>
+          </Flex>
+        </Card>
+      )}
       <Card shadow='sm' padding='lg' withBorder>
         <Tabs
           variant='pills'
@@ -252,10 +259,10 @@ export function OrderList({ userId }: { userId: string }) {
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
-                  {isLoading ? (
+                  {status == 'loading' || isLoading ? (
                     <Table.Tr>
                       <Table.Td colSpan={5}>
-                        <LoadingSkeleton cols={5} variant='table' />
+                        <CommonSkeleton.Table />
                       </Table.Td>
                     </Table.Tr>
                   ) : displayedOrders?.length > 0 ? (

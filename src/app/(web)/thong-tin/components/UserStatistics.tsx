@@ -18,8 +18,10 @@ import {
 } from '@mantine/core';
 import { UserLevel } from '@prisma/client';
 import { IconArrowRight } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { getInfoLevelUser } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { GetTotalSpentInMonthByUser } from '~/shared/type-trpc/revenue.type-trpc';
@@ -40,10 +42,12 @@ const months = [
   { month: 'Tháng 12', amount: 0 }
 ];
 export const orderCompletionRate = 85;
-export function UserStatistics({ userId }: { userId: string }) {
+export function UserStatistics() {
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
   const [selectedYear, setSelectedYear] = useState('2025');
-  const { data: userDb } = api.User.getOne.useQuery({ key: userId || '' }, { enabled: !!userId });
-  const { data: revenue } = api.Revenue.getTotalSpentInMonthByUser.useQuery(
+  const { data: userDb, isLoading } = api.User.getOne.useQuery({ key: userId || '' }, { enabled: !!userId });
+  const { data: revenue, isLoading: isLoadingRevenue } = api.Revenue.getTotalSpentInMonthByUser.useQuery(
     {
       userId: userId || '',
       year: Number(selectedYear) || 2025
@@ -68,6 +72,8 @@ export function UserStatistics({ userId }: { userId: string }) {
   const levelInfo = useMemo(() => {
     return getInfoLevelUser(userDb?.level as UserLevel);
   }, [userDb]);
+
+  if (status == 'loading' || isLoading || isLoadingRevenue) return <CommonSkeleton.Chart />;
 
   return (
     <Stack>

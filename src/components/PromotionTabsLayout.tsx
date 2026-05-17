@@ -16,14 +16,17 @@ import {
 } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { IconGift } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
 import { GetVoucherForUserVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 import { api } from '~/trpc/react';
-import { LoadingSkeleton } from './Loading/LoadingSkeleton';
+import { CommonSkeleton } from './Loading/LoadingSkeleton';
 
-export function PromotionTabLayout({ userId }: { userId: string }) {
+export function PromotionTabLayout() {
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
   const { data, isLoading } = api.Voucher.getVoucherForUser.useQuery({
     userId: userId || ''
   });
@@ -102,8 +105,8 @@ export function PromotionTabLayout({ userId }: { userId: string }) {
 
       <Divider my='sm' />
       <Tabs.Panel value={activeTab || 'all'}>
-        {isLoading ? (
-          <LoadingSkeleton variant='detail' />
+        {status == 'loading' || isLoading ? (
+          <CommonSkeleton.InfoGrid />
         ) : displayedPromotions?.length > 0 ? (
           <Grid mt='md'>
             {displayedPromotions.map((promo: GetVoucherForUserVoucher[number]) => (

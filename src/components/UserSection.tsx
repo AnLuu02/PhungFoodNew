@@ -19,7 +19,9 @@ import { IconChevronDown, IconMail, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useCallback } from 'react';
 import { menuUserInfo } from '~/lib/ConfigUI';
+import { api } from '~/trpc/react';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
@@ -28,6 +30,18 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
     defaultValue: []
   });
   const { data: session, status } = useSession();
+
+  const utils = api.useUtils();
+  const handlePrefetchInfoUser = useCallback(() => {
+    if (session?.user?.email) {
+      void utils.User.getOne.prefetch({ key: session?.user?.email || '', include: { order: true } });
+      void utils.Order.getFilter.prefetch({ s: session?.user?.email || '' });
+      void utils.Voucher.getVoucherForUser.prefetch({
+        userId: session?.user?.id || ''
+      });
+    }
+  }, [session?.user?.email]);
+
   if (status === 'loading') {
     return (
       <>
@@ -149,7 +163,11 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
           <Divider />
         </Box>
         {menuUserInfo.map((item, index) => (
-          <Link href={item.href} key={index}>
+          <Link
+            href={item.href}
+            key={index}
+            onMouseEnter={() => item.href === '/thong-tin' && handlePrefetchInfoUser()}
+          >
             <Box key={index} className='flex items-center gap-4 hover:bg-mainColor/10' px={'lg'} py={'sm'}>
               <Paper withBorder className='flex items-center justify-center bg-mainColor/10' w={40} h={40}>
                 <item.icon size={20} />

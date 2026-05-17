@@ -22,11 +22,12 @@ import {
 } from '@mantine/core';
 import { UserLevel } from '@prisma/client';
 import { IconCircleCheck, IconUpload } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
-import { LoadingSkeleton } from '~/components/Loading/LoadingSkeleton';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
@@ -34,8 +35,12 @@ import { promotionLevels } from '~/lib/HardData/promotion-level';
 import { GetOneUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
-export function UserInfo({ userId }: { userId: string }) {
-  const { data: userInfor, isLoading } = api.User.getOne.useQuery({ key: userId || '', include: { order: true } });
+export function UserInfo() {
+  const { data: session, status, update } = useSession();
+  const { data: userInfor, isLoading } = api.User.getOne.useQuery(
+    { key: session?.user?.id || '', include: { order: true } },
+    { enabled: !!session?.user?.id }
+  );
   const [opened, setOpened] = useState(false);
   const { statusObj } = useMemo(() => {
     const orderData =
@@ -52,7 +57,17 @@ export function UserInfo({ userId }: { userId: string }) {
     return { statusObj };
   }, [userInfor]);
   const levelInfo = userInfor?.level ? getInfoLevelUser(userInfor?.level) : {};
-  if (isLoading) return <LoadingSkeleton variant='detail' />;
+  if (status === 'loading' || isLoading)
+    return (
+      <Grid p={0} grow>
+        <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
+          <CommonSkeleton.ProfileCard />
+        </GridCol>
+        <GridCol span={{ base: 12, sm: 12, md: 6 }}>
+          <CommonSkeleton.StatsGrid />
+        </GridCol>
+      </Grid>
+    );
   return (
     <Grid p={0} grow>
       <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
@@ -280,9 +295,9 @@ export function UserInfo({ userId }: { userId: string }) {
                       className={`relative overflow-hidden rounded-full transition-all duration-300`}
                     >
                       <Tooltip label={`Tối thiểu: ${level.minPoint} điểm`}>
-                        <Paper w={60} h={40} pos={'relative'} className='overflow-hidden'>
+                        <Box w={60} h={40} pos={'relative'} className='overflow-hidden'>
                           <Image src={`/images/png/${level.thumbnail}`} fill alt='vip' />
-                        </Paper>
+                        </Box>
                       </Tooltip>
                     </Center>
                   );

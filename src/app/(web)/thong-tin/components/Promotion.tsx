@@ -2,7 +2,7 @@ import { Box, Button, Card, Flex, Stack, Text, Title } from '@mantine/core';
 import Link from 'next/link';
 import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
 
-export function Promotions({ userId }: { userId: string }) {
+export function Promotions() {
   return (
     <Stack>
       <Flex className='sm:items-center' gap={'md'} justify={'space-between'} direction={{ base: 'column', sm: 'row' }}>
@@ -19,7 +19,7 @@ export function Promotions({ userId }: { userId: string }) {
         </Link>
       </Flex>
       <Card withBorder shadow='sm' padding='lg'>
-        <PromotionTabLayout userId={userId} />
+        <PromotionTabLayout />
       </Card>
     </Stack>
   );
