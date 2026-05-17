@@ -83,12 +83,14 @@ export const logActivity = async (input: ActivityLogInput): Promise<void> => {
       changes
     }
   });
-
-  if (queue.length >= BATCH_SIZE) {
-    flush().catch(err => {
-      console.error('[ActivityLogger] Flush error:', err.message);
-    });
-  }
+  flush().catch(err => {
+    console.error('[ActivityLogger] Flush error:', err.message);
+  });
+  // if (queue.length >= BATCH_SIZE) {
+  //   flush().catch(err => {
+  //     console.error('[ActivityLogger] Flush error:', err.message);
+  //   });
+  // }
 };
 
 export const flushAll = async (): Promise<void> => {
@@ -97,11 +99,11 @@ export const flushAll = async (): Promise<void> => {
   }
 };
 
-if (typeof window === 'undefined') {
-  setInterval(() => {
-    flush();
-  }, FLUSH_INTERVAL);
-}
+// if (typeof window === 'undefined') {
+//   setInterval(() => {
+//     flush();
+//   }, FLUSH_INTERVAL);
+// }
 
 export const getAllActivitiesService = async (
   db: PrismaClient,

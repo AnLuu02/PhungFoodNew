@@ -48,13 +48,13 @@ export const ButtonCheckout = ({
     let userId = user?.user?.id;
     setLoading(true);
     if (!userId) {
-      const guest = generateGuestCredentials();
+      const { email, phone, password } = generateGuestCredentials();
       const responseGuest = await guestCreateMutation.mutateAsync({
-        email: guest.email || '',
-        name: guest.email || '',
-        password: guest.password || '',
+        email,
+        name: 'Khách hàng - ' + email,
+        password,
         imageForEntity: undefined,
-        phone: ''
+        phone
       });
       userId = responseGuest.id;
     }

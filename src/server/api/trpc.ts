@@ -99,7 +99,7 @@ export const activityLogger = t.middleware(async opts => {
                     action,
                     entityType: path?.split('.')?.[0]?.toLowerCase() || 'OTHER',
                     entityId: logContent?.before?.id || logContent?.after?.id || (input as any)?.id,
-                    userId: user?.id,
+                    userId: user?.id || logContent?.after?.userId || logContent?.before?.id || '',
                     metadata: {
                       before: logContent.before ?? {},
                       after: logContent.after ?? {}
