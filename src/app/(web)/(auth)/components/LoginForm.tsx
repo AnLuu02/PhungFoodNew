@@ -1,0 +1,223 @@
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Center,
+  Flex,
+  Grid,
+  GridCol,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title
+} from '@mantine/core';
+import { IconCheck, IconKey, IconMail } from '@tabler/icons-react';
+import { signIn } from 'next-auth/react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { checkLoginCooldown, setLoginCooldown } from '~/lib/FuncHandler/HandleLockedUser/loginLimiter';
+import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import LoginServices from '../components/LoginServices';
+
+export default function LoginForm() {
+  const [error, setError] = useState('');
+  const [cooldown, setCooldown] = useState(0);
+  const searchParams = useSearchParams();
+  const { callbackUrl, email, status } = useMemo(() => {
+    const url = searchParams.get('callbackUrl') || '/';
+    return {
+      callbackUrl: url.startsWith('/') ? url : '/',
+      email: searchParams.get('email')?.trim().toLowerCase() || null,
+      status: searchParams.get('status')
+    };
+  }, [searchParams]);
+  const {
+    control,
+    setValue,
+    handleSubmit,
+    formState: { errors, isSubmitting, isDirty }
+  } = useForm({
+    resolver: zodResolver(
+      z.object({
+        email: z.string().min(1, 'Email là bắt buộc'),
+        password: z.string().min(1, 'Mật khẩu là bắt buộc')
+      })
+    ),
+    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
+  useEffect(() => {
+    if (email) setValue('email', email);
+  }, [email]);
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
+  const onSubmit: SubmitHandler<{ email: string; password: string }> = async formData => {
+    setError('');
+    const { blocked, remaining } = checkLoginCooldown();
+    if (blocked) {
+      setCooldown(remaining);
+      NotifyError(`Vui lòng chờ ${remaining}s trước khi thử lại.`);
+      return;
+    }
+    setLoginCooldown();
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+        callbackUrl
+      });
+
+      if (result?.error) {
+        setError(result.error);
+      } else if (result?.ok && result.url) {
+        NotifySuccess('Đăng nhập thành công!');
+        window.location.href = result.url;
+      }
+    } catch {
+      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+    }
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Center my={'md'}>
+          <Card
+            w={{ base: '100%', sm: '50vw', md: '40vw', lg: '25vw' }}
+            h={'max-content'}
+            py={'lg'}
+            shadow='xl'
+            className='animate-fadeUp'
+          >
+            <Card.Section p={'md'}>
+              <Grid>
+                <GridCol span={12} className='flex justify-center'>
+                  <Title className='font-quicksand' size={28}>
+                    ĐĂNG NHẬP
+                  </Title>
+                </GridCol>
+                {status && (
+                  <GridCol span={12} className='flex justify-center'>
+                    <Alert w={'100%'} variant='light' color='green' title='Thành công' icon={<IconCheck />}>
+                      Tài khoản của bạn đã được kích hoạt. Nhập mật khẩu để đăng nhập.
+                    </Alert>
+                  </GridCol>
+                )}
+                <GridCol span={12}>
+                  <Controller
+                    control={control}
+                    name='email'
+                    render={({ field }) => (
+                      <TextInput
+                        {...field}
+                        placeholder='E-mail'
+                        type='email'
+                        label='E-mail'
+                        leftSection={<IconMail size={18} stroke={1.5} />}
+                        onChange={e => {
+                          field.onChange(e.target.value);
+                          setError('');
+                        }}
+                        error={error !== '' || errors.email?.message}
+                      />
+                    )}
+                  />
+                </GridCol>
+                <GridCol span={12}>
+                  <Controller
+                    control={control}
+                    name='password'
+                    render={({ field }) => (
+                      <PasswordInput
+                        {...field}
+                        placeholder='Mật khẩu'
+                        label='Mật khẩu'
+                        leftSection={<IconKey size={18} stroke={1.5} />}
+                        onChange={e => {
+                          field.onChange(e.target.value);
+                          setError('');
+                        }}
+                        error={error !== '' || errors.password?.message}
+                      />
+                    )}
+                  />
+                  {error && (
+                    <Text size='xs' className='text-red-500' mt={5}>
+                      {error}
+                    </Text>
+                  )}
+                </GridCol>
+
+                <GridCol span={12} className='flex justify-end'>
+                  <Link href={'/password/forgot-password'}>
+                    <Text
+                      fw={700}
+                      className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text dark:hover:text-mainColor'
+                      size='sm'
+                    >
+                      Bạn quên mật khẩu?
+                    </Text>
+                  </Link>
+                </GridCol>
+              </Grid>
+
+              <Grid>
+                <GridCol span={12} className=''>
+                  <Button
+                    disabled={!isDirty || cooldown > 0}
+                    loading={isSubmitting}
+                    type='submit'
+                    fullWidth
+                    size='md'
+                    children={'Đăng nhập'}
+                  />
+                </GridCol>
+                <GridCol span={12} className='flex justify-center'>
+                  <Flex align={'center'} gap={4}>
+                    <Text size='sm'>Bạn chưa có tài khoản?</Text>
+                    <Link href={'/dang-ky'}>
+                      <Text
+                        fw={700}
+                        className='cursor-pointer text-mainColor hover:text-subColor dark:text-dark-text dark:hover:text-mainColor'
+                        size='sm'
+                      >
+                        Đăng ký ngay
+                      </Text>
+                    </Link>
+                  </Flex>
+                </GridCol>
+                <GridCol span={12} className='flex justify-center' mt={10}>
+                  <Flex align={'center'} gap={10}>
+                    <Box w={100} h={1} className='bg-black opacity-20 dark:bg-dark-text'></Box>
+                    <Text size='xs' className='text-black dark:text-dark-text' opacity={0.5}>
+                      / HOẶC /
+                    </Text>
+                    <Box w={100} h={1} className='bg-black opacity-20 dark:bg-dark-text'></Box>
+                  </Flex>
+                </GridCol>
+
+                <GridCol span={12} className='flex justify-center'>
+                  <LoginServices />
+                </GridCol>
+              </Grid>
+            </Card.Section>
+          </Card>
+        </Center>
+      </form>
+    </>
+  );
+}

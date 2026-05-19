@@ -9,7 +9,7 @@ import { NotifyError } from '~/lib/FuncHandler/toast';
 
 const providers = [
   { name: 'google', icon: '/images/png/google.png' },
-  { name: 'facebook', icon: '/images/png/facebook.png' },
+  { name: 'facebook', icon: '/images/svg/icon-facebook.svg' },
   { name: 'zalo', icon: '/images/png/zalo.png' }
 ];
 
@@ -39,7 +39,7 @@ const LoginServices = () => {
           loading={loadingProvider === name}
           loaderProps={{ size: 'xs', color: 'red' }}
           onClick={() => handleLoginServices(name)}
-          className='hover: flex cursor-pointer items-center justify-center rounded-full bg-white opacity-100 transition-all duration-200 ease-in-out hover:scale-110 hover:bg-white hover:opacity-80'
+          className='flex cursor-pointer items-center justify-center rounded-full bg-white opacity-100 transition-all duration-200 ease-in-out hover:scale-110 hover:bg-white hover:opacity-80 dark:bg-dark-background'
         >
           <Image loading='lazy' src={icon} alt={name} width={30} height={30} className='object-cover' />
         </Button>
