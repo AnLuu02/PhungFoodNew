@@ -1,6 +1,6 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
-import { UserRole } from './shared/constants/user';
+import { UserRole } from './shared/constants/user.constants';
 
 const protectedRoutes = ['/admin', '/thong-tin', '/don-hang-cua-toi'];
 const authPages = ['/dang-nhap', '/dang-ky'];

@@ -1,13 +1,29 @@
 'use client';
 import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { FindCategory } from '~/shared/type-trpc/category.type-trpc';
+import { api } from '~/trpc/react';
 import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';
 
-export default function TableCategory({ data, s }: { s: string; data: FindCategory }) {
+export default function TableCategory() {
+  const searchParams = useSearchParams();
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') || '5';
+  const { data, isLoading } = api.Category.find.useQuery({ page: +page, limit: +limit, s });
   const currentItems = data?.categories || [];
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.Category.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -34,7 +50,13 @@ export default function TableCategory({ data, s }: { s: string; data: FindCatego
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={5}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((row: FindCategory['categories'][number], index: number) => (
                 <Table.Tr key={row.name + index}>
                   <Table.Td className='text-sm'>

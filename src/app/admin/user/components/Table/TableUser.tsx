@@ -17,42 +17,37 @@ import {
 } from '@mantine/core';
 import { IconAlertTriangle, IconCircleCheck, IconForbid2, IconUserPlus } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { getInfoLevelUser } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { UserRole } from '~/shared/constants/user';
+import { UserRole } from '~/shared/constants/user.constants';
 import { FindUser, GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
 
-export default function TableUser({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: {
-    s: string;
-    page: string;
-    limit: string;
-    sortArr: string[];
-    filter?: string;
-  };
-  data: FindUser;
-  allData: GetAllUser;
-}) {
+export default function TableUser() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const { s, page, limit, sortArr, filter } = queryParams;
 
-  const { data: dataClient } = api.User.find.useQuery(
-    { skip: +page, take: +limit, s, sort: sortArr, filter: filter + '@#@$@@' },
-    { initialData: data }
-  );
-  const { data: allDataClient } = api.User.getAll.useQuery(undefined, { initialData: allData });
+  const s = searchParams?.get('s') || '';
+  const page = searchParams?.get('page') || '1';
+  const limit = searchParams?.get('limit') ?? '5';
+  const filter = searchParams?.get('filter') + '@#@$@@';
+  const sortArr = searchParams?.getAll('sort');
+
+  const { data: dataClient, isLoading } = api.User.find.useQuery({
+    page: +page,
+    limit: +limit,
+    s,
+    sort: sortArr,
+    filter
+  });
+  const { data: allDataClient } = api.User.getAll.useQuery(undefined);
   const currentItems = dataClient?.users || [];
 
   const dataFilter = useMemo(() => {
@@ -102,6 +97,14 @@ export default function TableUser({
       }
     ];
   }, [allDataClient]);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.User.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
+
   return (
     <>
       <SimpleGrid cols={4}>
@@ -206,7 +209,13 @@ export default function TableUser({
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {currentItems.length > 0 ? (
+              {isLoading ? (
+                <Table.Tr>
+                  <Table.Td colSpan={10}>
+                    <CommonSkeleton.Table count={5} />
+                  </Table.Td>
+                </Table.Tr>
+              ) : currentItems.length > 0 ? (
                 currentItems.map((item: FindUser['users'][number]) => (
                   <Table.Tr key={item.id}>
                     <Table.Td className='text-sm'>

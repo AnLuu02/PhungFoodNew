@@ -1,9 +1,13 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { UserRole } from '~/shared/constants/user';
-import { api } from '~/trpc/server';
+import { UserRole } from '~/shared/constants/user.constants';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreateProductButton } from './components/Button';
 import TableProduct from './components/Table/TableProduct';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý sản phẩm '
 };
@@ -20,9 +24,9 @@ export default async function ProductManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const [allData, data] = await Promise.all([
-    api.Product.getAll({ userRole: UserRole.ADMIN }),
-    api.Product.find({
+  await Promise.allSettled([
+    api.Product.getAll.prefetch({ userRole: UserRole.ADMIN }),
+    api.Product.find.prefetch({
       page: +page,
       limit: +limit,
       userRole: UserRole.ADMIN,
@@ -32,7 +36,7 @@ export default async function ProductManagementPage({
   ]);
 
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'} mb={'md'}>
@@ -47,8 +51,8 @@ export default async function ProductManagementPage({
           <CreateProductButton />
         </Flex>
 
-        <TableProduct data={data} queryParams={{ s, page, limit }} allData={allData} />
+        <TableProduct />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

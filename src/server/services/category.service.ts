@@ -7,11 +7,10 @@ import { CategoryInput } from '~/shared/schema/category.schema';
 
 export const findCategoryService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; include?: Prisma.CategoryInclude }
+  input: { page: number; limit: number; s?: string; include?: Prisma.CategoryInclude }
 ) => {
-  const { skip, take, s, include } = input;
+  const { page, limit, s, include } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.CategoryWhereInput = {
     OR: [
       {
@@ -31,8 +30,8 @@ export const findCategoryService = async (
       where
     }),
     db.category.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       orderBy: {
         createdAt: 'desc'
@@ -52,15 +51,14 @@ export const findCategoryService = async (
     Object.entries(input)?.length > 2
       ? totalCategoriesQuery == 0
         ? 1
-        : totalCategoriesQuery / take
-      : totalCategories / take
+        : totalCategoriesQuery / limit
+      : totalCategories / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     categories,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

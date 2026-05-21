@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button, createTheme, MantineColorsTuple } from '@mantine/core';
+import { Badge, Button, createTheme, MantineColorsTuple, Title } from '@mantine/core';
 
 //Default
 const defaultRadius = 'lg';
@@ -39,6 +39,11 @@ export const mainTheme = createTheme({
   primaryColor: 'primary',
   defaultRadius,
   components: {
+    Title: Title.extend({
+      classNames: {
+        root: 'font-quicksand'
+      }
+    }),
     Button: Button.extend({
       defaultProps: {
         children: 'Mua ngay',

@@ -29,6 +29,9 @@ import { formatMoneyShort } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/server';
 import { ChangeRate } from './(dashboard)/reports/components/ChangeRate';
 
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 const recentControl = [
   {
     label: 'Thêm người dùng mới',

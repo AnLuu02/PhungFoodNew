@@ -9,31 +9,26 @@ import { DeleteReviewButton, UpdateReviewButton } from '../Button';
 import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';
 import { IconStar } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { FindReview, GetAllReview } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function TableReview({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: { s: string; page: string; limit: string; sortArr: string[] };
-  data: FindReview;
-  allData?: GetAllReview;
-}) {
+export default function TableReview() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const { s, page, limit, sortArr } = queryParams;
-  const { data: dataClient } = api.Review.find.useQuery(
-    { skip: +page, take: +limit, s, sort: sortArr },
-    { initialData: data }
-  );
-  const { data: allDataClient } = api.Review.getAll.useQuery(undefined, { initialData: allData });
 
-  const currentItems = dataClient.reviews || [];
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') || '5';
+  const sortArr = searchParams.getAll('sort');
+
+  const { data: dataClient, isLoading } = api.Review.find.useQuery({ page: +page, limit: +limit, s, sort: sortArr });
+  const { data: allDataClient } = api.Review.getAll.useQuery(undefined);
+
+  const currentItems = dataClient?.reviews || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
@@ -82,6 +77,13 @@ export default function TableReview({
       }
     ];
   }, [allDataClient]);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Review.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -185,7 +187,13 @@ export default function TableReview({
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={6}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((item: FindReview['reviews'][number]) => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
@@ -232,7 +240,7 @@ export default function TableReview({
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
     </>
   );

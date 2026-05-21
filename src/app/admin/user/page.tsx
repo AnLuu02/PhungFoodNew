@@ -1,8 +1,12 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreateUserButton } from './components/Button';
 import TableUser from './components/Table/TableUser';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý người dùng '
 };
@@ -21,20 +25,24 @@ export default async function UserManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const allData = await api.User.getAll();
   const sortArr: string[] = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
   const filter = searchParams?.filter + '@#@$@@';
-  const data = await api.User.find({
-    skip: +page,
-    take: +limit,
-    s,
-    sort: sortArr,
-    filter
-  });
+
+  await Promise.allSettled([
+    api.User.find.prefetch({
+      page: +page,
+      limit: +limit,
+      s,
+      sort: sortArr,
+      filter
+    }),
+    api.User.getAll.prefetch()
+  ]);
+
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'} mb={'md'}>
@@ -49,8 +57,8 @@ export default async function UserManagementPage({
           <CreateUserButton />
         </Flex>
 
-        <TableUser data={data} allData={allData} queryParams={{ s, page, limit, sortArr, filter }} />
+        <TableUser />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

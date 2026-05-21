@@ -3,7 +3,7 @@ import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
-import { TUserRole, UserRole } from '~/shared/constants/user';
+import { TUserRole, UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { FilterProductOptions } from '~/shared/schema/product.filter.schema';
 import { ProductFromDb } from '~/shared/schema/product.schema';
@@ -161,7 +161,8 @@ export const findProductService = async (
     pagination: {
       currentPage: page,
       totalPages,
-      totalProducts: totalProductsQuery
+      totalProducts: totalProductsQuery,
+      hasNext: Boolean(totalPages > page)
     }
   };
 };

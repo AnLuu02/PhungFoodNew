@@ -1,42 +1,21 @@
 'use client';
 import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Tabs, Title } from '@mantine/core';
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { FindCategory, GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
-import { FindSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
+import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 import { api } from '~/trpc/react';
 import { CreateCategoryButton, CreateSubCategoryButton } from './Button';
 import TableCategory from './Table/TableCategory';
 import TableSubCategory from './Table/TableSubCategory';
 
-export default function CategoryClientManagementPage({
-  s,
-  allData,
-  dataCategory,
-  dataSubCategory
-}: {
-  s: string;
-  allData: GetAllCategory;
-  dataCategory: FindCategory;
-  dataSubCategory: FindSubCategory;
-}) {
+export default function CategoryClientManagementPage() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const page = searchParams.get('page') || '1';
-  const limit = searchParams.get('limit') || '5';
   const [activeTab, setActiveTab] = useState<'category' | 'subCategory'>('category');
-  const { data: dataClient } =
-    activeTab === 'category'
-      ? api.Category.find.useQuery({ skip: +page, take: +limit, s }, { initialData: dataCategory })
-      : api.SubCategory.find.useQuery({ skip: +page, take: +limit, s }, { initialData: dataSubCategory });
-
-  const { data: allDataClient } = api.Category.getAll.useQuery(undefined, { initialData: allData });
-  const { data: user } = useSession();
-
+  const { data: allDataClient } = api.Category.getAll.useQuery(undefined);
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient?.reduce(
@@ -172,7 +151,7 @@ export default function CategoryClientManagementPage({
                       { value: 'all', label: 'Tất cả' },
                       { value: 'active', label: 'Hoạt động' },
                       { value: 'inactive', label: 'Tạm khóa' },
-                      ...allData?.map((item: GetAllCategory[number]) => {
+                      ...(allDataClient ?? []).map((item: GetAllCategory[number]) => {
                         return {
                           label: item.name,
                           value: item.tag
@@ -188,11 +167,7 @@ export default function CategoryClientManagementPage({
         </Paper>
 
         <Tabs.Panel value={activeTab} mt={'md'}>
-          {activeTab === 'category' ? (
-            <TableCategory data={dataClient as FindCategory} s={s} />
-          ) : (
-            <TableSubCategory data={dataClient as FindSubCategory} s={s} />
-          )}
+          {activeTab === 'category' ? <TableCategory /> : <TableSubCategory />}
         </Tabs.Panel>
       </Tabs>
     </>

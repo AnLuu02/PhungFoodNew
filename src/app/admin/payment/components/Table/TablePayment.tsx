@@ -1,6 +1,9 @@
 'use client';
 
 import { Badge, Box, Group, Table, Text } from '@mantine/core';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
@@ -8,16 +11,22 @@ import { FindPayment } from '~/shared/type-trpc/payment.type-trpc';
 import { api } from '~/trpc/react';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';
 
-export default function TablePayment({
-  queryParams,
-  data
-}: {
-  queryParams: { s: string; page: string; limit: string };
-  data: FindPayment;
-}) {
-  const { s, page, limit } = queryParams;
-  const { data: dataClient } = api.Payment.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
+export default function TablePayment() {
+  const searchParams = useSearchParams();
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') || '5';
+
+  const { data: dataClient, isLoading } = api.Payment.find.useQuery({ page: +page, limit: +limit, s });
   const currentItems = dataClient?.payments || [];
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Payment.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -41,7 +50,13 @@ export default function TablePayment({
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={13}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((row: FindPayment['payments'][number]) => (
                 <Table.Tr key={row.id}>
                   <Table.Td>{row.id}</Table.Td>
@@ -83,7 +98,7 @@ export default function TablePayment({
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
     </>
   );

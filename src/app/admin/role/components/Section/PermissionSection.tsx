@@ -3,7 +3,7 @@ import { Box, Paper, SimpleGrid, Switch, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { UserRole } from '~/shared/constants/user';
+import { UserRole } from '~/shared/constants/user.constants';
 import { api } from '~/trpc/react';
 import { FilterPermission, SelectedPermissions } from '../types';
 

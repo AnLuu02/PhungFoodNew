@@ -4,11 +4,10 @@ import { RoleInput } from '~/shared/schema/role.schema';
 
 export const findRoleService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; include?: Prisma.RoleInclude }
+  input: { page: number; limit: number; s?: string; include?: Prisma.RoleInclude }
 ) => {
-  const { skip, take, s, include } = input;
+  const { page, limit, s, include } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
 
   const where: Prisma.RoleWhereInput = {
     OR: [
@@ -35,8 +34,8 @@ export const findRoleService = async (
       where
     }),
     db.role.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       orderBy: {
         createdAt: 'desc'
@@ -45,13 +44,14 @@ export const findRoleService = async (
     })
   ]);
 
-  const totalPages = Math.ceil(searchQuery ? (totalRolesQuery === 0 ? 1 : totalRolesQuery / take) : totalRoles / take);
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
+  const totalPages = Math.ceil(
+    searchQuery ? (totalRolesQuery === 0 ? 1 : totalRolesQuery / limit) : totalRoles / limit
+  );
 
   return {
     roles,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

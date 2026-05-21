@@ -1,8 +1,12 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreateVoucherButton } from './components/Button';
-import VoucherClient from './components/voucherClient';
+import VoucherClient from './components/PageClient';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý khuyến mãi '
 };
@@ -19,10 +23,10 @@ export default async function VoucherManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const [allData, data] = await Promise.all([api.Voucher.getAll(), api.Voucher.find({ skip: +page, take: +limit, s })]);
+  await Promise.all([api.Voucher.getAll.prefetch(), api.Voucher.find.prefetch({ page: +page, limit: +limit, s })]);
 
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'} mb={'md'}>
@@ -37,8 +41,8 @@ export default async function VoucherManagementPage({
           <CreateVoucherButton />
         </Flex>
 
-        <VoucherClient queryParams={{ s, page, limit }} data={data} allData={allData} />
+        <VoucherClient />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

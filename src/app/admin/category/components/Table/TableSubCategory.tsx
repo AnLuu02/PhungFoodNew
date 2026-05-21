@@ -1,14 +1,31 @@
 'use client';
 
 import { Avatar, Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { FindSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
+import { api } from '~/trpc/react';
 import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
-export default function TableSubCategory({ s, data }: { s: string; data: FindSubCategory }) {
+export default function TableSubCategory() {
+  const searchParams = useSearchParams();
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') || '5';
+  const { data, isLoading } = api.SubCategory.find.useQuery({ page: +page, limit: +limit, s });
   const currentItems = data?.subCategories || [];
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.SubCategory.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
+
   return (
     <>
       <Box className={`tableAdmin w-full overflow-x-auto`}>
@@ -26,7 +43,13 @@ export default function TableSubCategory({ s, data }: { s: string; data: FindSub
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={7}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((item: FindSubCategory['subCategories'][number], index: number) => (
                 <Table.Tr key={item.id + index}>
                   <Table.Td className='text-sm'>

@@ -14,9 +14,11 @@ import {
   Tooltip
 } from '@mantine/core';
 import { IconBrandCashapp, IconDumpling, IconMeat, IconMoneybag, IconMushroomFilled } from '@tabler/icons-react';
-import { useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
 import { SendOrderButton } from '~/app/admin/order/components/Button';
 import InvoiceToPrint from '~/components/InvoceToPrint';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
@@ -24,18 +26,16 @@ import { FindInvoice, GetAllInvoice } from '~/shared/type-trpc/invoice.type-trpc
 import { api } from '~/trpc/react';
 import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '../Button';
 
-export default function TableInvoice({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: { s: string; page: string; limit: string };
-  data: FindInvoice;
-  allData: GetAllInvoice;
-}) {
-  const { s, page, limit } = queryParams;
-  const { data: dataClient } = api.Invoice.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
-  const { data: allDataClient } = api.Invoice.getAll.useQuery(undefined, { initialData: allData });
+export default function TableInvoice() {
+  const searchParams = useSearchParams();
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') ?? '5';
+
+  const { data: dataClient, isLoading } = api.Invoice.find.useQuery({ page: +page, limit: +limit, s });
+  const { data: allDataClient } = api.Invoice.getAll.useQuery(undefined);
+
   const currentItems = dataClient?.invoices || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
@@ -87,6 +87,13 @@ export default function TableInvoice({
     ];
   }, [allDataClient]);
 
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Invoice.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
+
   return (
     <>
       <SimpleGrid cols={5}>
@@ -127,7 +134,13 @@ export default function TableInvoice({
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={8}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((row: FindInvoice['invoices'][number], index: number) => (
                 <Table.Tr key={row.id + index}>
                   <Table.Td>
@@ -215,7 +228,7 @@ export default function TableInvoice({
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
     </>
   );

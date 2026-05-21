@@ -7,17 +7,16 @@ import { OrderInput } from '~/shared/schema/order.schema';
 export const findOrderService = async (
   db: PrismaClient,
   input: {
-    skip: number;
-    take: number;
+    page: number;
+    limit: number;
     s?: string;
     filter?: string | null;
     sort?: string[];
     include?: Prisma.OrderInclude;
   }
 ) => {
-  const { skip, take, s, filter, sort, include } = input;
+  const { page, limit, s, filter, sort, include } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.OrderWhereInput = {
     OR: [
       {
@@ -73,8 +72,8 @@ export const findOrderService = async (
       orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined
     }),
     db.order.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : { createdAt: 'desc' },
       include: {
@@ -101,14 +100,13 @@ export const findOrderService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    Object.entries(input)?.length > 2 ? (totalOrdersQuery == 0 ? 1 : totalOrdersQuery / take) : totalOrders / take
+    Object.entries(input)?.length > 2 ? (totalOrdersQuery == 0 ? 1 : totalOrdersQuery / limit) : totalOrders / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     orders,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

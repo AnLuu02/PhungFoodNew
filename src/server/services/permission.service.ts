@@ -14,11 +14,10 @@ export const getOnePermissionService = async (
 
 export const findPermissionService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; include?: Prisma.PermissionInclude }
+  input: { page: number; limit: number; s?: string; include?: Prisma.PermissionInclude }
 ) => {
-  const { skip, take, s } = input;
+  const { page, limit, s } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.PermissionWhereInput = {
     OR: [
       { id: { contains: searchQuery, mode: 'insensitive' } },
@@ -33,8 +32,8 @@ export const findPermissionService = async (
       where
     }),
     db.permission.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       include: {
         ...(input?.include ?? {}),
@@ -50,14 +49,13 @@ export const findPermissionService = async (
   ]);
 
   const totalPages = Math.ceil(
-    searchQuery ? (totalPermissionsQuery === 0 ? 1 : totalPermissionsQuery / take) : totalPermissions / take
+    searchQuery ? (totalPermissionsQuery === 0 ? 1 : totalPermissionsQuery / limit) : totalPermissions / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     permissions,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

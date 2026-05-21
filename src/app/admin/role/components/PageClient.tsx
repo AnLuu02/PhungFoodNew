@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { UserRole } from '~/shared/constants/user';
-import { FindPermission, FindRole, GetAllRole } from '~/shared/type-trpc/role-permission.type-trpc';
+import { UserRole } from '~/shared/constants/user.constants';
+import { GetAllRole } from '~/shared/type-trpc/role-permission.type-trpc';
 import { api } from '~/trpc/react';
 import { CreateManyPermissionButton, CreateManyRoleButton, CreatePermissionButton, CreateRoleButton } from './Button';
 import { RoleSection } from './Section/RoleSection';
@@ -17,33 +17,14 @@ const TABS: Record<string, { value: string; label: string }> = {
   permission: { value: 'permission', label: 'Quyền người dùng' }
 };
 const DEFAULT_TAB = TABS?.['role']?.value || 'role';
-export default function RoleClient({
-  queryParams,
-  allData,
-  dataRole,
-  dataPermission
-}: {
-  queryParams: {
-    s: string;
-    page: string;
-    limit: string;
-  };
-  allData: GetAllRole;
-  dataRole: FindRole;
-  dataPermission: FindPermission;
-}) {
+export default function RoleClient() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const { s, page, limit } = queryParams;
 
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
-  const { data: dataClient } =
-    activeTab === TABS?.['role']?.value
-      ? api.RolePermission.find.useQuery({ skip: +page, take: +limit, s }, { initialData: dataRole })
-      : api.RolePermission.findPermission.useQuery({ skip: +page, take: +limit, s }, { initialData: dataPermission });
 
-  const { data: allDataClient } = api.RolePermission.getAllRole.useQuery(undefined, { initialData: allData });
+  const { data: allDataClient } = api.RolePermission.getAllRole.useQuery(undefined);
 
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
@@ -222,13 +203,7 @@ export default function RoleClient({
         </Flex>
 
         <Divider my='sm' />
-        <Tabs.Panel value={activeTab}>
-          {activeTab === 'role' ? (
-            <RoleSection data={dataClient as FindRole} s={s} />
-          ) : (
-            <TablePermission data={dataClient as FindPermission} s={s} />
-          )}
-        </Tabs.Panel>
+        <Tabs.Panel value={activeTab}>{activeTab === 'role' ? <RoleSection /> : <TablePermission />}</Tabs.Panel>
       </Tabs>
     </>
   );

@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
 import LayoutAdmin from './LayoutAdmin';
 
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: {
     default: 'Tổng quan ',

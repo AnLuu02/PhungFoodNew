@@ -10,34 +10,34 @@ import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@manti
 import { ImageType } from '@prisma/client';
 import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
-import { UserRole } from '~/shared/constants/user';
+import { UserRole } from '~/shared/constants/user.constants';
 import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 import { FindProduct, GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function TableProduct({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: { s: string; page: string; limit: string };
-  data: FindProduct;
-  allData: GetAllProduct;
-}) {
+export default function TableProduct() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  const { s, page, limit } = queryParams;
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') || '5';
+
   const { data: categories, isLoading } = api.Category.getAll.useQuery();
-  const { data: dataClient } = api.Product.find.useQuery(
-    { page: +page, limit: +limit, s, userRole: UserRole.ADMIN, filter: searchParams?.get('filter') + '@#@$@@' },
-    { initialData: data }
-  );
-  const { data: allDataClient } = api.Product.getAll.useQuery({ userRole: UserRole.ADMIN }, { initialData: allData });
+  const { data: dataClient, isLoading: isLoadingProduct } = api.Product.find.useQuery({
+    page: +page,
+    limit: +limit,
+    s,
+    userRole: UserRole.ADMIN,
+    filter: searchParams?.get('filter') + '@#@$@@'
+  });
+  const { data: allDataClient } = api.Product.getAll.useQuery({ userRole: UserRole.ADMIN });
   const currentItems = dataClient?.products || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
@@ -82,6 +82,13 @@ export default function TableProduct({
       }
     ];
   }, [allDataClient]);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Product.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -168,7 +175,13 @@ export default function TableProduct({
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoadingProduct ? (
+              <Table.Tr>
+                <Table.Td colSpan={9}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((item: FindProduct['products'][number]) => (
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
@@ -250,7 +263,7 @@ export default function TableProduct({
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
     </>
   );

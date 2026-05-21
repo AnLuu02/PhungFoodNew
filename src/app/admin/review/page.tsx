@@ -1,8 +1,12 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreateReviewButton } from './components/Button';
 import TableReview from './components/Table/TableReview';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý đánh giá'
 };
@@ -22,12 +26,14 @@ export default async function ReviewManagementPage({
   const sortArr: string[] = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
-  const [allData, data] = await Promise.all([
-    api.Review.getAll(),
-    api.Review.find({ skip: +page, take: +limit, s, sort: sortArr })
+
+  await Promise.allSettled([
+    api.Review.getAll.prefetch(),
+    api.Review.find.prefetch({ page: +page, limit: +limit, s, sort: sortArr })
   ]);
+
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
@@ -41,8 +47,8 @@ export default async function ReviewManagementPage({
           </Box>
           <CreateReviewButton />
         </Flex>
-        <TableReview data={data} queryParams={{ s, page, limit, sortArr }} allData={allData} />
+        <TableReview />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

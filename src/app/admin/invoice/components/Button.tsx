@@ -32,7 +32,7 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import InvoiceUpsert from './form/InvoiceUpsert';
 
-export function CreateInvoiceButton({ allData }: any) {
+export function CreateInvoiceButton() {
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -51,7 +51,7 @@ export function CreateInvoiceButton({ allData }: any) {
           </Title>
         }
       >
-        <InvoiceUpsert invoiceId={allData?.id} setOpened={setOpened} />
+        <InvoiceUpsert setOpened={setOpened} />
       </Modal>
     </>
   );

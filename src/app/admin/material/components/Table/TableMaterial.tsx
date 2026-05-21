@@ -17,7 +17,8 @@ import {
 import { IconMeat } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
@@ -28,21 +29,18 @@ import { FindMaterial, GetAllMaterial } from '~/shared/type-trpc/material.type-t
 import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 
-export default function TableMaterial({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: { s: string; page: string; limit: string };
-  data: FindMaterial;
-  allData: GetAllMaterial;
-}) {
+export default function TableMaterial() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const { s, page, limit } = queryParams;
-  const { data: dataClient } = api.Material.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
-  const { data: allDataClient } = api.Material.getAll.useQuery(undefined, { initialData: allData });
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') ?? '5';
+
+  const { data: dataClient, isLoading } = api.Material.find.useQuery({ page: +page, limit: +limit, s });
+  const { data: allDataClient } = api.Material.getAll.useQuery(undefined);
+
   const currentItems = dataClient?.materials || [];
   const dataFilter = useMemo(() => {
     let keys: any = {};
@@ -63,6 +61,13 @@ export default function TableMaterial({
       color: randomColorHex()
     }));
   }, [allDataClient]);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Material.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -142,7 +147,13 @@ export default function TableMaterial({
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={5}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((row: FindMaterial['materials'][number], index: number) => (
                 <Table.Tr key={index}>
                   <Table.Td className='text-sm'>
@@ -184,7 +195,7 @@ export default function TableMaterial({
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
     </>
   );

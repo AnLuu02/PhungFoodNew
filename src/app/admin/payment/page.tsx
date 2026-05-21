@@ -1,9 +1,13 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreatePaymentButton } from './components/Button';
 import TablePayment from './components/Table/TablePayment';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý thanh toán '
 };
@@ -19,11 +23,14 @@ export default async function PaymentManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const allData = await api.Payment.getAll();
-  const data = await api.Payment.find({ skip: +page, take: +limit, s });
+
+  await Promise.allSettled([
+    api.Payment.getAll.prefetch(),
+    api.Payment.find.prefetch({ page: +page, limit: +limit, s })
+  ]);
 
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
@@ -35,16 +42,14 @@ export default async function PaymentManagementPage({
               Quản lí việc thanh toán trong hệ thống PhungFood
             </Text>
           </Box>
-        </Flex>
-        <Group justify='space-between' mb='md'>
-          <Text fw={500}>Số lượng bản ghi: {allData && allData?.length}</Text>
           <Group>
             <SearchInput />
             <CreatePaymentButton />
           </Group>
-        </Group>
-        <TablePayment data={data} queryParams={{ s, page, limit }} />
+        </Flex>
+
+        <TablePayment />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

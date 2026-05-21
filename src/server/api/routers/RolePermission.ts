@@ -25,8 +25,8 @@ export const rolePermissionRouter = createTRPCRouter({
   find: publicProcedure
     .input(
       z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
+        page: z.number().default(1),
+        limit: z.number().default(5),
         s: z.string().optional(),
         include: z.custom<Prisma.RoleInclude>().optional()
       })
@@ -71,8 +71,8 @@ export const rolePermissionRouter = createTRPCRouter({
   findPermission: publicProcedure
     .input(
       z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
+        page: z.number().default(1),
+        limit: z.number().default(5),
         s: z.string().optional(),
         include: z.custom<Prisma.PermissionInclude>().optional()
       })

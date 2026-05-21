@@ -5,10 +5,9 @@ import { PaymentInput } from '~/shared/schema/payment.schema';
 
 export const findPaymentService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; include?: Prisma.PaymentInclude }
+  input: { page: number; limit: number; s?: string; include?: Prisma.PaymentInclude }
 ) => {
-  const { skip, take, s, include } = input;
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const { page, limit, s, include } = input;
   const where: Prisma.PaymentWhereInput = {
     name: { contains: s, mode: 'insensitive' }
   };
@@ -18,8 +17,8 @@ export const findPaymentService = async (
       where
     }),
     db.payment.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       include,
       orderBy: {
@@ -27,12 +26,11 @@ export const findPaymentService = async (
       }
     })
   ]);
-  const totalPages = Math.ceil(s ? (totalPaymentsQuery == 0 ? 1 : totalPaymentsQuery / take) : totalPayments / take);
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
+  const totalPages = Math.ceil(s ? (totalPaymentsQuery == 0 ? 1 : totalPaymentsQuery / limit) : totalPayments / limit);
   return {
     payments,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

@@ -7,15 +7,14 @@ import { SubCategoryInput } from '~/shared/schema/subCategory.schema';
 export const findSubCategoryService = async (
   db: PrismaClient,
   input: {
-    skip: number;
-    take: number;
+    page: number;
+    limit: number;
     s: string;
     include?: Prisma.SubCategoryInclude;
   }
 ) => {
-  const { skip, take, s, include } = input;
+  const { page, limit, s, include } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.SubCategoryWhereInput = {
     OR: [
       {
@@ -45,8 +44,8 @@ export const findSubCategoryService = async (
       where
     }),
     db.subCategory.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       include: {
         ...(include ?? {}),
@@ -78,14 +77,13 @@ export const findSubCategoryService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    searchQuery ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / take) : totalSubCategory / take
+    searchQuery ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / limit) : totalSubCategory / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     subCategories,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

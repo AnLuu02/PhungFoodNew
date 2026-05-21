@@ -3,35 +3,31 @@
 import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Title } from '@mantine/core';
 import { IconActivity, IconAlertTriangle, IconCircleCheck, IconGift } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { FindVoucher, GetAllVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 import { api } from '~/trpc/react';
-import CardVoucher from './card-voucher';
+import CardVoucher from './CardVoucher';
 import { UpdateVoucherModal } from './Modal/UpdateVoucherModal';
 import { ViewVoucherModal } from './Modal/ViewVoucherModal';
 
-export default function VoucherClient({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: {
-    s: string;
-    page: string;
-    limit: string;
-  };
-  data: FindVoucher;
-  allData?: GetAllVoucher;
-}) {
+export default function VoucherClient() {
   const searchParams = useSearchParams();
-  const { s, page, limit } = queryParams;
-  const { data: dataClient } = api.Voucher.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
-  const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined, { initialData: allData });
-  const [selectedPromotion, setSelectedPromotion] = useState<{ type: 'edit' | 'view'; data: any } | null>(null);
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') ?? '5';
+
+  const { data: dataClient, isLoading } = api.Voucher.find.useQuery({ page: +page, limit: +limit, s });
+  const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined);
+  const [selectedPromotion, setSelectedPromotion] = useState<{
+    type: 'edit' | 'view';
+    data: FindVoucher['vouchers'][number];
+  } | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'enabled' | 'disabled'>('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
@@ -103,6 +99,13 @@ export default function VoucherClient({
     ];
   }, [allDataClient]);
 
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Voucher.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
+
   return (
     <>
       <SimpleGrid cols={4}>
@@ -163,7 +166,9 @@ export default function VoucherClient({
           </Group>
         </Group>
       </Paper>
-      {filteredItems.length === 0 ? (
+      {isLoading ? (
+        <ModalUpsertSkeleton />
+      ) : filteredItems.length === 0 ? (
         <Empty hasButton={false} title='Không có kết quả phù hợp' content='' />
       ) : (
         <SimpleGrid cols={3}>

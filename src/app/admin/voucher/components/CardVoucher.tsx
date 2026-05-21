@@ -3,11 +3,12 @@
 import { Badge, Box, Button, Card, Highlight, Stack, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { IconCopy, IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { getPromotionStatus, getStatusColor } from '~/lib/FuncHandler/vouchers-calculate';
+import { FindVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function CardVoucher({
@@ -15,9 +16,14 @@ export default function CardVoucher({
   s,
   setSelectedPromotion
 }: {
-  promotion: any;
+  promotion: FindVoucher['vouchers'][number];
   s: string;
-  setSelectedPromotion: any;
+  setSelectedPromotion: Dispatch<
+    SetStateAction<{
+      type: 'edit' | 'view';
+      data: FindVoucher['vouchers'][number];
+    } | null>
+  >;
 }) {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const mutationDelete = api.Voucher.delete.useMutation({
@@ -59,7 +65,7 @@ export default function CardVoucher({
                   {promotion.name || 'Đang cập nhật'}
                 </Highlight>
                 <Highlight lineClamp={2} size='sm' highlight={s}>
-                  {promotion.description}
+                  {promotion.description || 'Đang cập nhật'}
                 </Highlight>
               </Box>
               <Badge variant='light' className={getStatusColor(status.name)}>
@@ -131,7 +137,7 @@ export default function CardVoucher({
                   name: promotion.name + '-' + new Date().getTime(),
                   isActive: false,
                   id: ''
-                });
+                } as any);
               }}
               styles={{
                 root: {

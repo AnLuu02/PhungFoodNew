@@ -17,7 +17,8 @@ import {
 import { TypeContact } from '@prisma/client';
 import { IconBrandAsana, IconHelpOctagon, IconMessageReply, IconPhysotherapist } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
@@ -26,22 +27,18 @@ import { FindContact, GetAllContact } from '~/shared/type-trpc/contact.type-trpc
 import { api } from '~/trpc/react';
 import { CallPhoneButton, DeleteContactButton, SendMailButton } from '../Button';
 
-export default function TableContact({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: { s: string; page: string; limit: string };
-  data: FindContact;
-  allData: GetAllContact;
-}) {
+export default function TableContact() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
-  const { s, page, limit } = queryParams;
-  const { data: dataClient } = api.Contact.find.useQuery({ skip: +page, take: +limit, s }, { initialData: data });
 
-  const { data: allDataClient } = api.Contact.getAll.useQuery(undefined, { initialData: allData });
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') ?? '5';
+
+  const { data: dataClient, isLoading } = api.Contact.find.useQuery({ page: +page, limit: +limit, s });
+  const { data: allDataClient } = api.Contact.getAll.useQuery(undefined);
+
   const currentItems = dataClient?.contacts || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
@@ -82,6 +79,13 @@ export default function TableContact({
       }
     ];
   }, [allDataClient]);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Contact.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -156,7 +160,13 @@ export default function TableContact({
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={7}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((row: FindContact['contacts'][number], index: number) => (
                 <Table.Tr key={index}>
                   <Table.Td className='text-sm'>
@@ -199,7 +209,7 @@ export default function TableContact({
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
     </>
   );

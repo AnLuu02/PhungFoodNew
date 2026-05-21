@@ -7,18 +7,17 @@ import { ReviewInput } from '~/shared/schema/review.schema';
 export const findReviewService = async (
   db: PrismaClient,
   input: {
-    skip: number;
-    take: number;
+    page: number;
+    limit: number;
     s?: string;
     relationId?: string;
     sort?: string[];
     include?: Prisma.ReviewInclude;
   }
 ) => {
-  const { skip, take, s, relationId, sort, include } = input;
+  const { page, limit, s, relationId, sort, include } = input;
   const searchQuery = s?.trim();
   const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.ReviewWhereInput = {
     OR: filterStar
       ? [
@@ -83,8 +82,8 @@ export const findReviewService = async (
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : { createdAt: 'desc' }
     }),
     db.review.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : { createdAt: 'desc' },
       include: {
@@ -109,14 +108,13 @@ export const findReviewService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    Object.entries(input)?.length > 2 ? (totalReviewsQuery == 0 ? 1 : totalReviewsQuery / take) : totalReviews / take
+    Object.entries(input)?.length > 2 ? (totalReviewsQuery == 0 ? 1 : totalReviewsQuery / limit) : totalReviews / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     reviews,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

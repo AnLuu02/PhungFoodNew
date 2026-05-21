@@ -11,8 +11,8 @@ import { CommentsSkeleton } from './CommentsSkeleton';
 
 export const CommentsList = ({ productId }: { productId: string }) => {
   const { data, isLoading } = api.Review.find.useQuery({
-    skip: 0,
-    take: 100,
+    page: 1,
+    limit: 100,
     ...(productId ? { relationId: productId } : {})
   });
   const reviews = data?.reviews || [];

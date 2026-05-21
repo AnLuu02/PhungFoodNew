@@ -1,8 +1,12 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreateMaterialButton } from './components/Button';
 import TableMaterial from './components/Table/TableMaterial';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý nguyên liệu '
 };
@@ -18,12 +22,12 @@ export default async function MaterialManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const [data, allData] = await Promise.all([
-    await api.Material.find({ skip: +page, take: +limit, s }),
-    api.Material.getAll()
+  await Promise.allSettled([
+    api.Material.find.prefetch({ page: +page, limit: +limit, s }),
+    api.Material.getAll.prefetch()
   ]);
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
@@ -38,8 +42,8 @@ export default async function MaterialManagementPage({
           <CreateMaterialButton />
         </Flex>
 
-        <TableMaterial allData={allData} data={data} queryParams={{ s, page, limit }} />
+        <TableMaterial />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

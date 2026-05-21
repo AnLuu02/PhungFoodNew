@@ -2,9 +2,13 @@ import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreateInvoiceButton } from './components/Button';
 import TableInvoice from './components/Table/TableInvoice';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý hóa đơn '
 };
@@ -20,11 +24,13 @@ export default async function InvoiceManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const allData = await api.Invoice.getAll();
-  const data = await api.Invoice.find({ skip: +page, take: +limit, s });
+  await Promise.allSettled([
+    api.Invoice.getAll.prefetch(),
+    api.Invoice.find.prefetch({ page: +page, limit: +limit, s })
+  ]);
 
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
@@ -36,21 +42,15 @@ export default async function InvoiceManagementPage({
               Danh sách tất cả hóa đơn trong hệ thống PhungFood
             </Text>
           </Box>
-        </Flex>
-
-        <Group justify='space-between'>
-          <Text fw={500} size='md'>
-            Số lượng bản ghi: {allData && allData?.length}
-          </Text>
           <Group>
             <PageSizeSelector />
             <SearchInput width={300} />
-            <CreateInvoiceButton allData={allData} />
+            <CreateInvoiceButton />
           </Group>
-        </Group>
+        </Flex>
 
-        <TableInvoice allData={allData} data={data} queryParams={{ s, page, limit }} />
+        <TableInvoice />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

@@ -1,7 +1,11 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import TableContact from './components/Table/TableContact';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý liên hệ của khách ahngf '
 };
@@ -17,10 +21,13 @@ export default async function ContactManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const [allData, data] = await Promise.all([api.Contact.getAll(), api.Contact.find({ skip: +page, take: +limit, s })]);
+  await Promise.allSettled([
+    api.Contact.getAll.prefetch(),
+    api.Contact.find.prefetch({ page: +page, limit: +limit, s })
+  ]);
 
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
@@ -34,8 +41,8 @@ export default async function ContactManagementPage({
           </Box>
         </Flex>
 
-        <TableContact allData={allData} data={data} queryParams={{ s, page, limit }} />
+        <TableContact />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

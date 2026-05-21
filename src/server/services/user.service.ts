@@ -7,7 +7,7 @@ import { Session } from 'next-auth';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
-import { UserRole } from '~/shared/constants/user';
+import { UserRole } from '~/shared/constants/user.constants';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { UserInput } from '~/shared/schema/user.schema';
 import { db } from '../db';
@@ -92,16 +92,15 @@ export const createOTP = (timeExpiredMinutes = 3) => {
 export const findUserService = async (
   db: PrismaClient,
   input: {
-    skip: number;
-    take: number;
+    page: number;
+    limit: number;
     s?: string;
     sort?: string[];
     filter?: string;
     include?: Prisma.UserInclude;
   }
 ) => {
-  const { skip, take, s, sort, filter, include } = input;
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
+  const { page, limit, s, sort, filter, include } = input;
   const where: Prisma.UserWhereInput = {
     AND: {
       OR: [
@@ -133,8 +132,8 @@ export const findUserService = async (
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : { createdAt: 'desc' }
     }),
     db.user.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['pointUser', 'name']) : { createdAt: 'desc' },
       include: {
@@ -145,14 +144,13 @@ export const findUserService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    Object.entries(input)?.length > 2 ? (totalUsersQuery == 0 ? 1 : totalUsersQuery / take) : totalUsers / take
+    Object.entries(input)?.length > 2 ? (totalUsersQuery == 0 ? 1 : totalUsersQuery / limit) : totalUsers / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     users,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

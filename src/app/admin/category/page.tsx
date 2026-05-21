@@ -1,9 +1,13 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
-import CategoryClientManagementPage from './components/categoryClient';
+import { api, HydrateClient } from '~/trpc/server';
+import CategoryClientManagementPage from './components/PageClient';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
-  title: 'Quản lý danh mục '
+  title: 'Quản lý danh mục'
 };
 export default async function CategoryManagementPage({
   searchParams
@@ -15,15 +19,15 @@ export default async function CategoryManagementPage({
   };
 }) {
   const s = searchParams?.s || '';
-  const currentPage = searchParams?.page || '1';
-  const limit = searchParams?.limit ?? '5';
-  const [allData, dataCategory, dataSubCategory] = await Promise.all([
-    api.Category.getAll(),
-    api.Category.find({ skip: +currentPage, take: +limit, s }),
-    api.SubCategory.find({ skip: +currentPage, take: +limit, s })
+  const page = searchParams?.page || '1';
+  const limit = searchParams?.limit || '5';
+  await Promise.allSettled([
+    api.Category.getAll.prefetch(),
+    api.Category.find.prefetch({ page: +page, limit: +limit, s }),
+    api.SubCategory.find.prefetch({ page: +page, limit: +limit, s })
   ]);
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'} mb={'md'}>
@@ -37,13 +41,8 @@ export default async function CategoryManagementPage({
           </Box>
         </Flex>
 
-        <CategoryClientManagementPage
-          s={s}
-          allData={allData}
-          dataCategory={dataCategory}
-          dataSubCategory={dataSubCategory}
-        />
+        <CategoryClientManagementPage />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

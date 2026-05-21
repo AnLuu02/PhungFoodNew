@@ -1,10 +1,9 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { ContactInput } from '~/shared/schema/contact.schema';
 
-export const findContactService = async (db: PrismaClient, input: { skip: number; take: number; s?: string }) => {
-  const { skip, take, s } = input;
+export const findContactService = async (db: PrismaClient, input: { page: number; limit: number; s?: string }) => {
+  const { page, limit, s } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.ContactWhereInput = {
     OR: [
       {
@@ -30,8 +29,8 @@ export const findContactService = async (db: PrismaClient, input: { skip: number
       where
     }),
     db.contact.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       orderBy: {
         createdAt: 'desc'
@@ -39,15 +38,18 @@ export const findContactService = async (db: PrismaClient, input: { skip: number
     })
   ]);
   const totalPages = Math.ceil(
-    Object.entries(input)?.length > 2 ? (totalContactsQuery == 0 ? 1 : totalContactsQuery / take) : totalContacts / take
+    Object.entries(input)?.length > 2
+      ? totalContactsQuery == 0
+        ? 1
+        : totalContactsQuery / limit
+      : totalContacts / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     contacts,
     totalData: Object.entries(input)?.length > 2 ? totalContactsQuery : totalContacts,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

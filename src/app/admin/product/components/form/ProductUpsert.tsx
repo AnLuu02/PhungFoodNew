@@ -25,7 +25,7 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { seedRegions } from '~/lib/HardData/seed';
-import { UserRole } from '~/shared/constants/user';
+import { UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { ProductInput, productInputSchema } from '~/shared/schema/product.schema';
 import { api } from '~/trpc/react';

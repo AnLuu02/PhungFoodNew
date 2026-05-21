@@ -18,30 +18,32 @@ import {
 import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { TFindOrder, TGetAllOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function TableOrder({
-  queryParams,
-  data,
-  allData
-}: {
-  queryParams: { s: string; page: string; limit: string; filter: OrderStatus; sortArr: string[] };
-  data: TFindOrder;
-  allData?: TGetAllOrder;
-}) {
+export default function TableOrder() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  const { s, page, limit, filter, sortArr } = queryParams;
-  const { data: dataClient } = api.Order.find.useQuery(
-    { skip: +page, take: +limit, s, filter, sort: sortArr },
-    { initialData: data }
-  );
-  const { data: allDataClient } = api.Order.getAll.useQuery(undefined, { initialData: allData });
-  const currentItems = dataClient.orders || [];
+
+  const s = searchParams?.get('s') || '';
+  const page = searchParams?.get('page') || '1';
+  const limit = searchParams?.get('limit') ?? '5';
+  const filter = searchParams?.get('filter') ?? undefined;
+  const sortArr = searchParams?.getAll('sort') ?? undefined;
+
+  const { data: dataClient, isLoading } = api.Order.find.useQuery({
+    page: +page,
+    limit: +limit,
+    s,
+    filter,
+    sort: sortArr
+  });
+  const { data: allDataClient } = api.Order.getAll.useQuery(undefined);
+  const currentItems = dataClient?.orders || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
@@ -106,6 +108,13 @@ export default function TableOrder({
       }
     ];
   }, [allDataClient]);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Order.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -195,7 +204,13 @@ export default function TableOrder({
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={7}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((order: TFindOrder['orders'][number]) => {
                 const statusInfo = getStatusInfo(order.status as OrderStatus);
                 return (
@@ -271,7 +286,7 @@ export default function TableOrder({
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
       </Group>
     </>
   );

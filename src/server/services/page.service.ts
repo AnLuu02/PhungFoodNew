@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { UserRole } from '~/shared/constants/user';
+import dayjs from 'dayjs';
+import { UserRole } from '~/shared/constants/user.constants';
 import { getAllActivitiesService } from './activityLogger.service';
 import { getAllProductService, getFilterProductService, getOneProductService } from './product.service';
 import { getOneBannerService } from './restaurant.banner.service';
@@ -141,10 +142,6 @@ export const getInitAdminPageService = async (db: PrismaClient) => {
     getOverviewRevenueService(db, {}),
     getAllActivitiesService(db, {
       limit: 10
-      // filters: {
-      //   dateFrom: dayjs(queryOverview?.startTime).toDate(),
-      //   dateTo: dayjs(queryOverview?.endTime).toDate()
-      // }
     })
   ]);
 
@@ -176,11 +173,11 @@ export const getInitReportPageService = async (db: PrismaClient, input: { startT
     getRevenueOrderStatusService(db, queryOverview),
     getDistributionProductsService(db, queryOverview),
     getAllActivitiesService(db, {
-      limit: 10
-      // filters: {
-      //   dateFrom: dayjs(queryOverview?.startTime).toDate(),
-      //   dateTo: dayjs(queryOverview?.endTime).toDate()
-      // }
+      limit: 10,
+      filters: {
+        dateFrom: dayjs(queryOverview?.startTime).toDate(),
+        dateTo: dayjs(queryOverview?.endTime).toDate()
+      }
     })
   ]);
 

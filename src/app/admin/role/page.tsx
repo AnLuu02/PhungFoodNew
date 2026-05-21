@@ -1,7 +1,11 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import { api } from '~/trpc/server';
-import RoleClient from './components/roleClient';
+import { api, HydrateClient } from '~/trpc/server';
+import RoleClient from './components/PageClient';
+
+export const revalidate = 60 * 60;
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Quản lý phân quyền'
 };
@@ -17,14 +21,14 @@ export default async function RoleManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const [allData, dataRole, dataPermissions] = await Promise.all([
-    api.RolePermission.getAllRole(),
-    api.RolePermission.find({ skip: +page, take: +limit, s }),
-    api.RolePermission.findPermission({ skip: +page, take: +limit, s })
+  await Promise.allSettled([
+    api.RolePermission.getAllRole.prefetch(),
+    api.RolePermission.find.prefetch({ page: +page, limit: +limit, s }),
+    api.RolePermission.findPermission.prefetch({ page: +page, limit: +limit, s })
   ]);
 
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'} mb={'md'}>
@@ -37,17 +41,8 @@ export default async function RoleManagementPage({
             </Text>
           </Box>
         </Flex>
-        <RoleClient
-          queryParams={{
-            s,
-            page,
-            limit
-          }}
-          allData={allData}
-          dataRole={dataRole}
-          dataPermission={dataPermissions}
-        />
+        <RoleClient />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

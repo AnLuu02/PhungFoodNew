@@ -17,8 +17,8 @@ export const orderRouter = createTRPCRouter({
   find: publicProcedure
     .input(
       z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
+        page: z.number().default(1),
+        limit: z.number().default(5),
         s: z.string().optional(),
         filter: z.string().optional().nullable(),
         sort: z.array(z.string()).optional()

@@ -1,8 +1,7 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
-import { OrderStatus } from '@prisma/client';
 import { Metadata } from 'next';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { api } from '~/trpc/server';
+import { api, HydrateClient } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserAdvanced } from './components/Button';
 import TableOrder from './components/Table/TableOrder';
 export const metadata: Metadata = {
@@ -22,16 +21,17 @@ export default async function OrderManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  const filter = searchParams?.filter as OrderStatus;
+  const filter = searchParams?.filter;
   const sortArr: string[] = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
-  const [allData, data] = await Promise.all([
-    api.Order.getAll(),
-    api.Order.find({ skip: +page, take: +limit, s, filter, sort: sortArr })
+
+  await Promise.allSettled([
+    api.Order.getAll.prefetch(),
+    api.Order.find.prefetch({ page: +page, limit: +limit, s, filter, sort: sortArr })
   ]);
   return (
-    <>
+    <HydrateClient>
       <Divider my={'md'} />
       <Stack gap={'lg'} pb={'xl'} mb={'xl'}>
         <Flex align={'center'} justify={'space-between'}>
@@ -44,16 +44,15 @@ export default async function OrderManagementPage({
             </Text>
           </Box>
         </Flex>
-        <Group justify='space-between' mb='md'>
-          <Text fw={500}>Số lượng bản ghi: {allData && allData?.length}</Text>
+        <Group justify='end' mb='md'>
           <Group>
             <SearchInput />
             <CreateOrderButton />
             <SendMessageAllUserAdvanced />
           </Group>
         </Group>
-        <TableOrder data={data} queryParams={{ s, page, limit, filter, sortArr }} allData={allData} />
+        <TableOrder />
       </Stack>
-    </>
+    </HydrateClient>
   );
 }

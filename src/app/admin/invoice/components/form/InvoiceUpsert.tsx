@@ -16,9 +16,9 @@ export default function InvoiceUpsert({
   invoiceId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data: orders = [] } = api.Order.getAll.useQuery(undefined, { enabled: invoiceId !== '' });
-  const { data: salers = [] } = api.User.getSaler.useQuery(undefined, { enabled: invoiceId !== '' });
-  const { data: invoiceData } = api.Invoice.getOne.useQuery({ key: invoiceId || '' }, { enabled: invoiceId !== '' });
+  const { data: orders = [] } = api.Order.getAll.useQuery(undefined);
+  const { data: salers = [] } = api.User.getSaler.useQuery(undefined);
+  const { data: invoiceData } = api.Invoice.getOne.useQuery({ key: invoiceId || '' });
   const {
     control,
     handleSubmit,

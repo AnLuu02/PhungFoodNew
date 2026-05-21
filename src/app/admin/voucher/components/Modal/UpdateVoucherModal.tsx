@@ -1,9 +1,27 @@
 'use client';
 
 import { Modal, ScrollAreaAutosize, Title } from '@mantine/core';
+import { Dispatch, SetStateAction } from 'react';
+import { FindVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 import UpdateVoucher from '../form/UpdateVoucher';
 
-export const UpdateVoucherModal = ({ selectedPromotion, setSelectedPromotion }: any) => {
+export const UpdateVoucherModal = ({
+  selectedPromotion,
+  setSelectedPromotion
+}: {
+  selectedPromotion: {
+    type: 'edit' | 'view';
+    data: FindVoucher['vouchers'][number];
+  } | null;
+  setSelectedPromotion: Dispatch<
+    SetStateAction<{
+      type: 'edit' | 'view';
+      data: FindVoucher['vouchers'][number];
+    } | null>
+  >;
+}) => {
+  if (!selectedPromotion) return null;
+
   return (
     <Modal
       closeOnClickOutside={false}

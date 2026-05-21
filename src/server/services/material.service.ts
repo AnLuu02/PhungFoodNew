@@ -5,11 +5,10 @@ import { MaterialInput } from '~/shared/schema/material.schema';
 
 export const findMaterialService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; include?: Prisma.MaterialInclude }
+  input: { page: number; limit: number; s?: string; include?: Prisma.MaterialInclude }
 ) => {
-  const { skip, take, s, include } = input;
+  const { page, limit, s, include } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.MaterialWhereInput = {
     OR: [
       {
@@ -35,8 +34,8 @@ export const findMaterialService = async (
       where
     }),
     db.material.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       orderBy: {
         createdAt: 'desc'
@@ -48,14 +47,13 @@ export const findMaterialService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    s?.trim() ? (totalMaterialsQuery == 0 ? 1 : totalMaterialsQuery / take) : totalMaterials / take
+    s?.trim() ? (totalMaterialsQuery == 0 ? 1 : totalMaterialsQuery / limit) : totalMaterials / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     materials,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

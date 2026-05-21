@@ -21,8 +21,8 @@ export const categoryRouter = createTRPCRouter({
   find: publicProcedure
     .input(
       z.object({
-        skip: z.number().nonnegative(),
-        take: z.number().positive(),
+        page: z.number().default(1),
+        limit: z.number().default(5),
         s: z.string().optional(),
         include: z.custom<Prisma.CategoryInclude>().optional()
       })

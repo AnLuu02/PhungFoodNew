@@ -1,12 +1,31 @@
 'use client';
 import { Badge, Box, Flex, Group, Highlight, Table, Text } from '@mantine/core';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { FindPermission } from '~/shared/type-trpc/role-permission.type-trpc';
+import { api } from '~/trpc/react';
 import { DeletePermissionButton, UpdatePermissionButton } from '../Button';
 
-export default function TablePermission({ s, data }: { s: string; data: FindPermission }) {
+export default function TablePermission() {
+  const searchParams = useSearchParams();
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') ?? '5';
+
+  const { data, isLoading } = api.RolePermission.findPermission.useQuery({ page: +page, limit: +limit, s });
+
   const currentItems = data?.permissions || [];
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.RolePermission.findPermission.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
 
   return (
     <>
@@ -36,7 +55,13 @@ export default function TablePermission({ s, data }: { s: string; data: FindPerm
           </Table.Thead>
 
           <Table.Tbody>
-            {currentItems.length > 0 ? (
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={6}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((row: FindPermission['permissions'][number], index: number) => (
                 <Table.Tr key={index}>
                   <Table.Td className='text-sm'>{row.id}</Table.Td>

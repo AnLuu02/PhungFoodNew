@@ -4,11 +4,10 @@ import { VoucherInput } from '~/shared/schema/voucher.schema';
 
 export const findVoucherService = async (
   db: PrismaClient,
-  input: { skip: number; take: number; s?: string; include?: Prisma.VoucherInclude }
+  input: { page: number; limit: number; s?: string; include?: Prisma.VoucherInclude }
 ) => {
-  const { skip, take, s, include } = input;
+  const { page, limit, s, include } = input;
   const searchQuery = s?.trim();
-  const startPageItem = skip > 0 ? (skip - 1) * take : 0;
   const where: Prisma.VoucherWhereInput = {
     OR: [
       {
@@ -25,8 +24,8 @@ export const findVoucherService = async (
       where
     }),
     db.voucher.findMany({
-      skip: startPageItem,
-      take,
+      skip: (page - 1) * limit,
+      take: limit,
       where,
       include,
       orderBy: {
@@ -35,14 +34,13 @@ export const findVoucherService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    searchQuery ? (totalVouchersQuery == 0 ? 1 : totalVouchersQuery / take) : totalVouchers / take
+    searchQuery ? (totalVouchersQuery == 0 ? 1 : totalVouchersQuery / limit) : totalVouchers / limit
   );
-  const currentPage = skip ? Math.floor(skip / take + 1) : 1;
 
   return {
     vouchers,
     pagination: {
-      currentPage,
+      hasNext: Boolean(totalPages > page),
       totalPages
     }
   };

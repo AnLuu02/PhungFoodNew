@@ -1,8 +1,10 @@
 'use client';
 import { ActionIcon, Box, Card, Flex, Group, Highlight, Modal, Text, Title, Tooltip } from '@mantine/core';
 import { IconEdit, IconSettings, IconShield, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
+import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
@@ -13,7 +15,15 @@ import { api } from '~/trpc/react';
 import RoleUpsert from '../form/RoleUpsert';
 import UpdatePermissionForRole from '../form/UpdatePermissionForRole';
 
-export const RoleSection = ({ data, s }: { data: FindRole; s: string }) => {
+export const RoleSection = () => {
+  const searchParams = useSearchParams();
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') ?? '5';
+
+  const { data, isLoading } = api.RolePermission.find.useQuery({ page: +page, limit: +limit, s });
+
   const [selectedRole, setSelectedRole] = useState<{
     mode: 'update:role' | 'update:permissionForRole';
     data: FindRole['roles'][number];
@@ -27,9 +37,18 @@ export const RoleSection = ({ data, s }: { data: FindRole; s: string }) => {
     },
     onError: () => {}
   });
+
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.RolePermission.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
+
   return (
     <>
-      {currentItems?.length === 0 ? (
+      {isLoading ? (
+        <ModalUpsertSkeleton />
+      ) : currentItems?.length === 0 ? (
         <Empty hasButton={false} title='Không có kết quả phù hợp' content='' />
       ) : (
         <>
