@@ -1,7 +1,7 @@
 import z from 'zod';
 
 export const productFilterSchema = z.object({
-  page: z.coerce.number().min(0).default(1),
+  page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).default(12),
   sort: z.array(z.string()).default([]),
   filter: z.string().optional(),

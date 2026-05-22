@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
 import { TGetOneActiveClient } from '~/shared/type-trpc/restaurant.type-trpc';
-import Chatbox from './Chatbox';
+import ModernChatbox from './chat/Chatbox';
 
 export default function FloatingWidget({ restaurant }: { restaurant: TGetOneActiveClient }) {
   const [cart] = useLocalStorage({ key: 'cart', defaultValue: [] });
@@ -32,7 +32,7 @@ export default function FloatingWidget({ restaurant }: { restaurant: TGetOneActi
           </Center>
         </Link>
       </Box>
-      <Box pos={'fixed'} bottom={100} left={20} className='z-[200] flex flex-col space-y-4'>
+      <Box pos={'fixed'} bottom={80} left={20} className='z-[200] flex flex-col space-y-4'>
         <Menu shadow='md' width={'max-content'} position='top-start' offset={0} zIndex={10000}>
           <MenuTarget>
             <Center
@@ -48,7 +48,7 @@ export default function FloatingWidget({ restaurant }: { restaurant: TGetOneActi
           </MenuTarget>
 
           <MenuDropdown className='overflow-hidden bg-white shadow-md' ml={{ base: 0, sm: 40, md: 40, lg: 40 }} p={0}>
-            <Chatbox />
+            <ModernChatbox />
           </MenuDropdown>
         </Menu>
       </Box>

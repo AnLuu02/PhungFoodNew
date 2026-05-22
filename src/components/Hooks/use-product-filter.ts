@@ -20,7 +20,6 @@ export const useProductFilters = () => {
 
   return useMemo(() => {
     const raw = parseSearchParams(searchParams, ['sort', 'nguyen-lieu']);
-    console.log(raw);
 
     const parsed = productFilterSchema.safeParse({
       ...defaultProductFilters,

@@ -1,73 +1,134 @@
-import { GoogleGenAI } from '@google/genai';
+import { OpenRouter } from '@openrouter/sdk';
 import { NextResponse } from 'next/server';
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+import { callOpenRouter, cleanHTML } from '~/lib/FuncHandler/Chat';
+
+export const runtime = 'nodejs';
+const systemPrompt = `
+Bạn là nhân viên chăm sóc khách hàng senior của Phụng Food Restaurant.
+Bạn chỉ điền nội dung vào khung HTML có sẵn.
+Không phá layout.
+Không thêm markdown, JSON hoặc giải thích.
+Không dùng emoji.
+`;
+const openrouter = new OpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY!
+});
 
 export async function POST(req: Request) {
   const { name, email, message } = await req.json();
 
-  let prompt = `
-  
-  This is the customer message: ${message}
+  const prompt = `
+Bạn là AI viết email phản hồi khách hàng cho Phụng Food Restaurant.
 
-  You are ReplyAssistant, an AI specialized in writing professional and empathetic email replies to customer messages.
+Thông tin khách hàng:
+- Tên: ${name || 'Khách hàng'}
+- Email: ${email || 'Không có'}
 
-  Your role:
-  - Read the customer's message carefully.
-  - Understand its intent, tone, and emotional state.
-  - Identify the intent type among these four categories:
-    1. Collab — đề xuất hợp tác, liên hệ đối tác, quảng cáo, truyền thông
-    2. Support — yêu cầu hỗ trợ, khiếu nại, sự cố sản phẩm/dịch vụ
-    3. Feedback — góp ý, đánh giá, khen/chê sản phẩm hoặc trải nghiệm
-    4. Other — các email khác không thuộc 3 nhóm trên
-  - Generate a natural, human-like email response on behalf of the company.
+Tin nhắn khách hàng:
+"""
+${message}
+"""
 
-  Tone & style:
-  - Be polite, warm, and professional.
-  - Match the customer's tone (e.g., friendly if the customer is casual, formal if the customer is formal).
-  - Use clear, natural Vietnamese. Avoid robotic, stiff, or overly generic language.
-  - Keep the tone caring and solution-oriented.
+Nhiệm vụ:
+- Đọc tin nhắn khách hàng.
+- Hiểu mục đích: hợp tác, hỗ trợ, góp ý, khiếu nại hoặc câu hỏi thông thường.
+- Viết nội dung phản hồi phù hợp, tự nhiên, lịch sự và chuyên nghiệp.
+- Luôn viết bằng tiếng Việt.
+- Không bịa thông tin.
+- Nếu thiếu thông tin, hỏi thêm ngắn gọn.
+- Không dùng emoji.
 
-  Behavior rules:
-  - Always reply in **Vietnamese**.
-  - Always begin with a short, personalized greeting (e.g., “Chào ${name},” or “Kính gửi ${name},”).
-  - If the customer mentions a problem, acknowledge it and express understanding before giving a solution.
-  - If information is missing, politely ask for clarification.
-  - Never invent false information or make promises you cannot guarantee.
-  - Keep responses concise (typically 8-150 words), unless otherwise requested.
-  - End every message with a friendly closing and the company's signature (e.g., “Trân trọng, Đội ngũ PhungFood”).
+Yêu cầu cực kỳ quan trọng:
+- Chỉ trả về HTML hoàn chỉnh bên dưới.
+- Không markdown.
+- Không JSON.
+- Không giải thích.
+- Không dùng \`\`\`.
+- Không thay đổi layout, màu sắc, style, class, cấu trúc HTML.
+- Chỉ thay nội dung chữ bên trong các vùng được đánh dấu:
+  {{GREETING}}
+  {{INTRO}}
+  {{MAIN_CONTENT}}
+  {{CTA_TEXT}}
+  {{CLOSING}}
+- Nếu không cần CTA, vẫn giữ nút CTA với nội dung: "Phản hồi thêm thông tin".
 
+HTML bắt buộc:
 
-  Output requirement (critical — follow exactly):
-  - Generate **only the HTML body content** (the part used directly as Nodemailer’s 'html:' value).  
-  - The email must look natural and human-written — no templates, cards, or robotic structure.
-  - Use **inline CSS** (or minimal '<style>' block if necessary) appropriate for common email clients.  
-    - Recommended inline styles: 'font-family', 'color', 'line-height', 'margin', and 'padding'.  
-    - Use clean structure with '<div>' and '<p>' tags — no '<html>', '<head>', '<body>', or metadata.  
-  - **Highlight key details** (e.g., customer name, restaurant name, company name, product name, order number) using '<b>' or subtle inline color (e.g., '#1a73e8').
-  - Do **not** output any extra text, explanations, JSON, intent labels, or comments — only pure HTML/CSS email content.  
-  - Ensure the entire visible text is in **Vietnamese**.  
-  - Avoid excessive formatting; the goal is a **clean, warm, human-like email** ready for direct rendering in mail clients.
+<div style="max-width:680px;margin:0 auto;background:#f8fafc;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#334155;">
+  <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,0.08);">
+    
+    <div style="background:linear-gradient(135deg,#f97316,#fb923c);padding:24px;">
+      <div style="font-size:13px;color:#ffedd5;margin-bottom:6px;">
+        Phản hồi từ
+      </div>
+      <div style="font-size:24px;font-weight:700;color:#ffffff;line-height:1.3;">
+        Phụng Food Restaurant
+      </div>
+      <div style="font-size:14px;color:#fff7ed;margin-top:6px;">
+        Cảm ơn bạn đã liên hệ với chúng tôi
+      </div>
+    </div>
 
+    <div style="padding:28px 28px 24px;">
+      <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#0f172a;">
+        {{GREETING}}
+      </p>
 
-  Context:
-  - You will receive the original message from the customer.
-  - You may also receive optional metadata such as: customer name, issue type, and company info.
-  - Your job is to generate one polished, natural Vietnamese email reply that sounds human and ready to send.
-  `;
+      <p style="margin:0 0 14px;font-size:15px;line-height:1.8;color:#334155;">
+        {{INTRO}}
+      </p>
+
+      <p style="margin:0 0 20px;font-size:15px;line-height:1.8;color:#334155;">
+        {{MAIN_CONTENT}}
+      </p>
+
+      <div style="margin:22px 0;">
+        <a href="mailto:${email || ''}" style="display:inline-block;background:#f97316;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;border-radius:999px;padding:12px 18px;">
+          {{CTA_TEXT}}
+        </a>
+      </div>
+
+      <p style="margin:0 0 18px;font-size:15px;line-height:1.8;color:#334155;">
+        {{CLOSING}}
+      </p>
+
+      <div style="margin-top:24px;padding-top:18px;border-top:1px solid #e2e8f0;">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#334155;">
+          Trân trọng,
+        </p>
+        <p style="margin:2px 0 0;font-size:16px;font-weight:700;color:#f97316;">
+          Đội ngũ Phụng Food
+        </p>
+      </div>
+    </div>
+
+    <div style="background:#fff7ed;padding:16px 28px;border-top:1px solid #fed7aa;">
+      <p style="margin:0;font-size:12px;line-height:1.6;color:#9a3412;">
+        Email này được gửi từ hệ thống chăm sóc khách hàng của Phụng Food Restaurant.
+      </p>
+    </div>
+
+  </div>
+</div>
+`;
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-001',
-      contents: prompt
+    const response = await callOpenRouter(prompt, systemPrompt);
+
+    const answer = cleanHTML(response.choices?.[0]?.message?.content);
+
+    return NextResponse.json({
+      message: answer || '<p>PhungFood xin cảm ơn anh/chị đã liên hệ. Đội ngũ sẽ phản hồi trong thời gian sớm nhất.</p>'
     });
-
-    let answer = response.text;
-    answer = answer?.replace(/```(html|plaintext)?\n?/g, '').trim();
-
-    return NextResponse.json({ message: answer });
   } catch (error) {
-    console.error('Lỗi API Together AI:', error);
-    return NextResponse.json({ message: 'Chatbox đang bận. Thử lại sau.' }, { status: 500 });
+    console.error('Lỗi OpenRouter:', error);
+
+    return NextResponse.json(
+      {
+        message: 'Chatbox đang bận. Thử lại sau.'
+      },
+      { status: 500 }
+    );
   }
 }

@@ -77,24 +77,34 @@ export default function MailResponse({
   });
 
   const handleSendEmail = async ({ type }: { type: 'default' | 'auto' }) => {
-    setLoading(true);
-    let html = value.html;
-    if (type === 'auto') {
-      const resp = await fetch('/api/agent-ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: userContactInfo?.fullName || 'Khách hàng',
-          email: userContactInfo.email,
-          message: userContactInfo.message
-        })
-      });
-      const data = await resp.json();
-      if (data?.message) {
-        html = data.message;
+    try {
+      setLoading(true);
+
+      let html = value.html;
+
+      if (type === 'auto') {
+        const resp = await fetch('/api/agent-ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: userContactInfo?.fullName || 'Khách hàng',
+            email: userContactInfo.email,
+            message: userContactInfo.message
+          })
+        });
+
+        const data = await resp.json();
+
+        if (data?.message) {
+          html = data.message;
+        }
       }
-    }
-    if (html) {
+
+      if (!html) {
+        NotifyError('Chưa đủ thông tin.', 'Chưa tạo phản hồi.');
+        return;
+      }
+
       const res = await fetch('/api/send-mail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,6 +118,7 @@ export default function MailResponse({
       });
 
       const json = await res.json();
+
       if (json?.success) {
         if (!userContactInfo.responded) {
           await updateMutation.mutateAsync({
@@ -117,13 +128,15 @@ export default function MailResponse({
             phone: userContactInfo?.phone || '0918064618'
           });
         }
-        NotifySuccess('Thao tác thành công!', 'Phản hồi thành công! ');
+
+        NotifySuccess('Thao tác thành công!', 'Phản hồi thành công!');
         setOpenedModal(false);
-        setLoading(false);
       }
-    } else {
+    } catch (error) {
+      console.error(error);
+      NotifyError('Có lỗi xảy ra.', 'Không thể gửi phản hồi.');
+    } finally {
       setLoading(false);
-      NotifyError('Chưa đủ thông tin.', 'Chưa tạo phản hồi.');
     }
   };
 
