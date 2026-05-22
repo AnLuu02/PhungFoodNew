@@ -1,14 +1,14 @@
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { defaultProductFilters, productFilterSchema } from '~/shared/schema/product.filter.schema';
-const parseSearchParams = (searchParams: URLSearchParams) => {
+const parseSearchParams = (searchParams: URLSearchParams, isArrayKey?: string[]) => {
   const obj: Record<string, any> = {};
 
   searchParams.forEach((value, key) => {
     if (obj[key]) {
       obj[key] = Array.isArray(obj[key]) ? [...obj[key], value] : [obj[key], value];
     } else {
-      obj[key] = value;
+      obj[key] = isArrayKey && isArrayKey.includes(key) ? [value] : value;
     }
   });
 
@@ -19,7 +19,9 @@ export const useProductFilters = () => {
   const searchParams = useSearchParams();
 
   return useMemo(() => {
-    const raw = parseSearchParams(searchParams);
+    const raw = parseSearchParams(searchParams, ['sort', 'nguyen-lieu']);
+    console.log(raw);
+
     const parsed = productFilterSchema.safeParse({
       ...defaultProductFilters,
       ...raw
@@ -51,25 +53,9 @@ export const useProductFilters = () => {
             'loai-san-pham': data['loai-san-pham']
           }
         : {}),
-
-      ...(data.loai === 'san-pham-moi'
+      ...(data['loai']
         ? {
-            newProduct: data.loai === 'san-pham-moi'
-          }
-        : {}),
-      ...(data.loai === 'san-pham-giam-gia'
-        ? {
-            discount: data.loai === 'san-pham-giam-gia'
-          }
-        : {}),
-      ...(data.loai === 'san-pham-hot'
-        ? {
-            hotProduct: data.loai === 'san-pham-hot'
-          }
-        : {}),
-      ...(data.loai === 'san-pham-ban-chay'
-        ? {
-            bestSaler: data.loai === 'san-pham-ban-chay'
+            loai: data['loai']
           }
         : {}),
       ...(data.minPrice || data.maxPrice

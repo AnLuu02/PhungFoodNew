@@ -1,7 +1,7 @@
 import { OrderStatus, PrismaClient } from '@prisma/client';
 
-export const buildSortFilter = (sort: any, sortValue: any[]) => {
-  const orderBy: any[] = [];
+export const buildSortFilter = (sort: string[], sortValue: string[]) => {
+  const orderBy: Record<string, string>[] = [];
 
   sortValue.forEach(item => {
     if (sort?.includes(`${item}-asc`) || sort?.includes(`${item}-desc`)) {
@@ -13,7 +13,7 @@ export const buildSortFilter = (sort: any, sortValue: any[]) => {
   return orderBy?.map(item => item).filter(Boolean);
 };
 
-export function getDateRange(year: any, month: any, day: any) {
+export function getDateRange(year: number, month: number, day: number) {
   const start = new Date(year, month - 1, day, 0, 0, 0, 0);
   const end = new Date(year, month - 1, day, 23, 59, 59, 999);
   if (!start || !end) return {};
