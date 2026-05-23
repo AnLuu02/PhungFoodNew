@@ -33,7 +33,9 @@ function NavigationHeader({ categories }: { categories: GetAllCategory }) {
             }}
             disabled={!isDesktop || !categories?.length}
             width={1000}
-            offset={0}
+            withArrow
+            arrowSize={10}
+            offset={10}
             transitionProps={{ transition: 'fade-up', duration: 300 }}
           >
             <Menu.Target>

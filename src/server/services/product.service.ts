@@ -100,7 +100,7 @@ const buildFilter = (input: FilterProductOptions) => {
       ? {
           price: {
             gte: minPrice ?? 0,
-            lte: maxPrice ?? 0
+            lte: maxPrice
           }
         }
       : undefined

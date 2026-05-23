@@ -57,14 +57,18 @@ export const useProductFilters = () => {
             loai: data['loai']
           }
         : {}),
-      ...(data.minPrice || data.maxPrice
+
+      ...(data.minPrice
         ? {
-            price: {
-              min: data.minPrice,
-              max: data.maxPrice
-            }
+            minPrice: data?.minPrice
           }
         : {}),
+      ...(data.maxPrice
+        ? {
+            maxPrice: data?.maxPrice
+          }
+        : {}),
+
       ...(data.rating
         ? {
             rating: data.rating

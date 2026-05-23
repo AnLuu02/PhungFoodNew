@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Flex, Grid, GridCol, NumberInput, Popover, RangeSlider, Text } from '@mantine/core';
 import { IconMoneybag } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 export function PriceRangeFilter() {
@@ -35,6 +35,15 @@ export function PriceRangeFilter() {
     params.set('maxPrice', String(maxPrice));
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
+
+  useEffect(() => {
+    const minPrice = searchParams.get('minPrice');
+    const maxPrice = searchParams.get('maxPrice');
+    if (minPrice) setMinPrice(+minPrice);
+    if (maxPrice) setMaxPrice(+maxPrice);
+    else if (minPrice) setMaxPrice(+minPrice);
+  }, [searchParams.toString()]);
+
   return (
     <Popover width={300} position='bottom' arrowSize={10} withArrow shadow='lg'>
       <Popover.Target>

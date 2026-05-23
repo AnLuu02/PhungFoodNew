@@ -16,7 +16,7 @@ import {
   Tooltip
 } from '@mantine/core';
 import { ImageType } from '@prisma/client';
-import { IconChevronRight } from '@tabler/icons-react';
+import { IconCheese, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -105,10 +105,10 @@ export default function MegaMenu({ categories }: { categories: GetAllCategory })
               <Box p={'lg'}>
                 <Grid mb={'xs'}>
                   {categoriesItem?.map((category: GetAllCategory[number]['subCategory'][number], index: number) => (
-                    <GridCol span={4} key={category.id + index}>
+                    <GridCol span={4} key={category.id + index} className='hover:scale-105'>
                       <Link
                         href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${category.tag}`}
-                        className={`dark:hover:shadow-md/80 flex animate-fadeUp items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-all hover:scale-105 hover:shadow-md dark:bg-dark-card ${
+                        className={`dark:hover:shadow-md/80 flex animate-fadeUp items-center gap-4 rounded-lg bg-white p-2 shadow-sm transition-all hover:shadow-md dark:bg-dark-card ${
                           searchParams.get('loai-san-pham') === category?.tag ? '!bg-mainColor/10' : ''
                         }`}
                         style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
@@ -124,8 +124,7 @@ export default function MegaMenu({ categories }: { categories: GetAllCategory })
                             loading='lazy'
                             src={category?.imageForEntity?.image?.url || '/images/png/momo.png'}
                             alt={category?.name || 'Ảnh minh họa'}
-                            width={50}
-                            height={50}
+                            fill
                             className='rounded-md object-cover'
                           />
                         </Card>
@@ -141,10 +140,28 @@ export default function MegaMenu({ categories }: { categories: GetAllCategory })
                     </GridCol>
                   ))}
                 </Grid>
-                <Divider />
+                <Center my={'md'}>
+                  <Divider
+                    variant='dashed'
+                    size={'sm'}
+                    w={'100%'}
+                    classNames={{
+                      root: 'border-mainColor'
+                    }}
+                    labelPosition='center'
+                    label={
+                      <>
+                        <IconCheese size={12} className='italic' />
+                        <Box ml={5} className='italic'>
+                          Thực đơn
+                        </Box>
+                      </>
+                    }
+                  />
+                </Center>
                 <Box>
                   <Box className='flex items-center justify-between'>
-                    <Title className='font-quicksand text-xl font-bold' my={'md'}>
+                    <Title className='font-quicksand text-xl font-bold' mb={'md'}>
                       Bán chạy nhất
                     </Title>
                     <Link
