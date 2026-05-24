@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
+import { Badge, Box, Divider, Group, Highlight, Paper, Stack, Text } from '@mantine/core';
 import { IconBellPause, IconCircleCheck, IconSum, IconTruckDelivery, IconXboxX } from '@tabler/icons-react';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
@@ -15,7 +15,7 @@ import {
   UpdateOrderButton
 } from '../Button';
 
-import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';
+import { ActionIcon, Card, Flex, Select, SimpleGrid, Title } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
@@ -189,100 +189,124 @@ export default function TableOrder() {
           </Group>
         </Group>
       </Paper>
-      <Box className={`tableAdmin w-full overflow-x-auto`}>
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='text-sm uppercase leading-normal'>
-            <Table.Tr>
-              <Table.Th>Mã hóa đơn</Table.Th>
-              <Table.Th>Khách hàng</Table.Th>
-              <Table.Th>Thanh toán</Table.Th>
-              <Table.Th>Tổng hóa đơn</Table.Th>
-              <Table.Th>Ngày tạo</Table.Th>
-              <Table.Th>Trạng thái</Table.Th>
-              <Table.Th>Thao tác</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
+      <Stack gap='md'>
+        {isLoading ? (
+          <CommonSkeleton.Table count={5} />
+        ) : currentItems.length > 0 ? (
+          currentItems.map((order: TFindOrder['orders'][number]) => {
+            const statusInfo = getStatusInfo(order.status as OrderStatus);
 
-          <Table.Tbody>
-            {isLoading ? (
-              <Table.Tr>
-                <Table.Td colSpan={7}>
-                  <CommonSkeleton.Table count={5} />
-                </Table.Td>
-              </Table.Tr>
-            ) : currentItems.length > 0 ? (
-              currentItems.map((order: TFindOrder['orders'][number]) => {
-                const statusInfo = getStatusInfo(order.status as OrderStatus);
-                return (
-                  <Table.Tr key={order.id}>
-                    <Table.Td className='text-sm'>
-                      <Highlight size='sm' highlight={s}>
+            return (
+              <Paper
+                key={order.id}
+                withBorder
+                radius='lg'
+                p='md'
+                className='bg-white shadow-sm transition hover:shadow-md dark:bg-dark-card'
+              >
+                <Group justify='space-between' align='flex-start' wrap='nowrap'>
+                  <Stack gap={6}>
+                    <Group gap='xs'>
+                      <Text size='xs' c='dimmed'>
+                        Mã hóa đơn
+                      </Text>
+
+                      <Highlight size='sm' fw={600} highlight={s}>
                         {order.id}
                       </Highlight>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {order.user?.name || 'Đang cập nhật'}
-                      </Highlight>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {order.payment?.name || 'Đang cập nhật'}
-                      </Highlight>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>{formatPriceLocaleVi(order?.finalTotal || 0)}</Table.Td>
-                    <Table.Td className='text-sm'>{formatDateViVN(order.createdAt)} </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Group className='text-center'>
-                        <Badge leftSection={<statusInfo.icon size={16} />} color={statusInfo.color}>
-                          {statusInfo.label}
-                        </Badge>
-                      </Group>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Group className='text-center'>
-                        <>
-                          <Group>
-                            {order.status === OrderStatus.PENDING && (
-                              <HandleStateOrderButton id={order.id} status={OrderStatus.CONFIRMED} title='Xác nhận' />
-                            )}
-                            {order.status === OrderStatus.CONFIRMED && (
-                              <HandleStateOrderButton id={order.id} status={OrderStatus.SHIPPING} title='Giao hàng' />
-                            )}
-                            {order.status === OrderStatus.SHIPPING && (
-                              <HandleStateOrderButton id={order.id} status={OrderStatus.COMPLETED} title='Hoàn thành' />
-                            )}
-                            {order.status !== OrderStatus.CANCELLED && (
-                              <HandleStateOrderButton id={order.id} status={OrderStatus.CANCELLED} title='Hủy đơn' />
-                            )}
-                            <UpdateOrderButton id={order.id} />
-                            <DeleteOrderButton id={order.id} />
-                            <CopyOrderButton data={order} />
-                          </Group>
-                          <Group>
-                            {order?.user && <SendOrderButton order={order} />}
-                            {order.status !== OrderStatus.COMPLETED && order?.user && (
-                              <SendMessageOrderButton user={order.user} />
-                            )}
-                          </Group>
-                        </>
-                      </Group>
-                    </Table.Td>
-                  </Table.Tr>
-                );
-              })
-            ) : (
-              <Table.Tr>
-                <Table.Td colSpan={7} className='bg-gray-100 text-center dark:bg-dark-card'>
-                  <Text size='md' c='dimmed'>
-                    Không có bản ghi phù hợp.
-                  </Text>
-                </Table.Td>
-              </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
-      </Box>
+                    </Group>
+
+                    <Group gap='xl' wrap='wrap'>
+                      <Stack gap={2}>
+                        <Text size='xs' c='dimmed'>
+                          Khách hàng
+                        </Text>
+                        <Highlight size='sm' highlight={s}>
+                          {order.user?.name || 'Đang cập nhật'}
+                        </Highlight>
+                      </Stack>
+
+                      <Stack gap={2}>
+                        <Text size='xs' c='dimmed'>
+                          Thanh toán
+                        </Text>
+                        <Highlight size='sm' highlight={s}>
+                          {order.payment?.name || 'Đang cập nhật'}
+                        </Highlight>
+                      </Stack>
+
+                      <Stack gap={2}>
+                        <Text size='xs' c='dimmed'>
+                          Tổng hóa đơn
+                        </Text>
+                        <Text size='sm' fw={600}>
+                          {formatPriceLocaleVi(order?.finalTotal || 0)}
+                        </Text>
+                      </Stack>
+
+                      <Stack gap={2}>
+                        <Text size='xs' c='dimmed'>
+                          Ngày tạo
+                        </Text>
+                        <Text size='sm'>{formatDateViVN(order.createdAt)}</Text>
+                      </Stack>
+                    </Group>
+                  </Stack>
+
+                  <Badge
+                    leftSection={<statusInfo.icon size={16} />}
+                    variant='light'
+                    color={statusInfo.color}
+                    style={{ borderColor: statusInfo.color }}
+                  >
+                    {statusInfo.label}
+                  </Badge>
+                </Group>
+
+                <Divider my='sm' />
+
+                <Group justify='space-between' align='center' wrap='wrap'>
+                  <Group gap='xs'>
+                    {order.status === OrderStatus.PENDING && (
+                      <HandleStateOrderButton id={order.id} status={OrderStatus.CONFIRMED} title='Xác nhận' />
+                    )}
+
+                    {order.status === OrderStatus.CONFIRMED && (
+                      <HandleStateOrderButton id={order.id} status={OrderStatus.SHIPPING} title='Giao hàng' />
+                    )}
+
+                    {order.status === OrderStatus.SHIPPING && (
+                      <HandleStateOrderButton id={order.id} status={OrderStatus.COMPLETED} title='Hoàn thành' />
+                    )}
+
+                    {order.status !== OrderStatus.CANCELLED && (
+                      <HandleStateOrderButton id={order.id} status={OrderStatus.CANCELLED} title='Hủy đơn' />
+                    )}
+                  </Group>
+
+                  <Group gap='xs'>
+                    <UpdateOrderButton id={order.id} />
+                    <DeleteOrderButton id={order.id} />
+                    <CopyOrderButton data={order} />
+
+                    {order?.user && <SendOrderButton order={order} />}
+
+                    {order.status !== OrderStatus.COMPLETED && order?.user && (
+                      <SendMessageOrderButton user={order.user} />
+                    )}
+                  </Group>
+                </Group>
+              </Paper>
+            );
+          })
+        ) : (
+          <Paper withBorder radius='lg' p='xl' className='bg-gray-100 text-center dark:bg-dark-card'>
+            <Text size='md' c='dimmed'>
+              Không có bản ghi phù hợp.
+            </Text>
+          </Paper>
+        )}
+      </Stack>
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />

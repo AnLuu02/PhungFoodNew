@@ -24,6 +24,7 @@ export default async function ProductManagementPage({
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
+  const filter = searchParams?.filter;
   await Promise.allSettled([
     api.Product.getAll.prefetch({ userRole: UserRole.ADMIN }),
     api.Product.find.prefetch({
@@ -31,7 +32,7 @@ export default async function ProductManagementPage({
       limit: +limit,
       userRole: UserRole.ADMIN,
       s,
-      filter: searchParams?.filter + '@#@$@@'
+      filter: filter ? filter + '@#@$@@' : undefined
     })
   ]);
 

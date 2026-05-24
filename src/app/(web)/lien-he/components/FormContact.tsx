@@ -4,14 +4,9 @@ import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/cor
 import { TypeContact } from '@prisma/client';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { ContactTypeOptions } from '~/shared/constants/contact.constants';
 import { baseContactSchema, ContactInput } from '~/shared/schema/contact.schema';
 import { api } from '~/trpc/react';
-const ContactTypeOptions = {
-  [TypeContact.COLLABORATION]: { viName: 'Hợp tác' },
-  [TypeContact.FEEDBACK]: { viName: 'Phản hồi' },
-  [TypeContact.SUPPORT]: { viName: 'Hỗ trợ' },
-  [TypeContact.OTHER]: { viName: 'Khác' }
-};
 
 export const FormContact = () => {
   const {

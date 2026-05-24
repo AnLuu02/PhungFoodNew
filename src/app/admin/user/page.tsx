@@ -28,7 +28,7 @@ export default async function UserManagementPage({
   const sortArr: string[] = (
     searchParams?.sort && Array.isArray(searchParams?.sort) ? searchParams?.sort : [searchParams?.sort]
   )?.filter(Boolean);
-  const filter = searchParams?.filter + '@#@$@@';
+  const filter = searchParams?.filter ? searchParams?.filter + '@#@$@@' : undefined;
 
   await Promise.allSettled([
     api.User.find.prefetch({

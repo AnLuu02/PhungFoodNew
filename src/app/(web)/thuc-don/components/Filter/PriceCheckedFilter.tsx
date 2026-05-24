@@ -1,7 +1,7 @@
 'use client';
 import { CheckIcon, Flex, Radio, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { priceRanges } from '~/constants';
+import { priceRanges } from '~/shared/constants/menu.constants';
 
 export const PriceCheckedFilter = () => {
   const params = useSearchParams();

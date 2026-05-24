@@ -10,7 +10,7 @@ import {
   Paper,
   Select,
   SimpleGrid,
-  Table,
+  Stack,
   Text,
   Title
 } from '@mantine/core';
@@ -18,11 +18,12 @@ import { TypeContact } from '@prisma/client';
 import { IconBrandAsana, IconHelpOctagon, IconMessageReply, IconPhysotherapist } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { ContactTypeOptions } from '~/shared/constants/contact.constants';
 import { FindContact, GetAllContact } from '~/shared/type-trpc/contact.type-trpc';
 import { api } from '~/trpc/react';
 import { CallPhoneButton, DeleteContactButton, SendMailButton } from '../Button';
@@ -133,79 +134,94 @@ export default function TableContact() {
           </Group>
         </Group>
       </Paper>
-      <Box className={`tableAdmin w-full overflow-x-auto`}>
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead className='text-sm uppercase leading-normal'>
-            <Table.Tr>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Khách hàng
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Email
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Số điện thoại
-              </Table.Th>
-              <Table.Th className='text-sm'>Nội dung</Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Ngày gửi
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Trạng thái
-              </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
-                Thao tác
-              </Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-
-          <Table.Tbody>
-            {isLoading ? (
-              <Table.Tr>
-                <Table.Td colSpan={7}>
-                  <CommonSkeleton.Table count={5} />
-                </Table.Td>
-              </Table.Tr>
-            ) : currentItems.length > 0 ? (
-              currentItems.map((row: FindContact['contacts'][number], index: number) => (
-                <Table.Tr key={index}>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.fullName}
-                    </Highlight>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.email}
-                    </Highlight>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>{row.phone}</Table.Td>
-                  <Table.Td className='text-sm'>{row.message}</Table.Td>
-                  <Table.Td className='text-sm'>{formatDateViVN(row.createdAt)}</Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Badge bg={row.responded ? 'blue' : 'red'}>{row.responded ? 'Đã phản hồi' : 'Chờ'}</Badge>
-                  </Table.Td>
-                  <Table.Td className='text-sm'>
-                    <Group className='text-center'>
-                      <SendMailButton userContactInfo={row} />
-                      <CallPhoneButton phone={row.phone || '0918064618'} />
-                      <DeleteContactButton id={row.id} />
+      <SimpleGrid cols={2} spacing='md'>
+        {isLoading ? (
+          [0, 0, 0, 0, 0, 0].map((_, index) => <CardSkeleton key={index} />)
+        ) : currentItems.length > 0 ? (
+          currentItems.map((row: FindContact['contacts'][number], index: number) => (
+            <Paper
+              key={index}
+              withBorder
+              radius='xl'
+              p='md'
+              pos={'relative'}
+              className='bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card'
+            >
+              <Stack gap={'md'} className='min-w-0 flex-1'>
+                <Group justify='space-between' align='flex-start' wrap='wrap'>
+                  <Stack gap={4}>
+                    <Group gap={8}>
+                      <Text size='xs' c='dimmed' fw={600}>
+                        Người gửi:
+                      </Text>
+                      <Highlight size='sm' fw={700} highlight={s}>
+                        {row.fullName}
+                      </Highlight>
                     </Group>
-                  </Table.Td>
-                </Table.Tr>
-              ))
-            ) : (
-              <Table.Tr>
-                <Table.Td colSpan={7} className='bg-gray-100 text-center dark:bg-dark-card'>
-                  <Text size='md' c='dimmed'>
-                    Không có bản ghi phù hợp.
-                  </Text>
-                </Table.Td>
-              </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
-      </Box>
+
+                    <Group gap={8}>
+                      <Text size='xs' c='dimmed' fw={600}>
+                        Email:
+                      </Text>
+                      <Highlight size='xs' c='dimmed' highlight={s} fs={'italic'}>
+                        {row.email}
+                      </Highlight>
+                    </Group>
+                  </Stack>
+                </Group>
+
+                <Paper
+                  withBorder
+                  radius='md'
+                  p='sm'
+                  className='border-dashed border-gray-300 bg-gray-50 dark:border-dark-dimmed dark:bg-dark-card'
+                >
+                  <Stack gap={6}>
+                    <Text size='xs' fw={700} c='dimmed'>
+                      Nội dung liên hệ
+                    </Text>
+
+                    <Text size='sm' className='whitespace-pre-line break-words leading-relaxed'>
+                      {row.message}
+                    </Text>
+                  </Stack>
+                </Paper>
+
+                <Group justify='space-between'>
+                  <Group gap='lg' wrap='wrap'>
+                    <Text size='xs' c='dimmed'>
+                      SĐT: {row.phone}
+                    </Text>
+
+                    <Text size='xs' c='dimmed'>
+                      Ngày gửi: {formatDateViVN(row.createdAt)}
+                    </Text>
+                  </Group>
+                  <Group gap={6}>
+                    <Badge variant='light' color={ContactTypeOptions[row.type]?.color}>
+                      {ContactTypeOptions[row.type]?.viName}
+                    </Badge>
+
+                    <Badge bg={row.responded ? 'blue' : 'red'}>{row.responded ? 'Đã phản hồi' : 'Chờ'}</Badge>
+                  </Group>
+                </Group>
+              </Stack>
+
+              <Group gap='xs' wrap='nowrap' pos={'absolute'} top={10} right={16}>
+                <SendMailButton userContactInfo={row} />
+                <CallPhoneButton phone={row.phone || '0918064618'} />
+                <DeleteContactButton id={row.id} />
+              </Group>
+            </Paper>
+          ))
+        ) : (
+          <Paper withBorder radius='lg' p='xl' className='bg-gray-100 text-center dark:bg-dark-card'>
+            <Text size='md' c='dimmed'>
+              Không có bản ghi phù hợp.
+            </Text>
+          </Paper>
+        )}
+      </SimpleGrid>
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />

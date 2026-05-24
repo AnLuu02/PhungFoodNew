@@ -11,7 +11,8 @@ import {
   Paper,
   Select,
   SimpleGrid,
-  Table,
+  Spoiler,
+  Stack,
   Text,
   Title
 } from '@mantine/core';
@@ -28,7 +29,6 @@ import { UserRole } from '~/shared/constants/user.constants';
 import { FindUser, GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
-
 export default function TableUser() {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
@@ -37,7 +37,7 @@ export default function TableUser() {
   const s = searchParams?.get('s') || '';
   const page = searchParams?.get('page') || '1';
   const limit = searchParams?.get('limit') ?? '5';
-  const filter = searchParams?.get('filter') + '@#@$@@';
+  const filter = searchParams?.get('filter') ? searchParams?.get('filter') + '@#@$@@' : undefined;
   const sortArr = searchParams?.getAll('sort');
 
   const { data: dataClient, isLoading } = api.User.find.useQuery({
@@ -191,101 +191,117 @@ export default function TableUser() {
           </Group>
         </Group>
       </Paper>
-      <Paper withBorder shadow='md' p={'md'}>
-        <Box className={`tableAdmin w-full overflow-x-auto`}>
-          <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Tên</Table.Th>
-                <Table.Th>Email</Table.Th>
-                <Table.Th>Vai trò</Table.Th>
-                <Table.Th>Tình trạng</Table.Th>
-                <Table.Th>Điện thoại</Table.Th>
-                <Table.Th>Địa chỉ</Table.Th>
-                <Table.Th>Ngày tạo</Table.Th>
-                <Table.Th>Điểm</Table.Th>
-                <Table.Th>Cấp điểm</Table.Th>
-                <Table.Th>Thao tác</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {isLoading ? (
-                <Table.Tr>
-                  <Table.Td colSpan={10}>
-                    <CommonSkeleton.Table count={5} />
-                  </Table.Td>
-                </Table.Tr>
-              ) : currentItems.length > 0 ? (
-                currentItems.map((item: FindUser['users'][number]) => (
-                  <Table.Tr key={item.id}>
-                    <Table.Td className='text-sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.name || 'Đang cập nhật...'}
-                      </Highlight>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.email || 'Đang cập nhật...'}
-                      </Highlight>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Badge p='sm' color={item.role?.name !== UserRole.ADMIN ? '#195EFE' : 'red'}>
-                        {item.role?.viName || 'Đang cập nhật...'}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Badge p='sm' color={item.isActive ? '#195EFE' : 'red'}>
-                        {item.isActive ? 'Hoạt động' : 'Bị cấm'}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Highlight size='sm' highlight={s}>
-                        {item.phone || 'Đang cập nhật...'}
-                      </Highlight>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
+      <Stack gap='md'>
+        {isLoading ? (
+          <CommonSkeleton.Table count={5} />
+        ) : currentItems.length > 0 ? (
+          currentItems.map((item: FindUser['users'][number]) => (
+            <Paper
+              key={item.id}
+              withBorder
+              radius='xl'
+              p='md'
+              bg={item.role?.name !== UserRole.CUSTOMER ? 'red.1' : ''}
+              pos={'relative'}
+              className='bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card'
+            >
+              <Stack className='min-w-0 flex-1'>
+                <Group justify='space-between' align='flex-start' wrap='wrap'>
+                  <Stack gap={3}>
+                    <Highlight size='sm' fw={700} highlight={s}>
+                      {item.name || 'Đang cập nhật...'}
+                    </Highlight>
+
+                    <Highlight size='xs' c='dimmed' highlight={s}>
+                      {item.email || 'Đang cập nhật...'}
+                    </Highlight>
+                  </Stack>
+                </Group>
+
+                <Group gap='80px' wrap='wrap' align='flex-start'>
+                  <Stack gap={2}>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Điện thoại
+                    </Text>
+                    <Highlight size='sm' highlight={s}>
+                      {item.phone || 'Đang cập nhật...'}
+                    </Highlight>
+                  </Stack>
+
+                  <Stack gap={2}>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Ngày tạo
+                    </Text>
+                    <Text size='sm'>{formatDateViVN(item.createdAt)}</Text>
+                  </Stack>
+
+                  <Stack gap={2}>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Điểm
+                    </Text>
+                    <Text size='sm'>{item.pointUser}</Text>
+                  </Stack>
+
+                  <Stack gap={2}>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Cấp điểm
+                    </Text>
+                    <Text size='sm'>{getInfoLevelUser(item.level)?.viName}</Text>
+                  </Stack>
+                  <Stack gap={2} flex={1}>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Địa chỉ
+                    </Text>
+
+                    <Spoiler
+                      maxHeight={22}
+                      showLabel={'Xem tất cả'}
+                      hideLabel={'Thu gọn'}
+                      p={0}
+                      m={0}
+                      mb={10}
+                      classNames={{
+                        control: 'flex w-full justify-end text-xs text-mainColor'
+                      }}
+                    >
                       <Highlight size='sm' highlight={s}>
                         {item.address?.fullAddress || 'Đang cập nhật...'}
                       </Highlight>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Text size='sm'>{formatDateViVN(item.createdAt)} </Text>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Text size='sm'>{item.pointUser}</Text>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Text size='sm'>{getInfoLevelUser(item.level)?.viName}</Text>
-                    </Table.Td>
-                    <Table.Td className='text-sm'>
-                      <Group>
-                        <>
-                          <UpdatePermissions email={item.email} />
-                          <UpdateUserButton email={item.email} />
-                          <DeleteUserButton id={item.id} />
-                        </>
-                      </Group>
-                    </Table.Td>
-                  </Table.Tr>
-                ))
-              ) : (
-                <Table.Tr>
-                  <Table.Td colSpan={9} className='bg-gray-100 text-center'>
-                    <Text size='md' c='dimmed'>
-                      Không có bản ghi phù hợp.
-                    </Text>
-                  </Table.Td>
-                </Table.Tr>
-              )}
-            </Table.Tbody>
-          </Table>
-        </Box>
+                    </Spoiler>
+                  </Stack>
+                  <Group gap={8}>
+                    <Badge p='sm' color={item.role?.name !== UserRole.ADMIN ? '#195EFE' : 'red'}>
+                      {' '}
+                      {item.role?.viName || 'Đang cập nhật...'}{' '}
+                    </Badge>
 
-        <Group justify='space-between' align='center' my={'md'}>
-          <PageSizeSelector />
-          <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
-        </Group>
-      </Paper>
+                    <Badge variant='filled' color={item.isActive ? 'blue' : 'red'} radius='md' px='sm'>
+                      {item.isActive ? 'Hoạt động' : 'Bị cấm'}
+                    </Badge>
+                  </Group>
+                </Group>
+              </Stack>
+
+              <Group gap='xs' wrap='nowrap' pos={'absolute'} top={16} right={20}>
+                <UpdatePermissions email={item.email} />
+                <UpdateUserButton email={item.email} />
+                <DeleteUserButton id={item.id} />
+              </Group>
+            </Paper>
+          ))
+        ) : (
+          <Paper withBorder radius='lg' p='xl' className='bg-gray-100 text-center dark:bg-dark-card'>
+            <Text size='md' c='dimmed'>
+              Không có bản ghi phù hợp.
+            </Text>
+          </Paper>
+        )}
+      </Stack>
+
+      <Group justify='space-between' align='center' my={'md'}>
+        <PageSizeSelector />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
+      </Group>
     </>
   );
 }

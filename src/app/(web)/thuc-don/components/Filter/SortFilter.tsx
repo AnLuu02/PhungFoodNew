@@ -1,7 +1,7 @@
 import { Button, Checkbox, Grid, GridCol, Popover, Text } from '@mantine/core';
 import { IconSort09 } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { dataSort } from '~/constants';
+import { dataSort } from '~/shared/constants/menu.constants';
 
 export function SortFilter() {
   const params = useSearchParams();

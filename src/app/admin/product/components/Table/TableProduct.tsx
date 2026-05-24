@@ -1,18 +1,18 @@
 'use client';
 
-import { Avatar, Badge, Box, Group, Highlight, Spoiler, Table, Text, Tooltip } from '@mantine/core';
+import { Avatar, Badge, Box, Group, Highlight, Spoiler, Text, Tooltip } from '@mantine/core';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
-import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';
+import { ActionIcon, Card, Divider, Flex, Paper, Select, SimpleGrid, Stack, Title } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { UserRole } from '~/shared/constants/user.constants';
@@ -28,6 +28,7 @@ export default function TableProduct() {
   const s = searchParams.get('s') || '';
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '5';
+  const filter = searchParams?.get('filter');
 
   const { data: categories, isLoading } = api.Category.getAll.useQuery();
   const { data: dataClient, isLoading: isLoadingProduct } = api.Product.find.useQuery({
@@ -35,7 +36,7 @@ export default function TableProduct() {
     limit: +limit,
     s,
     userRole: UserRole.ADMIN,
-    filter: searchParams?.get('filter') + '@#@$@@'
+    filter: filter ? filter + '@#@$@@' : undefined
   });
   const { data: allDataClient } = api.Product.getAll.useQuery({ userRole: UserRole.ADMIN });
   const currentItems = dataClient?.products || [];
@@ -158,108 +159,120 @@ export default function TableProduct() {
           </Group>
         </Group>
       </Paper>
-      <Box className={`tableAdmin w-full overflow-x-auto`}>
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th w={100}>Tên</Table.Th>
-              <Table.Th w={100}>Ảnh</Table.Th>
-              <Table.Th w={100}>Giá tiền</Table.Th>
-              <Table.Th w={100}>Nguyên liệu</Table.Th>
-              <Table.Th w={400}>Mô tả</Table.Th>
-              <Table.Th>Danh mục</Table.Th>
-              <Table.Th>Trạng thái</Table.Th>
-              <Table.Th>Ngày tạo</Table.Th>
-              <Table.Th>Thao tác</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
+      <SimpleGrid cols={{ base: 1, md: 2, xl: 3 }} spacing='md'>
+        {isLoadingProduct ? (
+          [0, 0, 0, 0, 0, 0].map((_, index) => <CardSkeleton key={index} />)
+        ) : currentItems.length > 0 ? (
+          currentItems.map((item: FindProduct['products'][number]) => (
+            <Paper
+              key={item.id}
+              withBorder
+              radius='xl'
+              p='md'
+              className='bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:bg-dark-card'
+            >
+              <Group justify='space-between' align='flex-start' wrap='nowrap'>
+                <Group align='flex-start' wrap='nowrap'>
+                  <Avatar
+                    src={getImageProduct(item?.imageForEntities ?? [], ImageType.THUMBNAIL)}
+                    alt={item.name}
+                    size={64}
+                    radius='md'
+                  />
 
-          <Table.Tbody>
-            {isLoadingProduct ? (
-              <Table.Tr>
-                <Table.Td colSpan={9}>
-                  <CommonSkeleton.Table count={5} />
-                </Table.Td>
-              </Table.Tr>
-            ) : currentItems.length > 0 ? (
-              currentItems.map((item: FindProduct['products'][number]) => (
-                <Table.Tr key={item.id}>
-                  <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
+                  <Stack gap={4}>
+                    <Highlight size='sm' fw={700} highlight={s}>
                       {item.name}
                     </Highlight>
-                  </Table.Td>
 
-                  <Table.Td className='text-sm'>
-                    <Avatar
-                      src={getImageProduct(item?.imageForEntities ?? [], ImageType.THUMBNAIL)}
-                      alt={item.name}
-                      size={40}
-                    />
-                  </Table.Td>
+                    <Text size='sm' fw={700} c='mainColor'>
+                      {formatPriceLocaleVi(item.price)}
+                    </Text>
 
-                  <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
-                  <Table.Td className='text-sm'>
-                    {item?.materials?.length > 0
-                      ? item?.materials?.map(
-                          (i: FindProduct['products'][number]['materials'][number], index: number) => (
-                            <Tooltip label={i?.name} key={index}>
-                              <Badge bg={randomColorHex(index + 20)}>{i?.name}</Badge>
-                            </Tooltip>
-                          )
-                        )
-                      : 'Đang cập nhật'}
-                  </Table.Td>
+                    <Text size='xs' c='dimmed'>
+                      {formatDateViVN(item.createdAt)}
+                    </Text>
+                  </Stack>
+                </Group>
 
-                  <Table.Td className='text-sm'>
-                    <Spoiler
-                      maxHeight={60}
-                      showLabel='Xem thêm'
-                      hideLabel='Ẩn'
-                      classNames={{
-                        control: 'text-sm font-bold text-mainColor'
-                      }}
-                    >
-                      <Highlight size='sm' highlight={s}>
-                        {item.description || 'Đang cập nhật.'}
-                      </Highlight>
-                    </Spoiler>
-                  </Table.Td>
+                <Group gap={6} wrap='nowrap'>
+                  <UpdateProductButton id={item.id} />
+                  <DeleteProductButton id={item.id} />
+                </Group>
+              </Group>
 
-                  <Table.Td className='text-sm'>
-                    <Tooltip label={item.subCategory?.name}>
-                      <Badge color='green'>{item.subCategory?.name}</Badge>
-                    </Tooltip>
-                  </Table.Td>
+              <Divider my='sm' />
 
-                  <Table.Td className='text-sm'>
-                    <Tooltip label={item.isActive ? 'Hoạt động' : 'Tạm ẩn'}>
-                      <Badge color={item.isActive ? '' : 'red'}>{item.isActive ? 'Hoạt động' : 'Tạm ẩn'}</Badge>
-                    </Tooltip>
-                  </Table.Td>
-
-                  <Table.Td className='text-sm'> {formatDateViVN(item.createdAt)} </Table.Td>
-
-                  <Table.Td className='text-sm'>
-                    <Group>
-                      <UpdateProductButton id={item.id} />
-                      <DeleteProductButton id={item.id} />
-                    </Group>
-                  </Table.Td>
-                </Table.Tr>
-              ))
-            ) : (
-              <Table.Tr>
-                <Table.Td colSpan={8} className='bg-gray-100 text-center dark:bg-dark-card'>
-                  <Text size='md' c='dimmed'>
-                    Không có bản ghi phù hợp.
+              <Stack gap='sm'>
+                <Group gap='xs'>
+                  <Text size='xs' c='dimmed' fw={600}>
+                    Danh mục:
                   </Text>
-                </Table.Td>
-              </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
-      </Box>
+
+                  <Tooltip label={item.subCategory?.name}>
+                    <Badge color='green'>{item.subCategory?.name}</Badge>
+                  </Tooltip>
+                </Group>
+
+                <Group gap='xs'>
+                  <Text size='xs' c='dimmed' fw={600}>
+                    Trạng thái:
+                  </Text>
+
+                  <Tooltip label={item.isActive ? 'Hoạt động' : 'Tạm ẩn'}>
+                    <Badge color={item.isActive ? '' : 'red'}>{item.isActive ? 'Hoạt động' : 'Tạm ẩn'}</Badge>
+                  </Tooltip>
+                </Group>
+
+                <Stack gap={6}>
+                  <Text size='xs' c='dimmed' fw={600}>
+                    Nguyên liệu
+                  </Text>
+
+                  <Group gap={6}>
+                    {item?.materials?.length > 0 ? (
+                      item?.materials?.map((i: FindProduct['products'][number]['materials'][number], index: number) => (
+                        <Tooltip label={i?.name} key={index}>
+                          <Badge bg={randomColorHex(index + 20)}>{i?.name}</Badge>
+                        </Tooltip>
+                      ))
+                    ) : (
+                      <Text size='sm' c='dimmed'>
+                        Đang cập nhật
+                      </Text>
+                    )}
+                  </Group>
+                </Stack>
+
+                <Stack gap={6}>
+                  <Text size='xs' c='dimmed' fw={600}>
+                    Mô tả
+                  </Text>
+
+                  <Spoiler
+                    maxHeight={60}
+                    showLabel='Xem thêm'
+                    hideLabel='Ẩn'
+                    classNames={{
+                      control: 'text-sm font-bold text-mainColor'
+                    }}
+                  >
+                    <Highlight size='sm' highlight={s}>
+                      {item.description || 'Đang cập nhật.'}
+                    </Highlight>
+                  </Spoiler>
+                </Stack>
+              </Stack>
+            </Paper>
+          ))
+        ) : (
+          <Paper withBorder radius='lg' p='xl' className='col-span-full bg-gray-100 text-center dark:bg-dark-card'>
+            <Text size='md' c='dimmed'>
+              Không có bản ghi phù hợp.
+            </Text>
+          </Paper>
+        )}
+      </SimpleGrid>
 
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />

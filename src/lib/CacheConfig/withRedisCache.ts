@@ -1,11 +1,5 @@
 import { redis } from './redis';
 
-/**
- * Hàm cache dữ liệu bằng Upstash Redis.
- * @param key - khóa cache (string)
- * @param fetcher - hàm async trả về dữ liệu (VD: gọi API hoặc DB)
- * @param ttlSeconds - thời gian sống của cache (mặc định 60 giây)
- */
 async function revalidateCache<T>(key: string, fetcher: () => Promise<T>, ttlSeconds: number) {
   try {
     const freshData = await fetcher();

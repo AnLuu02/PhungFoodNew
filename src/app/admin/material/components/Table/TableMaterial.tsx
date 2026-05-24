@@ -10,6 +10,7 @@ import {
   Paper,
   Select,
   SimpleGrid,
+  Spoiler,
   Table,
   Text,
   Title
@@ -25,9 +26,13 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { categoryMaterials } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
+import { BADGE_COLORS } from '~/shared/constants/helper.constants';
 import { FindMaterial, GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
 import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
+
+type CategoryMaterialType = typeof categoryMaterials;
+type KeyCategory = keyof CategoryMaterialType;
 
 export default function TableMaterial() {
   const searchParams = useSearchParams();
@@ -128,19 +133,19 @@ export default function TableMaterial() {
         <Table striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead className='text-sm uppercase leading-normal'>
             <Table.Tr>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+              <Table.Th className='text-sm' style={{ width: '15%' }}>
                 Tên
               </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+              <Table.Th className='text-sm' style={{ width: '50%' }}>
                 Mô tả
               </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+              <Table.Th className='text-sm' style={{ width: '15%' }}>
                 Danh mục
               </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+              <Table.Th className='text-sm' style={{ width: '10%' }}>
                 Ngày tạo
               </Table.Th>
-              <Table.Th className='text-sm' style={{ minWidth: 100 }}>
+              <Table.Th className='text-sm' style={{ width: '10%' }}>
                 Thao tác
               </Table.Th>
             </Table.Tr>
@@ -162,12 +167,23 @@ export default function TableMaterial() {
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Highlight size='sm' highlight={s}>
-                      {row.description || 'Đang cập nhật'}
-                    </Highlight>
+                    <Spoiler
+                      maxHeight={22}
+                      showLabel={'Xem tất cả'}
+                      hideLabel={'Thu gọn'}
+                      classNames={{
+                        control: 'flex w-full justify-end text-sm text-mainColor'
+                      }}
+                    >
+                      <Highlight size='sm' highlight={s}>
+                        {row.description || 'Đang cập nhật'}
+                      </Highlight>
+                    </Spoiler>
                   </Table.Td>
                   <Table.Td className='text-sm'>
-                    <Badge>{row.category}</Badge>
+                    <Badge bg={BADGE_COLORS?.[index % BADGE_COLORS.length]}>
+                      {categoryMaterials?.[row.category as KeyCategory]}
+                    </Badge>
                   </Table.Td>
                   <Table.Td className='text-sm'>{formatDateViVN(row.createdAt)}</Table.Td>
                   <Table.Td className='text-sm'>
