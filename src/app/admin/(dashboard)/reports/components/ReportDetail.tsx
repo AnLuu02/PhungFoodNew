@@ -1,11 +1,9 @@
 'use client';
 
-import { BarChart } from '@mantine/charts';
 import { ActionIcon, Box, Button, Card, Flex, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import {
   IconArrowRight,
   IconChartCovariate,
-  IconCircleCheck,
   IconMoneybag,
   IconSettings,
   IconStack2Filled,
@@ -13,9 +11,8 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
 import TimelineRecentActivity from '~/components/TimelineRecentActivity';
-import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
+import { toNumber } from '~/lib/FuncHandler/Format';
 
 const navReportDetails = [
   {
@@ -60,66 +57,14 @@ const navReportDetails = [
   }
 ];
 
-export default function ReportDetailPageClient({
-  overviews,
-  recentActivitiesApp
-}: {
-  overviews: GetInitReport['overview'];
-  recentActivitiesApp: GetInitReport['recentActivitiesApp'];
-}) {
+export default function ReportDetailPageClient() {
   const searchParams = useSearchParams();
-  const startTime = searchParams.get('startTime');
-  const endTime = searchParams.get('endTime');
-  const startTimeToNum = (startTime && Number(startTime)) || new Date().getTime();
-  const endTimeToNum = (endTime && Number(endTime)) || new Date().getTime();
-  const period = !(endTimeToNum - startTimeToNum) ? 1 : (endTimeToNum - startTimeToNum) / (24 * 60 * 60 * 1000) + 1;
-
-  const revenues = overviews.revenues || [];
-  const dataOverviewChart = useMemo(() => {
-    const labels = Array.from({ length: +period }, (_, i) => {
-      const currentDate = new Date(endTimeToNum - (period !== 1 ? (+period - i - 1) * 24 * 60 * 60 * 1000 : 0));
-      return `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
-    });
-    const summaryRevenue: Record<string, number> = {};
-    const summaryUsers: Record<string, number> = {};
-    labels.forEach(label => {
-      summaryRevenue[label] = 0;
-      summaryUsers[label] = 0;
-    });
-
-    revenues.forEach((revenue: NonNullable<GetInitReport['overview']['revenues']>[number]) => {
-      const day = +revenue.day;
-      const month = +revenue.month;
-      const year = +revenue.year;
-      const key = `${day}/${month}/${year}`;
-      if (labels.includes(key)) {
-        summaryRevenue[key]! += Number(revenue.totalSpent || 0);
-      }
-    });
-
-    const users = overviews.users || [];
-    users.forEach((user: GetInitReport['overview']['users'][number]) => {
-      const date = user.createdAt ? new Date(user.createdAt) : new Date();
-      const key = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-      if (labels.includes(key)) {
-        summaryUsers[key]! += 1;
-      }
-    });
-
-    return {
-      revenues: labels.map(label => ({
-        label: `Ngày ${label}`,
-        revenue: summaryRevenue[label]
-      })),
-      users: labels.map(label => ({
-        label: `Ngày ${label}`,
-        users: summaryUsers[label]
-      }))
-    };
-  }, [overviews]);
-
-  const recentActivitiesAppRender = recentActivitiesApp?.items ?? [];
-
+  const startTimeToNum = toNumber(searchParams?.get('startTime') ?? undefined);
+  const endTimeToNum = toNumber(searchParams?.get('endTime') ?? undefined);
+  // const { data: overviews, isLoading } = api.Revenue.getOverview.useQuery({
+  //   startTime: startTimeToNum,
+  //   endTime: endTimeToNum
+  // });
   return (
     <Stack>
       <Card withBorder shadow='sm'>
@@ -166,31 +111,7 @@ export default function ReportDetailPageClient({
       </Card>
 
       <SimpleGrid cols={2}>
-        <TimelineRecentActivity recentActivities={recentActivitiesAppRender?.slice(0, 2) || []} />
-
-        <Card withBorder shadow='sm'>
-          <Flex align={'center'} justify={'space-between'} mb={'md'}>
-            <Box>
-              <Title order={5} className='font-quicksand'>
-                Tình trạng hệ thống
-              </Title>
-              <Text size='sm' c={'dimmed'}>
-                Hiệu suất và trạng thái dịch vụ
-              </Text>
-            </Box>
-            <ActionIcon variant='light' c={'green'} size={'lg'}>
-              <IconCircleCheck size={16} />
-            </ActionIcon>
-          </Flex>
-          <BarChart
-            h={300}
-            data={dataOverviewChart.users}
-            dataKey='label'
-            type='stacked'
-            series={[{ name: 'users', label: 'Người dùng mới', color: 'violet.6' }]}
-            gridAxis='xy'
-          />
-        </Card>
+        <TimelineRecentActivity startTime={startTimeToNum} endTime={endTimeToNum} />
       </SimpleGrid>
     </Stack>
   );

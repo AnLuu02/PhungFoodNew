@@ -122,7 +122,6 @@ export const getAllActivitiesService = async (
   }
 ) => {
   const { cursor, limit, filters } = input;
-
   const where: Prisma.ActivityLogWhereInput = {
     ...(filters?.entityType && { entityType: filters.entityType }),
     ...(filters?.action && { action: { contains: filters.action, mode: 'insensitive' } }),

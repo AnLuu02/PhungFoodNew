@@ -6,14 +6,21 @@ import { OrderStatus } from '@prisma/client';
 import { IconRotateClockwise, IconUserPlus } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
+import { formatDateViVN, formatPriceLocaleVi, toNumber } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
-export default function ReportOverviewPageClient({ overviews }: { overviews: GetInitReport['overview'] }) {
-  const revenues = overviews.revenues || [];
+import { api } from '~/trpc/react';
+export default function ReportOverviewPageClient() {
   const searchParams = useSearchParams();
   const startTime = searchParams.get('startTime');
   const endTime = searchParams.get('endTime');
+  const { data: overviews, isLoading } = api.Revenue.getOverview.useQuery({
+    startTime: toNumber(startTime ?? undefined),
+    endTime: toNumber(endTime ?? undefined)
+  });
+  const revenues = overviews ? overviews?.revenues : [];
+
   const startTimeToNum = startTime
     ? Number(startTime)
     : revenues?.[0]?.createdAt
@@ -46,7 +53,7 @@ export default function ReportOverviewPageClient({ overviews }: { overviews: Get
       }
     });
 
-    const users = overviews.users || [];
+    const users = overviews ? overviews?.users : [];
     users.forEach((user: NonNullable<GetInitReport['overview']['users']>[number]) => {
       const date = user.createdAt ? new Date(user.createdAt) : new Date();
       const key = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
@@ -69,75 +76,84 @@ export default function ReportOverviewPageClient({ overviews }: { overviews: Get
   return (
     <>
       <SimpleGrid cols={2}>
-        <Card withBorder shadow='md'>
-          <Flex align={'center'} justify={'space-between'} mb={'xl'}>
-            <Box>
-              <Title order={5} className='font-quicksand'>
-                Doanh thu theo thời gian
-              </Title>
-              <Text size='sm' c={'dimmed'}>
-                Biểu đồ doanh thu{' '}
-                <b>
-                  {period >= 0
-                    ? !period
-                      ? 'trong hôm nay'
-                      : `từ ${formatDateViVN(startTimeToNum)} đến ${formatDateViVN(endTimeToNum)}`
-                    : ' kể từ đơn hàng đầu tiên'}
-                </b>
-              </Text>
-            </Box>
-            <ActionIcon variant='light' size={'lg'}>
-              <IconRotateClockwise size={16} />
-            </ActionIcon>
-          </Flex>
-          <LineChart
-            h={300}
-            data={dataOverviewChart.revenues}
-            dataKey='label'
-            series={[{ name: 'revenue', label: 'Doanh thu (VNĐ)', color: 'blue.6' }]}
-            curveType='bump'
-            gridAxis='xy'
-            lineProps={{
-              isAnimationActive: true,
-              animationDuration: 400,
-              animationEasing: 'ease-in-out'
-            }}
-            valueFormatter={value => formatPriceLocaleVi(value)}
-          />
-        </Card>
-        <Card withBorder shadow='sm'>
-          <Flex align={'center'} justify={'space-between'} mb={'xl'}>
-            <Box>
-              <Title order={5} className='font-quicksand'>
-                Người dùng mới
-              </Title>
-              <Text size='sm' c={'dimmed'}>
-                Số lượng người dùng đăng kí mới{' '}
-                <b>
-                  {period >= 0
-                    ? !period
-                      ? 'hôm nay'
-                      : `từ ${formatDateViVN(startTimeToNum)} đến ${formatDateViVN(endTimeToNum)}`
-                    : ' kể từ đơn hàng đầu tiên'}
-                </b>
-              </Text>
-            </Box>
-            <ActionIcon variant='light' size={'lg'}>
-              <IconUserPlus size={16} />
-            </ActionIcon>
-          </Flex>
-          <BarChart
-            h={300}
-            data={dataOverviewChart.users}
-            dataKey='label'
-            type='stacked'
-            series={[{ name: 'users', label: 'Người dùng mới', color: 'violet.6' }]}
-            gridAxis='xy'
-          />
-        </Card>
+        {isLoading ? (
+          <>
+            <CommonSkeleton.Chart />
+            <CommonSkeleton.Chart />
+          </>
+        ) : (
+          <>
+            <Card withBorder shadow='md'>
+              <Flex align={'center'} justify={'space-between'} mb={'xl'}>
+                <Box>
+                  <Title order={5} className='font-quicksand'>
+                    Doanh thu theo thời gian
+                  </Title>
+                  <Text size='sm' c={'dimmed'}>
+                    Biểu đồ doanh thu{' '}
+                    <b>
+                      {period >= 0
+                        ? !period
+                          ? 'trong hôm nay'
+                          : `từ ${formatDateViVN(startTimeToNum)} đến ${formatDateViVN(endTimeToNum)}`
+                        : ' kể từ đơn hàng đầu tiên'}
+                    </b>
+                  </Text>
+                </Box>
+                <ActionIcon variant='light' size={'lg'}>
+                  <IconRotateClockwise size={16} />
+                </ActionIcon>
+              </Flex>
+              <LineChart
+                h={300}
+                data={dataOverviewChart.revenues}
+                dataKey='label'
+                series={[{ name: 'revenue', label: 'Doanh thu (VNĐ)', color: 'blue.6' }]}
+                curveType='bump'
+                gridAxis='xy'
+                lineProps={{
+                  isAnimationActive: true,
+                  animationDuration: 400,
+                  animationEasing: 'ease-in-out'
+                }}
+                valueFormatter={value => formatPriceLocaleVi(value)}
+              />
+            </Card>
+            <Card withBorder shadow='sm'>
+              <Flex align={'center'} justify={'space-between'} mb={'xl'}>
+                <Box>
+                  <Title order={5} className='font-quicksand'>
+                    Người dùng mới
+                  </Title>
+                  <Text size='sm' c={'dimmed'}>
+                    Số lượng người dùng đăng kí mới{' '}
+                    <b>
+                      {period >= 0
+                        ? !period
+                          ? 'hôm nay'
+                          : `từ ${formatDateViVN(startTimeToNum)} đến ${formatDateViVN(endTimeToNum)}`
+                        : ' kể từ đơn hàng đầu tiên'}
+                    </b>
+                  </Text>
+                </Box>
+                <ActionIcon variant='light' size={'lg'}>
+                  <IconUserPlus size={16} />
+                </ActionIcon>
+              </Flex>
+              <BarChart
+                h={300}
+                data={dataOverviewChart.users}
+                dataKey='label'
+                type='stacked'
+                series={[{ name: 'users', label: 'Người dùng mới', color: 'violet.6' }]}
+                gridAxis='xy'
+              />
+            </Card>
+          </>
+        )}
       </SimpleGrid>
 
-      {overviews.orders && overviews.orders?.length > 0 && (
+      {overviews?.orders && overviews?.orders?.length > 0 && (
         <Card withBorder shadow='sm'>
           <Box mb={'md'}>
             <Title order={5} className='font-quicksand'>
@@ -166,22 +182,40 @@ export default function ReportOverviewPageClient({ overviews }: { overviews: Get
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {overviews.orders.map((order: NonNullable<GetInitReport['overview']['orders']>[number]) => {
-                const statusInfo = getStatusInfo(order.status as OrderStatus);
-                return (
-                  <Table.Tr key={order.id}>
-                    <Table.Td>{order.id}</Table.Td>
-                    <Table.Td>{formatDateViVN(order.createdAt)}</Table.Td>
-                    <Table.Td>{order?.user?.name}</Table.Td>
-                    <Table.Td>{formatPriceLocaleVi(order?.finalTotal)}</Table.Td>
-                    <Table.Td>
-                      <Badge leftSection={<statusInfo.icon size={16} />} color={statusInfo.color}>
-                        {statusInfo.label}
-                      </Badge>
+              {isLoading ? (
+                <>
+                  <Table.Tr>
+                    <Table.Td colSpan={5}>
+                      <CommonSkeleton.Table cols={5} />
                     </Table.Td>
                   </Table.Tr>
-                );
-              })}
+                </>
+              ) : (
+                overviews &&
+                overviews?.orders.map((order: NonNullable<GetInitReport['overview']['orders']>[number]) => {
+                  const statusInfo = getStatusInfo(order.status as OrderStatus);
+                  return (
+                    <Table.Tr key={order.id}>
+                      <Table.Td>{order.id}</Table.Td>
+                      <Table.Td>{formatDateViVN(order.createdAt)}</Table.Td>
+                      <Table.Td>{order?.user?.name}</Table.Td>
+                      <Table.Td>{formatPriceLocaleVi(order?.finalTotal)}</Table.Td>
+                      <Table.Td>
+                        <Badge
+                          leftSection={<statusInfo.icon size={16} />}
+                          variant='light'
+                          color={statusInfo.color}
+                          style={{
+                            borderColor: statusInfo.color
+                          }}
+                        >
+                          {statusInfo.label}
+                        </Badge>
+                      </Table.Td>
+                    </Table.Tr>
+                  );
+                })
+              )}
             </Table.Tbody>
           </Table>
         </Card>

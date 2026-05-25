@@ -105,3 +105,11 @@ export function formatMoneyShort(amount: number): string {
   }
   return amount.toString();
 }
+
+export const toNumber = (value?: string) => {
+  if (!value) return undefined;
+
+  const num = Number(value);
+
+  return Number.isNaN(num) ? undefined : num;
+};

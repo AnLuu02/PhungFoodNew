@@ -1,34 +1,34 @@
 'use client';
 
-import { PieChart } from '@mantine/charts';
-import {
-  Box,
-  Card,
-  Divider,
-  Flex,
-  Grid,
-  GridCol,
-  Group,
-  Paper,
-  SimpleGrid,
-  Stack,
-  Table,
-  Text,
-  Title
-} from '@mantine/core';
+import { Divider, Grid, GridCol, Paper, SimpleGrid, Stack, Title } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
+import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { toNumber } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { api } from '~/trpc/react';
+import { PieChartBase } from './PieChartBase';
+import { TopProductTable } from './TopProductTable';
+import { TopUserTable } from './TopUserTable';
 const colors = ['blue.6', 'green.6', 'orange.6', 'red.6', 'gray.6'];
-export default function ReportRevenuePageClient({
-  topUsers,
-  revenueByCategories,
-  revenueByOrderStatus,
-  topProducts,
-  distributionProducts
-}: any) {
+export default function ReportRevenuePageClient() {
+  const searchParams = useSearchParams();
+  const startTimeToNum = toNumber(searchParams?.get('startTime') ?? undefined);
+  const endTimeToNum = toNumber(searchParams?.get('endTime') ?? undefined);
+  const { data: revenueByCategories, isLoading } = api.Revenue.getRevenueByCategory.useQuery({
+    startTime: startTimeToNum,
+    endTime: endTimeToNum
+  });
+  const { data: revenueByOrderStatus, isLoading: isLoading1 } = api.Revenue.getRevenueOrderStatus.useQuery({
+    startTime: startTimeToNum,
+    endTime: endTimeToNum
+  });
+  const { data: distributionProducts, isLoading: isLoading2 } = api.Revenue.getDistributionProducts.useQuery({
+    startTime: startTimeToNum,
+    endTime: endTimeToNum
+  });
   const revenueByCategoriesRender = useMemo(() => {
+    if (!revenueByCategories) return [];
     const revenueByCategoriesArr = Object.entries(revenueByCategories || {});
     return revenueByCategoriesArr.map(([label, value]: any, index: number) => {
       return {
@@ -39,6 +39,7 @@ export default function ReportRevenuePageClient({
     });
   }, [revenueByCategories]);
   const distributionProductsRender = useMemo(() => {
+    if (!distributionProducts) return [];
     const distributionProductsArr = Object.entries(distributionProducts || {});
     return distributionProductsArr.map(([label, value]: any, index: number) => {
       return {
@@ -47,8 +48,10 @@ export default function ReportRevenuePageClient({
         color: colors[index] || 'gray.6'
       };
     });
-  }, [revenueByCategories]);
+  }, [distributionProducts]);
   const revenueByOrderStatusRender = useMemo(() => {
+    if (!revenueByOrderStatus || revenueByOrderStatus?.length <= 0) return [];
+
     const revenueByOrderStatusArr = Object.entries(OrderStatus || {});
     return revenueByOrderStatusArr.map(([label]: any, index: number) => {
       const existed = revenueByOrderStatus.find((item: any) => item.status === label);
@@ -76,198 +79,33 @@ export default function ReportRevenuePageClient({
           </Title>
           <Grid>
             <GridCol span={12} className='h-fit'>
-              <Card withBorder shadow='sm'>
-                <Title order={5} mb={'md'} className='font-quicksand'>
-                  Top khách hàng
-                </Title>
-                <Table>
-                  <Table.Thead>
-                    <Table.Tr>
-                      <Table.Th>Khách hàng</Table.Th>
-                      <Table.Th>Tổng chi</Table.Th>
-                      <Table.Th>Đơn hàng</Table.Th>
-                    </Table.Tr>
-                  </Table.Thead>
-                  <Table.Tbody>
-                    {topUsers?.length > 0 ? (
-                      topUsers.map((customer: any, index: number) => (
-                        <Table.Tr key={index}>
-                          <Table.Td>{customer?.user?.name || 'Đang cập nhật'}</Table.Td>
-                          <Table.Td>{formatPriceLocaleVi(Number(customer?.totalSpent || 0))}</Table.Td>
-                          <Table.Td>{customer?.totalOrders || 0}</Table.Td>
-                        </Table.Tr>
-                      ))
-                    ) : (
-                      <>
-                        <Table.Tr>
-                          <Table.Td colSpan={3} className='bg-gray-100 text-center dark:bg-dark-card'>
-                            <Text size='md' c='dimmed'>
-                              Hôm nay chưa có thanh toán nào được thực hiện./
-                            </Text>
-                          </Table.Td>
-                        </Table.Tr>
-                      </>
-                    )}
-                  </Table.Tbody>
-                </Table>
-              </Card>
+              <TopUserTable startTime={startTimeToNum} endTime={endTimeToNum} />
               <Divider my={'md'} />
-              <Card withBorder shadow='sm'>
-                <Title order={5} mb={'md'} className='font-quicksand'>
-                  Top sản phẩm
-                </Title>
-                <Table>
-                  <Table.Thead>
-                    <Table.Tr>
-                      <Table.Th>Tên</Table.Th>
-                      <Table.Th>Danh mục</Table.Th>
-                      <Table.Th>Giá</Table.Th>
-                      <Table.Th>Đã bán</Table.Th>
-                      <Table.Th>Tổng thu</Table.Th>
-                    </Table.Tr>
-                  </Table.Thead>
-                  <Table.Tbody>
-                    {topProducts?.length > 0 ? (
-                      topProducts.map((product: any, index: number) => (
-                        <Table.Tr key={index}>
-                          <Table.Td>{product?.product?.name || 'Đang cập nhật'}</Table.Td>
-                          <Table.Td>{product?.product?.subCategory?.name || 'Đang cập nhật'}</Table.Td>
-                          <Table.Td>{formatPriceLocaleVi(product?.product?.price || 0)}</Table.Td>
-                          <Table.Td>{product?.soldQuantity || 0}</Table.Td>
-                          <Table.Td>{formatPriceLocaleVi(product?.profit || 0)}</Table.Td>
-                        </Table.Tr>
-                      ))
-                    ) : (
-                      <>
-                        <Table.Tr>
-                          <Table.Td colSpan={5} className='bg-gray-100 text-center dark:bg-dark-card'>
-                            <Text size='md' c='dimmed'>
-                              Hôm nay chưa có thanh toán nào được thực hiện./
-                            </Text>
-                          </Table.Td>
-                        </Table.Tr>
-                      </>
-                    )}
-                  </Table.Tbody>
-                </Table>
-              </Card>
+              <TopProductTable startTime={startTimeToNum} endTime={endTimeToNum} />
             </GridCol>
             <GridCol span={12} className='h-fit'>
               <SimpleGrid cols={2}>
-                <Card withBorder shadow='sm'>
-                  <Title order={5} mb={'md'} className='font-quicksand'>
-                    Doanh thu theo danh mục
-                  </Title>
-                  <Group align='center' gap={'xl'}>
-                    <PieChart
-                      data={revenueByCategoriesRender}
-                      withLabels
-                      withTooltip
-                      size={200}
-                      valueFormatter={value => formatPriceLocaleVi(value)}
-                    />
-                    <Stack>
-                      {colors.map((color, index) => (
-                        <Group key={index}>
-                          <Paper w={50} h={20} bg={color}></Paper>
-                          <Text size='xs' fw={600}>
-                            {revenueByCategoriesRender?.[index]?.name || 'Đang cập nhật'}
-                          </Text>
-                        </Group>
-                      ))}
-                    </Stack>
-                  </Group>
-                </Card>
-                <Card withBorder shadow='sm'>
-                  <Title order={5} mb={'md'} className='font-quicksand'>
-                    Doanh thu theo trang thái đơn hàng
-                  </Title>
-                  <Flex align='center' gap={'xl'}>
-                    <PieChart
-                      data={revenueByOrderStatusRender}
-                      withLabels
-                      withTooltip
-                      size={200}
-                      valueFormatter={value => formatPriceLocaleVi(value)}
-                    />
-                    <Stack>
-                      {colors.map((color, index) => (
-                        <Flex key={index} gap={'xs'} align={'center'}>
-                          <Paper w={50} h={20} bg={color}></Paper>
-                          <Text size='xs' fw={600} flex={1}>
-                            {revenueByOrderStatusRender?.[index]?.name || 'Đang cập nhật'}
-                          </Text>
-                        </Flex>
-                      ))}
-                    </Stack>
-                  </Flex>
-                </Card>
+                <PieChartBase
+                  title={'Doanh thu theo danh mục'}
+                  loading={isLoading}
+                  dataChart={revenueByCategoriesRender}
+                />
+                <PieChartBase
+                  title={'Doanh thu theo trang thái đơn hàng'}
+                  loading={isLoading1}
+                  dataChart={revenueByOrderStatusRender}
+                />
               </SimpleGrid>
             </GridCol>
             <GridCol span={12} className='h-fit'>
               <SimpleGrid cols={2}>
-                <Card withBorder shadow='sm'>
-                  <Box>
-                    <Title order={5} className='font-quicksand'>
-                      Phân bổ sản phẩm
-                    </Title>
-                    <Text size='sm' c={'dimmed'}>
-                      Theo danh mục
-                    </Text>
-                  </Box>
-                  <Flex align='center' gap={'xl'}>
-                    <PieChart data={distributionProductsRender} withLabels withTooltip size={200} />
-                    <Stack>
-                      {colors.map((color, index) => (
-                        <Group key={index}>
-                          <Paper w={50} h={20} bg={color}></Paper>
-                          <Text size='xs' fw={600}>
-                            {distributionProductsRender?.[index]?.name || 'Đang cập nhật'}
-                          </Text>
-                        </Group>
-                      ))}
-                    </Stack>
-                  </Flex>
-                </Card>
-                <Card withBorder shadow='sm'>
-                  <Title order={5} mb={'md'} className='font-quicksand'>
-                    Top sản phẩm
-                  </Title>
-                  <Table>
-                    <Table.Thead>
-                      <Table.Tr>
-                        <Table.Th>Tên</Table.Th>
-                        <Table.Th>Danh mục</Table.Th>
-                        <Table.Th>Giá</Table.Th>
-                        <Table.Th>Đã bán</Table.Th>
-                        <Table.Th>Tổng thu</Table.Th>
-                      </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                      {topProducts?.length > 0 ? (
-                        topProducts.map((product: any, index: number) => (
-                          <Table.Tr key={index}>
-                            <Table.Td>{product?.product?.name || 'Đang cập nhật'}</Table.Td>
-                            <Table.Td>{product?.product?.subCategory?.name || 'Đang cập nhật'}</Table.Td>
-                            <Table.Td>{formatPriceLocaleVi(product?.product?.price || 0)}</Table.Td>
-                            <Table.Td>{product?.soldQuantity || 0}</Table.Td>
-                            <Table.Td>{formatPriceLocaleVi(product?.profit || 0)}</Table.Td>
-                          </Table.Tr>
-                        ))
-                      ) : (
-                        <>
-                          <Table.Tr>
-                            <Table.Td colSpan={5} className='bg-gray-100 text-center dark:bg-dark-card'>
-                              <Text size='md' c='dimmed'>
-                                Hôm nay chưa có thanh toán nào được thực hiện./
-                              </Text>
-                            </Table.Td>
-                          </Table.Tr>
-                        </>
-                      )}
-                    </Table.Tbody>
-                  </Table>
-                </Card>
+                <PieChartBase
+                  title={'Phân bổ sản phẩm'}
+                  loading={isLoading2}
+                  dataChart={distributionProductsRender}
+                  valueFormatter={value => value + ' món'}
+                />
+                <TopProductTable startTime={startTimeToNum} endTime={endTimeToNum} />
               </SimpleGrid>
             </GridCol>
           </Grid>

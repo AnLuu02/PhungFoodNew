@@ -141,7 +141,11 @@ export const getInitAdminPageService = async (db: PrismaClient) => {
     getAllProductService(db, { userRole: UserRole.ADMIN }),
     getOverviewRevenueService(db, {}),
     getAllActivitiesService(db, {
-      limit: 10
+      limit: 10,
+      filters: {
+        dateFrom: undefined,
+        dateTo: undefined
+      }
     })
   ]);
 

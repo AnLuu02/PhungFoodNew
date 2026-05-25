@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { OrderStatus, PrismaClient } from '@prisma/client';
 import { getCompare } from '~/lib/FuncHandler/PrismaHelper';
 
 export const getTotalSpentInMonthByUserService = async (db: PrismaClient, input: { userId: string; year: number }) => {
@@ -53,7 +53,7 @@ export const getTopUsersService = async (
         })
       : [];
   return revenues.map(item => {
-    const user = users.find((user: any) => user.id === item.userId);
+    const user = users.find((user: (typeof users)[number]) => user.id === item.userId);
     return {
       userId: item.userId,
       totalSpent: item._sum.totalSpent,
@@ -97,7 +97,7 @@ export const getTopProductsService = async (db: PrismaClient, input: { startTime
         acc: { product: (typeof data)[number]['product']; soldQuantity: number; profit: number }[],
         item: (typeof data)[number]
       ) => {
-        const existed = acc.find((it: any) => it?.product?.id === item?.product?.id);
+        const existed = acc.find((it: (typeof acc)[number]) => it?.product?.id === item?.product?.id);
         if (!existed) {
           acc.push({
             product: item?.product,
@@ -157,12 +157,12 @@ export const getDistributionProductsService = async (
       }
     }
   });
-  const distributionProducts = data.reduce((acc: any, item: any) => {
-    item?.subCategory?.forEach((subCategory: any) => {
+  const distributionProducts = data.reduce((acc: any, item: (typeof data)[number]) => {
+    item?.subCategory?.forEach((subCategory: (typeof item)['subCategory'][number]) => {
       if (!acc[item?.name]) {
-        acc[item?.name] = subCategory?.product?.length || 0;
+        acc[item?.name] = subCategory?.products?.length || 0;
       } else {
-        acc[item?.name] += subCategory?.product?.length || 0;
+        acc[item?.name] += subCategory?.products?.length || 0;
       }
     });
     return acc;
@@ -189,20 +189,23 @@ export const getRevenueOrderStatusService = async (
       orderItems: true
     }
   });
-  const revenueByOrderStatus = data.reduce((acc: any, item: any) => {
-    const existed = acc.find((it: any) => it?.status === item?.status);
-    if (!existed) {
-      acc.push({
-        status: item?.status,
-        totalOrders: 1,
-        profit: item?.finalTotal || 0
-      });
-    } else {
-      existed.totalOrders += 1;
-      existed.profit += item?.finalTotal || 0;
-    }
-    return acc;
-  }, []);
+  const revenueByOrderStatus = data.reduce(
+    (acc: { status: OrderStatus; totalOrders: number; profit: number }[], item: (typeof data)[number]) => {
+      const existed = acc.find((it: (typeof acc)[number]) => it?.status === item?.status);
+      if (!existed) {
+        acc.push({
+          status: item?.status,
+          totalOrders: 1,
+          profit: item?.finalTotal || 0
+        });
+      } else {
+        existed.totalOrders += 1;
+        existed.profit += item?.finalTotal || 0;
+      }
+      return acc;
+    },
+    []
+  );
   return revenueByOrderStatus;
 };
 export const getRevenueByCategoryService = async (
@@ -229,7 +232,7 @@ export const getRevenueByCategoryService = async (
     }
   });
 
-  const revenueByCategory = data.reduce((acc: any, item: any) => {
+  const revenueByCategory = data.reduce((acc: any, item: (typeof data)[number]) => {
     const categoryName = item?.product?.subCategory?.name || 'Khác';
     const total = item.price * item.quantity;
 
@@ -282,7 +285,9 @@ export const getAllRevenueService = async (db: PrismaClient) => {
 };
 export const getOverviewRevenueService = async (db: PrismaClient, input: { startTime?: number; endTime?: number }) => {
   const { startTime, endTime } = input;
-  let startTimeToDate, endTimeToDate, firstRevenue: any;
+  let startTimeToDate = undefined,
+    endTimeToDate = undefined,
+    firstRevenue = undefined;
   if (startTime && endTime) {
     startTimeToDate = startTime ? new Date(startTime) : undefined;
     endTimeToDate = endTime ? new Date(endTime) : undefined;
@@ -360,7 +365,7 @@ export const getOverviewRevenueService = async (db: PrismaClient, input: { start
   return {
     revenues:
       revenues.status === 'fulfilled'
-        ? revenues.value.map((item: any) => {
+        ? revenues.value.map((item: (typeof revenues.value)[number]) => {
             return {
               day: item.day,
               month: item.month,
@@ -370,7 +375,7 @@ export const getOverviewRevenueService = async (db: PrismaClient, input: { start
               createdAt: firstRevenue?.updatedAt || new Date()
             };
           })
-        : null,
+        : [],
     totalUsers:
       totalUsers.status === 'fulfilled' ? totalUsers.value : { currentValue: 0, previousValue: 0, changeRate: null },
     totalOrders:
@@ -472,7 +477,7 @@ export const getOverviewDetailRevenueService = async (
     summaryRevenue[label] = 0;
   });
   revenues.status === 'fulfilled' &&
-    revenues.value.forEach((revenue: any) => {
+    revenues.value.forEach((revenue: (typeof revenues.value)[number]) => {
       const day = +revenue.day;
       const month = +revenue.month;
       const year = +revenue.year;
@@ -486,20 +491,23 @@ export const getOverviewDetailRevenueService = async (
 
   const revenueByCategory =
     categories.status === 'fulfilled'
-      ? categories.value.reduce((acc: any, item: any) => {
-          const categoryName = item?.product?.subCategory?.name || 'Khác';
-          const total = item.price * item.quantity;
-          const existed = acc.find((item: { category: string; revenue: number }) => item.category === categoryName);
-          if (!existed) {
-            acc.push({
-              category: categoryName,
-              revenue: total
-            });
-          } else {
-            existed.revenue += total;
-          }
-          return acc;
-        }, [])
+      ? categories.value.reduce(
+          (acc: { category: string; revenue: number }[], item: (typeof categories.value)[number]) => {
+            const categoryName = item?.product?.subCategory?.name || 'Khác';
+            const total = item.price * item.quantity;
+            const existed = acc.find((item: { category: string; revenue: number }) => item.category === categoryName);
+            if (!existed) {
+              acc.push({
+                category: categoryName,
+                revenue: total
+              });
+            } else {
+              existed.revenue += total;
+            }
+            return acc;
+          },
+          []
+        )
       : [];
 
   //top user
@@ -521,7 +529,7 @@ export const getOverviewDetailRevenueService = async (
   const topUsers =
     (revenueByUser.status === 'fulfilled' &&
       revenueByUser.value.map(item => {
-        const user = userData.find((user: any) => user.id === item.userId);
+        const user = userData.find((user: (typeof userData)[number]) => user.id === item.userId);
         return {
           totalSpent: item._sum.totalSpent,
           totalOrders: item._sum.totalOrders,

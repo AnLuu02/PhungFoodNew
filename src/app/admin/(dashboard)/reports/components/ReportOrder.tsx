@@ -4,7 +4,7 @@ import { LineChart, PieChart } from '@mantine/charts';
 import { Card, Grid, GridCol, Paper, Title } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi, toNumber } from '~/lib/FuncHandler/Format';
 import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
 
 const orderStatusData = [
@@ -17,10 +17,8 @@ const orderStatusData = [
 export default function ReportOrderPageClient({ overviews }: { overviews: GetInitReport['overview'] }) {
   const revenues = overviews.revenues || [];
   const searchParams = useSearchParams();
-  const startTime = searchParams.get('startTime');
-  const endTime = searchParams.get('endTime');
-  const startTimeToNum = (startTime && Number(startTime)) || new Date().getTime();
-  const endTimeToNum = (endTime && Number(endTime)) || new Date().getTime();
+  const startTimeToNum = toNumber(searchParams.get('startTime') ?? undefined) ?? new Date().getTime();
+  const endTimeToNum = toNumber(searchParams.get('endTime') ?? undefined) ?? new Date().getTime();
   const period = !(endTimeToNum - startTimeToNum) ? 1 : (endTimeToNum - startTimeToNum) / (24 * 60 * 60 * 1000) + 1;
 
   const dataOverviewChart = useMemo(() => {
