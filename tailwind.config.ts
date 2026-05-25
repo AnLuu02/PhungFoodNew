@@ -2,7 +2,7 @@ import { type Config } from 'tailwindcss';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 
 export default {
-  content: ['./src/**/*.tsx'],
+  content: ['./src/**/*.tsx', './src/lib/**/*.{js,ts,jsx,tsx,mdx}'],
   darkMode: ['class', '[data-mantine-color-scheme="dark"]'],
   corePlugins: { preflight: false },
   theme: {

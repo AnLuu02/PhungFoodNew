@@ -1,11 +1,11 @@
 'use client';
 
-import { Badge, Box, Button, Card, Highlight, Stack, Text } from '@mantine/core';
+import { ActionIcon, Box, Button, Card, Flex, Group, Highlight, Stack, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { IconCopy, IconEdit, IconEye, IconTrash } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { getPromotionStatus, getStatusColor } from '~/lib/FuncHandler/vouchers-calculate';
 import { FindVoucher } from '~/shared/type-trpc/voucher.type-trpc';
@@ -51,57 +51,98 @@ export default function CardVoucher({
       NotifyError(e.message);
     }
   });
-  const status = getPromotionStatus(promotion);
+  const status = getPromotionStatus(promotion?.startDate, promotion?.endDate, promotion?.isActive);
+  const statusColor = getStatusColor(status.name);
+  const promotionDescription =
+    promotion.description?.trim() && promotion.description.trim().length > 24
+      ? promotion.description
+      : `Áp dụng voucher giảm ${
+          promotion.type === VoucherType.PERCENTAGE
+            ? `${promotion.discountValue}%`
+            : `${formatPriceLocaleVi(promotion.discountValue)}`
+        } cho đơn hàng trong thời gian khuyến mãi.`;
   const utils = api.useUtils();
-
   return (
     <>
-      <Card withBorder key={promotion.id} className='overflow-hidden bg-gray-100 dark:bg-dark-card'>
-        <Stack>
-          <Box>
-            <Box className='flex items-start justify-between'>
-              <Box className='flex-1'>
-                <Highlight lineClamp={1} className='text-lg' fw={700} highlight={s}>
-                  {promotion.name || 'Đang cập nhật'}
-                </Highlight>
-                <Highlight lineClamp={2} size='sm' highlight={s}>
-                  {promotion.description || 'Đang cập nhật'}
-                </Highlight>
-              </Box>
-              <Badge variant='light' className={getStatusColor(status.name)}>
+      <Card
+        withBorder
+        key={promotion.id}
+        p='md'
+        className={`relative overflow-hidden border-dashed shadow-sm transition hover:scale-105 hover:shadow-md dark:border-dark-dimmed dark:bg-dark-card ${status.name === 'EXPIRED' ? 'opacity-80 grayscale-[0.15]' : ''} `}
+      >
+        {status.name !== 'ACTIVE' && (
+          <>
+            <Box className='pointer-events-none absolute inset-0 z-[2] flex items-center justify-center overflow-hidden'>
+              <Text
+                fw={900}
+                className={`rotate-[-25deg] select-none whitespace-nowrap text-5xl tracking-[10px] ${statusColor.textBlur}`}
+              >
                 {status.viName}
-              </Badge>
-            </Box>
-          </Box>
-
-          <Box className='flex items-center justify-between'>
-            <Box className='flex items-center gap-2'>
-              <Text fw={700}>Giảm: </Text>
-              <Text size='sm'>
-                {promotion.type === VoucherType.PERCENTAGE
-                  ? `${promotion.discountValue}%`
-                  : `$${promotion.discountValue}`}
               </Text>
             </Box>
-            <code className='bg-muted rounded px-2 py-1 text-sm'>{promotion.code}</code>
+            <Box
+              className={`pointer-events-none absolute -left-10 top-0 z-[1] h-32 w-32 rounded-full ${statusColor.bgBlur} blur-3xl`}
+            />
+          </>
+        )}
+        <Stack gap='md'>
+          <Box className='flex items-start justify-between gap-4'>
+            <Box className='min-w-0 flex-1'>
+              <Highlight lineClamp={1} className='text-base' fw={800} highlight={s}>
+                {promotion.name || 'Đang cập nhật'}
+              </Highlight>
+
+              <Highlight lineClamp={3} size='sm' c='dimmed' mt={4} highlight={s} className='leading-relaxed'>
+                {promotionDescription}
+              </Highlight>
+            </Box>
+
+            <Flex
+              direction={'column'}
+              align={'center'}
+              gap={4}
+              justify={'center'}
+              className='shrink-0 rounded-lg border border-dashed border-mainColor/50 px-3 py-2'
+            >
+              <Text size='xs' fw={700} c='dimmed'>
+                GIẢM
+              </Text>
+              <Text fw={900} className='text-xl text-mainColor'>
+                {promotion.type === VoucherType.PERCENTAGE
+                  ? `${promotion.discountValue}%`
+                  : `${formatPriceLocaleVi(promotion.discountValue)}`}
+              </Text>
+              <Box className='relative inline-flex items-center overflow-hidden rounded-xl border border-dashed border-mainColor/50 px-3 py-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.04)]'>
+                <Text ff='monospace' fw={900} className='relative z-[2] text-sm tracking-[3px] text-mainColor'>
+                  {promotion.code}
+                </Text>
+              </Box>
+            </Flex>
           </Box>
-          <Box className='grid grid-cols-2 gap-4 text-sm'>
+
+          <Box className='grid grid-cols-2 gap-3 rounded-lg bg-gray-100 p-3 dark:bg-dark-background'>
             <Box>
-              <Text size='sm'>Đã dùng</Text>
-              <Text size='sm' fw={700}>
+              <Text size='xs' c='dimmed' fw={700}>
+                Lượt sử dụng
+              </Text>
+              <Text size='sm' fw={800}>
                 {`${promotion.usedQuantity}/${promotion.quantity}`}
               </Text>
             </Box>
+
             <Box>
-              <Text size='sm'>Có hiệu lực cho đến</Text>
-              <Text size='sm' fw={700}>
+              <Text size='xs' c='dimmed' fw={700}>
+                Có hiệu lực đến
+              </Text>
+              <Text size='sm' fw={800}>
                 {formatDateViVN(promotion.endDate)}
               </Text>
             </Box>
           </Box>
-          <Box className='flex gap-2'>
+
+          <Group gap='xs' justify='space-between'>
             <Button
-              variant='outline'
+              variant={promotion.isActive ? 'danger' : 'filled'}
               size='xs'
               loading={loading['toggle']}
               onClick={async () => {
@@ -115,20 +156,15 @@ export default function CardVoucher({
                   }
                 });
               }}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `flex-1 !border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-              }}
+              className='flex-1 font-bold'
             >
               {promotion.isActive ? 'Tạm ẩn' : 'Hiển thị'}
             </Button>
-            <Button
-              variant='outline'
-              size='xs'
+
+            <ActionIcon
+              variant='subtle'
+              size='lg'
+              radius='md'
               loading={loading['copy']}
               onClick={async () => {
                 setLoading({ copy: true });
@@ -139,54 +175,39 @@ export default function CardVoucher({
                   id: ''
                 } as any);
               }}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `!border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-              }}
             >
               <IconCopy className='h-4 w-4' />
-            </Button>
-            <Button
-              variant='outline'
-              size='xs'
+            </ActionIcon>
+
+            <ActionIcon
+              variant='subtle'
+              size='lg'
+              radius='md'
+              color='blue'
               onClick={() => {
                 setSelectedPromotion({ type: 'edit', data: promotion });
               }}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `!border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-              }}
             >
               <IconEdit className='h-4 w-4' />
-            </Button>
-            <Button
-              variant='outline'
-              size='xs'
+            </ActionIcon>
+
+            <ActionIcon
+              variant='subtle'
+              size='lg'
+              radius='md'
+              color='gray'
               onClick={() => {
                 setSelectedPromotion({ type: 'view', data: promotion });
               }}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `!border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-              }}
             >
               <IconEye className='h-4 w-4' />
-            </Button>
-            <Button
-              variant='outline'
-              size='xs'
+            </ActionIcon>
+
+            <ActionIcon
+              variant='subtle'
+              size='lg'
+              radius='md'
+              color='red'
               onClick={() => {
                 promotion?.id &&
                   onHandleModalAction({
@@ -198,18 +219,10 @@ export default function CardVoucher({
                     }
                   });
               }}
-              styles={{
-                root: {
-                  border: '1px solid '
-                }
-              }}
-              classNames={{
-                root: `!border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-              }}
             >
               <IconTrash className='h-4 w-4' />
-            </Button>
-          </Box>
+            </ActionIcon>
+          </Group>
         </Stack>
       </Card>
     </>

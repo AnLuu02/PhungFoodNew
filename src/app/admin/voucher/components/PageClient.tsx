@@ -134,6 +134,7 @@ export default function VoucherClient() {
         <Group justify='space-between'>
           <SearchInput width={500} />
           <Group>
+            <PageSizeSelector />
             <Select
               allowDeselect={false}
               value={statusFilter}

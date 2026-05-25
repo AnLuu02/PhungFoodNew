@@ -55,12 +55,12 @@ export const hoursRemainingVoucher = (startDate: any, endDate: any) => {
   }
 };
 
-export const getPromotionStatus = (promotion: any) => {
+export const getPromotionStatus = (startDate: Date, endDate: Date, isActive: boolean | null) => {
   const now = new Date();
-  const start = new Date(promotion.startDate);
-  const end = new Date(promotion.endDate);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
-  if (!promotion.isActive)
+  if (!isActive)
     return {
       name: 'INACTIVE',
       viName: 'Tạm ẩn'
@@ -80,17 +80,38 @@ export const getPromotionStatus = (promotion: any) => {
     viName: 'Khả dụng'
   };
 };
+
 export const getStatusColor = (status: string) => {
   switch (status) {
     case 'ACTIVE':
-      return 'bg-green-100 text-green-800';
+      return {
+        color: 'blue',
+        textBlur: 'text-blue-500/20',
+        bgBlur: 'bg-blue-500/20'
+      };
     case 'SCHEDULED':
-      return 'bg-blue-100 text-blue-800';
+      return {
+        color: 'yellow',
+        textBlur: 'text-yellow-500/20',
+        bgBlur: 'bg-yellow-500/20'
+      };
     case 'EXPIRED':
-      return 'bg-red-100 text-red-800';
+      return {
+        color: 'red',
+        textBlur: 'text-red-500/20',
+        bgBlur: 'bg-red-500/20'
+      };
     case 'INACTIVE':
-      return 'bg-gray-200 text-gray-800 dark:text-dark-text';
+      return {
+        color: 'gray',
+        textBlur: 'text-gray-500/20',
+        bgBlur: 'bg-gray-500/20'
+      };
     default:
-      return 'bg-gray-200 text-gray-800 dark:text-dark-text';
+      return {
+        color: 'gray',
+        textBlur: 'text-gray-500/20',
+        bgBlur: 'bg-gray-500/20'
+      };
   }
 };

@@ -3,7 +3,7 @@
 import { Badge, Box, Modal, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { Dispatch, SetStateAction } from 'react';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getPromotionStatus } from '~/lib/FuncHandler/vouchers-calculate';
 import { FindVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 
@@ -46,7 +46,7 @@ export const ViewVoucherModal = ({
         <Box className='space-y-4'>
           <Box className='grid gap-4 md:grid-cols-2'>
             <Box>
-              <Text className='mb-2' fw={700}>
+              <Text size='sm' className='mb-2' fw={700}>
                 Thông tin cơ bản
               </Text>
               <Box className='space-y-1 text-sm'>
@@ -58,19 +58,26 @@ export const ViewVoucherModal = ({
                   <strong>Giảm:</strong>{' '}
                   {selectedPromotion?.data?.type === 'PERCENTAGE'
                     ? `${selectedPromotion?.data?.discountValue}%`
-                    : `$${selectedPromotion?.data?.discountValue}`}
+                    : `$${formatPriceLocaleVi(selectedPromotion?.data?.discountValue || 0)}`}
                 </Text>
                 <Text size='sm'>
                   <strong>Mã:</strong> <code className='rounded bg-gray-100 px-1'>{selectedPromotion?.data?.code}</code>
                 </Text>
                 <Text size='sm'>
-                  <strong>Trạng thái:</strong> {getPromotionStatus(selectedPromotion).viName}
+                  <strong>Trạng thái:</strong>{' '}
+                  {
+                    getPromotionStatus(
+                      selectedPromotion?.data?.startDate,
+                      selectedPromotion?.data?.endDate,
+                      selectedPromotion?.data?.isActive
+                    ).viName
+                  }
                 </Text>
               </Box>
             </Box>
 
             <Box>
-              <Text fw={700} className='mb-2'>
+              <Text size='sm' fw={700} className='mb-2'>
                 Hạn dùng
               </Text>
               <Box className='space-y-1 text-sm'>
@@ -86,7 +93,7 @@ export const ViewVoucherModal = ({
                 </Text>
                 {selectedPromotion?.data?.minOrderPrice && (
                   <Text size='sm'>
-                    <strong>Đơn tối thiểu:</strong> ${selectedPromotion?.data?.minOrderPrice}
+                    <strong>Đơn tối thiểu:</strong> {formatPriceLocaleVi(selectedPromotion?.data?.minOrderPrice || 0)}
                   </Text>
                 )}
               </Box>
@@ -105,22 +112,7 @@ export const ViewVoucherModal = ({
               Áp dụng cho
             </Text>
             <Box className='flex flex-wrap gap-1'>
-              {selectedPromotion?.data?.applyAll && (
-                <Badge
-                  variant='outline'
-                  className='text-xs'
-                  styles={{
-                    root: {
-                      border: '1px solid '
-                    }
-                  }}
-                  classNames={{
-                    root: `!border-gray-300 !font-bold text-black hover:bg-mainColor/10 hover:text-black data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
-                  }}
-                >
-                  Tất cả khách hàng
-                </Badge>
-              )}
+              {selectedPromotion?.data?.applyAll && <Badge>Tất cả khách hàng</Badge>}
               {selectedPromotion?.data?.pointUser && selectedPromotion?.data?.pointUser > 0 && (
                 <Badge
                   variant='outline'
