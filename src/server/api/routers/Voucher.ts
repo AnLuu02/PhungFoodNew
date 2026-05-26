@@ -20,7 +20,11 @@ export const voucherRouter = createTRPCRouter({
       z.object({
         page: z.number().default(1),
         limit: z.number().default(5),
-        s: z.string().optional(),
+        filters: z.object({
+          s: z.string().optional(),
+          status: z.array(z.string()).default([]),
+          type: z.string().optional()
+        }),
         include: z.custom<Prisma.VoucherInclude>().optional()
       })
     )

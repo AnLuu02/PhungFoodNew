@@ -18,12 +18,20 @@ export default async function VoucherManagementPage({
     s?: string;
     page?: string;
     limit?: string;
+    status?: string[];
+    type?: string;
   };
 }) {
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
-  await Promise.all([api.Voucher.getAll.prefetch(), api.Voucher.find.prefetch({ page: +page, limit: +limit, s })]);
+  const status = searchParams?.status ?? [];
+  const type = searchParams?.type ?? undefined;
+
+  await Promise.all([
+    api.Voucher.getAll.prefetch(),
+    api.Voucher.find.prefetch({ page: +page, limit: +limit, filters: { s, status, type } })
+  ]);
 
   return (
     <HydrateClient>

@@ -201,9 +201,10 @@ export default function TableUser() {
               withBorder
               radius='xl'
               p='md'
-              bg={item.role?.name !== UserRole.CUSTOMER ? 'red.1' : ''}
               pos={'relative'}
-              className='bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card'
+              className={`shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
+                item.role?.name !== UserRole.CUSTOMER ? 'bg-red-100 dark:bg-transparent' : 'bg-white dark:bg-dark-card'
+              }`}
             >
               <Stack className='min-w-0 flex-1'>
                 <Group justify='space-between' align='flex-start' wrap='wrap'>

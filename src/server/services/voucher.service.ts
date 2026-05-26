@@ -1,21 +1,59 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, VoucherType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { STATUS_VOUCHER } from '~/shared/constants/voucher.constants';
 import { VoucherInput } from '~/shared/schema/voucher.schema';
 
 export const findVoucherService = async (
   db: PrismaClient,
-  input: { page: number; limit: number; s?: string; include?: Prisma.VoucherInclude }
+  input: {
+    page: number;
+    limit: number;
+    filters: {
+      s?: string;
+      status: string[];
+      type?: string;
+    };
+    include?: Prisma.VoucherInclude;
+  }
 ) => {
-  const { page, limit, s, include } = input;
+  const {
+    page,
+    limit,
+    filters: { s, status, type },
+    include
+  } = input;
   const searchQuery = s?.trim();
   const where: Prisma.VoucherWhereInput = {
+    type: (type?.toUpperCase() ?? undefined) as VoucherType | undefined,
+    ...(status.includes(STATUS_VOUCHER.ACTIVE)
+      ? {
+          isActive: true
+        }
+      : status.includes(STATUS_VOUCHER.INACTIVE)
+        ? {
+            isActive: false
+          }
+        : status.includes(STATUS_VOUCHER.EXPIRED)
+          ? {
+              endDate: {
+                lt: new Date()
+              }
+            }
+          : status.includes(STATUS_VOUCHER.SCHEDULE)
+            ? {
+                startDate: {
+                  gt: new Date()
+                }
+              }
+            : {}),
     OR: [
       {
         name: { contains: searchQuery, mode: 'insensitive' }
       },
       {
         description: { contains: searchQuery, mode: 'insensitive' }
-      }
+      },
+      { code: { contains: searchQuery, mode: 'insensitive' } }
     ]
   };
   const [totalVouchers, totalVouchersQuery, vouchers] = await db.$transaction([
@@ -34,7 +72,11 @@ export const findVoucherService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    searchQuery ? (totalVouchersQuery == 0 ? 1 : totalVouchersQuery / limit) : totalVouchers / limit
+    searchQuery || status.length > 0 || type
+      ? totalVouchersQuery == 0
+        ? 1
+        : totalVouchersQuery / limit
+      : totalVouchers / limit
   );
 
   return {

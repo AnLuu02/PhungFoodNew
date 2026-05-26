@@ -113,9 +113,14 @@ export default function CardVoucher({
                   : `${formatPriceLocaleVi(promotion.discountValue)}`}
               </Text>
               <Box className='relative inline-flex items-center overflow-hidden rounded-xl border border-dashed border-mainColor/50 px-3 py-1.5 shadow-[0_4px_12px_rgba(0,0,0,0.04)]'>
-                <Text ff='monospace' fw={900} className='relative z-[2] text-sm tracking-[3px] text-mainColor'>
+                <Highlight
+                  highlight={s}
+                  ff='monospace'
+                  fw={900}
+                  className='relative z-[2] text-sm tracking-[3px] text-mainColor'
+                >
                   {promotion.code}
-                </Text>
+                </Highlight>
               </Box>
             </Flex>
           </Box>
@@ -130,14 +135,24 @@ export default function CardVoucher({
               </Text>
             </Box>
 
-            <Box>
-              <Text size='xs' c='dimmed' fw={700}>
-                Có hiệu lực đến
-              </Text>
-              <Text size='sm' fw={800}>
-                {formatDateViVN(promotion.endDate)}
-              </Text>
-            </Box>
+            <Stack>
+              <Box>
+                <Text size='xs' c='dimmed' fw={700}>
+                  Có hiệu lực từ
+                </Text>
+                <Text size='sm' fw={800}>
+                  {formatDateViVN(promotion.startDate, { hour: true })}
+                </Text>
+              </Box>
+              <Box>
+                <Text size='xs' c='dimmed' fw={700}>
+                  Đến
+                </Text>
+                <Text size='sm' fw={800}>
+                  {formatDateViVN(promotion.endDate, { hour: true })}
+                </Text>
+              </Box>
+            </Stack>
           </Box>
 
           <Group gap='xs' justify='space-between'>

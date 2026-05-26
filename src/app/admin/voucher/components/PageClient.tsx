@@ -2,49 +2,50 @@
 
 import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Title } from '@mantine/core';
 import { IconActivity, IconAlertTriangle, IconCircleCheck, IconGift } from '@tabler/icons-react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
+import { STATUS_FILTER_VOUCHER } from '~/shared/constants/voucher.constants';
 import { FindVoucher, GetAllVoucher } from '~/shared/type-trpc/voucher.type-trpc';
 import { api } from '~/trpc/react';
 import CardVoucher from './CardVoucher';
 import { UpdateVoucherModal } from './Modal/UpdateVoucherModal';
 import { ViewVoucherModal } from './Modal/ViewVoucherModal';
 
+type StatusFilterVoucher = typeof STATUS_FILTER_VOUCHER;
+
 export default function VoucherClient() {
   const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+  const router = useRouter();
 
   const s = searchParams.get('s') || '';
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') ?? '5';
+  const status = searchParams?.getAll('status');
+  const type = searchParams?.get('type') ?? undefined;
 
-  const { data: dataClient, isLoading } = api.Voucher.find.useQuery({ page: +page, limit: +limit, s });
+  const { data, isLoading } = api.Voucher.find.useQuery({
+    page: +page,
+    limit: +limit,
+    filters: {
+      s: s,
+      status,
+      type
+    }
+  });
   const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined);
   const [selectedPromotion, setSelectedPromotion] = useState<{
     type: 'edit' | 'view';
     data: FindVoucher['vouchers'][number];
   } | null>(null);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'enabled' | 'disabled'>('all');
+  const [statusFilter, setStatusFilter] = useState<keyof StatusFilterVoucher>('all');
   const [typeFilter, setTypeFilter] = useState('all');
-
-  const filteredItems = useMemo(() => {
-    if (!dataClient?.vouchers) return [];
-
-    return dataClient.vouchers.filter((promotion: FindVoucher['vouchers'][number]) => {
-      const matchStatus =
-        statusFilter === 'all' ||
-        (statusFilter === 'enabled' && promotion.isActive) ||
-        (statusFilter === 'disabled' && !promotion.isActive);
-
-      const matchType = typeFilter === 'all' || promotion.type?.toLowerCase() === typeFilter?.toLowerCase();
-
-      return matchStatus && matchType;
-    });
-  }, [dataClient?.vouchers, statusFilter, typeFilter]);
+  const vouchers = data?.vouchers || [];
 
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
@@ -101,8 +102,16 @@ export default function VoucherClient() {
 
   const utils = api.useUtils();
   useEffect(() => {
-    if (dataClient?.pagination.hasNext) {
-      void utils.Voucher.find.prefetch({ page: +page + 1, limit: +limit, s });
+    if (data?.pagination.hasNext) {
+      void utils.Voucher.find.prefetch({
+        page: +page + 1,
+        limit: +limit,
+        filters: {
+          s,
+          status,
+          type
+        }
+      });
     }
   }, [page]);
 
@@ -138,19 +147,31 @@ export default function VoucherClient() {
             <Select
               allowDeselect={false}
               value={statusFilter}
-              onChange={value => setStatusFilter(value as any)}
+              onChange={value => {
+                if (value) {
+                  setStatusFilter(value as typeof statusFilter);
+                  params.set('status', value.toString());
+                  if (value === 'all') params.delete('status');
+                  params.delete('page');
+                  router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+                }
+              }}
               placeholder='Status'
-              data={[
-                { value: 'all', label: 'Tất cả trạng thái' },
-                { value: 'enabled', label: 'Hoạt động' },
-                { value: 'disabled', label: 'Không hoạt động' }
-              ]}
+              data={Object.values(STATUS_FILTER_VOUCHER)}
             />
 
             <Select
               value={typeFilter}
               allowDeselect={false}
-              onChange={value => setTypeFilter(value as string)}
+              onChange={value => {
+                if (value) {
+                  setTypeFilter(value as string);
+                  params.set('type', value);
+                  if (value === 'all') params.delete('type');
+                  params.delete('page');
+                  router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+                }
+              }}
               placeholder='Type'
               data={[
                 { value: 'all', label: 'Tất cả loại' },
@@ -169,11 +190,11 @@ export default function VoucherClient() {
       </Paper>
       {isLoading ? (
         <ModalUpsertSkeleton />
-      ) : filteredItems.length === 0 ? (
+      ) : vouchers.length === 0 ? (
         <Empty hasButton={false} title='Không có kết quả phù hợp' content='' />
       ) : (
         <SimpleGrid cols={3}>
-          {filteredItems.map((promotion: FindVoucher['vouchers'][number]) => {
+          {vouchers.map((promotion: FindVoucher['vouchers'][number]) => {
             return (
               <CardVoucher key={promotion.id} promotion={promotion} s={s} setSelectedPromotion={setSelectedPromotion} />
             );
@@ -182,7 +203,7 @@ export default function VoucherClient() {
       )}
       <Group justify='space-between' align='center' my={'md'}>
         <PageSizeSelector />
-        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
       </Group>
       <ViewVoucherModal selectedPromotion={selectedPromotion} setSelectedPromotion={setSelectedPromotion} />
       <UpdateVoucherModal selectedPromotion={selectedPromotion} setSelectedPromotion={setSelectedPromotion} />
