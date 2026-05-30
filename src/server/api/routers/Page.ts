@@ -6,6 +6,7 @@ import {
   getInitProductDetailPageService,
   getInitReportPageService
 } from '~/server/services/page.service';
+import { Period } from '~/shared/types';
 
 export const pageRouter = createTRPCRouter({
   getInit: publicProcedure.query(async ({ ctx }) => await getInitPageService(ctx.db)),
@@ -17,7 +18,8 @@ export const pageRouter = createTRPCRouter({
     .input(
       z.object({
         startTime: z.number().optional(),
-        endTime: z.number().optional()
+        endTime: z.number().optional(),
+        period: z.custom<Period>()
       })
     )
     .query(async ({ ctx, input }) => await getInitReportPageService(ctx.db, input))

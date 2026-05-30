@@ -227,7 +227,7 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
   //test admin
   if (result.newData && result.newData.status === OrderStatus.COMPLETED) {
     updatepointUser(db, input.userId, Number(input.finalTotal) || 0);
-    updateRevenue(db, result.newData.status, input.userId, result.newData);
+    updateRevenue(db, result.newData.status, input.userId, { finalTotal: result.newData?.finalTotal || 0 });
     await Promise.all(
       result.newData?.orderItems?.map((orderItem: any) => {
         return updateSales(db, result.newData.status, orderItem.productId, orderItem?.quantity);
@@ -257,7 +257,7 @@ export const updateOrderService = async (
   });
 
   if (order && order.status === OrderStatus.COMPLETED) {
-    updateRevenue(db, order.status, order.userId, order);
+    updateRevenue(db, order.status, order.userId, { finalTotal: order?.finalTotal || 0 });
     updatepointUser(db, order.userId, order.finalTotal);
     await Promise.all(
       order?.orderItems?.map((orderItem: any) => {

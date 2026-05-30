@@ -47,7 +47,7 @@ export const ExportReports = () => {
     <>
       <Button
         size='sm'
-        variant='subtle'
+        variant='outline'
         leftSection={<IconFileArrowRight size={16} />}
         rightSection={<IconCaretDown size={16} />}
         onClick={handleExportReports}

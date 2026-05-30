@@ -1,81 +1,84 @@
 'use client';
 
 import { BarChart, LineChart } from '@mantine/charts';
-import { ActionIcon, Badge, Box, Card, Flex, SimpleGrid, Table, Text, Title } from '@mantine/core';
+import { ActionIcon, Badge, Box, Card, Flex, Group, SimpleGrid, Table, Text, Title, Tooltip } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
-import { IconRotateClockwise, IconUserPlus } from '@tabler/icons-react';
+import { IconArrowsHorizontal, IconRotateClockwise } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
+import dayjs from '~/lib/dayjs';
 import { formatDateViVN, formatPriceLocaleVi, toNumber } from '~/lib/FuncHandler/Format';
+import { getDatesObjBetween } from '~/lib/FuncHandler/Statistics';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
+import { Period } from '~/shared/types';
 import { api } from '~/trpc/react';
-export default function ReportOverviewPageClient() {
-  const searchParams = useSearchParams();
-  const startTime = searchParams.get('startTime');
-  const endTime = searchParams.get('endTime');
-  const { data: overviews, isLoading } = api.Revenue.getOverview.useQuery({
-    startTime: toNumber(startTime ?? undefined),
-    endTime: toNumber(endTime ?? undefined)
-  });
-  const revenues = overviews ? overviews?.revenues : [];
 
-  const startTimeToNum = startTime
-    ? Number(startTime)
-    : revenues?.[0]?.createdAt
-      ? new Date(revenues?.[0]?.createdAt).getTime()
-      : -1;
-  const endTimeToNum = endTime ? Number(endTime) : revenues?.[0]?.createdAt ? new Date().getTime() : -2;
-  const period = (endTimeToNum - startTimeToNum) / (24 * 60 * 60 * 1000);
+export default function ReportOverviewPageClient() {
+  const [showAllChart, setShowAllChart] = useState(false);
+  const searchParams = useSearchParams();
+  const startTimeToNum = toNumber(searchParams.get('startTime') ?? undefined);
+  const endTimeToNum = toNumber(searchParams.get('endTime') ?? undefined);
+  const period = (searchParams.get('period') ?? '_all') as Period;
+  const { data: overviews, isLoading } = api.Revenue.getOverview.useQuery({
+    startTime: startTimeToNum,
+    endTime: endTimeToNum,
+    period
+  });
+
+  const revenues = overviews ? overviews?.revenues : [];
+  const users = overviews ? overviews?.users : [];
+  const startDate = startTimeToNum || revenues?.[0]?.createdAt || dayjs().tz().toDate();
+  const endDate = endTimeToNum || dayjs().tz().toDate();
+  const periodSize = dayjs(endDate).tz().diff(startDate, 'day');
 
   const dataOverviewChart = useMemo(() => {
-    const periodValue = period > 0 ? period : 1;
-    const labels = Array.from({ length: periodValue || 1 }, (_, i) => {
-      const currentDate = new Date(endTimeToNum - (periodValue !== 1 ? (periodValue - i) * 24 * 60 * 60 * 1000 : 0));
-      return `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
+    const rangeDateObj = getDatesObjBetween(startDate, endDate, {
+      format: 'DD-MM-YYYY',
+      defaultTimeZone: true
     });
-
+    const labels = Object.keys(rangeDateObj);
     const summaryRevenue: Record<string, number> = {};
     const summaryUsers: Record<string, number> = {};
-    labels.forEach(label => {
-      summaryRevenue[label] = 0;
-      summaryUsers[label] = 0;
-    });
 
-    revenues.forEach((revenue: NonNullable<GetInitReport['overview']['revenues']>[number]) => {
+    revenues.forEach((revenue: (typeof revenues)[number]) => {
       const day = +revenue.day;
       const month = +revenue.month;
       const year = +revenue.year;
-      const key = `${day}/${month}/${year}`;
+      const key = dayjs([year, month - 1, day])
+        .tz()
+        .format('DD-MM-YYYY');
       if (labels.includes(key)) {
-        summaryRevenue[key]! += Number(revenue.totalSpent || 0);
+        summaryRevenue[key] = Number(summaryRevenue[key] || 0) + Number(revenue.totalSpent || 0);
+      } else if (!(key in summaryRevenue)) {
+        summaryRevenue[key] = 0;
       }
     });
 
-    const users = overviews ? overviews?.users : [];
-    users.forEach((user: NonNullable<GetInitReport['overview']['users']>[number]) => {
-      const date = user.createdAt ? new Date(user.createdAt) : new Date();
-      const key = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    users.forEach((user: (typeof users)[number]) => {
+      const key = user.createdAt ? dayjs(user.createdAt).tz().format('DD-MM-YYYY') : dayjs().tz().format('DD-MM-YYYY');
       if (labels.includes(key)) {
-        summaryUsers[key]! += 1;
+        summaryUsers[key] = Number(summaryUsers[key] || 0) + 1;
+      } else if (!(key in summaryUsers)) {
+        summaryUsers[key] = 0;
       }
     });
-
     return {
       revenues: labels.map(label => ({
         label: `Ngày ${label}`,
-        revenue: summaryRevenue[label]
+        revenue: summaryRevenue[label] || 0
       })),
       users: labels.map(label => ({
         label: `Ngày ${label}`,
-        users: summaryUsers[label]
+        users: summaryUsers[label] || 0
       }))
     };
-  }, [overviews]);
+  }, [revenues, users]);
+
   return (
     <>
-      <SimpleGrid cols={2}>
+      <SimpleGrid cols={showAllChart ? 1 : 2}>
         {isLoading ? (
           <>
             <CommonSkeleton.Chart />
@@ -83,7 +86,7 @@ export default function ReportOverviewPageClient() {
           </>
         ) : (
           <>
-            <Card withBorder shadow='md'>
+            <Card withBorder shadow='md' className='transition duration-300 ease-in-out dark:bg-transparent'>
               <Flex align={'center'} justify={'space-between'} mb={'xl'}>
                 <Box>
                   <Title order={5} className='font-quicksand'>
@@ -92,17 +95,26 @@ export default function ReportOverviewPageClient() {
                   <Text size='sm' c={'dimmed'}>
                     Biểu đồ doanh thu{' '}
                     <b>
-                      {period >= 0
-                        ? !period
-                          ? 'trong hôm nay'
-                          : `từ ${formatDateViVN(startTimeToNum)} đến ${formatDateViVN(endTimeToNum)}`
-                        : ' kể từ đơn hàng đầu tiên'}
+                      {periodSize == 0
+                        ? 'trong hôm nay'
+                        : periodSize > 0
+                          ? `từ ${formatDateViVN(startDate)} đến ${formatDateViVN(endDate)}`
+                          : ' kể từ đơn hàng đầu tiên'}
                     </b>
                   </Text>
                 </Box>
-                <ActionIcon variant='light' size={'lg'}>
-                  <IconRotateClockwise size={16} />
-                </ActionIcon>
+                <Group>
+                  <Tooltip label={'Cập nhật'}>
+                    <ActionIcon variant='light' size={'lg'}>
+                      <IconRotateClockwise size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label={'Mở rộng'}>
+                    <ActionIcon variant='light' size={'lg'} onClick={() => setShowAllChart(!showAllChart)}>
+                      <IconArrowsHorizontal size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
               </Flex>
               <LineChart
                 h={300}
@@ -119,7 +131,7 @@ export default function ReportOverviewPageClient() {
                 valueFormatter={value => formatPriceLocaleVi(value)}
               />
             </Card>
-            <Card withBorder shadow='sm'>
+            <Card withBorder shadow='sm' className='transition duration-300 ease-in-out dark:bg-transparent'>
               <Flex align={'center'} justify={'space-between'} mb={'xl'}>
                 <Box>
                   <Title order={5} className='font-quicksand'>
@@ -128,17 +140,26 @@ export default function ReportOverviewPageClient() {
                   <Text size='sm' c={'dimmed'}>
                     Số lượng người dùng đăng kí mới{' '}
                     <b>
-                      {period >= 0
-                        ? !period
+                      {periodSize >= 0
+                        ? !periodSize
                           ? 'hôm nay'
-                          : `từ ${formatDateViVN(startTimeToNum)} đến ${formatDateViVN(endTimeToNum)}`
+                          : `từ ${formatDateViVN(startDate)} đến ${formatDateViVN(endDate)}`
                         : ' kể từ đơn hàng đầu tiên'}
                     </b>
                   </Text>
                 </Box>
-                <ActionIcon variant='light' size={'lg'}>
-                  <IconUserPlus size={16} />
-                </ActionIcon>
+                <Group>
+                  <Tooltip label={'Cập nhật'}>
+                    <ActionIcon variant='light' size={'lg'}>
+                      <IconRotateClockwise size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label={'Mở rộng'}>
+                    <ActionIcon variant='light' size={'lg'} onClick={() => setShowAllChart(!showAllChart)}>
+                      <IconArrowsHorizontal size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
               </Flex>
               <BarChart
                 h={300}
@@ -154,7 +175,7 @@ export default function ReportOverviewPageClient() {
       </SimpleGrid>
 
       {overviews?.orders && overviews?.orders?.length > 0 && (
-        <Card withBorder shadow='sm'>
+        <Card withBorder shadow='sm' className={`dark:bg-transparent`}>
           <Box mb={'md'}>
             <Title order={5} className='font-quicksand'>
               Đơn hàng gần đây
@@ -162,10 +183,10 @@ export default function ReportOverviewPageClient() {
             <Text size='sm' c={'dimmed'}>
               Danh sách đơn hàng{' '}
               <b>
-                {period >= 0
-                  ? !period
+                {periodSize >= 0
+                  ? !periodSize
                     ? 'hôm nay'
-                    : `từ ${formatDateViVN(startTimeToNum)} đến ${formatDateViVN(endTimeToNum)}`
+                    : `từ ${formatDateViVN(startDate)} đến ${formatDateViVN(endDate)}`
                   : ' kể từ đơn hàng đầu tiên'}
               </b>
             </Text>

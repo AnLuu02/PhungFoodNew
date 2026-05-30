@@ -18,6 +18,15 @@ export default function LayoutAdmin({ children }: { children: React.ReactNode })
         collapsed: { mobile: !opened }
       }}
       padding='md'
+      classNames={{
+        header: 'bg-backgroundAdmin dark:bg-dark-background',
+        aside: 'bg-backgroundAdmin dark:bg-dark-background',
+        footer: 'bg-backgroundAdmin dark:bg-dark-background',
+        main: 'bg-backgroundAdmin dark:bg-dark-background',
+        navbar: 'bg-backgroundAdmin dark:bg-dark-background',
+        root: 'bg-backgroundAdmin dark:bg-dark-background',
+        section: 'bg-backgroundAdmin dark:bg-dark-background'
+      }}
     >
       <AppShell.Header className='flex items-center justify-between' px={'sm'} w={'100%'}>
         <Burger

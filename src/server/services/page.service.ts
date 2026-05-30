@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import dayjs from 'dayjs';
+import dayjs from '~/lib/dayjs';
 import { UserRole } from '~/shared/constants/user.constants';
+import { Period } from '~/shared/types';
 import { getAllActivitiesService } from './activityLogger.service';
 import { getAllProductService, getFilterProductService, getOneProductService } from './product.service';
 import { getOneBannerService } from './restaurant.banner.service';
@@ -139,7 +140,7 @@ export const getInitProductDetailPageService = async (db: PrismaClient, input: {
 export const getInitAdminPageService = async (db: PrismaClient) => {
   const results: any = await Promise.allSettled([
     getAllProductService(db, { userRole: UserRole.ADMIN }),
-    getOverviewRevenueService(db, {}),
+    getOverviewRevenueService(db, { period: '_all' }),
     getAllActivitiesService(db, {
       limit: 10,
       filters: {
@@ -158,9 +159,12 @@ export const getInitAdminPageService = async (db: PrismaClient) => {
     recentActivities
   };
 };
-export const getInitReportPageService = async (db: PrismaClient, input: { startTime?: number; endTime?: number }) => {
+export const getInitReportPageService = async (
+  db: PrismaClient,
+  input: { startTime?: number; endTime?: number; period: Period }
+) => {
   const { startTime, endTime } = input;
-  const queryOverview = { startTime, endTime };
+  const queryOverview = { startTime, endTime, period: 'custom' as Period };
   const [
     overview,
     topUsers,

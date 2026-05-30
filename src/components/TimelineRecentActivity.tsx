@@ -34,7 +34,7 @@ export default function TimelineRecentActivity({
   const recentActivities = data?.items ?? [];
 
   return (
-    <Paper withBorder radius='xl' className='overflow-hidden bg-white dark:bg-dark-background'>
+    <Paper withBorder radius='xl' className='overflow-hidden bg-white dark:bg-transparent'>
       <Box px='xl' py='lg'>
         <Group justify='space-between'>
           <Box>
@@ -103,7 +103,7 @@ export default function TimelineRecentActivity({
                 </Badge>
               </Group>
 
-              <Box className='grid grid-rows-[0fr] transition-all duration-300 group-hover:grid-rows-[1fr]'>
+              <Box className='grid grid-rows-[0fr] transition-all duration-300 group-hover:grid-rows-[1fr] group-hover:delay-300'>
                 <Box className='overflow-hidden'>
                   <Divider my='sm' />
 

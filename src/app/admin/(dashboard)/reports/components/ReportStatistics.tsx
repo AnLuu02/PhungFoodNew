@@ -1,57 +1,95 @@
 'use client';
-import { Card, Flex, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
-import { IconBrandCashapp, IconCheese, IconShoppingCart, IconUser } from '@tabler/icons-react';
+import { Badge, Box, Group, Paper, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core';
+import {
+  IconBrandCashapp,
+  IconCalendarStats,
+  IconCheese,
+  IconClockHour4,
+  IconShoppingCart,
+  IconUser
+} from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import { formatMoneyShort, toNumber } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatMoneyShort, toNumber } from '~/lib/FuncHandler/Format';
+import { buildChangeRateData } from '~/lib/FuncHandler/Statistics';
+import { Period } from '~/shared/types';
 import { api } from '~/trpc/react';
-import { ChangeRate } from './ChangeRate';
+import { AnalyticsMetricCard } from '../../components/AnalyticsMetricCard';
 
 export const ReportStatistics = () => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
   const startTimeToNum = toNumber(params.get('startTime') ?? undefined);
   const endTimeToNum = toNumber(params.get('endTime') ?? undefined);
+  const period = params.get('period') ?? '_all';
   const { data: overview, isLoading } = api.Revenue.getOverview.useQuery({
     startTime: startTimeToNum,
-    endTime: endTimeToNum
+    endTime: endTimeToNum,
+    period: period as Period
   });
-  const dataRevenue = useMemo(() => {
-    return [
-      {
-        label: 'Tổng doanh thu',
-        currentValue: Number(overview?.totalFinalRevenue?.currentValue || 0),
-        previousValue: overview?.totalFinalRevenue?.previousValue || 0,
-        changeRate: overview?.totalFinalRevenue?.changeRate || 0,
-        icon: IconBrandCashapp,
-        color: '#4ED07E'
-      },
-      {
-        label: 'Tổng người dùng',
-        currentValue: Number(overview?.totalUsers?.currentValue || 0),
-        previousValue: overview?.totalUsers?.previousValue || 0,
-        icon: IconUser,
-        changeRate: overview?.totalUsers?.changeRate || 0,
-        color: '#4B6CB3'
-      },
-      {
-        label: 'Tổng đơn hàng',
-        currentValue: Number(overview?.totalOrders?.currentValue || 0),
-        previousValue: overview?.totalOrders?.previousValue || 0,
-        changeRate: overview?.totalOrders?.changeRate || 0,
-        icon: IconShoppingCart,
-        color: '#8547BB'
-      },
-      {
-        label: 'Tổng sản phẩm',
-        currentValue: Number(overview?.totalProducts?.currentValue || 0),
-        previousValue: overview?.totalProducts?.previousValue || 0,
-        changeRate: overview?.totalProducts?.changeRate || 0,
-        icon: IconCheese,
-        color: '#CB7E56'
-      }
-    ];
+
+  const { dataRevenue, periodItems } = useMemo(() => {
+    return {
+      dataRevenue: [
+        {
+          label: 'Tổng doanh thu',
+          currentValue: Number(overview?.totalFinalRevenue?.current?.value || 0),
+          previousSparkline: overview?.totalFinalRevenue?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          currentSparkline: overview?.totalFinalRevenue?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          changeRate: overview?.totalFinalRevenue?.changeRate || 0,
+          icon: IconBrandCashapp,
+          color: 'blue'
+        },
+        {
+          label: 'Tổng người dùng',
+          currentValue: Number(overview?.totalUsers?.current?.value || 0),
+          previousSparkline: overview?.totalUsers?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          currentSparkline: overview?.totalUsers?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          changeRate: overview?.totalUsers?.changeRate || 0,
+          icon: IconUser,
+          color: 'green'
+        },
+        {
+          label: 'Tổng đơn hàng',
+          currentValue: Number(overview?.totalOrders?.current?.value || 0),
+          previousSparkline: overview?.totalOrders?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          currentSparkline: overview?.totalOrders?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          changeRate: overview?.totalOrders?.changeRate || 0,
+          icon: IconShoppingCart,
+          color: 'orange'
+        },
+        {
+          label: 'Tổng sản phẩm',
+          currentValue: Number(overview?.totalProducts?.current?.value || 0),
+          previousSparkline: overview?.totalProducts?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          currentSparkline: overview?.totalProducts?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+          changeRate: overview?.totalProducts?.changeRate || 0,
+          icon: IconCheese,
+          color: 'violet'
+        }
+      ],
+      periodItems: [
+        {
+          label: 'Kỳ trước',
+          description: 'Dữ liệu dùng để so sánh',
+          color: 'red',
+          bg: 'bg-red-50 dark:bg-transparent',
+          border: 'border-red-100  dark:border-dark-card',
+          startDate: overview?.totalFinalRevenue?.previous?.startDate,
+          endDate: overview?.totalFinalRevenue?.previous?.endDate
+        },
+        {
+          label: 'Kỳ hiện tại',
+          description: 'Dữ liệu đang được phân tích',
+          color: 'blue',
+          bg: 'bg-blue-50 dark:bg-transparent',
+          border: 'border-blue-100  dark:border-dark-card',
+          startDate: overview?.totalFinalRevenue?.current?.startDate,
+          endDate: overview?.totalFinalRevenue?.current?.endDate
+        }
+      ]
+    };
   }, [overview]);
 
   return isLoading ? (
@@ -59,41 +97,88 @@ export const ReportStatistics = () => {
       <CommonSkeleton.StatsGrid count={4} cols={4} />
     </>
   ) : (
-    <SimpleGrid cols={4}>
-      {dataRevenue.map((item, index) => {
-        const IconR = item.icon;
-        return (
-          <Card key={index} withBorder shadow='md'>
-            <Stack gap={'xs'}>
-              <Text size='sm' fw={700} c={'dimmed'}>
-                {item.label}
-              </Text>
-              <Flex align={'center'} justify={'space-between'}>
-                <Title className='font-quicksand' order={3}>
-                  {formatMoneyShort(item.currentValue)}
-                </Title>
-                <Paper
-                  w={40}
-                  h={40}
-                  withBorder
-                  className='flex items-center justify-center'
-                  style={{
-                    backgroundColor: item.color + '22'
-                  }}
-                >
-                  <IconR size={16} color={item.color} />
-                </Paper>
-              </Flex>
+    <>
+      <Box className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+        {periodItems.map(item => (
+          <Paper
+            key={item.label}
+            withBorder
+            radius='lg'
+            p='md'
+            className={`${item.bg} ${item.border} transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md`}
+          >
+            <Stack gap='sm'>
+              <Group justify='space-between' align='flex-start'>
+                <Group gap='sm'>
+                  <ThemeIcon color={item.color} variant='light' radius='xl' size={42}>
+                    <IconCalendarStats size={22} />
+                  </ThemeIcon>
 
-              <ChangeRate
-                currentValue={Number(item.currentValue)}
-                previousValue={Number(item.previousValue)}
-                changeRate={item.changeRate}
-              />
+                  <Box>
+                    <Text fw={700} size='sm'>
+                      {item.label}
+                    </Text>
+                    <Text size='xs' c='dimmed'>
+                      {item.description}
+                    </Text>
+                  </Box>
+                </Group>
+
+                <Badge color={item.color} variant='light' py={'xs'}>
+                  Báo cáo
+                </Badge>
+              </Group>
+
+              <Paper className='bg-white/70 p-3 dark:bg-transparent' withBorder>
+                <Stack gap={8}>
+                  <Group justify='space-between' gap='xs'>
+                    <Group gap={6}>
+                      <IconClockHour4 size={16} />
+                      <Text size='xs' c='dimmed'>
+                        Bắt đầu
+                      </Text>
+                    </Group>
+
+                    <Text size='sm' fw={600}>
+                      {formatDateViVN(item.startDate, { hour: true })}
+                    </Text>
+                  </Group>
+
+                  <Group justify='space-between' gap='xs'>
+                    <Group gap={6}>
+                      <IconClockHour4 size={16} />
+                      <Text size='xs' c='dimmed'>
+                        Kết thúc
+                      </Text>
+                    </Group>
+
+                    <Text size='sm' fw={600}>
+                      {formatDateViVN(item.endDate, { hour: true })}
+                    </Text>
+                  </Group>
+                </Stack>
+              </Paper>
             </Stack>
-          </Card>
-        );
-      })}
-    </SimpleGrid>
+          </Paper>
+        ))}
+      </Box>
+      <SimpleGrid cols={4}>
+        {dataRevenue.map((item, index) => {
+          const IconR = item.icon;
+          return (
+            <AnalyticsMetricCard
+              key={index}
+              title={item.label}
+              value={formatMoneyShort(item.currentValue).toString()}
+              descObj={buildChangeRateData(item.changeRate, period as Period)}
+              color={item.color}
+              icon={<IconR size={24} />}
+              previousSparkline={item.previousSparkline}
+              currentSparkline={item.currentSparkline}
+            />
+          );
+        })}
+      </SimpleGrid>
+    </>
   );
 };

@@ -1,5 +1,8 @@
 import { OrderStatus, PrismaClient } from '@prisma/client';
-
+import dayjs from '~/lib/dayjs';
+import { defaultValueCompareReturn } from '~/shared/constants/statistics.constants';
+import { CompareOptions, CompareReturn } from '~/shared/types';
+import { calcChangeRate } from '../Statistics';
 export const buildSortFilter = (sort: string[], sortValue: string[]) => {
   const orderBy: Record<string, string>[] = [];
 
@@ -20,7 +23,12 @@ export function getDateRange(year: number, month: number, day: number) {
   return { start, end };
 }
 
-export async function updateRevenue(db: PrismaClient, status: OrderStatus, userId: string, order: any) {
+export async function updateRevenue(
+  db: PrismaClient,
+  status: OrderStatus,
+  userId: string,
+  order: { finalTotal: number }
+) {
   const orderTotal = order.finalTotal || 0;
   const now = new Date();
   const day = now.getDate();
@@ -55,80 +63,225 @@ export async function updateSales(db: PrismaClient, status: OrderStatus, product
   });
 }
 
-//revenue
-
-interface CompareOptions {
-  db: any;
-  model: any;
-  field: string;
-  mode: 'sum' | 'count';
-  startDate?: Date;
-  endDate?: Date;
-}
-
-export async function getCompare({ db, model, field, mode, startDate, endDate }: CompareOptions) {
-  const modelDelegate = db[model] as any;
-
-  if (!startDate || !endDate) {
-    const firstRecord = await modelDelegate.findFirst({
+export async function getCompare({
+  period,
+  db,
+  model,
+  field = '*',
+  aggregateFn = 'COUNT',
+  startDate,
+  endDate
+}: CompareOptions): Promise<CompareReturn> {
+  let compareReturn: CompareReturn = defaultValueCompareReturn;
+  if (period === '_all' || !startDate || !endDate) {
+    const firstOpened = await db.restaurant.findFirst({
       orderBy: { createdAt: 'asc' },
       select: { createdAt: true }
     });
 
-    if (!firstRecord) {
-      return { currentValue: 0, previousValue: 0, changeRate: null };
+    if (!firstOpened || !firstOpened.createdAt) {
+      return defaultValueCompareReturn;
+    }
+    compareReturn.current.startDate = dayjs(firstOpened.createdAt).toDate();
+    compareReturn.current.endDate = dayjs().toDate();
+  }
+  compareReturn.current.startDate = dayjs(startDate).toDate();
+  compareReturn.current.endDate = dayjs(endDate).toDate();
+
+  switch (period) {
+    case '_today': {
+      const prevEndDate = dayjs().subtract(1, 'day').toDate();
+      const prevStartDate = dayjs().subtract(1, 'day').startOf('day').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
+    }
+    case '7_day': {
+      const prevStartDate = dayjs().subtract(14, 'day').startOf('day').toDate();
+      const prevEndDate = dayjs().subtract(7, 'day').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
+    }
+    case '15_day': {
+      const prevStartDate = dayjs().subtract(30, 'day').startOf('day').toDate();
+      const prevEndDate = dayjs().subtract(15, 'day').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
+    }
+    case '1_month': {
+      const prevEndDate = dayjs(endDate).subtract(1, 'month').toDate();
+      const prevStartDate = dayjs(startDate).subtract(1, 'month').startOf('month').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+
+      break;
+    }
+    case '3_month': {
+      const prevEndDate = dayjs(endDate).subtract(3, 'month').toDate();
+      const prevStartDate = dayjs(startDate).subtract(3, 'month').startOf('month').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
+    }
+    case '6_month': {
+      const prevEndDate = dayjs(endDate).subtract(6, 'month').toDate();
+      const prevStartDate = dayjs(startDate).subtract(6, 'month').startOf('month').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
+    }
+    case '1_year': {
+      const prevEndDate = dayjs(endDate).subtract(1, 'year').toDate();
+      const prevStartDate = dayjs(startDate).subtract(1, 'year').startOf('year').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
     }
 
-    let total: number;
-    if (mode === 'sum') {
-      const res = await modelDelegate.aggregate({
-        _sum: { [field]: true }
+    case '_custom': {
+      const sizePeriod = dayjs(endDate).diff(dayjs(startDate), 'day');
+      const prevStartDate = dayjs(startDate).subtract(sizePeriod, 'day').startOf('day').toDate();
+      const prevEndDate = dayjs(endDate).subtract(sizePeriod, 'day').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
       });
-      total = res._sum[field] ?? 0;
-    } else {
-      const res = await modelDelegate.aggregate({
-        _count: { [field]: true }
-      });
-      total = res._count[field] ?? 0;
+
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
     }
+    default: {
+      const prevEndDate = dayjs(endDate).subtract(1, 'year').toDate();
+      const prevStartDate = dayjs(startDate).subtract(1, 'year').startOf('year').toDate();
+      const result = await calcChangeRate({
+        period,
+        db,
+        model,
+        aggregateFn,
+        field,
+        endDate: compareReturn.current.endDate,
+        startDate: compareReturn.current.startDate,
+        previousEndDate: prevEndDate,
+        previousStartDate: prevStartDate
+      });
 
-    return { currentValue: total, previousValue: 0, changeRate: null };
+      compareReturn = {
+        ...compareReturn,
+        ...result
+      };
+      break;
+    }
   }
 
-  const diff = endDate.getTime() - startDate.getTime();
-  const prevStart = new Date(startDate.getTime() - diff);
-  const prevEnd = new Date(endDate.getTime() - diff);
-
-  let currentValue: number;
-  let previousValue: number;
-
-  if (mode === 'sum') {
-    const current = await modelDelegate.aggregate({
-      _sum: { [field]: true },
-      where: { createdAt: { gte: startDate, lte: endDate } }
-    });
-    const previous = await modelDelegate.aggregate({
-      _sum: { [field]: true },
-      where: { createdAt: { gte: prevStart, lte: prevEnd } }
-    });
-
-    currentValue = current._sum[field] ?? 0;
-    previousValue = previous._sum[field] ?? 0;
-  } else {
-    const current = await modelDelegate.aggregate({
-      _count: { [field]: true },
-      where: { createdAt: { gte: startDate, lte: endDate } }
-    });
-    const previous = await modelDelegate.aggregate({
-      _count: { [field]: true },
-      where: { createdAt: { gte: prevStart, lte: prevEnd } }
-    });
-
-    currentValue = current._count[field] ?? 0;
-    previousValue = previous._count[field] ?? 0;
-  }
-
-  const changeRate = previousValue === 0 ? null : ((currentValue - previousValue) / previousValue) * 100;
-
-  return { currentValue, previousValue, changeRate };
+  return compareReturn;
 }

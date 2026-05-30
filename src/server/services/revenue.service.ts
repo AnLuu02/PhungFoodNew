@@ -1,5 +1,20 @@
 import { OrderStatus, PrismaClient } from '@prisma/client';
+import dayjs from '~/lib/dayjs';
 import { getCompare } from '~/lib/FuncHandler/PrismaHelper';
+import { getDatesObjBetween } from '~/lib/FuncHandler/Statistics';
+import { defaultValueCompareReturn } from '~/shared/constants/statistics.constants';
+import { Period } from '~/shared/types';
+
+const buildQuery = (startTime?: number, endTime?: number) => {
+  const startTimeToDate = startTime ? dayjs(startTime).utc().toDate() : undefined;
+  const endTimeToDate = endTime ? dayjs(endTime).utc().toDate() : undefined;
+  return {
+    createdAt: {
+      gte: startTimeToDate,
+      lte: endTimeToDate
+    }
+  };
+};
 
 export const getTotalSpentInMonthByUserService = async (db: PrismaClient, input: { userId: string; year: number }) => {
   const revenues = await db.revenue.groupBy({
@@ -22,14 +37,7 @@ export const getTopUsersService = async (
   input: { startTime?: number; endTime?: number; limit?: number }
 ) => {
   const { startTime, endTime } = input;
-  const startTimeToDate = startTime && new Date(startTime);
-  const endTimeToDate = endTime && new Date(endTime);
-  const where = {
-    createdAt: {
-      gte: startTimeToDate,
-      lte: endTimeToDate
-    }
-  };
+  const where = buildQuery(startTime, endTime);
   const revenues = await db.revenue.groupBy({
     by: ['userId'],
     where: where as any,
@@ -64,14 +72,7 @@ export const getTopUsersService = async (
 };
 export const getTopProductsService = async (db: PrismaClient, input: { startTime?: number; endTime?: number }) => {
   const { startTime, endTime } = input;
-  const startTimeToDate = startTime && new Date(startTime);
-  const endTimeToDate = endTime && new Date(endTime);
-  const where = {
-    createdAt: {
-      gte: startTimeToDate,
-      lte: endTimeToDate
-    }
-  };
+  const where = buildQuery(startTime, endTime);
   const data = await db.orderItem.findMany({
     where: where as any,
     include: {
@@ -121,17 +122,10 @@ export const getDistributionProductsService = async (
   input: { startTime?: number; endTime?: number }
 ) => {
   const { startTime, endTime } = input;
-  const startTimeToDate = startTime ? new Date(startTime) : undefined;
-  const endTimeToDate = endTime ? new Date(endTime) : undefined;
-
+  const where = buildQuery(startTime, endTime);
   const result = await db.orderItem.groupBy({
     by: ['productId'],
-    where: {
-      createdAt: {
-        gte: startTimeToDate,
-        lte: endTimeToDate
-      }
-    },
+    where: where as any,
     _sum: {
       price: true
     },
@@ -175,14 +169,8 @@ export const getRevenueOrderStatusService = async (
   input: { startTime?: number; endTime?: number }
 ) => {
   const { startTime, endTime } = input;
-  const startTimeToDate = startTime && new Date(startTime);
-  const endTimeToDate = endTime && new Date(endTime);
-  const where = {
-    createdAt: {
-      gte: startTimeToDate,
-      lte: endTimeToDate
-    }
-  };
+  const where = buildQuery(startTime, endTime);
+
   const data = await db.order.findMany({
     where: where as any,
     include: {
@@ -213,14 +201,7 @@ export const getRevenueByCategoryService = async (
   input: { startTime?: number; endTime?: number }
 ) => {
   const { startTime, endTime } = input;
-  const startTimeToDate = startTime && new Date(startTime);
-  const endTimeToDate = endTime && new Date(endTime);
-  const where = {
-    createdAt: {
-      gte: startTimeToDate,
-      lte: endTimeToDate
-    }
-  };
+  const where = buildQuery(startTime, endTime);
   const data = await db.orderItem.findMany({
     where: where as any,
     include: {
@@ -283,19 +264,24 @@ export const getOneRevenueService = async (db: PrismaClient, input: { id: string
 export const getAllRevenueService = async (db: PrismaClient) => {
   return await db.revenue.findMany({});
 };
-export const getOverviewRevenueService = async (db: PrismaClient, input: { startTime?: number; endTime?: number }) => {
-  const { startTime, endTime } = input;
+export const getOverviewRevenueService = async (
+  db: PrismaClient,
+  input: { startTime?: number; endTime?: number; period: Period }
+) => {
+  const { startTime, endTime, period } = input;
   let startTimeToDate = undefined,
     endTimeToDate = undefined,
     firstRevenue = undefined;
+
   if (startTime && endTime) {
-    startTimeToDate = startTime ? new Date(startTime) : undefined;
-    endTimeToDate = endTime ? new Date(endTime) : undefined;
+    startTimeToDate = dayjs(startTime).utc().toDate();
+    endTimeToDate = dayjs(endTime).utc().toDate();
   } else {
     firstRevenue = await db.restaurant.findFirst();
     startTimeToDate = firstRevenue?.createdAt;
-    endTimeToDate = new Date();
+    endTimeToDate = dayjs().utc().toDate();
   }
+
   const where = startTimeToDate &&
     endTimeToDate && {
       createdAt: {
@@ -306,34 +292,33 @@ export const getOverviewRevenueService = async (db: PrismaClient, input: { start
 
   const [totalFinal, totalUsers, totalOrders, totalProducts, revenues, users, orders] = await Promise.allSettled([
     getCompare({
+      period,
       db: db,
-      model: 'revenue',
-      mode: 'sum',
+      model: 'Revenue',
+      aggregateFn: 'SUM',
       field: 'totalSpent',
       startDate: startTimeToDate,
       endDate: endTimeToDate
     }),
     getCompare({
+      period,
       db: db,
-      model: 'user',
-      mode: 'count',
-      field: 'id',
+      model: 'User',
+      startDate: startTimeToDate,
+      endDate: endTimeToDate
+    }),
+    // trong thực tế phải query từ  bảng order. Đây chỉ là test
+    getCompare({
+      period,
+      db: db,
+      model: 'Order',
       startDate: startTimeToDate,
       endDate: endTimeToDate
     }),
     getCompare({
+      period,
       db: db,
-      model: 'order',
-      mode: 'count',
-      field: 'id',
-      startDate: startTimeToDate,
-      endDate: endTimeToDate
-    }),
-    getCompare({
-      db: db,
-      model: 'product',
-      mode: 'count',
-      field: 'id',
+      model: 'Product',
       startDate: startTimeToDate,
       endDate: endTimeToDate
     }),
@@ -372,20 +357,14 @@ export const getOverviewRevenueService = async (db: PrismaClient, input: { start
               year: item.year,
               totalSpent: item._sum.totalSpent,
               totalOrders: item._sum.totalOrders,
-              createdAt: firstRevenue?.updatedAt || new Date()
+              createdAt: firstRevenue?.createdAt || dayjs().utc().toDate()
             };
           })
         : [],
-    totalUsers:
-      totalUsers.status === 'fulfilled' ? totalUsers.value : { currentValue: 0, previousValue: 0, changeRate: null },
-    totalOrders:
-      totalOrders.status === 'fulfilled' ? totalOrders.value : { currentValue: 0, previousValue: 0, changeRate: null },
-    totalProducts:
-      totalProducts.status === 'fulfilled'
-        ? totalProducts.value
-        : { currentValue: 0, previousValue: 0, changeRate: null },
-    totalFinalRevenue:
-      totalFinal.status === 'fulfilled' ? totalFinal.value : { currentValue: 0, previousValue: 0, changeRate: null },
+    totalUsers: totalUsers.status === 'fulfilled' ? totalUsers.value : defaultValueCompareReturn,
+    totalOrders: totalOrders.status === 'fulfilled' ? totalOrders.value : defaultValueCompareReturn,
+    totalProducts: totalProducts.status === 'fulfilled' ? totalProducts.value : defaultValueCompareReturn,
+    totalFinalRevenue: totalFinal.status === 'fulfilled' ? totalFinal.value : defaultValueCompareReturn,
     users: users.status === 'fulfilled' ? users.value : [],
     orders: orders.status === 'fulfilled' ? orders.value : []
   };
@@ -397,8 +376,8 @@ export const getOverviewDetailRevenueService = async (
   const { startTime, endTime } = input;
   let startTimeToDate, endTimeToDate;
   if (startTime && endTime) {
-    startTimeToDate = startTime ? new Date(startTime) : undefined;
-    endTimeToDate = endTime ? new Date(endTime) : undefined;
+    startTimeToDate = startTime ? dayjs(startTime).utc().toDate() : undefined;
+    endTimeToDate = endTime ? dayjs(endTime).utc().toDate() : undefined;
   }
   const where = startTimeToDate &&
     endTimeToDate && {
@@ -460,17 +439,11 @@ export const getOverviewDetailRevenueService = async (
       })
     ]);
 
-  //revenue by day
-
-  let period = -1;
   let labels: string[] = [];
 
   if (startTime && endTime) {
-    period = !(endTime - startTime) ? 1 : (endTime - startTime) / (24 * 60 * 60 * 1000) + 1;
-    labels = Array.from({ length: +period }, (_, i) => {
-      const currentDate = new Date(endTime - (period !== 1 ? (+period - i - 1) * 24 * 60 * 60 * 1000 : 0));
-      return `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
-    });
+    const ojectRangeDate = getDatesObjBetween(startTime, endTime);
+    labels = Object.keys(ojectRangeDate);
   }
   const summaryRevenue: Record<string, number> = {};
   labels.forEach(label => {

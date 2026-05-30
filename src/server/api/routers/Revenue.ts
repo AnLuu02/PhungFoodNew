@@ -15,6 +15,7 @@ import {
   getTotalSpentInMonthByUserService,
   updateRevenueService
 } from '~/server/services/revenue.service';
+import { Period } from '~/shared/types';
 
 export const revenueRouter = createTRPCRouter({
   getTotalSpentInMonthByUser: publicProcedure
@@ -102,7 +103,8 @@ export const revenueRouter = createTRPCRouter({
     .input(
       z.object({
         startTime: z.number().optional(),
-        endTime: z.number().optional()
+        endTime: z.number().optional(),
+        period: z.custom<Period>()
       })
     )
     .query(async ({ ctx, input }) => await getOverviewRevenueService(ctx.db, input)),

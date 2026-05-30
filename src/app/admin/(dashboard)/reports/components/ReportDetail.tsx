@@ -61,13 +61,9 @@ export default function ReportDetailPageClient() {
   const searchParams = useSearchParams();
   const startTimeToNum = toNumber(searchParams?.get('startTime') ?? undefined);
   const endTimeToNum = toNumber(searchParams?.get('endTime') ?? undefined);
-  // const { data: overviews, isLoading } = api.Revenue.getOverview.useQuery({
-  //   startTime: startTimeToNum,
-  //   endTime: endTimeToNum
-  // });
   return (
     <Stack>
-      <Card withBorder shadow='sm'>
+      <Card withBorder shadow='sm' className='dark:bg-transparent'>
         <Flex align={'center'} justify={'space-between'} mb={'md'}>
           <Box>
             <Title order={4} className='font-quicksand'>

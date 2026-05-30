@@ -1,20 +1,16 @@
 import { EMPTY_STRING, VND_SYMBOL } from '~/constants';
+import dayjs from '~/lib/dayjs';
+import { FormatDateViVNOptions } from '~/shared/types';
 
-export const formatDateViVN = (date?: any, options?: { hour?: boolean }) => {
-  if (!date) return EMPTY_STRING;
-  return new Date(date || new Date()).toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    ...(options?.hour && {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    })
-  });
+export const formatDateViVN = (date?: Date | string | number | null, options?: FormatDateViVNOptions) => {
+  const { hour = false, format, fallback = EMPTY_STRING } = options || {};
+
+  if (!date) return fallback;
+
+  const defaultFormat = hour ? 'DD-MM-YYYY HH:mm' : 'DD-MM-YYYY';
+
+  return dayjs(date).format(format || defaultFormat);
 };
-
 export function formatTimeAgo(date: Date | string | number): string {
   const now = new Date();
   const past = new Date(date);

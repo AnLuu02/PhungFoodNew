@@ -33,8 +33,10 @@ import {
 import Link from 'next/link';
 import TimelineRecentActivity from '~/components/TimelineRecentActivity';
 import { formatMoneyShort } from '~/lib/FuncHandler/Format';
+import { buildChangeRateData } from '~/lib/FuncHandler/Statistics';
+import { Period } from '~/shared/types';
 import { api } from '~/trpc/server';
-import { ChangeRate } from './(dashboard)/reports/components/ChangeRate';
+import { AnalyticsMetricCard } from './(dashboard)/components/AnalyticsMetricCard';
 
 export const revalidate = 60 * 60;
 export const dynamic = 'force-static';
@@ -83,41 +85,45 @@ export default async function Dashboard() {
   const dataRevenue = [
     {
       label: 'Tổng doanh thu',
-      currentValue: Number(revenue?.totalFinalRevenue?.currentValue || 0),
-      previousValue: revenue?.totalFinalRevenue?.previousValue || 0,
+      currentValue: Number(revenue?.totalFinalRevenue?.current?.value || 0),
+      previousSparkline: revenue?.totalFinalRevenue?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+      currentSparkline: revenue?.totalFinalRevenue?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
       changeRate: revenue?.totalFinalRevenue?.changeRate || 0,
       icon: IconBrandCashapp,
-      color: '#4ED07E'
+      color: 'blue'
     },
     {
       label: 'Tổng người dùng',
-      currentValue: Number(revenue?.totalUsers?.currentValue || 0),
-      previousValue: revenue?.totalUsers?.previousValue || 0,
-      icon: IconUser,
+      currentValue: Number(revenue?.totalUsers?.current?.value || 0),
+      previousSparkline: revenue?.totalUsers?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+      currentSparkline: revenue?.totalUsers?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
       changeRate: revenue?.totalUsers?.changeRate || 0,
-      color: '#4B6CB3'
+      icon: IconUser,
+      color: 'green'
     },
     {
       label: 'Tổng đơn hàng',
-      currentValue: Number(revenue?.totalOrders?.currentValue || 0),
-      previousValue: revenue?.totalOrders?.previousValue || 0,
+      currentValue: Number(revenue?.totalOrders?.current?.value || 0),
+      previousSparkline: revenue?.totalOrders?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+      currentSparkline: revenue?.totalOrders?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
       changeRate: revenue?.totalOrders?.changeRate || 0,
       icon: IconShoppingCart,
-      color: '#8547BB'
+      color: 'orange'
     },
     {
       label: 'Tổng sản phẩm',
-      currentValue: Number(revenue?.totalProducts?.currentValue || 0),
-      previousValue: revenue?.totalProducts?.previousValue || 0,
+      currentValue: Number(revenue?.totalProducts?.current?.value || 0),
+      previousSparkline: revenue?.totalProducts?.previous?.sparkline || [0, 0, 0, 0, 0, 0, 0],
+      currentSparkline: revenue?.totalProducts?.current?.sparkline || [0, 0, 0, 0, 0, 0, 0],
       changeRate: revenue?.totalProducts?.changeRate || 0,
       icon: IconCheese,
-      color: '#CB7E56'
+      color: 'violet'
     }
   ];
   return (
     <Box pb='xl' mb='xl' className='min-h-screen bg-gray-50/70 dark:bg-transparent'>
       <Stack gap='xs' className='mx-auto max-w-7xl'>
-        <Paper withBorder radius='xl' p='xl' className='relative overflow-hidden bg-white dark:bg-dark-background'>
+        <Paper withBorder radius='xl' p='xl' className='relative overflow-hidden bg-white dark:bg-transparent'>
           <Flex justify='space-between' align='center' gap='lg' wrap='wrap' className='relative z-10'>
             <Box>
               <Badge variant='light' size='lg' mb='sm'>
@@ -153,51 +159,20 @@ export default async function Dashboard() {
         </Paper>
 
         <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing='md'>
-          {dataRevenue.map((item: any, index: number) => {
+          {dataRevenue.map((item: (typeof dataRevenue)[number], index: number) => {
             const IconR = item.icon;
 
             return (
-              <Card
+              <AnalyticsMetricCard
                 key={index}
-                withBorder
-                radius='xl'
-                p='lg'
-                className='group bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:bg-dark-background'
-              >
-                <Stack gap='md'>
-                  <Flex align='center' justify='space-between'>
-                    <Text size='sm' fw={700} c='dimmed'>
-                      {item.label}
-                    </Text>
-
-                    <ThemeIcon
-                      size={42}
-                      radius='xl'
-                      variant='light'
-                      style={{
-                        color: item.color,
-                        backgroundColor: `${item.color}18`
-                      }}
-                    >
-                      <IconR size={20} />
-                    </ThemeIcon>
-                  </Flex>
-
-                  <Box>
-                    <Title order={3} className='font-quicksand'>
-                      {formatMoneyShort(item.currentValue)}
-                    </Title>
-
-                    <Box mt={6}>
-                      <ChangeRate
-                        currentValue={Number(item.currentValue)}
-                        previousValue={Number(item.previousValue)}
-                        changeRate={item.changeRate}
-                      />
-                    </Box>
-                  </Box>
-                </Stack>
-              </Card>
+                title={item.label}
+                value={formatMoneyShort(item.currentValue).toString()}
+                descObj={buildChangeRateData(item.changeRate, '_all' as Period)}
+                color={item.color}
+                icon={<IconR size={24} />}
+                currentSparkline={item.currentSparkline}
+                previousSparkline={item.previousSparkline}
+              />
             );
           })}
         </SimpleGrid>
@@ -205,7 +180,7 @@ export default async function Dashboard() {
         <Grid gutter='md'>
           <GridCol span={{ base: 12, lg: 8 }}>
             <Stack gap='md' h={'100%'}>
-              <Paper withBorder radius='xl' className='overflow-hidden bg-white dark:bg-dark-background'>
+              <Paper withBorder radius='xl' className='overflow-hidden bg-white dark:bg-transparent'>
                 <Box px='xl' py='lg'>
                   <Group justify='space-between' align='flex-start'>
                     <Box>
@@ -266,7 +241,7 @@ export default async function Dashboard() {
               </Paper>
 
               <SimpleGrid cols={{ base: 1, sm: 3 }} spacing='md'>
-                <Paper withBorder radius='xl' p='lg' className='bg-white dark:bg-dark-background'>
+                <Paper withBorder radius='xl' p='lg' className='bg-white dark:bg-transparent'>
                   <Group gap='sm'>
                     <ThemeIcon variant='light' color='green' radius='xl'>
                       <IconTrendingUp size={18} />
@@ -280,7 +255,7 @@ export default async function Dashboard() {
                   </Group>
                 </Paper>
 
-                <Paper withBorder radius='xl' p='lg' className='bg-white dark:bg-dark-background'>
+                <Paper withBorder radius='xl' p='lg' className='bg-white dark:bg-transparent'>
                   <Group gap='sm'>
                     <ThemeIcon variant='light' color='orange' radius='xl'>
                       <IconCalendarStats size={18} />
@@ -294,7 +269,7 @@ export default async function Dashboard() {
                   </Group>
                 </Paper>
 
-                <Paper withBorder radius='xl' p='lg' className='bg-white dark:bg-dark-background'>
+                <Paper withBorder radius='xl' p='lg' className='bg-white dark:bg-transparent'>
                   <Group gap='sm'>
                     <ThemeIcon variant='light' color='violet' radius='xl'>
                       <IconChartBar size={18} />
