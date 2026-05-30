@@ -2,6 +2,7 @@ import { Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { Period } from '~/shared/types';
 import { api, HydrateClient } from '~/trpc/server';
+import ReportChartCompare from './components/ReportChartCompare';
 import ReportDetailPageClient from './components/ReportDetail';
 import { FilterSectionReport } from './components/ReportFilterSection';
 import ReportOverviewPageClient from './components/ReportOverview';
@@ -24,6 +25,7 @@ export default async function ReportPage() {
         <FilterSectionReport />
         <ReportStatistics />
         <ReportOverviewPageClient />
+        <ReportChartCompare />
         <ReportRevenuePageClient />
         <ReportDetailPageClient />
       </Stack>

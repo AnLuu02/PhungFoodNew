@@ -15,6 +15,7 @@ import { Quicksand } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import { TRPCReactProvider } from '~/trpc/react';
 
+import LoadingGlobal from '~/components/Loading/LoadingGlobal';
 import ScrollToTop from '~/components/ScrollToTop';
 import { GlobalModal } from '~/contexts/GlobalModal';
 import { ModalProvider } from '~/contexts/ModalContext';
@@ -111,10 +112,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <NextTopLoader />
             <ModalsProvider>
               <ModalProvider>
-                <>
+                <LoadingGlobal>
                   {children}
                   <GlobalModal />
-                </>
+                </LoadingGlobal>
               </ModalProvider>
             </ModalsProvider>
             <ScrollToTop />

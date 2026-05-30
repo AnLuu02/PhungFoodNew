@@ -16,6 +16,7 @@ export default {
         cardAdmin: '#F2F3FD',
         dark: {
           background: '#1e1e1e',
+          subBackground: '#242424',
           card: '#2E2E2E',
           surface: '#333333',
           text: '#C9C9BF',
@@ -41,7 +42,17 @@ export default {
           '0%, 100%': { width: '0%' },
           '40%, 60%': { width: '100%' }
         },
+        //
+        float: {
+          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+          '50%': { transform: 'translateY(-20px) rotate(5deg)' }
+        },
+        blob: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.2' },
+          '50%': { transform: 'scale(1.1)', opacity: '0.3' }
+        },
 
+        //
         wiggle: {
           '0%, 100%': { transform: 'rotate(0deg) scale(0.9) ' },
           '10%': { transform: 'rotate(0deg) scale(1)' },
@@ -92,7 +103,9 @@ export default {
         slideRightPulse: 'slideRightPulse 2s ease-in-out infinite',
         scaleIn: 'scaleIn 0.3s ease-out forwards',
         bounceSlow: 'bounceSlow 2s infinite ease-in-out',
-        typing: 'typing 4s steps(30) infinite'
+        typing: 'typing 4s steps(30) infinite',
+        float: 'float 6s ease-in-out infinite',
+        blob: 'blob 8s ease-in-out infinite'
       }
     },
     screens: {

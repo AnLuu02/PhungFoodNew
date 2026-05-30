@@ -1,39 +1,98 @@
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
-import { UserRole } from './shared/constants/user.constants';
+import { ADMIN_ROLES } from './shared/constants/user.constants';
 
-const protectedRoutes = ['/admin', '/thong-tin', '/don-hang-cua-toi'];
+const ADMIN_LOGIN_PATH = '/admin/dang-nhap';
+const CLIENT_LOGIN_PATH = '/dang-nhap';
+
 const authPages = ['/dang-nhap', '/dang-ky'];
 
+const protectedClientRoutes = ['/thong-tin', '/don-hang-cua-toi'];
+
+const isStartsWith = (pathname: string, routes: string[]) => {
+  return routes.some(route => pathname === route || pathname.startsWith(`${route}/`));
+};
+
+const redirectTo = (path: string, request: NextRequest) => {
+  return NextResponse.redirect(new URL(path, request.url));
+};
+
 export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request });
-  const ip = request.headers.get('x-forwarded-for') || request.ip;
-  const currentUrl = request.nextUrl.pathname + request.nextUrl.search;
+  const { pathname, search } = request.nextUrl;
 
-  // safeLog({
-  //   email: token?.email ?? 'guest',
-  //   role: token?.role?.toString() ?? 'none',
-  //   ip: ip?.toString() ?? '',
-  //   path: request.nextUrl.pathname,
-  //   time: new Date().toISOString()
-  // });
-  if (token && authPages.some(route => request.nextUrl.pathname.startsWith(route))) {
-    return NextResponse.redirect(new URL('/', request.url));
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET
+  });
+
+  const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/');
+  const isAdminLoginPage = pathname === ADMIN_LOGIN_PATH;
+  const isAuthPage = isStartsWith(pathname, authPages);
+  const isProtectedClientRoute = isStartsWith(pathname, protectedClientRoutes);
+
+  /**
+   * Admin login page
+   */
+  if (isAdminLoginPage) {
+    if (!token) return NextResponse.next();
+
+    const role = token.role as string;
+
+    if (ADMIN_ROLES.includes(role as any)) {
+      return redirectTo('/admin', request);
+    }
+
+    return redirectTo('/', request);
   }
 
-  if (!token && protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
-    const loginUrl = new URL('/dang-nhap', request.url);
-    loginUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
+  /**
+   * Admin protected routes
+   */
+  if (isAdminRoute) {
+    if (!token) {
+      const loginUrl = new URL(ADMIN_LOGIN_PATH, request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname + search);
 
-    return NextResponse.redirect(loginUrl);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    const role = token.role as string;
+
+    if (!ADMIN_ROLES.includes(role as any)) {
+      return redirectTo('/unauthorized', request);
+    }
+
+    return NextResponse.next();
   }
-  if (token && token?.role === UserRole.CUSTOMER && request.nextUrl.pathname.startsWith('/admin')) {
-    return NextResponse.redirect(new URL('/unauthorized', request.url));
+
+  /**
+   * Client auth pages
+   */
+  if (isAuthPage) {
+    if (token) {
+      return redirectTo('/', request);
+    }
+
+    return NextResponse.next();
+  }
+
+  /**
+   * Client protected routes
+   */
+  if (isProtectedClientRoute) {
+    if (!token) {
+      const loginUrl = new URL(CLIENT_LOGIN_PATH, request.url);
+      loginUrl.searchParams.set('callbackUrl', pathname + search);
+
+      return NextResponse.redirect(loginUrl);
+    }
+
+    return NextResponse.next();
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/thong-tin/:path*', '/dang-nhap', '/dang-ky']
+  matcher: ['/admin/:path*', '/thong-tin/:path*', '/don-hang-cua-toi/:path*', '/dang-nhap', '/dang-ky']
 };

@@ -2,13 +2,21 @@
 
 import { AppShell, Box, Burger } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { useSession } from 'next-auth/react';
 import Header from '~/components/Admin/Header';
 import Navbar from '~/components/Admin/Navbar';
 import { BreadcrumbsBase } from '~/components/Breadcrumbs/BreadcrumbsBase';
+import { ADMIN_ROLES } from '~/shared/constants/user.constants';
 
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
+  const { data: session } = useSession();
 
+  const role = session?.user?.role;
+
+  if (!role || !ADMIN_ROLES.includes(role)) {
+    return <Box>{children}</Box>;
+  }
   return (
     <AppShell
       header={{ height: 60 }}

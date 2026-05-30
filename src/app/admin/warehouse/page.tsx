@@ -613,7 +613,7 @@ export default function WarehouseManagementPage() {
             classNames={{
               root: 'w-full',
               list: `border-1 flex flex-wrap gap-3 rounded-2xl border border-solid border-slate-200 bg-white p-2 shadow-sm dark:border-dark-dimmed dark:bg-transparent`,
-              tab: `rounded-xl px-5 py-3 font-semibold text-slate-600 transition-all duration-200 hover:bg-slate-100 hover:text-slate-900 data-[active=true]:bg-gradient-to-r data-[active=true]:from-blue-500 data-[active=true]:to-indigo-500 data-[active=true]:text-white data-[active=true]:shadow-lg data-[active=true]:shadow-blue-500/20`,
+              tab: `rounded-xl px-5 py-3 font-semibold text-slate-600 transition-all duration-200 hover:bg-mainColor/20 hover:text-slate-900 data-[active=true]:bg-gradient-to-r data-[active=true]:from-mainColor data-[active=true]:to-indigo-500 data-[active=true]:text-white data-[active=true]:shadow-lg data-[active=true]:shadow-blue-500/20`,
               panel: 'pt-6'
             }}
           >

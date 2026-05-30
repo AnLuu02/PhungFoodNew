@@ -17,17 +17,18 @@ import {
 import { IconCheck, IconKey, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { checkLoginCooldown, setLoginCooldown } from '~/lib/FuncHandler/HandleLockedUser/loginLimiter';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import LoginServices from '../components/LoginServices';
+import LoginServices from '../../../../components/Auth/LoginServices';
 
 export default function LoginForm() {
   const [error, setError] = useState('');
   const [cooldown, setCooldown] = useState(0);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { callbackUrl, email, status } = useMemo(() => {
     const url = searchParams.get('callbackUrl') || '/';
@@ -85,7 +86,8 @@ export default function LoginForm() {
         setError(result.error);
       } else if (result?.ok && result.url) {
         NotifySuccess('Đăng nhập thành công!');
-        window.location.href = result.url;
+        router.replace(result.url);
+        router.refresh();
       }
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

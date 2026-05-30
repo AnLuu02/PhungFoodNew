@@ -3,16 +3,21 @@
 import { AreaChart, LineChart } from '@mantine/charts';
 import {
   Accordion,
+  Alert,
   Avatar,
   Badge,
   Box,
   Button,
   Card,
+  Center,
+  Container,
   Divider,
   Grid,
   Group,
   JsonInput,
   List,
+  Loader,
+  Menu,
   Modal,
   MultiSelect,
   NumberInput,
@@ -20,9 +25,9 @@ import {
   Progress,
   RingProgress,
   ScrollArea,
-  SegmentedControl,
   Select,
   SimpleGrid,
+  Space,
   Stack,
   Stepper,
   Switch,
@@ -40,8 +45,10 @@ import {
   IconBrain,
   IconChartDots,
   IconCheck,
+  IconChevronDown,
   IconDatabase,
   IconDeviceAnalytics,
+  IconDownload,
   IconFlame,
   IconPlus,
   IconRobot,
@@ -54,6 +61,7 @@ import {
   IconWand
 } from '@tabler/icons-react';
 import { useState } from 'react';
+import { useAnalyticsData } from '~/components/Hooks/use-analytics-data';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { buildChangeRateData } from '~/lib/FuncHandler/Statistics';
 import { AnalyticsMetricCard } from '../../components/AnalyticsMetricCard';
@@ -61,6 +69,18 @@ import { AIInsightHero } from './AIInsightHero';
 import { ConversionFunnel } from './ConversionFunnel';
 import { LiveActivityStream } from './LiveActivityStream';
 import { PeakHourHeatmap } from './PeakHourHeatmap';
+import { AnalyticsHeader } from './analytics/AnalyticsHeader';
+import { AnomalyDetection } from './analytics/AnomalyDetection';
+import { BusinessInsights } from './analytics/BusinessInsights';
+import { CustomerAnalytics } from './analytics/CustomerAnalytics';
+import { ExportActions } from './analytics/ExportActions';
+import { ForecastSection } from './analytics/ForecastSection';
+import { KPIOverview } from './analytics/KPIOverview';
+import { MonitoringSection } from './analytics/MonitoringSection';
+import { OperationalAnalytics } from './analytics/OperationalAnalytics';
+import { ProductAnalytics } from './analytics/ProductAnalytics';
+import { RevenueAnalysis } from './analytics/RevenueAnalysis';
+import { TrendAnalysis } from './analytics/TrendAnalysis';
 const recommendations = [
   {
     id: 1,
@@ -115,6 +135,35 @@ export default function AnalyticsDashboard() {
 
   const [recommendationOpened, recommendationHandler] = useDisclosure(false);
   const [createStrategyOpened, createStrategyHandler] = useDisclosure(false);
+
+  const {
+    filters,
+    setFilters,
+    filteredDailyData,
+    previousPeriodData,
+    kpiData,
+    revenueBreakdown,
+    businessInsights,
+    anomalies,
+    revenueForecast,
+    customerSegments,
+    topProducts,
+    menuEngineeringMatrix,
+    operationalMetrics,
+    systemHealth,
+    isLoading,
+    error
+  } = useAnalyticsData();
+
+  if (error) {
+    return (
+      <Container size='xl' py='xl'>
+        <Alert title='Error loading analytics' color='red'>
+          {error}
+        </Alert>
+      </Container>
+    );
+  }
   return (
     <>
       <Box className='space-y-6'>
@@ -126,16 +175,35 @@ export default function AnalyticsDashboard() {
             <Text c='dimmed'>Phân tích realtime, hành vi khách hàng, dự đoán và đề xuất vận hành.</Text>
           </Box>
 
-          <SegmentedControl
-            radius='xl'
-            data={[
-              { label: 'Realtime', value: 'realtime' },
-              { label: '7 ngày', value: '7days' },
-              { label: '30 ngày', value: '30days' }
-            ]}
-            defaultValue='realtime'
-          />
+          <Group gap='xs'>
+            <Menu shadow='md' width={210} position='bottom-end'>
+              <Menu.Target>
+                <Button
+                  radius='xl'
+                  variant='filled'
+                  leftSection={<IconDownload size={17} />}
+                  rightSection={<IconChevronDown size={15} />}
+                >
+                  Xuất báo cáo
+                </Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Label>Định dạng</Menu.Label>
+                <Menu.Item onClick={() => {}}>Xuất PDF</Menu.Item>
+                <Menu.Item onClick={() => {}}>Xuất Excel</Menu.Item>
+                <Menu.Item onClick={() => {}}>Xuất CSV</Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
         </Group>
+
+        <AnalyticsHeader
+          filters={filters}
+          setFilters={setFilters}
+          onRefresh={() => window.location.reload()}
+          onExport={format => console.log(`Exporting as ${format}...`)}
+        />
 
         <AIInsightHero onOpenRecommendations={recommendHandler.open} onOpenRawData={rawDataHandler.open} />
 
@@ -151,7 +219,7 @@ export default function AnalyticsDashboard() {
           />
 
           <AnalyticsMetricCard
-            title='Checkout active'
+            title='Thanh toán đang hoạt động'
             value='31'
             descObj={buildChangeRateData(-10, '_all')}
             color='green'
@@ -732,7 +800,7 @@ export default function AnalyticsDashboard() {
                       <List mt='sm' spacing='xs'>
                         <List.Item>Revenue velocity</List.Item>
 
-                        <List.Item>Checkout conversion rate</List.Item>
+                        <List.Item>Checkout Tỷ lệ chuyển đổi</List.Item>
 
                         <List.Item>Session duration</List.Item>
 
@@ -980,6 +1048,63 @@ export default function AnalyticsDashboard() {
           </Grid.Col>
         </Grid>
       </Modal>
+
+      <Space h='lg' />
+
+      {isLoading ? (
+        <Center h={400}>
+          <Loader size='xl' />
+        </Center>
+      ) : (
+        <>
+          <KPIOverview data={kpiData} />
+          <Space h='lg' />
+          <Grid gutter='lg'>
+            <Grid.Col span={{ base: 12 }}>
+              <TrendAnalysis data={filteredDailyData} previousData={previousPeriodData} />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12 }}>
+              <BusinessInsights insights={businessInsights} />
+            </Grid.Col>
+          </Grid>
+
+          <Space h='lg' />
+          <RevenueAnalysis data={revenueBreakdown} />
+          <Space h='lg' />
+
+          <Grid gutter='lg'>
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <CustomerAnalytics segments={customerSegments} topCustomers={[]} retentionRate={68.5} repeatRate={42.3} />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 6 }}>
+              <ProductAnalytics topProducts={topProducts} menuMatrix={menuEngineeringMatrix} />
+            </Grid.Col>
+          </Grid>
+
+          <Space h='lg' />
+          <OperationalAnalytics metrics={operationalMetrics} />
+          <Space h='lg' />
+
+          <Grid gutter='lg'>
+            <Grid.Col span={{ base: 12, md: 7 }}>
+              <ForecastSection forecast={revenueForecast} title='Dự báo doanh thu' unit='currency' />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 5 }}>
+              <AnomalyDetection anomalies={anomalies} />
+            </Grid.Col>
+          </Grid>
+
+          <Space h='lg' />
+          <Grid gutter='lg'>
+            <Grid.Col span={{ base: 12, md: 8 }}>
+              <MonitoringSection health={systemHealth} />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 4 }}>
+              <ExportActions onExport={console.log} />
+            </Grid.Col>
+          </Grid>
+        </>
+      )}
     </>
   );
 }
