@@ -126,26 +126,109 @@ export const parseProductFilter = (message: string) => {
   return filter;
 };
 
-export const callOpenRouter = async (prompt: string, systemPromt?: string) => {
-  const response = await openrouter.chat.send({
-    chatRequest: {
-      model: 'baidu/cobuddy:free',
-      messages: [
-        ...(systemPromt
-          ? [
-              {
-                role: 'system' as any,
-                content: systemPromt
-              }
-            ]
-          : []),
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      stream: false
+//call model
+const FALLBACK_MODELS = [
+  'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
+  'openrouter/owl-alpha',
+  'poolside/laguna-xs.2:free',
+  'poolside/laguna-m.1:free',
+  'deepseek/deepseek-v4-flash:free',
+  'moonshotai/kimi-k2.6:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'google/gemma-4-31b-it:free'
+] as const;
+
+const MODEL_COOLDOWN_MS = 5 * 60 * 1000;
+
+const deadModels = new Map<string, number>();
+
+const isModelInCooldown = (model: string) => {
+  const expiredAt = deadModels.get(model);
+
+  if (!expiredAt) return false;
+
+  if (Date.now() > expiredAt) {
+    deadModels.delete(model);
+    return false;
+  }
+
+  return true;
+};
+
+const markModelAsDead = (model: string) => {
+  deadModels.set(model, Date.now() + MODEL_COOLDOWN_MS);
+};
+
+const isRetryableOpenRouterError = (error: any) => {
+  const status = error?.status || error?.response?.status || error?.cause?.status;
+  const msg = JSON.stringify(error);
+
+  return (
+    status === 429 ||
+    status === 500 ||
+    status === 502 ||
+    status === 503 ||
+    status === 504 ||
+    msg.includes('"code":429') ||
+    msg.includes('rate-limit') ||
+    msg.includes('rate-limited') ||
+    msg.includes('temporarily rate-limited') ||
+    msg.includes('Provider returned error') ||
+    msg.includes('provider unavailable')
+  );
+};
+
+export const callOpenRouter = async (prompt: string, systemPrompt?: string) => {
+  let lastError: unknown;
+
+  for (const model of FALLBACK_MODELS) {
+    if (isModelInCooldown(model)) {
+      continue;
     }
-  });
-  return response;
+
+    try {
+      const response = await openrouter.chat.send({
+        chatRequest: {
+          model,
+          messages: [
+            ...(systemPrompt
+              ? [
+                  {
+                    role: 'system' as const,
+                    content: systemPrompt
+                  }
+                ]
+              : []),
+            {
+              role: 'user' as const,
+              content: prompt
+            }
+          ],
+          stream: false
+        }
+      });
+
+      return {
+        ...response,
+        usedModel: model
+      };
+    } catch (error: any) {
+      lastError = error;
+
+      if (isRetryableOpenRouterError(error)) {
+        markModelAsDead(model);
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  deadModels.clear();
+
+  throw new Error(
+    `All AI models failed or are in cooldown. Last error: ${
+      lastError instanceof Error ? lastError.message : 'Unknown error'
+    }`
+  );
 };
