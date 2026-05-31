@@ -2,18 +2,14 @@ import { z } from 'zod';
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import {
-  createRevenueService,
-  getAllRevenueService,
   getDistributionProductsService,
-  getOneRevenueService,
   getOverviewDetailRevenueService,
   getOverviewRevenueService,
   getRevenueByCategoryService,
   getRevenueOrderStatusService,
   getTopProductsService,
   getTopUsersService,
-  getTotalSpentInMonthByUserService,
-  updateRevenueService
+  getTotalSpentInMonthByUserService
 } from '~/server/services/revenue.service';
 import { Period } from '~/shared/types';
 
@@ -70,35 +66,6 @@ export const revenueRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => await getRevenueByCategoryService(ctx.db, input)),
 
-  create: publicProcedure
-    .input(
-      z.object({
-        userId: z.string(),
-        totalSpent: z.number(),
-        totalOrders: z.number(),
-        day: z.number(),
-        year: z.number(),
-        month: z.number()
-      })
-    )
-    .mutation(async ({ ctx, input }) => await createRevenueService(ctx.db, input)),
-  update: publicProcedure
-    .input(
-      z.object({
-        id: z.string(),
-        userId: z.string(),
-        totalSpent: z.number(),
-        totalOrders: z.number(),
-        day: z.number(),
-        year: z.number(),
-        month: z.number()
-      })
-    )
-    .mutation(async ({ ctx, input }) => await updateRevenueService(ctx.db, input)),
-  getOne: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => await getOneRevenueService(ctx.db, input)),
-  getAll: publicProcedure.query(async ({ ctx }) => await getAllRevenueService(ctx.db)),
   getOverview: publicProcedure
     .input(
       z.object({

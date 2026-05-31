@@ -6,7 +6,6 @@ import { formatDateViVN, formatPriceLocaleVi } from '../Format';
 
 interface ReportData {
   revenuePeriod: any;
-
   totalUsers: any;
   totalOrders: any;
   totalFinalRevenue: any;
@@ -303,7 +302,7 @@ export const generateReportPDF = async (reportData: ReportData): Promise<Buffer>
           .map((u: any, i: number) => [
             String(i + 1),
             String(u?.name ?? ''),
-            formatPriceLocaleVi(Number(u?.totalSpent))
+            formatPriceLocaleVi(Number(u?.netRevenue))
           ]),
         [50, 250, 150],
         margin,

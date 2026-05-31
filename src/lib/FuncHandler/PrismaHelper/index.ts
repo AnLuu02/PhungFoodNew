@@ -27,20 +27,35 @@ export async function updateRevenue(
   db: PrismaClient,
   status: OrderStatus,
   userId: string,
-  order: { finalTotal: number }
+  order: { originalTotal: number; discountAmount: number; finalTotal: number }
 ) {
-  const orderTotal = order.finalTotal || 0;
-  const now = new Date();
+  const { originalTotal, discountAmount, finalTotal } = order;
+  const now = dayjs().utc().toDate();
   const day = now.getDate();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
   await db.revenue.upsert({
     where: { userId_year_month_day: { userId, year, month, day } },
     update: {
-      totalSpent: status === OrderStatus.COMPLETED ? { increment: orderTotal } : { decrement: orderTotal },
+      totalSpent: status === OrderStatus.COMPLETED ? { increment: originalTotal } : { decrement: originalTotal },
+      grossRevenue: status === OrderStatus.COMPLETED ? { increment: originalTotal } : { decrement: originalTotal },
+      netRevenue: status === OrderStatus.COMPLETED ? { increment: finalTotal } : { decrement: finalTotal },
+      totalCustomers: 0,
+      totalDiscount: status === OrderStatus.COMPLETED ? { increment: discountAmount } : { decrement: discountAmount },
       totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 }
     },
-    create: { userId, day, year, month, totalSpent: orderTotal, totalOrders: 1 }
+    create: {
+      userId,
+      day,
+      year,
+      month,
+      totalSpent: originalTotal,
+      grossRevenue: originalTotal,
+      netRevenue: finalTotal,
+      totalDiscount: discountAmount,
+      totalCustomers: 0,
+      totalOrders: 1
+    }
   });
 }
 

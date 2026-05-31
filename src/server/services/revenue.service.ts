@@ -20,13 +20,13 @@ export const getTotalSpentInMonthByUserService = async (db: PrismaClient, input:
   const revenues = await db.revenue.groupBy({
     by: ['month'],
     where: { userId: input.userId, year: input.year || 2025 },
-    _sum: { totalSpent: true },
+    _sum: { netRevenue: true },
     orderBy: { month: 'asc' }
   });
   return revenues?.map(item => {
     return {
       month: item.month,
-      totalSpent: item._sum.totalSpent,
+      totalSpent: item._sum.netRevenue,
       year: input.year
     };
   });
@@ -41,8 +41,8 @@ export const getTopUsersService = async (
   const revenues = await db.revenue.groupBy({
     by: ['userId'],
     where: where as any,
-    _sum: { totalSpent: true, totalOrders: true },
-    orderBy: { _sum: { totalSpent: 'desc' } },
+    _sum: { netRevenue: true, totalOrders: true },
+    orderBy: { _sum: { netRevenue: 'desc' } },
     take: input.limit || 5
   });
   const userIds = revenues.map(revenue => revenue.userId);
@@ -64,7 +64,7 @@ export const getTopUsersService = async (
     const user = users.find((user: (typeof users)[number]) => user.id === item.userId);
     return {
       userId: item.userId,
-      totalSpent: item._sum.totalSpent,
+      totalSpent: item._sum.netRevenue,
       totalOrders: item._sum.totalOrders,
       user: user
     };
@@ -227,43 +227,6 @@ export const getRevenueByCategoryService = async (
   return revenueByCategory;
 };
 
-export const createRevenueService = async (db: PrismaClient, input: any) => {
-  return await db.revenue.create({
-    data: {
-      userId: input.userId,
-      totalSpent: input.totalSpent,
-      totalOrders: input.totalOrders,
-      day: input.day,
-      year: input.year,
-      month: input.month
-    }
-  });
-};
-export const updateRevenueService = async (db: PrismaClient, input: any) => {
-  return await db.revenue.update({
-    where: {
-      id: input.id
-    },
-    data: {
-      userId: input.userId,
-      totalSpent: input.totalSpent,
-      totalOrders: input.totalOrders,
-      day: input.day,
-      year: input.year,
-      month: input.month
-    }
-  });
-};
-export const getOneRevenueService = async (db: PrismaClient, input: { id: string }) => {
-  return await db.revenue.findUnique({
-    where: {
-      id: input.id
-    }
-  });
-};
-export const getAllRevenueService = async (db: PrismaClient) => {
-  return await db.revenue.findMany({});
-};
 export const getOverviewRevenueService = async (
   db: PrismaClient,
   input: { startTime?: number; endTime?: number; period: Period }
@@ -296,7 +259,7 @@ export const getOverviewRevenueService = async (
       db: db,
       model: 'Revenue',
       aggregateFn: 'SUM',
-      field: 'totalSpent',
+      field: 'netRevenue',
       startDate: startTimeToDate,
       endDate: endTimeToDate
     }),
@@ -307,7 +270,6 @@ export const getOverviewRevenueService = async (
       startDate: startTimeToDate,
       endDate: endTimeToDate
     }),
-    // trong thực tế phải query từ  bảng order. Đây chỉ là test
     getCompare({
       period,
       db: db,
@@ -324,7 +286,7 @@ export const getOverviewRevenueService = async (
     }),
     db.revenue.groupBy({
       by: ['day', 'month', 'year'],
-      _sum: { totalSpent: true, totalOrders: true },
+      _sum: { netRevenue: true, totalOrders: true },
       where: where as any
     }),
     db.user.findMany({
@@ -355,7 +317,7 @@ export const getOverviewRevenueService = async (
               day: item.day,
               month: item.month,
               year: item.year,
-              totalSpent: item._sum.totalSpent,
+              netRevenue: item._sum.netRevenue,
               totalOrders: item._sum.totalOrders,
               createdAt: firstRevenue?.createdAt || dayjs().utc().toDate()
             };
@@ -390,7 +352,7 @@ export const getOverviewDetailRevenueService = async (
   const [totalFinal, totalUsers, totalOrders, revenues, users, orders, categories, revenueByUser] =
     await Promise.allSettled([
       db.revenue.aggregate({
-        _sum: { totalSpent: true, totalOrders: true },
+        _sum: { netRevenue: true, totalOrders: true },
         where: where as any
       }),
       db.user.aggregate({
@@ -403,7 +365,7 @@ export const getOverviewDetailRevenueService = async (
       }),
       db.revenue.groupBy({
         by: ['day', 'month', 'year'],
-        _sum: { totalSpent: true, totalOrders: true },
+        _sum: { netRevenue: true, totalOrders: true },
         where: where as any
       }),
       db.user.findMany({
@@ -433,8 +395,8 @@ export const getOverviewDetailRevenueService = async (
       db.revenue.groupBy({
         by: ['userId'],
         where: where as any,
-        _sum: { totalSpent: true, totalOrders: true },
-        orderBy: { _sum: { totalSpent: 'desc' } },
+        _sum: { netRevenue: true, totalOrders: true },
+        orderBy: { _sum: { netRevenue: 'desc' } },
         take: 5
       })
     ]);
@@ -456,7 +418,7 @@ export const getOverviewDetailRevenueService = async (
       const year = +revenue.year;
       const key = `${day}/${month}/${year}`;
       if (labels.includes(key)) {
-        summaryRevenue[key]! += Number(revenue._sum.totalSpent);
+        summaryRevenue[key]! += Number(revenue._sum.netRevenue);
       }
     });
 
@@ -504,7 +466,7 @@ export const getOverviewDetailRevenueService = async (
       revenueByUser.value.map(item => {
         const user = userData.find((user: (typeof userData)[number]) => user.id === item.userId);
         return {
-          totalSpent: item._sum.totalSpent,
+          netRevenue: item._sum.netRevenue,
           totalOrders: item._sum.totalOrders,
           name: user?.name || 'Đang cập nhật'
         };
@@ -517,7 +479,7 @@ export const getOverviewDetailRevenueService = async (
     })),
     totalUsers: totalUsers.status === 'fulfilled' ? totalUsers.value._count.id : 0,
     totalOrders: totalOrders.status === 'fulfilled' ? totalOrders.value._count.id : 0,
-    totalFinalRevenue: totalFinal.status === 'fulfilled' ? totalFinal.value._sum.totalSpent : 0,
+    totalFinalRevenue: totalFinal.status === 'fulfilled' ? totalFinal.value._sum.netRevenue : 0,
     recentUsers: users.status === 'fulfilled' ? users.value : [],
     recentOrders: orders.status === 'fulfilled' ? orders.value : [],
     revenueByCategory,

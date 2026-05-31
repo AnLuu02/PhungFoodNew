@@ -50,7 +50,7 @@ export default function ReportOverviewPageClient() {
         .tz()
         .format('DD-MM-YYYY');
       if (labels.includes(key)) {
-        summaryRevenue[key] = Number(summaryRevenue[key] || 0) + Number(revenue.totalSpent || 0);
+        summaryRevenue[key] = Number(summaryRevenue[key] || 0) + Number(revenue.netRevenue || 0);
       } else if (!(key in summaryRevenue)) {
         summaryRevenue[key] = 0;
       }

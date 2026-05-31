@@ -2,6 +2,7 @@ import { AreaChart } from '@mantine/charts';
 import { ActionIcon, Box, Card, Flex, Group, Text, Title, Tooltip } from '@mantine/core';
 import { IconRotateClockwise } from '@tabler/icons-react';
 import dayjs from '~/lib/dayjs';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 export const AreaChartBase = ({
   dataChart,
@@ -53,9 +54,10 @@ export const AreaChartBase = ({
         dataKey='label'
         type='stacked'
         withLegend
+        valueFormatter={formatPriceLocaleVi}
         series={[
-          { name: 'current', label: 'Hiện tại', color: 'indigo.6' },
-          { name: 'previous', label: 'Kỳ trước', color: 'gray.6' }
+          { name: 'previous', label: 'Kỳ trước', color: 'gray.6' },
+          { name: 'current', label: 'Hiện tại', color: 'indigo.6' }
         ]}
       />
     </Card>

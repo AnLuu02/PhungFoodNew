@@ -460,16 +460,20 @@ model UserPermission {
 }
 
 model Revenue {
-  id          String    @id @default(cuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  day         Int
-  year        Int
-  month       Int
-  totalSpent  Decimal   @default(0)
-  totalOrders Int       @default(0)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime? @updatedAt
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  day            Int
+  year           Int
+  month          Int
+  grossRevenue   Decimal   @default(0)
+  totalDiscount  Decimal   @default(0)
+  netRevenue     Decimal   @default(0)
+  totalSpent     Decimal   @default(0)
+  totalCustomers Int       @default(0)
+  totalOrders    Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
 
   @@unique([userId, year, month, day])
   @@unique([userId, year, month, id])
