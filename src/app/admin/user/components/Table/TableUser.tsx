@@ -16,6 +16,7 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { UserLevel } from '@prisma/client';
 import { IconAlertTriangle, IconCircleCheck, IconForbid2, IconUserPlus } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
@@ -23,9 +24,8 @@ import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { getInfoLevelUser } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { UserRole } from '~/shared/constants/user.constants';
+import { INFO_LEVEL_USER, UserRole } from '~/shared/constants/user.constants';
 import { FindUser, GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
@@ -247,7 +247,7 @@ export default function TableUser() {
                     <Text size='xs' c='dimmed' fw={600}>
                       Cấp điểm
                     </Text>
-                    <Text size='sm'>{getInfoLevelUser(item.level)?.viName}</Text>
+                    <Text size='sm'>{INFO_LEVEL_USER[item.level || UserLevel.BRONZE]?.viName}</Text>
                   </Stack>
                   <Stack gap={2} flex={1}>
                     <Text size='xs' c='dimmed' fw={600}>

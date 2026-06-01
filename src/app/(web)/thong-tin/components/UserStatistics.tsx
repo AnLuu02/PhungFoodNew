@@ -22,8 +22,8 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import { getInfoLevelUser } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { GetTotalSpentInMonthByUser } from '~/shared/type-trpc/revenue.type-trpc';
 import { api } from '~/trpc/react';
 
@@ -69,9 +69,7 @@ export function UserStatistics() {
     };
   }, [revenue]);
 
-  const levelInfo = useMemo(() => {
-    return getInfoLevelUser(userDb?.level as UserLevel);
-  }, [userDb]);
+  const levelInfo = INFO_LEVEL_USER[(userDb?.level as UserLevel) || UserLevel.BRONZE];
 
   if (status == 'loading' || isLoading || isLoadingRevenue) return <CommonSkeleton.Chart />;
 
@@ -152,7 +150,7 @@ export function UserStatistics() {
               <Box className='flex items-center justify-between text-sm'>
                 <Text fw={700}>
                   Tiến độ lên hạng
-                  <i> {getInfoLevelUser(levelInfo.nextLevel).viName}</i>
+                  <i> {INFO_LEVEL_USER[levelInfo.nextLevel]?.viName}</i>
                 </Text>
                 <span className='font-medium text-gray-900 dark:text-dark-text'>
                   {userDb?.pointUser || 0 / levelInfo.maxPoint} điểm

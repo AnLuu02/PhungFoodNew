@@ -28,15 +28,15 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import { getInfoLevelUser, infoUserLevel } from '~/constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { promotionLevels } from '~/lib/HardData/promotion-level';
+import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { GetOneUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
 export function UserInfo() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const { data: userInfor, isLoading } = api.User.getOne.useQuery(
     { key: session?.user?.id || '', include: { order: true } },
     { enabled: !!session?.user?.id }
@@ -56,7 +56,7 @@ export function UserInfo() {
     const statusObj = getTotalOrderStatus(orderData);
     return { statusObj };
   }, [userInfor]);
-  const levelInfo = userInfor?.level ? getInfoLevelUser(userInfor?.level) : {};
+  const levelInfo = INFO_LEVEL_USER[userInfor?.level || UserLevel.BRONZE];
   if (status === 'loading' || isLoading)
     return (
       <Grid p={0} grow>
@@ -259,7 +259,7 @@ export function UserInfo() {
           <Box className='mt-4 space-y-3'>
             <Box className='flex items-center justify-between text-sm'>
               <span className='text-gray-600 dark:text-dark-text'>
-                Tiến độ lên hạng<b> {getInfoLevelUser(levelInfo.nextLevel).viName}</b>
+                Tiến độ lên hạng<b> {INFO_LEVEL_USER[levelInfo.nextLevel]?.viName}</b>
               </span>
               <span className='font-medium text-gray-900 dark:text-dark-text'>
                 {userInfor?.pointUser || 0 / levelInfo.maxPoint} điểm
@@ -284,11 +284,11 @@ export function UserInfo() {
           <Center mt={'xl'}>
             <Box>
               <Flex gap={8} align='center' wrap={'wrap'} justify={'center'}>
-                {infoUserLevel.map((level, idx) => {
+                {Object.values(INFO_LEVEL_USER).map((level, idx) => {
                   const isCurrent = level.key === levelInfo.key;
                   return (
                     <Center
-                      key={level.key}
+                      key={level.key + idx}
                       w={80}
                       h={80}
                       bg={isCurrent ? `${level.color}22` : 'transparent'}

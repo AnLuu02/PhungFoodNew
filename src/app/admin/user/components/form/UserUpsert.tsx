@@ -24,11 +24,10 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import AddressSection from '~/components/AdressSection';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import { infoUserLevel } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { UserRole } from '~/shared/constants/user.constants';
+import { INFO_LEVEL_USER, UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { api } from '~/trpc/react';
@@ -149,7 +148,9 @@ export default function UserUpsert({
   const [pointUserValue] = useDebouncedValue(formFields.watch('pointUser'), 500);
 
   useEffect(() => {
-    const level = infoUserLevel.find(level => level.minPoint <= pointUserValue && level.maxPoint >= pointUserValue);
+    const level = Object.values(INFO_LEVEL_USER).find(
+      level => level.minPoint <= pointUserValue && level.maxPoint >= pointUserValue
+    );
     formFields.setValue('level', level?.key || UserLevel.BRONZE);
   }, [pointUserValue]);
 
@@ -310,7 +311,7 @@ export default function UserUpsert({
                       {...field}
                       disabled={session?.user.role !== UserRole.ADMIN}
                       data={
-                        infoUserLevel.map(level => ({ value: level.key, label: level.viName })) || [
+                        Object.values(INFO_LEVEL_USER).map(level => ({ value: level.key, label: level.viName })) || [
                           { value: 0, label: 'Không cấp độ' }
                         ]
                       }

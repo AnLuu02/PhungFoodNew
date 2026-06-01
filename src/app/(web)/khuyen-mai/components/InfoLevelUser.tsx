@@ -18,7 +18,7 @@ import { UserLevel } from '@prisma/client';
 import { IconBolt, IconBrandZapier, IconCurrencyDollar, IconUserPlus } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useMemo } from 'react';
-import { getInfoLevelUser } from '~/constants';
+import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { api } from '~/trpc/react';
 
 export default function InfoLevelUser() {
@@ -35,8 +35,8 @@ export default function InfoLevelUser() {
     }
   );
   const { levelUser, levelNextUser, caculatePoint } = useMemo(() => {
-    const levelUser = getInfoLevelUser((userData?.level as UserLevel) || UserLevel.BRONZE);
-    const levelNextUser = getInfoLevelUser(levelUser?.nextLevel || UserLevel.BRONZE);
+    const levelUser = INFO_LEVEL_USER[(userData?.level as UserLevel) || UserLevel.BRONZE];
+    const levelNextUser = INFO_LEVEL_USER[levelUser?.nextLevel || UserLevel.BRONZE];
     return {
       levelUser,
       levelNextUser,
