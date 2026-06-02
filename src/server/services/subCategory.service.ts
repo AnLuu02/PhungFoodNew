@@ -9,34 +9,59 @@ export const findSubCategoryService = async (
   input: {
     page: number;
     limit: number;
-    s: string;
+    filters?: {
+      s?: string;
+      status?: 'active' | 'inactive';
+      category?: string;
+    };
     include?: Prisma.SubCategoryInclude;
   }
 ) => {
-  const { page, limit, s, include } = input;
-  const searchQuery = s?.trim();
+  const { page, limit, filters, include } = input;
+  const searchQuery = filters?.s?.trim();
   const where: Prisma.SubCategoryWhereInput = {
-    OR: [
-      {
-        name: { contains: searchQuery, mode: 'insensitive' }
-      },
-      {
-        tag: { contains: searchQuery, mode: 'insensitive' }
-      },
-      {
-        description: { contains: searchQuery, mode: 'insensitive' }
-      },
-      {
-        category: {
+    ...(filters
+      ? {
+          ...(filters?.status
+            ? {
+                isActive: filters?.status === 'active' ? true : false
+              }
+            : {}),
+          ...(filters?.category
+            ? {
+                category: {
+                  OR: [
+                    { tag: filters?.category },
+                    {
+                      name: filters?.category
+                    }
+                  ]
+                }
+              }
+            : {}),
           OR: [
-            { tag: { contains: searchQuery, mode: 'insensitive' } },
             {
               name: { contains: searchQuery, mode: 'insensitive' }
+            },
+            {
+              tag: { contains: searchQuery, mode: 'insensitive' }
+            },
+            {
+              description: { contains: searchQuery, mode: 'insensitive' }
+            },
+            {
+              category: {
+                OR: [
+                  { tag: { contains: searchQuery, mode: 'insensitive' } },
+                  {
+                    name: { contains: searchQuery, mode: 'insensitive' }
+                  }
+                ]
+              }
             }
           ]
         }
-      }
-    ]
+      : {})
   };
   const [totalSubCategory, totalSubCategoryQuery, subCategories] = await db.$transaction([
     db.subCategory.count(),
@@ -77,7 +102,7 @@ export const findSubCategoryService = async (
     })
   ]);
   const totalPages = Math.ceil(
-    searchQuery ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / limit) : totalSubCategory / limit
+    filters ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / limit) : totalSubCategory / limit
   );
 
   return {

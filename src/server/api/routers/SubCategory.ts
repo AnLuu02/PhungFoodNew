@@ -17,7 +17,13 @@ export const subCategoryRouter = createTRPCRouter({
       z.object({
         page: z.number().default(1),
         limit: z.number().default(5),
-        s: z.string(),
+        filters: z
+          .object({
+            s: z.string().optional(),
+            status: z.enum(['active', 'inactive']).optional(),
+            category: z.string().optional()
+          })
+          .optional(),
         include: z.custom<Prisma.SubCategoryInclude>().optional()
       })
     )

@@ -16,15 +16,19 @@ export default async function CategoryManagementPage({
     s?: string;
     page?: string;
     limit?: string;
+    status?: string;
+    category?: string;
   };
 }) {
   const s = searchParams?.s || '';
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit || '5';
+  const status = (searchParams?.status as 'active' | 'inactive') ?? undefined;
+  const category = searchParams?.category;
   await Promise.allSettled([
     api.Category.getAll.prefetch(),
     api.Category.find.prefetch({ page: +page, limit: +limit, s }),
-    api.SubCategory.find.prefetch({ page: +page, limit: +limit, s })
+    api.SubCategory.find.prefetch({ page: +page, limit: +limit, filters: { s, status, category } })
   ]);
   return (
     <HydrateClient>

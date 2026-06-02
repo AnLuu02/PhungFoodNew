@@ -132,7 +132,7 @@ export default function CategoryClientManagementPage() {
               </Tabs.Tab>
             </Group>
             <Group>
-              <SearchInput width={400} />
+              <SearchInput width={300} />
 
               {activeTab === 'category' ? (
                 <CreateCategoryButton />
@@ -140,17 +140,32 @@ export default function CategoryClientManagementPage() {
                 <>
                   <Select
                     allowDeselect={false}
-                    value={searchParams.get('s') || 'all'}
+                    placeholder='Trạng thái'
+                    value={searchParams.get('status') || null}
                     onChange={value => {
-                      if (value === 'all') params.delete('s');
-                      else params.set('s', value as string);
+                      if (value === 'all') params.delete('status');
+                      else params.set('status', value as string);
                       const url = `${location.pathname}?${params.toString()}`;
                       router.push(url, { scroll: false });
                     }}
                     data={[
                       { value: 'all', label: 'Tất cả' },
                       { value: 'active', label: 'Hoạt động' },
-                      { value: 'inactive', label: 'Tạm khóa' },
+                      { value: 'inactive', label: 'Tạm khóa' }
+                    ]}
+                  />
+                  <Select
+                    allowDeselect={false}
+                    placeholder='Danh mục'
+                    value={searchParams.get('category') || null}
+                    onChange={value => {
+                      if (value === 'all') params.delete('category');
+                      else params.set('category', value as string);
+                      const url = `${location.pathname}?${params.toString()}`;
+                      router.push(url, { scroll: false });
+                    }}
+                    data={[
+                      { value: 'all', label: 'Tất cả' },
                       ...(allDataClient ?? []).map((item: GetAllCategory[number]) => {
                         return {
                           label: item.name,

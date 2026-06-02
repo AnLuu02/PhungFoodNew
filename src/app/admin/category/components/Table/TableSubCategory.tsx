@@ -14,15 +14,21 @@ import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 export default function TableSubCategory() {
   const searchParams = useSearchParams();
   const s = searchParams.get('s') || '';
+  const status = (searchParams?.get('status') as 'active' | 'inactive') ?? undefined;
+  const category = searchParams?.get('category') ?? undefined;
   const page = searchParams.get('page') || '1';
   const limit = searchParams.get('limit') || '5';
-  const { data, isLoading } = api.SubCategory.find.useQuery({ page: +page, limit: +limit, s });
+  const { data, isLoading } = api.SubCategory.find.useQuery({
+    page: +page,
+    limit: +limit,
+    filters: { s, status, category }
+  });
   const currentItems = data?.subCategories || [];
 
   const utils = api.useUtils();
   useEffect(() => {
     if (data?.pagination.hasNext) {
-      void utils.SubCategory.find.prefetch({ page: +page + 1, limit: +limit, s });
+      void utils.SubCategory.find.prefetch({ page: +page + 1, limit: +limit, filters: { s, status, category } });
     }
   }, [page]);
 
@@ -92,7 +98,7 @@ export default function TableSubCategory() {
               ))
             ) : (
               <Table.Tr>
-                <Table.Td colSpan={6} className='bg-gray-100 text-center dark:bg-dark-card'>
+                <Table.Td colSpan={7} className='bg-gray-100 text-center dark:bg-dark-card'>
                   <Text size='md' c='dimmed'>
                     Không có bản ghi phù hợp.
                   </Text>
