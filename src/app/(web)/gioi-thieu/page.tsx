@@ -3,7 +3,6 @@ import {
   AccordionControl,
   AccordionItem,
   AccordionPanel,
-  Avatar,
   Box,
   Button,
   Card,
@@ -21,9 +20,14 @@ import {
   IconArrowRight,
   IconChefHat,
   IconClock,
+  IconFlame,
+  IconHeartHandshake,
   IconMapPin,
+  IconMoodSmile,
+  IconPackage,
   IconPhone,
   IconReceipt,
+  IconShieldCheck,
   IconStar,
   IconTruckDelivery
 } from '@tabler/icons-react';
@@ -36,32 +40,98 @@ import { api } from '~/trpc/server';
 
 import { TimelineItem } from '@mantine/core';
 import { IconGift } from '@tabler/icons-react';
-import {
-  faqs,
-  journey,
-  menuHighlights,
-  processSteps,
-  signatures,
-  stats,
-  testimonials,
-  values
-} from '~/shared/constants/about-us.constants';
+import { journey, signatures, stats } from '~/shared/constants/about-us.constants';
+import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
 import { SectionHeading } from './components/SectionHeading';
-
+import { SectionMenuHighlights } from './components/SectionMenuHighlights';
+import { SectionTestimonials } from './components/SectionTestimonials';
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   title: 'Giới thiệu - Phụng Food',
   description: 'Phụng Food - hương vị miền Tây hiện đại, món ngon nóng hổi, giao nhanh và đầy cảm xúc.'
 };
+const faqs = [
+  {
+    q: 'Phụng Food có giao hàng không?',
+    a: 'Có. Bạn có thể đặt món trực tiếp trên website và theo dõi trạng thái đơn hàng.'
+  },
+  {
+    q: 'Món ăn có được làm mới khi đặt không?',
+    a: 'Có. Các món chính được chế biến sau khi có đơn để đảm bảo độ nóng và hương vị.'
+  },
+  {
+    q: 'Có chương trình thành viên không?',
+    a: 'Có. Khách hàng có thể tích điểm, nhận voucher và ưu đãi theo cấp độ thành viên.'
+  }
+];
+const menuHighlights = [
+  {
+    name: 'Burger bò sốt tiêu miền Tây',
+    desc: 'Bò mềm, sốt tiêu đậm vị, rau tươi và bánh nóng.',
+    image: '/images/png/delicious-burger-fries.png'
+  },
+  {
+    name: 'Gà giòn mật ong cay',
+    desc: 'Lớp vỏ giòn, sốt mật ong cay nhẹ, rất hợp ăn cùng khoai.',
+    image: '/images/jpg/cooking-1.jpg'
+  },
+  {
+    name: 'Combo gia đình',
+    desc: 'Phần ăn đầy đủ, tiết kiệm, phù hợp cho nhóm bạn hoặc gia đình.',
+    image: '/images/jpg/cooking-2.jpg'
+  }
+];
+const processSteps = [
+  {
+    icon: IconShieldCheck,
+    title: 'Chọn nguyên liệu',
+    desc: 'Nguyên liệu được kiểm tra kỹ trước khi nhập bếp.'
+  },
+  {
+    icon: IconFlame,
+    title: 'Chế biến nóng mới',
+    desc: 'Món được làm khi có đơn để giữ độ ngon tốt nhất.'
+  },
+  {
+    icon: IconPackage,
+    title: 'Đóng gói cẩn thận',
+    desc: 'Bao bì sạch, chắc chắn, giữ nhiệt và dễ mang đi.'
+  },
+  {
+    icon: IconMoodSmile,
+    title: 'Giao đến khách hàng',
+    desc: 'Đơn hàng được xử lý nhanh, rõ trạng thái và dễ theo dõi.'
+  }
+];
+const values = [
+  {
+    icon: IconChefHat,
+    title: 'Món ăn có linh hồn',
+    desc: 'Không chỉ ngon, mỗi món đều có câu chuyện: vị miền Tây, cách làm chỉn chu và cảm giác thân thuộc.'
+  },
+  {
+    icon: IconTruckDelivery,
+    title: 'Nóng hổi đến tay',
+    desc: 'Tối ưu quy trình bếp và giao hàng để món đến nơi vẫn giữ được độ ngon, giòn, nóng.'
+  },
+  {
+    icon: IconHeartHandshake,
+    title: 'Tử tế trong từng phần ăn',
+    desc: 'Nguyên liệu rõ ràng, đóng gói sạch sẽ, khẩu vị dễ nhớ và dịch vụ khiến khách muốn quay lại.'
+  }
+];
 
-const getInitRestaurant = async () => {
-  return await withRedisCache('restaurant:getOneActiveClient', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+const getInitAboutUs = async () => {
+  try {
+    return await withRedisCache('page:initAboutUs', () => api.Page.getInitAboutUs(), 60 * 60);
+  } catch {
+    return await api.Page.getInitAboutUs();
+  }
 };
-
 export default async function AboutPage() {
-  const restaurant = await getInitRestaurant();
-
+  const data: GetInitAboutUs = await api.Page.getInitAboutUs();
+  const restaurant = data?.restaurant;
   return (
     <>
       <Box mx={{ base: -10, sm: -30, md: -30, lg: -130 }} mt={-16}>
@@ -366,61 +436,7 @@ export default async function AboutPage() {
           </Box>
         </Reveal>
 
-        <Reveal z={40}>
-          <Box>
-            <Group justify='space-between' align='end' mb={32}>
-              <SectionHeading
-                index='05'
-                title='Những món khiến khách nhớ đến'
-                description='Một vài lựa chọn nổi bật giúp khách mới dễ bắt đầu và khách cũ luôn có lý do quay lại.'
-              />
-
-              <Button
-                component={Link}
-                href='/thuc-don'
-                radius='xl'
-                rightSection={<IconArrowRight size={17} />}
-                visibleFrom='md'
-              >
-                Xem tất cả món
-              </Button>
-            </Group>
-
-            <SimpleGrid cols={{ base: 1, md: 3 }} spacing='xl'>
-              {menuHighlights.map(item => (
-                <Card
-                  key={item.name}
-                  radius={32}
-                  p={10}
-                  className='group overflow-hidden border bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl dark:bg-dark-card'
-                >
-                  <Box className='relative h-[260px] overflow-hidden rounded-[26px]'>
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className='object-cover transition duration-500 group-hover:scale-110'
-                    />
-                    <Box className='absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent' />
-                    <Text className='absolute bottom-4 left-4 right-4 font-quicksand text-2xl font-black text-white'>
-                      {item.name}
-                    </Text>
-                  </Box>
-
-                  <Box p='md'>
-                    <Text c='dimmed' className='leading-7'>
-                      {item.desc}
-                    </Text>
-
-                    <Button component={Link} href='/thuc-don' mt='md' radius='xl' variant='light' fullWidth>
-                      Đặt món này
-                    </Button>
-                  </Box>
-                </Card>
-              ))}
-            </SimpleGrid>
-          </Box>
-        </Reveal>
+        <SectionMenuHighlights productsPagination={data.productBestSaler} />
 
         <Reveal z={40}>
           <Paper
@@ -539,58 +555,7 @@ export default async function AboutPage() {
           </Paper>
         </Reveal>
 
-        <Reveal z={40}>
-          <Box>
-            <Group justify='space-between' align='end' mb={32}>
-              <SectionHeading
-                index='08'
-                title='Một lần đặt, nhiều lần quay lại'
-                description='Cảm nhận thật từ những khách hàng đã chọn Phụng Food cho bữa ăn mỗi ngày.'
-              />
-
-              <Button
-                component={Link}
-                href='/thuc-don'
-                radius='xl'
-                rightSection={<IconArrowRight size={17} />}
-                visibleFrom='md'
-              >
-                Đặt món thử ngay
-              </Button>
-            </Group>
-
-            <Box className='flex gap-5 overflow-x-auto pb-3 lg:grid lg:grid-cols-3 lg:overflow-visible'>
-              {testimonials.map(item => (
-                <Card
-                  key={item.name}
-                  radius={28}
-                  p='xl'
-                  className='min-w-[82vw] border bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:bg-dark-card sm:min-w-[420px] lg:min-w-0'
-                >
-                  <Group align='center'>
-                    <Avatar src='/images/png/403.png' size={58} radius='xl' />
-                    <Box>
-                      <Text fw={900}>{item.name}</Text>
-                      <Text size='sm' c='dimmed'>
-                        {item.rank}
-                      </Text>
-                    </Box>
-                  </Group>
-
-                  <Text mt='lg' c='dimmed' className='leading-7'>
-                    “{item.content}”
-                  </Text>
-
-                  <Group gap={4} mt='lg'>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <IconStar key={index} size={18} className='fill-yellow-400 text-yellow-400' />
-                    ))}
-                  </Group>
-                </Card>
-              ))}
-            </Box>
-          </Box>
-        </Reveal>
+        <SectionTestimonials reviewsPagination={data.topReviews} />
 
         <Reveal z={40}>
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' className='items-stretch'>
@@ -668,10 +633,16 @@ export default async function AboutPage() {
             <Paper radius={32} p={8} className='relative min-h-[420px] overflow-hidden border shadow-sm'>
               <Image src='/images/jpg/map.jpg' alt='Bản đồ Phụng Food' fill className='object-cover' />
               <Box className='absolute inset-0 bg-gradient-to-t from-black/45 to-transparent' />
-              <Paper radius='xl' p='md' className='absolute bottom-5 left-5 right-5 bg-white/90 backdrop-blur-md'>
+              <Paper
+                radius='xl'
+                p='md'
+                className='absolute bottom-5 left-5 right-5 bg-white/90 backdrop-blur-md dark:bg-dark-card'
+              >
                 <Group justify='space-between'>
                   <Box>
-                    <Text fw={900}>Phụng Food Restaurant</Text>
+                    <Text fw={900} className='text-mainColor'>
+                      Phụng Food Restaurant
+                    </Text>
                     <Text size='sm' c='dimmed'>
                       Sẵn sàng phục vụ món ngon nóng hổi mỗi ngày
                     </Text>

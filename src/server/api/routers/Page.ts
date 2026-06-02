@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import {
+  getInitAboutUs,
   getInitAdminPageService,
   getInitPageService,
   getInitProductDetailPageService,
@@ -10,6 +11,7 @@ import { Period } from '~/shared/types';
 
 export const pageRouter = createTRPCRouter({
   getInit: publicProcedure.query(async ({ ctx }) => await getInitPageService(ctx.db)),
+  getInitAboutUs: publicProcedure.query(async ({ ctx }) => await getInitAboutUs(ctx.db)),
   getInitProductDetail: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ ctx, input }) => await getInitProductDetailPageService(ctx.db, input)),

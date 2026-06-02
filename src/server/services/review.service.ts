@@ -4,6 +4,8 @@ import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { ReviewInput } from '~/shared/schema/review.schema';
 
+type ReviewScalarFieldEnum = 'userId' | 'productId' | 'id' | 'rating';
+
 export const findReviewService = async (
   db: PrismaClient,
   input: {
@@ -13,67 +15,73 @@ export const findReviewService = async (
     relationId?: string;
     sort?: string[];
     include?: Prisma.ReviewInclude;
+    options?: {
+      distinct?: Prisma.Enumerable<ReviewScalarFieldEnum>;
+    };
   }
 ) => {
-  const { page, limit, s, relationId, sort, include } = input;
+  const { page, limit, s, relationId, sort, include, options } = input;
   const searchQuery = s?.trim();
   const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
   const where: Prisma.ReviewWhereInput = {
-    OR: filterStar
-      ? [
-          {
-            AND: [
-              {
-                rating: {
-                  gte: Number(filterStar)
-                }
-              },
-              {
-                rating: {
-                  lt: Number(filterStar) + 1
-                }
+    ...(filterStar
+      ? {
+          AND: [
+            {
+              rating: {
+                gte: Number(filterStar)
               }
-            ]
-          }
-        ]
-      : [
-          {
-            comment: {
-              contains: searchQuery,
-              mode: 'insensitive'
+            },
+            {
+              rating: {
+                lt: Number(filterStar) + 1
+              }
             }
-          },
-          {
-            user: {
-              OR: [
-                {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
+          ]
+        }
+      : {}),
+    ...(searchQuery || relationId
+      ? {
+          OR: [
+            {
+              comment: {
+                contains: searchQuery,
+                mode: 'insensitive'
+              }
+            },
+            {
+              user: {
+                OR: [
+                  {
+                    name: {
+                      contains: searchQuery,
+                      mode: 'insensitive'
+                    }
+                  },
+                  {
+                    id: relationId
                   }
-                },
-                {
-                  id: relationId
-                }
-              ]
-            }
-          },
-          {
-            product: {
-              OR: [
-                {
-                  name: {
-                    contains: searchQuery,
-                    mode: 'insensitive'
+                ]
+              }
+            },
+            {
+              product: {
+                OR: [
+                  {
+                    name: {
+                      contains: searchQuery,
+                      mode: 'insensitive'
+                    }
+                  },
+                  {
+                    id: relationId
                   }
-                },
-                {
-                  id: relationId
-                }
-              ]
+                ]
+              }
             }
-          }
-        ]
+          ]
+        }
+      : {})
   };
   const [totalReviews, totalReviewsQuery, reviews] = await db.$transaction([
     db.review.count(),
@@ -84,6 +92,7 @@ export const findReviewService = async (
     db.review.findMany({
       skip: (page - 1) * limit,
       take: limit,
+      distinct: options?.distinct ? options.distinct : undefined,
       where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : { createdAt: 'desc' },
       include: {
@@ -93,6 +102,8 @@ export const findReviewService = async (
             id: true,
             name: true,
             email: true,
+            level: true,
+            pointUser: true,
             imageForEntity: { include: { image: true } }
           }
         },

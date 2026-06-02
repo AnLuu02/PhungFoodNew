@@ -1,10 +1,17 @@
 import { PrismaClient } from '@prisma/client';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import dayjs from '~/lib/dayjs';
 import { UserRole } from '~/shared/constants/user.constants';
 import { Period } from '~/shared/types';
 import { getAllActivitiesService } from './activityLogger.service';
-import { getAllProductService, getFilterProductService, getOneProductService } from './product.service';
+import {
+  findProductService,
+  getAllProductService,
+  getFilterProductService,
+  getOneProductService
+} from './product.service';
 import { getOneBannerService } from './restaurant.banner.service';
+import { getOneActiveClientService } from './restaurant.service';
 import {
   getDistributionProductsService,
   getOverviewRevenueService,
@@ -13,6 +20,7 @@ import {
   getTopProductsService,
   getTopUsersService
 } from './revenue.service';
+import { findReviewService } from './review.service';
 import { getVoucherAppliedAllService } from './voucher.service';
 
 export const getInitPageService = async (db: PrismaClient) => {
@@ -197,5 +205,33 @@ export const getInitReportPageService = async (
     revenueByOrderStatus,
     distributionProducts,
     recentActivitiesApp
+  };
+};
+
+export const getInitAboutUs = async (db: PrismaClient) => {
+  const [restaurant, productBestSaler, topReviews] = await Promise.all([
+    withRedisCache('restaurant:getOneActiveClient', () => getOneActiveClientService(db), 60 * 60 * 24),
+    findProductService(db, {
+      limit: 3,
+      page: 1,
+      loai: 'san-pham-ban-chay',
+      userRole: UserRole.CUSTOMER,
+      sort: [],
+      'nguyen-lieu': []
+    }),
+    findReviewService(db, {
+      page: 1,
+      limit: 3,
+      sort: ['rating-desc'],
+      options: {
+        distinct: ['userId']
+      }
+    })
+  ]);
+
+  return {
+    restaurant,
+    productBestSaler,
+    topReviews
   };
 };

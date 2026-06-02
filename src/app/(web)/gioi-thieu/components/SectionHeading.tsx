@@ -1,7 +1,5 @@
 import { Box, Text, Title } from '@mantine/core';
 
-export const dynamic = 'force-static';
-
 export const SectionHeading = ({
   index,
   title,
