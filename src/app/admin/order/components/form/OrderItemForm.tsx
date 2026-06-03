@@ -38,14 +38,19 @@ const OrderItemForm = ({ index }: { index: number }) => {
   }, [chooseProduct]);
 
   useEffect(() => {
-    setValue(
-      'originalTotal',
-      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0)
+    const { originalTotal, discount } = orderItems.reduce(
+      (acc: { originalTotal: number; discount: number }, item: any) => {
+        acc.originalTotal += (item.price || 0) * (item.quantity || 0);
+        acc.discount += (item?.discount || 0) * (item.quantity || 0);
+        return acc;
+      },
+      { originalTotal: 0, discount: 0 }
     );
-    setValue(
-      'finalTotal',
-      orderItems.reduce((sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 0), 0)
-    );
+    const subTotal = originalTotal - discount;
+    const tax = subTotal * 0.08;
+    setValue('originalTotal', originalTotal);
+    setValue('taxTotal', tax);
+    setValue('finalTotal', originalTotal + tax + discount);
   }, [chooseProduct, chooseQuantity, orderItems]);
 
   return (

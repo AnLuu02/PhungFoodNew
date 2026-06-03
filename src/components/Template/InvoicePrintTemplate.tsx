@@ -129,7 +129,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
           <Text c={'dark'} fz={18} fw={'bold'}>
             Thuế (10%):
           </Text>
-          <Text c={'dark'}>- {formatPriceLocaleVi(tax || 0)}</Text>
+          <Text c={'dark'}>+ {formatPriceLocaleVi(tax || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
           <Text c={'dark'} fz={18} fw={'bold'}>

@@ -110,6 +110,7 @@ model VoucherForUser {
 model Order {
   id             String      @id @default(cuid())
   originalTotal  Int         @default(0)
+  taxTotal       Int         @default(0)
   finalTotal     Int         @default(0)
   discountAmount Int         @default(0)
   status         OrderStatus

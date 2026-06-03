@@ -18,6 +18,7 @@ export const baseOrderSchema = z.object({
   id: z.string().optional(),
   originalTotal: z.number().default(0),
   discountAmount: z.number().default(0),
+  taxTotal: z.number().default(0),
   finalTotal: z.number().default(0),
   status: z.nativeEnum(OrderStatus),
   userId: z.string({ required_error: 'Ai là người mua hàng?' }).min(1, 'Ai là người mua hàng?'),

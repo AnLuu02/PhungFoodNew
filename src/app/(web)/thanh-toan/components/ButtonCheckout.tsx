@@ -12,12 +12,14 @@ export const ButtonCheckout = ({
   data,
   finalTotal,
   originalTotal,
+  taxTotal,
   discountAmount,
   onClick
 }: {
   stylesButtonCheckout: ButtonProps;
   data: any;
   finalTotal: number;
+  taxTotal: number;
   originalTotal: number;
   discountAmount: number;
   onClick?: () => void;
@@ -64,6 +66,7 @@ export const ButtonCheckout = ({
           id: undefined,
           finalTotal,
           originalTotal,
+          taxTotal,
           discountAmount,
           status: OrderStatus.UNPAID,
           userId: userId || '',

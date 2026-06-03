@@ -15,6 +15,10 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
   const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
   const [note, setNote] = useState('');
   const [noteDebounced] = useDebouncedValue(note, 800);
+  const discountProduct = data?.discount || 0;
+  const subTotal = (data?.price || 0) - discountProduct;
+  const tax = subTotal * 0.08;
+  const finalTotal = subTotal + tax;
   useEffect(() => {
     if (opened) {
       const existNoteProduct = cart.find((item: any) => item.id === data?.id && item.note !== note);
@@ -119,8 +123,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
 
           <Group grow>
             <Button
-              variant='filled'
-              color='dark'
+              variant='outline'
               onClick={() => {
                 if (note !== '') {
                   const existingItem = cart.find((item: any) => item.id === data?.id);
@@ -142,9 +145,10 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
               data={cart}
-              finalTotal={data?.price || 0}
+              finalTotal={finalTotal || 0}
               originalTotal={data?.price || 0}
-              discountAmount={0}
+              taxTotal={tax}
+              discountAmount={data?.discount || 0}
               onClick={() => onClose()}
             />
           </Group>

@@ -45,6 +45,7 @@ export default function OrderUpsert({
     defaultValues: {
       id: undefined,
       finalTotal: 0,
+      taxTotal: 0,
       discountAmount: 0,
       originalTotal: 0,
       status: OrderStatus.UNPAID,
@@ -81,6 +82,7 @@ export default function OrderUpsert({
       formFields.reset({
         id: data?.id,
         finalTotal: data?.finalTotal || 0,
+        taxTotal: data?.taxTotal || 0,
         discountAmount: data?.discountAmount || 0,
         originalTotal: data?.originalTotal || 0,
         status: data?.status,
@@ -137,6 +139,7 @@ export default function OrderUpsert({
                   onClick={() => {
                     formFields.reset({
                       finalTotal: 0,
+                      taxTotal: 0,
                       discountAmount: 0,
                       originalTotal: 0,
                       status: OrderStatus.UNPAID,
@@ -262,7 +265,7 @@ export default function OrderUpsert({
                   )}
                 />
               </GridCol>
-              <GridCol span={6}>
+              <GridCol span={4}>
                 <Controller
                   control={formFields.control}
                   name='finalTotal'
@@ -283,7 +286,28 @@ export default function OrderUpsert({
                   )}
                 />
               </GridCol>
-              <GridCol span={6}>
+              <GridCol span={4}>
+                <Controller
+                  control={formFields.control}
+                  name='taxTotal'
+                  render={({ field: { onChange, onBlur, value, name } }) => (
+                    <NumberInput
+                      thousandSeparator=','
+                      hideControls
+                      clampBehavior='strict'
+                      readOnly
+                      label='Thuế (10%)'
+                      placeholder='Sẽ được tính ngay sau khi gọi món.'
+                      error={formFields.formState.errors.taxTotal?.message}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      name={name}
+                    />
+                  )}
+                />
+              </GridCol>
+              <GridCol span={4}>
                 <Controller
                   name='status'
                   control={formFields.control}
