@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Reveal from '~/components/Reveal';
 import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
-import { SectionHeading } from './SectionHeading';
+import { SectionHeading } from '../../../../components/SectionHeading';
 
 export const SectionTestimonials = ({ reviewsPagination }: { reviewsPagination: GetInitAboutUs['topReviews'] }) => {
   const reviews = reviewsPagination?.reviews ?? [];

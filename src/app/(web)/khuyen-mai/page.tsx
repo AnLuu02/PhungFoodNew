@@ -1,13 +1,30 @@
-import { Alert, Avatar, Badge, Box, Button, Card, Flex, Text, Title } from '@mantine/core';
-import { IconAward, IconBrandZapier, IconGiftFilled, IconHeart, IconSparkles, IconStar } from '@tabler/icons-react';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Group,
+  Image,
+  Paper,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title
+} from '@mantine/core';
+import { IconArrowRight, IconGift, IconStar } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
+import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
+import { CardFeaturedOffer } from '~/components/Web/Card/CardFeaturedOffer';
 import { promotionLevels } from '~/lib/HardData/promotion-level';
 import { api } from '~/trpc/server';
+import { SectionHeading } from '../../../components/SectionHeading';
+import { TextTyping } from '../../../components/TextTyping';
 import FooterSection from './components/FooterSection';
 import InfoLevelUser from './components/InfoLevelUser';
-import PromotionSection from './components/PromotionSection';
+import { SectionPromotions } from './components/SectionPromotions';
 
 export const dynamic = 'force-static';
 
@@ -18,123 +35,179 @@ export const metadata: Metadata = {
 export default async function FoodPromotionPage() {
   const productData = await api.Product.find({
     page: 1,
-    limit: 10,
+    limit: 6,
     loai: 'san-pham-giam-gia'
   });
-
+  const bestDeal = {
+    id: 1,
+    name: 'Cơm gà xối mỡ miền Tây',
+    image: '/images/png/delicious-burger-fries.png',
+    price: 59000,
+    oldPrice: 79000,
+    sold: 128,
+    tag: 'Bán chạy'
+  };
   return (
     <Box className='min-h-screen bg-mainColor/10' mx={{ base: -10, sm: -30, lg: -130 }} mt={-16}>
-      <Box className='relative overflow-hidden bg-[linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url(/images/png/banner_food.png)] bg-cover bg-no-repeat px-4 py-16 text-white sm:py-24'>
-        <Box className='relative z-10 mx-auto max-w-6xl text-center'>
-          <Box className='mb-8'>
-            <Badge
-              leftSection={<IconSparkles className='h-5 w-5' />}
-              size='xl'
-              className='animate-fadeUp border-white/30 bg-white/20 text-xs text-white backdrop-blur-sm md:text-lg'
-              style={{ animationDuration: '0.5s' }}
-            >
-              Ưu đãi đặc biệt cho thành viên mới
-            </Badge>
-          </Box>
-          <Title
-            className='mb-6 animate-fadeUp text-balance font-quicksand text-4xl font-black text-white md:mb-8 md:text-6xl'
-            style={{ animationDuration: '1s' }}
-          >
-            Thưởng Thức & Nhận Thưởng!
-          </Title>
-          <Text
-            className='text-md mx-auto mb-6 max-w-4xl animate-fadeUp text-pretty leading-relaxed text-white/90 md:mb-10 md:text-2xl'
-            style={{ animationDuration: '1.5s' }}
-          >
-            Tham gia ngay chương trình khách hàng thân thiết của chúng tôi để mở khóa <b>ưu đãi hấp dẫn</b>, tích điểm
-            với mỗi món ăn yêu thích và tận hưởng <b>đặc quyền VIP</b> chỉ dành riêng cho bạn.
-          </Text>
-          <Box className='flex flex-col items-center justify-center gap-4 sm:flex-row'>
-            <Button
-              size='lg'
-              className='h-auto animate-fadeUp bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
-              style={{ animationDuration: '2s' }}
-            >
-              <Link href={'/thuc-don'}> 🛒 Đặt món ngay</Link>
-            </Button>
+      <Box className='relative overflow-hidden bg-[#15110d] px-4 py-20 text-white sm:py-28'>
+        <Box className='absolute inset-0 opacity-45'>
+          <Image src='/images/png/banner_food.png' alt='Phụng Food promotion' className='h-full w-full object-cover' />
+        </Box>
 
-            <Button
-              size='lg'
-              variant='outline'
-              style={{ animationDuration: '2.5s' }}
-              className='h-auto animate-fadeUp border-subColor px-6 py-3 text-lg text-white shadow-xl duration-300 hover:scale-105 hover:border-mainColor hover:text-subColor'
-            >
-              <Link href={'/thuc-don'}> Xem thực đơn</Link>
-            </Button>
-          </Box>
+        <Box className='absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,138,0,0.35),transparent_35%),linear-gradient(90deg,rgba(0,0,0,0.88),rgba(0,0,0,0.42),rgba(0,0,0,0.75))]' />
+
+        <Box className='relative z-10 mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]'>
+          <Stack gap='xl' className='animate-fadeUp'>
+            <Group gap='sm'>
+              <Box className='h-px w-12 bg-orange-300' />
+              <Text className='text-sm font-bold uppercase tracking-[0.28em] text-orange-200'>Deal ngon hôm nay</Text>
+            </Group>
+
+            <Stack gap={'xs'}>
+              <Title className='max-w-3xl text-balance font-quicksand text-5xl font-black leading-tight text-white md:text-7xl'>
+                Món ngon đang giảm,
+              </Title>
+              <TextTyping />
+            </Stack>
+
+            <Text className='text-white/82 max-w-2xl text-lg leading-relaxed md:text-xl'>
+              Săn voucher, đặt món yêu thích và tích điểm cho lần sau. Tất cả ưu đãi nổi bật nhất của Phụng Food nằm ở
+              đây.
+            </Text>
+
+            <Group gap='md'>
+              <Button
+                component={Link}
+                href='/thuc-don'
+                size='lg'
+                radius='xl'
+                rightSection={<IconArrowRight size={18} />}
+                className='bg-orange-400 px-7 text-base font-bold text-black shadow-[0_18px_50px_rgba(255,138,0,0.35)] transition hover:scale-[1.03] hover:bg-orange-300'
+              >
+                Đặt ngay
+              </Button>
+
+              <Button
+                component={Link}
+                href='#voucher'
+                size='lg'
+                radius='xl'
+                variant='white'
+                className='border border-white/25 bg-white/10 px-7 text-base font-bold text-white backdrop-blur-md transition hover:bg-white/20'
+              >
+                Xem voucher
+              </Button>
+            </Group>
+
+            <Group gap='xl' className='pt-4' align='center'>
+              {[
+                ['12K+', 'voucher đã dùng'],
+                ['4.8/5', 'đánh giá món ăn'],
+                ['30 phút', 'giao nhanh nội thành']
+              ].map(item => (
+                <Box key={item[0]}>
+                  <Text className='font-quicksand text-2xl font-black text-white'>{item[0]}</Text>
+                  <Text size='sm' className='text-white/65'>
+                    {item[1]}
+                  </Text>
+                </Box>
+              ))}
+            </Group>
+          </Stack>
+
+          <CardFeaturedOffer bestDeal={bestDeal} />
         </Box>
       </Box>
 
-      <Box className='relative z-10 mx-auto -mt-8 max-w-6xl px-4 sm:animate-bounceSlow'>
-        <Alert
-          icon={
-            <Box className='relative'>
-              <IconBrandZapier className='h-7 w-7 animate-pulse text-yellow-600' />
-              <span className='absolute inset-0 animate-ping rounded-full bg-yellow-400 opacity-30'></span>
-            </Box>
-          }
-          className='relative overflow-hidden rounded-2xl border-0 bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 text-mainColor shadow-2xl'
+      <Box className='relative z-20 mx-auto -mt-6 max-w-6xl px-4 sm:-mt-8'>
+        <Paper
+          radius='xl'
+          className='border border-slate-200 bg-white/95 p-4 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-dark-card sm:p-5'
         >
-          <Box className='absolute inset-0 animate-pulse bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.4),transparent)]' />
+          <Flex
+            direction={{ base: 'column', lg: 'row' }}
+            align={{ base: 'stretch', lg: 'center' }}
+            justify='space-between'
+            gap='lg'
+          >
+            <Group wrap='nowrap' align='flex-start'>
+              <ThemeIcon size={52} radius='xl' className='shrink-0 bg-mainColor/10 text-mainColor'>
+                <IconGift size={26} />
+              </ThemeIcon>
 
-          <Box className='relative z-10'>
-            <Text className='flex items-center gap-2 text-xl font-extrabold'>
-              🔥 Ưu Đãi Có Hạn!
-              <span className='animate-bounce text-red-600'>⏰</span>
-            </Text>
+              <Box className='min-w-0'>
+                <Text fw={900} className='font-quicksand text-base sm:text-lg'>
+                  Quà tặng cho lần đặt đầu tiên
+                </Text>
 
-            <Text fw={700} size='lg' className='mt-2 leading-relaxed'>
-              Đăng ký ngay hôm nay để nhận <strong className='text-red-600'>500 điểm thưởng</strong> và{' '}
-              <strong className='text-blue-700'>Voucher giảm giá lên đến 20%</strong> cho đơn hàng đầu tiên!
-            </Text>
-          </Box>
-        </Alert>
+                <Text size='sm' c='dimmed' className='mt-1'>
+                  Đăng nhập để nhận 500 điểm và voucher giảm đến 20%.
+                </Text>
+              </Box>
+            </Group>
+
+            <Flex
+              direction={{ base: 'column', sm: 'row' }}
+              align={{ base: 'stretch', sm: 'center' }}
+              justify={{ base: 'flex-start', lg: 'flex-end' }}
+              gap='xs'
+              className='w-full lg:w-auto'
+            >
+              <Box className='sm:gap-xs grid grid-cols-3 gap-2 sm:flex'>
+                {[
+                  ['Không phí', 'tham gia'],
+                  ['Tự động', 'tích điểm'],
+                  ['Dùng ngay', 'voucher']
+                ].map(item => (
+                  <Paper
+                    key={item[0]}
+                    radius='lg'
+                    className='bg-slate-50 px-3 py-3 text-center dark:bg-white/5 sm:px-4'
+                  >
+                    <Text size='sm' fw={900} className='whitespace-nowrap'>
+                      {item[0]}
+                    </Text>
+                    <Text size='xs' c='dimmed' className='whitespace-nowrap'>
+                      {item[1]}
+                    </Text>
+                  </Paper>
+                ))}
+              </Box>
+
+              <Button component={Link} href='/dang-nhap' radius='xl' className='w-full sm:w-auto'>
+                Nhận ưu đãi
+              </Button>
+            </Flex>
+          </Flex>
+        </Paper>
       </Box>
 
       <Box className='space-y-24 py-20' px={{ base: 10, sm: 30, md: 30, lg: 130 }}>
-        <Box>
-          <Box className='mb-12 text-center'>
-            <Badge leftSection={<IconGiftFilled className='h-4 w-4' />} className='mb-4 bg-mainColor/20 text-mainColor'>
-              Ưu Đãi Nóng
-            </Badge>
-            <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-mainColor sm:text-5xl'>
-              Khuyến Mãi Khó Cưỡng
-            </Title>
-            <Text c={'dimmed'} className='mx-auto max-w-2xl text-pretty text-lg'>
-              Nhanh tay săn ngay những ưu đãi hấp dẫn này trước khi biến mất! Số lượng có hạn.
-            </Text>
-          </Box>
+        <SectionPromotions initialData={productData} />
+        <Stack gap={'xl'}>
+          <SectionHeading
+            center
+            index='02'
+            title='Số lượng có hạn'
+            description='Nhanh tay săn nhận ngay những voucher giảm giá sâu, ăn thả ga! Số lượng có hạn.'
+          />
 
-          {productData?.products?.length > 0 && (
-            <Box className='mb-16'>
-              <LayoutPromotion data={productData.products} />
-            </Box>
-          )}
-        </Box>
+          <Card withBorder shadow='sm' padding='lg'>
+            <PromotionTabLayout />
+          </Card>
+        </Stack>
 
-        <PromotionSection />
-
-        <Box>
-          <Box className='mb-12 text-center'>
-            <Badge leftSection={<IconAward className='h-4 w-4' />} className='mb-4 bg-purple-100 text-purple-700'>
-              Cấp Độ Thành Viên
-            </Badge>
-            <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-purple-600 sm:text-5xl'>
-              Leo Thang Phần Thưởng
-            </Title>
-            <Text c={'dimmed'} className='mx-auto max-w-2xl text-pretty text-lg'>
-              Mỗi đơn hàng đưa bạn đến gần hơn với những đặc quyền và ưu đãi độc quyền
-            </Text>
-          </Box>
+        <Stack gap={'xl'}>
+          <SectionHeading
+            center
+            index='03'
+            title='Leo Thang Phần Thưởng'
+            description='Mỗi đơn hàng đưa bạn đến gần hơn với những đặc quyền và ưu đãi độc quyền'
+          />
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end lg:hidden'>
-              <Box className='flex animate-slideRightPulse items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
+              <Box className='flex animate-slideRightPulse items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:bg-dark-card dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -196,26 +269,30 @@ export default async function FoodPromotionPage() {
               })}
             </Box>
           </Box>
-        </Box>
+        </Stack>
 
-        <InfoLevelUser />
+        <Stack gap={'xl'}>
+          <SectionHeading
+            center
+            index='04'
+            title='Mỗi 10k = Nhiều phần thưởng hơn'
+            description='Điểm sẽ tăng theo từng đơn hàng ngon lành và mở khóa nhiều phần thưởng hấp dẫn'
+          />
 
-        <Box>
-          <Box className='mb-12 text-center'>
-            <Badge leftSection={<IconHeart className='h-4 w-4' />} className='mb-4 bg-red-100 text-red-700'>
-              Khách hàng yêu thích
-            </Badge>
-            <Title className='mb-4 text-balance font-quicksand text-3xl font-bold text-pink-600 sm:text-5xl'>
-              Niềm tin khách hàng
-            </Title>
-            <Text c={'dimmed'} className='mx-auto max-w-2xl text-pretty text-lg'>
-              Hơn 50.000 thành viên hài lòng đang tiết kiệm tiền và tận hưởng từng bữa ăn ngon
-            </Text>
-          </Box>
+          <InfoLevelUser />
+        </Stack>
+
+        <Stack gap={'xl'}>
+          <SectionHeading
+            center
+            index='05'
+            title='Niềm tin khách hàng'
+            description='Hơn 50.000 thành viên hài lòng đang tiết kiệm tiền và tận hưởng từng bữa ăn ngon'
+          />
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end md:hidden'>
-              <Box className='flex animate-slideRightPulse items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:text-dark-text'>
+              <Box className='flex animate-slideRightPulse items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:bg-dark-card dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -331,7 +408,7 @@ export default async function FoodPromotionPage() {
               </Card>
             </Box>
           </Box>
-        </Box>
+        </Stack>
       </Box>
       <FooterSection />
     </Box>

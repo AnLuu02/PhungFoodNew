@@ -1,12 +1,26 @@
 'use client';
 
-import { Card, Flex, Grid, GridCol, Group, Paper, Text, Title } from '@mantine/core';
+import { Card, Flex, Grid, GridCol, Group, Pagination, Paper, Select, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import Reveal from '~/components/Reveal';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
+import { CardProductHorizontalSkeleton } from '../../Card/CardProductHorizontalSkeleton';
 
-const LayoutPromotion = ({ data }: any) => {
+const LayoutPromotion = ({
+  data,
+  withPagination
+}: {
+  data: any;
+  withPagination?: {
+    loading: boolean;
+    totalPages: number;
+    page: number;
+    perPage: number;
+    onChangePage: (page: number) => void;
+    onSetPerpage: (perPage: string) => void;
+  };
+}) => {
   const [timeExpire, setTimeExpire] = React.useState({
     day: 0,
     hour: 0,
@@ -28,10 +42,6 @@ const LayoutPromotion = ({ data }: any) => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const dataMemorize = useMemo(() => {
-    return data;
-  }, [data]);
 
   return (
     <Card
@@ -129,14 +139,52 @@ const LayoutPromotion = ({ data }: any) => {
         </Flex>
 
         <Grid p={'sm'}>
-          {data?.map((item: any, index: number) => (
-            <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={item.id} mih={162}>
-              <Reveal x={(index + 1) * 2} delay={index * 0.01}>
-                <ProductCardCarouselHorizontal data={item} key={item.id} />
-              </Reveal>
-            </GridCol>
-          ))}
+          {withPagination?.loading ? (
+            <>
+              {Array.from({ length: Number(withPagination.perPage) }, (_, idex) => {
+                return (
+                  <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={idex} mih={162}>
+                    <CardProductHorizontalSkeleton />
+                  </GridCol>
+                );
+              })}
+            </>
+          ) : (
+            data?.map((item: any, index: number) => (
+              <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={item.id} mih={162}>
+                <Reveal x={(index + 1) * 2} delay={index * 0.01}>
+                  <ProductCardCarouselHorizontal data={item} key={item.id} />
+                </Reveal>
+              </GridCol>
+            ))
+          )}
         </Grid>
+        {withPagination && (
+          <Flex
+            p={'sm'}
+            py={'lg'}
+            justify='flex-end'
+            align={'center'}
+            gap={'md'}
+            direction={{ base: 'column-reverse', md: 'row' }}
+          >
+            <Pagination
+              total={withPagination?.totalPages}
+              value={withPagination?.page}
+              onChange={withPagination?.onChangePage}
+              classNames={{
+                control:
+                  'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
+              }}
+            />
+            <Select
+              value={String(withPagination.perPage)}
+              w={100}
+              onChange={value => value && withPagination?.onSetPerpage(value)}
+              data={['6', '12', '18', '24']}
+            />
+          </Flex>
+        )}
       </Flex>
     </Card>
   );

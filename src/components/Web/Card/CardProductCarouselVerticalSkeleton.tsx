@@ -1,6 +1,6 @@
 import { Badge, Card, Flex, Group, Skeleton, Text } from '@mantine/core';
 
-export default function ProductCardSkeleton() {
+export default function ProductCardCarouselVerticalSkeleton() {
   return (
     <Card h={320} padding={0} shadow='sm' className='flex flex-col justify-between' pos='relative'>
       <Card.Section h='50%' pos='relative'>

@@ -14,6 +14,7 @@ import {
   Text,
   ThemeIcon,
   Timeline,
+  TimelineItem,
   Title
 } from '@mantine/core';
 import {
@@ -21,30 +22,30 @@ import {
   IconChefHat,
   IconClock,
   IconFlame,
+  IconGift,
   IconHeartHandshake,
   IconMapPin,
   IconMoodSmile,
   IconPackage,
   IconPhone,
-  IconReceipt,
   IconShieldCheck,
   IconStar,
+  IconTrendingUp,
   IconTruckDelivery
 } from '@tabler/icons-react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
+import { TextTyping } from '~/components/TextTyping';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
-import { api } from '~/trpc/server';
-
-import { TimelineItem } from '@mantine/core';
-import { IconGift } from '@tabler/icons-react';
 import { journey, signatures, stats } from '~/shared/constants/about-us.constants';
 import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
-import { SectionHeading } from './components/SectionHeading';
+import { api } from '~/trpc/server';
+import { SectionHeading } from '../../../components/SectionHeading';
 import { SectionMenuHighlights } from './components/SectionMenuHighlights';
 import { SectionTestimonials } from './components/SectionTestimonials';
+
 export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
@@ -124,7 +125,7 @@ const values = [
 
 const getInitAboutUs = async () => {
   try {
-    return await withRedisCache('page:initAboutUs', () => api.Page.getInitAboutUs(), 60 * 60);
+    return await withRedisCache('page:InitAboutUs', () => api.Page.getInitAboutUs(), 60 * 60);
   } catch {
     return await api.Page.getInitAboutUs();
   }
@@ -148,20 +149,22 @@ export default async function AboutPage() {
           <Box className='absolute left-10 top-24 hidden h-24 w-24 animate-[pulse_4s_ease-in-out_infinite] rounded-full bg-subColor/30 blur-3xl md:block' />
           <Box className='absolute bottom-20 right-16 hidden h-36 w-36 animate-[pulse_5s_ease-in-out_infinite] rounded-full bg-mainColor/30 blur-3xl md:block' />
 
-          <Box className='relative z-10 mx-auto grid min-h-[720px] max-w-7xl items-center gap-10 px-5 py-24 md:grid-cols-[1.1fr_0.9fr] lg:px-10'>
+          <Box className='relative z-10 mx-auto grid min-h-[720px] max-w-7xl items-center gap-10 px-5 py-24 md:grid-cols-[1.3fr_0.7fr] lg:px-10'>
             <Reveal x={-30}>
               <Stack gap='xl'>
-                <Text className='w-max rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-bold uppercase tracking-[0.25em] text-white/80 backdrop-blur-md'>
-                  Phụng Food Restaurant
-                </Text>
+                <Group gap='sm'>
+                  <Box className='h-px w-12 bg-orange-300' />
+                  <Text className='text-sm font-bold uppercase tracking-[0.28em] text-orange-200'>
+                    Phụng Food Restaurant
+                  </Text>
+                </Group>
 
                 <Stack gap='md'>
-                  <Title className='max-w-4xl text-balance font-quicksand text-5xl font-black leading-[1.02] md:text-7xl'>
-                    Không chỉ là đồ ăn nhanh.
-                    <Text span inherit className='block text-subColor'>
-                      Là món ngon khiến bạn nhớ lại.
-                    </Text>
+                  <Title className='max-w-4xl font-quicksand text-5xl font-black leading-[1.02] md:text-balance md:text-7xl'>
+                    Thức ăn nhanh, nhưng ...
                   </Title>
+
+                  <TextTyping text={['vị ngon nhớ mãi.', 'chuẩn gu bạn thích.', 'đậm đà bản sắc.']} />
 
                   <Text className='text-white/82 max-w-2xl text-pretty text-lg leading-8 md:text-xl'>
                     Phụng Food mang tinh thần bếp nhà vào từng phần ăn: nóng hổi, đậm vị, sạch sẽ và đủ hấp dẫn để bạn
@@ -171,23 +174,23 @@ export default async function AboutPage() {
 
                 <Group gap='md'>
                   <Button
+                    size='lg'
+                    className='h-auto animate-fadeUp bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
+                    style={{ animationDuration: '2s' }}
+                    rightSection={<IconArrowRight size={18} />}
                     component={Link}
                     href='/thuc-don'
-                    size='lg'
-                    radius='xl'
-                    rightSection={<IconArrowRight size={18} />}
-                    className='bg-subColor text-black transition duration-300 hover:-translate-y-1 hover:bg-subColor/90'
                   >
-                    Đặt món ngay
+                    Đặt ngay
                   </Button>
 
                   <Button
+                    size='lg'
+                    variant='outline'
+                    style={{ animationDuration: '2.5s' }}
+                    className='h-auto animate-fadeUp border-subColor px-6 py-3 text-lg text-white shadow-xl duration-300 hover:scale-105 hover:border-mainColor hover:text-subColor'
                     component={Link}
                     href='/dang-ky'
-                    size='lg'
-                    radius='xl'
-                    variant='white'
-                    className='transition duration-300 hover:-translate-y-1'
                   >
                     Nhận ưu đãi
                   </Button>
@@ -225,20 +228,23 @@ export default async function AboutPage() {
                     <Box className='absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent' />
 
                     <Paper radius='xl' p='md' className='bg-white/92 absolute bottom-4 left-4 right-4 backdrop-blur-md'>
-                      <Group justify='space-between' align='center'>
-                        <Box>
-                          <Text fw={800} className='text-mainColor'>
-                            Món bán chạy hôm nay
-                          </Text>
-                          <Text size='sm' c='dimmed'>
-                            Gà giòn mật ong cay · Burger bò đặc biệt
-                          </Text>
-                        </Box>
+                      <Box>
+                        <Text fw={800} className='text-mainColor'>
+                          Không chỉ là một bữa ăn
+                        </Text>
 
-                        <ThemeIcon radius='xl' size='xl' className='bg-subColor text-black'>
-                          <IconReceipt />
-                        </ThemeIcon>
-                      </Group>
+                        <Text size='sm' c='dimmed'>
+                          Chúng tôi mong muốn tạo nên những khoảnh khắc đáng nhớ quanh bàn ăn của bạn.
+                        </Text>
+                      </Box>
+
+                      <ThemeIcon
+                        variant='transparent'
+                        size='xl'
+                        className='absolute right-[10px] top-[10px] text-subColor'
+                      >
+                        <IconTrendingUp />
+                      </ThemeIcon>
                     </Paper>
                   </Box>
                 </Card>
@@ -691,17 +697,22 @@ export default async function AboutPage() {
 
             <Group justify='center' mt='xl'>
               <Button
+                size='lg'
+                className='h-auto bg-subColor px-6 py-3 text-lg text-black shadow-xl duration-300 hover:scale-105 hover:bg-mainColor hover:text-white'
+                rightSection={<IconArrowRight size={18} />}
                 component={Link}
                 href='/thuc-don'
-                size='lg'
-                radius='xl'
-                rightSection={<IconArrowRight size={18} />}
-                className='bg-subColor text-black hover:bg-subColor/90'
               >
-                Đặt món ngay
+                Đặt ngay
               </Button>
 
-              <Button component={Link} href='/dang-ky' size='lg' radius='xl' variant='white'>
+              <Button
+                size='lg'
+                variant='outline'
+                className='h-auto border-subColor px-6 py-3 text-lg text-white shadow-xl duration-300 hover:scale-105 hover:border-mainColor hover:text-subColor'
+                component={Link}
+                href='/dang-ky'
+              >
                 Đăng ký nhận ưu đãi
               </Button>
             </Group>

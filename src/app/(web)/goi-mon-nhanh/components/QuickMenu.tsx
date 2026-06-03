@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
-import ProductCardSkeleton from '~/components/Web/Card/CardProductSkeleton';
+import ProductCardCarouselVerticalSkeleton from '~/components/Web/Card/CardProductCarouselVerticalSkeleton';
 import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
@@ -81,7 +81,7 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
                 className='animate-fadeUp'
                 style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
               >
-                <ProductCardSkeleton />
+                <ProductCardCarouselVerticalSkeleton />
               </GridCol>
             ))
           ) : products?.length > 0 ? (
@@ -111,7 +111,7 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
               className='animate-fadeUp'
               style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
             >
-              <ProductCardSkeleton />
+              <ProductCardCarouselVerticalSkeleton />
             </GridCol>
           ))}
         </Grid>
