@@ -89,7 +89,7 @@ const LayoutGridCarouselOnly = ({
             </Center>
           )}
 
-          <Flex align={'center'} justify={{ base: 'space-between' }} className='hidden sm:block'>
+          <Flex align={'center'} justify={{ base: 'space-between' }} className='hidden sm:flex'>
             <ActionIcon
               radius={'50%'}
               size={'lg'}
