@@ -51,7 +51,7 @@ export default function FooterSection() {
                       rightSection={<IconArrowRight size={18} />}
                       className='h-auto bg-subColor px-7 py-3 text-base font-black text-black shadow-[0_18px_60px_rgba(248,193,68,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300'
                     >
-                      Đặt món ngay
+                      Đặt ngay
                     </Button>
 
                     <Button

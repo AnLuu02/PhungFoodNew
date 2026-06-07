@@ -272,9 +272,10 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
             </Text>
 
             <PaginationLocal
-              initPerpage={perPage}
+              perPage={perPage}
+              page={page}
               onChangePage={setPage}
-              onChangePerPage={setPerPage}
+              onSetPerpage={setPerPage}
               totalPages={totalPages}
             />
           </Group>

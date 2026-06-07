@@ -10,6 +10,7 @@ import {
   NumberFormatter,
   Paper,
   Progress,
+  SimpleGrid,
   Stack,
   Text,
   Title
@@ -48,7 +49,7 @@ export default function InfoLevelUser() {
   }, [userData]);
   return (
     <>
-      <Box className='grid items-center gap-16 lg:grid-cols-2'>
+      <SimpleGrid cols={{ base: 1, lg: 2 }} className='items-center gap-16'>
         <Box className='space-y-8'>
           <Card padding={'lg'} shadow='xl' className='border-0 bg-white dark:bg-dark-card'>
             <Title className='flex items-center font-quicksand text-2xl'>
@@ -286,7 +287,7 @@ export default function InfoLevelUser() {
             </Box>
           </Card>
         </Box>
-      </Box>
+      </SimpleGrid>
     </>
   );
 }

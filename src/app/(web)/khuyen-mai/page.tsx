@@ -192,7 +192,7 @@ export default async function FoodPromotionPage() {
             description='Nhanh tay săn nhận ngay những voucher giảm giá sâu, ăn thả ga! Số lượng có hạn.'
           />
 
-          <Card withBorder shadow='sm' padding='lg'>
+          <Card p={0} withBorder shadow='sm' className='dark:bg-dark-subBackground'>
             <PromotionTabLayout />
           </Card>
         </Stack>

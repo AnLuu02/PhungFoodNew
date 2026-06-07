@@ -1,8 +1,9 @@
 'use client';
 
-import { Card, Flex, Grid, GridCol, Group, Pagination, Paper, Select, Text, Title } from '@mantine/core';
+import { Card, Flex, Grid, GridCol, Group, Paper, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
 import React, { useEffect } from 'react';
+import PaginationLocal from '~/components/PaginationLocal';
 import Reveal from '~/components/Reveal';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 import { CardProductHorizontalSkeleton } from '../../Card/CardProductHorizontalSkeleton';
@@ -159,31 +160,15 @@ const LayoutPromotion = ({
             ))
           )}
         </Grid>
+
         {withPagination && (
-          <Flex
-            p={'sm'}
-            py={'lg'}
-            justify='flex-end'
-            align={'center'}
-            gap={'md'}
-            direction={{ base: 'column-reverse', md: 'row' }}
-          >
-            <Pagination
-              total={withPagination?.totalPages}
-              value={withPagination?.page}
-              onChange={withPagination?.onChangePage}
-              classNames={{
-                control:
-                  'hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white'
-              }}
-            />
-            <Select
-              value={String(withPagination.perPage)}
-              w={100}
-              onChange={value => value && withPagination?.onSetPerpage(value)}
-              data={['6', '12', '18', '24']}
-            />
-          </Flex>
+          <PaginationLocal
+            page={withPagination?.page}
+            perPage={withPagination?.perPage}
+            totalPages={withPagination?.totalPages}
+            onChangePage={withPagination?.onChangePage}
+            onSetPerpage={value => withPagination?.onSetPerpage(String(value))}
+          />
         )}
       </Flex>
     </Card>

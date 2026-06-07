@@ -32,7 +32,7 @@ export default function Reveal({ children, delay = 0, y = 0, x = 0, z = 0 }: Pro
       ref={ref}
       style={{
         opacity: 0,
-        transform: `${z ? 'perspective(1000px)' : ''}translate3d(${x}px,${y}px,${z}px)`,
+        transform: `${z ? 'perspective(1000px)' : ''} translate3d(${x}px,${y}px,${z}px)`,
         transition: 'opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)',
         willChange: 'opacity, transform'
       }}

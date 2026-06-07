@@ -25,6 +25,7 @@ import {
   IconGift,
   IconHeartHandshake,
   IconMapPin,
+  IconMapPins,
   IconMoodSmile,
   IconPackage,
   IconPhone,
@@ -254,7 +255,7 @@ export default async function AboutPage() {
         </Box>
       </Box>
 
-      <Stack gap={100} className='relative mx-auto max-w-7xl px-1 py-16 md:px-4 md:py-24'>
+      <Stack gap={100} className='relative w-full overflow-hidden px-1 py-16 md:px-4 md:py-24'>
         <Reveal z={40}>
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing={50} verticalSpacing={40} className='items-center'>
             <Stack gap='lg'>
@@ -339,7 +340,7 @@ export default async function AboutPage() {
                   key={item.title}
                   radius={28}
                   p='xl'
-                  className='group relative overflow-hidden border bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-2xl dark:bg-dark-card'
+                  className='group relative overflow-hidden border bg-white shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-2xl dark:bg-dark-card'
                 >
                   <Box className='absolute right-0 top-0 h-28 w-28 rounded-bl-full bg-mainColor/5 transition duration-300 group-hover:bg-subColor/20' />
 
@@ -419,7 +420,7 @@ export default async function AboutPage() {
                   key={step.title}
                   radius={28}
                   p='xl'
-                  className='relative overflow-hidden border bg-white shadow-sm transition duration-300 hover:-translate-y-2 hover:shadow-xl dark:bg-dark-card'
+                  className='relative overflow-hidden border bg-white shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-xl dark:bg-dark-card'
                 >
                   <Text className='absolute right-5 top-4 font-quicksand text-5xl font-black text-mainColor/[0.06]'>
                     0{index + 1}
@@ -447,7 +448,7 @@ export default async function AboutPage() {
         <Reveal z={40}>
           <Paper
             radius={36}
-            p={{ base: 'xl', md: 48 }}
+            p={{ md: 48 }}
             className='relative overflow-hidden border bg-white shadow-sm dark:bg-dark-card'
           >
             <SimpleGrid cols={{ base: 1, md: 2 }} spacing={50} className='items-center'>
@@ -476,7 +477,7 @@ export default async function AboutPage() {
                   'Ưu đãi sinh nhật và dịp đặc biệt',
                   'Theo dõi lịch sử đơn hàng dễ dàng'
                 ].map(item => (
-                  <Paper key={item} radius='xl' p='lg' className='border bg-mainColor/[0.03]'>
+                  <Paper key={item} radius='xl' p='lg' className='border bg-mainColor/[0.06]'>
                     <Group>
                       <ThemeIcon radius='xl' className='bg-mainColor'>
                         <IconGift size={18} />
@@ -500,7 +501,7 @@ export default async function AboutPage() {
 
             <Accordion variant='separated' radius='xl'>
               {faqs.map(item => (
-                <AccordionItem key={item.q} value={item.q}>
+                <AccordionItem key={item.q} value={item.q} className='bg-mainColor/[0.06]'>
                   <AccordionControl>
                     <Text fw={800}>{item.q}</Text>
                   </AccordionControl>
@@ -514,7 +515,6 @@ export default async function AboutPage() {
             </Accordion>
           </SimpleGrid>
         </Reveal>
-
         <Reveal z={40}>
           <Paper radius={36} p={{ base: 'xl', md: 48 }} className='relative overflow-hidden bg-mainColor text-white'>
             <Box className='absolute -right-24 -top-24 h-72 w-72 rounded-full bg-subColor/25 blur-3xl' />
@@ -565,11 +565,24 @@ export default async function AboutPage() {
 
         <Reveal z={40}>
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' className='items-stretch'>
-            <Paper radius={32} p='xl' className='border bg-white shadow-sm dark:bg-dark-card'>
+            <Paper radius={32} p={{ md: 'xl' }} className='border bg-white shadow-sm dark:bg-dark-card'>
               <Stack gap='md'>
                 <SectionHeading index='09' title='Đến ăn trực tiếp hoặc đặt giao tận nơi' />
 
-                <Divider />
+                <Divider
+                  variant='dashed'
+                  size={'sm'}
+                  w={'100%'}
+                  classNames={{
+                    root: 'border-mainColor'
+                  }}
+                  labelPosition='center'
+                  label={
+                    <>
+                      <IconMapPins size={30} className='italic text-mainColor' />
+                    </>
+                  }
+                />
 
                 <Group align='flex-start' wrap='nowrap'>
                   <ThemeIcon radius='xl' className='bg-mainColor'>
@@ -663,22 +676,22 @@ export default async function AboutPage() {
         </Reveal>
       </Stack>
 
-      <Reveal z={40}>
-        <Box
-          mx={{ base: -10, sm: -30, md: -30, lg: -130 }}
-          className='min-[720px] relative overflow-hidden bg-[#07110f] py-20 text-white'
-        >
-          <Box className='absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(248,193,68,0.32),transparent_28%),linear-gradient(120deg,rgba(0,0,0,0.9),rgba(0,0,0,0.45),rgba(0,191,166,0.22))]' />
-          <Box className='absolute left-10 top-24 hidden h-24 w-24 animate-[pulse_4s_ease-in-out_infinite] rounded-full bg-subColor/30 blur-3xl md:block' />
-          <Box className='absolute bottom-20 right-16 hidden h-36 w-36 animate-[pulse_5s_ease-in-out_infinite] rounded-full bg-mainColor/30 blur-3xl md:block' />
-          <Image
-            src='/images/jpg/cooking-2.jpg'
-            alt='Phụng Food hero'
-            fill
-            priority
-            className='scale-105 object-cover opacity-45'
-          />
+      <Box
+        mx={{ base: -10, sm: -30, md: -30, lg: -130 }}
+        className='min-[720px] relative overflow-hidden bg-[#07110f] py-20 text-white'
+      >
+        <Box className='absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(248,193,68,0.32),transparent_28%),linear-gradient(120deg,rgba(0,0,0,0.9),rgba(0,0,0,0.45),rgba(0,191,166,0.22))]' />
+        <Box className='absolute left-10 top-24 hidden h-24 w-24 animate-[pulse_4s_ease-in-out_infinite] rounded-full bg-subColor/30 blur-3xl md:block' />
+        <Box className='absolute bottom-20 right-16 hidden h-36 w-36 animate-[pulse_5s_ease-in-out_infinite] rounded-full bg-mainColor/30 blur-3xl md:block' />
+        <Image
+          src='/images/jpg/cooking-2.jpg'
+          alt='Phụng Food hero'
+          fill
+          priority
+          className='scale-105 object-cover opacity-45'
+        />
 
+        <Reveal z={40}>
           <Box className='relative mx-auto max-w-4xl px-5 text-center'>
             <Text size='sm' fw={800} tt='uppercase' lts={3} className='mb-5 text-white/55'>
               Sẵn sàng ăn ngon?
@@ -717,8 +730,8 @@ export default async function AboutPage() {
               </Button>
             </Group>
           </Box>
-        </Box>
-      </Reveal>
+        </Reveal>
+      </Box>
     </>
   );
 }
