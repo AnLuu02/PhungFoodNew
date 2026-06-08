@@ -4,12 +4,17 @@ export const SectionHeading = ({
   index,
   title,
   description,
-  center = false
+  center = false,
+  classNames
 }: {
   index: string;
   title: string;
   description?: string;
   center?: boolean;
+  classNames?: {
+    title?: string;
+    des?: string;
+  };
 }) => {
   return (
     <Box pos='relative' className={center ? 'mx-auto max-w-3xl text-center' : 'max-w-3xl'}>
@@ -17,12 +22,14 @@ export const SectionHeading = ({
         {index}
       </Text>
 
-      <Title className='relative z-10 text-balance font-quicksand text-4xl font-black text-mainColor md:text-5xl'>
+      <Title
+        className={`relative z-10 text-balance font-quicksand text-4xl font-black text-mainColor md:text-5xl ${classNames?.title ?? ''}`}
+      >
         {title}
       </Title>
 
       {description ? (
-        <Text mt='md' c='dimmed' className='relative z-10 text-pretty text-lg leading-8'>
+        <Text mt='md' c='dimmed' className={`relative z-10 text-pretty text-lg leading-8 ${classNames?.des ?? ''}`}>
           {description}
         </Text>
       ) : null}

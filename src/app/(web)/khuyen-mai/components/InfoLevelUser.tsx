@@ -1,29 +1,111 @@
 'use client';
+
 import {
-  ActionIcon,
   Badge,
   Box,
   Button,
-  Card,
+  Center,
   Divider,
-  Flex,
+  Group,
   NumberFormatter,
   Paper,
   Progress,
+  RingProgress,
   SimpleGrid,
   Stack,
   Text,
   Title
 } from '@mantine/core';
 import { UserLevel } from '@prisma/client';
-import { IconBolt, IconCurrencyDollar, IconUserPlus } from '@tabler/icons-react';
+import { IconLogin2 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useMemo } from 'react';
+import { promotionLevels } from '~/lib/HardData/promotion-level';
 import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { api } from '~/trpc/react';
 
+const rewardRules = [
+  {
+    title: 'Tích điểm theo đơn hàng',
+    description: 'Mỗi 100.000đ chi tiêu được cộng 10 điểm vào tài khoản.',
+    value: '+10 điểm'
+  },
+  {
+    title: 'Cuối tuần nhiều điểm hơn',
+    description: 'Các đơn đặt vào Thứ Bảy và Chủ Nhật có thể nhận thêm điểm thưởng.',
+    value: 'x2 điểm'
+  },
+  {
+    title: 'Ưu đãi theo chiến dịch',
+    description: 'Một số món hoặc sự kiện đặc biệt sẽ có mức điểm riêng.',
+    value: 'Linh hoạt'
+  }
+];
+
+const levelPreview = [
+  {
+    name: 'Đồng',
+    point: '0+',
+    benefit: 'Bắt đầu tích điểm',
+    tone: 'from-orange-500/16 to-orange-500/5'
+  },
+  {
+    name: 'Bạc',
+    point: '500+',
+    benefit: 'Ưu đãi thành viên',
+    tone: 'from-slate-400/20 to-slate-400/5'
+  },
+  {
+    name: 'Vàng',
+    point: '1.500+',
+    benefit: 'Voucher tốt hơn',
+    tone: 'from-yellow-500/22 to-yellow-500/5'
+  },
+  {
+    name: 'Kim cương',
+    point: '3.000+',
+    benefit: 'Đặc quyền cao nhất',
+    tone: 'from-cyan-500/20 to-cyan-500/5'
+  }
+];
+
+const guestEstimate = [
+  {
+    label: '8 đơn / tháng',
+    value: '+250 điểm',
+    muted: 'Theo giá trị đơn trung bình'
+  },
+  {
+    label: 'Đặt cuối tuần',
+    value: '+500 điểm',
+    muted: 'Khi có chương trình nhân điểm'
+  },
+  {
+    label: 'Quà thành viên mới',
+    value: '+500 điểm',
+    muted: 'Tùy chính sách hiện hành'
+  }
+];
+
+const pointExamples = [
+  {
+    label: 'Đơn 120.000đ',
+    point: '+12 điểm'
+  },
+  {
+    label: 'Đơn 250.000đ',
+    point: '+25 điểm'
+  },
+  {
+    label: 'Đơn 420.000đ',
+    point: '+42 điểm'
+  }
+];
+
 export default function InfoLevelUser() {
   const { data: session } = useSession();
+
   const { data: userData } = api.User.getOne.useQuery(
     {
       key: session?.user.email || '',
@@ -35,259 +117,395 @@ export default function InfoLevelUser() {
       enabled: !!session?.user.email
     }
   );
-  const { levelUser, levelNextUser, caculatePoint } = useMemo(() => {
-    const levelUser = INFO_LEVEL_USER[(userData?.level as UserLevel) || UserLevel.BRONZE];
-    const levelNextUser = INFO_LEVEL_USER[levelUser?.nextLevel || UserLevel.BRONZE];
+
+  const { levelUser, levelNextUser, progressValue, remainingPoint, currentPoint, orderCount } = useMemo(() => {
+    const currentLevelKey = (userData?.level as UserLevel) || UserLevel.BRONZE;
+    const currentLevel = INFO_LEVEL_USER[currentLevelKey];
+    const nextLevel = INFO_LEVEL_USER[currentLevel?.nextLevel || currentLevelKey];
+
+    const point = userData?.pointUser || 0;
+    const maxPoint = currentLevel?.maxPoint || 0;
+    const nextMilestone = maxPoint + 1;
+
+    const percent = nextMilestone > 0 ? Math.min((point / nextMilestone) * 100, 100) : 0;
+
     return {
-      levelUser,
-      levelNextUser,
-      caculatePoint: {
-        remainingPointToNextLevel: levelUser.maxPoint + 1 - (userData?.pointUser || 0),
-        percentFormat: ((userData?.pointUser || 0) / (levelUser.maxPoint + 1)) * 100 || 0
-      }
+      levelUser: currentLevel,
+      levelNextUser: nextLevel,
+      progressValue: percent,
+      remainingPoint: Math.max(nextMilestone - point, 0),
+      currentPoint: point,
+      orderCount: userData?.order?.length || 0
     };
   }, [userData]);
-  return (
-    <>
-      <SimpleGrid cols={{ base: 1, lg: 2 }} className='items-center gap-16'>
-        <Box className='space-y-8'>
-          <Card padding={'lg'} shadow='xl' className='border-0 bg-white dark:bg-dark-card'>
-            <Title className='flex items-center font-quicksand text-2xl'>
-              <ActionIcon className='mr-4 flex h-12 w-12 items-center justify-center rounded-full shadow-lg'>
-                <IconCurrencyDollar className='h-6 w-6 text-white' />
-              </ActionIcon>
-              Kiếm điểm trên mỗi đơn hàng
-            </Title>
-            <Box>
-              <Text className='my-5'>
-                Nhận 10 điểm cho mỗi 100.000 VND chi tiêu cho các đơn hàng. Số lượng không giới hạn. Mua càng nhiều,
-                điểm càng cao, ăn càng sướng!
-              </Text>
-              <Paper withBorder className='border border-blue-200 bg-blue-50 p-6'>
-                <Text size='xl' fw={700} className='text-blue-800'>
-                  Ví dụ: Đơn 100.000 VND = 10 điểm 🎯
-                </Text>
-                <Text className='mt-2 text-blue-600'>Thêm điểm thưởng vào cuối tuần và cho các món đặc biệt!</Text>
-              </Paper>
-            </Box>
-          </Card>
 
-          <Card padding={'lg'} shadow='xl' className='border-0 bg-white dark:bg-dark-card'>
-            <Box mb={'md'}>
-              <Title className='flex items-center font-quicksand text-2xl'>
-                <Box className='mr-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500 shadow-lg'>
-                  <IconBolt className='h-6 w-6 text-white' />
-                </Box>
-                Cơ hội điểm thưởng
-              </Title>
-            </Box>
+  const isLoggedIn = !!userData?.id;
+  const currentPromotionLevel = promotionLevels[(userData?.level as UserLevel) || UserLevel.BRONZE];
+
+  const visibleFeatures = currentPromotionLevel.features.slice(0, 4);
+  const hiddenFeatureCount = Math.max(currentPromotionLevel.features.length - visibleFeatures.length, 0);
+  return (
+    <Box className='relative overflow-hidden rounded-[2rem] border border-slate-200 bg-backgroundAdmin p-4 shadow-[0_24px_80px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-dark-card sm:p-6 lg:p-8'>
+      <Box className='pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-mainColor/10 blur-3xl' />
+
+      <SimpleGrid cols={{ base: 1, lg: 12 }} spacing={{ base: 'xl', lg: 34 }} className='relative z-[1]'>
+        <Box className='lg:col-span-5'>
+          <Stack gap='xl' className='h-full'>
             <Box>
-              <Box className='space-y-4'>
-                <Paper
-                  withBorder
-                  className='flex items-center justify-between border border-solid border-green-200 bg-green-50 p-4'
-                >
-                  <Text size='lg' fw={'bold'} className='dark:text-green-600'>
-                    🎉 Đơn hàng cuối tuần
-                  </Text>
-                  <Badge size='lg' py={'sm'} className='bg-green-500 text-white'>
-                    x2 điểm
-                  </Badge>
-                </Paper>
-                <Paper
-                  withBorder
-                  className='flex items-center justify-between border border-solid border-orange-200 bg-orange-50 p-4'
-                >
-                  <Text size='lg' fw={'bold'} className='dark:text-orange-600'>
-                    🎂 Tháng sinh nhật
-                  </Text>
-                  <Badge size='lg' py={'sm'} className='bg-orange-500 text-white'>
-                    x3 điểm
-                  </Badge>
-                </Paper>
-                <Paper
-                  withBorder
-                  className='flex items-center justify-between border border-solid border-purple-200 bg-purple-50 p-4'
-                >
-                  <Text size='lg' fw={'bold'} className='dark:text-purple-600'>
-                    🎪 Sự kiện đặc biệt
-                  </Text>
-                  <Badge size='lg' py={'sm'} className='bg-purple-500 text-white'>
-                    x5 điểm
-                  </Badge>
-                </Paper>
-              </Box>
+              <Group gap='xs' mb='sm'>
+                <Box className='h-px w-10 bg-mainColor' />
+                <Text size='sm' fw={800} className='uppercase tracking-[0.22em] text-mainColor'>
+                  Thành viên Phụng Food
+                </Text>
+              </Group>
+
+              <Title className='font-quicksand text-3xl font-black leading-tight text-slate-950 dark:text-white sm:text-4xl'>
+                Tích điểm sau mỗi lần đặt.
+              </Title>
+
+              <Text mt='md' size='md' c='dimmed' className='max-w-xl leading-7'>
+                Tích điểm dễ dàng, ưu đãi rõ ràng - Đặc quyền trong tầm tay, quản lý ngay trong ví
+              </Text>
             </Box>
-          </Card>
+
+            <Stack gap='sm'>
+              {rewardRules.map((item, index) => (
+                <Paper
+                  key={item.title}
+                  radius={'xl'}
+                  p='md'
+                  className='group relative overflow-hidden border border-slate-200 bg-slate-50/70 transition duration-300 hover:-translate-y-1 hover:border-mainColor/30 hover:bg-backgroundAdmin hover:shadow-lg dark:border-white/10 dark:bg-backgroundAdmin/[0.03] dark:hover:bg-backgroundAdmin/[0.06]'
+                >
+                  <Group wrap='nowrap' align='flex-start' gap='md'>
+                    <Text
+                      fw={950}
+                      className='w-10 shrink-0 font-quicksand text-2xl leading-none text-slate-300 transition duration-300 group-hover:text-mainColor dark:text-white/20'
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </Text>
+
+                    <Box className='min-w-0 flex-1'>
+                      <Group justify='space-between' gap='xs' wrap='nowrap'>
+                        <Text fw={900} className='text-slate-900 dark:text-white'>
+                          {item.title}
+                        </Text>
+
+                        <Badge
+                          variant='light'
+                          radius='xl'
+                          className='shrink-0 bg-subColor/20 text-slate-900 dark:text-white'
+                        >
+                          {item.value}
+                        </Badge>
+                      </Group>
+
+                      <Text mt={5} size='sm' c='dimmed' className='leading-6'>
+                        {item.description}
+                      </Text>
+                    </Box>
+                  </Group>
+                </Paper>
+              ))}
+            </Stack>
+
+            <Paper
+              radius={'xl'}
+              p='lg'
+              className='mt-auto overflow-hidden border border-slate-200 bg-slate-950 text-white shadow-xl dark:border-white/10'
+            >
+              <Box className='pointer-events-none absolute' />
+
+              <Stack gap='md'>
+                <Box>
+                  <Text size='xs' fw={900} className='uppercase tracking-[0.22em] text-white/45'>
+                    Cách tính dễ hiểu
+                  </Text>
+
+                  <Title mt={6} order={4} className='font-quicksand text-xl font-black'>
+                    Cứ 100.000đ chi tiêu tương ứng 10 điểm.
+                  </Title>
+
+                  <Text mt={6} size='sm' className='leading-6 text-white/60'>
+                    Điểm được cộng sau khi đơn hàng hoàn tất. Các chương trình cuối tuần hoặc chiến dịch riêng có thể
+                    cộng thêm.
+                  </Text>
+                </Box>
+
+                <Box className='h-px w-full bg-white/10' />
+
+                <Stack gap='xs'>
+                  {pointExamples.map((item, index) => (
+                    <Group key={item.label} justify='space-between' gap='md' wrap='nowrap'>
+                      <Group gap='sm' wrap='nowrap'>
+                        <Text className='w-6 shrink-0 font-quicksand text-sm font-black text-white/30'>
+                          {String(index + 1).padStart(2, '0')}
+                        </Text>
+
+                        <Text size='sm' className='text-white/72'>
+                          {item.label}
+                        </Text>
+                      </Group>
+
+                      <Text fw={950} className='shrink-0 text-subColor'>
+                        {item.point}
+                      </Text>
+                    </Group>
+                  ))}
+                </Stack>
+
+                <Paper p='sm' className='border border-white/10 bg-white/[0.06]'>
+                  <Group justify='space-between' gap='md' wrap='nowrap'>
+                    <Box>
+                      <Text size='sm' fw={900} className='text-white'>
+                        Mẹo nhỏ
+                      </Text>
+                      <Text size='xs' className='mt-1 leading-5 text-white/55'>
+                        Đặt theo nhóm hoặc gia đình sẽ giúp điểm tăng nhanh hơn.
+                      </Text>
+                    </Box>
+
+                    <Text className='shrink-0 font-quicksand text-2xl font-black text-white/20'>+++</Text>
+                  </Group>
+                </Paper>
+              </Stack>
+            </Paper>
+          </Stack>
         </Box>
 
-        <Box className='space-y-8'>
-          {userData?.id ? (
-            <Card padding={'lg'} shadow='xl' className='border-0 bg-white shadow-2xl dark:bg-dark-card'>
-              <Stack>
-                <Title className='flex items-center justify-between font-quicksand text-2xl'>
-                  Tiến độ
-                  <Badge
-                    size='xl'
-                    py={'lg'}
-                    className={`text-lg text-white`}
-                    style={{ backgroundColor: levelUser.color }}
-                  >
-                    {levelUser.viName}
-                  </Badge>
-                </Title>
-                <Divider />
-
-                <Flex gap={'md'} align={'center'}>
-                  <Text size='md'>
-                    Hiện có <b>{userData.pointUser}</b> điểm
-                  </Text>
-                  <Text>-/-</Text>
-                  <Text size='md'>
-                    Cần <b>{caculatePoint.remainingPointToNextLevel}</b> điểm để lên hạng <b>{levelNextUser.viName}</b>
-                  </Text>
-                </Flex>
-                <Divider />
-                <Box>
-                  <Box className='mb-3 flex justify-between text-lg font-semibold'>
-                    <span>Tiến trình lên hạng {levelNextUser.viName || 'Vàng'}</span>
-                    <span className={`text-[${levelUser.color}]`}>{caculatePoint.percentFormat.toFixed(1)}%</span>
-                  </Box>
-                  <Progress value={caculatePoint.percentFormat} color={levelUser.color} size='md' />
-                  <Text size='sm' c={'dimmed'} className='mt-2'>
-                    Chỉ cần thêm {caculatePoint.remainingPointToNextLevel} điểm tích lũy nữa để đạt hạng{' '}
-                    {levelNextUser.viName}!
-                  </Text>
-                </Box>
-
-                <Box className='grid grid-cols-2 gap-6 pt-4'>
-                  <Paper withBorder className='border-orange-200 bg-orange-50 p-3 text-center shadow-lg'>
-                    <Title order={1} fw={700} className='font-quicksand text-orange-600'>
-                      <NumberFormatter value={userData.pointUser} thousandSeparator='.' decimalSeparator=',' />
-                    </Title>
-                    <Text size='sm' fw={500} c={'dimmed'}>
-                      Tổng điểm
-                    </Text>
-                  </Paper>
-                  <Paper withBorder className='border-blue-200 bg-blue-100 p-3 text-center font-quicksand shadow-lg'>
-                    <Title order={1} fw={700} className='font-quicksand text-blue-600'>
-                      {userData.order.length || 0}
-                    </Title>
-                    <Text size='sm' fw={500} c={'dimmed'}>
-                      Đơn hàng trong năm
-                    </Text>
-                  </Paper>
-                </Box>
-              </Stack>
-            </Card>
-          ) : (
-            <Card
-              padding={'lg'}
-              shadow='xl'
-              className='relative overflow-hidden border-0 bg-white shadow-2xl dark:bg-dark-card'
+        <Box className='lg:col-span-7'>
+          {isLoggedIn ? (
+            <Paper
+              p={{ base: 'lg', sm: 'xl' }}
+              radius={'xl'}
+              className='relative overflow-hidden border border-slate-200 bg-slate-950 text-white shadow-2xl dark:border-white/10'
             >
-              <Box className='absolute left-0 right-0 top-0 h-2 bg-orange-400'></Box>
-              <Box mb={'md'}>
-                <Title className='flex items-center justify-between font-quicksand text-2xl'>
-                  Kiếm điểm ngay hôm nay!
-                  <Button size='md' className='bg-orange-500 text-lg text-white hover:bg-orange-600'>
-                    Tham gia
-                  </Button>
-                </Title>
-                <Text mt={'xs'}>Xem bạn có thể kiếm được bao nhiêu khi trở thành thành viên</Text>
-              </Box>
-              <Box className='space-y-6'>
-                <Paper withBorder className='border-2 border-orange-200 bg-orange-50 p-6'>
-                  <Title className='mb-4 font-quicksand text-xl font-bold text-orange-800'>
-                    🎯 Ví dụ: Tháng đầu tiên của bạn
+              <Box
+                className='absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-40 blur-3xl'
+                style={{ backgroundColor: levelUser.color }}
+              />
+
+              <Box className='absolute bottom-0 left-0 h-40 w-full bg-gradient-to-t from-white/10 to-transparent' />
+
+              <Stack gap='xl' className='relative z-[1]'>
+                <Box>
+                  <Badge
+                    size='lg'
+                    radius='xl'
+                    className='border border-white/15 bg-backgroundAdmin/10 text-white backdrop-blur'
+                  >
+                    Hạng {levelUser.viName}
+                  </Badge>
+
+                  <Title mt='lg' className='font-quicksand text-3xl font-black sm:text-4xl'>
+                    Xin chào, thành viên {levelUser.viName}
                   </Title>
-                  <Box className='space-y-3'>
-                    <Box className='flex items-center justify-between'>
-                      <span className='text-gray-700 dark:text-dark-text'>8 đơn hàng × trung bình 250.000 VND</span>
-                      <span className='font-bold text-orange-600'>250 điểm</span>
-                    </Box>
-                    <Box className='flex items-center justify-between'>
-                      <span className='text-gray-700 dark:text-dark-text'>Tiền thưởng cuối tuần (gấp đôi điểm)</span>
-                      <span className='font-bold text-orange-600'>+500 điểm</span>
-                    </Box>
-                    <Box className='flex items-center justify-between'>
-                      <span className='text-gray-700 dark:text-dark-text'>Tiền thưởng đăng ký</span>
-                      <span className='font-bold text-orange-600'>+500 điểm</span>
-                    </Box>
-                    <hr className='border-orange-200' />
-                    <Box className='flex items-center justify-between text-lg'>
-                      <span className='font-bold text-orange-800'> Tổng số điểm kiếm được</span>
-                      <span className='text-xl font-bold text-orange-600'>3,000 điểm</span>
-                    </Box>
-                    <Paper withBorder className='border border-yellow-300 bg-yellow-100 p-3'>
-                      <Text className='text-center font-semibold text-yellow-800'>
-                        🎉 Xin chúc mừng! Bạn đã đạt trạng thái Vàng!{' '}
-                      </Text>
-                    </Paper>
-                  </Box>
+
+                  <Text mt='sm' className='max-w-xl leading-7 text-white/70'>
+                    Bạn đang có{' '}
+                    <Text span fw={900} className='text-white'>
+                      <NumberFormatter value={currentPoint} thousandSeparator='.' decimalSeparator=',' /> điểm
+                    </Text>
+                    . Tiếp tục tích lũy để mở khóa hạng {levelNextUser.viName}.
+                  </Text>
+                </Box>
+                <Center className='hidden shrink-0 sm:flex'>
+                  <RingProgress
+                    size={150}
+                    thickness={12}
+                    roundCaps
+                    sections={[{ value: progressValue, color: levelUser.color }]}
+                    label={
+                      <Box ta='center'>
+                        <Text fw={950} size='xl' className='text-white'>
+                          {progressValue.toFixed(0)}%
+                        </Text>
+                        <Text size='xs' className='text-white/55'>
+                          tiến độ
+                        </Text>
+                      </Box>
+                    }
+                  />
+                </Center>
+                <Paper p='md' className='border border-white/10 bg-backgroundAdmin/10 backdrop-blur-md'>
+                  <Group justify='space-between' mb='sm' gap='xs'>
+                    <Text fw={900}>Tiến trình lên hạng {levelNextUser.viName}</Text>
+
+                    <Text size='sm' className='text-white/70'>
+                      Còn {remainingPoint} điểm
+                    </Text>
+                  </Group>
+
+                  <Progress
+                    value={progressValue}
+                    size='lg'
+                    radius='xl'
+                    color={levelUser.color}
+                    classNames={{
+                      root: 'bg-backgroundAdmin/15'
+                    }}
+                  />
+
+                  <Group mt='sm' justify='space-between'>
+                    <Text size='xs' className='text-white/55'>
+                      Hiện tại
+                    </Text>
+
+                    <Text size='xs' className='text-white/55'>
+                      {levelNextUser.viName}
+                    </Text>
+                  </Group>
                 </Paper>
 
-                <Box className='grid grid-cols-2 gap-6 pt-4'>
-                  <Paper withBorder className='border-orange-200 bg-orange-50 p-3 text-center shadow-lg'>
-                    <Title order={1} fw={700} className='font-quicksand text-orange-600'>
-                      15%
-                    </Title>
-                    <Text size='sm' fw={500} c={'dimmed'}>
-                      Giảm giá vàng
-                    </Text>
-                  </Paper>
-                  <Paper withBorder className='border-blue-200 bg-blue-100 p-3 text-center shadow-lg'>
-                    <Title order={1} fw={700} className='font-quicksand text-blue-600'>
-                      450k
-                    </Title>
-                    <Text size='sm' fw={500} c={'dimmed'}>
-                      Tiết kiệm hàng tháng
-                    </Text>
-                  </Paper>
-                </Box>
+                <SimpleGrid cols={{ base: 1, md: 12 }} spacing='sm' className='items-stretch'>
+                  <Box className='md:col-span-5'>
+                    <Stack gap='sm' className='h-full'>
+                      <Paper p='md' className='flex-1 border border-white/10 bg-backgroundAdmin/[0.08] backdrop-blur'>
+                        <Text size='xs' className='text-white/55'>
+                          Tổng điểm
+                        </Text>
 
-                <Box className='pt-4'>
-                  <Button
-                    leftSection={<IconUserPlus className='mr-2 h-5 w-5' />}
-                    className='w-full transform bg-orange-500 text-lg text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-orange-600'
+                        <Text mt={4} fw={950} size='xl'>
+                          <NumberFormatter value={currentPoint} thousandSeparator='.' decimalSeparator=',' /> điểm
+                        </Text>
+                      </Paper>
+
+                      <Paper p='md' className='flex-1 border border-white/10 bg-backgroundAdmin/[0.08] backdrop-blur'>
+                        <Text size='xs' className='text-white/55'>
+                          Đơn hàng trong năm
+                        </Text>
+
+                        <Text mt={4} fw={950} size='xl'>
+                          {orderCount} đơn hàng
+                        </Text>
+                      </Paper>
+
+                      <Paper p='md' className='flex-1 border border-white/10 bg-backgroundAdmin/[0.08] backdrop-blur'>
+                        <Text size='xs' className='text-white/55'>
+                          Hạng tiếp theo
+                        </Text>
+
+                        <Text mt={4} fw={950} size='xl'>
+                          {levelNextUser.viName}
+                        </Text>
+                      </Paper>
+                    </Stack>
+                  </Box>
+
+                  <Paper
+                    p='md'
+                    className='border border-white/10 bg-backgroundAdmin/[0.08] backdrop-blur md:col-span-7'
                   >
-                    Đăng ký miễn phí và bắt đầu kiếm điểm!
-                  </Button>
-                </Box>
-              </Box>
-            </Card>
-          )}
+                    <Stack gap='md' className='h-full'>
+                      <Group justify='space-between' align='flex-start' gap='md'>
+                        <Box>
+                          <Text size='xs' className='text-white/55'>
+                            Quyền lợi hiện tại
+                          </Text>
 
-          <Card padding={'lg'} shadow='xl' className='border-0 bg-white dark:bg-dark-card'>
-            <Box mb={'md'}>
-              <Title className='font-quicksand text-2xl'>🎯 Cách kiếm điểm</Title>
-              <Text>Tối đa hóa điểm của bạn bằng những chiến lược này!</Text>
-            </Box>
-            <Box className='space-y-4'>
-              <Paper withBorder className='border border-solid border-yellow-200 bg-yellow-50 p-4'>
-                <Text className='text-lg font-semibold text-yellow-800'>💡 Đặt hàng cuối tuần nhận gấp đôi điểm</Text>
-                <Text className='mt-1 text-sm text-yellow-700'>
-                  Vào thứ Bảy và Chủ Nhật được cộng 20 điểm cho mỗi 10.000 VND
-                </Text>
-              </Paper>
-              <Paper withBorder className='border border-solid border-purple-200 bg-purple-50 p-4'>
-                <Text className='text-lg font-semibold text-purple-800'>
-                  🎪 Tham gia sự kiện nhận điểm thưởng triền miên
-                </Text>
-                <Text className='mt-1 text-sm text-purple-700'>
-                  Theo dõi chúng tôi để biết các sự kiện tích điểm độc quyền
-                </Text>
-              </Paper>
-              <Paper withBorder className='border border-solid border-green-200 bg-green-50 p-4'>
-                <Text className='text-lg font-semibold text-green-800'>🎂 Tháng sinh nhật = điểm gấp ba</Text>
-                <Text className='mt-1 text-sm text-green-700'>
-                  Kiếm 30 điểm cho mỗi 1 đô la trong tháng sinh nhật của bạn
-                </Text>
-              </Paper>
-            </Box>
-          </Card>
+                          <Text mt={4} fw={950} size='lg'>
+                            Hạng {currentPromotionLevel.name}
+                          </Text>
+                        </Box>
+
+                        <Badge radius='xl' className='border border-white/10 bg-white/10 text-white'>
+                          {currentPromotionLevel.range}
+                        </Badge>
+                      </Group>
+
+                      <Box className='h-px w-full bg-white/10' />
+
+                      <Stack gap='xs' className='flex-1'>
+                        {visibleFeatures.map((feature, index) => (
+                          <Group key={feature} gap='sm' align='flex-start' wrap='nowrap'>
+                            <Text fw={950} className='mt-[2px] w-6 shrink-0 font-quicksand text-sm text-white/35'>
+                              {String(index + 1).padStart(2, '0')}
+                            </Text>
+
+                            <Text size='sm' className='text-white/78 leading-6'>
+                              {feature}
+                            </Text>
+                          </Group>
+                        ))}
+                      </Stack>
+
+                      {hiddenFeatureCount > 0 && (
+                        <Paper p='sm' className='border border-white/10 bg-white/[0.06]'>
+                          <Text size='sm' className='text-white/65'>
+                            Còn {hiddenFeatureCount} quyền lợi khác sẽ được hiển thị trong trang chi tiết thành viên.
+                          </Text>
+                        </Paper>
+                      )}
+                    </Stack>
+                  </Paper>
+                </SimpleGrid>
+              </Stack>
+            </Paper>
+          ) : (
+            <Paper
+              p={{ base: 'lg', sm: 'xl' }}
+              radius={'xl'}
+              className='relative overflow-hidden border border-slate-200 bg-slate-950 text-white shadow-2xl dark:border-white/10'
+            >
+              <Box className='absolute -right-20 -top-20 h-72 w-72 rounded-full bg-subColor/30 blur-3xl' />
+              <Box className='absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-mainColor/25 blur-3xl' />
+
+              <Stack gap='xl' className='relative z-[1]'>
+                <Group justify='space-between' align='flex-start' gap='lg'>
+                  <Box>
+                    <Badge size='lg' radius='xl' className='border border-white/15 bg-backgroundAdmin/10 text-white'>
+                      Thành viên mới
+                    </Badge>
+
+                    <Title mt='lg' className='font-quicksand text-3xl font-black sm:text-4xl'>
+                      Đăng nhập để bắt đầu nhận điểm.
+                    </Title>
+
+                    <Text mt='sm' className='max-w-xl text-white/70'>
+                      Theo dõi điểm thưởng, hạng thành viên và các ưu đãi cá nhân hóa sau mỗi lần đặt món.
+                    </Text>
+                  </Box>
+                </Group>
+
+                <Paper p='md' className='border border-white/10 bg-backgroundAdmin/10 backdrop-blur-md'>
+                  <Text fw={900}>Ví dụ trong tháng đầu tiên</Text>
+
+                  <Stack mt='md' gap='sm'>
+                    {guestEstimate.map(item => (
+                      <Group key={item.label} justify='space-between' gap='md' wrap='nowrap'>
+                        <Box className='w-[60%] md:flex-1'>
+                          <Text size='sm' fw={800}>
+                            {item.label}
+                          </Text>
+                          <Text size='xs' className='text-white/55'>
+                            {item.muted}
+                          </Text>
+                        </Box>
+
+                        <Text fw={950} className='flex-1 text-subColor md:w-[max-content] md:flex-none'>
+                          {item.value}
+                        </Text>
+                      </Group>
+                    ))}
+                  </Stack>
+
+                  <Divider my='md' className='border-white/10' />
+
+                  <Group justify='space-between'>
+                    <Text fw={900}>Tổng điểm ước tính</Text>
+                    <Text fw={950} size='xl'>
+                      1.250 điểm
+                    </Text>
+                  </Group>
+                </Paper>
+
+                <Button component={Link} href='/dang-nhap' size='md' rightSection={<IconLogin2 size={18} />}>
+                  Đăng nhập để tích điểm
+                </Button>
+              </Stack>
+            </Paper>
+          )}
         </Box>
       </SimpleGrid>
-    </>
+    </Box>
   );
 }

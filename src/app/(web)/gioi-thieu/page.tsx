@@ -1,8 +1,4 @@
 import {
-  Accordion,
-  AccordionControl,
-  AccordionItem,
-  AccordionPanel,
   Box,
   Button,
   Card,
@@ -20,20 +16,15 @@ import {
 import {
   IconArrowRight,
   IconChefHat,
+  IconCircleCheck,
   IconClock,
-  IconFlame,
-  IconGift,
-  IconHeartHandshake,
   IconMapPin,
   IconMapPins,
-  IconMoodSmile,
-  IconPackage,
   IconPhone,
-  IconShieldCheck,
-  IconStar,
-  IconTrendingUp,
-  IconTruckDelivery
+  IconSoup,
+  IconStar
 } from '@tabler/icons-react';
+
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -44,8 +35,12 @@ import { journey, signatures, stats } from '~/shared/constants/about-us.constant
 import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
 import { api } from '~/trpc/server';
 import { SectionHeading } from '../../../components/SectionHeading';
+import { SectionFaqs } from './components/SectionFaqs';
+import { SectionMember } from './components/SectionMember';
 import { SectionMenuHighlights } from './components/SectionMenuHighlights';
-import { SectionTestimonials } from './components/SectionTestimonials';
+import { SectionProcessSteps } from './components/SectionProcessSteps';
+import AboutReviewBlock from './components/SectionTestimonials';
+import { SectionValues } from './components/SectionValues';
 
 export const dynamic = 'force-static';
 
@@ -53,76 +48,6 @@ export const metadata: Metadata = {
   title: 'Giới thiệu - Phụng Food',
   description: 'Phụng Food - hương vị miền Tây hiện đại, món ngon nóng hổi, giao nhanh và đầy cảm xúc.'
 };
-const faqs = [
-  {
-    q: 'Phụng Food có giao hàng không?',
-    a: 'Có. Bạn có thể đặt món trực tiếp trên website và theo dõi trạng thái đơn hàng.'
-  },
-  {
-    q: 'Món ăn có được làm mới khi đặt không?',
-    a: 'Có. Các món chính được chế biến sau khi có đơn để đảm bảo độ nóng và hương vị.'
-  },
-  {
-    q: 'Có chương trình thành viên không?',
-    a: 'Có. Khách hàng có thể tích điểm, nhận voucher và ưu đãi theo cấp độ thành viên.'
-  }
-];
-const menuHighlights = [
-  {
-    name: 'Burger bò sốt tiêu miền Tây',
-    desc: 'Bò mềm, sốt tiêu đậm vị, rau tươi và bánh nóng.',
-    image: '/images/png/delicious-burger-fries.png'
-  },
-  {
-    name: 'Gà giòn mật ong cay',
-    desc: 'Lớp vỏ giòn, sốt mật ong cay nhẹ, rất hợp ăn cùng khoai.',
-    image: '/images/jpg/cooking-1.jpg'
-  },
-  {
-    name: 'Combo gia đình',
-    desc: 'Phần ăn đầy đủ, tiết kiệm, phù hợp cho nhóm bạn hoặc gia đình.',
-    image: '/images/jpg/cooking-2.jpg'
-  }
-];
-const processSteps = [
-  {
-    icon: IconShieldCheck,
-    title: 'Chọn nguyên liệu',
-    desc: 'Nguyên liệu được kiểm tra kỹ trước khi nhập bếp.'
-  },
-  {
-    icon: IconFlame,
-    title: 'Chế biến nóng mới',
-    desc: 'Món được làm khi có đơn để giữ độ ngon tốt nhất.'
-  },
-  {
-    icon: IconPackage,
-    title: 'Đóng gói cẩn thận',
-    desc: 'Bao bì sạch, chắc chắn, giữ nhiệt và dễ mang đi.'
-  },
-  {
-    icon: IconMoodSmile,
-    title: 'Giao đến khách hàng',
-    desc: 'Đơn hàng được xử lý nhanh, rõ trạng thái và dễ theo dõi.'
-  }
-];
-const values = [
-  {
-    icon: IconChefHat,
-    title: 'Món ăn có linh hồn',
-    desc: 'Không chỉ ngon, mỗi món đều có câu chuyện: vị miền Tây, cách làm chỉn chu và cảm giác thân thuộc.'
-  },
-  {
-    icon: IconTruckDelivery,
-    title: 'Nóng hổi đến tay',
-    desc: 'Tối ưu quy trình bếp và giao hàng để món đến nơi vẫn giữ được độ ngon, giòn, nóng.'
-  },
-  {
-    icon: IconHeartHandshake,
-    title: 'Tử tế trong từng phần ăn',
-    desc: 'Nguyên liệu rõ ràng, đóng gói sạch sẽ, khẩu vị dễ nhớ và dịch vụ khiến khách muốn quay lại.'
-  }
-];
 
 const getInitAboutUs = async () => {
   try {
@@ -132,7 +57,7 @@ const getInitAboutUs = async () => {
   }
 };
 export default async function AboutPage() {
-  const data: GetInitAboutUs = await api.Page.getInitAboutUs();
+  const data: GetInitAboutUs = await getInitAboutUs();
   const restaurant = data?.restaurant;
   return (
     <>
@@ -201,9 +126,8 @@ export default async function AboutPage() {
                   {stats.map(item => (
                     <Paper
                       key={item.label}
-                      radius='xl'
                       p='md'
-                      className='border border-white/10 bg-white/10 text-center text-white backdrop-blur-md'
+                      className='border border-white/10 bg-backgroundAdmin/10 text-center text-white backdrop-blur-md'
                     >
                       <Text className='font-quicksand text-2xl font-black text-subColor'>{item.value}</Text>
                       <Text size='sm' className='text-white/72'>
@@ -220,34 +144,49 @@ export default async function AboutPage() {
                 <Box className='absolute -inset-6 rounded-[3rem] bg-gradient-to-br from-subColor/30 to-mainColor/30 blur-2xl' />
 
                 <Card
-                  radius={36}
                   p='md'
-                  className='relative overflow-hidden border border-white/15 bg-white/10 backdrop-blur-xl'
+                  radius={'xl'}
+                  className='relative overflow-hidden border border-white/15 bg-backgroundAdmin/10 backdrop-blur-xl'
                 >
-                  <Box className='relative h-[430px] overflow-hidden rounded-[28px]'>
+                  <Paper radius={'xl'} className='relative h-[430px] overflow-hidden bg-transparent'>
                     <Image src='/images/jpg/cooking-1.jpg' alt='Bếp Phụng Food' fill className='object-cover' />
                     <Box className='absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent' />
 
-                    <Paper radius='xl' p='md' className='bg-white/92 absolute bottom-4 left-4 right-4 backdrop-blur-md'>
-                      <Box>
-                        <Text fw={800} className='text-mainColor'>
+                    <Paper
+                      p='md'
+                      radius={'xl'}
+                      className='absolute bottom-4 left-4 right-4 overflow-hidden border border-white/20 bg-[linear-gradient(135deg,rgba(15,23,42,0.82),rgba(30,41,59,0.72),rgba(120,78,25,0.58))] shadow-[0_24px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl'
+                    >
+                      <Box className='absolute -right-12 -top-12 h-32 w-32 rounded-full bg-mainColor/25 blur-3xl' />
+                      <Box className='absolute -bottom-14 left-8 h-28 w-28 rounded-full bg-subColor/25 blur-2xl' />
+
+                      <Box className='relative pl-3'>
+                        <Group gap='xs' mb={8}>
+                          <Box className='h-px w-7 bg-subColor/80' />
+                          <Text size='xs' fw={800} className='uppercase tracking-[0.22em] text-subColor'>
+                            Phụng Food
+                          </Text>
+                        </Group>
+
+                        <Text fw={900} className='font-quicksand text-lg leading-snug text-white'>
                           Không chỉ là một bữa ăn
                         </Text>
 
-                        <Text size='sm' c='dimmed'>
-                          Chúng tôi mong muốn tạo nên những khoảnh khắc đáng nhớ quanh bàn ăn của bạn.
+                        <Text mt={6} size='sm' className='max-w-[92%] leading-6 text-white/75'>
+                          Chúng tôi chăm chút từng món ăn để mỗi lần đặt hàng đều có cảm giác gần gũi, ấm áp và đáng nhớ
+                          hơn.
                         </Text>
-                      </Box>
 
-                      <ThemeIcon
-                        variant='transparent'
-                        size='xl'
-                        className='absolute right-[10px] top-[10px] text-subColor'
-                      >
-                        <IconTrendingUp />
-                      </ThemeIcon>
+                        <Box className='mt-4 flex items-center gap-2'>
+                          <Box className='h-px flex-1 bg-gradient-to-r from-subColor/70 to-transparent' />
+
+                          <Text size='xs' fw={800} className='whitespace-nowrap text-white/60'>
+                            phục vụ bằng sự tử tế
+                          </Text>
+                        </Box>
+                      </Box>
                     </Paper>
-                  </Box>
+                  </Paper>
                 </Card>
               </Box>
             </Reveal>
@@ -255,7 +194,7 @@ export default async function AboutPage() {
         </Box>
       </Box>
 
-      <Stack gap={100} className='relative w-full overflow-hidden px-1 py-16 md:px-4 md:py-24'>
+      <Stack className='relative w-full gap-[100px] overflow-hidden px-1 py-16 sm:gap-[120px] sm:overflow-visible md:px-4 md:py-24'>
         <Reveal z={40}>
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing={50} verticalSpacing={40} className='items-center'>
             <Stack gap='lg'>
@@ -282,16 +221,10 @@ export default async function AboutPage() {
               </Stack>
 
               <Group>
-                <Button
-                  component={Link}
-                  href='/thuc-don'
-                  radius='xl'
-                  size='md'
-                  rightSection={<IconArrowRight size={17} />}
-                >
+                <Button component={Link} href='/thuc-don' size='md' rightSection={<IconArrowRight size={17} />}>
                   Khám phá thực đơn
                 </Button>
-                <Button component={Link} href='/dang-ky' radius='xl' size='md' variant='light'>
+                <Button component={Link} href='/dang-ky' size='md' variant='light'>
                   Tích điểm ngay
                 </Button>
               </Group>
@@ -302,19 +235,19 @@ export default async function AboutPage() {
               <Box className='absolute -bottom-5 -left-5 h-40 w-40 rounded-full bg-mainColor/20 blur-2xl' />
 
               <Paper
-                radius={32}
+                radius={'xl'}
                 p={10}
-                className='relative overflow-hidden border bg-white shadow-2xl dark:bg-dark-card'
+                className='relative overflow-hidden border bg-backgroundAdmin shadow-2xl dark:bg-dark-card'
               >
-                <Box className='relative h-[420px] overflow-hidden rounded-[26px]'>
+                <Paper radius={'xl'} className='relative h-[420px] overflow-hidden bg-transparent'>
                   <Image src='/images/jpg/cooking-2.jpg' alt='Chef Phụng' fill className='object-cover' />
-                </Box>
+                </Paper>
               </Paper>
 
               <Paper
-                radius='xl'
                 p='lg'
-                className='absolute -bottom-8 left-6 max-w-[300px] border bg-white shadow-xl dark:bg-dark-card'
+                radius={'xl'}
+                className='absolute -bottom-8 left-6 max-w-[300px] border bg-backgroundAdmin shadow-xl dark:bg-dark-card'
               >
                 <Text className='font-quicksand text-xl font-black text-mainColor'>“Ngon là phải nhớ.”</Text>
                 <Text size='sm' c='dimmed' mt={6}>
@@ -325,41 +258,7 @@ export default async function AboutPage() {
           </SimpleGrid>
         </Reveal>
 
-        <Reveal z={40}>
-          <Box>
-            <SectionHeading
-              index='02'
-              title='Điều làm nên sự khác biệt'
-              description='Không chỉ bán đồ ăn. Chúng tôi tạo ra trải nghiệm khiến khách muốn quay lại.'
-              center
-            />
-
-            <SimpleGrid cols={{ base: 1, md: 3 }} spacing='xl' mt={45}>
-              {values.map((item, index) => (
-                <Card
-                  key={item.title}
-                  radius={28}
-                  p='xl'
-                  className='group relative overflow-hidden border bg-white shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-2xl dark:bg-dark-card'
-                >
-                  <Box className='absolute right-0 top-0 h-28 w-28 rounded-bl-full bg-mainColor/5 transition duration-300 group-hover:bg-subColor/20' />
-
-                  <ThemeIcon size={58} radius={20} className='bg-mainColor text-white'>
-                    <item.icon size={28} />
-                  </ThemeIcon>
-
-                  <Text mt='xl' className='font-quicksand text-2xl font-black'>
-                    0{index + 1}. {item.title}
-                  </Text>
-
-                  <Text mt='sm' c='dimmed' className='leading-7'>
-                    {item.desc}
-                  </Text>
-                </Card>
-              ))}
-            </SimpleGrid>
-          </Box>
-        </Reveal>
+        <SectionValues />
 
         <Reveal z={40}>
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing={50} className='items-start'>
@@ -370,12 +269,12 @@ export default async function AboutPage() {
                 description='Một thương hiệu đáng nhớ không chỉ đến từ món ngon, mà còn từ cách nó lớn lên cùng khách hàng.'
               />
 
-              <Paper radius={28} p='xl' className='border-l-4 border-subColor bg-mainColor/[0.09] dark:bg-dark-card'>
-                <Text className='font-quicksand text-2xl font-black italic leading-snug text-mainColor'>
+              <Paper p='xl' radius={'xl'} className='border-l-4 border-subColor bg-mainColor/[0.09] dark:bg-dark-card'>
+                <Text className='font-quicksand text-xl font-black italic leading-snug text-mainColor md:text-2xl'>
                   “Một món ăn ngon không phải là món đắt nhất, mà là món khiến khách muốn quay lại lần nữa.”
                 </Text>
 
-                <Text mt='md' fw={700} c='dimmed'>
+                <Text mt='md' fw={700} c='dimmed' ta={'right'}>
                   — Chef Phụng
                 </Text>
               </Paper>
@@ -405,271 +304,247 @@ export default async function AboutPage() {
           </SimpleGrid>
         </Reveal>
 
-        <Reveal z={40}>
-          <Box>
-            <SectionHeading
-              index='04'
-              title='Từ căn bếp đến tay bạn'
-              description='Chúng tôi thiết kế quy trình phục vụ để mỗi đơn hàng không chỉ nhanh, mà còn chỉn chu.'
-              center
-            />
-
-            <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing='xl' mt={45}>
-              {processSteps.map((step, index) => (
-                <Card
-                  key={step.title}
-                  radius={28}
-                  p='xl'
-                  className='relative overflow-hidden border bg-white shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-xl dark:bg-dark-card'
-                >
-                  <Text className='absolute right-5 top-4 font-quicksand text-5xl font-black text-mainColor/[0.06]'>
-                    0{index + 1}
-                  </Text>
-
-                  <ThemeIcon size={58} radius={20} className='bg-subColor text-black'>
-                    <step.icon size={28} />
-                  </ThemeIcon>
-
-                  <Text mt='xl' className='font-quicksand text-xl font-black'>
-                    {step.title}
-                  </Text>
-
-                  <Text mt='sm' c='dimmed' className='leading-7'>
-                    {step.desc}
-                  </Text>
-                </Card>
-              ))}
-            </SimpleGrid>
-          </Box>
-        </Reveal>
+        <SectionProcessSteps />
 
         <SectionMenuHighlights productsPagination={data.productBestSaler} />
 
-        <Reveal z={40}>
-          <Paper
-            radius={36}
-            p={{ md: 48 }}
-            className='relative overflow-hidden border bg-white shadow-sm dark:bg-dark-card'
-          >
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing={50} className='items-center'>
-              <Stack gap='md'>
-                <SectionHeading
-                  index='06'
-                  title='Ăn ngon hơn khi trở thành thành viên'
-                  description='Không chỉ đặt món, khách hàng còn được tích điểm, nhận ưu đãi và mở khóa nhiều quyền lợi theo từng cấp độ.'
-                />
+        <SectionMember />
 
-                <Group>
-                  <Button component={Link} href='/dang-ky' radius='xl' size='lg' rightSection={<IconGift size={18} />}>
-                    Đăng ký thành viên
-                  </Button>
-
-                  <Button component={Link} href='/thuc-don' radius='xl' size='lg' variant='light'>
-                    Đặt món trước
-                  </Button>
-                </Group>
-              </Stack>
-
-              <SimpleGrid cols={1} spacing='md'>
-                {[
-                  'Tích điểm sau mỗi đơn hàng',
-                  'Nhận voucher theo cấp độ thành viên',
-                  'Ưu đãi sinh nhật và dịp đặc biệt',
-                  'Theo dõi lịch sử đơn hàng dễ dàng'
-                ].map(item => (
-                  <Paper key={item} radius='xl' p='lg' className='border bg-mainColor/[0.06]'>
-                    <Group>
-                      <ThemeIcon radius='xl' className='bg-mainColor'>
-                        <IconGift size={18} />
-                      </ThemeIcon>
-                      <Text fw={800}>{item}</Text>
-                    </Group>
-                  </Paper>
-                ))}
-              </SimpleGrid>
-            </SimpleGrid>
-          </Paper>
-        </Reveal>
+        <SectionFaqs />
 
         <Reveal z={40}>
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing={50} className='items-start'>
-            <SectionHeading
-              index='07'
-              title='Một vài điều khách thường hỏi'
-              description='Trả lời nhanh những thắc mắc phổ biến trước khi khách đặt món.'
-            />
-
-            <Accordion variant='separated' radius='xl'>
-              {faqs.map(item => (
-                <AccordionItem key={item.q} value={item.q} className='bg-mainColor/[0.06]'>
-                  <AccordionControl>
-                    <Text fw={800}>{item.q}</Text>
-                  </AccordionControl>
-                  <AccordionPanel>
-                    <Text c='dimmed' className='leading-7'>
-                      {item.a}
-                    </Text>
-                  </AccordionPanel>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </SimpleGrid>
-        </Reveal>
-        <Reveal z={40}>
-          <Paper radius={36} p={{ base: 'xl', md: 48 }} className='relative overflow-hidden bg-mainColor text-white'>
+          <Paper radius={'xl'} p={{ base: 'lg', md: 36 }} className='relative overflow-hidden bg-[#1f4f4a] text-white'>
             <Box className='absolute -right-24 -top-24 h-72 w-72 rounded-full bg-subColor/25 blur-3xl' />
             <Box className='absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-white/10 blur-3xl' />
 
-            <SimpleGrid cols={{ base: 1, md: 2 }} spacing={40} className='relative items-center'>
+            <SimpleGrid cols={{ base: 1, md: 2 }} spacing={{ base: 32, md: 44 }} className='relative items-center'>
               <Stack gap='md'>
-                <Text size='sm' fw={800} tt='uppercase' lts={3} className='text-white/60'>
-                  Chef Phụng
-                </Text>
+                <Group gap='sm'>
+                  <Box className='h-px w-8 bg-subColor' />
+                  <Text size='sm' fw={800} tt='uppercase' lts={3} className='text-subColor'>
+                    Chef Phụng
+                  </Text>
+                </Group>
 
-                <Title className='text-balance font-quicksand text-4xl font-black md:text-5xl'>
+                <Title className='text-balance font-quicksand text-3xl font-black md:text-5xl'>
                   Mỗi món ăn phải có lý do để khách nhớ đến
                 </Title>
 
-                <Text className='text-lg leading-8 text-white/80'>
+                <Text className='max-w-xl text-base leading-7 text-white/80 md:text-lg'>
                   Chef Phụng không chỉ tạo công thức. Cô tạo cảm giác: vị sốt đậm hơn một chút, lớp vỏ giòn lâu hơn một
                   chút, phần ăn đủ đầy hơn một chút.
                 </Text>
               </Stack>
 
-              <Stack gap='md'>
-                {[
-                  { icon: IconClock, label: 'Chuẩn bị nhanh nhưng không cẩu thả' },
-                  { icon: IconChefHat, label: 'Công thức được thử vị nhiều lần trước khi bán' },
-                  { icon: IconTruckDelivery, label: 'Đóng gói tối ưu để giữ độ nóng và giòn' }
-                ].map(item => (
-                  <Paper
-                    key={item.label}
-                    radius='xl'
-                    p='lg'
-                    className='border border-white/10 bg-white/10 backdrop-blur-md'
-                  >
-                    <Group>
-                      <ThemeIcon radius='xl' size='lg' className='bg-subColor text-black'>
-                        <item.icon size={20} />
+              <Box className='relative mx-auto w-full max-w-[470px]'>
+                <Box className='absolute -top-4 left-1/2 z-20 h-8 w-40 -translate-x-1/2 rotate-1 bg-[#d8b985]/80 shadow-sm'>
+                  <Box className='absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.18)_0px,rgba(255,255,255,0.18)_1px,transparent_1px,transparent_7px)] opacity-50' />
+                </Box>
+
+                <Box className='absolute -right-1 top-7 z-20 h-16 w-8 rotate-12 rounded-full border-[3px] border-[#c59b45]' />
+                <Box className='absolute right-[6px] top-[42px] z-20 h-11 w-3 rotate-12 rounded-full border-[3px] border-[#c59b45]' />
+
+                <Paper
+                  p={{ base: 'lg', md: 26 }}
+                  className='paper-note-real relative overflow-hidden border border-[#eadfca] bg-[#fff8e9] text-[#123f3b] shadow-[0_22px_50px_rgba(39,28,12,0.26),0_8px_16px_rgba(39,28,12,0.12)]'
+                >
+                  <Box className='pointer-events-none absolute inset-0 opacity-[0.32]'>
+                    <Box className='absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(80,50,20,0.08)_0_1px,transparent_1px),radial-gradient(circle_at_80%_30%,rgba(80,50,20,0.07)_0_1px,transparent_1px)] bg-[length:18px_18px]' />
+                    <Box className='absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.45),transparent_35%,rgba(120,80,30,0.06))]' />
+                  </Box>
+
+                  <Box className='absolute bottom-0 right-0 h-20 w-20 overflow-hidden'>
+                    <Box className='absolute bottom-0 right-0 h-20 w-20 rounded-tl-[24px] bg-[#ead8b8] shadow-[-8px_-8px_18px_rgba(80,50,20,0.12)]' />
+                    <Box className='absolute bottom-0 right-0 h-16 w-16 bg-[#fff3dc]' />
+                  </Box>
+
+                  <Stack gap='md' className='relative z-10'>
+                    <Group gap='sm'>
+                      <ThemeIcon size={30} radius='xl' variant='transparent' className='text-[#c79b3b]'>
+                        <IconChefHat size={23} />
                       </ThemeIcon>
-                      <Text fw={700}>{item.label}</Text>
+
+                      <Box>
+                        <Text size='md' fw={800} className='text-[#123f3b]'>
+                          Ghi chú từ bếp
+                        </Text>
+                        <Box className='mt-1 h-[2px] w-28 rounded-full bg-[#c79b3b]/50' />
+                      </Box>
                     </Group>
-                  </Paper>
-                ))}
-              </Stack>
+
+                    <Box>
+                      <Title className='max-w-sm font-quicksand text-3xl font-black leading-[1.05] text-[#063f3b] md:text-4xl'>
+                        Không chỉ là một bữa ăn
+                      </Title>
+
+                      <Box className='mt-2 h-[3px] w-36 rounded-full bg-[#c79b3b]' />
+                    </Box>
+
+                    <Text className='max-w-sm text-sm leading-6 text-slate-700 md:text-base'>
+                      Chúng tôi mong muốn tạo nên những khoảnh khắc đáng nhớ quanh bàn ăn của bạn.
+                    </Text>
+
+                    <Stack gap={6}>
+                      {['Vị được chỉnh kỹ', 'Đóng gói giữ độ nóng', 'Phần ăn đủ đầy'].map(item => (
+                        <Group key={item} gap='sm' wrap='nowrap' className='border-b border-[#d8c7a8]/70 pb-1.5'>
+                          <ThemeIcon size={28} radius='xl' variant='transparent' className='shrink-0 text-[#0c4a43]'>
+                            <IconCircleCheck size={22} stroke={2.4} />
+                          </ThemeIcon>
+
+                          <Text fw={700} className='font-quicksand text-[15px] italic text-[#263b38]'>
+                            {item}
+                          </Text>
+                        </Group>
+                      ))}
+                    </Stack>
+
+                    <Group justify='space-between' align='center' mt={4}>
+                      <Text size='xs' fw={800} tt='uppercase' lts={2} className='text-[#c79b3b]'>
+                        Chef Phụng
+                      </Text>
+
+                      <Group gap={4} className='hidden sm:flex'>
+                        <IconSoup size={38} stroke={1.5} className='text-[#123f3b]/80' />
+                        <Text className='text-xl text-[#c79b3b]'>〰</Text>
+                      </Group>
+                    </Group>
+                  </Stack>
+                </Paper>
+              </Box>
             </SimpleGrid>
           </Paper>
         </Reveal>
 
-        <SectionTestimonials reviewsPagination={data.topReviews} />
+        <AboutReviewBlock />
 
         <Reveal z={40}>
           <SimpleGrid cols={{ base: 1, md: 2 }} spacing='xl' className='items-stretch'>
-            <Paper radius={32} p={{ md: 'xl' }} className='border bg-white shadow-sm dark:bg-dark-card'>
-              <Stack gap='md'>
-                <SectionHeading index='09' title='Đến ăn trực tiếp hoặc đặt giao tận nơi' />
+            <Stack gap='md'>
+              <SectionHeading index='09' title='Đến ăn trực tiếp hoặc đặt giao tận nơi' />
 
-                <Divider
-                  variant='dashed'
-                  size={'sm'}
-                  w={'100%'}
-                  classNames={{
-                    root: 'border-mainColor'
-                  }}
-                  labelPosition='center'
-                  label={
-                    <>
-                      <IconMapPins size={30} className='italic text-mainColor' />
-                    </>
-                  }
-                />
+              <Divider
+                variant='dashed'
+                size={'sm'}
+                w={'100%'}
+                classNames={{
+                  root: 'border-mainColor'
+                }}
+                labelPosition='center'
+                label={
+                  <>
+                    <IconMapPins size={30} className='italic text-mainColor' />
+                  </>
+                }
+              />
 
-                <Group align='flex-start' wrap='nowrap'>
-                  <ThemeIcon radius='xl' className='bg-mainColor'>
-                    <IconMapPin size={18} />
-                  </ThemeIcon>
-                  <Box>
-                    <Text fw={800}>Địa chỉ</Text>
-                    <Text c='dimmed'>
-                      {restaurant?.address || '123 Sài Gòn, Quận Ẩm Thực, Thành phố của chúng tôi'}
+              <Group align='flex-start' wrap='nowrap'>
+                <ThemeIcon radius='xl' className='bg-mainColor'>
+                  <IconMapPin size={18} />
+                </ThemeIcon>
+                <Box>
+                  <Text fw={800}>Địa chỉ</Text>
+                  <Text c='dimmed'>{restaurant?.address || '123 Sài Gòn, Quận Ẩm Thực, Thành phố của chúng tôi'}</Text>
+                </Box>
+              </Group>
+
+              <Group align='flex-start' wrap='nowrap'>
+                <ThemeIcon radius='xl' className='bg-mainColor'>
+                  <IconClock size={18} />
+                </ThemeIcon>
+                <Box>
+                  <Text fw={800}>Giờ hoạt động</Text>
+                  {restaurant?.openingHours?.length ? (
+                    restaurant.openingHours.map((hours, index) => (
+                      <Text key={index} c='dimmed'>
+                        {hours.viNameDay}: <b>{hours.openTime}</b> - <b>{hours.closeTime}</b>
+                      </Text>
+                    ))
+                  ) : (
+                    <Text c='dimmed'>Thứ 2 - Chủ Nhật: 10:00 - 22:00</Text>
+                  )}
+                </Box>
+              </Group>
+
+              <Group align='flex-start' wrap='nowrap'>
+                <ThemeIcon radius='xl' className='bg-mainColor'>
+                  <IconPhone size={18} />
+                </ThemeIcon>
+                <Box>
+                  <Text fw={800}>Hotline</Text>
+                  <Group gap={8}>
+                    <Text
+                      component='a'
+                      href={`tel:${restaurant?.phone}`}
+                      fw={800}
+                      className='text-mainColor hover:underline'
+                    >
+                      {restaurant?.phone || '0942486950'}
                     </Text>
-                  </Box>
-                </Group>
+                    <Text c='dimmed'>-/ -</Text>
+                    <Text component='a' href='tel:0942486950' fw={800} className='text-mainColor hover:underline'>
+                      0942486950
+                    </Text>
+                  </Group>
+                </Box>
+              </Group>
 
-                <Group align='flex-start' wrap='nowrap'>
-                  <ThemeIcon radius='xl' className='bg-mainColor'>
-                    <IconClock size={18} />
-                  </ThemeIcon>
-                  <Box>
-                    <Text fw={800}>Giờ hoạt động</Text>
-                    {restaurant?.openingHours?.length ? (
-                      restaurant.openingHours.map((hours, index) => (
-                        <Text key={index} c='dimmed'>
-                          {hours.viNameDay}: <b>{hours.openTime}</b> - <b>{hours.closeTime}</b>
-                        </Text>
-                      ))
-                    ) : (
-                      <Text c='dimmed'>Thứ 2 - Chủ Nhật: 10:00 - 22:00</Text>
-                    )}
-                  </Box>
-                </Group>
+              <Button component={Link} href='/thuc-don' size='lg' rightSection={<IconArrowRight size={18} />}>
+                Xem thực đơn
+              </Button>
+            </Stack>
 
-                <Group align='flex-start' wrap='nowrap'>
-                  <ThemeIcon radius='xl' className='bg-mainColor'>
-                    <IconPhone size={18} />
-                  </ThemeIcon>
-                  <Box>
-                    <Text fw={800}>Hotline</Text>
-                    <Group gap={8}>
-                      <Text
-                        component='a'
-                        href={`tel:${restaurant?.phone}`}
-                        fw={800}
-                        className='text-mainColor hover:underline'
-                      >
-                        {restaurant?.phone || '0942486950'}
-                      </Text>
-                      <Text c='dimmed'>-/ -</Text>
-                      <Text component='a' href='tel:0942486950' fw={800} className='text-mainColor hover:underline'>
-                        0942486950
-                      </Text>
-                    </Group>
-                  </Box>
-                </Group>
-
-                <Button
-                  component={Link}
-                  href='/thuc-don'
-                  radius='xl'
-                  size='lg'
-                  rightSection={<IconArrowRight size={18} />}
-                >
-                  Xem thực đơn
-                </Button>
-              </Stack>
-            </Paper>
-
-            <Paper radius={32} p={8} className='relative min-h-[420px] overflow-hidden border shadow-sm'>
+            <Paper
+              p={8}
+              radius={'xl'}
+              className='relative min-h-[420px] overflow-hidden border border-white/25 bg-slate-950 shadow-[0_28px_80px_rgba(15,23,42,0.18)] dark:border-white/10'
+            >
               <Image src='/images/jpg/map.jpg' alt='Bản đồ Phụng Food' fill className='object-cover' />
-              <Box className='absolute inset-0 bg-gradient-to-t from-black/45 to-transparent' />
+
+              <Box className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent' />
+              <Box className='absolute inset-0 bg-gradient-to-r from-black/35 via-transparent to-black/20' />
+
+              <Box className='absolute left-[52%] top-[38%]'>
+                <Box className='relative flex h-8 w-8 items-center justify-center rounded-full bg-subColor shadow-[0_0_0_10px_rgba(248,193,68,0.18)]'>
+                  <Box className='h-2.5 w-2.5 rounded-full bg-black' />
+                  <Box className='absolute h-8 w-8 animate-ping rounded-full bg-subColor/45' />
+                </Box>
+              </Box>
+
               <Paper
-                radius='xl'
                 p='md'
-                className='absolute bottom-5 left-5 right-5 bg-white/90 backdrop-blur-md dark:bg-dark-card'
+                radius={'xl'}
+                className='absolute bottom-5 left-5 right-5 overflow-hidden border border-white/20 bg-[linear-gradient(135deg,rgba(15,23,42,0.88),rgba(30,41,59,0.74),rgba(120,78,25,0.52))] shadow-[0_24px_60px_rgba(0,0,0,0.32)] backdrop-blur-xl'
               >
-                <Group justify='space-between'>
-                  <Box>
-                    <Text fw={900} className='text-mainColor'>
-                      Phụng Food Restaurant
+                <Box className='absolute -right-10 -top-10 h-28 w-28 rounded-full bg-mainColor/20 blur-2xl' />
+                <Box className='absolute -bottom-12 left-8 h-24 w-24 rounded-full bg-subColor/25 blur-2xl' />
+
+                <Box className='relative pl-3'>
+                  <Group gap='xs' mb={8}>
+                    <Box className='h-px w-7 bg-subColor/80' />
+
+                    <Text size='xs' fw={800} className='uppercase tracking-[0.22em] text-subColor'>
+                      Vị trí nhà hàng
                     </Text>
-                    <Text size='sm' c='dimmed'>
-                      Sẵn sàng phục vụ món ngon nóng hổi mỗi ngày
+                  </Group>
+
+                  <Text fw={900} className='font-quicksand text-lg leading-snug text-white'>
+                    Phụng Food Restaurant
+                  </Text>
+
+                  <Text mt={6} size='sm' className='max-w-[92%] leading-6 !text-white/75'>
+                    Sẵn sàng phục vụ món ngon nóng hổi mỗi ngày, từ căn bếp quen thuộc của Phụng Food.
+                  </Text>
+
+                  <Box className='mt-4 flex items-center gap-3'>
+                    <Box className='h-2 w-2 rounded-full bg-subColor shadow-[0_0_0_6px_rgba(248,193,68,0.14)]' />
+
+                    <Box className='h-px flex-1 bg-gradient-to-r from-subColor/70 via-white/20 to-transparent' />
+
+                    <Text size='xs' fw={800} className='whitespace-nowrap !text-white/75'>
+                      mở cửa mỗi ngày
                     </Text>
                   </Box>
-                  <ThemeIcon radius='xl' size='xl' className='bg-subColor text-black'>
-                    <IconMapPin />
-                  </ThemeIcon>
-                </Group>
+                </Box>
               </Paper>
             </Paper>
           </SimpleGrid>

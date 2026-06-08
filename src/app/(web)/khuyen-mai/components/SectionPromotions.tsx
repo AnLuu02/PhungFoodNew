@@ -1,5 +1,5 @@
 'use client';
-import { Box, Stack } from '@mantine/core';
+import { Paper, Stack } from '@mantine/core';
 import { useCallback, useState } from 'react';
 import { SectionHeading } from '~/components/SectionHeading';
 import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
@@ -41,7 +41,7 @@ export const SectionPromotions = ({ initialData }: { initialData: any }) => {
         />
 
         {productData?.length > 0 && (
-          <Box className='mb-16'>
+          <Paper radius={'xl'} withBorder className='mb-16 overflow-hidden border-2 border-dashed border-mainColor'>
             <LayoutPromotion
               data={productData}
               withPagination={{
@@ -53,7 +53,7 @@ export const SectionPromotions = ({ initialData }: { initialData: any }) => {
                 loading: isLoading
               }}
             />
-          </Box>
+          </Paper>
         )}
       </Stack>
     </>

@@ -41,13 +41,7 @@ export const SectionMenuHighlights = ({
             description='Một vài lựa chọn nổi bật giúp khách mới dễ bắt đầu và khách cũ luôn có lý do quay lại.'
           />
 
-          <Button
-            component={Link}
-            href='/thuc-don'
-            radius='xl'
-            rightSection={<IconArrowRight size={17} />}
-            visibleFrom='md'
-          >
+          <Button component={Link} href='/thuc-don' rightSection={<IconArrowRight size={17} />} visibleFrom='md'>
             Xem tất cả món
           </Button>
         </Group>

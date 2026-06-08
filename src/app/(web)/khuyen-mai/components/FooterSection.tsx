@@ -47,7 +47,6 @@ export default function FooterSection() {
                       component={Link}
                       href='/thuc-don'
                       size='lg'
-                      radius='xl'
                       rightSection={<IconArrowRight size={18} />}
                       className='h-auto bg-subColor px-7 py-3 text-base font-black text-black shadow-[0_18px_60px_rgba(248,193,68,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300'
                     >
@@ -58,7 +57,6 @@ export default function FooterSection() {
                       component={Link}
                       href='/thong-tin'
                       size='lg'
-                      radius='xl'
                       variant='outline'
                       className='h-auto border-white/25 bg-white/10 px-7 py-3 text-base font-bold text-white backdrop-blur-md transition hover:-translate-y-1 hover:bg-white/15'
                     >
@@ -70,10 +68,8 @@ export default function FooterSection() {
                     <Button
                       component={Link}
                       href='/dang-nhap'
-                      size='lg'
-                      radius='xl'
                       rightSection={<IconGift size={18} />}
-                      className='h-auto bg-subColor px-7 py-3 text-base font-black text-black shadow-[0_18px_60px_rgba(248,193,68,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300'
+                      className='h-auto bg-subColor px-5 py-3 text-sm font-black text-black shadow-[0_18px_60px_rgba(248,193,68,0.35)] transition hover:-translate-y-1 hover:bg-yellow-300 md:px-7 md:py-3 md:text-base'
                     >
                       Nhận 500 điểm
                     </Button>
@@ -81,12 +77,10 @@ export default function FooterSection() {
                     <Button
                       component={Link}
                       href='/thuc-don'
-                      size='lg'
-                      radius='xl'
                       variant='outline'
-                      className='h-auto border-white/25 bg-white/10 px-7 py-3 text-base font-bold text-white backdrop-blur-md transition hover:-translate-y-1 hover:bg-white/15'
+                      className='h-auto border-white/25 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur-md transition hover:-translate-y-1 hover:bg-white/15 md:px-7 md:py-3 md:text-base'
                     >
-                      Xem món đang giảm
+                      Món đang giảm
                     </Button>
                   </>
                 )}
@@ -97,7 +91,7 @@ export default function FooterSection() {
           <GridCol span={{ base: 12, lg: 5 }}>
             <Paper
               pos={'relative'}
-              radius={32}
+              radius={'xl'}
               className='border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-xl sm:p-6'
             >
               <Stack gap='md'>
