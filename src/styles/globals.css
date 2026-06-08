@@ -119,3 +119,8 @@ a {
   pointer-events: none;
   content: '';
 }
+@keyframes vip-shine {
+  100% {
+    transform: translateX(100%);
+  }
+}

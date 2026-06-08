@@ -25,6 +25,7 @@ import {
   IconStar
 } from '@tabler/icons-react';
 
+import { Flex } from '@mantine/core';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -221,10 +222,24 @@ export default async function AboutPage() {
               </Stack>
 
               <Group>
-                <Button component={Link} href='/thuc-don' size='md' rightSection={<IconArrowRight size={17} />}>
+                <Button
+                  component={Link}
+                  href='/thuc-don'
+                  h={{ base: 40, sm: 44, lg: 50 }}
+                  px={{ base: 16, sm: 22, lg: 28 }}
+                  fz={{ base: 14, sm: 15, lg: 16 }}
+                  rightSection={<IconArrowRight size={17} />}
+                >
                   Khám phá thực đơn
                 </Button>
-                <Button component={Link} href='/dang-ky' size='md' variant='light'>
+                <Button
+                  component={Link}
+                  href='/dang-ky'
+                  h={{ base: 40, sm: 44, lg: 50 }}
+                  px={{ base: 16, sm: 22, lg: 28 }}
+                  fz={{ base: 14, sm: 15, lg: 16 }}
+                  variant='outline'
+                >
                   Tích điểm ngay
                 </Button>
               </Group>
@@ -488,9 +503,17 @@ export default async function AboutPage() {
                 </Box>
               </Group>
 
-              <Button component={Link} href='/thuc-don' size='lg' rightSection={<IconArrowRight size={18} />}>
-                Xem thực đơn
-              </Button>
+              <Flex align={'flex-end'} justify={'flex-end'}>
+                <Button
+                  component={Link}
+                  href='/thuc-don'
+                  size='md'
+                  w={'max-content'}
+                  rightSection={<IconArrowRight size={18} />}
+                >
+                  Xem thực đơn
+                </Button>
+              </Flex>
             </Stack>
 
             <Paper

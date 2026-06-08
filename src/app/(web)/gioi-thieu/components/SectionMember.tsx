@@ -1,9 +1,12 @@
 'use client';
-import { Badge, Box, Button, Group, Paper, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
+import { Badge, Box, Button, Group, Paper, SimpleGrid, Skeleton, Stack, Text, ThemeIcon, Title } from '@mantine/core';
+import { UserLevel } from '@prisma/client';
 import { IconArrowRight, IconCake, IconGift, IconTicket, IconTruckDelivery } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
+import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
+import { api } from '~/trpc/react';
 const guestBenefits = [
   {
     icon: IconGift,
@@ -130,7 +133,7 @@ const MemberGuestCard = () => {
           </Stack>
 
           <Paper p='md' className='border border-slate-100 bg-slate-50 dark:border-white/10 dark:bg-white/5'>
-            <Group justify='space-between' align='center' wrap='nowrap'>
+            <Group justify='space-between' align='center' wrap='wrap'>
               <Box>
                 <Text size='sm' fw={900} className='text-slate-950 dark:text-white'>
                   Bắt đầu bằng một tài khoản miễn phí
@@ -158,7 +161,29 @@ const MemberGuestCard = () => {
 };
 export const SectionMember = () => {
   const { data: session } = useSession();
+  const { data: user, isLoading } = api.User.getOne.useQuery(
+    { key: session?.user?.id },
+    { enabled: !!session?.user?.id }
+  );
+
   const isLoggedIn = !!session?.user;
+
+  const currentLevelKey = user?.level ?? UserLevel.BRONZE;
+  const LEVEL = INFO_LEVEL_USER[currentLevelKey];
+
+  const NEXT_LEVEL = LEVEL.key === LEVEL.nextLevel ? LEVEL : INFO_LEVEL_USER[LEVEL.nextLevel];
+
+  const currentPoint = user?.pointUser ?? 0;
+  const pointRemaining = NEXT_LEVEL.minPoint - currentPoint;
+
+  const isMaxLevel = pointRemaining <= 0;
+
+  const levelText = isMaxLevel
+    ? 'Bạn đã đạt hạng thành viên cao nhất của nhà hàng.'
+    : `Còn ${pointRemaining} điểm để lên hạng ${NEXT_LEVEL.viName}`;
+
+  const progressColor = LEVEL.color;
+  const valueProgress = isMaxLevel ? 100 : Math.min((currentPoint / NEXT_LEVEL.minPoint) * 100, 100);
 
   return (
     <>
@@ -191,13 +216,42 @@ export const SectionMember = () => {
                 </Text>
               </Box>
 
-              <Group gap='sm'>
-                <Button component={Link} href='/dang-ky' size='lg' rightSection={<IconGift size={18} />}>
-                  Đăng ký thành viên
-                </Button>
+              <Group gap='sm' p={0} m={0}>
+                {isLoggedIn ? (
+                  <>
+                    <Button
+                      component={Link}
+                      href='/thuc-don'
+                      h={{ base: 40, sm: 44, lg: 50 }}
+                      px={{ base: 16, sm: 22, lg: 28 }}
+                      fz={{ base: 14, sm: 15, lg: 16 }}
+                      rightSection={<IconGift size={18} />}
+                    >
+                      Tích lũy ngay
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    component={Link}
+                    href='/dang-ky'
+                    h={{ base: 40, sm: 44, lg: 50 }}
+                    px={{ base: 12, sm: 22, lg: 28 }}
+                    fz={{ base: 14, sm: 15, lg: 16 }}
+                    rightSection={<IconGift size={18} />}
+                  >
+                    Đăng ký thành viên
+                  </Button>
+                )}
 
-                <Button component={Link} href='/thuc-don' size='lg' variant='light'>
-                  Đặt món trước
+                <Button
+                  component={Link}
+                  href='/thuc-don'
+                  h={{ base: 40, sm: 44, lg: 50 }}
+                  px={{ base: 12, sm: 22, lg: 28 }}
+                  fz={{ base: 14, sm: 15, lg: 16 }}
+                  variant='outline'
+                >
+                  Đặt món
                 </Button>
               </Group>
 
@@ -225,7 +279,53 @@ export const SectionMember = () => {
               </SimpleGrid>
             </Stack>
 
-            {isLoggedIn ? (
+            {isLoading ? (
+              <Box className='relative mx-auto w-full max-w-[520px]'>
+                <Paper
+                  p={{ base: 'lg', md: 'xl' }}
+                  radius='xl'
+                  className='relative overflow-hidden border border-slate-200 bg-white shadow-2xl dark:border-white/10 dark:bg-slate-950'
+                >
+                  <Stack gap='xl' className='relative'>
+                    <Box>
+                      <Skeleton height={12} width='30%' mb={8} radius='xl' />
+                      <Skeleton height={28} width='70%' radius='md' />
+                    </Box>
+
+                    <Paper
+                      p='md'
+                      className='border border-mainColor/10 bg-mainColor/[0.06] dark:border-white/10 dark:bg-white/5'
+                    >
+                      <Group justify='space-between' mb={12}>
+                        <Box style={{ flex: 1 }}>
+                          <Skeleton height={16} width='60%' mb={6} />
+                          <Skeleton height={12} width='80%' />
+                        </Box>
+                        <Skeleton height={24} width={40} />
+                      </Group>
+                      <Skeleton height={8} radius='xl' />
+                    </Paper>
+
+                    <Stack gap='lg'>
+                      {[1, 2, 3, 4].map(i => (
+                        <Group key={i} gap='md' align='flex-start' wrap='nowrap'>
+                          <Skeleton height={40} width={40} circle className='shrink-0' />
+                          <Box style={{ flex: 1 }}>
+                            <Skeleton height={16} width='70%' mb={8} />
+                            <Skeleton height={12} width='90%' />
+                          </Box>
+                        </Group>
+                      ))}
+                    </Stack>
+
+                    <Paper p='md' className='rounded-2xl bg-slate-50 dark:bg-white/5'>
+                      <Skeleton height={14} width='90%' mb={8} />
+                      <Skeleton height={12} width='60%' />
+                    </Paper>
+                  </Stack>
+                </Paper>
+              </Box>
+            ) : isLoggedIn ? (
               <>
                 <Box className='relative mx-auto w-full max-w-[520px]'>
                   <Box className='absolute -inset-4 rounded-[2rem] bg-mainColor/5 blur-xl' />
@@ -262,20 +362,33 @@ export const SectionMember = () => {
                         <Group justify='space-between' mb={8}>
                           <Box>
                             <Text size='sm' fw={800} className='text-slate-950 dark:text-white'>
-                              Hạng Bạc
+                              Hạng <b style={{ color: LEVEL.color }}> {LEVEL.viName}</b>
                             </Text>
                             <Text size='xs' c='dimmed'>
-                              Còn 320 điểm để lên hạng Vàng
+                              {levelText}
                             </Text>
                           </Box>
 
-                          <Text fw={900} className='font-quicksand text-xl text-mainColor'>
-                            680đ
+                          <Text fw={900} className='font-quicksand text-xl' style={{ color: LEVEL.color }}>
+                            {user?.pointUser ?? 0}
                           </Text>
                         </Group>
 
                         <Box className='h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10'>
-                          <Box className='h-full w-[68%] rounded-full bg-mainColor' />
+                          <Box
+                            className='relative h-full overflow-hidden rounded-full transition-all duration-500'
+                            style={{
+                              width: `${isMaxLevel ? 100 : valueProgress}%`,
+                              background: isMaxLevel
+                                ? `linear-gradient(90deg, ${progressColor}, ${progressColor + 10}, ${progressColor})`
+                                : progressColor,
+                              boxShadow: isMaxLevel ? `0 0 16px ${progressColor}80` : undefined
+                            }}
+                          >
+                            {isMaxLevel && (
+                              <Box className='absolute inset-0 -translate-x-full animate-[vip-shine_1.8s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/70 to-transparent' />
+                            )}
+                          </Box>
                         </Box>
                       </Paper>
 

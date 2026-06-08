@@ -96,7 +96,6 @@ export const SectionFaqs = () => {
                       href='/lien-he'
                       mt='md'
                       size='sm'
-                      variant='light'
                       rightSection={<IconArrowRight size={16} />}
                     >
                       Liên hệ hỗ trợ
