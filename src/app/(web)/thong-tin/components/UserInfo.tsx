@@ -20,7 +20,6 @@ import {
   ThemeIcon,
   Tooltip
 } from '@mantine/core';
-import { UserLevel } from '@prisma/client';
 import { IconCircleCheck, IconUpload } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
@@ -28,9 +27,9 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
+import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
-import { promotionLevels } from '~/lib/HardData/promotion-level';
 import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { GetOneUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
@@ -56,7 +55,10 @@ export function UserInfo() {
     const statusObj = getTotalOrderStatus(orderData);
     return { statusObj };
   }, [userInfor]);
-  const levelInfo = INFO_LEVEL_USER[userInfor?.level || UserLevel.BRONZE];
+  const { currentLevel, benefit, currentPoint, levelText, nextLevel, progressRemainingValue } = caculateLevelUser({
+    level: userInfor?.level,
+    pointUser: userInfor?.pointUser
+  });
   if (status === 'loading' || isLoading)
     return (
       <Grid p={0} grow>
@@ -71,7 +73,7 @@ export function UserInfo() {
   return (
     <Grid p={0} grow>
       <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
-        <Card shadow='lg' withBorder pos='relative' bg={`${levelInfo.color}22`} className='h-full pt-10 sm:p-7'>
+        <Card shadow='lg' withBorder pos='relative' bg={`${currentLevel.color}22`} className='h-full pt-10 sm:p-7'>
           <Box pos='absolute' top={10} right={4}>
             <UpdateUserButton
               email={userInfor?.email || ''}
@@ -107,25 +109,25 @@ export function UserInfo() {
               </Group>
               <Flex align='center' gap={10} pos={'relative'}>
                 <Box pos={'relative'}>
-                  <Image src={`/images/png/${levelInfo.thumbnail}`} width={120} height={40} alt='vip' />
+                  <Image src={`/images/png/${currentLevel.thumbnail}`} width={120} height={40} alt='vip' />
                   <Badge
                     size='md'
                     pos={'absolute'}
                     bottom={10}
-                    bg={levelInfo.color}
+                    bg={currentLevel.color}
                     className='left-[50%] w-[max-content] translate-x-[-50%] rounded-b-full font-bold tracking-widest text-white'
                   >
-                    {levelInfo.viName}
+                    {currentLevel.viName}
                   </Badge>
                 </Box>
 
-                <Badge size='md' ml={5} variant='outline' color={levelInfo.color}>
+                <Badge size='md' ml={5} variant='outline' color={currentLevel.color}>
                   {userInfor?.pointUser} điểm
                 </Badge>
               </Flex>
             </Stack>
           </Group>
-          <Divider mb={16} color={`${levelInfo.color}20`} />
+          <Divider mb={16} color={`${currentLevel.color}20`} />
           <Grid>
             <Grid.Col span={6}>
               <Text size='sm' fw={700}>
@@ -168,9 +170,9 @@ export function UserInfo() {
               </Text>
             </Grid.Col>
             <Grid.Col span={12}>
-              <Paper withBorder p='md' shadow='xs' bg={`${levelInfo.color}10`}>
+              <Paper withBorder p='md' shadow='xs' bg={`${currentLevel.color}10`}>
                 <Text size='sm' fw={700} mb={8}>
-                  Đặc quyền hạng {levelInfo.viName}
+                  Đặc quyền hạng {currentLevel.viName}
                 </Text>
                 <Spoiler
                   maxHeight={50}
@@ -185,12 +187,12 @@ export function UserInfo() {
                     size='xs'
                     center
                     icon={
-                      <ThemeIcon color={levelInfo.color} size={16} radius='xl'>
+                      <ThemeIcon color={currentLevel.color} size={16} radius='xl'>
                         <IconCircleCheck size={12} />
                       </ThemeIcon>
                     }
                   >
-                    {promotionLevels[(levelInfo.key as UserLevel) || UserLevel.BRONZE].features.map(f => (
+                    {benefit.features.map(f => (
                       <List.Item>{f}</List.Item>
                     ))}
                     <List.Item>Quà tặng sinh nhật bất ngờ</List.Item>
@@ -259,24 +261,19 @@ export function UserInfo() {
           <Box className='mt-4 space-y-3'>
             <Box className='flex items-center justify-between text-sm'>
               <span className='text-gray-600 dark:text-dark-text'>
-                Tiến độ lên hạng<b> {INFO_LEVEL_USER[levelInfo.nextLevel]?.viName}</b>
+                Tiến độ lên hạng<b> {nextLevel?.viName}</b>
               </span>
               <span className='font-medium text-gray-900 dark:text-dark-text'>
-                {userInfor?.pointUser || 0 / levelInfo.maxPoint} điểm
+                {userInfor?.pointUser || 0 / currentLevel.maxPoint} điểm
               </span>
             </Box>
-            <Progress
-              value={((userInfor?.pointUser || 0) / (levelInfo.maxPoint + 1)) * 100}
-              color={levelInfo.color}
-              size='md'
-              radius='xl'
-            />
+            <Progress value={progressRemainingValue} color={currentLevel.color} size='md' radius='xl' />
             <Box className='flex items-center justify-between'>
               <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[35%]'>
-                {levelInfo.viName} - ({userInfor?.pointUser || 0} điểm)
+                {currentLevel.viName} - ({userInfor?.pointUser || 0} điểm)
               </Text>
               <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[55%]'>
-                Cần thêm {levelInfo.maxPoint + 1 - (userInfor?.pointUser || 0)} điểm để thăng hạn
+                {levelText}
               </Text>
             </Box>
           </Box>
@@ -285,7 +282,7 @@ export function UserInfo() {
             <Box>
               <Flex gap={8} align='center' wrap={'wrap'} justify={'center'}>
                 {Object.values(INFO_LEVEL_USER).map((level, idx) => {
-                  const isCurrent = level.key === levelInfo.key;
+                  const isCurrent = level.key === currentLevel.key;
                   return (
                     <Center
                       key={level.key + idx}
@@ -305,7 +302,7 @@ export function UserInfo() {
               </Flex>
               <Center mt={'md'}>
                 <Text size='sm' c='dimmed'>
-                  <b>{userInfor?.pointUser}</b> điểm tích lũy |<b> {levelInfo.viName}</b>
+                  <b>{userInfor?.pointUser}</b> điểm tích lũy |<b> {currentLevel.viName}</b>
                 </Text>
               </Center>
             </Box>

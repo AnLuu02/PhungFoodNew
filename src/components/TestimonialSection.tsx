@@ -67,10 +67,10 @@ export function TestimonialSection({
       </Box>
 
       <Box className='relative'>
-        <Box className='mb-4 flex animate-slideRightPulse justify-end md:hidden'>
+        <Box className='mb-4 flex justify-end overflow-hidden md:hidden'>
           <Group
             gap={4}
-            className='rounded-full border border-slate-200 bg-white px-3 py-1.5 text-slate-500 shadow-sm dark:border-white/10 dark:bg-dark-card dark:text-dark-text'
+            className='animate-slideRightPulse rounded-full border border-slate-200 bg-white px-3 py-1.5 text-slate-500 shadow-sm dark:border-white/10 dark:bg-dark-card dark:text-dark-text'
           >
             <Text size='xs' fw={700} className='text-slate-500 dark:text-dark-text'>
               Kéo ngang để xem thêm

@@ -18,7 +18,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
 import { CardFeaturedOffer } from '~/components/Web/Card/CardFeaturedOffer';
-import { promotionLevels } from '~/lib/HardData/promotion-level';
+import { benefitLevel } from '~/lib/HardData/promotion-level';
 import { api } from '~/trpc/server';
 import { SectionHeading } from '../../../components/SectionHeading';
 import { TextTyping } from '../../../components/TextTyping';
@@ -155,7 +155,7 @@ export default async function FoodPromotionPage() {
                   ['Tự động', 'tích điểm'],
                   ['Dùng ngay', 'voucher']
                 ].map(item => (
-                  <Paper key={item[0]} className='bg-slate-50 px-3 py-3 text-center dark:bg-white/5 sm:px-4'>
+                  <Paper key={item[0]} className='bg-slate-50 px-3 py-3 text-center dark:bg-transparent sm:px-4'>
                     <Text size='sm' fw={900} className='whitespace-nowrap'>
                       {item[0]}
                     </Text>
@@ -199,7 +199,7 @@ export default async function FoodPromotionPage() {
 
           <Box className='relative'>
             <Box className='relative mb-4 mr-4 flex items-end justify-end lg:hidden'>
-              <Box className='flex animate-slideRightPulse items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:bg-dark-card dark:text-dark-text'>
+              <Box className='flex items-center gap-2 rounded-full bg-gray-100 px-4 py-2 text-xs font-medium text-gray-600 shadow-sm dark:bg-dark-card dark:text-dark-text'>
                 <span>Kéo để xem thêm</span>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
@@ -214,7 +214,7 @@ export default async function FoodPromotionPage() {
             </Box>
 
             <Box className='flex gap-4 overflow-x-auto pb-2 lg:overflow-x-visible'>
-              {Object.values(promotionLevels).map((level, i) => {
+              {Object.values(benefitLevel).map((level, i) => {
                 const Icon = level.icon;
                 return (
                   <Card

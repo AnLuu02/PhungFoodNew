@@ -1,6 +1,6 @@
 import { UserLevel } from '@prisma/client';
 import { IconAward, IconCrown, IconSparkles, IconStar, IconTrophy } from '@tabler/icons-react';
-export const promotionLevels = {
+export const benefitLevel = {
   [UserLevel.BRONZE]: {
     name: 'Đồng',
     color: '#3F2627',

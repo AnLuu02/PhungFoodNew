@@ -1,11 +1,10 @@
 'use client';
 import { Badge, Box, Button, Group, Paper, SimpleGrid, Skeleton, Stack, Text, ThemeIcon, Title } from '@mantine/core';
-import { UserLevel } from '@prisma/client';
 import { IconArrowRight, IconCake, IconGift, IconTicket, IconTruckDelivery } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
-import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
+import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
 import { api } from '~/trpc/react';
 const guestBenefits = [
   {
@@ -168,22 +167,14 @@ export const SectionMember = () => {
 
   const isLoggedIn = !!session?.user;
 
-  const currentLevelKey = user?.level ?? UserLevel.BRONZE;
-  const LEVEL = INFO_LEVEL_USER[currentLevelKey];
-
-  const NEXT_LEVEL = LEVEL.key === LEVEL.nextLevel ? LEVEL : INFO_LEVEL_USER[LEVEL.nextLevel];
-
-  const currentPoint = user?.pointUser ?? 0;
-  const pointRemaining = NEXT_LEVEL.minPoint - currentPoint;
-
-  const isMaxLevel = pointRemaining <= 0;
-
-  const levelText = isMaxLevel
-    ? 'Bạn đã đạt hạng thành viên cao nhất của nhà hàng.'
-    : `Còn ${pointRemaining} điểm để lên hạng ${NEXT_LEVEL.viName}`;
+  const {
+    progressRemainingValue,
+    currentLevel: LEVEL,
+    isMaxLevel,
+    levelText
+  } = caculateLevelUser({ level: user?.level, pointUser: user?.pointUser });
 
   const progressColor = LEVEL.color;
-  const valueProgress = isMaxLevel ? 100 : Math.min((currentPoint / NEXT_LEVEL.minPoint) * 100, 100);
 
   return (
     <>
@@ -284,7 +275,7 @@ export const SectionMember = () => {
                 <Paper
                   p={{ base: 'lg', md: 'xl' }}
                   radius='xl'
-                  className='relative overflow-hidden border border-slate-200 bg-white shadow-2xl dark:border-white/10 dark:bg-slate-950'
+                  className='relative overflow-hidden border border-slate-200 shadow-2xl dark:border-white/10'
                 >
                   <Stack gap='xl' className='relative'>
                     <Box>
@@ -378,7 +369,7 @@ export const SectionMember = () => {
                           <Box
                             className='relative h-full overflow-hidden rounded-full transition-all duration-500'
                             style={{
-                              width: `${isMaxLevel ? 100 : valueProgress}%`,
+                              width: `${isMaxLevel ? 100 : progressRemainingValue}%`,
                               background: isMaxLevel
                                 ? `linear-gradient(90deg, ${progressColor}, ${progressColor + 10}, ${progressColor})`
                                 : progressColor,

@@ -16,14 +16,13 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
-import { UserLevel } from '@prisma/client';
 import { IconArrowRight } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
+import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { GetTotalSpentInMonthByUser } from '~/shared/type-trpc/revenue.type-trpc';
 import { api } from '~/trpc/react';
 
@@ -69,7 +68,10 @@ export function UserStatistics() {
     };
   }, [revenue]);
 
-  const levelInfo = INFO_LEVEL_USER[(userDb?.level as UserLevel) || UserLevel.BRONZE];
+  const { currentLevel, currentPoint, levelText, nextLevel, progressRemainingValue } = caculateLevelUser({
+    level: userDb?.level,
+    pointUser: userDb?.pointUser
+  });
 
   if (status == 'loading' || isLoading || isLoadingRevenue) return <CommonSkeleton.Chart />;
 
@@ -150,26 +152,19 @@ export function UserStatistics() {
               <Box className='flex items-center justify-between text-sm'>
                 <Text fw={700}>
                   Tiến độ lên hạng
-                  <i> {INFO_LEVEL_USER[levelInfo.nextLevel]?.viName}</i>
+                  <i> {nextLevel?.viName}</i>
                 </Text>
-                <span className='font-medium text-gray-900 dark:text-dark-text'>
-                  {userDb?.pointUser || 0 / levelInfo.maxPoint} điểm
-                </span>
+                <span className='font-medium text-gray-900 dark:text-dark-text'>{currentPoint} điểm</span>
               </Box>
               <Tooltip label={`${userDb?.pointUser || 0} điểm`}>
-                <Progress
-                  value={((userDb?.pointUser || 0) / (levelInfo.maxPoint + 1)) * 100}
-                  color={levelInfo.color}
-                  size='md'
-                  radius='xl'
-                />
+                <Progress value={progressRemainingValue} color={currentLevel.color} size='md' radius='xl' />
               </Tooltip>
               <Box className='flex items-center justify-between text-xs'>
                 <Text size='xs' c='dimmed'>
-                  {levelInfo.viName} - ({userDb?.pointUser || 0} điểm)
+                  {currentLevel.viName} - ({userDb?.pointUser || 0} điểm)
                 </Text>
                 <Text size='xs' c={'dimmed'}>
-                  Cần thêm {levelInfo.maxPoint + 1 - (userDb?.pointUser || 0)} điểm để thăng hạn
+                  {levelText}
                 </Text>
               </Box>
             </Box>

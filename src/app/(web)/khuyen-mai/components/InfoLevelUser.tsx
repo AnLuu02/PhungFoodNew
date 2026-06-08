@@ -12,17 +12,18 @@ import {
   Progress,
   RingProgress,
   SimpleGrid,
+  Skeleton,
   Stack,
   Text,
-  Title
+  Title,
+  Tooltip
 } from '@mantine/core';
 import { UserLevel } from '@prisma/client';
 import { IconLogin2 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useMemo } from 'react';
-import { promotionLevels } from '~/lib/HardData/promotion-level';
-import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
+import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
+import { benefitLevel } from '~/lib/HardData/promotion-level';
 import { api } from '~/trpc/react';
 
 const rewardRules = [
@@ -40,33 +41,6 @@ const rewardRules = [
     title: 'Ưu đãi theo chiến dịch',
     description: 'Một số món hoặc sự kiện đặc biệt sẽ có mức điểm riêng.',
     value: 'Linh hoạt'
-  }
-];
-
-const levelPreview = [
-  {
-    name: 'Đồng',
-    point: '0+',
-    benefit: 'Bắt đầu tích điểm',
-    tone: 'from-orange-500/16 to-orange-500/5'
-  },
-  {
-    name: 'Bạc',
-    point: '500+',
-    benefit: 'Ưu đãi thành viên',
-    tone: 'from-slate-400/20 to-slate-400/5'
-  },
-  {
-    name: 'Vàng',
-    point: '1.500+',
-    benefit: 'Voucher tốt hơn',
-    tone: 'from-yellow-500/22 to-yellow-500/5'
-  },
-  {
-    name: 'Kim cương',
-    point: '3.000+',
-    benefit: 'Đặc quyền cao nhất',
-    tone: 'from-cyan-500/20 to-cyan-500/5'
   }
 ];
 
@@ -106,7 +80,7 @@ const pointExamples = [
 export default function InfoLevelUser() {
   const { data: session } = useSession();
 
-  const { data: userData } = api.User.getOne.useQuery(
+  const { data: userData, isLoading } = api.User.getOne.useQuery(
     {
       key: session?.user.email || '',
       include: {
@@ -118,29 +92,14 @@ export default function InfoLevelUser() {
     }
   );
 
-  const { levelUser, levelNextUser, progressValue, remainingPoint, currentPoint, orderCount } = useMemo(() => {
-    const currentLevelKey = (userData?.level as UserLevel) || UserLevel.BRONZE;
-    const currentLevel = INFO_LEVEL_USER[currentLevelKey];
-    const nextLevel = INFO_LEVEL_USER[currentLevel?.nextLevel || currentLevelKey];
-
-    const point = userData?.pointUser || 0;
-    const maxPoint = currentLevel?.maxPoint || 0;
-    const nextMilestone = maxPoint + 1;
-
-    const percent = nextMilestone > 0 ? Math.min((point / nextMilestone) * 100, 100) : 0;
-
-    return {
-      levelUser: currentLevel,
-      levelNextUser: nextLevel,
-      progressValue: percent,
-      remainingPoint: Math.max(nextMilestone - point, 0),
-      currentPoint: point,
-      orderCount: userData?.order?.length || 0
-    };
-  }, [userData]);
-
+  const { currentPoint, pointRemaining, progressRemainingValue, currentLevel, nextLevel, levelText } =
+    caculateLevelUser({
+      level: userData?.level,
+      pointUser: userData?.pointUser
+    });
+  const orderCount = userData?.order?.length || 0;
   const isLoggedIn = !!userData?.id;
-  const currentPromotionLevel = promotionLevels[(userData?.level as UserLevel) || UserLevel.BRONZE];
+  const currentPromotionLevel = benefitLevel[(userData?.level as UserLevel) || UserLevel.BRONZE];
 
   const visibleFeatures = currentPromotionLevel.features.slice(0, 4);
   const hiddenFeatureCount = Math.max(currentPromotionLevel.features.length - visibleFeatures.length, 0);
@@ -273,7 +232,75 @@ export default function InfoLevelUser() {
         </Box>
 
         <Box className='lg:col-span-7'>
-          {isLoggedIn ? (
+          {isLoading ? (
+            <>
+              <Paper
+                p={{ base: 'lg', sm: 'xl' }}
+                radius='xl'
+                className='relative overflow-hidden border border-slate-200 text-white shadow-2xl dark:border-white/10'
+              >
+                <Box className='absolute -right-24 -top-24 h-72 w-72 rounded-full bg-slate-500 opacity-20 blur-3xl' />
+
+                <Stack gap='xl' className='relative z-[1]'>
+                  <Box>
+                    <Skeleton height={30} width={120} radius='xl' mb='lg' />
+                    <Skeleton height={40} width='60%' radius='md' mb='sm' />
+                    <Skeleton height={20} width='80%' radius='md' />
+                  </Box>
+
+                  <Center className='hidden sm:flex'>
+                    <Skeleton height={150} width={150} circle />
+                  </Center>
+
+                  <Paper p='md' className='border border-white/10 bg-white/5 backdrop-blur-md'>
+                    <Group justify='space-between' mb='sm'>
+                      <Skeleton height={20} width='40%' />
+                      <Skeleton height={20} width='20%' />
+                    </Group>
+                    <Skeleton height={24} radius='xl' />
+                    <Group mt='sm' justify='space-between'>
+                      <Skeleton height={12} width='15%' />
+                      <Skeleton height={12} width='15%' />
+                    </Group>
+                  </Paper>
+
+                  <SimpleGrid cols={{ base: 1, md: 12 }} spacing='sm'>
+                    <Box className='md:col-span-5'>
+                      <Stack gap='sm'>
+                        {[1, 2, 3].map(i => (
+                          <Paper key={i} p='md' className='border border-white/10 bg-white/5'>
+                            <Skeleton height={12} width='40%' mb={8} />
+                            <Skeleton height={24} width='60%' />
+                          </Paper>
+                        ))}
+                      </Stack>
+                    </Box>
+
+                    <Paper p='md' className='border border-white/10 bg-white/5 md:col-span-7'>
+                      <Stack gap='md'>
+                        <Group justify='space-between'>
+                          <Box>
+                            <Skeleton height={12} width={80} mb={8} />
+                            <Skeleton height={20} width={150} />
+                          </Box>
+                          <Skeleton height={28} width={100} radius='xl' />
+                        </Group>
+                        <Box className='h-px w-full bg-white/10' />
+                        <Stack gap='lg'>
+                          {[1, 2, 3].map(i => (
+                            <Group key={i} gap='sm' wrap='nowrap'>
+                              <Skeleton height={20} width={20} radius='sm' />
+                              <Skeleton height={16} width='90%' />
+                            </Group>
+                          ))}
+                        </Stack>
+                      </Stack>
+                    </Paper>
+                  </SimpleGrid>
+                </Stack>
+              </Paper>
+            </>
+          ) : isLoggedIn ? (
             <Paper
               p={{ base: 'lg', sm: 'xl' }}
               radius={'xl'}
@@ -281,7 +308,7 @@ export default function InfoLevelUser() {
             >
               <Box
                 className='absolute -right-24 -top-24 h-72 w-72 rounded-full opacity-40 blur-3xl'
-                style={{ backgroundColor: levelUser.color }}
+                style={{ backgroundColor: currentLevel.color }}
               />
 
               <Box className='absolute bottom-0 left-0 h-40 w-full bg-gradient-to-t from-white/10 to-transparent' />
@@ -293,11 +320,11 @@ export default function InfoLevelUser() {
                     radius='xl'
                     className='border border-white/15 bg-backgroundAdmin/10 text-white backdrop-blur'
                   >
-                    Hạng {levelUser.viName}
+                    Hạng {currentLevel.viName}
                   </Badge>
 
                   <Title mt='lg' className='font-quicksand text-3xl font-black sm:text-4xl'>
-                    Xin chào, thành viên {levelUser.viName}
+                    Xin chào, thành viên <b style={{ color: currentLevel.color }}>{currentLevel.viName}</b>
                   </Title>
 
                   <Text mt='sm' className='max-w-xl leading-7 text-white/70'>
@@ -305,7 +332,7 @@ export default function InfoLevelUser() {
                     <Text span fw={900} className='text-white'>
                       <NumberFormatter value={currentPoint} thousandSeparator='.' decimalSeparator=',' /> điểm
                     </Text>
-                    . Tiếp tục tích lũy để mở khóa hạng {levelNextUser.viName}.
+                    . {levelText}
                   </Text>
                 </Box>
                 <Center className='hidden shrink-0 sm:flex'>
@@ -313,11 +340,11 @@ export default function InfoLevelUser() {
                     size={150}
                     thickness={12}
                     roundCaps
-                    sections={[{ value: progressValue, color: levelUser.color }]}
+                    sections={[{ value: progressRemainingValue, color: currentLevel.color }]}
                     label={
                       <Box ta='center'>
                         <Text fw={950} size='xl' className='text-white'>
-                          {progressValue.toFixed(0)}%
+                          {progressRemainingValue.toFixed(0)}%
                         </Text>
                         <Text size='xs' className='text-white/55'>
                           tiến độ
@@ -328,22 +355,32 @@ export default function InfoLevelUser() {
                 </Center>
                 <Paper p='md' className='border border-white/10 bg-backgroundAdmin/10 backdrop-blur-md'>
                   <Group justify='space-between' mb='sm' gap='xs'>
-                    <Text fw={900}>Tiến trình lên hạng {levelNextUser.viName}</Text>
+                    <Text fw={900}>Tiến trình lên hạng {nextLevel.viName}</Text>
 
                     <Text size='sm' className='text-white/70'>
-                      Còn {remainingPoint} điểm
+                      Còn {pointRemaining} điểm
                     </Text>
                   </Group>
 
-                  <Progress
-                    value={progressValue}
-                    size='lg'
-                    radius='xl'
-                    color={levelUser.color}
-                    classNames={{
-                      root: 'bg-backgroundAdmin/15'
+                  <Tooltip
+                    label={`${currentPoint} / ${nextLevel.minPoint} điểm`}
+                    styles={{
+                      tooltip: {
+                        backgroundColor: currentLevel.color,
+                        color: 'white'
+                      }
                     }}
-                  />
+                  >
+                    <Progress
+                      value={progressRemainingValue}
+                      size='lg'
+                      radius='xl'
+                      color={currentLevel.color}
+                      classNames={{
+                        root: 'bg-backgroundAdmin/15'
+                      }}
+                    />
+                  </Tooltip>
 
                   <Group mt='sm' justify='space-between'>
                     <Text size='xs' className='text-white/55'>
@@ -351,7 +388,7 @@ export default function InfoLevelUser() {
                     </Text>
 
                     <Text size='xs' className='text-white/55'>
-                      {levelNextUser.viName}
+                      {nextLevel.viName}
                     </Text>
                   </Group>
                 </Paper>
@@ -385,7 +422,7 @@ export default function InfoLevelUser() {
                         </Text>
 
                         <Text mt={4} fw={950} size='xl'>
-                          {levelNextUser.viName}
+                          {nextLevel.viName}
                         </Text>
                       </Paper>
                     </Stack>
@@ -441,68 +478,162 @@ export default function InfoLevelUser() {
               </Stack>
             </Paper>
           ) : (
-            <Paper
-              p={{ base: 'lg', sm: 'xl' }}
-              radius={'xl'}
-              className='relative overflow-hidden border border-slate-200 bg-slate-950 text-white shadow-2xl dark:border-white/10'
-            >
-              <Box className='absolute -right-20 -top-20 h-72 w-72 rounded-full bg-subColor/30 blur-3xl' />
-              <Box className='absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-mainColor/25 blur-3xl' />
+            <Stack gap={'xs'}>
+              <Paper
+                p={{ base: 'lg', sm: 'xl' }}
+                radius={'xl'}
+                className='relative overflow-hidden border border-slate-200 bg-slate-950 text-white shadow-2xl dark:border-white/10'
+              >
+                <Box className='absolute -right-20 -top-20 h-72 w-72 rounded-full bg-subColor/30 blur-3xl' />
+                <Box className='absolute -bottom-24 left-10 h-72 w-72 rounded-full bg-mainColor/25 blur-3xl' />
 
-              <Stack gap='xl' className='relative z-[1]'>
-                <Group justify='space-between' align='flex-start' gap='lg'>
-                  <Box>
-                    <Badge size='lg' radius='xl' className='border border-white/15 bg-backgroundAdmin/10 text-white'>
-                      Thành viên mới
-                    </Badge>
+                <Stack gap='xl' className='relative z-[1]'>
+                  <Group justify='space-between' align='flex-start' gap='lg'>
+                    <Box>
+                      <Badge size='lg' radius='xl' className='border border-white/15 bg-backgroundAdmin/10 text-white'>
+                        Thành viên mới
+                      </Badge>
 
-                    <Title mt='lg' className='font-quicksand text-3xl font-black sm:text-4xl'>
-                      Đăng nhập để bắt đầu nhận điểm.
-                    </Title>
+                      <Title mt='lg' className='font-quicksand text-3xl font-black sm:text-4xl'>
+                        Đăng nhập để bắt đầu nhận điểm.
+                      </Title>
 
-                    <Text mt='sm' className='max-w-xl text-white/70'>
-                      Theo dõi điểm thưởng, hạng thành viên và các ưu đãi cá nhân hóa sau mỗi lần đặt món.
-                    </Text>
-                  </Box>
-                </Group>
+                      <Text mt='sm' className='max-w-xl text-white/70'>
+                        Theo dõi điểm thưởng, hạng thành viên và các ưu đãi cá nhân hóa sau mỗi lần đặt món.
+                      </Text>
+                    </Box>
+                  </Group>
 
-                <Paper p='md' className='border border-white/10 bg-backgroundAdmin/10 backdrop-blur-md'>
-                  <Text fw={900}>Ví dụ trong tháng đầu tiên</Text>
+                  <Paper p='md' className='border border-white/10 bg-backgroundAdmin/10 backdrop-blur-md'>
+                    <Text fw={900}>Ví dụ trong tháng đầu tiên</Text>
 
-                  <Stack mt='md' gap='sm'>
-                    {guestEstimate.map(item => (
-                      <Group key={item.label} justify='space-between' gap='md' wrap='nowrap'>
-                        <Box className='w-[60%] md:flex-1'>
-                          <Text size='sm' fw={800}>
-                            {item.label}
+                    <Stack mt='md' gap='sm'>
+                      {guestEstimate.map(item => (
+                        <Group key={item.label} justify='space-between' gap='md' wrap='nowrap'>
+                          <Box className='w-[60%] md:flex-1'>
+                            <Text size='sm' fw={800}>
+                              {item.label}
+                            </Text>
+                            <Text size='xs' className='text-white/55'>
+                              {item.muted}
+                            </Text>
+                          </Box>
+
+                          <Text fw={950} className='flex-1 text-subColor md:w-[max-content] md:flex-none'>
+                            {item.value}
                           </Text>
-                          <Text size='xs' className='text-white/55'>
-                            {item.muted}
-                          </Text>
-                        </Box>
+                        </Group>
+                      ))}
+                    </Stack>
 
-                        <Text fw={950} className='flex-1 text-subColor md:w-[max-content] md:flex-none'>
-                          {item.value}
-                        </Text>
+                    <Divider my='md' className='border-white/10' />
+
+                    <Group justify='space-between'>
+                      <Text fw={900}>Tổng điểm ước tính</Text>
+                      <Text fw={950} size='xl'>
+                        1.250 điểm
+                      </Text>
+                    </Group>
+                  </Paper>
+
+                  <Button component={Link} href='/dang-nhap' size='md' rightSection={<IconLogin2 size={18} />}>
+                    Đăng nhập để tích điểm
+                  </Button>
+                </Stack>
+              </Paper>
+
+              <Box className='mt-10 flex justify-center'>
+                <Paper
+                  radius='xl'
+                  p={{ base: 'lg', md: 'xl' }}
+                  className='relative w-full max-w-4xl overflow-hidden border border-dashed border-mainColor/25 bg-white/70 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-dark-card/70'
+                >
+                  <Box className='absolute -right-10 -top-10 h-28 w-28 rounded-full bg-mainColor/10 blur-2xl' />
+                  <Box className='absolute -bottom-12 left-1/3 h-28 w-28 rounded-full bg-subColor/10 blur-2xl' />
+
+                  <Group justify='space-between' align='center' gap='xl' className='relative'>
+                    <Box className='min-w-0 flex-1'>
+                      <Text size='xs' fw={900} tt='uppercase' lts={2} className='text-mainColor'>
+                        Điểm sẽ tự động cộng
+                      </Text>
+
+                      <Text mt={6} fw={900} className='font-quicksand text-xl text-slate-950 dark:text-white'>
+                        Ăn nhiều hơn, nhận lại nhiều hơn trong những lần sau.
+                      </Text>
+
+                      <Text mt={6} size='sm' c='dimmed' className='max-w-xl leading-6'>
+                        Khi đơn hàng hoàn tất, điểm được cộng vào tài khoản và dùng để theo dõi hạng thành viên hoặc đổi
+                        ưu đãi phù hợp.
+                      </Text>
+
+                      <Group mt='md' gap='xs'>
+                        {['Tự động cộng điểm', 'Theo dõi hạng', 'Đổi ưu đãi'].map(item => (
+                          <Box
+                            key={item}
+                            className='rounded-full border border-mainColor/10 bg-mainColor/5 px-3 py-1 text-xs font-bold text-mainColor'
+                          >
+                            {item}
+                          </Box>
+                        ))}
                       </Group>
-                    ))}
-                  </Stack>
+                    </Box>
 
-                  <Divider my='md' className='border-white/10' />
+                    <Box className='hidden min-w-[240px] md:block'>
+                      <Paper
+                        radius='lg'
+                        p='md'
+                        className='border border-white/60 bg-white/80 shadow-sm dark:border-white/10 dark:bg-white/5'
+                      >
+                        <Group justify='space-between' mb='sm'>
+                          <Text size='xs' fw={900} tt='uppercase' lts={1.5} c='dimmed'>
+                            Ví dụ đơn hàng
+                          </Text>
 
-                  <Group justify='space-between'>
-                    <Text fw={900}>Tổng điểm ước tính</Text>
-                    <Text fw={950} size='xl'>
-                      1.250 điểm
-                    </Text>
+                          <Box className='h-2 w-2 rounded-full bg-mainColor' />
+                        </Group>
+
+                        <Stack gap={8}>
+                          <Group justify='space-between'>
+                            <Text size='sm' c='dimmed'>
+                              Tạm tính
+                            </Text>
+                            <Text size='sm' fw={800}>
+                              250.000đ
+                            </Text>
+                          </Group>
+
+                          <Group justify='space-between'>
+                            <Text size='sm' c='dimmed'>
+                              Quy đổi
+                            </Text>
+                            <Text size='sm' fw={800}>
+                              100.000đ = 10 điểm
+                            </Text>
+                          </Group>
+
+                          <Box className='h-px bg-slate-200 dark:bg-white/10' />
+
+                          <Group justify='space-between' align='flex-end'>
+                            <Box>
+                              <Text size='xs' c='dimmed'>
+                                Điểm nhận được
+                              </Text>
+                              <Text size='xs' c='dimmed'>
+                                Sau khi hoàn tất đơn
+                              </Text>
+                            </Box>
+
+                            <Text fw={900} className='font-quicksand text-2xl text-amber-500'>
+                              +25
+                            </Text>
+                          </Group>
+                        </Stack>
+                      </Paper>
+                    </Box>
                   </Group>
                 </Paper>
-
-                <Button component={Link} href='/dang-nhap' size='md' rightSection={<IconLogin2 size={18} />}>
-                  Đăng nhập để tích điểm
-                </Button>
-              </Stack>
-            </Paper>
+              </Box>
+            </Stack>
           )}
         </Box>
       </SimpleGrid>
