@@ -38,8 +38,6 @@ export function PromotionTabLayout() {
       <Tabs
         variant='pills'
         value={activeTab}
-        p={{ base: 'xs', sm: 'xl' }}
-        pt={{ base: 'xl' }}
         onChange={value => {
           setActiveTab(value as any);
           setPage(1);

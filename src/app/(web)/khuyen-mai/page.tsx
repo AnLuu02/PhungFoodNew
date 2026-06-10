@@ -184,7 +184,14 @@ export default async function FoodPromotionPage() {
             description='Nhanh tay săn nhận ngay những voucher giảm giá sâu, ăn thả ga! Số lượng có hạn.'
           />
 
-          <Card p={0} radius={'xl'} withBorder shadow='sm' className='overflow-hidden dark:bg-dark-subBackground'>
+          <Card
+            p={{ base: 'xs', sm: 'xl' }}
+            pt={{ base: 'xl' }}
+            radius={'xl'}
+            withBorder
+            shadow='sm'
+            className='overflow-hidden dark:bg-dark-subBackground'
+          >
             <PromotionTabLayout />
           </Card>
         </Stack>

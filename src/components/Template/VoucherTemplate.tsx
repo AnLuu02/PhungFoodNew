@@ -75,7 +75,7 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
   };
 
   return (
-    <Card p={0} shadow='xl' pos={'relative'}>
+    <Card className='rounded-l-none' p={0} shadow='xl' pos={'relative'}>
       <Flex h={{ base: 'max-content', lg: 120 }}>
         <Flex
           w={{ base: 0, lg: 120 }}

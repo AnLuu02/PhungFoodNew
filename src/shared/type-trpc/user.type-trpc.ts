@@ -7,3 +7,4 @@ export type GetFilterUser = RouterOutputs['User']['getFilter'];
 export type GetNotGuestUser = RouterOutputs['User']['getNotGuest'];
 export type GetOneUser = RouterOutputs['User']['getOne'];
 export type GetSalerUser = RouterOutputs['User']['getSaler'];
+export type GetOverviewUser = RouterOutputs['User']['getOverviewUser'];

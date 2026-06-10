@@ -6,13 +6,13 @@ import { IconCopy, IconEdit, IconPlus, IconPrinter, IconTrash } from '@tabler/ic
 import { useState } from 'react';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
+import dayjs from '~/lib/dayjs';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api, RouterOutputs } from '~/trpc/react';
 import { NotificationModal } from '../../settings/notification/components/modal/cretae_update_notification';
 import OrderUpsert from './form/OrderUpsert';
-
 export function CreateOrderButton() {
   const [opened, setOpened] = useState(false);
   return (
@@ -149,6 +149,15 @@ export function DeleteOrderButton({ id }: { id: string }) {
   );
 }
 
+function getRandomDate() {
+  const start = dayjs('2025-01-01').startOf('day');
+  const end = dayjs();
+
+  const randomTimestamp = start.valueOf() + Math.random() * (end.valueOf() - start.valueOf());
+
+  return dayjs(randomTimestamp).toDate();
+}
+
 export function CopyOrderButton({ data }: { data: RouterOutputs['Order']['find']['orders'][number] }) {
   const [loading, setLoading] = useState(false);
   const utils = api.useUtils();
@@ -163,6 +172,7 @@ export function CopyOrderButton({ data }: { data: RouterOutputs['Order']['find']
       NotifyError(e.message);
     }
   });
+  const date = getRandomDate();
   return (
     <>
       <Tooltip label='Nhân bản hóa đơn'>
@@ -174,6 +184,8 @@ export function CopyOrderButton({ data }: { data: RouterOutputs['Order']['find']
             await mutationCreate.mutateAsync({
               ...data,
               id: undefined,
+              createdAt: date,
+              updatedAt: date,
               orderItems: data?.orderItems?.map(item => ({
                 ...item,
                 orderId: undefined

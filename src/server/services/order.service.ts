@@ -1,8 +1,10 @@
-import { AddressType, InvoiceStatus, OrderStatus, Prisma, PrismaClient } from '@prisma/client';
+import { AddressType, OrderStatus, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-
+import dayjs from '~/lib/dayjs';
+import { generateInvoiceNumber } from '~/lib/FuncHandler/generateInvoiceNumber';
 import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/FuncHandler/PrismaHelper';
 import { OrderInput } from '~/shared/schema/order.schema';
+import { upsertInvoiceService } from './invoice.service';
 
 export const findOrderService = async (
   db: PrismaClient,
@@ -155,6 +157,11 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
       update: {
         ...data,
         payment: paymentId ? { connect: { id: paymentId } } : undefined,
+        user: {
+          connect: {
+            id: userId
+          }
+        },
         orderItems: {
           deleteMany: {
             id: {
@@ -230,7 +237,8 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
     updateRevenue(db, result.newData.status, input.userId, {
       originalTotal: result.newData?.originalTotal || 0,
       discountAmount: result.newData?.discountAmount || 0,
-      finalTotal: result.newData?.finalTotal || 0
+      finalTotal: result.newData?.finalTotal || 0,
+      createdAt: result.newData?.createdAt
     });
     await Promise.all(
       result.newData?.orderItems?.map((orderItem: any) => {
@@ -264,7 +272,8 @@ export const updateOrderService = async (
     updateRevenue(db, order.status, order.userId, {
       originalTotal: order?.originalTotal || 0,
       discountAmount: order?.discountAmount || 0,
-      finalTotal: order?.finalTotal || 0
+      finalTotal: order?.finalTotal || 0,
+      createdAt: order?.createdAt
     });
     updatepointUser(db, order.userId, order.finalTotal);
     await Promise.all(
@@ -278,18 +287,65 @@ export const updateOrderService = async (
 export const deleteOrderService = async (db: PrismaClient, input: { id: string }) => {
   const deleted = await db.order.update({
     where: { id: input.id },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: {
+            select: {
+              fullAddress: true
+            }
+          }
+        }
+      },
+      payment: {
+        select: {
+          name: true
+        }
+      }
+    },
     data: {
       status: OrderStatus.CANCELLED
     }
   });
-  await db.invoice.update({
-    where: {
-      orderId: deleted.id
-    },
-    data: {
-      status: InvoiceStatus.CANCELLED
+  if (deleted) {
+    try {
+      await upsertInvoiceService(
+        db,
+        {
+          invoiceNumber: generateInvoiceNumber(),
+          status: 'CANCELLED',
+          buyerName: deleted.user?.name ?? 'Khách hàng',
+          buyerEmail: deleted?.user?.email ?? null,
+          buyerPhone: deleted?.user?.phone ?? null,
+          buyerAddress: deleted?.user?.address?.fullAddress ?? 'Đang cập nhật',
+          buyerTaxCode: '13254',
+          subTotal: deleted.finalTotal ?? 0,
+          taxAmount: deleted?.taxTotal ?? 0,
+          discountAmount: deleted?.discountAmount ?? 0,
+          totalAmount: deleted.originalTotal,
+          currency: 'VND',
+          paymentMethod: deleted.payment?.name ?? null,
+          pdfUrl: '',
+          note: '',
+          sellerId: 'cmfgrmpbt0000emt09bftxjo3',
+          customerId: deleted.userId,
+          orderId: deleted.id,
+          issuedAt: dayjs().utc().toDate(),
+          paidAt: dayjs().utc().toDate(),
+          dueDate: dayjs().utc().toDate()
+        },
+        {
+          orderId: deleted.id
+        }
+      );
+    } catch (error) {
+      throw error;
     }
-  });
+  }
 
   return {
     metaData: {
@@ -322,9 +378,7 @@ export const getFilterOrderService = async (
           },
           {
             user: {
-              email: {
-                equals: searchQuery
-              }
+              OR: [{ email: searchQuery }, { id: searchQuery }]
             }
           }
         ]

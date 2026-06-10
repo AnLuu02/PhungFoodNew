@@ -7,47 +7,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import dayjs from '~/lib/dayjs';
 import { toNumber } from '~/lib/FuncHandler/Format';
-import { Period } from '~/shared/types';
+import { DATA_SELECT_PERIOD } from '~/shared/constants/filter.constants';
 import { ExportReports } from './ExportReportsBtn';
-const dataSelect: { value: Period; label: string; disabled?: boolean }[] = [
-  {
-    value: '_all',
-    label: 'Tất cả'
-  },
-  {
-    value: '_today',
-    label: 'Hôm nay'
-  },
-  {
-    value: '7_day',
-    label: '7 ngày qua'
-  },
-  {
-    value: '15_day',
-    label: '15 ngày qua'
-  },
-  {
-    value: '1_month',
-    label: '30 ngày qua'
-  },
-  {
-    value: '3_month',
-    label: '3 tháng qua'
-  },
-  {
-    value: '6_month',
-    label: '6 tháng qua'
-  },
-  {
-    value: '1_year',
-    label: 'Năm vừa rồi'
-  },
-  {
-    value: '_custom',
-    label: 'Tùy chỉnh',
-    disabled: true
-  }
-];
+
 export const FilterSectionReport = () => {
   const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
   const searchParams = useSearchParams();
@@ -58,7 +20,7 @@ export const FilterSectionReport = () => {
   const period = params?.get('period') ?? '_all';
 
   const valueSelect = useMemo(() => {
-    return dataSelect.some(item => item.value === period.toString()) ? period.toString() : '_all';
+    return DATA_SELECT_PERIOD.some(item => item.value === period.toString()) ? period.toString() : '_all';
   }, [period]);
 
   useEffect(() => {
@@ -132,7 +94,7 @@ export const FilterSectionReport = () => {
                 router.push(url, { scroll: false });
               }}
               defaultValue={'7day'}
-              data={dataSelect}
+              data={DATA_SELECT_PERIOD}
             />
             <Group>
               <DatePickerInput

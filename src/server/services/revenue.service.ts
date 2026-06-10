@@ -16,20 +16,62 @@ const buildQuery = (startTime?: number, endTime?: number) => {
   };
 };
 
-export const getTotalSpentInMonthByUserService = async (db: PrismaClient, input: { userId: string; year: number }) => {
-  const revenues = await db.revenue.groupBy({
-    by: ['month'],
-    where: { userId: input.userId, year: input.year || 2025 },
-    _sum: { netRevenue: true },
-    orderBy: { month: 'asc' }
-  });
-  return revenues?.map(item => {
-    return {
-      month: item.month,
-      totalSpent: item._sum.netRevenue,
-      year: input.year
-    };
-  });
+export const getStatisticsSpentUserService = async (
+  db: PrismaClient,
+  input: { userId: string; startTime?: number; endTime?: number; period: Period }
+) => {
+  const { userId, startTime, endTime, period } = input;
+  let startTimeToDate = undefined,
+    endTimeToDate = undefined,
+    firstRevenue = undefined;
+
+  if (startTime && endTime) {
+    startTimeToDate = dayjs(startTime).utc().toDate();
+    endTimeToDate = dayjs(endTime).utc().toDate();
+  } else {
+    firstRevenue = await db.restaurant.findFirst();
+    startTimeToDate = firstRevenue?.createdAt;
+    endTimeToDate = dayjs().utc().toDate();
+  }
+
+  const where = {
+    ...(startTimeToDate && endTimeToDate
+      ? {
+          createdAt: {
+            gte: startTimeToDate,
+            lte: endTimeToDate
+          }
+        }
+      : {}),
+    userId
+  };
+
+  const [revenues, orderStatusStatistics] = await Promise.all([
+    db.revenue.groupBy({
+      by: ['day', 'month', 'year'],
+      _sum: { netRevenue: true, totalOrders: true },
+      where: where as any
+    }),
+    db.order.groupBy({
+      by: ['status'],
+      where: where as any,
+      _count: {
+        status: true
+      }
+    })
+  ]);
+
+  return {
+    overviews: revenues.map((item: (typeof revenues)[number]) => {
+      return {
+        date: dayjs([item.year, item.month - 1, item.day]).format('DD-MM-YYYY'),
+        netRevenue: item._sum.netRevenue,
+        totalOrders: item._sum.totalOrders,
+        createdAt: firstRevenue?.createdAt || dayjs().utc().toDate()
+      };
+    }),
+    orderStatusStatistics: orderStatusStatistics.map(item => ({ status: item.status, total: item._count.status }))
+  };
 };
 
 export const getTopUsersService = async (

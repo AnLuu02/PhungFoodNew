@@ -8,6 +8,7 @@ import {
   getFilterUserService,
   getNotGuestService,
   getOneUserService,
+  getOverviewUserService,
   getSellerService,
   resetPasswordService,
   updateUserCustomService,
@@ -92,6 +93,13 @@ export const userRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getOneUserService(ctx.db, input)),
+  getOverviewUser: publicProcedure
+    .input(
+      z.object({
+        key: z.string()
+      })
+    )
+    .query(async ({ ctx, input }) => await getOverviewUserService(ctx.db, input)),
   getAll: publicProcedure
     .input(z.object({ include: z.custom<Prisma.UserInclude>().optional() }).optional())
     .query(async ({ ctx, input }) => {

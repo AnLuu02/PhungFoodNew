@@ -7,22 +7,24 @@ import {
   getOverviewRevenueService,
   getRevenueByCategoryService,
   getRevenueOrderStatusService,
+  getStatisticsSpentUserService,
   getTopProductsService,
-  getTopUsersService,
-  getTotalSpentInMonthByUserService
+  getTopUsersService
 } from '~/server/services/revenue.service';
 import { Period } from '~/shared/types';
 
 export const revenueRouter = createTRPCRouter({
-  getTotalSpentInMonthByUser: publicProcedure
+  getStatisticsSpentUser: publicProcedure
     .input(
       z.object({
         userId: z.string(),
-        year: z.number()
+        startTime: z.number().optional(),
+        endTime: z.number().optional(),
+        period: z.custom<Period>()
       })
     )
 
-    .query(async ({ ctx, input }) => await getTotalSpentInMonthByUserService(ctx.db, input)),
+    .query(async ({ ctx, input }) => await getStatisticsSpentUserService(ctx.db, input)),
 
   getTopUsers: publicProcedure
     .input(

@@ -16,24 +16,17 @@ export const buildSortFilter = (sort: string[], sortValue: string[]) => {
   return orderBy?.map(item => item).filter(Boolean);
 };
 
-export function getDateRange(year: number, month: number, day: number) {
-  const start = new Date(year, month - 1, day, 0, 0, 0, 0);
-  const end = new Date(year, month - 1, day, 23, 59, 59, 999);
-  if (!start || !end) return {};
-  return { start, end };
-}
-
 export async function updateRevenue(
   db: PrismaClient,
   status: OrderStatus,
   userId: string,
-  order: { originalTotal: number; discountAmount: number; finalTotal: number }
+  order: { originalTotal: number; discountAmount: number; finalTotal: number; createdAt?: Date | null }
 ) {
-  const { originalTotal, discountAmount, finalTotal } = order;
-  const now = dayjs().utc().toDate();
-  const day = now.getDate();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
+  const { originalTotal, discountAmount, finalTotal, createdAt } = order;
+  const currentDate = createdAt ? dayjs(createdAt).utc().toDate() : dayjs().utc().toDate();
+  const day = currentDate.getDate();
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
   await db.revenue.upsert({
     where: { userId_year_month_day: { userId, year, month, day } },
     update: {

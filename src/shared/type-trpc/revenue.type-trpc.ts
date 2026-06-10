@@ -1,3 +1,3 @@
 import { RouterOutputs } from '~/trpc/react';
 
-export type GetTotalSpentInMonthByUser = RouterOutputs['Revenue']['getTotalSpentInMonthByUser'];
+export type GetStatisticsSpentUser = RouterOutputs['Revenue']['getStatisticsSpentUser'];

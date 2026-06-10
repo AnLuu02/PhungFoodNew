@@ -127,12 +127,16 @@ export const getAllInvoiceService = async (db: PrismaClient, input?: { include?:
   });
 };
 
-export const upsertInvoiceService = async (db: PrismaClient, input: InvoiceInput) => {
+export const upsertInvoiceService = async (
+  db: PrismaClient,
+  input: InvoiceInput,
+  where?: Prisma.InvoiceWhereUniqueInput
+) => {
   const { id, ...data } = input;
   const result = await db.$transaction(async tx => {
     const oldData = id ? await tx.invoice.findUnique({ where: { id } }) : null;
     const newData = await tx.invoice.upsert({
-      where: {
+      where: where ?? {
         id: id || ''
       },
       create: data,

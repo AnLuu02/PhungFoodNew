@@ -25,7 +25,9 @@ export const baseOrderSchema = z.object({
   paymentId: z.string().optional(),
   orderItems: z.array(baseOrderItemSchema).min(1, 'Đơn hàng phải có ít nhất 1 sản phẩm.'),
   voucherIds: z.array(z.string()).default([]),
-  delivery: baseDeliverySchema.omit({ orderId: true }).optional()
+  delivery: baseDeliverySchema.omit({ orderId: true }).optional(),
+  createdAt: z.date().nullish(),
+  updatedAt: z.date().nullish()
 });
 
 export type OrderInput = z.infer<typeof baseOrderSchema>;

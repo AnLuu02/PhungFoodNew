@@ -4,7 +4,7 @@ import { Badge, Box, Divider, Group, Highlight, Paper, Stack, Text } from '@mant
 import { IconBellPause, IconCircleCheck, IconSum, IconTruckDelivery, IconXboxX } from '@tabler/icons-react';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import {
   CopyOrderButton,
@@ -17,6 +17,7 @@ import {
 
 import { ActionIcon, Card, Flex, Select, SimpleGrid, Title } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
+import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
@@ -248,7 +249,7 @@ export default function TableOrder() {
                         <Text size='xs' c='dimmed'>
                           Ngày tạo
                         </Text>
-                        <Text size='sm'>{formatDateViVN(order.createdAt)}</Text>
+                        <Text size='sm'>{dayjs(order.createdAt).format('DD-MM-YYYY HH:mm:ss')}</Text>
                       </Stack>
                     </Group>
                   </Stack>

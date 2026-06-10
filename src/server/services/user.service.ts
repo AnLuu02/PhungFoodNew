@@ -510,7 +510,7 @@ export const getOneUserService = async (db: PrismaClient, input: { key: string; 
       OR: [{ id: key }, { email: key }]
     },
     include: {
-      ...(include ?? {}),
+      order: { include: { orderItems: true } },
       imageForEntity: { include: { image: true } },
       role: {
         include: {
@@ -711,5 +711,28 @@ export const verifyOtpService = async (db: PrismaClient, input: { email: string;
   return {
     ...resp,
     user: { ...rest }
+  };
+};
+
+export const getOverviewUserService = async (db: PrismaClient, input: { key: string }) => {
+  const { key } = input;
+  const [user, overview] = await Promise.all([
+    getOneUserService(db, { key }),
+    db.order.aggregate({
+      where: { userId: key },
+      _count: { id: true },
+      _sum: { finalTotal: true },
+      _max: { finalTotal: true },
+      _avg: { finalTotal: true }
+    })
+  ]);
+  return {
+    user,
+    overview: {
+      spent: overview._sum.finalTotal,
+      quantity: overview._count.id,
+      max: overview._max.finalTotal,
+      avg: overview._avg.finalTotal
+    }
   };
 };
