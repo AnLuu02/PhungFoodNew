@@ -21,29 +21,23 @@ import {
   Tooltip
 } from '@mantine/core';
 import { IconCircleCheck, IconUpload } from '@tabler/icons-react';
-import { useSession } from 'next-auth/react';
+import { Session } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
-import { GetOneUser } from '~/shared/type-trpc/user.type-trpc';
-import { api } from '~/trpc/react';
+import { GetOverviewUser } from '~/shared/type-trpc/user.type-trpc';
 
-export function UserInfo() {
-  const { data: session, status } = useSession();
-  const { data: userInfor, isLoading } = api.User.getOne.useQuery(
-    { key: session?.user?.id || '', include: { order: true } },
-    { enabled: !!session?.user?.id }
-  );
+export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>['user']; session: Session | null }) {
+  const userInfor = user;
   const [opened, setOpened] = useState(false);
   const { statusObj } = useMemo(() => {
     const orderData =
-      userInfor?.order?.map((order: NonNullable<GetOneUser>['order'][number]) => {
+      userInfor?.order?.map((order: NonNullable<GetOverviewUser['user']>['order'][number]) => {
         if (!order) return {};
         return {
           id: order.id,
@@ -55,25 +49,15 @@ export function UserInfo() {
     const statusObj = getTotalOrderStatus(orderData);
     return { statusObj };
   }, [userInfor]);
-  const { currentLevel, benefit, currentPoint, levelText, nextLevel, progressRemainingValue } = caculateLevelUser({
+  const { currentLevel, benefit, levelText, nextLevel, progressRemainingValue } = caculateLevelUser({
     level: userInfor?.level,
     pointUser: userInfor?.pointUser
   });
-  if (status === 'loading' || isLoading)
-    return (
-      <Grid p={0} grow>
-        <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
-          <CommonSkeleton.ProfileCard />
-        </GridCol>
-        <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-          <CommonSkeleton.StatsGrid />
-        </GridCol>
-      </Grid>
-    );
+
   return (
     <Grid p={0} grow>
       <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
-        <Card shadow='lg' withBorder pos='relative' bg={`${currentLevel.color}22`} className='h-full pt-10 sm:p-7'>
+        <Card shadow='lg' pos='relative' bg={`${currentLevel.color}22`} className='h-full pt-10 sm:p-7'>
           <Box pos='absolute' top={10} right={4}>
             <UpdateUserButton
               email={userInfor?.email || ''}
@@ -205,7 +189,7 @@ export function UserInfo() {
       </GridCol>
 
       <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-        <Card shadow='sm' className='sm:p-7' withBorder>
+        <Card shadow='sm' className='sm:p-7'>
           <Stack gap='md'>
             <Flex align='center' justify='space-between'>
               <Text fw={700} size='md' mb={4}>
@@ -253,60 +237,146 @@ export function UserInfo() {
         </Card>
       </GridCol>
       <GridCol span={{ base: 12, sm: 12, md: 6 }}>
-        <Card shadow='sm' className='sm:p-7' withBorder mt={'md'}>
-          <Text fw={700} size='md' mb={4}>
-            Tiến trình cấp độ thành viên
-          </Text>
-
-          <Box className='mt-4 space-y-3'>
-            <Box className='flex items-center justify-between text-sm'>
-              <span className='text-gray-600 dark:text-dark-text'>
-                Tiến độ lên hạng<b> {nextLevel?.viName}</b>
-              </span>
-              <span className='font-medium text-gray-900 dark:text-dark-text'>
-                {userInfor?.pointUser || 0 / currentLevel.maxPoint} điểm
-              </span>
-            </Box>
-            <Progress value={progressRemainingValue} color={currentLevel.color} size='md' radius='xl' />
-            <Box className='flex items-center justify-between'>
-              <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[35%]'>
-                {currentLevel.viName} - ({userInfor?.pointUser || 0} điểm)
-              </Text>
-              <Text size='xs' c={'dimmed'} className='max-w-[45%] sm:max-w-[55%]'>
-                {levelText}
-              </Text>
-            </Box>
-          </Box>
-
-          <Center mt={'xl'}>
+        <Card shadow='sm' className='sm:p-7' mt={'md'}>
+          <Stack gap='lg' className='relative z-10'>
             <Box>
-              <Flex gap={8} align='center' wrap={'wrap'} justify={'center'}>
-                {Object.values(INFO_LEVEL_USER).map((level, idx) => {
-                  const isCurrent = level.key === currentLevel.key;
-                  return (
-                    <Center
-                      key={level.key + idx}
-                      w={80}
-                      h={80}
-                      bg={isCurrent ? `${level.color}22` : 'transparent'}
-                      className={`relative overflow-hidden rounded-full transition-all duration-300`}
-                    >
-                      <Tooltip label={`Tối thiểu: ${level.minPoint} điểm`}>
-                        <Box w={60} h={40} pos={'relative'} className='overflow-hidden'>
-                          <Image src={`/images/png/${level.thumbnail}`} fill alt='vip' />
-                        </Box>
-                      </Tooltip>
-                    </Center>
-                  );
-                })}
-              </Flex>
-              <Center mt={'md'}>
-                <Text size='sm' c='dimmed'>
-                  <b>{userInfor?.pointUser}</b> điểm tích lũy |<b> {currentLevel.viName}</b>
-                </Text>
-              </Center>
+              <Text fw={900} className='font-quicksand text-xl text-slate-950 dark:text-white'>
+                Tiến trình thành viên
+              </Text>
+
+              <Text size='sm' c='dimmed' mt={4}>
+                Tích điểm qua các đơn hàng hoàn thành để nâng hạng.
+              </Text>
             </Box>
-          </Center>
+
+            <Paper p='md' className='border border-slate-100 bg-slate-50/70 dark:border-white/10 dark:bg-white/5'>
+              <Stack gap='sm'>
+                <Flex justify='space-between' align='flex-start' gap='md'>
+                  <Box>
+                    <Text size='sm' c='dimmed'>
+                      Tiến độ lên hạng <b>{nextLevel?.viName}</b>
+                    </Text>
+
+                    <Text mt={4} fw={900} className='font-quicksand text-lg text-slate-950 dark:text-white'>
+                      {userInfor?.pointUser || 0} điểm
+                    </Text>
+                  </Box>
+
+                  <Badge radius='xl' variant='light' color='gray'>
+                    {currentLevel.viName}
+                  </Badge>
+                </Flex>
+
+                <Progress value={progressRemainingValue} color={currentLevel.color} size='lg' radius='xl' />
+
+                <Flex justify='space-between' gap='md'>
+                  <Text size='xs' c='dimmed'>
+                    {currentLevel.viName}
+                  </Text>
+
+                  <Text size='xs' c='dimmed' ta='right'>
+                    {levelText}
+                  </Text>
+                </Flex>
+              </Stack>
+            </Paper>
+
+            <Center mt='xl'>
+              <Box w='100%'>
+                <Box className='overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
+                  <Box className='relative min-w-[560px] px-4 py-5'>
+                    <Box className='absolute left-[64px] right-[64px] top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-slate-200 dark:bg-white/10' />
+
+                    <Box
+                      className='absolute left-[64px] top-1/2 h-[3px] -translate-y-1/2 rounded-full transition-all duration-500'
+                      style={{
+                        width: `calc((100% - 128px) * ${
+                          Object.values(INFO_LEVEL_USER).findIndex(level => level.key === currentLevel.key) /
+                          Math.max(Object.values(INFO_LEVEL_USER).length - 1, 1)
+                        })`,
+                        backgroundColor: currentLevel.color
+                      }}
+                    />
+
+                    <Flex align='center' justify='space-between' w='100%' className='relative z-10'>
+                      {Object.values(INFO_LEVEL_USER).map((level, idx) => {
+                        const levels = Object.values(INFO_LEVEL_USER);
+                        const currentIndex = levels.findIndex(item => item.key === currentLevel.key);
+                        const isCurrent = level.key === currentLevel.key;
+                        const isPassed = idx < currentIndex;
+
+                        return (
+                          <Stack key={level.key + idx} align='center' gap={8} className='shrink-0'>
+                            <Tooltip label={`Tối thiểu: ${level.minPoint} điểm`}>
+                              <Center
+                                w={isCurrent ? 112 : 78}
+                                h={isCurrent ? 112 : 78}
+                                className={[
+                                  'relative rounded-full border bg-white shadow-sm transition-all duration-300 dark:bg-dark-card',
+                                  isCurrent
+                                    ? 'scale-105 border-mainColor shadow-[0_16px_40px_rgba(15,23,42,0.14)]'
+                                    : isPassed
+                                      ? 'border-slate-200'
+                                      : 'border-slate-100 opacity-70 dark:border-white/10'
+                                ].join(' ')}
+                                style={{
+                                  borderColor: isCurrent || isPassed ? level.color : undefined,
+                                  backgroundColor: isCurrent ? `${level.color}18` : undefined
+                                }}
+                              >
+                                <Center
+                                  className='absolute -top-1 right-1 rounded-full border-2 border-white dark:border-dark-card'
+                                  w={22}
+                                  h={22}
+                                  style={{
+                                    backgroundColor: isPassed || isCurrent ? level.color : '#CBD5E1'
+                                  }}
+                                >
+                                  {isPassed ? (
+                                    <IconCircleCheck size={14} color='white' />
+                                  ) : (
+                                    <Box className='h-1.5 w-1.5 rounded-full bg-white' />
+                                  )}
+                                </Center>
+
+                                <Box
+                                  w={isCurrent ? 92 : 58}
+                                  h={isCurrent ? 58 : 38}
+                                  pos='relative'
+                                  className='overflow-hidden'
+                                >
+                                  <Image src={`/images/png/${level.thumbnail}`} fill alt='vip' />
+                                </Box>
+                              </Center>
+                            </Tooltip>
+
+                            <Text
+                              size='xs'
+                              fw={isCurrent ? 900 : 700}
+                              ta='center'
+                              style={{
+                                color: isCurrent ? level.color : undefined
+                              }}
+                              className='max-w-[90px]'
+                              lineClamp={1}
+                            >
+                              {level.viName}
+                            </Text>
+                          </Stack>
+                        );
+                      })}
+                    </Flex>
+                  </Box>
+                </Box>
+
+                <Center mt='md'>
+                  <Text size='sm' c='dimmed' ta='center'>
+                    <b>{userInfor?.pointUser || 0}</b> điểm tích lũy · <b>{currentLevel.viName}</b>
+                  </Text>
+                </Center>
+              </Box>
+            </Center>
+          </Stack>
         </Card>
       </GridCol>
     </Grid>

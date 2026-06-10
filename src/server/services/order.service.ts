@@ -238,7 +238,7 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
       originalTotal: result.newData?.originalTotal || 0,
       discountAmount: result.newData?.discountAmount || 0,
       finalTotal: result.newData?.finalTotal || 0,
-      createdAt: result.newData?.createdAt
+      createdAt: data?.createdAt
     });
     await Promise.all(
       result.newData?.orderItems?.map((orderItem: any) => {
@@ -273,7 +273,7 @@ export const updateOrderService = async (
       originalTotal: order?.originalTotal || 0,
       discountAmount: order?.discountAmount || 0,
       finalTotal: order?.finalTotal || 0,
-      createdAt: order?.createdAt
+      createdAt: input?.data?.createdAt
     });
     updatepointUser(db, order.userId, order.finalTotal);
     await Promise.all(

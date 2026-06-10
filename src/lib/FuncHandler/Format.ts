@@ -9,7 +9,9 @@ export const formatDateViVN = (date?: Date | string | number | null, options?: F
 
   const defaultFormat = hour ? 'DD-MM-YYYY HH:mm' : 'DD-MM-YYYY';
 
-  return dayjs(date).format(format || defaultFormat);
+  return dayjs(date)
+    .tz()
+    .format(format || defaultFormat);
 };
 export function formatTimeAgo(date: Date | string | number): string {
   const now = new Date();
@@ -74,13 +76,16 @@ export const formatDataExcel = (mapFields: Record<string, string>, rows: any[]) 
   });
 };
 
-export const formatPriceLocaleVi = (value: number | string, suffix = VND_SYMBOL) => {
-  const valStr =
-    (typeof value === 'number' && Number.isFinite(value)) ||
-    (typeof value === 'string' && !Number.isNaN(parseFloat(value)))
-      ? value.toString()
-      : EMPTY_STRING;
-  return valStr ? valStr.replace(/\B(?<!\,\d*)(?=(\d{3})+(?!\d))/g, '.') + suffix : EMPTY_STRING;
+export const formatPriceLocaleVi = (value: number | string | null | undefined, suffix = VND_SYMBOL) => {
+  if (value === null || value === undefined || value === '') return EMPTY_STRING;
+
+  const numberValue = Number(value);
+
+  if (!Number.isFinite(numberValue)) return EMPTY_STRING;
+
+  const roundedValue = Math.round(numberValue);
+
+  return roundedValue.toLocaleString('vi-VN') + suffix;
 };
 
 export function isStillValid({ createdAt, limitTime }: { createdAt: Date; limitTime: number }): boolean {

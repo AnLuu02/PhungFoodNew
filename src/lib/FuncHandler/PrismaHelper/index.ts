@@ -2,6 +2,7 @@ import { OrderStatus, PrismaClient } from '@prisma/client';
 import dayjs from '~/lib/dayjs';
 import { defaultValueCompareReturn } from '~/shared/constants/statistics.constants';
 import { CompareOptions, CompareReturn } from '~/shared/types';
+import { caculateLevelUser } from '../calculateLevel';
 import { calcChangeRate } from '../Statistics';
 export const buildSortFilter = (sort: string[], sortValue: string[]) => {
   const orderBy: Record<string, string>[] = [];
@@ -23,10 +24,11 @@ export async function updateRevenue(
   order: { originalTotal: number; discountAmount: number; finalTotal: number; createdAt?: Date | null }
 ) {
   const { originalTotal, discountAmount, finalTotal, createdAt } = order;
-  const currentDate = createdAt ? dayjs(createdAt).utc().toDate() : dayjs().utc().toDate();
-  const day = currentDate.getDate();
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth() + 1;
+  const currentDate = createdAt ? dayjs.utc(createdAt).tz('Asia/Ho_Chi_Minh') : dayjs().tz('Asia/Ho_Chi_Minh');
+  const day = currentDate.date();
+  const month = currentDate.month() + 1;
+  const year = currentDate.year();
+
   await db.revenue.upsert({
     where: { userId_year_month_day: { userId, year, month, day } },
     update: {
@@ -35,7 +37,8 @@ export async function updateRevenue(
       netRevenue: status === OrderStatus.COMPLETED ? { increment: finalTotal } : { decrement: finalTotal },
       totalCustomers: 0,
       totalDiscount: status === OrderStatus.COMPLETED ? { increment: discountAmount } : { decrement: discountAmount },
-      totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 }
+      totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 },
+      updatedAt: createdAt ? new Date(createdAt) : new Date()
     },
     create: {
       userId,
@@ -47,18 +50,34 @@ export async function updateRevenue(
       netRevenue: finalTotal,
       totalDiscount: discountAmount,
       totalCustomers: 0,
-      totalOrders: 1
+      totalOrders: 1,
+      createdAt: createdAt ? new Date(createdAt) : new Date(),
+      updatedAt: createdAt ? new Date(createdAt) : new Date()
     }
   });
 }
 
 export async function updatepointUser(db: PrismaClient, userId: string, orderTotalPrice: number) {
-  await db.user.update({
+  const user = await db.user.update({
     where: { id: userId },
     data: {
       pointUser: { increment: orderTotalPrice >= 10000 ? orderTotalPrice / 10000 : 0 }
     }
   });
+  if (user) {
+    const { currentLevel, nextLevel, currentPoint } = caculateLevelUser({
+      level: user?.level,
+      pointUser: user?.pointUser
+    });
+    if (currentPoint > currentLevel.maxPoint) {
+      await db.user.update({
+        where: { id: userId },
+        data: {
+          level: nextLevel.key
+        }
+      });
+    }
+  }
 }
 
 export async function updateSales(db: PrismaClient, status: OrderStatus, productId: string, soldQuantity: number) {

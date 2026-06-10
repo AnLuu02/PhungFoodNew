@@ -2,10 +2,12 @@ import { OrderStatus } from '@prisma/client';
 import {
   IconAlertTriangle,
   IconCheck,
+  IconChefHat,
   IconCircleDashedCheck,
   IconCircleX,
   IconClock,
   IconCreditCard,
+  IconCreditCardOff,
   IconProps,
   IconTruck,
   IconX
@@ -112,14 +114,14 @@ export const ORDER_STATUS_UI = [
   {
     key: OrderStatus.UNPAID,
     label: 'Chưa thanh toán',
-    color: '#FF6900',
-    icon: <IconClock size={22} color='#FF6900' />
+    color: '#F97316',
+    icon: <IconCreditCardOff size={22} color='#F97316' />
   },
   {
     key: OrderStatus.CONFIRMED,
     label: 'Đang chuẩn bị',
-    color: '#FF6900',
-    icon: <IconClock size={22} color='#FF6900' />
+    color: '#B45309',
+    icon: <IconChefHat size={22} color='#B45309' />
   }
 ];
 
