@@ -13,7 +13,7 @@ import { CartItemPayment } from '../app/(web)/thanh-toan/components/CartItemPaym
 import { ModalRecentOrder } from './Modals/ModalRecentOrder';
 import { RecapCartSkeleton } from './RecapCartSkeleton';
 
-export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
+export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?: number }) => {
   const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { data: session } = useSession();
@@ -80,7 +80,7 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
           ) : (
             <>
               <ScrollAreaAutosize
-                mah={220}
+                mah={75 * (limit || 3)}
                 px='0'
                 scrollbarSize={5}
                 className='bg-gray-100 dark:bg-dark-card'
@@ -157,7 +157,9 @@ export const RecapCart = ({ quickOrder }: { quickOrder?: boolean }) => {
         </Stack>
       </Card>
 
-      <ModalRecentOrder opened={showRecentOrdersModal} onClose={() => setShowRecentOrdersModal(false)} />
+      {quickOrder && (
+        <ModalRecentOrder opened={showRecentOrdersModal} onClose={() => setShowRecentOrdersModal(false)} />
+      )}
     </>
   );
 };

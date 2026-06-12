@@ -21,7 +21,13 @@ export const orderRouter = createTRPCRouter({
         limit: z.number().default(5),
         s: z.string().optional(),
         filter: z.string().optional().nullable(),
-        sort: z.array(z.string()).optional()
+        sort: z.array(z.string()).optional(),
+        period: z
+          .object({
+            startTime: z.number().optional(),
+            endTime: z.number().optional()
+          })
+          .optional()
       })
     )
     .query(async ({ ctx, input }) => await findOrderService(ctx.db, input)),

@@ -14,58 +14,78 @@ export const findOrderService = async (
     s?: string;
     filter?: string | null;
     sort?: string[];
+    period?: {
+      startTime?: number;
+      endTime?: number;
+    };
     include?: Prisma.OrderInclude;
   }
 ) => {
-  const { page, limit, s, filter, sort, include } = input;
+  const { page, limit, s, filter, sort, include, period } = input;
   const searchQuery = s?.trim();
   const where: Prisma.OrderWhereInput = {
-    OR: [
-      {
-        payment: {
+    ...(period
+      ? {
+          createdAt: {
+            gte: dayjs(period.startTime).utc().toISOString(),
+            lte: dayjs(period.endTime).utc().toISOString()
+          }
+        }
+      : {}),
+    ...(searchQuery
+      ? {
           OR: [
             {
-              name: {
-                contains: searchQuery,
-                mode: 'insensitive'
+              payment: {
+                OR: [
+                  {
+                    name: {
+                      contains: searchQuery,
+                      mode: 'insensitive'
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              user: {
+                name: {
+                  contains: searchQuery,
+                  mode: 'insensitive'
+                }
+              }
+            },
+            {
+              originalTotal: {
+                equals: Number(searchQuery) || 0
+              }
+            },
+            {
+              discountAmount: {
+                equals: Number(searchQuery) || 0
+              }
+            },
+            {
+              finalTotal: {
+                equals: Number(searchQuery) || 0
               }
             }
           ]
         }
-      },
-      {
-        user: {
-          name: {
-            contains: searchQuery,
-            mode: 'insensitive'
-          }
-        }
-      },
-      {
-        originalTotal: {
-          equals: Number(searchQuery) || 0
-        }
-      },
-      {
-        discountAmount: {
-          equals: Number(searchQuery) || 0
-        }
-      },
-      {
-        finalTotal: {
-          equals: Number(searchQuery) || 0
-        }
-      }
-    ],
-    status: filter
+      : {}),
+    ...(filter
       ? {
-          equals: filter?.trim() as OrderStatus
+          status: filter
+            ? {
+                equals: filter?.trim() as OrderStatus
+              }
+            : {
+                not: {
+                  equals: OrderStatus.CANCELLED
+                }
+              }
         }
-      : {
-          not: {
-            equals: OrderStatus.CANCELLED
-          }
-        }
+      : {})
   };
   const [totalOrders, totalOrdersQuery, orders] = await db.$transaction([
     db.order.count(),
@@ -366,8 +386,8 @@ export const getFilterOrderService = async (
       period
         ? {
             createdAt: {
-              gte: new Date(new Date().setDate(new Date().getDate() - period)),
-              lte: new Date()
+              gte: dayjs().utc().subtract(period, 'day').startOf('day').toISOString(),
+              lte: dayjs().utc().toISOString()
             }
           }
         : undefined,

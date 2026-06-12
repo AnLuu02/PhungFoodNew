@@ -451,13 +451,38 @@ export const findInfiniteProductService = async (
   const items = await db.product.findMany({
     take: limit + 1,
     where: {
-      subCategory: danhMuc
+      ...(danhMuc
         ? {
-            tag: {
-              equals: danhMuc
+            subCategory: {
+              OR: [
+                {
+                  tag: danhMuc
+                },
+                {
+                  category: {
+                    tag: danhMuc
+                  }
+                }
+              ]
             }
           }
-        : undefined
+        : {}),
+      ...(search
+        ? {
+            OR: [
+              {
+                name: {
+                  contains: search,
+                  mode: 'insensitive'
+                },
+                description: {
+                  contains: search,
+                  mode: 'insensitive'
+                }
+              }
+            ]
+          }
+        : {})
     },
     cursor: cursor ? { id: cursor } : undefined,
     include: {
