@@ -22,7 +22,7 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
     setCart(cart.filter(item => item.id !== id));
   };
 
-  const originalTotal = useMemo(() => {
+  const originalAmount = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }, [cart]);
 
@@ -97,7 +97,7 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
             >
               <Text fw={700}>Tạm tính:</Text>
               <Text fw={700} size='lg' c='red'>
-                {formatPriceLocaleVi(originalTotal)}
+                {formatPriceLocaleVi(originalAmount)}
               </Text>
             </Group>
 

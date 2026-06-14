@@ -37,9 +37,6 @@ import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 type DisplayOrder = TGetFilterOrder[number] & {
   date: string | undefined;
-  finalTotal: number;
-  originalTotal: number;
-  discountAmount: number;
 };
 
 const primaryOrderTabs = [
@@ -111,8 +108,8 @@ export function OrderList({ session }: { session: Session | null }) {
         orders?.map((order: TGetFilterOrder[number]) => ({
           ...order,
           date: new Date(order.createdAt || new Date()).toISOString().split('T')[0],
-          finalTotal: order?.finalTotal || 0,
-          originalTotal: order?.originalTotal || 0,
+          finalAmount: order?.finalAmount || 0,
+          originalAmount: order?.originalAmount || 0,
           discountAmount: order?.discountAmount || 0
         })) || []
     };
@@ -130,8 +127,8 @@ export function OrderList({ session }: { session: Session | null }) {
       [
         order?.payment?.name,
         order?.status,
-        order?.finalTotal?.toString(),
-        order?.originalTotal?.toString(),
+        order?.finalAmount?.toString(),
+        order?.originalAmount?.toString(),
         order?.discountAmount?.toString(),
         order?.id?.toString()
       ]
@@ -152,7 +149,7 @@ export function OrderList({ session }: { session: Session | null }) {
         id: order.id,
         date: new Date(order.createdAt ? order.createdAt : new Date()).toISOString().split('T')[0],
 
-        finalTotal: order?.finalTotal || 0,
+        finalAmount: order?.finalAmount || 0,
         status: order.status
       })) || [];
     const statusObj = getTotalOrderStatus(orderData);
@@ -459,7 +456,7 @@ export function OrderList({ session }: { session: Session | null }) {
 
                               <Table.Td>
                                 <Text size='sm' fw={900} className='text-slate-950 dark:text-white'>
-                                  {formatPriceLocaleVi(order.finalTotal || 0)}
+                                  {formatPriceLocaleVi(order.finalAmount || 0)}
                                 </Text>
                               </Table.Td>
 

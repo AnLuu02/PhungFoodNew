@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import dayjs from '~/lib/dayjs';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { UserRole } from '~/shared/constants/user.constants';
 import { Period } from '~/shared/types';
 import { getAllActivitiesService } from './activityLogger.service';
@@ -87,7 +88,11 @@ export const getInitPageService = async (db: PrismaClient) => {
     })
   ]);
 
-  const pick = (fn: (p: any) => boolean) => products.filter(fn).slice(0, 10);
+  const pick = (fn: (p: any) => boolean) =>
+    products
+      .map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
+      .filter(fn)
+      .slice(0, 10);
 
   const byMaterial = (tag: string) => pick(p => p.materials?.some((m: any) => m.tag === tag));
 
@@ -138,7 +143,7 @@ export const getInitProductDetailPageService = async (db: PrismaClient, input: {
   ]);
 
   const results = {
-    product,
+    product: { ...product, price: moneyToNumber(product.price), discount: moneyToNumber(product.discount) },
     dataRelatedProducts: dataRelatedProducts?.status === 'fulfilled' ? dataRelatedProducts.value : [],
     dataHintProducts: dataHintProducts?.status === 'fulfilled' ? dataHintProducts.value : [],
     dataVouchers: dataVouchers?.status === 'fulfilled' ? dataVouchers.value : []

@@ -121,7 +121,7 @@ export const getComfirmEmail = (user: any, order: any, orderTrackingUrl: string)
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; font-size: 15px; color: #555;">Tổng tiền:</td>
-                  <td style="padding: 8px 0; font-size: 15px; font-weight: bold; color: #1a1a1a; text-align: right;">${formatPriceLocaleVi(order?.finalTotal)}</td>
+                  <td style="padding: 8px 0; font-size: 15px; font-weight: bold; color: #1a1a1a; text-align: right;">${formatPriceLocaleVi(order?.finalAmount)}</td>
                 </tr>
                 <tr>
                   <td style="padding: 8px 0; font-size: 15px; color: #555;">Phương thức thanh toán:</td>

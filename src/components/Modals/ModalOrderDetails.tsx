@@ -123,7 +123,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                       <Box className='flex items-center justify-between'>
                         <Text size='sm'>Tổng tiền hàng:</Text>
                         <Text fw={700} size='md'>
-                          {formatPriceLocaleVi(data.originalTotal || 0)}
+                          {formatPriceLocaleVi(data.originalAmount || 0)}
                         </Text>
                       </Box>
                       {data?.vouchers?.length > 0 && (
@@ -178,7 +178,7 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                         className='flex items-center justify-between rounded-lg bg-emerald-50 p-3 text-lg font-bold text-emerald-600'
                       >
                         Thành tiền:
-                        <b className='font-semibold'>{formatPriceLocaleVi(data?.finalTotal || 0)}</b>
+                        <b className='font-semibold'>{formatPriceLocaleVi(data?.finalAmount || 0)}</b>
                       </Text>
                     </Stack>
                   </Card>

@@ -1,5 +1,6 @@
 'use client';
 import { useLocalStorage } from '@mantine/hooks';
+import { OrderStatus } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { formatTransDate } from '~/lib/FuncHandler/Format';
@@ -54,9 +55,9 @@ export default function PaymentResult() {
             subject: 'Hóa đơn mua hàng',
             data: order,
             orderTrackingUrl:
-              `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/vnpay-payment-result?orderId=${encodeURIComponent(order?.id?.trim())}` +
+              `${process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL_DEPLOY}/vnpay-payment-result?orderId=${encodeURIComponent(order?.id?.trim() ?? '')}` +
               `&transDate=${encodeURIComponent(transDate?.trim())}` +
-              `&statusOrder=${encodeURIComponent(order?.status?.trim())}` +
+              `&statusOrder=${encodeURIComponent(order?.status?.toString() ?? OrderStatus.CANCELLED)}` +
               `&useLocal=1`
           })
         });
@@ -108,7 +109,7 @@ export default function PaymentResult() {
         status={uiStatus}
         customerName={data?.user?.name || 'Khách hàng'}
         orderId={queryParams.orderId}
-        amount={queryParams.amount || data?.finalTotal || 0}
+        amount={queryParams.amount || data?.finalAmount || 0}
         customTitle={title}
         customMessage={message}
         onRetryPayment={() => {

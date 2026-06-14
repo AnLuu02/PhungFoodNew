@@ -44,10 +44,11 @@ export default function OrderUpsert({
     resolver: zodResolver(baseOrderSchema),
     defaultValues: {
       id: undefined,
-      finalTotal: 0,
-      taxTotal: 0,
+      finalAmount: 0,
+      taxAmount: 0,
       discountAmount: 0,
-      originalTotal: 0,
+      originalAmount: 0,
+      shippingAmount: 0,
       status: OrderStatus.UNPAID,
       userId: '',
       paymentId: '',
@@ -81,10 +82,11 @@ export default function OrderUpsert({
     if (data?.id) {
       formFields.reset({
         id: data?.id,
-        finalTotal: data?.finalTotal || 0,
-        taxTotal: data?.taxTotal || 0,
-        discountAmount: data?.discountAmount || 0,
-        originalTotal: data?.originalTotal || 0,
+        finalAmount: data?.finalAmount,
+        taxAmount: data?.taxAmount,
+        discountAmount: data?.discountAmount,
+        originalAmount: data?.originalAmount,
+        shippingAmount: data?.shippingAmount,
         status: data?.status,
         userId: data?.userId || '',
         paymentId: data?.paymentId || '',
@@ -138,10 +140,10 @@ export default function OrderUpsert({
                   disabled={Boolean(formFields.watch('userId'))}
                   onClick={() => {
                     formFields.reset({
-                      finalTotal: 0,
-                      taxTotal: 0,
+                      finalAmount: 0,
+                      taxAmount: 0,
                       discountAmount: 0,
-                      originalTotal: 0,
+                      originalAmount: 0,
                       status: OrderStatus.UNPAID,
                       userId: users?.[0]?.id,
                       paymentId: payments?.[0]?.id,
@@ -268,7 +270,7 @@ export default function OrderUpsert({
               <GridCol span={4}>
                 <Controller
                   control={formFields.control}
-                  name='finalTotal'
+                  name='finalAmount'
                   render={({ field: { onChange, onBlur, value, name } }) => (
                     <NumberInput
                       thousandSeparator=','
@@ -277,7 +279,7 @@ export default function OrderUpsert({
                       readOnly
                       label='Tổng tiền (chỉ đọc)'
                       placeholder='Sẽ được tính ngay sau khi gọi món.'
-                      error={formFields.formState.errors.finalTotal?.message}
+                      error={formFields.formState.errors.finalAmount?.message}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}
@@ -289,7 +291,7 @@ export default function OrderUpsert({
               <GridCol span={4}>
                 <Controller
                   control={formFields.control}
-                  name='taxTotal'
+                  name='taxAmount'
                   render={({ field: { onChange, onBlur, value, name } }) => (
                     <NumberInput
                       thousandSeparator=','
@@ -298,7 +300,7 @@ export default function OrderUpsert({
                       readOnly
                       label='Thuế (10%)'
                       placeholder='Sẽ được tính ngay sau khi gọi món.'
-                      error={formFields.formState.errors.taxTotal?.message}
+                      error={formFields.formState.errors.taxAmount?.message}
                       value={value}
                       onChange={onChange}
                       onBlur={onBlur}

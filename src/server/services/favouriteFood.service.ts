@@ -1,4 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 
 export const createFavouriteFoodService = async (db: PrismaClient, input: { productId: string; userId: string }) => {
   const favourite_food = await db.favouriteFood.create({
@@ -38,7 +39,7 @@ export const getFilterFavouriteFoodService = async (
   input: { s: string; include?: Prisma.FavouriteFoodInclude }
 ) => {
   const searchQuery = input.s?.trim();
-  const favourite_food = await db.favouriteFood.findMany({
+  const favourite_foods = await db.favouriteFood.findMany({
     where: {
       OR: [
         { id: searchQuery },
@@ -89,5 +90,12 @@ export const getFilterFavouriteFoodService = async (
     }
   });
 
-  return favourite_food;
+  return favourite_foods.map(ff => ({
+    ...ff,
+    product: {
+      ...ff.product,
+      price: moneyToNumber(ff.product.price),
+      discount: moneyToNumber(ff.product.discount)
+    }
+  }));
 };

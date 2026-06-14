@@ -92,10 +92,10 @@ export default function InvoiceUpsert({
           currentFormData?.buyerAddress ||
           currentOrder?.user?.address?.fullAddress ||
           currentOrder?.delivery?.address?.fullAddress,
-        subTotal: currentFormData?.subTotal || currentOrder?.originalTotal || 0,
+        subTotal: currentFormData?.subTotal || currentOrder?.originalAmount || 0,
         taxAmount: 0,
         discountAmount: currentFormData?.discountAmount || currentOrder?.discountAmount || 0,
-        totalAmount: currentFormData?.totalAmount || currentOrder?.finalTotal || 0
+        totalAmount: currentFormData?.totalAmount || currentOrder?.finalAmount || 0
       });
     }
   }, [orderId]);

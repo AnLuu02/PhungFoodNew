@@ -2,6 +2,7 @@ import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { TUserRole, UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
@@ -157,7 +158,7 @@ export const findProductService = async (
   );
 
   return {
-    products,
+    products: products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) })),
     pagination: {
       currentPage: page,
       totalPages,
@@ -176,7 +177,13 @@ export const deleteProductService = async (db: PrismaClient, input: { id: string
   });
   return {
     metaData: {
-      before: productDeleted ?? {},
+      before: productDeleted
+        ? {
+            ...productDeleted,
+            discount: moneyToNumber(productDeleted.discount),
+            price: moneyToNumber(productDeleted.price)
+          }
+        : {},
       after: {}
     }
   };
@@ -191,7 +198,7 @@ export const getFilterProductService = async (
 ) => {
   const { s, include, userRole } = input;
   const search = s?.trim();
-  const product = await db.product.findMany({
+  const products = await db.product.findMany({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER
         ? {}
@@ -240,7 +247,7 @@ export const getFilterProductService = async (
     }
   });
 
-  return product;
+  return products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));
 };
 export const getOneProductService = async (
   db: PrismaClient,
@@ -251,7 +258,7 @@ export const getOneProductService = async (
   }
 ) => {
   const { key, include, userRole } = input;
-  return await db.product.findFirst({
+  const product = await db.product.findFirst({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER
         ? {}
@@ -275,6 +282,12 @@ export const getOneProductService = async (
       }
     }
   });
+  if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Opps! Có vẻ như sản phẩm không tồn tại.' });
+  return {
+    ...product,
+    price: moneyToNumber(product.price),
+    discount: moneyToNumber(product.discount)
+  };
 };
 export const getAllProductService = async (
   db: PrismaClient,
@@ -284,7 +297,7 @@ export const getAllProductService = async (
   }
 ) => {
   const { include, userRole } = input;
-  const product = await db.product.findMany({
+  const products = await db.product.findMany({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
     },
@@ -295,7 +308,7 @@ export const getAllProductService = async (
       favouriteFood: true
     }
   });
-  return product;
+  return products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));
 };
 
 export const upsertProductToCloudinaryService = async (db: PrismaClient, input1: ProductFromDb) => {
@@ -426,8 +439,18 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
   }
   return {
     metaData: {
-      before: existed ?? {},
-      after: upserted ?? {}
+      before: existed
+        ? {
+            ...existed,
+            price: moneyToNumber(existed.price),
+            discount: moneyToNumber(existed.discount)
+          }
+        : {},
+      after: {
+        ...upserted,
+        discount: moneyToNumber(upserted.discount),
+        price: moneyToNumber(upserted.price)
+      }
     }
   };
 };
@@ -512,7 +535,7 @@ export const findInfiniteProductService = async (
   }
 
   return {
-    items,
+    items: items.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) })),
     nextCursor
   };
 };

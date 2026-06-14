@@ -23,30 +23,30 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
     defaultValue: []
   });
 
-  const { originalTotal, discount, tax, discountAmountByVoucher, finalTotal } = useMemo(() => {
-    const { discount, originalTotal } = cart?.reduce(
-      (acc: { discount: number; originalTotal: number }, item: any) => {
+  const { originalAmount, discount, tax, discountAmountByVoucher, finalAmount } = useMemo(() => {
+    const { discount, originalAmount } = cart?.reduce(
+      (acc: { discount: number; originalAmount: number }, item: any) => {
         acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
-        acc.originalTotal += (item.price || 0) * (item.quantity || 1);
+        acc.originalAmount += (item.price || 0) * (item.quantity || 1);
         return {
           discount: acc.discount,
-          originalTotal: acc.originalTotal
+          originalAmount: acc.originalAmount
         };
       },
       {
         discount: 0,
-        originalTotal: 0
+        originalAmount: 0
       }
-    ) || { discount: 0, originalTotal: 0 };
+    ) || { discount: 0, originalAmount: 0 };
     const discountAmountByVoucher = (appliedVouchers ?? []).reduce((sum, item) => {
       if (!item?.discountValue) return sum;
-      const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
+      const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalAmount) / 100;
       return sum + value;
     }, 0);
-    const pricePaid = originalTotal - discount - discountAmountByVoucher;
+    const pricePaid = originalAmount - discount - discountAmountByVoucher;
     const tax = pricePaid * 0.08;
-    const finalTotal = pricePaid + tax;
-    return { originalTotal, discount, tax, discountAmountByVoucher, finalTotal };
+    const finalAmount = pricePaid + tax;
+    return { originalAmount, discount, tax, discountAmountByVoucher, finalAmount };
   }, [cart, appliedVouchers]);
   useEffect(() => {
     setIsMounted(true);
@@ -95,7 +95,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 </Stack>
               </ScrollAreaAutosize>
 
-              <ApplyVoucher totalOrderPrice={originalTotal} />
+              <ApplyVoucher totalOrderPrice={originalAmount} />
             </>
           )}
           <Stack gap='xs'>
@@ -104,7 +104,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 Tạm tính
               </Text>
               <Text size='md' fw={700}>
-                {formatPriceLocaleVi(originalTotal)}
+                {formatPriceLocaleVi(originalAmount)}
               </Text>
             </Group>
             <Group justify='space-between'>
@@ -139,18 +139,18 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 Tổng cộng
               </Text>
               <Text size='xl' fw={700} className='text-red-500'>
-                {formatPriceLocaleVi(finalTotal)}
+                {formatPriceLocaleVi(finalAmount)}
               </Text>
             </Group>
           </Stack>
 
           <Flex gap={0} justify='space-between' wrap={'nowrap'}>
             <ButtonCheckout
-              finalTotal={finalTotal}
-              originalTotal={originalTotal}
+              finalAmount={finalAmount}
+              originalAmount={originalAmount}
               discountAmount={discountAmountByVoucher + discount}
               data={cart}
-              taxTotal={tax}
+              taxAmount={tax}
               stylesButtonCheckout={{ children: 'Thanh toán', fullWidth: true, size: 'md' }}
             />
           </Flex>

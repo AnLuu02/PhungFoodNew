@@ -220,7 +220,7 @@ export default function ReportOverviewPageClient() {
                       <Table.Td>{order.id}</Table.Td>
                       <Table.Td>{formatDateViVN(order.createdAt)}</Table.Td>
                       <Table.Td>{order?.user?.name}</Table.Td>
-                      <Table.Td>{formatPriceLocaleVi(order?.finalTotal)}</Table.Td>
+                      <Table.Td>{formatPriceLocaleVi(order?.finalAmount)}</Table.Td>
                       <Table.Td>
                         <Badge
                           leftSection={<statusInfo.icon size={16} />}

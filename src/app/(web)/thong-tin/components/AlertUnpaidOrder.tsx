@@ -22,7 +22,7 @@ export const AlertUnpaidOrder = ({ orders }: { orders: NonNullable<GetOverviewUs
   const unpaidOrders = orders.filter(order => order.status === OrderStatus.UNPAID);
   const unpaidOrdersCount = unpaidOrders.length;
   const unpaidTotal = unpaidOrders.reduce((sum, order) => {
-    return sum + order.finalTotal;
+    return sum + order.finalAmount;
   }, 0);
   return (
     <>
@@ -161,7 +161,7 @@ export const AlertUnpaidOrder = ({ orders }: { orders: NonNullable<GetOverviewUs
                           </Text>
 
                           <Text fw={950} className='font-quicksand text-lg text-orange-700 dark:text-orange-200'>
-                            {formatPriceLocaleVi(order.finalTotal)}
+                            {formatPriceLocaleVi(order?.finalAmount)}
                           </Text>
                         </Box>
 

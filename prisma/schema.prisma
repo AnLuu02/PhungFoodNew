@@ -76,10 +76,10 @@ model Voucher {
   description       String?
   type              VoucherType
   isActive          Boolean?         @default(false)
-  discountValue     Float
+  discountValue     Decimal
   code              String           @default("GIAMGIANE")
-  maxDiscount       Float
-  minOrderPrice     Float
+  maxDiscount       Decimal
+  minOrderPrice     Decimal
   quantity          Int              @default(0)
   quantityForUser   Int              @default(1)
   usedQuantity      Int              @default(0)
@@ -109,10 +109,11 @@ model VoucherForUser {
 
 model Order {
   id             String      @id @default(cuid())
-  originalTotal  Int         @default(0)
-  taxTotal       Int         @default(0)
-  finalTotal     Int         @default(0)
-  discountAmount Int         @default(0)
+  originalAmount Decimal     @default(0)
+  taxAmount      Decimal     @default(0)
+  finalAmount    Decimal     @default(0)
+  discountAmount Decimal     @default(0)
+  shippingAmount Decimal     @default(0)
   status         OrderStatus
   transactionId  String?     @default("")
   transDate      DateTime?
@@ -145,10 +146,10 @@ model Invoice {
   buyerPhone     String?
   buyerAddress   String?
   buyerTaxCode   String?
-  subTotal       Float
-  taxAmount      Float         @default(0)
-  discountAmount Float         @default(0)
-  totalAmount    Float
+  subTotal       Decimal       @default(0)
+  taxAmount      Decimal       @default(0)
+  discountAmount Decimal       @default(0)
+  totalAmount    Decimal       @default(0)
   currency       String        @default("VND")
   paymentMethod  String?
   pdfUrl         String?
@@ -180,7 +181,7 @@ model OrderItem {
   id        String    @id @default(cuid())
   productId String
   quantity  Int       @default(1)
-  price     Int       @default(0)
+  price     Decimal   @default(0)
   note      String?   @default("")
   orderId   String
   product   Product   @relation(fields: [productId], references: [id])
@@ -215,8 +216,8 @@ model Product {
   description           String?
   descriptionDetailJson Json?
   descriptionDetailHtml String?          @default("<p>Đang cập nhật</p>")
-  price                 Int              @default(0)
-  discount              Int              @default(0)
+  price                 Decimal          @default(0)
+  discount              Decimal          @default(0)
   tag                   String           @unique
   tags                  String[]
   isActive              Boolean?         @default(false)

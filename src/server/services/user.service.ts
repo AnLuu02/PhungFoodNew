@@ -4,6 +4,7 @@ import { compare, hash } from 'bcryptjs';
 import crypto, { randomInt } from 'crypto';
 import dayjs from 'dayjs';
 import { Session } from 'next-auth';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
@@ -550,6 +551,15 @@ export const getOneUserService = async (db: PrismaClient, input: { key: string; 
   }
   return {
     ...user,
+    order: user.order.map(item => ({
+      ...item,
+      orderItems: item.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) })),
+      discountAmount: moneyToNumber(item?.discountAmount),
+      finalAmount: moneyToNumber(item?.finalAmount),
+      originalAmount: moneyToNumber(item?.originalAmount),
+      taxAmount: moneyToNumber(item?.taxAmount),
+      shippingAmount: moneyToNumber(item?.shippingAmount)
+    })),
     role: {
       ...user.role,
       permissions: permissionsFinal
@@ -721,18 +731,18 @@ export const getOverviewUserService = async (db: PrismaClient, input: { key: str
     db.order.aggregate({
       where: { userId: key },
       _count: { id: true },
-      _sum: { finalTotal: true },
-      _max: { finalTotal: true },
-      _avg: { finalTotal: true }
+      _sum: { finalAmount: true },
+      _max: { finalAmount: true },
+      _avg: { finalAmount: true }
     })
   ]);
   return {
     user,
     overview: {
-      spent: overview._sum.finalTotal,
+      spent: moneyToNumber(overview._sum.finalAmount),
       quantity: overview._count.id,
-      max: overview._max.finalTotal,
-      avg: overview._avg.finalTotal
+      max: moneyToNumber(overview._max.finalAmount),
+      avg: moneyToNumber(overview._avg.finalAmount)
     }
   };
 };

@@ -1,5 +1,6 @@
 import { OrderStatus, PrismaClient } from '@prisma/client';
 import dayjs from '~/lib/dayjs';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { getCompare } from '~/lib/FuncHandler/PrismaHelper';
 import { getDatesObjBetween } from '~/lib/FuncHandler/Statistics';
 import { defaultValueCompareReturn } from '~/shared/constants/statistics.constants';
@@ -65,7 +66,7 @@ export const getStatisticsSpentUserService = async (
     overviews: revenues.map((item: (typeof revenues)[number]) => {
       return {
         date: dayjs([item.year, item.month - 1, item.day]).format('DD-MM-YYYY'),
-        netRevenue: item._sum.netRevenue,
+        netRevenue: moneyToNumber(item._sum.netRevenue),
         totalOrders: item._sum.totalOrders,
         createdAt: firstRevenue?.createdAt || dayjs().utc().toDate()
       };
@@ -106,7 +107,7 @@ export const getTopUsersService = async (
     const user = users.find((user: (typeof users)[number]) => user.id === item.userId);
     return {
       userId: item.userId,
-      totalSpent: item._sum.netRevenue,
+      totalSpent: moneyToNumber(item._sum.netRevenue),
       totalOrders: item._sum.totalOrders,
       user: user
     };
@@ -137,19 +138,25 @@ export const getTopProductsService = async (db: PrismaClient, input: { startTime
   const topProducts = data
     .reduce(
       (
-        acc: { product: (typeof data)[number]['product']; soldQuantity: number; profit: number }[],
+        acc: {
+          product: Omit<(typeof data)[number]['product'], 'price'> & {
+            price: number;
+          };
+          soldQuantity: number;
+          profit: number;
+        }[],
         item: (typeof data)[number]
       ) => {
         const existed = acc.find((it: (typeof acc)[number]) => it?.product?.id === item?.product?.id);
         if (!existed) {
           acc.push({
-            product: item?.product,
+            product: { ...item?.product, price: moneyToNumber(item?.product.price) },
             soldQuantity: item?.quantity,
-            profit: item?.product?.price * item?.quantity || 0
+            profit: moneyToNumber(item?.price) * item?.quantity || 0
           });
         } else {
           existed.soldQuantity += item?.quantity || 0;
-          existed.profit += item?.product?.price * item?.quantity || 0;
+          existed.profit += moneyToNumber(item?.price) * item?.quantity || 0;
         }
         return acc;
       },
@@ -226,11 +233,11 @@ export const getRevenueOrderStatusService = async (
         acc.push({
           status: item?.status,
           totalOrders: 1,
-          profit: item?.finalTotal || 0
+          profit: moneyToNumber(item?.finalAmount || 0)
         });
       } else {
         existed.totalOrders += 1;
-        existed.profit += item?.finalTotal || 0;
+        existed.profit += moneyToNumber(item?.finalAmount || 0);
       }
       return acc;
     },
@@ -257,7 +264,7 @@ export const getRevenueByCategoryService = async (
 
   const revenueByCategory = data.reduce((acc: any, item: (typeof data)[number]) => {
     const categoryName = item?.product?.subCategory?.name || 'Khác';
-    const total = item.price * item.quantity;
+    const total = moneyToNumber(item.price) * item.quantity;
 
     if (!acc[categoryName]) {
       acc[categoryName] = 0;
@@ -359,7 +366,7 @@ export const getOverviewRevenueService = async (
               day: item.day,
               month: item.month,
               year: item.year,
-              netRevenue: item._sum.netRevenue,
+              netRevenue: moneyToNumber(item._sum.netRevenue),
               totalOrders: item._sum.totalOrders,
               createdAt: firstRevenue?.createdAt || dayjs().utc().toDate()
             };
@@ -370,7 +377,17 @@ export const getOverviewRevenueService = async (
     totalProducts: totalProducts.status === 'fulfilled' ? totalProducts.value : defaultValueCompareReturn,
     totalFinalRevenue: totalFinal.status === 'fulfilled' ? totalFinal.value : defaultValueCompareReturn,
     users: users.status === 'fulfilled' ? users.value : [],
-    orders: orders.status === 'fulfilled' ? orders.value : []
+    orders:
+      orders.status === 'fulfilled'
+        ? orders.value.map(item => ({
+            ...item,
+            discountAmount: moneyToNumber(item?.discountAmount),
+            finalAmount: moneyToNumber(item?.finalAmount),
+            originalAmount: moneyToNumber(item?.originalAmount),
+            taxAmount: moneyToNumber(item?.taxAmount),
+            shippingAmount: moneyToNumber(item?.shippingAmount)
+          }))
+        : []
   };
 };
 export const getOverviewDetailRevenueService = async (
@@ -460,7 +477,7 @@ export const getOverviewDetailRevenueService = async (
       const year = +revenue.year;
       const key = `${day}/${month}/${year}`;
       if (labels.includes(key)) {
-        summaryRevenue[key]! += Number(revenue._sum.netRevenue);
+        summaryRevenue[key]! += moneyToNumber(revenue._sum.netRevenue);
       }
     });
 
@@ -471,7 +488,7 @@ export const getOverviewDetailRevenueService = async (
       ? categories.value.reduce(
           (acc: { category: string; revenue: number }[], item: (typeof categories.value)[number]) => {
             const categoryName = item?.product?.subCategory?.name || 'Khác';
-            const total = item.price * item.quantity;
+            const total = moneyToNumber(item.price) * item.quantity;
             const existed = acc.find((item: { category: string; revenue: number }) => item.category === categoryName);
             if (!existed) {
               acc.push({
@@ -508,7 +525,7 @@ export const getOverviewDetailRevenueService = async (
       revenueByUser.value.map(item => {
         const user = userData.find((user: (typeof userData)[number]) => user.id === item.userId);
         return {
-          netRevenue: item._sum.netRevenue,
+          netRevenue: moneyToNumber(item._sum.netRevenue),
           totalOrders: item._sum.totalOrders,
           name: user?.name || 'Đang cập nhật'
         };
@@ -521,9 +538,19 @@ export const getOverviewDetailRevenueService = async (
     })),
     totalUsers: totalUsers.status === 'fulfilled' ? totalUsers.value._count.id : 0,
     totalOrders: totalOrders.status === 'fulfilled' ? totalOrders.value._count.id : 0,
-    totalFinalRevenue: totalFinal.status === 'fulfilled' ? totalFinal.value._sum.netRevenue : 0,
+    totalFinalRevenue: totalFinal.status === 'fulfilled' ? moneyToNumber(totalFinal.value._sum.netRevenue) : 0,
     recentUsers: users.status === 'fulfilled' ? users.value : [],
-    recentOrders: orders.status === 'fulfilled' ? orders.value : [],
+    recentOrders:
+      orders.status === 'fulfilled'
+        ? orders.value.map(item => ({
+            ...item,
+            discountAmount: moneyToNumber(item?.discountAmount),
+            finalAmount: moneyToNumber(item?.finalAmount),
+            originalAmount: moneyToNumber(item?.originalAmount),
+            taxAmount: moneyToNumber(item?.taxAmount),
+            shippingAmount: moneyToNumber(item?.shippingAmount)
+          }))
+        : [],
     revenueByCategory,
     topUsers
   };

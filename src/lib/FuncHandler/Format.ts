@@ -1,6 +1,6 @@
 import { EMPTY_STRING, VND_SYMBOL } from '~/constants';
 import dayjs from '~/lib/dayjs';
-import { FormatDateViVNOptions } from '~/shared/types';
+import { FormatDateViVNOptions, MoneyValue } from '~/shared/types';
 
 export const formatDateViVN = (date?: Date | string | number | null, options?: FormatDateViVNOptions) => {
   const { hour = false, format, fallback = EMPTY_STRING } = options || {};
@@ -113,4 +113,19 @@ export const toNumber = (value?: string) => {
   const num = Number(value);
 
   return Number.isNaN(num) ? undefined : num;
+};
+
+export const moneyToNumber = (value: MoneyValue) => {
+  if (value === null || value === undefined) return 0;
+
+  if (typeof value === 'number') return value;
+
+  if (typeof value === 'string') return Number(value);
+
+  return Number(value.toString());
+};
+
+export const toIsoString = (value?: Date | string | null) => {
+  if (!value) return null;
+  return value instanceof Date ? value.toISOString() : value;
 };

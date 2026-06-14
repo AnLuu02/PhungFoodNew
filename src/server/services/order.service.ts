@@ -1,6 +1,7 @@
 import { AddressType, OrderStatus, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import dayjs from '~/lib/dayjs';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { generateInvoiceNumber } from '~/lib/FuncHandler/generateInvoiceNumber';
 import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/FuncHandler/PrismaHelper';
 import { OrderInput } from '~/shared/schema/order.schema';
@@ -56,7 +57,7 @@ export const findOrderService = async (
               }
             },
             {
-              originalTotal: {
+              originalAmount: {
                 equals: Number(searchQuery) || 0
               }
             },
@@ -66,7 +67,12 @@ export const findOrderService = async (
               }
             },
             {
-              finalTotal: {
+              finalAmount: {
+                equals: Number(searchQuery) || 0
+              }
+            },
+            {
+              shippingAmount: {
                 equals: Number(searchQuery) || 0
               }
             }
@@ -91,13 +97,13 @@ export const findOrderService = async (
     db.order.count(),
     db.order.count({
       where,
-      orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : undefined
+      orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalAmount']) : undefined
     }),
     db.order.findMany({
       skip: (page - 1) * limit,
       take: limit,
       where,
-      orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalTotal']) : { createdAt: 'desc' },
+      orderBy: sort && sort.length > 0 ? buildSortFilter(sort, ['finalAmount']) : { createdAt: 'desc' },
       include: {
         ...(include ?? {}),
         payment: true,
@@ -126,7 +132,29 @@ export const findOrderService = async (
   );
 
   return {
-    orders,
+    orders: orders.map(item => ({
+      ...item,
+      discountAmount: moneyToNumber(item?.discountAmount),
+      finalAmount: moneyToNumber(item?.finalAmount),
+      originalAmount: moneyToNumber(item?.originalAmount),
+      taxAmount: moneyToNumber(item?.taxAmount),
+      shippingAmount: moneyToNumber(item?.shippingAmount),
+      orderItems: item.orderItems.map(orItem => ({
+        ...orItem,
+        price: moneyToNumber(orItem.price),
+        product: {
+          ...orItem.product,
+          price: moneyToNumber(orItem.product.price),
+          discount: moneyToNumber(orItem.product.discount)
+        }
+      })),
+      vouchers: item.vouchers.map(v => ({
+        ...v,
+        discountValue: moneyToNumber(v.discountValue),
+        maxDiscount: moneyToNumber(v.maxDiscount),
+        minOrderPrice: moneyToNumber(v.minOrderPrice)
+      }))
+    })),
     pagination: {
       hasNext: Boolean(totalPages > page),
       totalPages
@@ -241,7 +269,26 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
         orderItems: true
       }
     });
-    return { oldData, newData };
+    return {
+      oldData: {
+        ...oldData,
+        discountAmount: moneyToNumber(oldData?.discountAmount),
+        finalAmount: moneyToNumber(oldData?.finalAmount),
+        originalAmount: moneyToNumber(oldData?.originalAmount),
+        taxAmount: moneyToNumber(oldData?.taxAmount),
+        shippingAmount: moneyToNumber(oldData?.shippingAmount),
+        orderItems: oldData?.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) }))
+      },
+      newData: {
+        ...newData,
+        discountAmount: moneyToNumber(newData?.discountAmount),
+        finalAmount: moneyToNumber(newData?.finalAmount),
+        originalAmount: moneyToNumber(newData?.originalAmount),
+        taxAmount: moneyToNumber(newData?.taxAmount),
+        shippingAmount: moneyToNumber(newData?.shippingAmount),
+        orderItems: newData?.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) }))
+      }
+    };
   });
   if (result?.oldData && result?.oldData?.id != result.newData?.id) {
     db.order.deleteMany({ where: { id: result.newData?.id } });
@@ -251,17 +298,17 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
     });
   }
 
-  //test admin
+  //statistics
   if (result.newData && result.newData.status === OrderStatus.COMPLETED) {
-    updatepointUser(db, input.userId, Number(input.finalTotal) || 0);
+    updatepointUser(db, input.userId, Number(input.finalAmount) || 0);
     updateRevenue(db, result.newData.status, input.userId, {
-      originalTotal: result.newData?.originalTotal || 0,
-      discountAmount: result.newData?.discountAmount || 0,
-      finalTotal: result.newData?.finalTotal || 0,
+      originalAmount: moneyToNumber(result.newData?.originalAmount),
+      discountAmount: moneyToNumber(result.newData?.discountAmount),
+      finalAmount: moneyToNumber(result.newData?.finalAmount),
       createdAt: data?.createdAt
     });
     await Promise.all(
-      result.newData?.orderItems?.map((orderItem: any) => {
+      result.newData?.orderItems?.map((orderItem: (typeof result)['newData']['orderItems'][number]) => {
         return updateSales(db, result.newData.status, orderItem.productId, orderItem?.quantity);
       })
     );
@@ -280,7 +327,7 @@ export const updateOrderService = async (
     data: any;
   }
 ) => {
-  const order: any = await db.order.update({
+  const order = await db.order.update({
     where: input.where as Prisma.OrderWhereUniqueInput,
     data: input.data,
     include: {
@@ -288,21 +335,29 @@ export const updateOrderService = async (
     }
   });
 
-  if (order && order.status === OrderStatus.COMPLETED) {
+  if (order && order.status === OrderStatus.COMPLETED && order.userId) {
     updateRevenue(db, order.status, order.userId, {
-      originalTotal: order?.originalTotal || 0,
-      discountAmount: order?.discountAmount || 0,
-      finalTotal: order?.finalTotal || 0,
+      originalAmount: moneyToNumber(order?.originalAmount),
+      discountAmount: moneyToNumber(order?.discountAmount),
+      finalAmount: moneyToNumber(order?.finalAmount),
       createdAt: input?.data?.createdAt
     });
-    updatepointUser(db, order.userId, order.finalTotal);
+    updatepointUser(db, order.userId, moneyToNumber(order.finalAmount));
     await Promise.all(
       order?.orderItems?.map((orderItem: any) => {
         return updateSales(db, order.status, orderItem.productId, orderItem?.quantity);
       })
     );
   }
-  return order;
+  return {
+    ...order,
+    orderItems: order.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) })),
+    discountAmount: moneyToNumber(order?.discountAmount),
+    finalAmount: moneyToNumber(order?.finalAmount),
+    originalAmount: moneyToNumber(order?.originalAmount),
+    taxAmount: moneyToNumber(order?.taxAmount),
+    shippingAmount: moneyToNumber(order?.shippingAmount)
+  };
 };
 export const deleteOrderService = async (db: PrismaClient, input: { id: string }) => {
   const deleted = await db.order.update({
@@ -343,10 +398,10 @@ export const deleteOrderService = async (db: PrismaClient, input: { id: string }
           buyerPhone: deleted?.user?.phone ?? null,
           buyerAddress: deleted?.user?.address?.fullAddress ?? 'Đang cập nhật',
           buyerTaxCode: '13254',
-          subTotal: deleted.finalTotal ?? 0,
-          taxAmount: deleted?.taxTotal ?? 0,
-          discountAmount: deleted?.discountAmount ?? 0,
-          totalAmount: deleted.originalTotal,
+          subTotal: moneyToNumber(deleted.finalAmount),
+          taxAmount: moneyToNumber(deleted?.taxAmount),
+          discountAmount: moneyToNumber(deleted?.discountAmount),
+          totalAmount: moneyToNumber(deleted.originalAmount),
           currency: 'VND',
           paymentMethod: deleted.payment?.name ?? null,
           pdfUrl: '',
@@ -405,7 +460,7 @@ export const getFilterOrderService = async (
       }
     ].filter(Boolean)
   };
-  const order = await db.order.findMany({
+  const orders = await db.order.findMany({
     where: where as any,
     include: {
       ...(include ?? {}),
@@ -434,11 +489,33 @@ export const getFilterOrderService = async (
     }
   });
 
-  return order;
+  return orders.map(item => ({
+    ...item,
+    orderItems: item.orderItems.map(orItem => ({
+      ...orItem,
+      price: moneyToNumber(orItem.price),
+      product: {
+        ...orItem.product,
+        price: moneyToNumber(orItem.product.price),
+        discount: moneyToNumber(orItem.product.discount)
+      }
+    })),
+    vouchers: item.vouchers.map(v => ({
+      ...v,
+      discountValue: moneyToNumber(v.discountValue),
+      maxDiscount: moneyToNumber(v.maxDiscount),
+      minOrderPrice: moneyToNumber(v.minOrderPrice)
+    })),
+    discountAmount: moneyToNumber(item?.discountAmount),
+    finalAmount: moneyToNumber(item?.finalAmount),
+    originalAmount: moneyToNumber(item?.originalAmount),
+    taxAmount: moneyToNumber(item?.taxAmount),
+    shippingAmount: moneyToNumber(item?.shippingAmount)
+  }));
 };
 export const getOneOrderService = async (db: PrismaClient, input: { key: string; include?: Prisma.OrderInclude }) => {
   const { key, include } = input;
-  return await db.order.findFirst({
+  const order = await db.order.findFirst({
     where: {
       OR: [
         {
@@ -472,6 +549,31 @@ export const getOneOrderService = async (db: PrismaClient, input: { key: string;
       }
     }
   });
+  if (!order) throw new TRPCError({ code: 'NOT_FOUND', message: 'Oops! Có vẻ như đơn hàng không tồn tại.' });
+  return {
+    ...order,
+    orderItems: order.orderItems.map(orItem => ({
+      ...orItem,
+      price: moneyToNumber(orItem.price),
+
+      product: {
+        ...orItem.product,
+        price: moneyToNumber(orItem.product.price),
+        discount: moneyToNumber(orItem.product.discount)
+      }
+    })),
+    vouchers: order.vouchers.map(v => ({
+      ...v,
+      discountValue: moneyToNumber(v.discountValue),
+      maxDiscount: moneyToNumber(v.maxDiscount),
+      minOrderPrice: moneyToNumber(v.minOrderPrice)
+    })),
+    discountAmount: moneyToNumber(order?.discountAmount),
+    finalAmount: moneyToNumber(order?.finalAmount),
+    originalAmount: moneyToNumber(order?.originalAmount),
+    taxAmount: moneyToNumber(order?.taxAmount),
+    shippingAmount: moneyToNumber(order?.shippingAmount)
+  };
 };
 export const getAllOrderService = async (
   db: PrismaClient,
@@ -479,7 +581,7 @@ export const getAllOrderService = async (
     include?: Prisma.OrderInclude;
   }
 ) => {
-  const order = await db.order.findMany({
+  const orders = await db.order.findMany({
     include: {
       ...(input?.include ? input.include : {}),
       orderItems: {
@@ -504,5 +606,21 @@ export const getAllOrderService = async (
       }
     }
   });
-  return order;
+  return orders.map(item => ({
+    ...item,
+    orderItems: item.orderItems.map(orItem => ({
+      ...orItem,
+      price: moneyToNumber(orItem.price),
+      product: {
+        ...orItem.product,
+        price: moneyToNumber(orItem.product.price),
+        discount: moneyToNumber(orItem.product.discount)
+      }
+    })),
+    discountAmount: moneyToNumber(item?.discountAmount),
+    finalAmount: moneyToNumber(item?.finalAmount),
+    originalAmount: moneyToNumber(item?.originalAmount),
+    taxAmount: moneyToNumber(item?.taxAmount),
+    shippingAmount: moneyToNumber(item?.shippingAmount)
+  }));
 };

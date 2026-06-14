@@ -18,7 +18,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
   const discountProduct = data?.discount || 0;
   const subTotal = (data?.price || 0) - discountProduct;
   const tax = subTotal * 0.08;
-  const finalTotal = subTotal + tax;
+  const finalAmount = subTotal + tax;
   useEffect(() => {
     if (opened) {
       const existNoteProduct = cart.find((item: any) => item.id === data?.id && item.note !== note);
@@ -145,9 +145,9 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
               data={cart}
-              finalTotal={finalTotal || 0}
-              originalTotal={data?.price || 0}
-              taxTotal={tax}
+              finalAmount={finalAmount || 0}
+              originalAmount={data?.price || 0}
+              taxAmount={tax}
               discountAmount={data?.discount || 0}
               onClick={() => onClose()}
             />

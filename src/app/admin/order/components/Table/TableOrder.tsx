@@ -183,8 +183,8 @@ export default function TableOrder() {
               }}
               data={[
                 { value: 'all', label: 'Tất cả' },
-                { value: 'finalTotal-asc', label: 'Tổng đơn tăng dần' },
-                { value: 'finalTotal-desc', label: 'Tổng đơn giảm dần' }
+                { value: 'finalAmount-asc', label: 'Tổng đơn tăng dần' },
+                { value: 'finalAmount-desc', label: 'Tổng đơn giảm dần' }
               ]}
             />
           </Group>
@@ -241,7 +241,7 @@ export default function TableOrder() {
                           Tổng hóa đơn
                         </Text>
                         <Text size='sm' fw={600}>
-                          {formatPriceLocaleVi(order?.finalTotal || 0)}
+                          {formatPriceLocaleVi(order?.finalAmount)}
                         </Text>
                       </Stack>
 

@@ -42,7 +42,7 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            amount: order?.finalTotal || 0,
+            amount: order?.finalAmount || 0,
             orderId: order.id
           })
         });
@@ -51,7 +51,7 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
           order.vouchers && order.vouchers.length > 0
             ? await mutationUseVoucher.mutateAsync({
                 userId: order?.user?.id || '',
-                voucherIds: order.vouchers.map((v: NonNullable<TGetOneOrder>['vouchers'][number]) => v.id)
+                voucherIds: order.vouchers.map((v: NonNullable<NonNullable<TGetOneOrder>['vouchers']>[number]) => v.id)
               })
             : null;
           window.location.href = paymentUrl;
@@ -65,34 +65,38 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
       NotifyError(e.message);
     }
   });
-  const { discountAmountByVoucher, discount, originalTotal, tax, finalTotal } = useMemo(() => {
+  const { discountAmountByVoucher, discount, originalAmount, tax, finalAmount } = useMemo(() => {
     const discountAmountByVoucher = (order?.vouchers ?? []).reduce(
-      (sum: number, item: NonNullable<TGetOneOrder>['vouchers'][number]) => {
-        const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalTotal) / 100;
+      (sum: number, item: NonNullable<NonNullable<TGetOneOrder>['vouchers']>[number]) => {
+        const value =
+          item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalAmount) / 100;
         return sum + value;
       },
       0
     );
-    const { discount, originalTotal } = order?.orderItems?.reduce(
-      (acc: { discount: number; originalTotal: number }, item: NonNullable<TGetOneOrder>['orderItems'][number]) => {
+    const { discount, originalAmount } = order?.orderItems?.reduce(
+      (
+        acc: { discount: number; originalAmount: number },
+        item: NonNullable<NonNullable<TGetOneOrder>['orderItems']>[number]
+      ) => {
         acc.discount += (item.product?.discount || 0) * (item.quantity || 1);
-        acc.originalTotal += (item.price || 0) * (item.quantity || 1);
+        acc.originalAmount += (item.price || 0) * (item.quantity || 1);
         return {
           discount: acc.discount,
-          originalTotal: acc.originalTotal
+          originalAmount: acc.originalAmount
         };
       },
       {
         discount: 0,
-        originalTotal: 0
+        originalAmount: 0
       }
-    ) || { discount: 0, originalTotal: 0 };
+    ) || { discount: 0, originalAmount: 0 };
 
-    const pricePaid = originalTotal - discount - discountAmountByVoucher;
+    const pricePaid = originalAmount - discount - discountAmountByVoucher;
 
     const tax = pricePaid * 0.08;
-    const finalTotal = pricePaid + tax;
-    return { discountAmountByVoucher, discount, originalTotal, tax, finalTotal };
+    const finalAmount = pricePaid + tax;
+    return { discountAmountByVoucher, discount, originalAmount, tax, finalAmount };
   }, [order]);
 
   const { control, setValue, handleSubmit, reset } = useForm<DeliveryCheckout>({
@@ -159,9 +163,14 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
               </Title>
               <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
                 <Stack gap={'md'} py={'sm'} className='overflow-x-hidden'>
-                  {order?.orderItems?.map((item: NonNullable<TGetOneOrder>['orderItems'][number], index: number) => (
-                    <CartItemPayment key={index} item={{ ...item.product, note: item.note, quantity: item.quantity }} />
-                  ))}
+                  {order?.orderItems?.map(
+                    (item: NonNullable<NonNullable<TGetOneOrder>['orderItems']>[number], index: number) => (
+                      <CartItemPayment
+                        key={index}
+                        item={{ ...item.product, note: item.note, quantity: item.quantity }}
+                      />
+                    )
+                  )}
                 </Stack>
               </ScrollAreaAutosize>
               <Divider />
@@ -171,7 +180,7 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
                     Tạm tính
                   </Text>
                   <Text size='md' fw={700}>
-                    {formatPriceLocaleVi(originalTotal)}
+                    {formatPriceLocaleVi(originalAmount)}
                   </Text>
                 </Group>
                 <Group justify='space-between'>
@@ -206,7 +215,7 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
                     Tổng cộng
                   </Text>
                   <Text size='xl' fw={700} className='text-red-500'>
-                    {formatPriceLocaleVi(finalTotal)}
+                    {formatPriceLocaleVi(finalAmount)}
                   </Text>
                 </Group>
               </Stack>

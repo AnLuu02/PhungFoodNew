@@ -21,9 +21,9 @@ export async function updateRevenue(
   db: PrismaClient,
   status: OrderStatus,
   userId: string,
-  order: { originalTotal: number; discountAmount: number; finalTotal: number; createdAt?: Date | null }
+  order: { originalAmount: number; discountAmount: number; finalAmount: number; createdAt?: Date | null }
 ) {
-  const { originalTotal, discountAmount, finalTotal, createdAt } = order;
+  const { originalAmount, discountAmount, finalAmount, createdAt } = order;
   const currentDate = createdAt ? dayjs.utc(createdAt).tz('Asia/Ho_Chi_Minh') : dayjs().tz('Asia/Ho_Chi_Minh');
   const day = currentDate.date();
   const month = currentDate.month() + 1;
@@ -32,9 +32,9 @@ export async function updateRevenue(
   await db.revenue.upsert({
     where: { userId_year_month_day: { userId, year, month, day } },
     update: {
-      totalSpent: status === OrderStatus.COMPLETED ? { increment: originalTotal } : { decrement: originalTotal },
-      grossRevenue: status === OrderStatus.COMPLETED ? { increment: originalTotal } : { decrement: originalTotal },
-      netRevenue: status === OrderStatus.COMPLETED ? { increment: finalTotal } : { decrement: finalTotal },
+      totalSpent: status === OrderStatus.COMPLETED ? { increment: originalAmount } : { decrement: originalAmount },
+      grossRevenue: status === OrderStatus.COMPLETED ? { increment: originalAmount } : { decrement: originalAmount },
+      netRevenue: status === OrderStatus.COMPLETED ? { increment: finalAmount } : { decrement: finalAmount },
       totalCustomers: 0,
       totalDiscount: status === OrderStatus.COMPLETED ? { increment: discountAmount } : { decrement: discountAmount },
       totalOrders: status === OrderStatus.COMPLETED ? { increment: 1 } : { decrement: 1 },
@@ -45,9 +45,9 @@ export async function updateRevenue(
       day,
       year,
       month,
-      totalSpent: originalTotal,
-      grossRevenue: originalTotal,
-      netRevenue: finalTotal,
+      totalSpent: originalAmount,
+      grossRevenue: originalAmount,
+      netRevenue: finalAmount,
       totalDiscount: discountAmount,
       totalCustomers: 0,
       totalOrders: 1,

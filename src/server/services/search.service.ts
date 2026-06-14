@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 
 export const searchService = async (db: PrismaClient, input: { s?: string }) => {
   const { s } = input;
@@ -42,7 +43,7 @@ export const searchService = async (db: PrismaClient, input: { s?: string }) => 
   ]);
 
   return {
-    products,
+    products: products.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) })),
     categories,
     subCategories
   };

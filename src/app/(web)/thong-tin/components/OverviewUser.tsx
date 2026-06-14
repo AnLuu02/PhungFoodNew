@@ -28,7 +28,7 @@ export const OverviewUser = ({
   const completedOrdersCount = completedOrders.length;
 
   const totalCompletedSpent = completedOrders.reduce((sum, order) => {
-    return sum + order.finalTotal;
+    return sum + order?.finalAmount;
   }, 0);
 
   const completedOrdersThisMonth = completedOrders.filter(order => {

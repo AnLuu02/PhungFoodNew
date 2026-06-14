@@ -243,7 +243,7 @@ export const generateReportPDF = async (reportData: ReportData): Promise<Buffer>
           .map((o: any) => [
             String(o?.id),
             String(o?.user?.name ?? ''),
-            formatPriceLocaleVi(o?.finalTotal),
+            formatPriceLocaleVi(o?.finalAmount),
             formatDateViVN(o?.updatedAt)
           ]),
         [150, 150, 100, 100],

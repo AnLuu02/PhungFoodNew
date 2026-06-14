@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { Session } from 'next-auth';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { CategoryInput } from '~/shared/schema/category.schema';
 
 export const findCategoryService = async (
@@ -101,7 +102,7 @@ export const getOneCategoryService = async (
 };
 
 export const getAllCategoryService = async (db: PrismaClient, input?: { include?: Prisma.CategoryInclude }) => {
-  let category = await db.category.findMany({
+  let categories = await db.category.findMany({
     include: {
       ...(input?.include ?? {}),
       subCategory: {
@@ -119,7 +120,13 @@ export const getAllCategoryService = async (db: PrismaClient, input?: { include?
       }
     }
   });
-  return category;
+  return categories.map(c => ({
+    ...c,
+    subCategory: c.subCategory.map(sc => ({
+      ...sc,
+      products: sc.products.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
+    }))
+  }));
 };
 
 export const upsertCategoryService = async (db: PrismaClient, input: CategoryInput) => {

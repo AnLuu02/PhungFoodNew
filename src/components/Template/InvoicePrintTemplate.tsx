@@ -11,20 +11,20 @@ type invoicePrintProps = {
 export default function InvoicePrintTemplate(props: invoicePrintProps) {
   const { data, printRef } = props || {};
   const productSale: any = data.orderItems || [];
-  const { discount, originalTotal } = productSale?.reduce(
-    (acc: { discount: number; originalTotal: number }, item: any) => {
+  const { discount, originalAmount } = productSale?.reduce(
+    (acc: { discount: number; originalAmount: number }, item: any) => {
       acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
-      acc.originalTotal += (item.price || 0) * (item.quantity || 1);
+      acc.originalAmount += (item.price || 0) * (item.quantity || 1);
       return {
         discount: acc.discount,
-        originalTotal: acc.originalTotal
+        originalAmount: acc.originalAmount
       };
     },
     {
       discount: 0,
-      originalTotal: 0
+      originalAmount: 0
     }
-  ) || { discount: 0, originalTotal: 0 };
+  ) || { discount: 0, originalAmount: 0 };
 
   const totalDiscountVoucher = data?.vouchers?.reduce((acc: any, voucher: any) => {
     if (voucher.type === VoucherType.PERCENTAGE) {
@@ -41,9 +41,9 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
     }
     return acc;
   }, 0);
-  const pricePaid = originalTotal - discount - totalDiscountVoucher;
+  const pricePaid = originalAmount - discount - totalDiscountVoucher;
   const tax = pricePaid * 0.08;
-  const finalTotal = pricePaid + tax;
+  const finalAmount = pricePaid + tax;
   return (
     <Box ref={printRef} p={'xl'}>
       <Box display={'flex'} style={{ flexDirection: 'column', alignItems: 'center', gap: 8 }}>
@@ -111,7 +111,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
           <Text c={'dark'} fz={18} fw={'bold'}>
             Tổng hoá đơn:
           </Text>
-          <Text c={'dark'}>{formatPriceLocaleVi(originalTotal || 0)}</Text>
+          <Text c={'dark'}>{formatPriceLocaleVi(originalAmount || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
           <Text c={'dark'} fz={18} fw={'bold'}>
@@ -135,7 +135,7 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
           <Text c={'dark'} fz={18} fw={'bold'}>
             Giá cuối:
           </Text>
-          <Text c={'dark'}>{formatPriceLocaleVi(finalTotal || 0)}</Text>
+          <Text c={'dark'}>{formatPriceLocaleVi(finalAmount || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'center' }}>
           <Text c={'dark'} fz={18} fs={'italic'}>

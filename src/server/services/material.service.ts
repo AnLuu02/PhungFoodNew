@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { MaterialInput } from '~/shared/schema/material.schema';
 
 export const findMaterialService = async (
@@ -51,7 +52,10 @@ export const findMaterialService = async (
   );
 
   return {
-    materials,
+    materials: materials.map(m => ({
+      ...m,
+      products: m.products.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
+    })),
     pagination: {
       hasNext: Boolean(totalPages > page),
       totalPages
@@ -116,14 +120,17 @@ export const getOneMaterialService = async (
   return material;
 };
 export const getAllMaterialService = async (db: PrismaClient, input?: { include?: Prisma.MaterialInclude }) => {
-  const material = await db.material.findMany({
+  const materials = await db.material.findMany({
     include: {
       ...(input?.include ? input.include : {}),
       products: true
     }
   });
-
-  return material;
+  if (!materials) throw new TRPCError({ code: 'NOT_FOUND', message: 'Oops! Có vẻ như nguyên liệu không tồn tại.' });
+  return materials.map(m => ({
+    ...m,
+    products: m.products.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
+  }));
 };
 
 export const upsertMaterialService = async (db: PrismaClient, input: MaterialInput) => {

@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { InvoiceInput } from '~/shared/schema/invoice.schema';
 
 export const findInvoiceService = async (
@@ -83,7 +84,30 @@ export const findInvoiceService = async (
   );
 
   return {
-    invoices,
+    invoices: invoices.map(item => ({
+      ...item,
+      discountAmount: moneyToNumber(item.discountAmount),
+      subTotal: moneyToNumber(item.subTotal),
+      totalAmount: moneyToNumber(item.totalAmount),
+      taxAmount: moneyToNumber(item.taxAmount),
+      order: {
+        ...item.order,
+        discountAmount: moneyToNumber(item.order?.discountAmount),
+        finalAmount: moneyToNumber(item.order?.finalAmount),
+        originalAmount: moneyToNumber(item.order?.originalAmount),
+        taxAmount: moneyToNumber(item.order?.taxAmount),
+        shippingAmount: moneyToNumber(item.order?.shippingAmount),
+        orderItems: item.order?.orderItems.map(orItem => ({
+          ...orItem,
+          price: moneyToNumber(orItem.price),
+          product: {
+            ...orItem.product,
+            price: moneyToNumber(orItem.product.price),
+            discount: moneyToNumber(orItem.product.discount)
+          }
+        }))
+      }
+    })),
     pagination: {
       hasNext: Boolean(totalPages > page),
       totalPages
@@ -96,7 +120,15 @@ export const deleteInvoiceService = async (db: PrismaClient, input: { id: string
   });
   return {
     metaData: {
-      before: deleted ?? {},
+      before: deleted
+        ? {
+            ...deleted,
+            discountAmount: moneyToNumber(deleted.discountAmount),
+            subTotal: moneyToNumber(deleted.subTotal),
+            totalAmount: moneyToNumber(deleted.totalAmount),
+            taxAmount: moneyToNumber(deleted.taxAmount)
+          }
+        : {},
       after: {}
     }
   };
@@ -108,12 +140,26 @@ export const getOneInvoiceService = async (
 ) => {
   try {
     const { key, include } = input;
-    return await db.invoice.findUnique({
+
+    const invoice = await db.invoice.findUnique({
       where: {
         id: key
       },
       include
     });
+    if (!invoice) {
+      throw new TRPCError({
+        code: 'CONFLICT',
+        message: 'Opps! Có vẻ như hóa đơn không tồn tại.'
+      });
+    }
+    return {
+      ...invoice,
+      discountAmount: moneyToNumber(invoice.discountAmount),
+      subTotal: moneyToNumber(invoice.subTotal),
+      totalAmount: moneyToNumber(invoice.totalAmount),
+      taxAmount: moneyToNumber(invoice.taxAmount)
+    };
   } catch {
     throw new TRPCError({
       code: 'NOT_FOUND',
@@ -122,9 +168,16 @@ export const getOneInvoiceService = async (
   }
 };
 export const getAllInvoiceService = async (db: PrismaClient, input?: { include?: Prisma.InvoiceInclude }) => {
-  return await db.invoice.findMany({
+  const invoices = await db.invoice.findMany({
     include: { ...(input?.include ?? {}), seller: true }
   });
+  return invoices.map(item => ({
+    ...item,
+    discountAmount: moneyToNumber(item.discountAmount),
+    subTotal: moneyToNumber(item.subTotal),
+    totalAmount: moneyToNumber(item.totalAmount),
+    taxAmount: moneyToNumber(item.taxAmount)
+  }));
 };
 
 export const upsertInvoiceService = async (
@@ -142,7 +195,26 @@ export const upsertInvoiceService = async (
       create: data,
       update: data
     });
-    return { oldData, newData };
+    return {
+      oldData: oldData
+        ? {
+            ...oldData,
+            discountAmount: moneyToNumber(oldData.discountAmount),
+            subTotal: moneyToNumber(oldData.subTotal),
+            totalAmount: moneyToNumber(oldData.totalAmount),
+            taxAmount: moneyToNumber(oldData.taxAmount)
+          }
+        : {},
+      newData: newData
+        ? {
+            ...newData,
+            discountAmount: moneyToNumber(newData.discountAmount),
+            subTotal: moneyToNumber(newData.subTotal),
+            totalAmount: moneyToNumber(newData.totalAmount),
+            taxAmount: moneyToNumber(newData.taxAmount)
+          }
+        : {}
+    };
   });
 
   return {

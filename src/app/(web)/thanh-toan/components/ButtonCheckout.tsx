@@ -10,17 +10,17 @@ import { api } from '~/trpc/react';
 export const ButtonCheckout = ({
   stylesButtonCheckout,
   data,
-  finalTotal,
-  originalTotal,
-  taxTotal,
+  finalAmount,
+  originalAmount,
+  taxAmount,
   discountAmount,
   onClick
 }: {
   stylesButtonCheckout: ButtonProps;
   data: any;
-  finalTotal: number;
-  taxTotal: number;
-  originalTotal: number;
+  finalAmount: number;
+  taxAmount: number;
+  originalAmount: number;
   discountAmount: number;
   onClick?: () => void;
 }) => {
@@ -64,9 +64,9 @@ export const ButtonCheckout = ({
       if (orderItems?.length > 0) {
         await mutationOrder.mutateAsync({
           id: undefined,
-          finalTotal,
-          originalTotal,
-          taxTotal,
+          finalAmount,
+          originalAmount,
+          taxAmount,
           discountAmount,
           status: OrderStatus.UNPAID,
           userId: userId || '',

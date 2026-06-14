@@ -42,7 +42,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
         return {
           id: order.id,
           date: order.createdAt ? new Date(order.createdAt).toISOString().split('T')[0] : new Date('yyyy-mm-dd'),
-          finalTotal: order?.finalTotal || 0,
+          finalAmount: order?.finalAmount,
           status: order.status
         };
       }) || [];

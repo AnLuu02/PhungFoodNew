@@ -1,6 +1,7 @@
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { SubCategoryInput } from '~/shared/schema/subCategory.schema';
 
@@ -106,7 +107,10 @@ export const findSubCategoryService = async (
   );
 
   return {
-    subCategories,
+    subCategories: subCategories.map(sub => ({
+      ...sub,
+      products: sub.products.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
+    })),
     pagination: {
       hasNext: Boolean(totalPages > page),
       totalPages

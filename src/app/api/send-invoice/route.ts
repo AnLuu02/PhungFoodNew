@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       from: `"Phụng Food" <${process.env.SMTP_EMAIL}>`,
       to: to,
       subject: subject || 'Hóa đơn mua hàng',
-      text: `Cảm ơn bạn đã mua hàng tại Phụng Food! Hóa đơn của bạn có tổng tiền ${data?.originalTotal || 0} VND.`,
+      text: `Cảm ơn bạn đã mua hàng tại Phụng Food! Hóa đơn của bạn có tổng tiền ${data?.originalAmount || 0} VND.`,
       html: emailContent,
       attachments: [
         {

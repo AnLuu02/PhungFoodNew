@@ -6,24 +6,24 @@ import { formatPriceLocaleVi } from '../Format';
 
 export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   try {
-    const { discount, originalTotal } = invoiceData?.orderItems?.reduce(
-      (acc: { discount: number; originalTotal: number }, item: any) => {
+    const { discount, originalAmount } = invoiceData?.orderItems?.reduce(
+      (acc: { discount: number; originalAmount: number }, item: any) => {
         acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
-        acc.originalTotal += (item.price || 0) * (item.quantity || 1);
+        acc.originalAmount += (item.price || 0) * (item.quantity || 1);
         return {
           discount: acc.discount,
-          originalTotal: acc.originalTotal
+          originalAmount: acc.originalAmount
         };
       },
       {
         discount: 0,
-        originalTotal: 0
+        originalAmount: 0
       }
-    ) || { discount: 0, originalTotal: 0 };
+    ) || { discount: 0, originalAmount: 0 };
 
-    const pricePaid = originalTotal - discount;
+    const pricePaid = originalAmount - discount;
     const tax = Math.round(pricePaid * 0.08);
-    const finalTotal = pricePaid + tax;
+    const finalAmount = pricePaid + tax;
 
     const pdfDoc = await PDFDocument.create();
     pdfDoc.registerFontkit(fontkit);
@@ -269,11 +269,11 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
     const summaryLabels: any = ['Tổng hoá đơn:', 'Giảm giá:', 'Khuyến mãi (voucher):', 'Thuế (10%):', 'Giá cuối:'];
 
     const summaryValues: any = [
-      formatPriceLocaleVi(originalTotal),
+      formatPriceLocaleVi(originalAmount),
       '- ' + formatPriceLocaleVi(discount),
       '- 0₫',
       '- ' + formatPriceLocaleVi(tax),
-      formatPriceLocaleVi(finalTotal)
+      formatPriceLocaleVi(finalAmount)
     ];
 
     page.drawText(`Ghi chú: ${invoiceData?.delivery?.note !== '' ? invoiceData?.delivery?.note : 'Không có./'}`, {

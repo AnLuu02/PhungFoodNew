@@ -19,7 +19,7 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
     return getStatusInfo(order?.status || OrderStatus.CANCELLED);
   }, [order]);
 
-  const originalTotal = Number(order?.finalTotal || 0) + Number(order?.discountAmount || 0);
+  const originalAmount = Number(order?.finalAmount || 0) + Number(order?.discountAmount || 0);
 
   const handleRebuildCart = () => {
     setCart(
@@ -93,7 +93,7 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
                 </Box>
 
                 <Text fw={900} className='text-lg text-mainColor'>
-                  {formatPriceLocaleVi(order?.finalTotal || 0)}
+                  {formatPriceLocaleVi(order?.finalAmount || 0)}
                 </Text>
               </Group>
             </Box>
@@ -244,7 +244,7 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
                   Tạm tính
                 </Text>
                 <Text size='sm' fw={700}>
-                  {formatPriceLocaleVi(originalTotal)}
+                  {formatPriceLocaleVi(originalAmount)}
                 </Text>
               </Group>
 
@@ -262,7 +262,7 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
               <Group justify='space-between'>
                 <Text fw={900}>Tổng đơn</Text>
                 <Text fw={900} className='text-xl text-mainColor'>
-                  {formatPriceLocaleVi(order?.finalTotal || 0)}
+                  {formatPriceLocaleVi(order?.finalAmount || 0)}
                 </Text>
               </Group>
             </Stack>

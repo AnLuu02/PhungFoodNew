@@ -1,5 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 
+export type MoneyValue = number | string | Prisma.Decimal | null | undefined;
+
 export type AggregateFn = 'COUNT' | 'SUM' | 'AVG';
 
 export type Period = '_today' | '7_day' | '15_day' | '1_month' | '3_month' | '6_month' | '1_year' | '_all' | '_custom';

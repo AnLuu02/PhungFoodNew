@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient, VoucherType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { STATUS_VOUCHER } from '~/shared/constants/voucher.constants';
 import { VoucherInput } from '~/shared/schema/voucher.schema';
 
@@ -80,7 +81,12 @@ export const findVoucherService = async (
   );
 
   return {
-    vouchers,
+    vouchers: vouchers.map(v => ({
+      ...v,
+      minOrderPrice: moneyToNumber(v.minOrderPrice),
+      discountValue: moneyToNumber(v.discountValue),
+      maxDiscount: moneyToNumber(v.maxDiscount)
+    })),
     pagination: {
       hasNext: Boolean(totalPages > page),
       totalPages
@@ -94,16 +100,35 @@ export const deleteVoucherService = async (db: PrismaClient, input: { id: string
 
   return {
     metaData: {
-      before: deleted ?? {},
+      before: deleted
+        ? {
+            ...deleted,
+            discountValue: moneyToNumber(deleted.discountValue),
+            maxDiscount: moneyToNumber(deleted.maxDiscount),
+            minOrderPrice: moneyToNumber(deleted.minOrderPrice)
+          }
+        : {},
       after: {}
     }
   };
 };
 export const getAllVoucherService = async (db: PrismaClient, input?: { include?: Prisma.VoucherInclude }) => {
-  return await db.voucher.findMany({ include: input?.include });
+  const vouchers = await db.voucher.findMany({ include: input?.include });
+  return vouchers.map(v => ({
+    ...v,
+    discountValue: moneyToNumber(v.discountValue),
+    maxDiscount: moneyToNumber(v.maxDiscount),
+    minOrderPrice: moneyToNumber(v.minOrderPrice)
+  }));
 };
 export const getVoucherAppliedAllService = async (db: PrismaClient, input?: { include?: Prisma.VoucherInclude }) => {
-  return await db.voucher.findMany({ where: { applyAll: true }, include: input?.include });
+  const vouhcers = await db.voucher.findMany({ where: { applyAll: true }, include: input?.include });
+  return vouhcers.map(v => ({
+    ...v,
+    maxDiscount: moneyToNumber(v.maxDiscount),
+    minOrderPrice: moneyToNumber(v.minOrderPrice),
+    discountValue: moneyToNumber(v.discountValue)
+  }));
 };
 
 export const getOneVoucherService = async (
@@ -116,7 +141,13 @@ export const getOneVoucherService = async (
     },
     include: input.include
   });
-  return voucher;
+  if (!voucher) throw new TRPCError({ code: 'NOT_FOUND', message: 'Oops! Có vẻ như voucher không tồn tại.' });
+  return {
+    ...voucher,
+    maxDiscount: moneyToNumber(voucher.maxDiscount),
+    minOrderPrice: moneyToNumber(voucher.minOrderPrice),
+    discountValue: moneyToNumber(voucher.discountValue)
+  };
 };
 export const getVoucherForUserService = async (
   db: PrismaClient,
@@ -131,7 +162,7 @@ export const getVoucherForUserService = async (
       select: { pointUser: true }
     });
   }
-  const voucher = await db.voucher.findMany({
+  const vouchers = await db.voucher.findMany({
     where: {
       isActive: true,
       startDate: {
@@ -163,7 +194,12 @@ export const getVoucherForUserService = async (
       voucherForUser: true
     }
   });
-  return voucher;
+  return vouchers.map(v => ({
+    ...v,
+    maxDiscount: moneyToNumber(v.maxDiscount),
+    minOrderPrice: moneyToNumber(v.minOrderPrice),
+    discountValue: moneyToNumber(v.discountValue)
+  }));
 };
 export const useVoucherService = async (db: PrismaClient, input: { userId: string; voucherIds: string[] }) => {
   const { userId, voucherIds } = input;
@@ -252,8 +288,20 @@ export const upsertVoucherService = async (db: PrismaClient, input: { where: any
       });
       return {
         metaData: {
-          before: existed ?? {},
-          after: updateVoucher
+          before: existed
+            ? {
+                ...existed,
+                maxDiscount: moneyToNumber(existed.maxDiscount),
+                minOrderPrice: moneyToNumber(existed.minOrderPrice),
+                discountValue: moneyToNumber(existed.discountValue)
+              }
+            : {},
+          after: {
+            ...updateVoucher,
+            maxDiscount: moneyToNumber(updateVoucher.maxDiscount),
+            minOrderPrice: moneyToNumber(updateVoucher.minOrderPrice),
+            discountValue: moneyToNumber(updateVoucher.discountValue)
+          }
         }
       };
     }
@@ -282,8 +330,20 @@ export const updateVoucherService = async (db: PrismaClient, input: { where: any
       });
       return {
         metaData: {
-          before: existed ?? {},
-          after: updateVoucher
+          before: existed
+            ? {
+                ...existed,
+                maxDiscount: moneyToNumber(existed.maxDiscount),
+                minOrderPrice: moneyToNumber(existed.minOrderPrice),
+                discountValue: moneyToNumber(existed.discountValue)
+              }
+            : {},
+          after: {
+            ...updateVoucher,
+            maxDiscount: moneyToNumber(updateVoucher.maxDiscount),
+            minOrderPrice: moneyToNumber(updateVoucher.minOrderPrice),
+            discountValue: moneyToNumber(updateVoucher.discountValue)
+          }
         }
       };
     }
@@ -307,7 +367,12 @@ export const createVoucherService = async (db: PrismaClient, input: VoucherInput
   return {
     metaData: {
       before: {},
-      after: result
+      after: {
+        ...result,
+        maxDiscount: moneyToNumber(result.maxDiscount),
+        minOrderPrice: moneyToNumber(result.minOrderPrice),
+        discountValue: moneyToNumber(result.discountValue)
+      }
     }
   };
 };

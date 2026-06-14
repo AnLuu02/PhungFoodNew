@@ -59,8 +59,8 @@ export default function MyOrderPageClient({ session }: { session: Session | null
         order?.payment?.name,
         order?.status,
         formatDateViVN(order?.createdAt),
-        order?.originalTotal?.toString(),
-        order?.finalTotal?.toString(),
+        order?.originalAmount?.toString(),
+        order?.finalAmount?.toString(),
         order?.discountAmount?.toString(),
         order?.id?.toString()
       ]
@@ -91,7 +91,7 @@ export default function MyOrderPageClient({ session }: { session: Session | null
     () =>
       orders.reduce((sum: number, order: TGetFilterOrder[number]) => {
         if (order.status === OrderStatus.COMPLETED) {
-          return sum + order.finalTotal;
+          return sum + order.finalAmount;
         }
         return sum;
       }, 0),
@@ -242,7 +242,7 @@ export default function MyOrderPageClient({ session }: { session: Session | null
                           </Table.Td>
                           <Table.Td className='text-sm'>
                             <Highlight size='sm' highlight={valueSearch || ''}>
-                              {formatPriceLocaleVi(order.finalTotal || 0)}
+                              {formatPriceLocaleVi(order.finalAmount || 0)}
                             </Highlight>
                           </Table.Td>
                           <Table.Td className='text-sm'>
