@@ -511,7 +511,7 @@ export const getOneUserService = async (db: PrismaClient, input: { key: string; 
       OR: [{ id: key }, { email: key }]
     },
     include: {
-      order: { include: { orderItems: true } },
+      orders: { include: { orderItems: true } },
       imageForEntity: { include: { image: true } },
       role: {
         include: {
@@ -551,7 +551,7 @@ export const getOneUserService = async (db: PrismaClient, input: { key: string; 
   }
   return {
     ...user,
-    order: user.order.map(item => ({
+    orders: user.orders.map(item => ({
       ...item,
       orderItems: item.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) })),
       discountAmount: moneyToNumber(item?.discountAmount),

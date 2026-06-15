@@ -10,8 +10,7 @@ import {
   getOneVoucherService,
   getVoucherAppliedAllService,
   getVoucherForUserService,
-  updateVoucherService,
-  useVoucherService
+  updateVoucherService
 } from '~/server/services/voucher.service';
 import { baseVoucherSchema } from '~/shared/schema/voucher.schema';
 export const voucherRouter = createTRPCRouter({
@@ -78,15 +77,6 @@ export const voucherRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getVoucherForUserService(ctx.db, input)),
-  useVoucher: publicProcedure
-    .use(activityLogger)
-    .input(
-      z.object({
-        userId: z.string(),
-        voucherIds: z.array(z.string())
-      })
-    )
-    .mutation(async ({ ctx, input }) => await useVoucherService(ctx.db, input)),
 
   update: publicProcedure
     .use(requirePermission('update:voucher'))

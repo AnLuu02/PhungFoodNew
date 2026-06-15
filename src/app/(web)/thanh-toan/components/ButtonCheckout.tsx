@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError } from '~/lib/FuncHandler/toast';
+import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
 import { api } from '~/trpc/react';
 
 export const ButtonCheckout = ({
@@ -17,14 +18,19 @@ export const ButtonCheckout = ({
   onClick
 }: {
   stylesButtonCheckout: ButtonProps;
-  data: any;
+  data: {
+    productId: string;
+    quantity: number;
+    note: string;
+    price: number;
+  }[];
   finalAmount: number;
   taxAmount: number;
   originalAmount: number;
   discountAmount: number;
   onClick?: () => void;
 }) => {
-  const [appliedVouchers] = useLocalStorage<any[]>({
+  const [appliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
   });
@@ -40,7 +46,7 @@ export const ButtonCheckout = ({
       NotifyError(e.message);
     }
   });
-  const orderItems: any = data ?? [];
+  const orderItems = data ?? [];
   const guestCreateMutation = api.User.create.useMutation({
     onError: e => {
       NotifyError(e.message);
@@ -62,6 +68,19 @@ export const ButtonCheckout = ({
     }
     try {
       if (orderItems?.length > 0) {
+        const vouchers = appliedVouchers.map(({ id, type, discountValue, maxDiscount }) => {
+          if (type === 'FIXED') {
+            return {
+              voucherId: id ?? '',
+              discountAmount: discountValue
+            };
+          }
+          let amount = (originalAmount * discountValue) / 100;
+          return {
+            voucherId: id ?? '',
+            discountAmount: amount <= maxDiscount ? amount : maxDiscount
+          };
+        });
         await mutationOrder.mutateAsync({
           id: undefined,
           finalAmount,
@@ -70,13 +89,13 @@ export const ButtonCheckout = ({
           discountAmount,
           status: OrderStatus.UNPAID,
           userId: userId || '',
-          orderItems: orderItems?.map((item: any) => ({
-            productId: item.id,
+          orderItems: orderItems?.map(item => ({
+            productId: item.productId,
             quantity: item.quantity,
             note: item.note,
             price: Number(item.price) || 0
           })),
-          voucherIds: appliedVouchers?.map((item: any) => item?.id).filter(Boolean) || []
+          vouchers
         });
       } else {
         NotifyError('Đơn hàng không tồn tại.', 'Đơn hàng không hợp lệ.');

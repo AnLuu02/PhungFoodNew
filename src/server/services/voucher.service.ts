@@ -190,8 +190,13 @@ export const getVoucherForUserService = async (
       ]
     },
     include: {
-      ...(input?.include ? input.include : {}),
-      voucherForUser: true
+      voucherForUser: {
+        select: {
+          id: true,
+          userId: true,
+          quantityForUser: true
+        }
+      }
     }
   });
   return vouchers.map(v => ({
@@ -201,80 +206,7 @@ export const getVoucherForUserService = async (
     discountValue: moneyToNumber(v.discountValue)
   }));
 };
-export const useVoucherService = async (db: PrismaClient, input: { userId: string; voucherIds: string[] }) => {
-  const { userId, voucherIds } = input;
-  let records = await db.voucherForUser.findMany({
-    where: {
-      userId,
-      voucherId: { in: voucherIds }
-    }
-  });
 
-  if (records.length < voucherIds.length) {
-    const missingVoucherIds = voucherIds.filter(v => !records.some(r => r.voucherId === v));
-
-    if (missingVoucherIds.length > 0) {
-      const vouchers = await db.voucher.findMany({
-        where: { id: { in: missingVoucherIds } },
-        select: { id: true, applyAll: true, quantityForUser: true }
-      });
-
-      const applyAllVouchers = vouchers.filter(v => v.applyAll);
-
-      if (applyAllVouchers.length > 0) {
-        await db.voucherForUser.createMany({
-          data: applyAllVouchers.map(v => ({
-            userId,
-            voucherId: v.id,
-            quantityForUser: v.quantityForUser ?? 1
-          })),
-          skipDuplicates: true
-        });
-
-        records = await db.voucherForUser.findMany({
-          where: { userId, voucherId: { in: voucherIds } }
-        });
-      }
-    }
-  }
-
-  if (records.length < voucherIds.length) {
-    throw new TRPCError({
-      code: 'FORBIDDEN',
-      message: 'Có voucher không hợp lệ cho user này'
-    });
-  }
-
-  records.forEach(r => {
-    if (r.quantityForUser <= 0) {
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: `Voucher ${r.voucherId} đã hết lượt sử dụng`
-      });
-    }
-  });
-
-  await db.$transaction([
-    db.voucherForUser.updateMany({
-      where: {
-        userId,
-        voucherId: { in: voucherIds }
-      },
-      data: { quantityForUser: { decrement: 1 } }
-    }),
-    db.voucher.updateMany({
-      where: {
-        id: { in: voucherIds }
-      },
-      data: {
-        usedQuantity: { increment: 1 },
-        availableQuantity: { decrement: 1 }
-      }
-    })
-  ]);
-
-  return records;
-};
 export const upsertVoucherService = async (db: PrismaClient, input: { where: any; data: any }) => {
   try {
     const existed = await db.voucher.findFirst({

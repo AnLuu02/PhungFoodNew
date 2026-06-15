@@ -8,10 +8,11 @@ import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
 import { api } from '~/trpc/react';
 import { DateVoucher } from '../DateVoucher';
 type VoucherTemplateProps = {
-  voucher: any;
+  voucher: VoucherApplyStorage;
   products?: any;
 };
 const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
@@ -202,7 +203,9 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
       </Flex>
       <Box className='absolute right-[-6px] top-[6px] z-[1] rounded-l-[10px] bg-red-500/30 px-[8px] py-[2px] text-[12px] font-semibold text-red-500'>
         x{' '}
-        {voucher.voucherForUser?.length ? voucher.voucherForUser?.[0]?.quantityForUser : (voucher.quantityForUser ?? 0)}
+        {voucher.voucherForUser?.length > 0
+          ? voucher.voucherForUser?.[0]?.quantityForUser
+          : (voucher.quantityForUser ?? 0)}
       </Box>
     </Card>
   );

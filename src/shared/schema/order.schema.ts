@@ -25,7 +25,14 @@ export const baseOrderSchema = z.object({
   userId: z.string({ required_error: 'Ai là người mua hàng?' }).min(1, 'Ai là người mua hàng?'),
   paymentId: z.string().optional(),
   orderItems: z.array(baseOrderItemSchema).min(1, 'Đơn hàng phải có ít nhất 1 sản phẩm.'),
-  voucherIds: z.array(z.string()).default([]),
+  vouchers: z
+    .array(
+      z.object({
+        voucherId: z.string(),
+        discountAmount: z.number().default(0)
+      })
+    )
+    .default([]),
   delivery: baseDeliverySchema.omit({ orderId: true }).optional(),
   createdAt: z.date().nullish(),
   updatedAt: z.date().nullish()

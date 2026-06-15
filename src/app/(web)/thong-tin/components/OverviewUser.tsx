@@ -15,7 +15,7 @@ export const OverviewUser = ({
   session: Session | null;
 }) => {
   const user = overviewUser?.user;
-  const orders = user?.order ?? [];
+  const orders = user?.orders ?? [];
   const overview = overviewUser?.overview;
 
   const { currentLevel, nextLevel, progressRemainingValue } = caculateLevelUser({

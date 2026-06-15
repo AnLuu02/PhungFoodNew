@@ -4,28 +4,34 @@ import { IconHelp } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
+import { api } from '~/trpc/react';
 import { ModalProps } from '~/types/modal';
 import LoadingSpiner from '../Loading/LoadingSpiner';
 import VoucherTemplate from '../Template/VoucherTemplate';
-type ModalListVoucherProps<T = any> = ModalProps<T> & {
-  loading?: boolean;
-};
-export default function ModalListVoucher({ opened, data, loading, onClose }: ModalListVoucherProps<any>) {
-  const vouchers = data.vouchers || [];
-  const products = data.products || [];
-  const [appliedVouchers, setSelectedVouchers] = useLocalStorage<any[]>({
+
+export default function ModalListVoucher({ opened, data, onClose }: ModalProps<{ userId: string }>) {
+  const { userId } = data;
+  const { data: fetchData, isLoading } = api.Voucher.getVoucherForUser.useQuery({
+    userId
+  });
+  const [cart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
+  const vouchers = fetchData || [];
+  const products = cart || [];
+  const [appliedVouchers, setSelectedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
   });
 
-  const { control, setValue } = useForm<any>({
+  const { control, setValue } = useForm<{ vouchers: string[] }>({
     defaultValues: {
       vouchers: []
     }
   });
 
   useEffect(() => {
-    setValue('vouchers', appliedVouchers?.map((item: any) => item.id?.toString()) || []);
+    const voucherIds: string[] = appliedVouchers.flatMap(item => (item.id ? [item.id] : []));
+    setValue('vouchers', voucherIds);
   }, [appliedVouchers]);
 
   return (
@@ -47,7 +53,7 @@ export default function ModalListVoucher({ opened, data, loading, onClose }: Mod
       }
       size={500}
     >
-      {loading ? (
+      {isLoading ? (
         <LoadingSpiner />
       ) : (
         <>
@@ -61,7 +67,19 @@ export default function ModalListVoucher({ opened, data, loading, onClose }: Mod
                   {...field}
                   onChange={value => {
                     field.onChange(value);
-                    setSelectedVouchers([...vouchers.filter((item: any) => value.includes(item?.id?.toString()))]);
+                    const selectedData = vouchers
+                      .flatMap(voucher => {
+                        if (value.includes(voucher?.id?.toString())) {
+                          return [
+                            {
+                              ...voucher
+                            }
+                          ];
+                        }
+                        return [];
+                      })
+                      .filter(Boolean);
+                    setSelectedVouchers([...selectedData]);
                   }}
                 >
                   {vouchers?.length > 0 ? (
@@ -73,7 +91,7 @@ export default function ModalListVoucher({ opened, data, loading, onClose }: Mod
                         </Text>
                       </Box>
                       <Stack mb={10} mt={6} gap={'xs'}>
-                        {vouchers?.map((item: any, index: number) => {
+                        {vouchers?.map((item, index: number) => {
                           return (
                             <label
                               key={index}

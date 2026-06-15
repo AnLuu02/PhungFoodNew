@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { statusConfig } from '~/lib/FuncHandler/status-order';
+import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
 
 interface OrderStatusPageProps {
   customerName: string;
@@ -31,7 +32,7 @@ export function OrderStatusPage({
   onBackToHome,
   onReturnHome
 }: OrderStatusPageProps) {
-  const [, , resetVoucher] = useLocalStorage<any[]>({ key: 'applied-vouchers', defaultValue: [] });
+  const [, , resetVoucher] = useLocalStorage<VoucherApplyStorage[]>({ key: 'applied-vouchers', defaultValue: [] });
 
   useEffect(() => {
     const isSuccessState = ['SHIPPING', 'COMPLETED', 'CONFIRMED'].includes(status);

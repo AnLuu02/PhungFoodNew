@@ -35,8 +35,6 @@ export function UserStatistics({
     },
     { enabled: !!selectedPeriod, placeholderData: previousData => previousData }
   );
-  console.log(selectedPeriod);
-
   const { spendingTrendData, orderFrequencyData, averageSpendingData, totalSpent } = useMemo(() => {
     let totalSpent = 0;
     const overviews = data?.overviews;
@@ -83,7 +81,7 @@ export function UserStatistics({
     };
   }, [data, isLoadingRevenue]);
 
-  const totalOrders = user?.order?.length ?? 0;
+  const totalOrders = user?.orders?.length ?? 0;
   const averageOrderValue = (totalOrders > 0 ? Number(totalSpent) / totalOrders : 0)?.toFixed(0);
   const hasSelectedRange = Boolean(selectedPeriod.startTime && selectedPeriod.endTime);
 

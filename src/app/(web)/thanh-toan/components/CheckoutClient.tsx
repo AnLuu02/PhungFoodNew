@@ -13,7 +13,6 @@ import {
   Text,
   Title
 } from '@mantine/core';
-import { VoucherType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -29,33 +28,35 @@ import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
 import { PaymentForm } from './PaymentForm';
 
+const handlePayWithVnpay = async (orderId: string) => {
+  const res = await fetch('/api/vnpay/create-payment-url', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      orderId,
+      locale: 'vn'
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || 'Không thể tạo thanh toán');
+  }
+
+  window.location.href = data.paymentUrl;
+};
+
 export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOrder> }) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
-  const mutationUseVoucher = api.Voucher.useVoucher.useMutation();
+
   const mutationUpdateOrder = api.Order.upsert.useMutation({
     onSuccess: async () => {
       try {
-        const response = await fetch('/api/vnpay/create_payment_url', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            amount: order?.finalAmount || 0,
-            orderId: order.id
-          })
-        });
-        const { paymentUrl } = await response.json();
-        if (paymentUrl) {
-          order.vouchers && order.vouchers.length > 0
-            ? await mutationUseVoucher.mutateAsync({
-                userId: order?.user?.id || '',
-                voucherIds: order.vouchers.map((v: NonNullable<NonNullable<TGetOneOrder>['vouchers']>[number]) => v.id)
-              })
-            : null;
-          window.location.href = paymentUrl;
-        }
+        handlePayWithVnpay(order.id);
       } catch {
         NotifyError('Đã có lỗi không mong muốn!', 'Đã có lỗi xảy ra trong quá trình thanh toán, thử lại sau.');
       }
@@ -66,11 +67,9 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
     }
   });
   const { discountAmountByVoucher, discount, originalAmount, tax, finalAmount } = useMemo(() => {
-    const discountAmountByVoucher = (order?.vouchers ?? []).reduce(
-      (sum: number, item: NonNullable<NonNullable<TGetOneOrder>['vouchers']>[number]) => {
-        const value =
-          item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalAmount) / 100;
-        return sum + value;
+    const discountAmountByVoucher = (order?.voucherUsages ?? []).reduce(
+      (sum: number, item: NonNullable<NonNullable<TGetOneOrder>['voucherUsages']>[number]) => {
+        return sum + item.discount;
       },
       0
     );

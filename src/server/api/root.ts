@@ -21,6 +21,7 @@ import { searchRouter } from './routers/Search';
 import { subCategoryRouter } from './routers/SubCategory';
 import { userRouter } from './routers/User';
 import { voucherRouter } from './routers/Voucher';
+import { voucherUsageRouter } from './routers/VoucherUsage';
 import { createCallerFactory, createTRPCRouter } from './trpc';
 
 export const appRouter = createTRPCRouter({
@@ -39,6 +40,7 @@ export const appRouter = createTRPCRouter({
   Revenue: revenueRouter,
   FavouriteFood: favouriteFoodRouter,
   Voucher: voucherRouter,
+  VoucherUsage: voucherUsageRouter,
   News: newsRouter,
   Material: materialRouter,
   RolePermission: rolePermissionRouter,

@@ -89,9 +89,9 @@ model Voucher {
   endDate           DateTime
   pointUser         Int?
   voucherForUser    VoucherForUser[]
-  orders            Order[]
   createdAt         DateTime         @default(now())
   updatedAt         DateTime?        @updatedAt
+  voucherUsages     VoucherUsage[]
 }
 
 model VoucherForUser {
@@ -107,26 +107,48 @@ model VoucherForUser {
   @@unique([userId, voucherId])
 }
 
+model VoucherUsage {
+  id         String             @id @default(cuid())
+  orderId    String
+  userId     String
+  voucherId  String
+  code       String
+  discount   Decimal
+  status     VoucherUsageStatus @default(PENDING)
+  usedAt     DateTime?
+  releasedAt DateTime?
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  order      Order              @relation(fields: [orderId], references: [id])
+  voucher    Voucher            @relation(fields: [voucherId], references: [id])
+  user       User               @relation(fields: [userId], references: [id])
+
+  @@unique([orderId, voucherId])
+  @@index([orderId])
+  @@index([userId])
+  @@index([voucherId])
+}
+
 model Order {
-  id             String      @id @default(cuid())
-  originalAmount Decimal     @default(0)
-  taxAmount      Decimal     @default(0)
-  finalAmount    Decimal     @default(0)
-  discountAmount Decimal     @default(0)
-  shippingAmount Decimal     @default(0)
+  id             String         @id @default(cuid())
+  originalAmount Decimal        @default(0)
+  taxAmount      Decimal        @default(0)
+  finalAmount    Decimal        @default(0)
+  discountAmount Decimal        @default(0)
+  shippingAmount Decimal        @default(0)
   status         OrderStatus
-  transactionId  String?     @default("")
+  transactionId  String?        @default("")
   transDate      DateTime?
   paymentId      String?
-  payment        Payment?    @relation(fields: [paymentId], references: [id])
+  payment        Payment?       @relation(fields: [paymentId], references: [id])
   orderItems     OrderItem[]
-  vouchers       Voucher[]
   delivery       Delivery?
-  userId         String?
-  user           User?       @relation(fields: [userId], references: [id])
-  createdAt      DateTime?   @default(now())
-  updatedAt      DateTime?   @updatedAt
+  userId         String
+  user           User           @relation(fields: [userId], references: [id])
+  createdAt      DateTime?      @default(now())
+  updatedAt      DateTime?      @updatedAt
   invoice        Invoice?
+  voucherUsages  VoucherUsage[]
 
   @@index([userId], map: "Order_usersId_fkey_unique")
 }
@@ -280,7 +302,7 @@ model User {
   failedAttempts     Int                     @default(0)
   lockedUntil        DateTime?
   isLocked           Boolean                 @default(false)
-  order              Order[]
+  orders             Order[]
   review             Review[]
   favouriteFood      FavouriteFood[]
   revenue            Revenue[]
@@ -298,6 +320,7 @@ model User {
   recipients         NotificationRecipient[]
   tokens             Token[]
   activityLogs       ActivityLog[]
+  voucherUsages      VoucherUsage[]
 }
 
 model Token {
@@ -703,4 +726,11 @@ enum InvoiceStatus {
   PAID
   CANCELLED
   OVERDUE
+}
+
+enum VoucherUsageStatus {
+  PENDING
+  USED
+  RELEASED
+  EXPIRED
 }

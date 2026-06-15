@@ -6,6 +6,7 @@ import { generateInvoiceNumber } from '~/lib/FuncHandler/generateInvoiceNumber';
 import { buildSortFilter, updatepointUser, updateRevenue, updateSales } from '~/lib/FuncHandler/PrismaHelper';
 import { OrderInput } from '~/shared/schema/order.schema';
 import { upsertInvoiceService } from './invoice.service';
+import { reserveVoucherService } from './voucherUsage.service';
 
 export const findOrderService = async (
   db: PrismaClient,
@@ -123,7 +124,7 @@ export const findOrderService = async (
             }
           }
         },
-        vouchers: true
+        voucherUsages: true
       }
     })
   ]);
@@ -148,12 +149,7 @@ export const findOrderService = async (
           discount: moneyToNumber(orItem.product.discount)
         }
       })),
-      vouchers: item.vouchers.map(v => ({
-        ...v,
-        discountValue: moneyToNumber(v.discountValue),
-        maxDiscount: moneyToNumber(v.maxDiscount),
-        minOrderPrice: moneyToNumber(v.minOrderPrice)
-      }))
+      voucherUsages: item.voucherUsages.map(vs => ({ ...vs, discount: moneyToNumber(vs.discount) }))
     })),
     pagination: {
       hasNext: Boolean(totalPages > page),
@@ -163,7 +159,7 @@ export const findOrderService = async (
 };
 
 export const upsertOrderService = async (db: PrismaClient, input: OrderInput) => {
-  const { id, userId, paymentId, voucherIds, orderItems, delivery, ...data } = input;
+  const { id, userId, paymentId, vouchers, orderItems, delivery, ...data } = input;
   const result = await db.$transaction(async tx => {
     const oldData = id ? await tx.order.findUnique({ where: { id }, include: { orderItems: true } }) : null;
     const newData = await tx.order.upsert({
@@ -174,11 +170,6 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
           connect: {
             id: userId ?? ''
           }
-        },
-        vouchers: {
-          connect: voucherIds.map(id => ({
-            id
-          }))
         },
         payment: paymentId ? { connect: { id: paymentId } } : undefined,
         orderItems: {
@@ -269,8 +260,20 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
         orderItems: true
       }
     });
+
+    if (vouchers.length > 0) {
+      await reserveVoucherService(tx, {
+        userId,
+        orderId: newData.id,
+        vouchers: vouchers.map(v => ({
+          voucherId: v.voucherId,
+          discountAmount: v.discountAmount
+        }))
+      });
+    }
+
     return {
-      oldData: {
+      oldData: oldData && {
         ...oldData,
         discountAmount: moneyToNumber(oldData?.discountAmount),
         finalAmount: moneyToNumber(oldData?.finalAmount),
@@ -299,7 +302,7 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
   }
 
   //statistics
-  if (result.newData && result.newData.status === OrderStatus.COMPLETED) {
+  if (result?.newData && result.newData.status === OrderStatus.COMPLETED) {
     updatepointUser(db, input.userId, Number(input.finalAmount) || 0);
     updateRevenue(db, result.newData.status, input.userId, {
       originalAmount: moneyToNumber(result.newData?.originalAmount),
@@ -308,7 +311,7 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
       createdAt: data?.createdAt
     });
     await Promise.all(
-      result.newData?.orderItems?.map((orderItem: (typeof result)['newData']['orderItems'][number]) => {
+      result.newData?.orderItems?.map((orderItem: NonNullable<(typeof result)['newData']>['orderItems'][number]) => {
         return updateSales(db, result.newData.status, orderItem.productId, orderItem?.quantity);
       })
     );
@@ -473,7 +476,7 @@ export const getFilterOrderService = async (
           }
         }
       },
-      vouchers: true,
+      voucherUsages: true,
       user: {
         include: {
           imageForEntity: { include: { image: true } },
@@ -500,12 +503,7 @@ export const getFilterOrderService = async (
         discount: moneyToNumber(orItem.product.discount)
       }
     })),
-    vouchers: item.vouchers.map(v => ({
-      ...v,
-      discountValue: moneyToNumber(v.discountValue),
-      maxDiscount: moneyToNumber(v.maxDiscount),
-      minOrderPrice: moneyToNumber(v.minOrderPrice)
-    })),
+    voucherUsages: item.voucherUsages.map(vs => ({ ...vs, discount: moneyToNumber(vs.discount) })),
     discountAmount: moneyToNumber(item?.discountAmount),
     finalAmount: moneyToNumber(item?.finalAmount),
     originalAmount: moneyToNumber(item?.originalAmount),
@@ -534,7 +532,7 @@ export const getOneOrderService = async (db: PrismaClient, input: { key: string;
           }
         }
       },
-      vouchers: true,
+      voucherUsages: true,
       user: {
         include: {
           imageForEntity: { include: { image: true } },
@@ -555,19 +553,13 @@ export const getOneOrderService = async (db: PrismaClient, input: { key: string;
     orderItems: order.orderItems.map(orItem => ({
       ...orItem,
       price: moneyToNumber(orItem.price),
-
       product: {
         ...orItem.product,
         price: moneyToNumber(orItem.product.price),
         discount: moneyToNumber(orItem.product.discount)
       }
     })),
-    vouchers: order.vouchers.map(v => ({
-      ...v,
-      discountValue: moneyToNumber(v.discountValue),
-      maxDiscount: moneyToNumber(v.maxDiscount),
-      minOrderPrice: moneyToNumber(v.minOrderPrice)
-    })),
+    voucherUsages: order.voucherUsages.map(vs => ({ ...vs, discount: moneyToNumber(vs.discount) })),
     discountAmount: moneyToNumber(order?.discountAmount),
     finalAmount: moneyToNumber(order?.finalAmount),
     originalAmount: moneyToNumber(order?.originalAmount),
@@ -595,7 +587,7 @@ export const getAllOrderService = async (
         }
       },
       payment: true,
-      vouchers: true,
+      voucherUsages: true,
       user: {
         include: {
           address: true
@@ -617,6 +609,7 @@ export const getAllOrderService = async (
         discount: moneyToNumber(orItem.product.discount)
       }
     })),
+    voucherUsages: item.voucherUsages.map(vs => ({ ...vs, discount: moneyToNumber(vs.discount) })),
     discountAmount: moneyToNumber(item?.discountAmount),
     finalAmount: moneyToNumber(item?.finalAmount),
     originalAmount: moneyToNumber(item?.originalAmount),

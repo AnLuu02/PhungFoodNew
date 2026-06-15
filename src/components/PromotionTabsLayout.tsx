@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
-import { GetVoucherForUserVoucher } from '~/shared/type-trpc/voucher.type-trpc';
+import { VoucherForUser } from '~/shared/type-trpc/voucher.type-trpc';
 import { api } from '~/trpc/react';
 import { CommonSkeleton } from './Loading/LoadingSkeleton';
 import PaginationLocal from './PaginationLocal';
@@ -24,7 +24,7 @@ export function PromotionTabLayout() {
   const [activeTab, setActiveTab] = useState<string | null>('all');
   const filteredPromotions = useMemo(() => {
     if (activeTab === 'all') return vouchers;
-    return vouchers.filter((promo: GetVoucherForUserVoucher[number]) => promo.type === activeTab);
+    return vouchers.filter((promo: VoucherForUser[number]) => promo.type === activeTab);
   }, [activeTab, vouchers]);
 
   const totalPages = Math.ceil(filteredPromotions.length / perPage);
@@ -128,7 +128,7 @@ export function PromotionTabLayout() {
             <CommonSkeleton.InfoGrid />
           ) : displayedPromotions?.length > 0 ? (
             <Grid mt='md'>
-              {displayedPromotions.map((promo: GetVoucherForUserVoucher[number]) => (
+              {displayedPromotions.map((promo: VoucherForUser[number]) => (
                 <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
                   <VoucherTemplate voucher={promo} />
                 </GridCol>

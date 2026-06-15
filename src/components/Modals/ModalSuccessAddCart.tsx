@@ -140,11 +140,16 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
             <ButtonCheckout
               stylesButtonCheckout={{
                 fullWidth: true,
-                children: 'Thanh toán ngay',
+                children: 'Đặt ngay',
                 size: 'xs',
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
-              data={cart}
+              data={cart.map((item: any) => ({
+                productId: item?.id || '',
+                note: item?.note ?? '',
+                price: item?.price ?? 0,
+                quantity: item?.quantity ?? 0
+              }))}
               finalAmount={finalAmount || 0}
               originalAmount={data?.price || 0}
               taxAmount={tax}

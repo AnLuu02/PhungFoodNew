@@ -84,7 +84,7 @@ export default function InfoLevelUser() {
     {
       key: session?.user.email || '',
       include: {
-        order: true
+        orders: true
       }
     },
     {
@@ -97,7 +97,7 @@ export default function InfoLevelUser() {
       level: userData?.level,
       pointUser: userData?.pointUser
     });
-  const orderCount = userData?.order?.length || 0;
+  const orderCount = userData?.orders?.length || 0;
   const isLoggedIn = !!userData?.id;
   const currentPromotionLevel = benefitLevel[(userData?.level as UserLevel) || UserLevel.BRONZE];
 

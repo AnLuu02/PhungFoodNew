@@ -21,11 +21,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
 import { menuUserInfo } from '~/lib/ConfigUI';
+import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
 import { api } from '~/trpc/react';
 
-export default function UserSection({ responsive, width }: { responsive?: boolean; width?: any }) {
+export default function UserSection({ responsive, width }: { responsive?: boolean; width?: string | number }) {
   const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [, , resetSelectedVouchers] = useLocalStorage<any[]>({
+  const [, , resetSelectedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
   });
@@ -34,7 +35,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
   const utils = api.useUtils();
   const handlePrefetchInfoUser = useCallback(() => {
     if (session?.user?.email) {
-      void utils.User.getOne.prefetch({ key: session?.user?.email || '', include: { order: true } });
+      void utils.User.getOne.prefetch({ key: session?.user?.email || '', include: { orders: true } });
       void utils.Order.getFilter.prefetch({ s: session?.user?.email || '' });
       void utils.Voucher.getVoucherForUser.prefetch({
         userId: session?.user?.id || ''

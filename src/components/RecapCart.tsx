@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
 import { ApplyVoucher } from '../app/(web)/thanh-toan/components/ApplyVoucher';
 import { ButtonCheckout } from '../app/(web)/thanh-toan/components/ButtonCheckout';
 import { CartItemPayment } from '../app/(web)/thanh-toan/components/CartItemPayment';
@@ -18,7 +19,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
   const [isMounted, setIsMounted] = useState(false);
   const { data: session } = useSession();
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [appliedVouchers] = useLocalStorage<any[]>({
+  const [appliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
   });
@@ -149,9 +150,14 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
               finalAmount={finalAmount}
               originalAmount={originalAmount}
               discountAmount={discountAmountByVoucher + discount}
-              data={cart}
+              data={cart.map((item: any) => ({
+                productId: item?.id || '',
+                note: item?.note ?? '',
+                price: item?.price ?? 0,
+                quantity: item?.quantity ?? 0
+              }))}
               taxAmount={tax}
-              stylesButtonCheckout={{ children: 'Thanh toán', fullWidth: true, size: 'md' }}
+              stylesButtonCheckout={{ children: 'Xác nhận', fullWidth: true, size: 'md' }}
             />
           </Flex>
         </Stack>

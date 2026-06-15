@@ -37,7 +37,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
   const [opened, setOpened] = useState(false);
   const { statusObj } = useMemo(() => {
     const orderData =
-      userInfor?.order?.map((order: NonNullable<GetOverviewUser['user']>['order'][number]) => {
+      userInfor?.orders?.map((order: NonNullable<GetOverviewUser['user']>['orders'][number]) => {
         if (!order) return {};
         return {
           id: order.id,

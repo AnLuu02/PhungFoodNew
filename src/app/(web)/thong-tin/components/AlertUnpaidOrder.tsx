@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { GetOverviewUser } from '~/shared/type-trpc/user.type-trpc';
 
-export const AlertUnpaidOrder = ({ orders }: { orders: NonNullable<GetOverviewUser['user']>['order'] }) => {
+export const AlertUnpaidOrder = ({ orders }: { orders: NonNullable<GetOverviewUser['user']>['orders'] }) => {
   const [openedUnpaidOrders, { toggle: toggleUnpaidOrders }] = useDisclosure(false);
   const unpaidOrders = orders.filter(order => order.status === OrderStatus.UNPAID);
   const unpaidOrdersCount = unpaidOrders.length;

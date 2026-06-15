@@ -8,16 +8,16 @@ import ModalListVoucher from '~/components/Modals/ModalListVoucher';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
 import { api } from '~/trpc/react';
 
-export const ApplyVoucher = ({ totalOrderPrice }: any) => {
+export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) => {
   const [showVoucher, setShowVoucher] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [voucherData, setVoucherData] = useState<any[]>([]);
   const [voucherCode, setVoucherCode] = useState('');
   const { data: user } = useSession();
   const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const [appliedVouchers, setAppliedVouchers] = useLocalStorage<any[]>({
+  const [appliedVouchers, setAppliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
   });
@@ -30,14 +30,14 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
         userId: user?.user.id
       });
       if (voucherCode) {
-        const voucher = voucherData.find((item: any) => item.code?.toLowerCase() === voucherCode?.toLowerCase());
+        const voucher = voucherData.find(item => item.code?.toLowerCase() === voucherCode?.toLowerCase());
         if (!voucher || allowedVoucher(totalOrderPrice, cart)) {
           NotifyError('Voucher không hợp lệ. Hoặc không đủ điều kiện.', 'Vui lý nhập lại mã khuyên mãi.');
           return;
         }
-        const isExist = appliedVouchers.find((item: any) => item.code?.toLowerCase() === voucher?.code?.toLowerCase());
+        const isExist = appliedVouchers.find(item => item.code?.toLowerCase() === voucher?.code?.toLowerCase());
         if (!isExist) {
-          setAppliedVouchers(prev => {
+          setAppliedVouchers((prev: VoucherApplyStorage[]) => {
             if (prev.some(item => item.code?.toLowerCase() === voucher?.code?.toLowerCase())) {
               return prev;
             }
@@ -78,12 +78,12 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
             leftSection={<IconGift className='mr-1 h-3 w-3' />}
             onClick={async () => {
               setShowVoucher(true);
-              setLoading(true);
-              const data = await utils.Voucher.getVoucherForUser.fetch({
-                userId: user?.user?.id
-              });
-              setLoading(false);
-              setVoucherData(data);
+              // setLoading(true);
+              // const data = await utils.Voucher.getVoucherForUser.fetch({
+              //   userId: user?.user?.id
+              // });
+              // setLoading(false);
+              // setVoucherData(data);
             }}
           >
             Chọn mã có sẵn
@@ -150,9 +150,8 @@ export const ApplyVoucher = ({ totalOrderPrice }: any) => {
       </Box>
       <ModalListVoucher
         opened={showVoucher}
-        loading={loading}
-        data={{ vouchers: voucherData, products: cart }}
         onClose={() => setShowVoucher(false)}
+        data={{ userId: user?.user?.id || '' }}
       />
       <Divider py={0} />
     </>
