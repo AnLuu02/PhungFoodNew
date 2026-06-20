@@ -129,14 +129,20 @@ export const getInitPageService = async (db: PrismaClient) => {
 };
 export const getInitProductDetailPageService = async (db: PrismaClient, input: { slug: string }) => {
   const product = await getOneProductService(db, {
-    key: input?.slug || ''
+    key: input.slug
   });
 
   if (!product) return null;
 
   const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
-    getFilterProductService(db, { s: product?.subCategory?.tag || '' }),
-    getFilterProductService(db, { s: product?.subCategory?.categoryId || '' }),
+    getFilterProductService(db, {
+      key: product?.subCategory?.tag || '',
+      ...(product?.id ? { excludes: [product?.id] } : {})
+    }),
+    getFilterProductService(db, {
+      key: product?.subCategory?.categoryId || '',
+      ...(product?.id ? { excludes: [product?.id] } : {})
+    }),
     getVoucherAppliedAllService(db)
   ]);
 

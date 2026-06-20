@@ -3,23 +3,22 @@
 import { Badge, Box, Card, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { IconChefHat, IconClock, IconPlayerPlay, IconUsers } from '@tabler/icons-react';
 import Image from 'next/image';
-import { useModalActions } from '~/contexts/ModalContext';
+import Link from 'next/link';
+import { Recipe } from '~/types/recipe';
 const difficultyColors = {
   Dễ: 'bg-green-100 text-green-800',
   'Trung bình': 'bg-yellow-100 text-yellow-800',
   Khó: 'bg-red-100 text-red-800'
 };
-export default function RecipeCard({ data }: { data: any }) {
-  const { openModal } = useModalActions();
+export default function CardRecipe({ data }: { data: Recipe }) {
   return (
     <Card
       shadow='sm'
       padding={0}
       className='group transform cursor-pointer transition-all duration-300 hover:shadow-xl'
       pos={'relative'}
-      onClick={() => {
-        openModal('recipe', null, data);
-      }}
+      component={Link}
+      href={`/huong-dan-nau-an/${data.tag}`}
     >
       <Box className='relative overflow-hidden rounded-t-md'>
         <Image

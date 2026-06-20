@@ -191,13 +191,16 @@ export const deleteProductService = async (db: PrismaClient, input: { id: string
 export const getFilterProductService = async (
   db: PrismaClient,
   input: {
-    s: string;
+    s?: string;
+    key?: string;
     userRole?: TUserRole;
+    excludes?: string[];
     include?: Prisma.ProductInclude;
   }
 ) => {
-  const { s, include, userRole } = input;
+  const { key, s, excludes, userRole } = input;
   const search = s?.trim();
+
   const products = await db.product.findMany({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER
@@ -237,6 +240,42 @@ export const getFilterProductService = async (
                             id: search
                           }
                         ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        : {}),
+
+      ...(excludes && excludes.length > 0
+        ? {
+            NOT: {
+              OR: [{ id: { in: excludes } }, { tag: { in: excludes } }]
+            }
+          }
+        : {}),
+      ...(key
+        ? {
+            OR: [
+              {
+                id: key
+              },
+              {
+                tag: key
+              },
+              {
+                subCategoryId: key
+              },
+              {
+                subCategory: {
+                  OR: [
+                    { tag: key },
+                    { categoryId: key },
+                    {
+                      category: {
+                        tag: key
                       }
                     }
                   ]

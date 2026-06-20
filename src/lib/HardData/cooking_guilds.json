@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "tag": "cach-lam-pho-bo",
+    "title": "Cách làm Phở bò",
+    "description": "Hướng dẫn chế biến món Phở bò thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=c9GfHgMk1ac",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "101K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Phở bò", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 2,
+    "tag": "cach-lam-pho-ga",
+    "title": "Cách làm Phở gà",
+    "description": "Hướng dẫn chế biến món Phở gà thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=Ildv1ncLJig",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "102K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Phở gà", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 3,
+    "tag": "cach-lam-bun-bo-hue",
+    "title": "Cách làm Bún bò Huế",
+    "description": "Hướng dẫn chế biến món Bún bò Huế thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "103K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Bún bò Huế", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 4,
+    "tag": "cach-lam-bun-cha-ha-noi",
+    "title": "Cách làm Bún chả Hà Nội",
+    "description": "Hướng dẫn chế biến món Bún chả Hà Nội thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=SQ1j8WkOUZM",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "104K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Bún chả Hà Nội", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 5,
+    "tag": "cach-lam-cha-ca-la-vong",
+    "title": "Cách làm Chả cá Lã Vọng",
+    "description": "Hướng dẫn chế biến món Chả cá Lã Vọng thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=rp-e4D525B0",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "105K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Chả cá Lã Vọng", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 6,
+    "tag": "cach-lam-nem-ran",
+    "title": "Cách làm Nem rán",
+    "description": "Hướng dẫn chế biến món Nem rán thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=VN7GnUm5rfo",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "106K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Nem rán", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 7,
+    "tag": "cach-lam-banh-cuon",
+    "title": "Cách làm Bánh cuốn",
+    "description": "Hướng dẫn chế biến món Bánh cuốn thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=Hlt_Yfz3JHM",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "107K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Bánh cuốn", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 8,
+    "tag": "cach-lam-banh-da-cua",
+    "title": "Cách làm Bánh đa cua",
+    "description": "Hướng dẫn chế biến món Bánh đa cua thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "108K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Bánh đa cua", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 9,
+    "tag": "cach-lam-mien-ga",
+    "title": "Cách làm Miến gà",
+    "description": "Hướng dẫn chế biến món Miến gà thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=JCI-V3D1hPg",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "109K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Miến gà", "Ẩm thực", "Món ăn"]
+  },
+  {
+    "id": 10,
+    "tag": "cach-lam-xoi-xeo",
+    "title": "Cách làm Xôi xéo",
+    "description": "Hướng dẫn chế biến món Xôi xéo thơm ngon theo phong cách gia đình.",
+    "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+    "videoUrl": "https://www.youtube.com/watch?v=udUgaFFiA6M",
+    "duration": "45 phút",
+    "difficulty": "Trung bình",
+    "servings": "4 người",
+    "category": "Món chính",
+    "rating": 4.8,
+    "views": "110K",
+    "prepTime": "20 phút",
+    "cookTime": "25 phút",
+    "totalTime": "45 phút",
+    "ingredients": {
+      "Chính": ["500g nguyên liệu chính", "200g rau củ"],
+      "Gia vị": ["1 thìa cà phê muối", "1/2 thìa cà phê tiêu", "2 thìa nước mắm"]
+    },
+    "instructions": [
+      {
+        "step": 1,
+        "title": "Chuẩn bị nguyên liệu",
+        "description": "Rửa sạch và sơ chế toàn bộ nguyên liệu.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1510627498534-cf7e9002facc?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 2,
+        "title": "Ướp nguyên liệu",
+        "description": "Ướp cùng gia vị cho thấm đều.",
+        "time": "10 phút",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 3,
+        "title": "Chế biến",
+        "description": "Nấu hoặc xào theo đặc trưng của món ăn.",
+        "time": "20 phút",
+        "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      },
+      {
+        "step": 4,
+        "title": "Hoàn thiện",
+        "description": "Trình bày và thưởng thức khi còn nóng.",
+        "time": "5 phút",
+        "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80"
+      }
+    ],
+    "tips": ["Chọn nguyên liệu tươi.", "Nêm nếm vừa khẩu vị.", "Dùng nóng để ngon nhất."],
+    "nutrition": {
+      "calories": 350,
+      "protein": 20,
+      "carbs": 40,
+      "fat": 12,
+      "fiber": 4
+    },
+    "tags": ["Xôi xéo", "Ẩm thực", "Món ăn"]
+  }
+]

@@ -1,10 +1,10 @@
 import { Space } from '@mantine/core';
 import Reveal from '~/components/Reveal';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { recipes } from '~/lib/HardData/recipe';
+import cooking_guilds from '~/lib/HardData/cooking_guilds.json';
 import { PartnerCard } from '../Card/CardPartner';
 import ProductCardCarouselVertical from '../Card/CardProductCarouselVertical';
-import RecipeCard from './components/RecipeCard';
+import CardRecipe from '../Card/CardRecipe';
 import BannerSection from './Section/Banner-section';
 import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
 import ReusablePromoBanner from './Section/Layout-Banner-Promotion';
@@ -14,7 +14,6 @@ import LayoutProductCarouselWithImage from './Section/Layout-Product-Carousel-Wi
 import LayoutProductCarouselWithImage2 from './Section/Layout-Product-Carousel-With-Image-2';
 import LayoutPromotion from './Section/Layout-Promotion';
 import LayoutGrid3Col from './Section/LayoutGrid3Col';
-
 const HomeWeb = ({
   data
 }: {
@@ -28,6 +27,7 @@ const HomeWeb = ({
     productHot: any;
   };
 }) => {
+  const recipes = cooking_guilds;
   return (
     <>
       {data.banner?.id && (
@@ -173,7 +173,7 @@ const HomeWeb = ({
             href: '/',
             label: 'Xem tất cả'
           }}
-          CardElement={RecipeCard}
+          CardElement={CardRecipe}
         />
         <Space h='xl' />
       </Reveal>

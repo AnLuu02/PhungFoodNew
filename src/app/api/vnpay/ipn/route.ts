@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { moneyToNumber } from '~/lib/FuncHandler/Format';
-
 import { VNPAY_CONFIG, assertVnpayConfig } from '~/lib/vnpay/config';
 import { extractVnpayParamsFromUrl, verifyVnpaySignature } from '~/lib/vnpay/utils';
-
 import { db } from '~/server/db';
 import { confirmVoucherUsageService, releaseVoucherUsageService } from '~/server/services/voucherUsage.service';
+
+export const dynamic = 'force-dynamic';
 
 const vnpayJson = (RspCode: string, Message: string) => {
   return NextResponse.json({

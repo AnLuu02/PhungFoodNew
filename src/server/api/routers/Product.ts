@@ -7,6 +7,7 @@ import {
   findInfiniteProductService,
   findProductService,
   getAllProductService,
+  getFilterProductService,
   getOneProductService,
   upsertProductToCloudinaryService
 } from '~/server/services/product.service';
@@ -36,14 +37,22 @@ export const productRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => await deleteProductService(ctx.db, input)),
   getOne: publicProcedure
     .input(
-      z
-        .object({
-          key: z.string(),
-          userRole: z.custom<TUserRole>().optional()
-        })
-        .transform(p => ({ ...p, key: p.key.split('san-pham-')?.[1] ?? p.key }))
+      z.object({
+        key: z.string(),
+        userRole: z.custom<TUserRole>().optional()
+      })
     )
     .query(async ({ ctx, input }) => await getOneProductService(ctx.db, input)),
+  getFilter: publicProcedure
+    .input(
+      z.object({
+        key: z.string().optional(),
+        s: z.string().optional(),
+        excludes: z.array(z.string()).optional(),
+        userRole: z.custom<TUserRole>().optional()
+      })
+    )
+    .query(async ({ ctx, input }) => await getFilterProductService(ctx.db, input)),
   getAll: publicProcedure
     .input(
       z.object({

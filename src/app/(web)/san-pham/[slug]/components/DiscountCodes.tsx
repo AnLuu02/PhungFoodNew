@@ -3,8 +3,10 @@
 import { Grid, GridCol, Group, Paper, Spoiler, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { IconGift } from '@tabler/icons-react';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
 
-export default function DiscountCodes({ data }: { data: any }) {
+export default function DiscountCodes({ data }: { data: NonNullable<GetInitProductDetail>['dataVouchers'] }) {
+  if (!data) return null;
   return (
     <Paper p='md' className='bg-green-50 dark:bg-dark-background'>
       <Group align='center' mb={'xs'}>
