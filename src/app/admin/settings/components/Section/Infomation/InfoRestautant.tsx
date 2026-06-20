@@ -209,7 +209,7 @@ export default function RestaurantInfoSettings() {
               </TabsPanel>
 
               <TabsPanel value='social' className='space-y-6'>
-                <SocialTab socials={data?.socials} restaurantId={data?.id || ''} />
+                <SocialTab socials={data?.socials ?? []} restaurantId={data?.id || ''} />
               </TabsPanel>
             </Tabs>
           </Stack>

@@ -92,15 +92,21 @@ export const getInitPageService = async (db: PrismaClient) => {
     products
       .map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
       .filter(fn)
-      .slice(0, 10);
+      .slice(0, 10)
+      .map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));
 
   const byMaterial = (tag: string) => pick(p => p.materials?.some((m: any) => m.tag === tag));
 
-  const category = (tag: string) => subCategories.filter(sc => sc.category?.tag === tag).slice(0, 10);
-
+  const category = (tag: string) =>
+    subCategories
+      .filter(sc => sc.category?.tag === tag)
+      .slice(0, 10)
+      .map(s => ({
+        ...s,
+        products: s.products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }))
+      }));
   return {
-    banner: banner || {},
-
+    banner,
     category: {
       anVat: category('danh-muc-an-vat-trang-mieng'),
       monChinh: category('danh-muc-mon-chinh'),
@@ -123,22 +129,14 @@ export const getInitPageService = async (db: PrismaClient) => {
 };
 export const getInitProductDetailPageService = async (db: PrismaClient, input: { slug: string }) => {
   const product = await getOneProductService(db, {
-    key: input?.slug || '',
-    include: {
-      subCategory: {
-        include: {
-          imageForEntity: { include: { image: true } },
-          category: true
-        }
-      }
-    }
+    key: input?.slug || ''
   });
 
   if (!product) return null;
 
   const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
     getFilterProductService(db, { s: product?.subCategory?.tag || '' }),
-    getFilterProductService(db, { s: product?.subCategory?.category?.tag || '' }),
+    getFilterProductService(db, { s: product?.subCategory?.categoryId || '' }),
     getVoucherAppliedAllService(db)
   ]);
 

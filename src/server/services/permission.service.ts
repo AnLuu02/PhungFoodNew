@@ -108,7 +108,7 @@ export const upsertPermissionService = async (db: PrismaClient, input: Permissio
     });
   }
 };
-export const deletePermissionService = async (db: PrismaClient, input: any) => {
+export const deletePermissionService = async (db: PrismaClient, input: { id: string }) => {
   const deleted = await db.permission.delete({
     where: { id: input.id || '' }
   });

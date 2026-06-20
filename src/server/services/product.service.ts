@@ -205,32 +205,46 @@ export const getFilterProductService = async (
         : {
             isActive: true
           }),
-      OR: [
-        { id: search },
-        { tag: search },
-        {
-          materials: {
-            some: {
-              category: search
-            }
-          }
-        },
-        {
-          subCategory: {
+      ...(search
+        ? {
             OR: [
+              { id: search },
+              { tag: search },
               {
-                tag: search
+                materials: {
+                  some: {
+                    category: search
+                  }
+                }
               },
-
               {
-                category: {
-                  tag: search
+                subCategory: {
+                  OR: [
+                    {
+                      id: search
+                    },
+                    {
+                      tag: search
+                    },
+
+                    {
+                      category: {
+                        OR: [
+                          {
+                            tag: search
+                          },
+                          {
+                            id: search
+                          }
+                        ]
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
-        }
-      ]
+        : {})
     },
     include: {
       imageForEntities: { include: { image: true } },
@@ -242,8 +256,8 @@ export const getFilterProductService = async (
         }
       },
       review: true,
-      favouriteFood: true,
-      ...(include ?? {})
+      favouriteFood: true
+      // ...(include ?? {})
     }
   });
 
@@ -254,10 +268,10 @@ export const getOneProductService = async (
   input: {
     key: string;
     userRole?: TUserRole;
-    include?: Prisma.ProductInclude;
   }
 ) => {
-  const { key, include, userRole } = input;
+  const { key, userRole } = input;
+
   const product = await db.product.findFirst({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER
@@ -269,7 +283,6 @@ export const getOneProductService = async (
       OR: [{ id: key }, { tag: key }]
     },
     include: {
-      ...(include ?? {}),
       imageForEntities: {
         include: { image: true }
       },

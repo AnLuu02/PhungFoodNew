@@ -207,7 +207,10 @@ export const getVoucherForUserService = async (
   }));
 };
 
-export const upsertVoucherService = async (db: PrismaClient, input: { where: any; data: any }) => {
+export const upsertVoucherService = async (
+  db: PrismaClient,
+  input: { where: Prisma.VoucherWhereUniqueInput; data: Prisma.VoucherUpdateInput }
+) => {
   try {
     const existed = await db.voucher.findFirst({
       where: input.where
@@ -215,8 +218,8 @@ export const upsertVoucherService = async (db: PrismaClient, input: { where: any
 
     if (!existed || (existed && existed?.id == input?.where?.id)) {
       const updateVoucher = await db.voucher.update({
-        where: input.where as Prisma.VoucherWhereUniqueInput,
-        data: input.data as Prisma.VoucherUpdateInput
+        where: input.where,
+        data: input.data
       });
       return {
         metaData: {
@@ -249,16 +252,19 @@ export const upsertVoucherService = async (db: PrismaClient, input: { where: any
     });
   }
 };
-export const updateVoucherService = async (db: PrismaClient, input: { where: any; data: any }) => {
+export const updateVoucherService = async (
+  db: PrismaClient,
+  input: { where: Prisma.VoucherWhereUniqueInput; data: Prisma.VoucherUpdateInput }
+) => {
   try {
-    const existed: any = await db.voucher.findFirst({
+    const existed = await db.voucher.findFirst({
       where: input.where
     });
 
     if (!existed || (existed && existed?.id == input?.where?.id)) {
       const updateVoucher = await db.voucher.update({
-        where: input.where as Prisma.VoucherWhereUniqueInput,
-        data: input.data as Prisma.VoucherUpdateInput
+        where: input.where,
+        data: input.data
       });
       return {
         metaData: {

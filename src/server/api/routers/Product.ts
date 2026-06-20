@@ -36,11 +36,12 @@ export const productRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => await deleteProductService(ctx.db, input)),
   getOne: publicProcedure
     .input(
-      z.object({
-        key: z.string(),
-        userRole: z.custom<TUserRole>().optional(),
-        include: z.custom<Prisma.ProductInclude>().optional()
-      })
+      z
+        .object({
+          key: z.string(),
+          userRole: z.custom<TUserRole>().optional()
+        })
+        .transform(p => ({ ...p, key: p.key.split('san-pham-')?.[1] ?? p.key }))
     )
     .query(async ({ ctx, input }) => await getOneProductService(ctx.db, input)),
   getAll: publicProcedure

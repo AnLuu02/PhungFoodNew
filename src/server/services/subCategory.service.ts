@@ -117,7 +117,7 @@ export const findSubCategoryService = async (
     }
   };
 };
-export const deleteSubCategoryService = async (db: PrismaClient, input: any) => {
+export const deleteSubCategoryService = async (db: PrismaClient, input: { id: string }) => {
   const deletedSubCategory = await db.subCategory.delete({ where: { id: input.id } });
   ManageTagVi('delete', { oldTag: deletedSubCategory.tag });
   return {

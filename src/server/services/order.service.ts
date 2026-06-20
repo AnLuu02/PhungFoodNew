@@ -204,7 +204,7 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
         orderItems: {
           deleteMany: {
             id: {
-              notIn: orderItems?.map(({ id }: any) => id).filter(Boolean) || []
+              notIn: orderItems?.flatMap(item => (item?.id ? [item?.id] : [])) || []
             }
           },
           upsert: orderItems?.map(({ id, orderId, ...item }) => ({
@@ -326,12 +326,12 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
 export const updateOrderService = async (
   db: PrismaClient,
   input: {
-    where: any;
-    data: any;
+    where: Prisma.OrderWhereUniqueInput;
+    data: Prisma.OrderUpdateInput;
   }
 ) => {
   const order = await db.order.update({
-    where: input.where as Prisma.OrderWhereUniqueInput,
+    where: input.where,
     data: input.data,
     include: {
       orderItems: true
@@ -343,11 +343,11 @@ export const updateOrderService = async (
       originalAmount: moneyToNumber(order?.originalAmount),
       discountAmount: moneyToNumber(order?.discountAmount),
       finalAmount: moneyToNumber(order?.finalAmount),
-      createdAt: input?.data?.createdAt
+      createdAt: order?.createdAt
     });
     updatepointUser(db, order.userId, moneyToNumber(order.finalAmount));
     await Promise.all(
-      order?.orderItems?.map((orderItem: any) => {
+      order?.orderItems?.map(orderItem => {
         return updateSales(db, order.status, orderItem.productId, orderItem?.quantity);
       })
     );
@@ -439,32 +439,32 @@ export const getFilterOrderService = async (
 ) => {
   const { s, period, include } = input;
   const searchQuery = s?.trim();
-  const where = {
-    AND: [
-      period
-        ? {
-            createdAt: {
-              gte: dayjs().utc().subtract(period, 'day').startOf('day').toISOString(),
-              lte: dayjs().utc().toISOString()
-            }
+  const where: Prisma.OrderWhereInput = {
+    ...(period
+      ? {
+          createdAt: {
+            gte: dayjs().utc().subtract(period, 'day').startOf('day').toISOString(),
+            lte: dayjs().utc().toISOString()
           }
-        : undefined,
-      {
-        OR: [
-          {
-            id: searchQuery
-          },
-          {
-            user: {
-              OR: [{ email: searchQuery }, { id: searchQuery }]
+        }
+      : {}),
+    ...(searchQuery
+      ? {
+          OR: [
+            {
+              id: searchQuery
+            },
+            {
+              user: {
+                OR: [{ email: searchQuery }, { id: searchQuery }]
+              }
             }
-          }
-        ]
-      }
-    ].filter(Boolean)
+          ]
+        }
+      : {})
   };
   const orders = await db.order.findMany({
-    where: where as any,
+    where,
     include: {
       ...(include ?? {}),
       orderItems: {

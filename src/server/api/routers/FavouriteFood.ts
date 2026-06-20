@@ -1,11 +1,11 @@
-import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import {
   createFavouriteFoodService,
   deleteFavouriteFoodService,
-  getFilterFavouriteFoodService
+  getFilterFavouriteFoodService,
+  getProductOwnerService
 } from '~/server/services/favouriteFood.service';
 
 export const favouriteFoodRouter = createTRPCRouter({
@@ -31,9 +31,16 @@ export const favouriteFoodRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        s: z.string(),
-        include: z.custom<Prisma.FavouriteFoodInclude>().optional()
+        s: z.string()
       })
     )
-    .query(async ({ ctx, input }) => await getFilterFavouriteFoodService(ctx.db, input))
+    .query(async ({ ctx, input }) => await getFilterFavouriteFoodService(ctx.db, input)),
+  getProductOwner: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        productId: z.string()
+      })
+    )
+    .query(async ({ ctx, input }) => await getProductOwnerService(ctx.db, input))
 });

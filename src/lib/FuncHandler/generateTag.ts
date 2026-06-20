@@ -25,7 +25,7 @@ export function getTagFromQuery(query: ReadonlyURLSearchParams | QueryData, tags
   if (danhMuc) return 'Danh mục sản phẩm';
   return 'Tất cả';
 }
-export function getViTag(tag: any) {
+export function getViTag(tag: string) {
   if (tags?.[tag as keyof typeof tags]) {
     return tags?.[tag as keyof typeof tags];
   }

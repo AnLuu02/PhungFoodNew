@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import { moneyToNumber } from '~/lib/FuncHandler/Format';
 
 export const createFavouriteFoodService = async (db: PrismaClient, input: { productId: string; userId: string }) => {
@@ -34,10 +35,7 @@ export const deleteFavouriteFoodService = async (db: PrismaClient, input: { prod
   };
 };
 
-export const getFilterFavouriteFoodService = async (
-  db: PrismaClient,
-  input: { s: string; include?: Prisma.FavouriteFoodInclude }
-) => {
+export const getFilterFavouriteFoodService = async (db: PrismaClient, input: { s: string }) => {
   const searchQuery = input.s?.trim();
   const favourite_foods = await db.favouriteFood.findMany({
     where: {
@@ -70,7 +68,6 @@ export const getFilterFavouriteFoodService = async (
       ]
     },
     include: {
-      ...(input?.include ?? {}),
       product: {
         include: {
           favouriteFood: true,
@@ -98,4 +95,49 @@ export const getFilterFavouriteFoodService = async (
       discount: moneyToNumber(ff.product.discount)
     }
   }));
+};
+
+export const getProductOwnerService = async (db: PrismaClient, input: { userId: string; productId: string }) => {
+  const { userId, productId } = input;
+  const favouriteFood = await db.favouriteFood.findUnique({
+    where: {
+      userId_productId: {
+        userId,
+        productId
+      }
+    },
+    include: {
+      product: {
+        include: {
+          imageForEntities: { include: { image: true } },
+          subCategory: {
+            include: { category: true }
+          }
+        }
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          imageForEntity: { include: { image: true } }
+        }
+      }
+    }
+  });
+
+  if (!favouriteFood)
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: 'Opps! Có vẻ như bạn chưa thêm sản phẩm này vào mục yêu thích./'
+    });
+
+  return {
+    ...favouriteFood,
+    product: {
+      ...favouriteFood.product,
+      price: moneyToNumber(favouriteFood.product.price),
+      discount: moneyToNumber(favouriteFood.product.discount)
+    }
+  };
 };

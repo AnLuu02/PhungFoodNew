@@ -7,7 +7,7 @@ import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { api } from '~/trpc/react';
 import CardRecentOrder from '../../app/(web)/goi-mon-nhanh/components/CardRecentOrder';
 
-export const ModalRecentOrder = ({ opened, onClose }: any) => {
+export const ModalRecentOrder = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
   const { data: session } = useSession();
   const { data: orders, isLoading: isLoadingOrders } = api.Order.getFilter.useQuery(
     { s: session?.user.email || '', period: 30 },

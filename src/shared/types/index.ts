@@ -1,4 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
+import { IconProps } from '@tabler/icons-react';
+import { ForwardRefExoticComponent, RefAttributes } from 'react';
 
 export type MoneyValue = number | string | Prisma.Decimal | null | undefined;
 
@@ -50,4 +52,12 @@ export type FormatDateViVNOptions = {
   fallback?: string;
   defaultTimeZone?: boolean;
   timezone?: string;
+};
+
+export type RecentControlType = {
+  label: string;
+  des: string;
+  icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
+  color: string;
+  href: string;
 };

@@ -163,7 +163,7 @@ export const upsertRoleService = async (db: PrismaClient, input: RoleInput) => {
     });
   }
 };
-export const deleteRoleService = async (db: PrismaClient, input: any) => {
+export const deleteRoleService = async (db: PrismaClient, input: { id: string }) => {
   const deleted = await db.role.delete({
     where: { id: input.id }
   });

@@ -83,8 +83,8 @@ export const voucherRouter = createTRPCRouter({
     .use(activityLogger)
     .input(
       z.object({
-        where: z.record(z.any()),
-        data: z.record(z.any())
+        where: z.custom<Prisma.VoucherWhereUniqueInput>(),
+        data: z.custom<Prisma.VoucherUpdateInput>()
       })
     )
     .mutation(async ({ ctx, input }) => await updateVoucherService(ctx.db, input))

@@ -1,7 +1,7 @@
 'use client';
 import { Box } from '@mantine/core';
 import Empty from '../Empty';
-export const TiptapViewer = ({ descriptionDetailHtml }: any) => {
+export const TiptapViewer = ({ descriptionDetailHtml }: { descriptionDetailHtml: string | null }) => {
   if (!descriptionDetailHtml || descriptionDetailHtml == '<p>Đang cập nhật</p>')
     return (
       <Empty

@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Divider, Grid, GridCol, ScrollAreaAutosize } from '@mantine/core';
+import { notFound } from 'next/navigation';
 import { CommentsForm } from '~/components/Comments/CommentsForm';
 import { CommentsList } from '~/components/Comments/CommentsList';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
@@ -11,23 +12,14 @@ import RatingStatistics from '../components/RatingStatistics';
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const productTag = params.slug;
-  const { data: product, isLoading } = api.Product.getOne.useQuery({
-    key: productTag,
-    include: {
-      review: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              imageForEntity: { include: { image: true } }
-            }
-          }
-        }
-      }
-    }
-  });
-  if (!product)
+  const { data: product, isLoading } = api.Product.getOne.useQuery(
+    {
+      key: productTag
+    },
+    { enabled: !!productTag }
+  );
+
+  if (isLoading)
     return (
       <Box py='md'>
         <Grid>
@@ -58,6 +50,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         </Grid>
       </Box>
     );
+  if (!product) return notFound();
   return (
     <Box py='md'>
       <Grid>

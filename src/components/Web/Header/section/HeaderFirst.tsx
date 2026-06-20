@@ -12,7 +12,7 @@ import { TGetOneActiveClient } from '~/shared/type-trpc/restaurant.type-trpc';
 import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 
 export const HeaderClient = ({ restaurant }: { restaurant: TGetOneActiveClient }) => {
-  const [language, setLanguage] = useLocalStorage<any>({ key: 'language', defaultValue: 'vn' });
+  const [language, setLanguage] = useLocalStorage<'vn' | 'us'>({ key: 'language', defaultValue: 'vn' });
   const timeOpen = useMemo(() => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurant?.openingHours ?? [];

@@ -5,9 +5,20 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 
-export function ConsumerCard({ data }: { data: any }) {
+export function ConsumerCard({
+  data
+}: {
+  data: {
+    image?: string;
+    link?: string;
+    title: string;
+    categories?: string[];
+    pubDate?: Date | null;
+    description?: string;
+  };
+}) {
   return (
-    <Link href={data?.link} target='_blank'>
+    <Link href={data?.link ?? ''} target='_blank'>
       <Card
         padding={0}
         withBorder
@@ -17,7 +28,7 @@ export function ConsumerCard({ data }: { data: any }) {
         <Box className='relative overflow-hidden' w={'100%'} h={200}>
           <Image
             src={data?.image || `/images/png/403.png`}
-            alt={data?.title}
+            alt={data?.title ?? 'Đang cập nhật'}
             fill
             onError={e => (e.currentTarget.src = '/images/png/delicious-burger-fries.png')}
             className='object-cover transition-transform duration-300 group-hover:scale-105'

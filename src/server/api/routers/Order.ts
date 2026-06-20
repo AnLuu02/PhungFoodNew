@@ -40,8 +40,8 @@ export const orderRouter = createTRPCRouter({
     .use(activityLogger)
     .input(
       z.object({
-        where: z.record(z.string(), z.any()),
-        data: z.record(z.string(), z.any())
+        where: z.custom<Prisma.OrderWhereUniqueInput>(),
+        data: z.custom<Prisma.OrderUpdateInput>()
       })
     )
     .mutation(async ({ ctx, input }) => await updateOrderService(ctx.db, input)),

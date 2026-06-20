@@ -228,7 +228,7 @@ export default function WarehouseManagementPage() {
     setItems(prev => prev.filter((_, i) => i !== index));
   };
 
-  const updateItem = (index: number, key: string, value: any) => {
+  const updateItem = (index: number, key: string, value: string | number | null) => {
     setItems(prev =>
       prev.map((item, i) => {
         if (i !== index) return item;

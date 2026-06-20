@@ -9,7 +9,7 @@ import { GetFilterFavouriteFood } from '~/shared/type-trpc/favouriteFood.type-tr
 import { api } from '~/trpc/react';
 
 export default function FavouritePage() {
-  const [localFavouriteFood] = useLocalStorage<{ product: any }[]>({
+  const [localFavouriteFood] = useLocalStorage<any[]>({
     key: 'favouriteFood',
     defaultValue: []
   });

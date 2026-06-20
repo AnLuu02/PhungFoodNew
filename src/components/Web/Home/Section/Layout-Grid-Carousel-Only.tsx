@@ -1,6 +1,19 @@
 'use client';
 import { Carousel, Embla } from '@mantine/carousel';
-import { ActionIcon, Box, Button, Card, Center, Divider, Flex, Space, StyleProp, Text, Title } from '@mantine/core';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Card,
+  Center,
+  Divider,
+  Flex,
+  MantineSize,
+  Space,
+  StyleProp,
+  Text,
+  Title
+} from '@mantine/core';
 import { IconCheese, IconChevronLeft, IconChevronRight, IconChevronRightFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,7 +34,7 @@ const LayoutGridCarouselOnly = ({
   title?: string;
   configs?: {
     slideSize?: StyleProp<string | number> | undefined;
-    h?: any;
+    h?: string | number | MantineSize;
   };
   navigation?: {
     href: string;
