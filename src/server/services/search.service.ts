@@ -141,7 +141,7 @@ export const searchGlobalService = async (
             isActive: true
           },
           include: {
-            favouriteFood: true,
+            favouriteFoods: true,
             imageForEntities: { include: { image: true } }
           }
         }

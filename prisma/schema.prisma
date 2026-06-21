@@ -250,7 +250,7 @@ model Product {
   totalRating           Int              @default(0)
   orderItem             OrderItem[]
   review                Review[]
-  favouriteFood         FavouriteFood[]
+  favouriteFoods        FavouriteFood[]
   materials             Material[]
   subCategory           SubCategory?     @relation(fields: [subCategoryId], references: [id])
   subCategoryId         String?
@@ -304,7 +304,7 @@ model User {
   isLocked           Boolean                 @default(false)
   orders             Order[]
   review             Review[]
-  favouriteFood      FavouriteFood[]
+  favouriteFoods     FavouriteFood[]
   revenue            Revenue[]
   imageForEntity     ImageForEntity?
   roleId             String?

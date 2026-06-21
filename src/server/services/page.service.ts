@@ -65,7 +65,7 @@ export const getInitPageService = async (db: PrismaClient) => {
             isActive: true
           },
           include: {
-            favouriteFood: true,
+            favouriteFoods: true,
             imageForEntities: { include: { image: true } }
           }
         }
@@ -83,7 +83,7 @@ export const getInitPageService = async (db: PrismaClient) => {
         materials: true,
         subCategory: { include: { category: true } },
         review: true,
-        favouriteFood: true
+        favouriteFoods: true
       }
     })
   ]);
@@ -136,11 +136,11 @@ export const getInitProductDetailPageService = async (db: PrismaClient, input: {
 
   const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
     getFilterProductService(db, {
-      key: product?.subCategory?.tag || '',
+      keys: product?.subCategory?.tag ? [product?.subCategory?.tag] : undefined,
       ...(product?.id ? { excludes: [product?.id] } : {})
     }),
     getFilterProductService(db, {
-      key: product?.subCategory?.categoryId || '',
+      keys: product?.subCategory?.categoryId ? [product?.subCategory?.categoryId] : undefined,
       ...(product?.id ? { excludes: [product?.id] } : {})
     }),
     getVoucherAppliedAllService(db)

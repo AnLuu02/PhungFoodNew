@@ -141,7 +141,7 @@ export const findProductService = async (
           }
         },
         review: true,
-        favouriteFood: true
+        favouriteFoods: true
       },
       orderBy:
         sort && sort?.length > 0
@@ -192,15 +192,15 @@ export const getFilterProductService = async (
   db: PrismaClient,
   input: {
     s?: string;
-    key?: string;
+    keys?: string[];
     userRole?: TUserRole;
     excludes?: string[];
     include?: Prisma.ProductInclude;
   }
 ) => {
-  const { key, s, excludes, userRole } = input;
+  const { s, excludes, userRole } = input;
+  const keys = input?.keys;
   const search = s?.trim();
-
   const products = await db.product.findMany({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER
@@ -256,26 +256,42 @@ export const getFilterProductService = async (
             }
           }
         : {}),
-      ...(key
+      ...(keys && keys.length > 0
         ? {
             OR: [
               {
-                id: key
+                id: {
+                  in: keys
+                }
               },
               {
-                tag: key
+                tag: {
+                  in: keys
+                }
               },
               {
-                subCategoryId: key
+                subCategoryId: {
+                  in: keys
+                }
               },
               {
                 subCategory: {
                   OR: [
-                    { tag: key },
-                    { categoryId: key },
+                    {
+                      tag: {
+                        in: keys
+                      }
+                    },
+                    {
+                      categoryId: {
+                        in: keys
+                      }
+                    },
                     {
                       category: {
-                        tag: key
+                        tag: {
+                          in: keys
+                        }
                       }
                     }
                   ]
@@ -295,7 +311,7 @@ export const getFilterProductService = async (
         }
       },
       review: true,
-      favouriteFood: true
+      favouriteFoods: true
       // ...(include ?? {})
     }
   });
@@ -357,7 +373,7 @@ export const getAllProductService = async (
       ...(include ?? {}),
       imageForEntities: { include: { image: true } },
       materials: true,
-      favouriteFood: true
+      favouriteFoods: true
     }
   });
   return products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));
@@ -574,7 +590,7 @@ export const findInfiniteProductService = async (
         }
       },
       review: true,
-      favouriteFood: true
+      favouriteFoods: true
     },
     orderBy: {
       createdAt: 'asc'
