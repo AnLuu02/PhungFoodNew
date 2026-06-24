@@ -4,6 +4,7 @@ import { Badge, Box, Button, Flex, Group, Image, NumberInput, Paper, Text } from
 import { ImageType } from '@prisma/client';
 import { IconPlus, IconShoppingCartPlus } from '@tabler/icons-react';
 import { useState } from 'react';
+import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
@@ -26,7 +27,7 @@ export const QuickMenuItem = ({
   return (
     <Paper
       p='sm'
-      className='group border border-slate-200 bg-slate-50/70 transition duration-200 hover:border-mainColor/30 hover:bg-white hover:shadow-sm dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/[0.07]'
+      className='group relative border border-slate-200 bg-slate-50/70 transition duration-200 hover:border-mainColor/30 hover:bg-white hover:shadow-sm dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/[0.07]'
       style={{
         animationDuration: `${(index % 10) * 0.04 + 0.35}s`
       }}
@@ -116,6 +117,9 @@ export const QuickMenuItem = ({
           </Button>
         </Box>
       </Flex>
+      <Box pos={'absolute'} bottom={4} right={8}>
+        <ButtonToggleLike product={product} />
+      </Box>
     </Paper>
   );
 };

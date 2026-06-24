@@ -7,7 +7,7 @@ const CLIENT_LOGIN_PATH = '/dang-nhap';
 
 const authPages = ['/dang-nhap', '/dang-ky'];
 
-const protectedClientRoutes = ['/thong-tin', '/don-hang-cua-toi'];
+const protectedClientRoutes = ['/thong-tin', '/don-hang-cua-toi', '/yeu-thich'];
 
 const isStartsWith = (pathname: string, routes: string[]) => {
   return routes.some(route => pathname === route || pathname.startsWith(`${route}/`));
@@ -94,5 +94,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/thong-tin/:path*', '/don-hang-cua-toi/:path*', '/dang-nhap', '/dang-ky']
+  matcher: [
+    '/admin/:path*',
+    '/thong-tin/:path*',
+    '/don-hang-cua-toi/:path*',
+    '/yeu-thich/:path*',
+    '/dang-nhap',
+    '/dang-ky'
+  ]
 };

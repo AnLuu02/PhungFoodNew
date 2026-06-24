@@ -1,104 +1,85 @@
 'use client';
 import { Button, Tooltip } from '@mantine/core';
-import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import { breakpoints } from '~/constants';
-import { NotifySuccess } from '~/lib/FuncHandler/toast';
+import { memo, useCallback, useMemo } from 'react';
+import { NotifyError } from '~/lib/FuncHandler/toast';
+import { useFavoriteStore } from '~/stores/favorite.store';
 import { api } from '~/trpc/react';
-export const ButtonToggleLike = ({ data }: any) => {
+import { useFavorite } from '../Hooks/use-favorite';
+const ButtonToggleLike = ({ product, isLiked }: { product: any; isLiked?: boolean }) => {
   const { data: session } = useSession();
-  const [localFavouriteFood, setLocalFavouriteFood] = useLocalStorage<any>({
-    key: 'favouriteFood',
-    defaultValue: []
-  });
-  const [like, setLike] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const toggle = useFavoriteStore(state => state.toggle);
   const utils = api.useUtils();
 
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
+  const userId = session?.user?.id;
+  const productId = product?.id;
 
-  useEffect(() => {
-    if (session) {
-      const favourite = data?.favouriteFood?.find((item: any) => item.userId === session?.user?.id);
-      if (favourite) {
-        setLike(true);
-      }
-    } else {
-      const favourite = localFavouriteFood?.find((item: any) => item.id === data.id);
-      if (favourite) {
-        setLike(true);
-      }
-    }
-  }, [data, session, localFavouriteFood]);
+  const _isLiked = typeof isLiked !== 'undefined' ? isLiked : useFavorite(product?.id);
 
-  const mutationAddFavourite = api.FavouriteFood.create.useMutation({
-    onSuccess: () => {
-      utils.FavouriteFood.invalidate();
+  const queryInput = useMemo(
+    () => ({
+      keys: userId ? [userId] : []
+    }),
+    [userId]
+  );
+
+  const mutationToggleLike = api.FavouriteFood.toggle.useMutation({
+    onMutate: async newState => {
+      toggle(newState.productId);
+      await utils.FavouriteFood.getFilter.cancel(queryInput);
+
+      utils.FavouriteFood.getFilter.setData(queryInput, oldState => {
+        const newProductLiked = { productId, userId, product } as any;
+        if (!oldState) return [newProductLiked];
+        const isExisted = oldState.some(({ productId }) => productId === newState.productId);
+        return isExisted
+          ? oldState.filter(({ productId }) => productId !== newState.productId)
+          : [...oldState, newProductLiked];
+      });
+
+      return { queryInput, productId: newState.productId };
+    },
+    onError: (err, vars, context) => {
+      if (context?.productId) {
+        toggle(context.productId);
+      }
+    },
+    onSettled: (data, error, variables, context) => {
+      if (context?.queryInput) {
+        utils.FavouriteFood.getFilter.invalidate(context?.queryInput);
+      }
     }
   });
-  const mutationCancleFavourite = api.FavouriteFood.delete.useMutation({
-    onSuccess: () => {
-      utils.FavouriteFood.invalidate();
+
+  const handleToggleLike = useCallback(async () => {
+    if (!userId) {
+      NotifyError('Oops! ᓚᘏᗢ ', 'Đăng nhập để lưu trữ sản phẩm yêu thích.');
+      return;
     }
-  });
+    mutationToggleLike.mutateAsync({ productId, userId });
+  }, [productId, userId, mutationToggleLike]);
+
+  if (!productId) return;
 
   return (
     <Button
       className={`flex items-center justify-center rounded-full text-mainColor hover:text-subColor`}
       size='xs'
       variant='default'
-      loading={loading}
-      disabled={loading}
       w={30}
       h={30}
     >
-      {like ? (
-        <Tooltip label='Xóa khỏi yêu thích' disabled={isMobile}>
-          <IconHeartFilled
-            onClick={async () => {
-              if (session) {
-                setLoading(true);
-                await mutationCancleFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
-                setLike(false);
-                setLoading(false);
-                NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
-              } else {
-                setLike(false);
-                setLoading(true);
-                setTimeout(() => {
-                  setLoading(false);
-                }, 500);
-                setLocalFavouriteFood(localFavouriteFood.filter((item: any) => item.id !== data.id));
-                NotifySuccess('Thao tác thành công!', 'Xoá yêu thích thành công.');
-              }
-            }}
-          />
+      {_isLiked ? (
+        <Tooltip label='Xóa khỏi yêu thích'>
+          <IconHeartFilled onClick={handleToggleLike} />
         </Tooltip>
       ) : (
-        <Tooltip label='Thêm vào yêu thích' disabled={isMobile}>
-          <IconHeart
-            onClick={async () => {
-              if (session) {
-                setLoading(true);
-                await mutationAddFavourite.mutateAsync({ userId: session?.user?.id, productId: data.id });
-                setLike(true);
-                setLoading(false);
-                NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');
-              } else {
-                setLike(true);
-                setLoading(true);
-                setTimeout(() => {
-                  setLoading(false);
-                }, 500);
-                setLocalFavouriteFood([...localFavouriteFood, data]);
-                NotifySuccess('Thao tác thành công!', 'Xóa yêu thích thành công.');
-              }
-            }}
-          />
+        <Tooltip label='Thêm vào yêu thích'>
+          <IconHeart onClick={handleToggleLike} />
         </Tooltip>
       )}
     </Button>
   );
 };
+export default memo(ButtonToggleLike);

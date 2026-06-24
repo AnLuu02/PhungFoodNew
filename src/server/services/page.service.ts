@@ -136,11 +136,11 @@ export const getInitProductDetailPageService = async (db: PrismaClient, input: {
 
   const [dataRelatedProducts, dataHintProducts, dataVouchers] = await Promise.allSettled([
     getFilterProductService(db, {
-      keys: product?.subCategory?.tag ? [product?.subCategory?.tag] : undefined,
+      keys: product?.subCategory?.tag ? [product?.subCategory?.tag] : [],
       ...(product?.id ? { excludes: [product?.id] } : {})
     }),
     getFilterProductService(db, {
-      keys: product?.subCategory?.categoryId ? [product?.subCategory?.categoryId] : undefined,
+      keys: product?.subCategory?.categoryId ? [product?.subCategory?.categoryId] : [],
       ...(product?.id ? { excludes: [product?.id] } : {})
     }),
     getVoucherAppliedAllService(db)

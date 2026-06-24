@@ -1,14 +1,16 @@
 'use client';
-import { Badge, Box, Card, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Box, Card, Flex, Group, Progress, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
+import { IconHeartFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { memo, useMemo } from 'react';
-import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
+import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import CardProductWrapper from '~/components/Card/CardProductWrapper';
+import { useFavorite } from '~/components/Hooks/use-favorite';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -18,12 +20,13 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
+  const isLiked = useFavorite(data?.id);
   const totalQuantityProduct = useMemo(() => {
     return (data?.availableQuantity || 0) + (data?.soldQuantity || 0);
   }, [data]);
 
   return (
-    <CardProductWrapper slug={data.id}>
+    <CardProductWrapper slug={data.id} key={data?.id + 'horizontal'}>
       <Card
         withBorder
         className='group cursor-pointer overflow-hidden bg-white transition-all duration-300 hover:shadow-lg dark:bg-dark-card'
@@ -55,7 +58,11 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             >
               <Group gap={5} className={`mr-1 mt-1 bg-transparent sm:group-hover:animate-fadeDown md:mr-0 md:mt-0`}>
                 <ButtonViewProduct data={data} isMobile={isMobile} />
-                <ButtonToggleLike data={data} />
+                <ButtonToggleLike
+                  isLiked={isLiked}
+                  key={data?.id + 'buttonToggleLikehorizontal'}
+                  product={data}
+                />
               </Group>
             </Box>
           </Box>
@@ -120,6 +127,11 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
           </Badge>
         ) : (
           ''
+        )}
+        {isLiked && (
+          <ActionIcon color='red' variant='white' pos='absolute' bottom={10} left={8} radius='xl'>
+            <IconHeartFilled size={20} />
+          </ActionIcon>
         )}
 
         <Badge color='red' pos={'absolute'} top={0} right={0} className='animate-wiggle'>

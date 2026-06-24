@@ -1,14 +1,16 @@
 'use client';
-import { Badge, Box, Card, Flex, Group, Rating, Text, Tooltip } from '@mantine/core';
+import { ActionIcon, Badge, Box, Card, Flex, Group, Rating, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
+import { IconHeartFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { memo } from 'react';
-import { ButtonToggleLike } from '~/components/Button/ButtonToggleLike';
+import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import CardProductWrapper from '~/components/Card/CardProductWrapper';
+import { useFavorite } from '~/components/Hooks/use-favorite';
 import { breakpoints } from '~/constants';
 import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -18,9 +20,10 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
+  const isLiked = useFavorite(data?.id);
 
   return (
-    <CardProductWrapper slug={data.id}>
+    <CardProductWrapper slug={data.id} key={data?.id + 'vertical'}>
       <Card
         h={320}
         padding={0}
@@ -53,7 +56,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
               className={`mr-1 mt-1 flex-col bg-transparent sm:group-hover:animate-fadeDown md:mr-0 md:mt-0 md:flex-row`}
             >
               <ButtonViewProduct data={data} isMobile={isMobile} />
-              <ButtonToggleLike data={data} />
+              <ButtonToggleLike isLiked={isLiked} key={data?.id + 'buttonToggleLikevertical'} product={data} />
             </Group>
           </Box>
         </Card.Section>
@@ -119,12 +122,17 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
               Đã bán: {data?.soldQuantity}
             </Text>
           </Badge>
-          {data?.discount > 0 && (
-            <Badge color='red' pos={'absolute'} top={'-100%'} left={-10} pl={20}>
-              Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(0) + '%' : '20%'}
-            </Badge>
-          )}
         </Card.Section>
+        {data?.discount > 0 && (
+          <Badge color='red' pos={'absolute'} top={0} left={-10} pl={20}>
+            Giảm {data?.discount ? ((data?.discount / data?.price) * 100).toFixed(0) + '%' : '20%'}
+          </Badge>
+        )}
+        {isLiked && (
+          <ActionIcon color='red' variant='white' pos='absolute' top={10} right={8} radius='xl'>
+            <IconHeartFilled size={20} />
+          </ActionIcon>
+        )}
       </Card>
     </CardProductWrapper>
   );

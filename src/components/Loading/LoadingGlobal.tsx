@@ -5,7 +5,7 @@ import { IconChefHat, IconCoffee, IconPizza, IconSalad } from '@tabler/icons-rea
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 
-export default function LoadingGlobal({ children }: { children: React.ReactNode }) {
+export default function LoadingGlobal({ loading, children }: { loading?: boolean; children?: React.ReactNode }) {
   const { status } = useSession();
   const [progress, setProgress] = useState(0);
 
@@ -20,22 +20,36 @@ export default function LoadingGlobal({ children }: { children: React.ReactNode 
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      setProgress(100);
-      return;
-    }
+    let rafId: number;
+    let lastTime = performance.now();
 
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 92) return prev;
-        if (prev < 35) return prev + 6;
-        if (prev < 70) return prev + 3;
-        return prev + 1;
-      });
-    }, 180);
+    const animate = (currentTime: number) => {
+      const delta = currentTime - lastTime;
 
-    return () => clearInterval(timer);
-  }, [isLoading]);
+      if (delta >= 180) {
+        lastTime = currentTime;
+
+        setProgress(prev => {
+          if (isLoading || loading) {
+            if (prev >= 92) return 92;
+
+            if (prev < 35) return Math.min(prev + 6, 92);
+            if (prev < 70) return Math.min(prev + 3, 92);
+
+            return Math.min(prev + 1, 92);
+          }
+
+          return Math.min(prev + 4, 100);
+        });
+      }
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    rafId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(rafId);
+  }, [isLoading, loading]);
 
   const loadingText = useMemo(() => {
     if (progress < 35) return 'Đang khởi tạo phiên làm việc...';
@@ -44,14 +58,14 @@ export default function LoadingGlobal({ children }: { children: React.ReactNode 
     return 'Hoàn tất';
   }, [progress]);
 
-  if (progress === 100) return <>{children}</>;
+  if (progress === 100) return <>{children ?? null}</>;
 
   return (
     <>
       <Flex align='center' justify='center' pos='fixed' inset={0} className='z-[10000] overflow-hidden bg-[#fffdf8]'>
-        <Box className='animate-blob absolute -left-24 top-10 h-80 w-80 rounded-full bg-orange-300/20 blur-3xl' />
-        <Box className='animate-blob absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-yellow-300/25 blur-3xl [animation-delay:2s]' />
-        <Box className='animate-blob absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-green-300/10 blur-3xl [animation-delay:4s]' />
+        <Box className='absolute -left-24 top-10 h-80 w-80 animate-blob rounded-full bg-orange-300/20 blur-3xl' />
+        <Box className='absolute -right-24 bottom-0 h-96 w-96 animate-blob rounded-full bg-yellow-300/25 blur-3xl [animation-delay:2s]' />
+        <Box className='absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 animate-blob rounded-full bg-green-300/10 blur-3xl [animation-delay:4s]' />
 
         <Box
           className='absolute inset-0 opacity-[0.035]'
@@ -62,16 +76,16 @@ export default function LoadingGlobal({ children }: { children: React.ReactNode 
           }}
         />
 
-        <Box className='animate-float absolute left-[8%] top-[18%] hidden text-orange-300/45 md:block'>
+        <Box className='absolute left-[8%] top-[18%] hidden animate-float text-orange-300/45 md:block'>
           <IconChefHat size={120} stroke={1.3} />
         </Box>
-        <Box className='animate-float absolute right-[12%] top-[22%] hidden text-yellow-400/45 [animation-delay:1s] md:block'>
+        <Box className='absolute right-[12%] top-[22%] hidden animate-float text-yellow-400/45 [animation-delay:1s] md:block'>
           <IconCoffee size={96} stroke={1.3} />
         </Box>
-        <Box className='animate-float absolute bottom-[17%] left-[14%] hidden text-green-400/40 [animation-delay:2s] md:block'>
+        <Box className='absolute bottom-[17%] left-[14%] hidden animate-float text-green-400/40 [animation-delay:2s] md:block'>
           <IconSalad size={110} stroke={1.3} />
         </Box>
-        <Box className='animate-float absolute bottom-[14%] right-[16%] hidden text-red-300/40 [animation-delay:3s] md:block'>
+        <Box className='absolute bottom-[14%] right-[16%] hidden animate-float text-red-300/40 [animation-delay:3s] md:block'>
           <IconPizza size={116} stroke={1.3} />
         </Box>
 

@@ -1,39 +1,33 @@
 'use client';
 import { Box, Button, Paper } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { IconHeart } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
+import { useFavoriteStore } from '~/stores/favorite.store';
 import { api } from '~/trpc/react';
 
 const LikeButton = () => {
-  const [localFavouriteFood] = useLocalStorage<any>({
-    key: 'favouriteFood',
-    defaultValue: []
-  });
   const { data: session } = useSession();
-  const user = session?.user;
-  const { data: favouriteFoodFromApi = [] } = api.FavouriteFood.getFilter.useQuery(
-    { s: user?.email || '' },
-    { enabled: !!user?.email }
-  );
-  const dataRender = useMemo(() => {
-    if (user?.email) return favouriteFoodFromApi;
-    return localFavouriteFood;
-  }, [user, favouriteFoodFromApi, localFavouriteFood]);
+  const favoriteIds = useFavoriteStore(state => state.favoriteIds);
+  const count = favoriteIds.size;
+  const utils = api.useUtils();
+  const handlePrefetch = useCallback(() => {
+    void utils.FavouriteFood.getFilter.prefetch({ keys: session?.user?.id ? [session?.user?.id] : [] });
+  }, []);
 
   return (
     <Link href={`/yeu-thich`}>
       <Button
         variant='outline'
         radius={'xl'}
+        onMouseEnter={handlePrefetch}
         className='sm:hidden md:block'
         leftSection={
           <Box className='relative inline-block'>
             <IconHeart size={20} />
             <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
-              {dataRender?.length || 0}
+              {count}
             </span>
           </Box>
         }
@@ -49,7 +43,7 @@ const LikeButton = () => {
       >
         <IconHeart size={24} />
         <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
-          {dataRender?.length || 0}
+          {count}
         </span>
       </Paper>
     </Link>

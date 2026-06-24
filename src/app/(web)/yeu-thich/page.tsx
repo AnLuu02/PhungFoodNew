@@ -1,53 +1,21 @@
-'use client';
-import { Grid, GridCol } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
-import { useSession } from 'next-auth/react';
-import { useMemo } from 'react';
-import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
-import { GetFilterFavouriteFood } from '~/shared/type-trpc/favouriteFood.type-trpc';
-import { api } from '~/trpc/react';
+import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '~/server/auth/options';
+import { api } from '~/trpc/server';
+import FavouritePageClient from './pageClient';
 
-export default function FavouritePage() {
-  const [localFavouriteFood] = useLocalStorage<any[]>({
-    key: 'favouriteFood',
-    defaultValue: []
+export const metadata: Metadata = {
+  title: 'Sản phẩm yêu thích - Phụng Food',
+  description:
+    'Xem các sản phẩm yêu thích của bạn tại Phụng Food. Lưu và quản lý món ăn bạn yêu thích để đặt hàng dễ dàng hơn.'
+};
+const FavouriteFoodPage = async () => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const favourites = await api.FavouriteFood.getFilter({
+    keys: userId ? [userId] : []
   });
+  return <FavouritePageClient favourites={favourites} />;
+};
 
-  const { data: session } = useSession();
-  const userEmail = session?.user?.email ?? '';
-
-  const { data: favouriteFoodFromApi = [] } = api.FavouriteFood.getFilter.useQuery(
-    { s: userEmail },
-    { enabled: !!userEmail }
-  );
-
-  const dataRender = useMemo(() => {
-    if (userEmail) return favouriteFoodFromApi.map((item: GetFilterFavouriteFood[number]) => item.product);
-    return localFavouriteFood;
-  }, [userEmail, favouriteFoodFromApi, localFavouriteFood]);
-
-  if (!dataRender?.length) {
-    return (
-      <Empty
-        title='Không có sản phẩm yêu thích hiện tại'
-        content='Không có sản phẩm yêu thích hiện tại'
-        btnText='Xem thực đơn'
-      />
-    );
-  }
-  return (
-    <Grid w='100%' mt='md' columns={12}>
-      {dataRender.map((item, index) => (
-        <GridCol
-          span={{ base: 12, sm: 6, md: 3, lg: 2 }}
-          key={index}
-          className={`animate-fadeUp`}
-          style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
-        >
-          <ProductCardCarouselVertical data={item} />
-        </GridCol>
-      ))}
-    </Grid>
-  );
-}
+export default FavouriteFoodPage;

@@ -21,6 +21,8 @@ import { GlobalModal } from '~/contexts/GlobalModal';
 import { ModalProvider } from '~/contexts/ModalContext';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
+import { FavoriteProvider } from '~/providers/favorite-provider';
+import { getServerAuthSession } from '~/server/auth';
 import { api } from '~/trpc/server';
 import { mainTheme } from './theme';
 
@@ -69,13 +71,16 @@ const getInitTheme = async () => {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const theme = await getInitTheme();
+  const [theme, session] = await Promise.all([getInitTheme(), getServerAuthSession()]);
+  const userId = session?.user?.id;
   const defaultScheme =
     theme?.themeMode === 'dark' || theme?.themeMode === 'light' || theme?.themeMode === 'auto'
       ? theme.themeMode
       : 'light';
   const mainColor = theme?.primaryColor || '#00BFA6';
   const subColor = theme?.secondaryColor || '#f8c144';
+
+  const favourites = userId ? await api.FavouriteFood.getFilter({ keys: [userId] }) : undefined;
 
   return (
     <html
@@ -113,6 +118,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <ModalsProvider>
               <ModalProvider>
                 <LoadingGlobal>
+                  <FavoriteProvider favourites={favourites} />
                   {children}
                   <GlobalModal />
                 </LoadingGlobal>

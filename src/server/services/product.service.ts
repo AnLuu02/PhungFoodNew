@@ -192,7 +192,7 @@ export const getFilterProductService = async (
   db: PrismaClient,
   input: {
     s?: string;
-    keys?: string[];
+    keys: string[];
     userRole?: TUserRole;
     excludes?: string[];
     include?: Prisma.ProductInclude;
@@ -203,6 +203,46 @@ export const getFilterProductService = async (
   const search = s?.trim();
   const products = await db.product.findMany({
     where: {
+      OR: [
+        {
+          id: {
+            in: keys
+          }
+        },
+        {
+          tag: {
+            in: keys
+          }
+        },
+        {
+          subCategoryId: {
+            in: keys
+          }
+        },
+        {
+          subCategory: {
+            OR: [
+              {
+                tag: {
+                  in: keys
+                }
+              },
+              {
+                categoryId: {
+                  in: keys
+                }
+              },
+              {
+                category: {
+                  tag: {
+                    in: keys
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ],
       ...(userRole && userRole != UserRole.CUSTOMER
         ? {}
         : {
@@ -248,56 +288,11 @@ export const getFilterProductService = async (
             ]
           }
         : {}),
-
       ...(excludes && excludes.length > 0
         ? {
             NOT: {
               OR: [{ id: { in: excludes } }, { tag: { in: excludes } }]
             }
-          }
-        : {}),
-      ...(keys && keys.length > 0
-        ? {
-            OR: [
-              {
-                id: {
-                  in: keys
-                }
-              },
-              {
-                tag: {
-                  in: keys
-                }
-              },
-              {
-                subCategoryId: {
-                  in: keys
-                }
-              },
-              {
-                subCategory: {
-                  OR: [
-                    {
-                      tag: {
-                        in: keys
-                      }
-                    },
-                    {
-                      categoryId: {
-                        in: keys
-                      }
-                    },
-                    {
-                      category: {
-                        tag: {
-                          in: keys
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
           }
         : {})
     },

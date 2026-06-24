@@ -46,7 +46,7 @@ export const productRouter = createTRPCRouter({
   getFilter: publicProcedure
     .input(
       z.object({
-        keys: z.array(z.string()).optional(),
+        keys: z.array(z.string()),
         s: z.string().optional(),
         excludes: z.array(z.string()).optional(),
         userRole: z.custom<TUserRole>().optional()
