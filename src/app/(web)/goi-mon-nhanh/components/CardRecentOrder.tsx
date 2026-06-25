@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge, Box, Button, Card, Divider, Group, Image, Modal, Paper, ScrollArea, Stack, Text } from '@mantine/core';
-import { useDisclosure, useLocalStorage } from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { ImageType, OrderStatus } from '@prisma/client';
 import { IconEye, IconRefresh, IconSettings } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
@@ -9,9 +9,10 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { useCartStorage } from '~/stores/cart.store';
 
 export default function CardRecentOrder({ order }: { order: TGetFilterOrder[number] }) {
-  const [_, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const reBuild = useCartStorage(s => s.reBuild);
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -22,9 +23,15 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
   const originalAmount = Number(order?.finalAmount || 0) + Number(order?.discountAmount || 0);
 
   const handleRebuildCart = () => {
-    setCart(
+    reBuild(
       order?.orderItems?.map((item: TGetFilterOrder[number]['orderItems'][number]) => ({
-        ...item?.product,
+        product: {
+          id: item?.product?.id,
+          name: item?.product?.name,
+          price: item?.product?.price,
+          discount: item?.product?.discount,
+          thumbnail: getImageProduct(item?.product?.imageForEntities ?? [], ImageType.THUMBNAIL) ?? ''
+        },
         quantity: item?.quantity || 1,
         note: item?.note || ''
       })) || []

@@ -1,23 +1,23 @@
 'use client';
 
 import { Button, ButtonProps } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
 import { flyToCart, getVisibleToEl } from '~/lib/ButtonHandler/FlyToCart';
+import { CartItem } from '~/shared/types/store.types';
+import { useCartStorage } from '~/stores/cart.store';
 
 export function ButtonAddToCart({
-  product,
+  item,
   style,
   handleAfterAdd,
   notify
 }: {
-  product: any;
+  item: CartItem;
   style: ButtonProps;
   handleAfterAdd: () => void;
   notify: (title?: string, message?: string) => void;
 }) {
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-
+  const addCart = useCartStorage(state => state.addCart);
   return (
     <Button
       radius={'xl'}
@@ -28,19 +28,9 @@ export function ButtonAddToCart({
       }}
       onClick={() => {
         const to = getVisibleToEl('.cart-btn');
-        const from = document.getElementById(`productImage-${product?.id}`);
+        const from = document.getElementById(`productImage-${item?.product?.id}`);
         if (from && to) flyToCart({ fromEl: from, toEl: to, imageUrl: from?.getAttribute('src') || '' });
-
-        const existingItem = cart.find((item: any) => item.id === product?.id);
-        if (existingItem) {
-          setCart(
-            cart.map((item: any) =>
-              item.id === product?.id ? { ...item, quantity: product.quantity + existingItem.quantity } : item
-            )
-          );
-        } else {
-          setCart([...cart, { ...product, quantity: product.quantity }]);
-        }
+        addCart(item);
         notify('Đã thêm vào giỏ hàng', 'Sản phẩm đã có trong giỏ hàng. Thanh toán ngay!');
         handleAfterAdd();
       }}

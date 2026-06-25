@@ -21,11 +21,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
 import { menuUserInfo } from '~/lib/ConfigUI';
-import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
+import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { api } from '~/trpc/react';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: string | number }) {
-  const [, , resetCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
   const [, , resetSelectedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
@@ -190,7 +189,6 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
             fullWidth
             variant='danger'
             onClick={() => {
-              resetCart();
               resetSelectedVouchers();
               signOut({ callbackUrl: '/' });
             }}

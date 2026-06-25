@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Button, Divider, Flex, Group, Menu, Paper, Stack, Text, TextInput } from '@mantine/core';
-import { useDebouncedValue, useInViewport, useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { useDebouncedValue, useInViewport, useMediaQuery } from '@mantine/hooks';
 import { IconAlertCircle, IconChevronDown, IconSearch } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -9,7 +9,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { breakpoints } from '~/constants';
 import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
-import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 import { QuickMenuItem } from './QuickMenuItem';
 import { QuickMenuItemSkeleton } from './QuickMenuItemSkeleton';
@@ -25,10 +24,6 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
 
   const [keyword, setKeyword] = useState('');
 
-  const [_, setCart] = useLocalStorage<any[]>({
-    key: 'cart',
-    defaultValue: []
-  });
   const [searchDebouceValue] = useDebouncedValue(keyword, 500);
   const currentCategory = searchParams.get('danh-muc');
   const searchQuery = searchParams.get('s');
@@ -83,32 +78,6 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
 
     return categories?.find(item => item.tag === currentCategory)?.name || null;
   }, [categories, currentCategory]);
-
-  const handleAddFast = (product: FindInfiniteProduct['items'][number], quantity = 1) => {
-    setCart(prev => {
-      const existed = prev.find(item => item.id === product.id);
-
-      if (existed) {
-        return prev.map(item =>
-          item.id === product.id
-            ? {
-                ...item,
-                quantity: Number(item.quantity || 1) + quantity
-              }
-            : item
-        );
-      }
-
-      return [
-        ...prev,
-        {
-          ...product,
-          quantity,
-          note: ''
-        }
-      ];
-    });
-  };
 
   if (error) {
     return (
@@ -292,14 +261,7 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
           {isLoading ? (
             Array.from({ length: 8 }).map((_, index) => <QuickMenuItemSkeleton key={index} />)
           ) : products.length > 0 ? (
-            products.map((item, index) => (
-              <QuickMenuItem
-                key={`${item.id}-${index}`}
-                product={item}
-                index={index}
-                onAdd={quantity => handleAddFast(item, quantity)}
-              />
-            ))
+            products.map((item, index) => <QuickMenuItem key={`${item.id}-${index}`} product={item} index={index} />)
           ) : (
             <Empty
               hasButton={false}

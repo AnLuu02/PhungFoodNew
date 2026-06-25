@@ -4,11 +4,12 @@ import { VoucherType } from '@prisma/client';
 import { IconGift, IconPlus, IconTag, IconX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { useCartItems } from '~/components/Hooks/use-cart';
 import ModalListVoucher from '~/components/Modals/ModalListVoucher';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
+import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { api } from '~/trpc/react';
 
 export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) => {
@@ -16,7 +17,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) =
   const [loading, setLoading] = useState(false);
   const [voucherCode, setVoucherCode] = useState('');
   const { data: user } = useSession();
-  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const cart = useCartItems();
   const [appliedVouchers, setAppliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
@@ -31,7 +32,13 @@ export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) =
       });
       if (voucherCode) {
         const voucher = voucherData.find(item => item.code?.toLowerCase() === voucherCode?.toLowerCase());
-        if (!voucher || allowedVoucher(totalOrderPrice, cart)) {
+        if (
+          !voucher ||
+          allowedVoucher(
+            totalOrderPrice,
+            cart.map(c => ({ price: c.product.price ?? 0, quantity: c.quantity }))
+          )
+        ) {
           NotifyError('Voucher không hợp lệ. Hoặc không đủ điều kiện.', 'Vui lý nhập lại mã khuyên mãi.');
           return;
         }
@@ -71,10 +78,9 @@ export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) =
           </Box>
 
           <Button
-            variant='subtle'
+            variant='transparent'
             size='sm'
-            c={'red'}
-            className='h-auto p-1 text-xs'
+            className='tex-red-500 h-auto p-1 text-xs hover:text-red-600'
             leftSection={<IconGift className='mr-1 h-3 w-3' />}
             onClick={async () => {
               setShowVoucher(true);

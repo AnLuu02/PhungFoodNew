@@ -1,20 +1,15 @@
 'use client';
 import { Box, Flex, Text } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { IconBell, IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useCartAmount } from '~/components/Hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 export function CartFloating() {
-  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-  const totalPrice = useMemo(() => {
-    return cart.reduce(
-      (sum, item) => sum + (Number(item?.price || 0) - Number(item?.discount || 0)) * Number(item?.quantity || 0),
-      0
-    );
-  }, [cart]);
-  if (cart && cart?.length === 0) return null;
+  const cartAmount = useCartAmount();
+
+  if (cartAmount === 0) return null;
+
   return (
     <Link href='/gio-hang'>
       <Box className='group fixed bottom-0 right-[80px] z-50 hidden cursor-pointer rounded-t-xl bg-mainColor text-white shadow-lg duration-200 hover:scale-105 hover:bg-subColor hover:text-black sm:block'>
@@ -24,7 +19,7 @@ export function CartFloating() {
 
         <Flex align='center' justify='center' gap={10} p={20} py={10}>
           <IconShoppingBag size={24} />
-          <Text className='text-xl font-bold'>{formatPriceLocaleVi(totalPrice)}</Text>
+          <Text className='text-xl font-bold'>{formatPriceLocaleVi(cartAmount)}</Text>
         </Flex>
       </Box>
     </Link>

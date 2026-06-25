@@ -50,6 +50,7 @@ export const SectionMenuHighlights = ({
           {products &&
             products.slice(0, 2).map(item => (
               <CardFeaturedOffer
+                key={item?.id}
                 bestDeal={{
                   id: item.id,
                   image:

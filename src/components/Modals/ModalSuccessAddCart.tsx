@@ -1,50 +1,55 @@
 'use client';
 
 import { Box, Button, Group, Modal, Paper, Stack, Text, Textarea } from '@mantine/core';
-import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
+import { useDebouncedValue } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
+import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { useCartStorage } from '~/stores/cart.store';
 import { ModalProps } from '~/types/modal';
-
+import { useCartItem, useCartItems } from '../Hooks/use-cart';
 export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {
-  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
+  const cart = useCartItems();
+  const updateCart = useCartStorage(s => s.updateCart);
+  const item = useCartItem(data?.id);
+
   const [note, setNote] = useState('');
   const [noteDebounced] = useDebouncedValue(note, 800);
-  const discountProduct = data?.discount || 0;
-  const subTotal = (data?.price || 0) - discountProduct;
-  const tax = subTotal * 0.08;
-  const finalAmount = subTotal + tax;
-  useEffect(() => {
-    if (opened) {
-      const existNoteProduct = cart.find((item: any) => item.id === data?.id && item.note !== note);
-      if (existNoteProduct) {
-        setNote(existNoteProduct?.note);
-      }
-    }
-  }, [opened]);
+
+  const { finalAmount, tax, totalDiscountAmount, totalOriginalPrice } = useMemo(() => {
+    return caculateAmount({
+      products: [
+        {
+          discount: item?.product.discount ?? 0,
+          price: item?.product.price ?? 0,
+          quantity: item?.quantity ?? 1
+        }
+      ],
+      vouchers: []
+    });
+  }, [item?.product?.id, item?.product?.price, item?.quantity]);
 
   useEffect(() => {
-    if (noteDebounced) {
-      const { cartFilter, existNoteProduct } = cart?.reduce(
-        (acc: any, item: any) => {
-          if (item.id === data?.id) {
-            acc.existNoteProduct = item;
-          } else {
-            acc.cartFilter.push(item);
-          }
-          return acc;
-        },
-        { cartFilter: [], existNoteProduct: null }
-      );
-      if (!existNoteProduct) return;
-      setCart([...cartFilter, { ...existNoteProduct, note: noteDebounced }]);
+    if (opened) {
+      item && item?.note ? setNote(item?.note) : setNote('');
     }
-  }, [noteDebounced]);
+  }, [opened, item]);
+
+  useEffect(() => {
+    if (!item) return;
+    if (noteDebounced) {
+      updateCart({
+        productId: item?.product?.id,
+        quantity: 0,
+        note
+      });
+    }
+  }, [noteDebounced, item]);
   return (
     <Modal
       opened={opened && type === 'success'}
@@ -107,7 +112,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
               Giỏ hàng của bạn hiện có <b>{cart?.length || 0}</b> sản phẩm
             </Text>
             <Text size='sm' c='dimmed'>
-              <b>{data?.name}</b> có <b>{cart?.find((item: any) => item.id === data?.id)?.quantity || 0} </b> sản phẩm
+              <b>{data?.name}</b> có <b>{item?.quantity || 0} </b> sản phẩm
             </Text>
           </Box>
           <Group w={'100%'}>
@@ -126,9 +131,12 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
               variant='outline'
               onClick={() => {
                 if (note !== '') {
-                  const existingItem = cart.find((item: any) => item.id === data?.id);
-                  if (existingItem) {
-                    setCart(cart.map((item: any) => (item.id === data?.id ? { ...item, note } : item)));
+                  if (item) {
+                    updateCart({
+                      productId: item.product.id,
+                      quantity: 0,
+                      note
+                    });
                   }
                 }
                 onClose();
@@ -144,16 +152,16 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 size: 'xs',
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
-              data={cart.map((item: any) => ({
-                productId: item?.id || '',
+              data={cart.map(item => ({
+                productId: item?.product.id || '',
                 note: item?.note ?? '',
-                price: item?.price ?? 0,
+                price: item?.product.price ?? 0,
                 quantity: item?.quantity ?? 0
               }))}
-              finalAmount={finalAmount || 0}
-              originalAmount={data?.price || 0}
+              finalAmount={finalAmount}
+              originalAmount={totalOriginalPrice}
               taxAmount={tax}
-              discountAmount={data?.discount || 0}
+              discountAmount={totalDiscountAmount}
               onClick={() => onClose()}
             />
           </Group>

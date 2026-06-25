@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
+import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { api } from '~/trpc/react';
 
 export const ButtonCheckout = ({

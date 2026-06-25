@@ -2,6 +2,7 @@
 import { Box, Button, Grid, NumberInput, Select, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
@@ -38,19 +39,18 @@ const OrderItemForm = ({ index }: { index: number }) => {
   }, [chooseProduct]);
 
   useEffect(() => {
-    const { originalAmount, discount } = orderItems.reduce(
-      (acc: { originalAmount: number; discount: number }, item: any) => {
-        acc.originalAmount += (item.price || 0) * (item.quantity || 0);
-        acc.discount += (item?.discount || 0) * (item.quantity || 0);
-        return acc;
-      },
-      { originalAmount: 0, discount: 0 }
-    );
-    const subTotal = originalAmount - discount;
-    const tax = subTotal * 0.08;
-    setValue('originalAmount', originalAmount);
+    const { finalAmount, tax, totalOriginalPrice } = caculateAmount({
+      products: (orderItems ?? []).map((c: any) => ({
+        discount: c?.discount ?? c?.product?.discount ?? 0,
+        price: c?.price ?? 0,
+        quantity: c?.quantity ?? 1
+      })),
+      vouchers: []
+    });
+
+    setValue('originalAmount', totalOriginalPrice);
     setValue('taxAmount', tax);
-    setValue('finalAmount', originalAmount + tax + discount);
+    setValue('finalAmount', finalAmount);
   }, [chooseProduct, chooseQuantity, orderItems]);
 
   return (

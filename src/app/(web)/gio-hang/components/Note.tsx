@@ -1,17 +1,18 @@
 'use client';
 import { Button, Group, Stack, Textarea } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
+import { useCartItem } from '~/components/Hooks/use-cart';
+import { useCartStorage } from '~/stores/cart.store';
 export const Note = ({ productId }: { productId: string }) => {
-  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
-  const [note, setNote] = useState<any>('');
+  const [note, setNote] = useState<string>('');
+  const updateCart = useCartStorage(s => s.updateCart);
+  const item = useCartItem(productId);
 
   useEffect(() => {
-    const product = cart.find((item: any) => item.id === productId);
-    if (product?.note) {
-      setNote(product?.note);
+    if (item && item?.note) {
+      setNote(item?.note);
     }
-  }, [cart]);
+  }, [item]);
 
   return (
     <Group>
@@ -28,9 +29,7 @@ export const Note = ({ productId }: { productId: string }) => {
           disabled={!note}
           w={'max-content'}
           size='xs'
-          onClick={() => {
-            setCart((prev: any) => prev.map((item: any) => (item.id === productId ? { ...item, note } : item)));
-          }}
+          onClick={() => updateCart({ productId, quantity: 0, note })}
         >
           Áp dụng
         </Button>
@@ -40,12 +39,8 @@ export const Note = ({ productId }: { productId: string }) => {
           variant='danger'
           size='xs'
           onClick={() => {
-            const productExist = cart.find((item: any) => item.id === productId);
-            if (productExist) {
-              const { note, ...rest } = productExist;
-              setCart((prev: any) => prev.map((item: any) => (item.id === productId ? { ...rest } : item)));
-              setNote('');
-            }
+            updateCart({ productId, note: undefined, quantity: 0 });
+            setNote('');
           }}
         >
           Xóa

@@ -1,5 +1,8 @@
+'use client';
 import { Box, Table, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
+import { useMemo } from 'react';
+import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import Logo from '../Logo';
 
@@ -11,39 +14,31 @@ type invoicePrintProps = {
 export default function InvoicePrintTemplate(props: invoicePrintProps) {
   const { data, printRef } = props || {};
   const productSale: any = data.orderItems || [];
-  const { discount, originalAmount } = productSale?.reduce(
-    (acc: { discount: number; originalAmount: number }, item: any) => {
-      acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
-      acc.originalAmount += (item.price || 0) * (item.quantity || 1);
-      return {
-        discount: acc.discount,
-        originalAmount: acc.originalAmount
-      };
-    },
-    {
-      discount: 0,
-      originalAmount: 0
-    }
-  ) || { discount: 0, originalAmount: 0 };
 
-  const totalDiscountVoucher = data?.vouchers?.reduce((acc: any, voucher: any) => {
-    if (voucher.type === VoucherType.PERCENTAGE) {
-      const discount =
-        (productSale?.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0) * voucher.discountValue) /
-        100;
-      if (discount > voucher.maxDiscount) {
-        acc += voucher.maxDiscount;
-      } else {
-        acc += discount;
-      }
-    } else if (voucher.type === VoucherType.FIXED) {
-      acc += voucher.discountValue;
-    }
-    return acc;
-  }, 0);
-  const pricePaid = originalAmount - discount - totalDiscountVoucher;
-  const tax = pricePaid * 0.08;
-  const finalAmount = pricePaid + tax;
+  const { finalAmount, tax, totalProductDiscount, totalOriginalPrice, totalVoucherAmount } = useMemo(() => {
+    return caculateAmount({
+      products: [
+        {
+          discount: productSale?.discount ?? 0,
+          price: productSale?.price ?? 0,
+          quantity: productSale?.quantity ?? 1
+        }
+      ],
+      vouchers: (data?.vouchers ?? [])?.map((voucher: any) => ({
+        discountValue: voucher?.discountValue ?? 0,
+        maxDiscount: voucher?.maxDiscount ?? 0,
+        minOrderPrice: voucher?.minOrderPrice ?? 0,
+        type: voucher?.type ?? VoucherType.FIXED
+      }))
+    });
+  }, [
+    productSale?.id,
+    productSale?.price,
+    productSale?.quantity,
+    productSale?.discount,
+    JSON.stringify(data?.vouchers)
+  ]);
+
   return (
     <Box ref={printRef} p={'xl'}>
       <Box display={'flex'} style={{ flexDirection: 'column', alignItems: 'center', gap: 8 }}>
@@ -111,19 +106,19 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
           <Text c={'dark'} fz={18} fw={'bold'}>
             Tổng hoá đơn:
           </Text>
-          <Text c={'dark'}>{formatPriceLocaleVi(originalAmount || 0)}</Text>
+          <Text c={'dark'}>{formatPriceLocaleVi(totalOriginalPrice || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
           <Text c={'dark'} fz={18} fw={'bold'}>
             Giảm giá:
           </Text>
-          <Text c={'dark'}>- {formatPriceLocaleVi(discount || 0)}</Text>
+          <Text c={'dark'}>- {formatPriceLocaleVi(totalProductDiscount || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
           <Text c={'dark'} fz={18} fw={'bold'}>
             Khuyến mãi (voucher):
           </Text>
-          <Text c={'dark'}>- {formatPriceLocaleVi(totalDiscountVoucher || 0)}</Text>
+          <Text c={'dark'}>- {formatPriceLocaleVi(totalVoucherAmount || 0)}</Text>
         </Box>
         <Box display={'flex'} style={{ justifyContent: 'space-between' }}>
           <Text c={'dark'} fz={18} fw={'bold'}>

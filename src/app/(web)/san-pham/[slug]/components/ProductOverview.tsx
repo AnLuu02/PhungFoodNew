@@ -37,8 +37,10 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
   const [quantity, setQuantity] = useState(1);
   const inStock = product?.availableQuantity > 0;
   const discount = product?.discount || 0;
-  const { gallery } = useMemo(() => {
+  const { thumbnail, gallery } = useMemo(() => {
     return {
+      thumbnail:
+        getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg',
       gallery:
         product?.imageForEntities?.filter(
           (item: NonNullable<GetOneProduct>['imageForEntities'][number]) =>
@@ -57,9 +59,7 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
         className='h-fit'
       >
         <ProductImage
-          thumbnail={
-            getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-          }
+          thumbnail={thumbnail}
           gallery={(gallery?.length > 0 ? gallery : []) as { image: { url: string } }[]}
           discount={product?.discount || 0}
           tag={product?.tag || ''}
@@ -181,7 +181,17 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
               />
             </Group>
             <ButtonAddToCart
-              product={{ ...product, note, quantity }}
+              item={{
+                product: {
+                  id: product?.id,
+                  price: product?.price ?? 0,
+                  discount: product?.discount ?? 0,
+                  name: product?.name,
+                  thumbnail
+                },
+                note,
+                quantity
+              }}
               style={{
                 children: 'Mua hàng',
                 size: 'md',

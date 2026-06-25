@@ -6,11 +6,13 @@ import { IconPercentage30 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
+import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
+import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { ApplyVoucher } from '../app/(web)/thanh-toan/components/ApplyVoucher';
 import { ButtonCheckout } from '../app/(web)/thanh-toan/components/ButtonCheckout';
 import { CartItemPayment } from '../app/(web)/thanh-toan/components/CartItemPayment';
+import { useCartItems } from './Hooks/use-cart';
 import { ModalRecentOrder } from './Modals/ModalRecentOrder';
 import { RecapCartSkeleton } from './RecapCartSkeleton';
 
@@ -18,37 +20,30 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
   const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { data: session } = useSession();
-  const [cart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const cart = useCartItems();
+
   const [appliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
     key: 'applied-vouchers',
     defaultValue: []
   });
 
-  const { originalAmount, discount, tax, discountAmountByVoucher, finalAmount } = useMemo(() => {
-    const { discount, originalAmount } = cart?.reduce(
-      (acc: { discount: number; originalAmount: number }, item: any) => {
-        acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
-        acc.originalAmount += (item.price || 0) * (item.quantity || 1);
-        return {
-          discount: acc.discount,
-          originalAmount: acc.originalAmount
-        };
-      },
-      {
-        discount: 0,
-        originalAmount: 0
-      }
-    ) || { discount: 0, originalAmount: 0 };
-    const discountAmountByVoucher = (appliedVouchers ?? []).reduce((sum, item) => {
-      if (!item?.discountValue) return sum;
-      const value = item.type === VoucherType.FIXED ? item.discountValue : (item.discountValue * originalAmount) / 100;
-      return sum + value;
-    }, 0);
-    const pricePaid = originalAmount - discount - discountAmountByVoucher;
-    const tax = pricePaid * 0.08;
-    const finalAmount = pricePaid + tax;
-    return { originalAmount, discount, tax, discountAmountByVoucher, finalAmount };
-  }, [cart, appliedVouchers]);
+  const { finalAmount, tax, totalDiscountAmount, totalOriginalPrice, totalVoucherAmount, totalProductDiscount } =
+    useMemo(() => {
+      return caculateAmount({
+        products: cart.map(c => ({
+          discount: c.product?.discount ?? 0,
+          price: c.product?.price ?? 0,
+          quantity: c?.quantity ?? 1
+        })),
+        vouchers: appliedVouchers.map(voucher => ({
+          discountValue: voucher?.discountValue ?? 0,
+          maxDiscount: voucher?.maxDiscount ?? 0,
+          minOrderPrice: voucher?.minOrderPrice ?? 0,
+          type: voucher?.type ?? VoucherType.FIXED
+        }))
+      });
+    }, [JSON.stringify(cart), JSON.stringify(appliedVouchers)]);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -76,7 +71,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
               />
             )}
           </Flex>
-          {cart?.length === 0 ? (
+          {cart.length === 0 ? (
             <Empty size='sm' title='Giỏ hàng trống' hasButton={false} content='' />
           ) : (
             <>
@@ -88,7 +83,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 mx={'-16px'}
               >
                 <Stack gap={'md'} py={'sm'} px={16}>
-                  {cart?.map((item: any, index: number) => (
+                  {cart.map((item, index: number) => (
                     <Box className={`animate-fadeUp`} style={{ animationDuration: `${index * 0.05 + 0.5}s` }}>
                       <CartItemPayment key={index} item={item} />
                     </Box>
@@ -96,7 +91,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 </Stack>
               </ScrollAreaAutosize>
 
-              <ApplyVoucher totalOrderPrice={originalAmount} />
+              <ApplyVoucher totalOrderPrice={totalOriginalPrice} />
             </>
           )}
           <Stack gap='xs'>
@@ -105,7 +100,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 Tạm tính
               </Text>
               <Text size='md' fw={700}>
-                {formatPriceLocaleVi(originalAmount)}
+                {formatPriceLocaleVi(totalOriginalPrice)}
               </Text>
             </Group>
             <Group justify='space-between'>
@@ -113,7 +108,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 Giảm giá sản phẩm:
               </Text>
               <Text size='md' fw={700}>
-                -{formatPriceLocaleVi(discount)}
+                -{formatPriceLocaleVi(totalProductDiscount)}
               </Text>
             </Group>
 
@@ -122,7 +117,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
                 Khuyến mãi:
               </Text>
               <Text size='md' fw={700}>
-                -{formatPriceLocaleVi(discountAmountByVoucher)}
+                -{formatPriceLocaleVi(totalVoucherAmount)}
               </Text>
             </Group>
             <Group justify='space-between' className='mb-2'>
@@ -148,12 +143,12 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
           <Flex gap={0} justify='space-between' wrap={'nowrap'}>
             <ButtonCheckout
               finalAmount={finalAmount}
-              originalAmount={originalAmount}
-              discountAmount={discountAmountByVoucher + discount}
-              data={cart.map((item: any) => ({
-                productId: item?.id || '',
+              originalAmount={totalOriginalPrice}
+              discountAmount={totalDiscountAmount}
+              data={cart.map(item => ({
+                productId: item?.product.id || '',
                 note: item?.note ?? '',
-                price: item?.price ?? 0,
+                price: item?.product.price ?? 0,
                 quantity: item?.quantity ?? 0
               }))}
               taxAmount={tax}

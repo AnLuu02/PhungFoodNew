@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { statusConfig } from '~/lib/FuncHandler/status-order';
-import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
+import { VoucherApplyStorage } from '~/shared/types/store.types';
 
 interface OrderStatusPageProps {
   customerName: string;

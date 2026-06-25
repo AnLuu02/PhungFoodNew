@@ -1,11 +1,9 @@
 'use client';
 
-import { Button, Center, Text } from '@mantine/core';
+import { Button, Center, MantineSize, Text } from '@mantine/core';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export default function Empty({
   noLogo = false,
@@ -23,7 +21,7 @@ export default function Empty({
   title?: string;
   content?: string;
   url?: string;
-  size?: Size;
+  size?: MantineSize;
   hasButton?: boolean;
   btnText?: 'Quay lại' | string;
   onClick?: () => void;

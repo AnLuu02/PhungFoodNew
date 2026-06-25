@@ -37,6 +37,10 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
   const [currentImage, setCurrentImage] = useState('');
   const [showfullImage, setShowfullImage] = useState(false);
   const inStock = data?.availableQuantity > 0;
+
+  const thumbnail =
+    getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/png/delicious-burger-fries.png';
+
   useEffect(() => {
     setQuantity(1);
   }, [data]);
@@ -64,10 +68,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
               <Paper w={'100%'} h={350} pos={'relative'} className='overflow-hidden'>
                 <Image
                   loading='lazy'
-                  src={
-                    getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                    '/images/png/delicious-burger-fries.png'
-                  }
+                  src={thumbnail}
                   alt={data?.name}
                   className='cursor-pointer object-cover'
                   fill
@@ -210,7 +211,16 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                     />
                   </Group>
                   <ButtonAddToCart
-                    product={{ ...data, quantity }}
+                    item={{
+                      product: {
+                        id: data?.id,
+                        price: data?.price ?? 0,
+                        discount: data?.discount ?? 0,
+                        name: data?.name,
+                        thumbnail
+                      },
+                      quantity
+                    }}
                     style={{
                       children: 'Mua hàng',
                       size: 'md',

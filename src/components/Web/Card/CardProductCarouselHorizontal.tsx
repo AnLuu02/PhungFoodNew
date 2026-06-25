@@ -21,6 +21,8 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
   const isLiked = useFavorite(data?.id);
+  const thumbnail =
+    getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg';
   const totalQuantityProduct = useMemo(() => {
     return (data?.availableQuantity || 0) + (data?.soldQuantity || 0);
   }, [data]);
@@ -38,9 +40,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             <Image
               loading='lazy'
               id={`productImage-${data?.id}`}
-              src={
-                getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-              }
+              src={thumbnail}
               fill
               style={{ objectFit: 'cover' }}
               alt={data?.name || 'Product Image'}
@@ -58,11 +58,7 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             >
               <Group gap={5} className={`mr-1 mt-1 bg-transparent sm:group-hover:animate-fadeDown md:mr-0 md:mt-0`}>
                 <ButtonViewProduct data={data} isMobile={isMobile} />
-                <ButtonToggleLike
-                  isLiked={isLiked}
-                  key={data?.id + 'buttonToggleLikehorizontal'}
-                  product={data}
-                />
+                <ButtonToggleLike isLiked={isLiked} key={data?.id + 'buttonToggleLikehorizontal'} product={data} />
               </Group>
             </Box>
           </Box>
@@ -102,7 +98,16 @@ const ProductCardCarouselHorizontal = ({ data }: { data?: any }) => {
             </Group>
             <Flex w={'100%'} align={'center'} gap={10} justify={'space-between'}>
               <ButtonAddToCart
-                product={{ ...data, quantity: 1 }}
+                item={{
+                  product: {
+                    id: data?.id,
+                    price: data?.price ?? 0,
+                    discount: data?.discount ?? 0,
+                    name: data?.name,
+                    thumbnail
+                  },
+                  quantity: 1
+                }}
                 style={{}}
                 handleAfterAdd={() => openModal('success', null, data)}
                 notify={() => {}}

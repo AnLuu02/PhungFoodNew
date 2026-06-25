@@ -114,7 +114,7 @@ export default async function FoodPromotionPage() {
             </Group>
           </Stack>
 
-          <CardFeaturedOffer bestDeal={bestDeal} />
+          <CardFeaturedOffer key={'hero-card'} bestDeal={bestDeal} />
         </Box>
       </Box>
 

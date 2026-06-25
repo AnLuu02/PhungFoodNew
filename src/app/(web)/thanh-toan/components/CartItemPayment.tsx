@@ -1,21 +1,16 @@
 import { Badge, Box, Button, Group, Paper, Spoiler, Text, Tooltip } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { TGetOneOrder } from '~/shared/type-trpc/order.type-trpc';
+import { CartItem } from '~/shared/types/store.types';
+import { useCartStorage } from '~/stores/cart.store';
 
-export function CartItemPayment({
-  item
-}: {
-  item: NonNullable<TGetOneOrder>['orderItems'][number]['product'] & { note: string | null; quantity: number };
-}) {
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+export function CartItemPayment({ item, isPayment }: { item: CartItem; isPayment?: boolean }) {
+  const removeCart = useCartStorage(s => s.removeCart);
+
   return (
     <>
-      <Group key={item.id} wrap='nowrap' align='flex-start'>
+      <Group key={item.product.id} wrap='nowrap' align='flex-start'>
         <Paper
           withBorder
           w={60}
@@ -24,15 +19,7 @@ export function CartItemPayment({
           pos={'relative'}
         >
           <Paper w={45} h={45} className='overflow-hidden' pos={'relative'}>
-            <Image
-              loading='lazy'
-              src={
-                getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-              }
-              fill
-              className='object-cover'
-              alt={item.name}
-            />
+            <Image loading='lazy' src={item.product.thumbnail} fill className='object-cover' alt={item.product.name} />
           </Paper>
           <Badge className='absolute -right-2 -top-2 bg-mainColor' radius='xl' size='sm'>
             {item.quantity}
@@ -40,9 +27,9 @@ export function CartItemPayment({
         </Paper>
 
         <Box className='flex-1'>
-          <Tooltip label={item.name}>
+          <Tooltip label={item.product.name}>
             <Text size='sm' fw={700} lineClamp={1}>
-              {item.name}
+              {item.product.name}
             </Text>
           </Tooltip>
           <Spoiler
@@ -58,20 +45,22 @@ export function CartItemPayment({
         </Box>
         <Group align='center' gap={'md'} p={0} m={0}>
           <Text className='text-right' fw={700}>
-            {formatPriceLocaleVi(item.price * item.quantity)}
+            {formatPriceLocaleVi(item.product.price * item.quantity)}
           </Text>
-          <Button
-            h={'max-content'}
-            className='text-red-500 hover:text-subColor'
-            variant='transparent'
-            w={'max-content'}
-            size='xs'
-            p={0}
-            m={0}
-            onClick={() => setCart(cart.filter((cartItem: any) => cartItem.id !== item.id))}
-          >
-            <IconTrash size={20} />
-          </Button>
+          {!isPayment && (
+            <Button
+              h={'max-content'}
+              className='text-red-500 hover:text-subColor'
+              variant='transparent'
+              w={'max-content'}
+              size='xs'
+              p={0}
+              m={0}
+              onClick={() => removeCart(item.product.id)}
+            >
+              <IconTrash size={20} />
+            </Button>
+          )}
         </Group>
       </Group>
     </>

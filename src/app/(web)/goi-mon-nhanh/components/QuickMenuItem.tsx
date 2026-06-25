@@ -8,17 +8,11 @@ import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
+import { useCartStorage } from '~/stores/cart.store';
 
-export const QuickMenuItem = ({
-  product,
-  index,
-  onAdd
-}: {
-  product: FindInfiniteProduct['items'][number];
-  index: number;
-  onAdd: (quantity: number) => void;
-}) => {
+export const QuickMenuItem = ({ product, index }: { product: FindInfiniteProduct['items'][number]; index: number }) => {
   const [quantity, setQuantity] = useState<number | string>(1);
+  const updateCart = useCartStorage(s => s.updateCart);
 
   const price = Number(product?.price || 0);
   const discount = Number(product?.discount || 0);
@@ -97,7 +91,7 @@ export const QuickMenuItem = ({
             <Button
               size='sm'
               leftSection={<IconPlus size={16} />}
-              onClick={() => onAdd(Number(quantity || 1))}
+              onClick={() => updateCart({ productId: product.id, quantity: Number(quantity || 1) })}
               className='bg-mainColor text-white hover:bg-mainColor'
             >
               Thêm
@@ -110,7 +104,7 @@ export const QuickMenuItem = ({
             size='xs'
             variant='subtle'
             leftSection={<IconShoppingCartPlus size={15} />}
-            onClick={() => onAdd(1)}
+            onClick={() => updateCart({ productId: product.id, quantity: 1 })}
             className='text-mainColor hover:bg-mainColor/10'
           >
             Thêm nhanh 1 phần

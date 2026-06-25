@@ -1,30 +1,21 @@
 'use client';
 import { Box, Button, Divider, Flex, Group, Menu, Paper, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
-import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
+import { useMediaQuery } from '@mantine/hooks';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useCartAmount, useCartItems } from '~/components/Hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { useCartStorage } from '~/stores/cart.store';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
 
 const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
   const isDesktop = useMediaQuery(`(min-width: 1024px)`);
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
-
-  const updateQuantity = (id: string, quantity: number) => {
-    setCart(cart.map(item => (item.id === id ? { ...item, quantity } : item)));
-  };
-
-  const removeItem = (id: number) => {
-    setCart(cart.filter(item => item.id !== id));
-  };
-
-  const originalAmount = useMemo(() => {
-    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  }, [cart]);
+  const cart = useCartItems();
+  const removeCart = useCartStorage(s => s.removeCart);
+  const updateCart = useCartStorage(s => s.updateCart);
+  const originalAmount = useCartAmount();
+  const cartSize = cart.length;
 
   return (
     <Menu
@@ -46,7 +37,7 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
               <Box className='relative inline-block'>
                 <IconShoppingBag size={20} />
                 <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
-                  {cart.length || 0}
+                  {cartSize}
                 </span>
               </Box>
             }
@@ -63,28 +54,30 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
           >
             <IconShoppingBag size={24} />
             <span className='absolute -right-2 -top-2 z-[100] flex h-[15px] w-[15px] items-center justify-center rounded-full bg-mainColor text-[10px] font-bold text-white'>
-              {cart?.length || 0}
+              {cartSize}
             </span>
           </Paper>
         </Link>
       </Menu.Target>
       <Menu.Dropdown>
-        {cart.length > 0 ? (
+        {cartSize > 0 ? (
           <Stack pb={10}>
             <ScrollAreaAutosize mah={'40vh'} scrollbarSize={5}>
               {cart.map(item => (
-                <Box key={item?.id}>
+                <Box key={item?.product.id}>
                   <CartItemFastMenu
-                    key={item?.id}
-                    image={
-                      getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                      '/images/jpg/empty-300x240.jpg'
-                    }
-                    name={item?.name}
-                    price={item?.price}
+                    key={item?.product.id}
+                    thumbnail={item.product.thumbnail}
+                    name={item?.product.name}
+                    price={item?.product.price}
                     quantity={item?.quantity}
-                    onQuantityChange={(value: any) => updateQuantity(item?.id, value)}
-                    onDelete={() => removeItem(item?.id)}
+                    onQuantityChange={value =>
+                      updateCart({
+                        productId: item?.product.id,
+                        quantity: value
+                      })
+                    }
+                    onDelete={() => removeCart(item?.product.id)}
                   />
                   <Divider />
                 </Box>
@@ -103,7 +96,7 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
 
             <Group gap='md' className='px-4' justify='space-between' align='center'>
               <Text size='sm' c={'dimmed'}>
-                {cart?.length || 0} sản phẩm
+                {cartSize || 0} sản phẩm
               </Text>
               <Link href='/gio-hang' className='text-white'>
                 <Button children={'Xem giỏ hàng'} radius='xl' w={'max-content'} />

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 interface CartItemProps {
-  image: string;
+  thumbnail: string;
   name: string;
   price: number;
   quantity: number;
@@ -13,11 +13,24 @@ interface CartItemProps {
   onDelete: () => void;
 }
 
-export default function CartItemFastMenu({ image, name, price, quantity, onQuantityChange, onDelete }: CartItemProps) {
+export default function CartItemFastMenu({
+  thumbnail,
+  name,
+  price,
+  quantity,
+  onQuantityChange,
+  onDelete
+}: CartItemProps) {
   return (
     <Group wrap='nowrap' className='w-full gap-4 overflow-hidden p-4'>
       <Paper w={80} h={80} pos={'relative'} className='overflow-hidden'>
-        <Image loading='lazy' src={image || '/images/jpg/empty-300x240.jpg'} alt={name} fill className='object-cover' />
+        <Image
+          loading='lazy'
+          src={thumbnail || '/images/jpg/empty-300x240.jpg'}
+          alt={name}
+          fill
+          className='object-cover'
+        />
       </Paper>
 
       <Box className='flex-grow'>

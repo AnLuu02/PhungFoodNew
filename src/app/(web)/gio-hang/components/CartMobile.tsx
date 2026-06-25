@@ -1,21 +1,18 @@
 import { Badge, Box, Button, Flex, Group, NumberInput, Paper, Popover, Stack, Text } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconAlertSquareRounded, IconCheck, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
+import { useCartItems } from '~/components/Hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { useCartStorage } from '~/stores/cart.store';
 import { Note } from './Note';
 
 export const ShoppingCartMobile = () => {
-  const [cart, setCart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
-  const updateQuantity = (id: string, quantity: number) => {
-    setCart((items: any) =>
-      items.map((item: any) => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
-    );
-  };
-  return cart.map((item: any) => (
-    <Paper shadow='xs' p={'xs'} mb={'xs'} withBorder key={item.id}>
+  const cart = useCartItems();
+  const updateCart = useCartStorage(s => s.updateCart);
+  const removeCart = useCartStorage(s => s.removeCart);
+
+  return cart.map(item => (
+    <Paper shadow='xs' p={'xs'} mb={'xs'} withBorder key={item?.product?.id}>
       <Stack gap={'4'}>
         <Group>
           <Paper
@@ -28,27 +25,27 @@ export const ShoppingCartMobile = () => {
             <Paper withBorder w={65} h={65} className='overflow-hidden' pos={'relative'}>
               <Image
                 loading='lazy'
-                src={
-                  getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-                }
+                src={item?.product?.thumbnail}
                 fill
                 className='object-cover'
-                alt={item.name}
+                alt={item?.product?.name}
               />
             </Paper>
           </Paper>
           <Stack gap='2' align='start'>
             <Text size='md' fw={700}>
-              {item.name}
+              {item?.product?.name}
             </Text>
             <Group m={0} p={0}>
-              {item?.discount > 0 && (
+              {item?.product?.discount > 0 && (
                 <Text size='sm' c={'dimmed'} fw={700} td='line-through'>
-                  {item?.discount ? `${formatPriceLocaleVi(item?.price)}` : `180.000đ`}
+                  {item?.product?.discount ? `${formatPriceLocaleVi(item?.product?.price)}` : `180.000đ`}
                 </Text>
               )}
               <Text size='md' fw={700} className='text-mainColor'>
-                {item?.price ? `${formatPriceLocaleVi(item?.price - item?.discount)} ` : `180.000đ`}
+                {item?.product?.price
+                  ? `${formatPriceLocaleVi(item?.product?.price - item?.product?.discount)} `
+                  : `180.000đ`}
               </Text>
             </Group>
             <Group m={0} p={0}>
@@ -56,15 +53,15 @@ export const ShoppingCartMobile = () => {
                 thousandSeparator=','
                 clampBehavior='strict'
                 size='xs'
-                value={item.quantity}
+                value={item?.quantity}
                 onChange={quantity => {
                   if (Number(quantity) === 0) {
-                    setCart(cart.filter((cartItem: any) => cartItem.id !== item.id));
+                    removeCart(item?.product?.id);
                   }
-                  updateQuantity(item.id, Number(quantity));
+                  updateCart({ productId: item?.product?.id, quantity: Number(quantity) });
                 }}
                 min={0}
-                max={Number(item?.availableQuantity) || 100}
+                max={20}
                 className='w-[80px]'
               />
               <Button
@@ -75,7 +72,7 @@ export const ShoppingCartMobile = () => {
                 size='xs'
                 p={0}
                 m={0}
-                onClick={() => setCart(cart.filter((cartItem: any) => cartItem.id !== item.id))}
+                onClick={() => removeCart(item?.product?.id)}
               >
                 <IconTrash size={16} />
               </Button>
@@ -84,10 +81,10 @@ export const ShoppingCartMobile = () => {
         </Group>
         <Flex justify={'space-between'} w={'100%'} align={'center'}>
           <Text className='text-red-500' size='md' fw={700}>
-            {formatPriceLocaleVi((item.price - item.discount) * item.quantity)}
+            {formatPriceLocaleVi((item?.product?.price - item?.product?.discount) * item?.quantity)}
           </Text>
           <Box>
-            {cart.find((cartItem: any) => cartItem.id === item.id && cartItem?.note) ? (
+            {cart.some(cartItem => cartItem?.product?.id === item?.product?.id && cartItem?.note) ? (
               <Badge c={'dimmed'} variant='transparent' px={0} mx={0} leftSection={<IconCheck size={12} />} size='sm'>
                 Đã thêm ghi chú
               </Badge>
@@ -111,7 +108,7 @@ export const ShoppingCartMobile = () => {
               </Button>
             </Popover.Target>
             <Popover.Dropdown>
-              <Note productId={item.id} />
+              <Note productId={item?.product?.id} />
             </Popover.Dropdown>
           </Popover>
         </Flex>

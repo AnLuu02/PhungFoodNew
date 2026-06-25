@@ -4,9 +4,10 @@ import { IconHelp } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { VoucherApplyStorage } from '~/shared/types/local-storage.types';
+import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { api } from '~/trpc/react';
 import { ModalProps } from '~/types/modal';
+import { useCartItems } from '../Hooks/use-cart';
 import LoadingSpiner from '../Loading/LoadingSpiner';
 import VoucherTemplate from '../Template/VoucherTemplate';
 
@@ -15,7 +16,8 @@ export default function ModalListVoucher({ opened, data, onClose }: ModalProps<{
   const { data: fetchData, isLoading } = api.Voucher.getVoucherForUser.useQuery({
     userId
   });
-  const [cart] = useLocalStorage<any>({ key: 'cart', defaultValue: [] });
+  const cart = useCartItems();
+
   const vouchers = fetchData || [];
   const products = cart || [];
   const [appliedVouchers, setSelectedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
@@ -96,7 +98,14 @@ export default function ModalListVoucher({ opened, data, onClose }: ModalProps<{
                             <label
                               key={index}
                               htmlFor={`voucher-${item?.id.toString()}`}
-                              className={`relative w-full ${allowedVoucher(item?.minOrderPrice || 0, products) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                              className={`relative w-full ${
+                                allowedVoucher(
+                                  item?.minOrderPrice || 0,
+                                  products.map(p => ({ price: p?.product?.price, quantity: p?.quantity }))
+                                )
+                                  ? 'cursor-pointer'
+                                  : 'cursor-not-allowed'
+                              }`}
                             >
                               <VoucherTemplate voucher={item} products={products} />
                             </label>

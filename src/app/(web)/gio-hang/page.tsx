@@ -1,9 +1,10 @@
 'use client';
 
 import { Divider, Grid, GridCol, Paper } from '@mantine/core';
-import { useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
+import { useCartCount } from '~/components/Hooks/use-cart';
 import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { RecapCart } from '../../../components/RecapCart';
 import { RecapCartSkeleton } from '../../../components/RecapCartSkeleton';
@@ -12,13 +13,14 @@ import { CartTable } from './components/CartTable';
 import { CartTableSkeleton } from './components/CartTableSkeleton';
 
 export default function ShoppingCart() {
-  const [cart, setCart] = useLocalStorage<any[]>({ key: 'cart', defaultValue: [] });
+  const cartSize = useCartCount();
+
   const [isMounted, setIsMounted] = useState(false);
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
 
   useEffect(() => {
     setIsMounted(true);
-  }, [cart]);
+  }, [cartSize]);
 
   if (!isMounted)
     return (
@@ -44,7 +46,7 @@ export default function ShoppingCart() {
         </GridCol>
       </Grid>
     );
-  if (cart && cart?.length === 0)
+  if (cartSize === 0)
     return (
       <Empty
         url='/thuc-don'
@@ -60,13 +62,7 @@ export default function ShoppingCart() {
           <ShoppingCartMobile />
         ) : (
           <Paper shadow='xs' className='p-0 lg:p-6'>
-            <CartTable
-              updateQuantity={(id: string, quantity: number) => {
-                setCart(items =>
-                  items.map(item => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
-                );
-              }}
-            />
+            <CartTable />
             <Divider mb={10} />
           </Paper>
         )}

@@ -21,6 +21,8 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const { openModal } = useModalActions();
   const isLiked = useFavorite(data?.id);
+  const thumbnail =
+    getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg';
 
   return (
     <CardProductWrapper slug={data.id} key={data?.id + 'vertical'}>
@@ -35,7 +37,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
           <Image
             loading='lazy'
             id={`productImage-${data?.id}`}
-            src={getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'}
+            src={thumbnail}
             fill
             style={{ objectFit: 'cover' }}
             className='object-cover transition-transform duration-300 group-hover:scale-105'
@@ -101,7 +103,16 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
             </Flex>
             <Box w={'100%'} px={'xs'}>
               <ButtonAddToCart
-                product={{ ...data, quantity: 1 }}
+                item={{
+                  product: {
+                    id: data?.id,
+                    price: data?.price ?? 0,
+                    discount: data?.discount ?? 0,
+                    name: data?.name,
+                    thumbnail
+                  },
+                  quantity: 1
+                }}
                 style={{ fullWidth: true }}
                 handleAfterAdd={() => openModal('success', null, data)}
                 notify={() => {}}

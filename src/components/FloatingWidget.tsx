@@ -1,16 +1,16 @@
 'use client';
 import { Box, Button, Center, Menu, MenuDropdown, MenuItem, MenuTarget } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { IconChevronCompactLeft, IconLink, IconMessageCircle, IconShoppingBagCheck } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
 import { TGetOneActiveClient } from '~/shared/type-trpc/restaurant.type-trpc';
 import ModernChatbox from './chat/Chatbox';
+import { useCartCount } from './Hooks/use-cart';
 
 export default function FloatingWidget({ restaurant }: { restaurant: TGetOneActiveClient }) {
-  const [cart] = useLocalStorage({ key: 'cart', defaultValue: [] });
-  const messager = restaurant?.socials?.find((social: NonNullable<TGetOneActiveClient>['socials'][number]) => {
+  const cartSize = useCartCount();
+  const messenger = restaurant?.socials?.find((social: NonNullable<TGetOneActiveClient>['socials'][number]) => {
     return social?.platform === 'messenger';
   });
   return (
@@ -24,7 +24,7 @@ export default function FloatingWidget({ restaurant }: { restaurant: TGetOneActi
           >
             <IconShoppingBagCheck size={40} />
             <span className='absolute -right-2 -top-2 z-[100] flex h-[25px] w-[25px] items-center justify-center rounded-full bg-mainColor text-[14px] font-bold text-white'>
-              {cart.length || 0}
+              {cartSize}
             </span>
             <span className='absolute z-[-1] h-full w-full animate-ping rounded-full bg-mainColor opacity-10'></span>
             <span className='absolute z-[-1] h-[80%] w-[80%] animate-ping rounded-full bg-mainColor opacity-20'></span>
@@ -118,9 +118,9 @@ export default function FloatingWidget({ restaurant }: { restaurant: TGetOneActi
           </MenuDropdown>
         </Menu>
 
-        {messager && (
+        {messenger && (
           <Link
-            href={`${generateSocialUrl(messager?.pattern, messager?.value)}`}
+            href={`${generateSocialUrl(messenger?.pattern, messenger?.value)}`}
             target='_blank'
             className='hidden sm:block'
           >

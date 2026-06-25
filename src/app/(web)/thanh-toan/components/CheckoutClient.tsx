@@ -13,13 +13,16 @@ import {
   Text,
   Title
 } from '@mantine/core';
+import { ImageType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { baseDeliverySchema, DeliveryCheckout } from '~/shared/schema/delivery.schema';
 import { TGetOneOrder } from '~/shared/type-trpc/order.type-trpc';
@@ -66,36 +69,20 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
       NotifyError(e.message);
     }
   });
-  const { discountAmountByVoucher, discount, originalAmount, tax, finalAmount } = useMemo(() => {
-    const discountAmountByVoucher = (order?.voucherUsages ?? []).reduce(
-      (sum: number, item: NonNullable<NonNullable<TGetOneOrder>['voucherUsages']>[number]) => {
-        return sum + item.discount;
-      },
-      0
-    );
-    const { discount, originalAmount } = order?.orderItems?.reduce(
-      (
-        acc: { discount: number; originalAmount: number },
-        item: NonNullable<NonNullable<TGetOneOrder>['orderItems']>[number]
-      ) => {
-        acc.discount += (item.product?.discount || 0) * (item.quantity || 1);
-        acc.originalAmount += (item.price || 0) * (item.quantity || 1);
-        return {
-          discount: acc.discount,
-          originalAmount: acc.originalAmount
-        };
-      },
-      {
-        discount: 0,
-        originalAmount: 0
-      }
-    ) || { discount: 0, originalAmount: 0 };
 
-    const pricePaid = originalAmount - discount - discountAmountByVoucher;
-
-    const tax = pricePaid * 0.08;
-    const finalAmount = pricePaid + tax;
-    return { discountAmountByVoucher, discount, originalAmount, tax, finalAmount };
+  const { finalAmount, tax, totalOriginalPrice, totalVoucherAmount, totalProductDiscount } = useMemo(() => {
+    return caculateAmount({
+      products: (order?.orderItems ?? [])?.map(c => ({
+        discount: c.product?.discount ?? 0,
+        price: c.product?.price ?? 0,
+        quantity: c?.quantity ?? 1
+      })),
+      vouchers: (order?.voucherUsages ?? []).flatMap(
+        (item: NonNullable<NonNullable<TGetOneOrder>['voucherUsages']>[number]) => {
+          return item?.discount ? [item?.discount] : [];
+        }
+      )
+    });
   }, [order]);
 
   const { control, setValue, handleSubmit, reset } = useForm<DeliveryCheckout>({
@@ -166,7 +153,18 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
                     (item: NonNullable<NonNullable<TGetOneOrder>['orderItems']>[number], index: number) => (
                       <CartItemPayment
                         key={index}
-                        item={{ ...item.product, note: item.note, quantity: item.quantity }}
+                        isPayment={true}
+                        item={{
+                          product: {
+                            id: item?.product?.id,
+                            name: item?.product?.name,
+                            price: item?.product?.price,
+                            discount: item?.product?.discount,
+                            thumbnail: getImageProduct(item?.product?.imageForEntities ?? [], ImageType.THUMBNAIL)
+                          },
+                          note: item?.note ?? undefined,
+                          quantity: item.quantity
+                        }}
                       />
                     )
                   )}
@@ -179,7 +177,7 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
                     Tạm tính
                   </Text>
                   <Text size='md' fw={700}>
-                    {formatPriceLocaleVi(originalAmount)}
+                    {formatPriceLocaleVi(totalOriginalPrice)}
                   </Text>
                 </Group>
                 <Group justify='space-between'>
@@ -187,7 +185,7 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
                     Giảm giá sản phẩm:
                   </Text>
                   <Text size='md' fw={700}>
-                    -{formatPriceLocaleVi(discount)}
+                    -{formatPriceLocaleVi(totalProductDiscount)}
                   </Text>
                 </Group>
 
@@ -196,7 +194,7 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
                     Khuyến mãi:
                   </Text>
                   <Text size='md' fw={700}>
-                    -{formatPriceLocaleVi(discountAmountByVoucher || 0)}
+                    -{formatPriceLocaleVi(totalVoucherAmount || 0)}
                   </Text>
                 </Group>
                 <Group justify='space-between' className='mb-2'>
