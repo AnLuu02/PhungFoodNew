@@ -23,7 +23,7 @@ import { useCallback, useState } from 'react';
 import { ConnectedModalPayload } from '~/components/Modals/ModalImageLibrary';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import PaginationLocal from '~/components/PaginationLocal';
-import { useModalState } from '~/contexts/ModalContext';
+import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 import { ImageFilterOptions } from '../types/image.types';
 import BulkActionsBar from './BulkActionsBar';
@@ -53,12 +53,12 @@ export type ConnectedStateWithEntity = ConnectedState & {
   imageForEntityId?: string;
 };
 export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
-  const { modalData }: { modalData: ConnectedModalPayload } = useModalState();
+  const { data }: { data: ConnectedModalPayload } = useModalStore(s => s.data);
   const { data: imageForEntity, isLoading: isLoadingImageForEntity } = api.Images.getImageForEntity.useQuery(
     {
-      entityId: modalData?.entityId || ''
+      entityId: data?.entityId || ''
     },
-    { enabled: !!modalData?.entityId }
+    { enabled: !!data?.entityId }
   );
 
   const [page, setPage] = useState(1);
@@ -127,11 +127,11 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
     setConnectedState(prev => ({
       ...prev,
       ...state,
-      entityId: modalData.entityId,
-      entityType: modalData.entityType,
-      imageType: modalData.initImageType,
+      entityId: data.entityId,
+      entityType: data.entityType,
+      imageType: data.initImageType,
       imageForEntityId: existingImage?.id,
-      onRefetch: modalData?.onRefetch
+      onRefetch: data?.onRefetch
     }));
   }, []);
 

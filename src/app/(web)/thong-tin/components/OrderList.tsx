@@ -29,11 +29,11 @@ import InvoiceToPrint from '~/components/InvoceToPrint';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import PaginationLocal from '~/components/PaginationLocal';
 import SearchLocal from '~/components/Search/SearchLocal';
-import { useModalActions } from '~/contexts/ModalContext';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 type DisplayOrder = TGetFilterOrder[number] & {
   date: string | undefined;
@@ -66,7 +66,7 @@ export function OrderList({ session }: { session: Session | null }) {
       utils.Order.invalidate();
     }
   });
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearch(valueSearch), 300);
@@ -494,7 +494,7 @@ export function OrderList({ session }: { session: Session | null }) {
                                     <InvoiceToPrint orderId={order?.id || ''} />
                                   )}
 
-                                  <Button size='xs' variant='light' onClick={() => openModal('orders', null, order)}>
+                                  <Button size='xs' variant='light' onClick={() => openModal('orders', order)}>
                                     Chi tiết
                                   </Button>
 

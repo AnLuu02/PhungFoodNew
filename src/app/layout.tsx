@@ -17,11 +17,10 @@ import { TRPCReactProvider } from '~/trpc/react';
 
 import LoadingGlobal from '~/components/Loading/LoadingGlobal';
 import ScrollToTop from '~/components/ScrollToTop';
-import { GlobalModal } from '~/contexts/GlobalModal';
-import { ModalProvider } from '~/contexts/ModalContext';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 import { FavoriteProvider } from '~/providers/favorite-provider';
+import { GlobalModalProvider } from '~/providers/global-modal-provider';
 import { getServerAuthSession } from '~/server/auth';
 import { api } from '~/trpc/server';
 import { mainTheme } from './theme';
@@ -116,13 +115,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>
-              <ModalProvider>
-                <LoadingGlobal>
-                  <FavoriteProvider favourites={favourites} />
-                  {children}
-                  <GlobalModal />
-                </LoadingGlobal>
-              </ModalProvider>
+              <LoadingGlobal>
+                <FavoriteProvider favourites={favourites} />
+                {children}
+                <GlobalModalProvider />
+              </LoadingGlobal>
             </ModalsProvider>
             <ScrollToTop />
           </MantineProvider>

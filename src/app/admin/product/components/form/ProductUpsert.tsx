@@ -21,13 +21,13 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
-import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { seedRegions } from '~/lib/HardData/seed';
 import { UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { ProductInput, productInputSchema } from '~/shared/schema/product.schema';
+import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 import GalleryUpsert from './GalleryUpsert';
 
@@ -38,7 +38,8 @@ export default function ProductUpsert({
   productId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
+
   const [imageDeleted, setImageDeleted] = useState<string[]>([]);
   const { data: categories } = api.SubCategory.getAll.useQuery();
   const { data: materials } = api.Material.getAll.useQuery();
@@ -219,7 +220,7 @@ export default function ProductUpsert({
                 fullWidth
                 className='w-[max-content]'
                 onClick={async () =>
-                  openModal('images_library', undefined, {
+                  openModal('images_library', {
                     entityId: data?.id,
                     entityType: EntityType.PRODUCT,
                     initImageType: ImageType.THUMBNAIL,
@@ -242,7 +243,7 @@ export default function ProductUpsert({
                 size='sm'
                 fullWidth
                 onClick={async () =>
-                  openModal('images_library', undefined, {
+                  openModal('images_library', {
                     entityId: data?.id,
                     entityType: EntityType.PRODUCT,
                     initImageType: ImageType.GALLERY,

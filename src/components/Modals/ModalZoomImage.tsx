@@ -141,7 +141,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
     setInitialDistance(null);
   };
 
-  //sáas
   const [index, setIndex] = useState(0);
   const totalImages = gallery;
   const displayImages = totalImages.slice(0, 4);
@@ -175,8 +174,15 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
       withCloseButton={false}
       padding={0}
       className='overflow-hidden'
+      pos={'relative'}
     >
       <Box className='h-[90vh] overflow-hidden border-0 bg-black/95 p-0' pos={'relative'}>
+        <ActionIcon
+          className='absolute right-4 top-4 z-50 border bg-black/50 text-white hover:scale-110 hover:bg-black/70'
+          onClick={onClose}
+        >
+          <IconX onClick={onClose} className='h-5 w-5' />
+        </ActionIcon>
         <ActionIcon
           disabled={index === 0 || totalImages.length === 1}
           onClick={() => handlePrev(index)}
@@ -195,14 +201,6 @@ export function ImageZoomModal({ activeImage, gallery, isOpen, onClose }: ImageZ
         >
           <IconChevronCompactRight className='h-5 w-5' />
         </ActionIcon>
-
-        <Button
-          size='icon'
-          className='absolute right-4 top-4 z-50 border border-white/20 bg-black/50 text-white hover:bg-black/70'
-          onClick={onClose}
-        >
-          <IconX className='h-5 w-5' />
-        </Button>
 
         <Box className='absolute left-4 top-4 z-50 flex flex-col gap-2'>
           <Button

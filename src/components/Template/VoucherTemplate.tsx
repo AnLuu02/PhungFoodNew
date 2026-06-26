@@ -4,11 +4,11 @@ import { VoucherType } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
 import { VoucherApplyStorage } from '~/shared/types/store.types';
+import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 import { DateVoucher } from '../DateVoucher';
 type VoucherTemplateProps = {
@@ -16,7 +16,7 @@ type VoucherTemplateProps = {
   products?: any;
 };
 const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
   const [loading, setLoading] = useState(false);
   const { data: user } = useSession();
   const mutationRecivedVoucher = api.Voucher.update.useMutation({
@@ -177,7 +177,7 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
                 pos={'relative'}
                 className='z-[0] bg-white text-blue-500 dark:bg-dark-card'
                 onClick={() => {
-                  openModal('voucher', null, { voucher, products });
+                  openModal('voucher', { voucher, products });
                 }}
               >
                 Điều kiện

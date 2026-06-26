@@ -107,8 +107,8 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                                 className='border-2 border-mainColor object-cover'
                                 fill
                                 style={{ objectFit: 'cover' }}
-                                alt='Product Image'
-                                src={item?.url}
+                                alt={`Ảnh bổ sung ${index + 1}`}
+                                src={item?.image?.url}
                               />
                             </Paper>
                           </Card.Section>
@@ -144,7 +144,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                     Mã sản phẩm:
                   </Text>
                   <Text className='text-mainColor' fw={700} size='sm'>
-                    {data?.id || 'asd15as5d465as65d465a16198'}
+                    #{data?.id || 'asd15as5d465as65d465a16198'}
                   </Text>
                 </Group>
 

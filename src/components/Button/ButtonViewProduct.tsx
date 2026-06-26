@@ -2,9 +2,9 @@
 import { Button, Tooltip } from '@mantine/core';
 import { IconEye } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useModalActions } from '~/contexts/ModalContext';
+import { useModalStore } from '~/stores/modal.store';
 export const ButtonViewProduct = ({ data, isMobile }: { data: any; isMobile?: boolean }) => {
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
   return (
     <Tooltip label='Xem nhanh'>
       {isMobile ? (
@@ -22,7 +22,7 @@ export const ButtonViewProduct = ({ data, isMobile }: { data: any; isMobile?: bo
       ) : (
         <Button
           onClick={() => {
-            openModal('details', null, data);
+            openModal('details', data);
           }}
           size='xs'
           w={30}

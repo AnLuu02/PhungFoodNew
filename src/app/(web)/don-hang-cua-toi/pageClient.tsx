@@ -29,16 +29,16 @@ import Empty from '~/components/Empty';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
 import { TOP_POSITION_STICKY } from '~/constants';
-import { useModalActions } from '~/contexts/ModalContext';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 
 export default function MyOrderPageClient({ session }: { session: Session | null }) {
   const { data: orders = [] } = api.Order.getFilter.useQuery({ s: session?.user?.email || '' });
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [valueSearch, setValueSearch] = useState<string | null>(null);
@@ -293,7 +293,7 @@ export default function MyOrderPageClient({ session }: { session: Session | null
                                 </Link>
                               )}
                               <Tooltip label='Chi tiết'>
-                                <Button size='xs' onClick={() => openModal('orders', null, order)}>
+                                <Button size='xs' onClick={() => openModal('orders', order)}>
                                   Chi tiết
                                 </Button>
                               </Tooltip>

@@ -16,7 +16,7 @@ import {
   Textarea,
   Title
 } from '@mantine/core';
-import { IconPencil, IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
+import { IconPencil, IconRefresh, IconShieldCheck, IconShoppingCartPlus, IconTruck } from '@tabler/icons-react';
 import { ButtonAddToCart } from '~/components/Button/ButtonAddToCart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -195,7 +195,8 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
               style={{
                 children: 'Mua hàng',
                 size: 'md',
-                fullWidth: true
+                fullWidth: true,
+                leftSection: <IconShoppingCartPlus size={20} className='mr-2 font-bold' />
               }}
               handleAfterAdd={() => {}}
               notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}

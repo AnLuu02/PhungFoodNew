@@ -24,12 +24,12 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import AddressSection from '~/components/AdressSection';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { INFO_LEVEL_USER, UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
+import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 import { TRPCErrorCode } from '~/types/ResponseFetcher';
 
@@ -42,7 +42,7 @@ export default function UserUpsert({
   setOpened: Dispatch<SetStateAction<boolean>>;
   method: 'create' | 'update';
 }) {
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
   const [error, setError] = useState<{ code: TRPCErrorCode | undefined; message: string }>({
     code: undefined,
     message: ''
@@ -383,7 +383,7 @@ export default function UserUpsert({
                 size='sm'
                 fullWidth
                 onClick={async () =>
-                  openModal('images_library', undefined, {
+                  openModal('images_library', {
                     entityId: user?.id,
                     entityType: EntityType.USER,
                     initImageType: ImageType.THUMBNAIL,

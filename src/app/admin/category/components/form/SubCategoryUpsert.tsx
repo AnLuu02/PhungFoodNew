@@ -6,11 +6,11 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import { useModalActions } from '~/contexts/ModalContext';
 import { handleUploadFromClient, UploadedImage } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { SubCategoryInput, subCategoryInputSchema } from '~/shared/schema/subCategory.schema';
+import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 
 export default function SubCategoryUpsert({
@@ -20,7 +20,8 @@ export default function SubCategoryUpsert({
   subCategoryId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
+
   const { data, isLoading: isLoadingDataSubCategory } = api.SubCategory.getOne.useQuery(
     { key: subCategoryId || '' },
     { enabled: !!subCategoryId }
@@ -191,7 +192,7 @@ export default function SubCategoryUpsert({
                     size='sm'
                     fullWidth
                     onClick={async () =>
-                      openModal('images_library', undefined, {
+                      openModal('images_library', {
                         entityId: data?.id,
                         entityType: EntityType.CATEGORY,
                         initImageType: ImageType.THUMBNAIL,

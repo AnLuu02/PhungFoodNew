@@ -12,14 +12,14 @@ import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import CardProductWrapper from '~/components/Card/CardProductWrapper';
 import { useFavorite } from '~/components/Hooks/use-favorite';
 import { breakpoints } from '~/constants';
-import { useModalActions } from '~/contexts/ModalContext';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { useModalStore } from '~/stores/modal.store';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
 const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
-  const { openModal } = useModalActions();
+  const openModal = useModalStore(s => s.open);
   const isLiked = useFavorite(data?.id);
   const thumbnail =
     getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg';
@@ -93,7 +93,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
                 onClick={() => {
                   isMobile
                     ? router.push(`/san-pham/${data?.tag}/danh-gia`, { scroll: false })
-                    : openModal('comments', null, data);
+                    : openModal('comments', data);
                 }}
                 size='xs'
                 className='cursor-pointer text-gray-400 transition-all duration-200 ease-in-out hover:text-subColor hover:underline dark:text-dark-text'
@@ -114,7 +114,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
                   quantity: 1
                 }}
                 style={{ fullWidth: true }}
-                handleAfterAdd={() => openModal('success', null, data)}
+                handleAfterAdd={() => openModal('success', data)}
                 notify={() => {}}
               />
             </Box>
