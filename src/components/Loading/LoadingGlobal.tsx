@@ -1,16 +1,13 @@
 'use client';
 
-import { Box, Flex, Image, Text } from '@mantine/core';
+import { Box, Center, Flex, Image, Loader, Text } from '@mantine/core';
 import { IconChefHat, IconCoffee, IconPizza, IconSalad } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 
-export default function LoadingGlobal({ loading, children }: { loading?: boolean; children?: React.ReactNode }) {
+export default function LoadingGlobal({ children }: { children?: React.ReactNode }) {
   const { status } = useSession();
-  const [progress, setProgress] = useState(0);
-
-  const isLoading = status === 'loading';
-
+  const isDone = status !== 'loading';
   useEffect(() => {
     document.body.style.overflow = 'hidden';
 
@@ -19,46 +16,7 @@ export default function LoadingGlobal({ loading, children }: { loading?: boolean
     };
   }, []);
 
-  useEffect(() => {
-    let rafId: number;
-    let lastTime = performance.now();
-
-    const animate = (currentTime: number) => {
-      const delta = currentTime - lastTime;
-
-      if (delta >= 180) {
-        lastTime = currentTime;
-
-        setProgress(prev => {
-          if (isLoading || loading) {
-            if (prev >= 92) return 92;
-
-            if (prev < 35) return Math.min(prev + 6, 92);
-            if (prev < 70) return Math.min(prev + 3, 92);
-
-            return Math.min(prev + 1, 92);
-          }
-
-          return Math.min(prev + 4, 100);
-        });
-      }
-
-      rafId = requestAnimationFrame(animate);
-    };
-
-    rafId = requestAnimationFrame(animate);
-
-    return () => cancelAnimationFrame(rafId);
-  }, [isLoading, loading]);
-
-  const loadingText = useMemo(() => {
-    if (progress < 35) return 'Đang khởi tạo phiên làm việc...';
-    if (progress < 70) return 'Đang kiểm tra đăng nhập...';
-    if (progress < 95) return 'Đang đồng bộ dữ liệu người dùng...';
-    return 'Hoàn tất';
-  }, [progress]);
-
-  if (progress === 100) return <>{children ?? null}</>;
+  if (isDone) return <>{children ?? null}</>;
 
   return (
     <>
@@ -104,24 +62,12 @@ export default function LoadingGlobal({ loading, children }: { loading?: boolean
           </Text>
 
           <Text size='sm' c='dimmed' mt={4}>
-            {loadingText}
+            Đang đồng bộ dữ liệu người dùng...
           </Text>
 
-          <div className='mt-6 h-3 w-full overflow-hidden rounded-full bg-gray-100'>
-            <div
-              className={`h-full transition-all duration-500 ease-out ${progress >= 100 ? 'bg-green-500' : 'bg-orange-500'}`}
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          <Flex justify='space-between' align='center' mt={8}>
-            <Text size='xs' c='dimmed'>
-              Đang tải hệ thống...
-            </Text>
-            <Text size='xs' fw={700} c={progress >= 100 ? 'green' : 'orange'}>
-              {Math.round(progress)}%
-            </Text>
-          </Flex>
+          <Center>
+            <Loader mt='sm' color='orange' size='md' type='dots' />
+          </Center>
         </Box>
       </Flex>
     </>
