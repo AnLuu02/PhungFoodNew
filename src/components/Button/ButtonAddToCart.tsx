@@ -4,7 +4,7 @@ import { Button, ButtonProps } from '@mantine/core';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
 import { flyToCart, getVisibleToEl } from '~/lib/ButtonHandler/FlyToCart';
 import { CartItem } from '~/shared/types/store.types';
-import { useCartStorage } from '~/stores/cart.store';
+import { useCartStore } from '~/stores/cart.store';
 
 export function ButtonAddToCart({
   item,
@@ -17,7 +17,7 @@ export function ButtonAddToCart({
   handleAfterAdd: () => void;
   notify: (title?: string, message?: string) => void;
 }) {
-  const addCart = useCartStorage(state => state.addCart);
+  const addCart = useCartStore(state => state.addCart);
   return (
     <Button
       radius={'xl'}

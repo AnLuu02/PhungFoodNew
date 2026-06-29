@@ -107,7 +107,6 @@ export const rolePermissionRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => await getAllPermissionService(ctx.db, input)),
-  //user permision
   updateUserPermissions: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
     .use(activityLogger)

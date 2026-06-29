@@ -3,7 +3,6 @@ import { TRPCError } from '@trpc/server';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { BannerReqCloudinary } from '~/shared/schema/restaurant.banner.schema';
 
-//upsert banner
 export const upsertBannerService = async (db: PrismaClient, input: BannerReqCloudinary) => {
   const { id, imageForEntities, restaurantId, ...data } = input;
   const imagesInput = imageForEntities || [];

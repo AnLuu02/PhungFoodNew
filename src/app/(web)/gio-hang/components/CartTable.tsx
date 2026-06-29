@@ -16,12 +16,12 @@ import { IconAlertSquareRounded, IconCheck, IconTrash } from '@tabler/icons-reac
 import Image from 'next/image';
 import { useCartItems } from '~/components/Hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { useCartStorage } from '~/stores/cart.store';
+import { useCartStore } from '~/stores/cart.store';
 import { Note } from './Note';
 export const CartTable = () => {
   const cart = useCartItems();
-  const updateCart = useCartStorage(s => s.updateCart);
-  const removeCart = useCartStorage(s => s.removeCart);
+  const updateCart = useCartStore(s => s.updateCart);
+  const removeCart = useCartStore(s => s.removeCart);
   return (
     <Table className='mb-6'>
       <Table.Thead>

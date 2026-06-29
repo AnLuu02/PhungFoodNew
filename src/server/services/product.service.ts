@@ -307,7 +307,6 @@ export const getFilterProductService = async (
       },
       review: true,
       favouriteFoods: true
-      // ...(include ?? {})
     }
   });
 

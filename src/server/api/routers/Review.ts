@@ -36,7 +36,6 @@ export const reviewRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await deleteReviewService(ctx.db, input)),
 
-  //getFilter
   getForOwner: publicProcedure
     .input(
       z.object({

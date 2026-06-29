@@ -2,10 +2,10 @@
 import { Button, Group, Stack, Textarea } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useCartItem } from '~/components/Hooks/use-cart';
-import { useCartStorage } from '~/stores/cart.store';
+import { useCartStore } from '~/stores/cart.store';
 export const Note = ({ productId }: { productId: string }) => {
   const [note, setNote] = useState<string>('');
-  const updateCart = useCartStorage(s => s.updateCart);
+  const updateCart = useCartStore(s => s.updateCart);
   const item = useCartItem(productId);
 
   useEffect(() => {

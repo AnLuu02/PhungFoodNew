@@ -1,13 +1,12 @@
 'use client';
 
 import { Badge, Box, Button, Card, Center, Flex, Paper, Text, Title } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { IconArrowBack, IconCreditCard } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { statusConfig } from '~/lib/FuncHandler/status-order';
-import { VoucherApplyStorage } from '~/shared/types/store.types';
+import { useCartStore } from '~/stores/cart.store';
 
 interface OrderStatusPageProps {
   customerName: string;
@@ -32,12 +31,12 @@ export function OrderStatusPage({
   onBackToHome,
   onReturnHome
 }: OrderStatusPageProps) {
-  const [, , resetVoucher] = useLocalStorage<VoucherApplyStorage[]>({ key: 'applied-vouchers', defaultValue: [] });
+  const clearVoucher = useCartStore(s => s.clearVoucher);
 
   useEffect(() => {
     const isSuccessState = ['SHIPPING', 'COMPLETED', 'CONFIRMED'].includes(status);
     if (isSuccessState) {
-      resetVoucher();
+      clearVoucher();
     }
   }, []);
 

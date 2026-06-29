@@ -19,7 +19,6 @@ import {
   IconTicket,
   IconUser
 } from '@tabler/icons-react';
-//admin
 export const navItems = [
   { label: 'Tổng quan', icon: IconLayoutDashboard, href: '/admin' },
   {

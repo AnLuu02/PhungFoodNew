@@ -481,8 +481,6 @@ export const getOverviewDetailRevenueService = async (
       }
     });
 
-  //revenue by category
-
   const revenueByCategory =
     categories.status === 'fulfilled'
       ? categories.value.reduce(
@@ -504,7 +502,6 @@ export const getOverviewDetailRevenueService = async (
         )
       : [];
 
-  //top user
   const userIds = (revenueByUser.status === 'fulfilled' && revenueByUser.value.map(revenue => revenue.userId)) || [];
 
   const userData =

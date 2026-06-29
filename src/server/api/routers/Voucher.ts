@@ -9,6 +9,7 @@ import {
   getAllVoucherService,
   getOneVoucherService,
   getVoucherAppliedAllService,
+  getVoucherForUserByUniqueService,
   getVoucherForUserService,
   updateVoucherService
 } from '~/server/services/voucher.service';
@@ -77,6 +78,15 @@ export const voucherRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getVoucherForUserService(ctx.db, input)),
+  getVoucherForUserByUnique: publicProcedure
+    .input(
+      z.object({
+        userId: z.string().optional(),
+        key: z.string(),
+        totalOrderPrice: z.number().default(0)
+      })
+    )
+    .query(async ({ ctx, input }) => await getVoucherForUserByUniqueService(ctx.db, input)),
 
   update: publicProcedure
     .use(requirePermission('update:voucher'))

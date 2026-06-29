@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { CartItem, VoucherApplyStorage } from '~/shared/types/store.types';
 
 export type ModalType =
   | 'comments'
@@ -27,4 +28,9 @@ export type ModalState = {
 export type ModalActions = {
   openModal: (type: ModalType, content?: ReactNode, data?: any) => void;
   closeModal: () => void;
+};
+
+export type VoucherModalDataProps = {
+  voucher: VoucherApplyStorage;
+  products: CartItem[];
 };

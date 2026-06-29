@@ -9,10 +9,10 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
-import { useCartStorage } from '~/stores/cart.store';
+import { useCartStore } from '~/stores/cart.store';
 
 export default function CardRecentOrder({ order }: { order: TGetFilterOrder[number] }) {
-  const reBuild = useCartStorage(s => s.reBuild);
+  const reBuild = useCartStore(s => s.reBuild);
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
 

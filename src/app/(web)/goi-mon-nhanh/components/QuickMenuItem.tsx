@@ -8,11 +8,11 @@ import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
-import { useCartStorage } from '~/stores/cart.store';
+import { useCartStore } from '~/stores/cart.store';
 
 export const QuickMenuItem = ({ product, index }: { product: FindInfiniteProduct['items'][number]; index: number }) => {
   const [quantity, setQuantity] = useState<number | string>(1);
-  const updateCart = useCartStorage(s => s.updateCart);
+  const updateCart = useCartStore(s => s.updateCart);
 
   const price = Number(product?.price || 0);
   const discount = Number(product?.discount || 0);

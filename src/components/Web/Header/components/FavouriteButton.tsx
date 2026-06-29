@@ -4,13 +4,12 @@ import { IconHeart } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useCallback } from 'react';
-import { useFavoriteStore } from '~/stores/favorite.store';
+import { useFavoriteCount } from '~/components/Hooks/use-favorite';
 import { api } from '~/trpc/react';
 
 const LikeButton = () => {
   const { data: session } = useSession();
-  const favoriteIds = useFavoriteStore(state => state.favoriteIds);
-  const count = favoriteIds.size;
+  const count = useFavoriteCount();
   const utils = api.useUtils();
   const handlePrefetch = useCallback(() => {
     void utils.FavouriteFood.getFilter.prefetch({ keys: session?.user?.id ? [session?.user?.id] : [] });

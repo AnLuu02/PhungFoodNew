@@ -23,7 +23,7 @@ export const productRouter = createTRPCRouter({
     .use(requirePermission('update:product'))
     .use(requirePermission('create:product'))
     .use(activityLogger)
-    .input(productFromDbSchema) //
+    .input(productFromDbSchema)
     .mutation(async ({ ctx, input }) => await upsertProductToCloudinaryService(ctx.db, input)),
 
   delete: publicProcedure

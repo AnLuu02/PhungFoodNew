@@ -3,10 +3,10 @@ import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { CartItem } from '~/shared/types/store.types';
-import { useCartStorage } from '~/stores/cart.store';
+import { useCartStore } from '~/stores/cart.store';
 
 export function CartItemPayment({ item, isPayment }: { item: CartItem; isPayment?: boolean }) {
-  const removeCart = useCartStorage(s => s.removeCart);
+  const removeCart = useCartStore(s => s.removeCart);
 
   return (
     <>

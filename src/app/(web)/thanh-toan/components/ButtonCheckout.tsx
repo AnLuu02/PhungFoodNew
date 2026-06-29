@@ -1,11 +1,10 @@
 import { Button, ButtonProps } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { useVoucherItems } from '~/components/Hooks/use-cart';
 import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { api } from '~/trpc/react';
 
 export const ButtonCheckout = ({
@@ -30,10 +29,7 @@ export const ButtonCheckout = ({
   discountAmount: number;
   onClick?: () => void;
 }) => {
-  const [appliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
-    key: 'applied-vouchers',
-    defaultValue: []
-  });
+  const appliedVouchers = useVoucherItems();
   const { data: user } = useSession();
   const [loading, setLoading] = useState(false);
   const mutationOrder = api.Order.upsert.useMutation({

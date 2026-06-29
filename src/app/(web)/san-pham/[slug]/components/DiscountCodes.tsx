@@ -39,7 +39,7 @@ export default function DiscountCodes({ data }: { data: NonNullable<GetInitProdu
           {data?.length > 0 &&
             data.map((promo: any) => (
               <GridCol span={{ base: 12, sm: 6, md: 6 }} key={promo.id}>
-                <VoucherTemplate voucher={promo} />
+                <VoucherTemplate voucher={promo} products={[]} />
               </GridCol>
             ))}
         </Grid>

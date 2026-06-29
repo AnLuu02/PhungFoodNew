@@ -1,13 +1,25 @@
-import { ActionIcon, Box, Button, Checkbox, Divider, Group, Modal, ScrollArea, Stack, Text } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Center,
+  Checkbox,
+  Divider,
+  Group,
+  Modal,
+  ScrollArea,
+  Stack,
+  Text
+} from '@mantine/core';
 import { IconHelp } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
 import { VoucherApplyStorage } from '~/shared/types/store.types';
+import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';
 import { ModalProps } from '~/types/modal';
-import { useCartItems } from '../Hooks/use-cart';
+import { useCartItems, useVoucherItems } from '../Hooks/use-cart';
 import LoadingSpiner from '../Loading/LoadingSpiner';
 import VoucherTemplate from '../Template/VoucherTemplate';
 
@@ -16,24 +28,34 @@ export default function ModalListVoucher({ opened, data, onClose }: ModalProps<{
   const { data: fetchData, isLoading } = api.Voucher.getVoucherForUser.useQuery({
     userId
   });
+  const { voucherValid, voucherIsRecived } = useMemo(() => {
+    return (fetchData || []).reduce(
+      (acc: { voucherValid: VoucherApplyStorage[]; voucherIsRecived: VoucherApplyStorage[] }, item) => {
+        if (item.voucherForUser.some(vfu => vfu?.userId === userId)) {
+          acc.voucherIsRecived.push(item);
+        } else {
+          acc.voucherValid.push(item);
+        }
+        return acc;
+      },
+      { voucherValid: [], voucherIsRecived: [] }
+    );
+  }, [JSON.stringify(fetchData)]);
+
   const cart = useCartItems();
 
-  const vouchers = fetchData || [];
-  const products = cart || [];
-  const [appliedVouchers, setSelectedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
-    key: 'applied-vouchers',
-    defaultValue: []
-  });
+  const appliedVouchers = useVoucherItems();
+  const addVouchers = useCartStore(s => s.addVouchers);
 
-  const { control, setValue } = useForm<{ vouchers: string[] }>({
+  const { control, setValue } = useForm<{ voucherIds: string[] }>({
     defaultValues: {
-      vouchers: []
+      voucherIds: []
     }
   });
 
   useEffect(() => {
     const voucherIds: string[] = appliedVouchers.flatMap(item => (item.id ? [item.id] : []));
-    setValue('vouchers', voucherIds);
+    setValue('voucherIds', voucherIds);
   }, [appliedVouchers]);
 
   return (
@@ -42,7 +64,7 @@ export default function ModalListVoucher({ opened, data, onClose }: ModalProps<{
       onClose={() => {
         onClose?.();
       }}
-      zIndex={9999}
+      zIndex={200}
       title={
         <Group w='100%'>
           <Text fw={600} size='lg'>
@@ -59,66 +81,129 @@ export default function ModalListVoucher({ opened, data, onClose }: ModalProps<{
         <LoadingSpiner />
       ) : (
         <>
-          <Divider mb='sm' c={'dimmed'} w={'100%'} />
+          <Center w={'100%'}>
+            <Divider
+              variant='dashed'
+              size={'sm'}
+              w={'100%'}
+              classNames={{
+                root: 'border-mainColor'
+              }}
+              labelPosition='center'
+              label={
+                <>
+                  <Box ml={5} className='italic'>
+                    Phụng Food Voucher
+                  </Box>
+                </>
+              }
+            />
+          </Center>
           <ScrollArea.Autosize mah={430} w={'100%'} mb={10} scrollbarSize={5}>
-            <Controller
-              control={control}
-              name='vouchers'
-              render={({ field }) => (
-                <Checkbox.Group
-                  {...field}
-                  onChange={value => {
-                    field.onChange(value);
-                    const selectedData = vouchers
-                      .flatMap(voucher => {
-                        if (value.includes(voucher?.id?.toString())) {
-                          return [
-                            {
-                              ...voucher
+            {fetchData && fetchData?.length > 0 ? (
+              <Box px={'sm'}>
+                <Controller
+                  control={control}
+                  name='voucherIds'
+                  render={({ field }) => (
+                    <Checkbox.Group
+                      {...field}
+                      onChange={value => {
+                        field.onChange(value);
+                        const selectedData = voucherIsRecived
+                          .flatMap(voucher => {
+                            if (value.includes(voucher?.id?.toString())) {
+                              return [
+                                {
+                                  id: voucher.id,
+                                  code: voucher.code,
+                                  maxDiscount: voucher.maxDiscount,
+                                  minOrderPrice: voucher.minOrderPrice,
+                                  type: voucher.type,
+                                  discountValue: voucher.discountValue
+                                }
+                              ];
                             }
-                          ];
+                            return [];
+                          })
+                          .filter(Boolean);
+                        addVouchers([...selectedData]);
+                      }}
+                    >
+                      {voucherIsRecived?.length > 0 && (
+                        <>
+                          <Box>
+                            <Text fw={500}>Kho voucher</Text>
+                            <Text size='sm' c='dimmed'>
+                              Có thể chọn 1 Voucher
+                            </Text>
+                          </Box>
+                          <Stack mt={6} gap={'xs'}>
+                            {voucherIsRecived?.map((item, index: number) => {
+                              return (
+                                <label
+                                  key={index}
+                                  htmlFor={`voucher-${item?.id.toString()}`}
+                                  className={`relative w-full ${
+                                    allowedVoucher(
+                                      item?.minOrderPrice || 0,
+                                      cart.map(p => ({ price: p?.product?.price, quantity: p?.quantity }))
+                                    )
+                                      ? 'cursor-pointer'
+                                      : 'cursor-not-allowed'
+                                  }`}
+                                >
+                                  <VoucherTemplate voucher={item} products={cart} />
+                                </label>
+                              );
+                            })}
+                          </Stack>
+                        </>
+                      )}
+                    </Checkbox.Group>
+                  )}
+                />
+                {voucherValid?.length > 0 && (
+                  <>
+                    <Center w={'100%'} mt={'lg'} mb={'sm'}>
+                      <Divider
+                        variant='dashed'
+                        size={'sm'}
+                        w={'100%'}
+                        classNames={{
+                          root: 'border-mainColor'
+                        }}
+                        labelPosition='center'
+                        label={
+                          <>
+                            <Box ml={5} className='italic'>
+                              Phụng Food Voucher
+                            </Box>
+                          </>
                         }
-                        return [];
-                      })
-                      .filter(Boolean);
-                    setSelectedVouchers([...selectedData]);
-                  }}
-                >
-                  {vouchers?.length > 0 ? (
+                      />
+                    </Center>
                     <>
                       <Box>
-                        <Text fw={500}>Giảm giá tiền</Text>
+                        <Text fw={500}>Dành cho bạn</Text>
                         <Text size='sm' c='dimmed'>
-                          Có thể chọn 1 Voucher
+                          Có thể nhận Voucher
                         </Text>
                       </Box>
                       <Stack mb={10} mt={6} gap={'xs'}>
-                        {vouchers?.map((item, index: number) => {
-                          return (
-                            <label
-                              key={index}
-                              htmlFor={`voucher-${item?.id.toString()}`}
-                              className={`relative w-full ${
-                                allowedVoucher(
-                                  item?.minOrderPrice || 0,
-                                  products.map(p => ({ price: p?.product?.price, quantity: p?.quantity }))
-                                )
-                                  ? 'cursor-pointer'
-                                  : 'cursor-not-allowed'
-                              }`}
-                            >
-                              <VoucherTemplate voucher={item} products={products} />
-                            </label>
-                          );
+                        {voucherValid?.map((item, index: number) => {
+                          return <VoucherTemplate voucher={item} products={cart} />;
                         })}
                       </Stack>
                     </>
-                  ) : (
-                    <Text>Không có voucher khả dụng.</Text>
-                  )}
-                </Checkbox.Group>
-              )}
-            />
+                  </>
+                )}
+              </Box>
+            ) : (
+              <>
+                <Text>Không có voucher khả dụng.</Text>
+              </>
+            )}
           </ScrollArea.Autosize>
 
           <Divider my={'md'} />

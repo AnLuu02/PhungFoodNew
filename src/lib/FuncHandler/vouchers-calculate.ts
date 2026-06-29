@@ -1,14 +1,14 @@
 import { formatDateViVN } from './Format';
 
 export const calculateMoney = (product: { price: number; quantity: number }[]) => {
-  return product?.reduce(
+  return product.reduce(
     (acc: number, item: { price: number; quantity: number }) => acc + item.price * item.quantity,
     0
   );
 };
 
-export const allowedVoucher = (orderPrice: number, products: { price: number; quantity: number }[]) => {
-  return orderPrice <= calculateMoney(products);
+export const allowedVoucher = (minOrderPrice: number, products: { price: number; quantity: number }[]) => {
+  return minOrderPrice <= calculateMoney(products);
 };
 export const hoursRemainingVoucher = (startDate: Date | string | number, endDate: Date | string | number) => {
   const now = new Date().getTime();

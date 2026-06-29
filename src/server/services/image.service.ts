@@ -718,7 +718,6 @@ export const connectedEntityService = async (
       return;
   }
 };
-//helper
 export async function deleteFromCloudinary(db: PrismaClient, imageIds: string[]) {
   const publicIds = await db.image.findMany({
     where: { id: { in: imageIds } },

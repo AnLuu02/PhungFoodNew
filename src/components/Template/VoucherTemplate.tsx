@@ -7,15 +7,12 @@ import { useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
+import { VoucherModalDataProps } from '~/types/modal';
 import { DateVoucher } from '../DateVoucher';
-type VoucherTemplateProps = {
-  voucher: VoucherApplyStorage;
-  products?: any;
-};
-const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
+
+const VoucherTemplate = ({ voucher, products }: VoucherModalDataProps) => {
   const openModal = useModalStore(s => s.open);
   const [loading, setLoading] = useState(false);
   const { data: user } = useSession();
@@ -26,6 +23,10 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
     }
   });
   const isReceived = voucher?.voucherForUser?.length > 0;
+  const isAllowed = allowedVoucher(
+    voucher?.minOrderPrice || 0,
+    products.map(p => ({ price: p.product.price, quantity: p.quantity }))
+  );
   const utils = api.useUtils();
 
   const handleReceivedVoucher = async (id: string) => {
@@ -138,8 +139,8 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
               <Text size='sm' fw={500} lineClamp={1}>
                 {voucher?.name}
               </Text>
-              {products && products.length > 0 && !allowedVoucher(voucher?.minOrderPrice || 0, products) && (
-                <Text size='xs' c='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
+              {products.length > 0 && !isAllowed && (
+                <Text size='11px' c='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
                   Không đủ điều kiện
                 </Text>
               )}
@@ -191,7 +192,7 @@ const VoucherTemplate = ({ voucher, products }: VoucherTemplateProps) => {
           ) : products && products.length >= 0 ? (
             <Checkbox
               value={voucher?.id.toString()}
-              disabled={products && products.length > 0 && !allowedVoucher(voucher?.minOrderPrice || 0, products)}
+              disabled={products && products.length > 0 && !isAllowed}
               id={`voucher-${voucher?.id.toString()}`}
             />
           ) : (

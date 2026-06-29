@@ -206,7 +206,53 @@ export const getVoucherForUserService = async (
     discountValue: moneyToNumber(v.discountValue)
   }));
 };
+export const getVoucherForUserByUniqueService = async (
+  db: PrismaClient,
+  input: { key: string; totalOrderPrice: number; userId?: string }
+) => {
+  const { key, userId, totalOrderPrice } = input;
+  const voucher = await db.voucher.findFirst({
+    where: {
+      isActive: true,
+      startDate: {
+        lte: new Date()
+      },
+      endDate: {
+        gte: new Date()
+      },
+      minOrderPrice: {
+        gte: totalOrderPrice
+      },
+      OR: [{ id: key }, { code: key }]
+    },
+    include: {
+      voucherForUser: {
+        select: {
+          id: true,
+          userId: true,
+          quantityForUser: true
+        }
+      }
+    }
+  });
+  if (!voucher) throw new TRPCError({ code: 'NOT_FOUND', message: 'Oops! Voucher không khả dụng hoặc đã hết hạn.' });
 
+  let validValue = undefined;
+  if (userId && voucher.voucherForUser.some(vfe => vfe.userId === userId && vfe.quantityForUser > 0)) {
+    validValue = voucher;
+  } else if (voucher.applyAll) {
+    validValue = voucher;
+  } else {
+    throw new TRPCError({ code: 'BAD_REQUEST', message: 'Oops! Voucher đã được sử dụng hết.' });
+  }
+
+  return {
+    ...validValue,
+    maxDiscount: moneyToNumber(validValue.maxDiscount),
+    minOrderPrice: moneyToNumber(validValue.minOrderPrice),
+    discountValue: moneyToNumber(validValue.discountValue)
+  };
+};
 export const upsertVoucherService = async (
   db: PrismaClient,
   input: { where: Prisma.VoucherWhereUniqueInput; data: Prisma.VoucherUpdateInput }

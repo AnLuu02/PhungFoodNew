@@ -6,14 +6,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCartAmount, useCartItems } from '~/components/Hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { useCartStorage } from '~/stores/cart.store';
+import { useCartStore } from '~/stores/cart.store';
 import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
 
 const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
   const isDesktop = useMediaQuery(`(min-width: 1024px)`);
   const cart = useCartItems();
-  const removeCart = useCartStorage(s => s.removeCart);
-  const updateCart = useCartStorage(s => s.updateCart);
+  const removeCart = useCartStore(s => s.removeCart);
+  const updateCart = useCartStore(s => s.updateCart);
   const originalAmount = useCartAmount();
   const cartSize = cart.length;
 

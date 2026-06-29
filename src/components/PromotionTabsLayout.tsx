@@ -130,7 +130,7 @@ export function PromotionTabLayout() {
             <Grid mt='md'>
               {displayedPromotions.map((promo: VoucherForUser[number]) => (
                 <GridCol span={{ base: 12, sm: 6, md: 6, lg: 6 }} key={promo.id}>
-                  <VoucherTemplate voucher={promo} />
+                  <VoucherTemplate voucher={promo} products={[]} />
                 </GridCol>
               ))}
             </Grid>

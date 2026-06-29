@@ -1,6 +1,5 @@
 'use client';
 import { Box, Button, Card, Divider, Flex, Group, ScrollAreaAutosize, Stack, Text, Title } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { VoucherType } from '@prisma/client';
 import { IconPercentage30 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
@@ -8,11 +7,10 @@ import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { ApplyVoucher } from '../app/(web)/thanh-toan/components/ApplyVoucher';
 import { ButtonCheckout } from '../app/(web)/thanh-toan/components/ButtonCheckout';
 import { CartItemPayment } from '../app/(web)/thanh-toan/components/CartItemPayment';
-import { useCartItems } from './Hooks/use-cart';
+import { useCartItems, useVoucherItems } from './Hooks/use-cart';
 import { ModalRecentOrder } from './Modals/ModalRecentOrder';
 import { RecapCartSkeleton } from './RecapCartSkeleton';
 
@@ -20,12 +18,9 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
   const [showRecentOrdersModal, setShowRecentOrdersModal] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { data: session } = useSession();
-  const cart = useCartItems();
 
-  const [appliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
-    key: 'applied-vouchers',
-    defaultValue: []
-  });
+  const cart = useCartItems();
+  const appliedVouchers = useVoucherItems();
 
   const { finalAmount, tax, totalDiscountAmount, totalOriginalPrice, totalVoucherAmount, totalProductDiscount } =
     useMemo(() => {

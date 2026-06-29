@@ -10,9 +10,9 @@ const ModalProductDetails = dynamic(() => import('~/components/Modals/ModalProdu
 
 const ModalOrderDetails = dynamic(() => import('~/components/Modals/ModalOrderDetails'), { ssr: false });
 
-const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'), { ssr: false });
+const ModalVoucherDetail = dynamic(() => import('~/components/Modals/ModalVoucherDetail'), { ssr: false });
 
-const ModalDetailVoucher = dynamic(() => import('~/components/Modals/ModalVoucherDetail'), { ssr: false });
+const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'), { ssr: false });
 
 const ModalImageLibrary = dynamic(() => import('~/components/Modals/ModalImageLibrary'), { ssr: false });
 
@@ -22,7 +22,7 @@ export const GlobalModalProvider: React.FC = () => {
   return (
     <>
       <ModalProductComments type={type} opened={opened && type === 'comments'} onClose={close} data={data} />
-      <ModalDetailVoucher type={type} opened={opened && type === 'voucher'} onClose={close} data={data} />
+      <ModalVoucherDetail type={type} opened={opened && type === 'voucher'} onClose={close} data={data} />
       <ModalProductDetails type={type} opened={opened && type === 'details'} onClose={close} data={data} />
       <ModalOrderDetails type={type} opened={opened && type === 'orders'} onClose={close} data={data} />
       <ModalSuccessAddToCart type={type} opened={opened && type === 'success'} onClose={close} data={data} />

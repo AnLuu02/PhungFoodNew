@@ -70,7 +70,6 @@ export const notificationRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await updateActionUserService(ctx.db, input)),
-  //delete
   deleteById: publicProcedure
     .use(activityLogger)
     .input(
@@ -79,7 +78,6 @@ export const notificationRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await deleteNotificationByIdService(ctx.db, input)),
-  //deleteFilter
   deleteNotificationRecipient: publicProcedure
     .use(activityLogger)
     .input(

@@ -301,7 +301,6 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
     });
   }
 
-  //statistics
   if (result?.newData && result.newData.status === OrderStatus.COMPLETED) {
     updatepointUser(db, input.userId, Number(input.finalAmount) || 0);
     updateRevenue(db, result.newData.status, input.userId, {

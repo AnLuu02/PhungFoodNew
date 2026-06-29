@@ -14,21 +14,17 @@ import {
   Title,
   UnstyledButton
 } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { IconChevronDown, IconMail, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
 import { menuUserInfo } from '~/lib/ConfigUI';
-import { VoucherApplyStorage } from '~/shared/types/store.types';
+import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: string | number }) {
-  const [, , resetSelectedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
-    key: 'applied-vouchers',
-    defaultValue: []
-  });
+  const clearCart = useCartStore(s => s.clearCart);
   const { data: session, status } = useSession();
 
   const utils = api.useUtils();
@@ -189,7 +185,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
             fullWidth
             variant='danger'
             onClick={() => {
-              resetSelectedVouchers();
+              clearCart();
               signOut({ callbackUrl: '/' });
             }}
           >

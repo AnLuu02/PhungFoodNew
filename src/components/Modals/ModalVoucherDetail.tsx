@@ -4,12 +4,18 @@ import { VoucherType } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { NotifyError } from '~/lib/FuncHandler/toast';
 import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { ModalProps } from '~/types/modal';
+import { ModalProps, VoucherModalDataProps } from '~/types/modal';
 
-export default function ModalDetailVoucher({ type, data, opened, onClose }: ModalProps<any>) {
-  const voucher = data?.voucher || {};
-  const products = data?.products || [];
+export default function ModalVoucherDetail({ type, data, opened, onClose }: ModalProps<VoucherModalDataProps>) {
+  const voucher = data?.voucher;
+  const productCaculates = (data?.products ?? []).map(p => ({ price: p.product.price, quantity: p.quantity }));
+  const isAllowed = allowedVoucher(voucher?.minOrderPrice || 0, productCaculates);
+  if (opened && !voucher) {
+    NotifyError('Oops! Có vẻ như voucher không tồn tại.');
+    return null;
+  }
   return (
     <Modal
       padding={0}
@@ -90,7 +96,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
               <Flex p='xs' justify={'space-between'} align={'center'} h={'100%'} flex={1}>
                 <Flex h={'100%'} direction={'column'} flex={1} pr={30}>
                   <Group>
-                    <Link href={`/san-pham/${voucher?.tag}`}>
+                    <Link href={``}>
                       <Tooltip label={voucher?.name}>
                         <Text
                           lineClamp={1}
@@ -98,11 +104,11 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
                           fw={700}
                           className='cursor-pointer text-center text-black hover:text-mainColor dark:text-dark-text'
                         >
-                          {voucher?.name || 'Cá thu'}
+                          {voucher?.name || 'Giảm giá sốc'}
                         </Text>
                       </Tooltip>
                     </Link>
-                    {!allowedVoucher(voucher?.minOrderPrice || 0, products) && (
+                    {!isAllowed && (
                       <Text size='xs' c='red' pos={'absolute'} bottom={2} right={10} className='z-50'>
                         Không đủ điều kiện
                       </Text>
@@ -135,11 +141,12 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
               </Flex>
             </Flex>
 
-            {!allowedVoucher(voucher?.minOrderPrice || 0, products) && products?.length > 0 && (
+            {!isAllowed && productCaculates.length > 0 && (
               <Box className='w-full border-t border-gray-100 bg-gray-100 px-1 py-2'>
                 <Text size='xs' className='text-red-500'>
                   Đơn của bạn còn thiếu{' '}
-                  <b> {formatPriceLocaleVi(voucher?.minOrderPrice - calculateMoney(products))}đ</b> để sử dụng voucher.
+                  <b> {formatPriceLocaleVi(voucher?.minOrderPrice - calculateMoney(productCaculates))}đ</b> để sử dụng
+                  voucher.
                 </Text>
               </Box>
             )}
@@ -151,7 +158,7 @@ export default function ModalDetailVoucher({ type, data, opened, onClose }: Moda
             </Box>
           </Paper>
 
-          <ScrollArea h={390} mt={16} scrollbarSize={5}>
+          <ScrollArea h={370} mt={16} scrollbarSize={5}>
             <Box className='border-b border-white' px={'md'} pt={'xl'}>
               <Text className='mb-1 text-sm' size='sm' fw={700}>
                 Hạn sử dụng mã

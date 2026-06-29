@@ -94,7 +94,6 @@ export const notificationPreferenceSchema = z.object({
   updatedAt: z.date().default(() => new Date())
 });
 
-//types
 export type Notification = z.infer<typeof notificationSchema>;
 
 export type NotificationRecipient = z.infer<typeof notificationRecipientSchema>;

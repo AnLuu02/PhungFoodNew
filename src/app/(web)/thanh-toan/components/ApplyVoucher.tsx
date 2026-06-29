@@ -1,54 +1,47 @@
 import { Badge, Box, Button, Divider, Paper, Text, TextInput } from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
 import { VoucherType } from '@prisma/client';
 import { IconGift, IconPlus, IconTag, IconX } from '@tabler/icons-react';
+import { TRPCClientError } from '@trpc/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import { useCartItems } from '~/components/Hooks/use-cart';
+import { useVoucherItems } from '~/components/Hooks/use-cart';
 import ModalListVoucher from '~/components/Modals/ModalListVoucher';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { VoucherApplyStorage } from '~/shared/types/store.types';
+import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';
 
 export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) => {
   const [showVoucher, setShowVoucher] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [voucherCode, setVoucherCode] = useState('');
+  const [loading, setLoading] = useState(false);
   const { data: user } = useSession();
-  const cart = useCartItems();
-  const [appliedVouchers, setAppliedVouchers] = useLocalStorage<VoucherApplyStorage[]>({
-    key: 'applied-vouchers',
-    defaultValue: []
-  });
+
+  const appliedVouchers = useVoucherItems();
+  const removeVoucher = useCartStore(s => s.removeVoucher);
+  const addVoucher = useCartStore(s => s.addVoucher);
+  console.log(1);
   const utils = api.useUtils();
 
   const handleApplyVoucher = async () => {
     try {
       setLoading(true);
-      const voucherData = await utils.Voucher.getVoucherForUser.fetch({
-        userId: user?.user.id
+      const voucher = await utils.Voucher.getVoucherForUserByUnique.fetch({
+        userId: user?.user.id,
+        key: voucherCode,
+        totalOrderPrice
       });
-      if (voucherCode) {
-        const voucher = voucherData.find(item => item.code?.toLowerCase() === voucherCode?.toLowerCase());
-        if (
-          !voucher ||
-          allowedVoucher(
-            totalOrderPrice,
-            cart.map(c => ({ price: c.product.price ?? 0, quantity: c.quantity }))
-          )
-        ) {
-          NotifyError('Voucher không hợp lệ. Hoặc không đủ điều kiện.', 'Vui lý nhập lại mã khuyên mãi.');
-          return;
-        }
-        const isExist = appliedVouchers.find(item => item.code?.toLowerCase() === voucher?.code?.toLowerCase());
-        if (!isExist) {
-          setAppliedVouchers((prev: VoucherApplyStorage[]) => {
-            if (prev.some(item => item.code?.toLowerCase() === voucher?.code?.toLowerCase())) {
-              return prev;
-            }
-            return [...prev, voucher];
+
+      if (voucherCode && voucher) {
+        const existed = appliedVouchers.some(item => item.code?.toLowerCase() === voucher?.code?.toLowerCase());
+        if (!existed) {
+          addVoucher({
+            id: voucher?.id,
+            maxDiscount: voucher?.maxDiscount,
+            minOrderPrice: voucher?.minOrderPrice,
+            discountValue: voucher?.discountValue,
+            type: voucher?.type,
+            code: voucher?.code
           });
           NotifySuccess('Thao tác thành công!', 'Voucher đã được thêm vào.');
           setVoucherCode('');
@@ -56,15 +49,16 @@ export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) =
           NotifyError('Thông báo!', 'Voucher này đã áp dụng rồi.');
         }
       }
-    } catch {
-      NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
+      setLoading(false);
+    } catch (error) {
+      if (error instanceof TRPCClientError) {
+        NotifyError(error.message);
+      } else {
+        NotifyError('Voucher không tồn tại hoặc đã có lỗi xảy ra.');
+      }
     } finally {
       setLoading(false);
     }
-  };
-  const removeVoucher = (code: string) => {
-    setAppliedVouchers(prev => prev.filter(item => item.code !== code));
-    NotifySuccess('Thao tác thành công!', 'Voucher đã được xóa.');
   };
 
   return (
@@ -82,15 +76,7 @@ export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) =
             size='sm'
             className='tex-red-500 h-auto p-1 text-xs hover:text-red-600'
             leftSection={<IconGift className='mr-1 h-3 w-3' />}
-            onClick={async () => {
-              setShowVoucher(true);
-              // setLoading(true);
-              // const data = await utils.Voucher.getVoucherForUser.fetch({
-              //   userId: user?.user?.id
-              // });
-              // setLoading(false);
-              // setVoucherData(data);
-            }}
+            onClick={async () => setShowVoucher(true)}
           >
             Chọn mã có sẵn
           </Button>
@@ -117,7 +103,10 @@ export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) =
                   variant='subtle'
                   size='sm'
                   className='h-6 w-6 p-0 text-green-600 hover:bg-green-100 hover:text-green-700'
-                  onClick={() => removeVoucher(voucher.code)}
+                  onClick={() => {
+                    removeVoucher(voucher.id);
+                    NotifySuccess('Thao tác thành công!', 'Voucher đã được xóa.');
+                  }}
                 >
                   <IconX className='h-3 w-3' />
                 </Button>

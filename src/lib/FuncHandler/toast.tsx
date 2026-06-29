@@ -33,7 +33,7 @@ const showNotification = ({
     color,
     icon: icon,
     withBorder: true,
-    style: { borderColor: color },
+    style: { borderColor: color, zIndex: 9999 },
     loading: false
   });
 };
