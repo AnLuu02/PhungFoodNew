@@ -12,7 +12,7 @@ export const ExportReports = () => {
   const handleExportReports = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/export-reports', {
+      const res = await fetch('/api/export/report', {
         method: 'POST',
         body: JSON.stringify({ period: Number(period) || 1 }),
         headers: { 'Content-Type': 'application/json' }

@@ -1,4 +1,5 @@
-import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { api, HydrateClient } from '~/trpc/server';
@@ -43,6 +44,16 @@ export default async function OrderManagementPage({
               Danh sách tất cả hóa đơn trong hệ thống PhungFood
             </Text>
           </Box>
+          <Button
+            component='a'
+            download
+            target='_self'
+            variant='outline'
+            href={`/api/export/xlsx?type=orders&limit=${limit}&page=${page}&s=${s}`}
+            leftSection={<IconDownload size={16} />}
+          >
+            Export danh sách đơn hàng
+          </Button>
         </Flex>
         <Group justify='end' mb='md'>
           <Group>

@@ -1,4 +1,18 @@
-import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Menu,
+  MenuDropdown,
+  MenuItem,
+  MenuLabel,
+  MenuTarget,
+  Stack,
+  Text,
+  Title
+} from '@mantine/core';
+import { IconDownload, IconFileTypeXls } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
 import CategoryClientManagementPage from './components/PageClient';
@@ -43,6 +57,37 @@ export default async function CategoryManagementPage({
               Danh sách tất cả danh mục sản phẩm trong hệ thống PhungFood
             </Text>
           </Box>
+          <Menu shadow='md' width={200}>
+            <MenuTarget>
+              <Button variant='outline' leftSection={<IconDownload size={16} />}>
+                Export dữ liệu
+              </Button>
+            </MenuTarget>
+
+            <MenuDropdown>
+              <MenuLabel>Tùy chọn xuất file</MenuLabel>
+
+              <MenuItem
+                component='a'
+                download
+                target='_self'
+                href={`/api/export/xlsx?type=categories&limit=${limit}&page=${page}&s=${s}`}
+                leftSection={<IconFileTypeXls size={16} />}
+              >
+                Export Danh mục
+              </MenuItem>
+
+              <MenuItem
+                component='a'
+                download
+                href={`/api/export/xlsx?type=subCategories&limit=${limit}&page=${page}&s=${s}`}
+                target='_self'
+                leftSection={<IconFileTypeXls size={16} />}
+              >
+                Export Danh mục con
+              </MenuItem>
+            </MenuDropdown>
+          </Menu>
         </Flex>
 
         <CategoryClientManagementPage />

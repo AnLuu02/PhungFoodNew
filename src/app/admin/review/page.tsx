@@ -1,4 +1,5 @@
-import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
 import { CreateReviewButton } from './components/Button';
@@ -45,7 +46,19 @@ export default async function ReviewManagementPage({
               Danh sách tất cả đánh giá trong hệ thống PhungFood
             </Text>
           </Box>
-          <CreateReviewButton />
+          <Group>
+            <Button
+              component='a'
+              download
+              variant='outline'
+              target='_self'
+              href={`/api/export/xlsx?type=reviews&limit=${limit}&page=${page}&s=${s}`}
+              leftSection={<IconDownload size={16} />}
+            >
+              Export danh sách đánh giá
+            </Button>
+            <CreateReviewButton />
+          </Group>
         </Flex>
         <TableReview />
       </Stack>

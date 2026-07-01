@@ -1,4 +1,5 @@
-import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
 import { CreateMaterialButton } from './components/Button';
@@ -39,7 +40,19 @@ export default async function MaterialManagementPage({
               Danh sách tất cả nguyên liệu trong hệ thống PhungFood
             </Text>
           </Box>
-          <CreateMaterialButton />
+          <Group>
+            <Button
+              component='a'
+              download
+              target='_self'
+              variant='outline'
+              href={`/api/export/xlsx?type=materials&limit=${limit}&page=${page}&s=${s}`}
+              leftSection={<IconDownload size={16} />}
+            >
+              Export danh sách nguyên liệu
+            </Button>
+            <CreateMaterialButton />
+          </Group>
         </Flex>
 
         <TableMaterial />

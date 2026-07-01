@@ -1,4 +1,5 @@
-import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Divider, Flex, Stack, Text, Title } from '@mantine/core';
+import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
 import TableContact from './components/Table/TableContact';
@@ -39,6 +40,16 @@ export default async function ContactManagementPage({
               Danh sách tất cả liên hệ của khách hàng trong hệ thống PhungFood
             </Text>
           </Box>
+          <Button
+            component='a'
+            download
+            target='_self'
+            variant='outline'
+            href={`/api/export/xlsx?type=contacts&limit=${limit}&page=${page}&s=${s}`}
+            leftSection={<IconDownload size={16} />}
+          >
+            Export danh sách liên hệ
+          </Button>
         </Flex>
 
         <TableContact />

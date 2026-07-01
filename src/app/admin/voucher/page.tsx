@@ -1,4 +1,5 @@
-import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
 import { CreateVoucherButton } from './components/Button';
@@ -46,7 +47,19 @@ export default async function VoucherManagementPage({
               Danh sách tất cả khuyến mãi trong hệ thống PhungFood
             </Text>
           </Box>
-          <CreateVoucherButton />
+          <Group>
+            <Button
+              component='a'
+              download
+              target='_self'
+              variant='outline'
+              href={`/api/export/xlsx?type=vouchers&limit=${limit}&page=${page}&s=${s}`}
+              leftSection={<IconDownload size={16} />}
+            >
+              Export mã giảm giá
+            </Button>
+            <CreateVoucherButton />
+          </Group>
         </Flex>
 
         <VoucherClient />

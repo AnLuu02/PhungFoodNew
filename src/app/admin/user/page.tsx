@@ -1,4 +1,5 @@
-import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
 import { CreateUserButton } from './components/Button';
@@ -54,7 +55,19 @@ export default async function UserManagementPage({
               Danh sách tất cả người dùng trong hệ thống PhungFood
             </Text>
           </Box>
-          <CreateUserButton />
+          <Group>
+            <Button
+              component='a'
+              download
+              target='_self'
+              variant='outline'
+              href={`/api/export/xlsx?type=users&limit=${limit}&page=${page}&s=${s}`}
+              leftSection={<IconDownload size={16} />}
+            >
+              Export danh sách người dùng
+            </Button>
+            <CreateUserButton />
+          </Group>
         </Flex>
 
         <TableUser />
