@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '~/server/auth/options';
-import { api } from '~/trpc/server';
+import { db } from '~/server/db';
+import { getFilterFavouriteFoodService } from '~/server/services/favouriteFood.service';
 import FavouritePageClient from './pageClient';
 
 export const metadata: Metadata = {
@@ -12,10 +13,10 @@ export const metadata: Metadata = {
 const FavouriteFoodPage = async () => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  const favourites = await api.FavouriteFood.getFilter({
+  const favourites = await getFilterFavouriteFoodService(db, {
     keys: userId ? [userId] : []
   });
-  return <FavouritePageClient favourites={favourites} />;
+  return <FavouritePageClient favourites={favourites} userId={userId} />;
 };
 
 export default FavouriteFoodPage;

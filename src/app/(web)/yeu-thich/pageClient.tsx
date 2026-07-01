@@ -1,16 +1,18 @@
 'use client';
 import { Grid, GridCol } from '@mantine/core';
-import { useSession } from 'next-auth/react';
 import Empty from '~/components/Empty';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { GetFilterFavouriteFood } from '~/shared/type-trpc/favouriteFood.type-trpc';
 import { api } from '~/trpc/react';
 
-export default function FavouritePageClient({ favourites }: { favourites: GetFilterFavouriteFood }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-
+export default function FavouritePageClient({
+  userId,
+  favourites
+}: {
+  favourites: GetFilterFavouriteFood;
+  userId?: string;
+}) {
   const { data, isLoading } = api.FavouriteFood.getFilter.useQuery(
     {
       keys: userId ? [userId] : []
