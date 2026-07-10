@@ -2,18 +2,14 @@
 
 import { Box, Divider, Flex, Paper, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
 import { IconChartBar, IconChevronRight, IconGift, IconShoppingCart, IconUser } from '@tabler/icons-react';
-import { Session } from 'next-auth';
-import { useState } from 'react';
-import { GetOverviewUser } from '~/shared/type-trpc/user.type-trpc';
+import { useSession } from 'next-auth/react';
+import { useEffect, useMemo, useState } from 'react';
+import { AppSkeleton } from '~/components/Skeleton/AppSkeleton';
+import { api } from '~/trpc/react';
 import { OrderList } from './OrderList';
 import { Promotions } from './Promotion';
 import { UserInfo } from './UserInfo';
 import { UserStatistics } from './UserStatistics';
-const surfaceShadow = 'shadow-[0_18px_50px_rgba(15,23,42,0.13)] dark:shadow-[0_18px_50px_rgba(0,0,0,0.38)]';
-
-const softShadow = 'shadow-[0_10px_30px_rgba(15,23,42,0.11)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.32)]';
-
-const activeShadow = 'shadow-[0_12px_30px_rgba(21,93,252,0.35)] dark:shadow-[0_12px_30px_rgba(21,93,252,0.25)]';
 
 const tabs = [
   {
@@ -42,16 +38,23 @@ const tabs = [
   }
 ];
 
-export function DashboardContent({
-  session,
-  user
-}: {
-  session: Session | null;
-  user: NonNullable<GetOverviewUser>['user'];
-}) {
+export function DashboardContent() {
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const { data: overviewUser, isLoading } = api.User.getOverviewUser.useQuery(
+    {
+      key: userId || ''
+    },
+    {
+      enabled: !!userId
+    }
+  );
+  const user = overviewUser?.user;
+
   const [activeTab, setActiveTab] = useState<string | null>('user-info');
 
-  const renderTabItem = () => {
+  const renderTabItem = useMemo(() => {
+    if (!user) return;
     switch (activeTab) {
       case 'statistics':
         return <UserStatistics user={user} session={session} />;
@@ -64,14 +67,20 @@ export function DashboardContent({
       default:
         return <UserInfo user={user} session={session} />;
     }
-  };
+  }, [user, activeTab]);
+
+  const utils = api.useUtils();
+
+  useEffect(() => {
+    void utils.Order.getFilter.prefetch({ s: userId || '' });
+  }, [userId]);
 
   return (
     <Tabs value={activeTab} onChange={setActiveTab} mt='lg' variant='unstyled'>
       <Flex gap='lg' align='flex-start'>
         <Paper
           p='sm'
-          className={`sticky top-24 hidden w-[290px] shrink-0 bg-white ${surfaceShadow} backdrop-blur-xl dark:bg-dark-card lg:block`}
+          className={`sticky top-24 hidden w-[290px] shrink-0 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.13)] backdrop-blur-xl dark:bg-dark-card dark:shadow-[0_18px_50px_rgba(0,0,0,0.38)] lg:block`}
         >
           <Text px='sm' pt='xs' pb='sm' size='xs' fw={800} c='dimmed' tt='uppercase'>
             Tài khoản của tôi
@@ -132,7 +141,10 @@ export function DashboardContent({
 
           <Divider my='sm' className='opacity-40' />
 
-          <Paper p='md' className={`bg-white ${softShadow} dark:bg-white/5`}>
+          <Paper
+            p='md'
+            className={`bg-white shadow-[0_10px_30px_rgba(15,23,42,0.11)] dark:bg-white/5 dark:shadow-[0_10px_30px_rgba(0,0,0,0.32)]`}
+          >
             <Text size='sm' fw={800}>
               Gợi ý hôm nay
             </Text>
@@ -143,15 +155,19 @@ export function DashboardContent({
         </Paper>
 
         <Box className='min-w-0 flex-1 md:pb-24 lg:pb-0'>
-          <Paper p={0} className={`animate-[fadeUp_.35s_ease] bg-transparent`}>
-            {renderTabItem()}
-          </Paper>
+          {isLoading ? (
+            <AppSkeleton />
+          ) : (
+            <Paper p={0} className={`animate-[fadeUp_.35s_ease] bg-transparent`}>
+              {renderTabItem}
+            </Paper>
+          )}
         </Box>
       </Flex>
 
       <Paper
         p={8}
-        className={`fixed bottom-[72px] left-3 right-3 z-50 bg-white/95 ${surfaceShadow} backdrop-blur-xl dark:bg-dark-card lg:hidden`}
+        className={`fixed bottom-[72px] left-3 right-3 z-50 bg-white/95 shadow-[0_18px_50px_rgba(15,23,42,0.13)] backdrop-blur-xl dark:bg-dark-card dark:shadow-[0_18px_50px_rgba(0,0,0,0.38)] lg:hidden`}
       >
         <Tabs.List grow>
           {tabs.map(tab => {

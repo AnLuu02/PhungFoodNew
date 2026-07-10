@@ -65,6 +65,6 @@ export const INFO_LEVEL_USER = {
     enName: 'DIAMOND',
     color: '#5F77C3',
     thumbnail: 'rank_kc.png',
-    nextLevel: UserLevel.DIAMOND
+    nextLevel: null
   }
 };

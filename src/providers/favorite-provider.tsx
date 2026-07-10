@@ -9,9 +9,9 @@ import { api } from '~/trpc/react';
 export function FavoriteProvider({ favourites }: { favourites?: GetFilterFavouriteFood }) {
   const { data: session } = useSession();
 
-  const hydrate = useFavoriteStore(state => state.hydrate);
-
   const userId = session?.user?.id;
+
+  const hydrate = useFavoriteStore(state => state.hydrate);
 
   const { data } = api.FavouriteFood.getFilterIds.useQuery(
     {
@@ -23,11 +23,17 @@ export function FavoriteProvider({ favourites }: { favourites?: GetFilterFavouri
     }
   );
 
+  const utils = api.useUtils();
+
   useEffect(() => {
     if (!userId) return;
     if (!data) return;
 
     hydrate(data.map(item => item.productId));
+
+    void utils.FavouriteFood.getFilter.prefetch({
+      keys: userId ? [userId] : []
+    });
   }, [data, userId]);
 
   return null;

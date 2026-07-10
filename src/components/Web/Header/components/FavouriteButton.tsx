@@ -1,13 +1,29 @@
 'use client';
 import { Box, Button, Paper } from '@mantine/core';
 import { IconHeart } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useCallback } from 'react';
 import { useFavoriteCount } from '~/components/Hooks/use-favorite';
+import { api } from '~/trpc/react';
 
 const LikeButton = () => {
   const count = useFavoriteCount();
+
+  const { data: session } = useSession();
+
+  const utils = api.useUtils();
+
+  const userId = session?.user?.id;
+
+  const handlePrefetch = useCallback(() => {
+    void utils.FavouriteFood.getFilter.prefetch({
+      keys: userId ? [userId] : []
+    });
+  }, [userId]);
+
   return (
-    <Link href={`/yeu-thich`}>
+    <Link href={`/yeu-thich`} onMouseEnter={handlePrefetch}>
       <Button
         variant='outline'
         radius={'xl'}

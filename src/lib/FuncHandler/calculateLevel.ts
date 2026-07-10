@@ -6,7 +6,7 @@ export const caculateLevelUser = ({ level, pointUser }: { level?: UserLevel; poi
   const currentLevelKey = level ?? UserLevel.BRONZE;
   const LEVEL = INFO_LEVEL_USER[currentLevelKey];
 
-  const NEXT_LEVEL = LEVEL.key === LEVEL.nextLevel ? LEVEL : INFO_LEVEL_USER[LEVEL.nextLevel];
+  const NEXT_LEVEL = !LEVEL.nextLevel ? LEVEL : INFO_LEVEL_USER[LEVEL.nextLevel];
 
   const currentPoint = pointUser ?? 0;
   const pointRemaining = NEXT_LEVEL.minPoint - currentPoint <= 0 ? 0 : NEXT_LEVEL.minPoint - currentPoint;
