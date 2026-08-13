@@ -55,7 +55,7 @@ export default async function ReviewManagementPage({
               href={`/api/export/xlsx?type=reviews&limit=${limit}&page=${page}&s=${s}`}
               leftSection={<IconDownload size={16} />}
             >
-              Export danh sách đánh giá
+              Export dữ liệu
             </Button>
             <CreateReviewButton />
           </Group>

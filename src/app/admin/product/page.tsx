@@ -59,7 +59,7 @@ export default async function ProductManagementPage({
               href={`/api/export/xlsx?type=products&limit=${limit}&page=${page}&s=${s}`}
               leftSection={<IconDownload size={16} />}
             >
-              Export danh sách mặc hàng
+              Export dữ liệu
             </Button>
             <CreateProductButton />
           </Group>

@@ -56,7 +56,7 @@ export default async function VoucherManagementPage({
               href={`/api/export/xlsx?type=vouchers&limit=${limit}&page=${page}&s=${s}`}
               leftSection={<IconDownload size={16} />}
             >
-              Export mã giảm giá
+              Export dữ liệu
             </Button>
             <CreateVoucherButton />
           </Group>

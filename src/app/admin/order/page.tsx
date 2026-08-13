@@ -52,7 +52,7 @@ export default async function OrderManagementPage({
             href={`/api/export/xlsx?type=orders&limit=${limit}&page=${page}&s=${s}`}
             leftSection={<IconDownload size={16} />}
           >
-            Export danh sách đơn hàng
+            Export dữ liệu
           </Button>
         </Flex>
         <Group justify='end' mb='md'>

@@ -23,7 +23,7 @@ const LikeButton = () => {
   }, [userId]);
 
   return (
-    <Link href={`/yeu-thich`} onMouseEnter={handlePrefetch}>
+    <Link href={`/yeu-thich`} onMouseEnter={handlePrefetch} onPointerDown={handlePrefetch}>
       <Button
         variant='outline'
         radius={'xl'}

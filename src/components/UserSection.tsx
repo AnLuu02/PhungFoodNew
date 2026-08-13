@@ -18,15 +18,16 @@ import { IconChevronDown, IconMail, IconUserCircle } from '@tabler/icons-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
 import { menuUserInfo } from '~/lib/ConfigUI';
 import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';
 
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: string | number }) {
+  const pathName = usePathname();
   const clearCart = useCartStore(s => s.clearCart);
   const { data: session, status } = useSession();
-
   const utils = api.useUtils();
   const handlePrefetchInfoUser = useCallback(() => {
     if (session?.user?.email) {
@@ -37,6 +38,8 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
       });
     }
   }, [session?.user?.email]);
+
+  const isAdmin = pathName.includes('/admin');
 
   if (status === 'loading') {
     return (
@@ -158,25 +161,29 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
         <Box px={'lg'} mt={'md'}>
           <Divider />
         </Box>
-        {menuUserInfo.map((item, index) => (
-          <Link
-            href={item.href}
-            key={index}
-            onMouseEnter={() => item.href === '/thong-tin' && handlePrefetchInfoUser()}
-          >
-            <Box key={index} className='flex items-center gap-4 hover:bg-mainColor/10' px={'lg'} py={'sm'}>
-              <Paper withBorder className='flex items-center justify-center bg-mainColor/10' w={40} h={40}>
-                <item.icon size={20} />
-              </Paper>
-              <Stack gap={2}>
-                <Text fw={700}>{item.label}</Text>
-                <Text size='xs' c={'dimmed'} fw={600}>
-                  {item.des}
-                </Text>
-              </Stack>
-            </Box>
-          </Link>
-        ))}
+        {menuUserInfo.map((item, index) => {
+          if (item?.isClientOnly && isAdmin) return null;
+          return (
+            <Link
+              href={item.href}
+              key={index}
+              onMouseEnter={() => item.href === '/thong-tin' && handlePrefetchInfoUser()}
+              onPointerDown={() => item.href === '/thong-tin' && handlePrefetchInfoUser()}
+            >
+              <Box key={index} className='flex items-center gap-4 hover:bg-mainColor/10' px={'lg'} py={'sm'}>
+                <Paper withBorder className='flex items-center justify-center bg-mainColor/10' w={40} h={40}>
+                  <item.icon size={20} />
+                </Paper>
+                <Stack gap={2}>
+                  <Text fw={700}>{item.label}</Text>
+                  <Text size='xs' c={'dimmed'} fw={600}>
+                    {item.des}
+                  </Text>
+                </Stack>
+              </Box>
+            </Link>
+          );
+        })}
         <Box px={'lg'}>
           <Divider />
         </Box>

@@ -48,7 +48,7 @@ export default async function ContactManagementPage({
             href={`/api/export/xlsx?type=contacts&limit=${limit}&page=${page}&s=${s}`}
             leftSection={<IconDownload size={16} />}
           >
-            Export danh sách liên hệ
+            Export dữ liệu
           </Button>
         </Flex>
 

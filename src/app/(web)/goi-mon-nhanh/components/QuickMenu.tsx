@@ -156,20 +156,22 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
                 const active = item.tag === currentCategory;
 
                 return (
-                  <Link href={`/goi-mon-nhanh?danh-muc=${item.tag}`} key={`${item.id}-${index}`}>
-                    <Button
-                      size='sm'
-                      variant='subtle'
-                      onMouseEnter={() => handlePrefetch(item.tag)}
-                      className={
-                        active
-                          ? 'bg-mainColor px-4 text-white shadow-sm hover:bg-mainColor hover:text-white dark:bg-dark-card dark:text-mainColor'
-                          : 'px-4 text-slate-600 hover:bg-white hover:text-mainColor dark:text-dark-text dark:hover:bg-white/10'
-                      }
-                    >
-                      {item.name}
-                    </Button>
-                  </Link>
+                  <Button
+                    component={Link}
+                    href={`/goi-mon-nhanh?danh-muc=${item.tag}`}
+                    key={`${item.id}-${index}`}
+                    size='sm'
+                    variant='subtle'
+                    onMouseEnter={() => handlePrefetch(item.tag)}
+                    onPointerDown={() => handlePrefetch(item.tag)}
+                    className={
+                      active
+                        ? 'bg-mainColor px-4 text-white shadow-sm hover:bg-mainColor hover:text-white dark:bg-dark-card dark:text-mainColor'
+                        : 'px-4 text-slate-600 hover:bg-white hover:text-mainColor dark:text-dark-text dark:hover:bg-white/10'
+                    }
+                  >
+                    {item.name}
+                  </Button>
                 );
               })}
 
@@ -202,6 +204,7 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCatego
                           component={Link}
                           href={`/goi-mon-nhanh?danh-muc=${item.tag}`}
                           onMouseEnter={() => handlePrefetch(item.tag)}
+                          onPointerDown={() => handlePrefetch(item.tag)}
                           className={
                             active
                               ? 'bg-mainColor/10 font-bold text-mainColor'

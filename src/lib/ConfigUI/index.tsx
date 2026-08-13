@@ -79,6 +79,7 @@ export const menuUserInfo = [
     label: 'Đơn hàng của tôi',
     des: 'Xem và quản lý các đơn hàng',
     href: '/don-hang-cua-toi',
+    isClientOnly: true,
     icon: IconShoppingBag
   },
   { label: 'Đổi mật khẩu', des: 'Đổi mật khẩu người dùng', href: '/password/change-password', icon: IconLock }

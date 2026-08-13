@@ -185,7 +185,7 @@ export default function TableProduct() {
                       {item.name}
                     </Highlight>
 
-                    <Text size='sm' fw={700} c='mainColor'>
+                    <Text size='sm' fw={700} c='primary'>
                       {formatPriceLocaleVi(item.price)}
                     </Text>
 
@@ -204,24 +204,46 @@ export default function TableProduct() {
               <Divider my='sm' />
 
               <Stack gap='sm'>
-                <Group gap='xs'>
-                  <Text size='xs' c='dimmed' fw={600}>
-                    Danh mục:
-                  </Text>
+                <Group justify='space-between'>
+                  <Group gap='xs'>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Danh mục:
+                    </Text>
 
-                  <Tooltip label={item.subCategory?.name}>
-                    <Badge color='green'>{item.subCategory?.name}</Badge>
-                  </Tooltip>
+                    <Tooltip label={item.subCategory?.name}>
+                      <Badge color='green'>{item.subCategory?.name}</Badge>
+                    </Tooltip>
+                  </Group>
+                  <Group gap='xs'>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Tồn kho:
+                    </Text>
+
+                    <Text size='xs' c='red' fw={700}>
+                      {item?.availableQuantity ?? 0}
+                    </Text>
+                  </Group>
                 </Group>
 
-                <Group gap='xs'>
-                  <Text size='xs' c='dimmed' fw={600}>
-                    Trạng thái:
-                  </Text>
+                <Group justify='space-between'>
+                  <Group gap='xs'>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Trạng thái:
+                    </Text>
 
-                  <Tooltip label={item.isActive ? 'Hoạt động' : 'Tạm ẩn'}>
-                    <Badge color={item.isActive ? '' : 'red'}>{item.isActive ? 'Hoạt động' : 'Tạm ẩn'}</Badge>
-                  </Tooltip>
+                    <Tooltip label={item.isActive ? 'Hoạt động' : 'Tạm ẩn'}>
+                      <Badge color={item.isActive ? '' : 'red'}>{item.isActive ? 'Hoạt động' : 'Tạm ẩn'}</Badge>
+                    </Tooltip>
+                  </Group>
+                  <Group gap='xs'>
+                    <Text size='xs' c='dimmed' fw={600}>
+                      Đã bán:
+                    </Text>
+
+                    <Text size='xs' c='red' fw={700}>
+                      {item?.soldQuantity ?? 0}
+                    </Text>
+                  </Group>
                 </Group>
 
                 <Stack gap={6}>

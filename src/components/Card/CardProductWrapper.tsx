@@ -11,7 +11,11 @@ const CardProductWrapper = ({ children, slug }: { children: React.ReactNode; slu
     });
   }, [slug]);
 
-  return <Box onMouseEnter={handlePrefetch}>{children}</Box>;
+  return (
+    <Box onMouseEnter={handlePrefetch} onPointerDown={handlePrefetch}>
+      {children}
+    </Box>
+  );
 };
 
 export default memo(CardProductWrapper);

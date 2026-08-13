@@ -64,7 +64,7 @@ export default async function UserManagementPage({
               href={`/api/export/xlsx?type=users&limit=${limit}&page=${page}&s=${s}`}
               leftSection={<IconDownload size={16} />}
             >
-              Export danh sách người dùng
+              Export dữ liệu
             </Button>
             <CreateUserButton />
           </Group>

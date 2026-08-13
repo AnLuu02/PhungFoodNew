@@ -49,7 +49,7 @@ export default async function MaterialManagementPage({
               href={`/api/export/xlsx?type=materials&limit=${limit}&page=${page}&s=${s}`}
               leftSection={<IconDownload size={16} />}
             >
-              Export danh sách nguyên liệu
+              Export dữ liệu
             </Button>
             <CreateMaterialButton />
           </Group>
