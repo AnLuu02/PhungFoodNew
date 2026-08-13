@@ -6,18 +6,18 @@ import { useModalStore } from '~/stores/modal.store';
 export const ButtonViewProduct = ({ data, isMobile }: { data: any; isMobile?: boolean }) => {
   const openModal = useModalStore(s => s.open);
   return (
-    <Tooltip label='Xem nhanh'>
+    <Tooltip label='Xem nhanh' key={data?.tag}>
       {isMobile ? (
         <Button
+          component={Link}
+          href={`/san-pham/${data?.tag}`}
           size='xs'
           w={30}
           h={30}
           variant='default'
-          className={`border-t-r-0 flex items-center justify-center rounded-full text-mainColor sm:hover:text-subColor`}
+          className={`flex items-center justify-center rounded-full text-mainColor hover:text-subColor`}
         >
-          <Link href={`/san-pham/${data?.tag}`}>
-            <IconEye size={20} />
-          </Link>
+          <IconEye size={20} />
         </Button>
       ) : (
         <Button
@@ -28,7 +28,7 @@ export const ButtonViewProduct = ({ data, isMobile }: { data: any; isMobile?: bo
           w={30}
           h={30}
           variant='default'
-          className={`border-t-r-0 flex items-center justify-center rounded-full text-mainColor sm:hover:text-subColor`}
+          className={`flex items-center justify-center rounded-full text-mainColor hover:text-subColor`}
         >
           <IconEye />
         </Button>

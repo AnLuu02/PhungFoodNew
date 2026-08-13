@@ -53,10 +53,7 @@ const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
               'visible flex items-center justify-center bg-[rgba(0,0,0,0.2)] transition-all duration-200 ease-in-out sm:group-hover:visible lg:invisible'
             }
           >
-            <Group
-              gap={5}
-              className={`mr-1 mt-1 flex-col bg-transparent sm:group-hover:animate-fadeDown md:mr-0 md:mt-0 md:flex-row`}
-            >
+            <Group gap={5} className={`mr-1 mt-1 bg-transparent sm:group-hover:animate-fadeDown md:mr-0 md:mt-0`}>
               <ButtonViewProduct data={data} isMobile={isMobile} />
               <ButtonToggleLike isLiked={isLiked} key={data?.id + 'buttonToggleLikevertical'} product={data} />
             </Group>
