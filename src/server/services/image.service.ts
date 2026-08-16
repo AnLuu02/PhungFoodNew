@@ -1,8 +1,8 @@
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { ImageAssociation, ImageWithAssociations } from '~/app/admin/images/types/image.types';
 import cloudinary from '~/lib/Cloudinary/cloudinary';
 import { ImageFromDb } from '~/shared/schema/image.schema';
+import { ImageAssociation, ImageWithAssociations } from '~/shared/types/image.types';
 import { getOneBannerService } from './restaurant.banner.service';
 import { getOneActiveClientService } from './restaurant.service';
 import { getOneUserService } from './user.service';

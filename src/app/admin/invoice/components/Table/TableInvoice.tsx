@@ -21,7 +21,8 @@ import InvoiceToPrint from '~/components/InvoceToPrint';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { renderShortId } from '~/lib/FuncHandler/renderShortId';
 import { FindInvoice, GetAllInvoice } from '~/shared/type-trpc/invoice.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '../Button';
@@ -97,7 +98,7 @@ export default function TableInvoice() {
   return (
     <>
       <SimpleGrid cols={5}>
-        {dataFilter?.map((item, index) => {
+        {dataFilter.map((item, index) => {
           const IconR = item.icon;
           return (
             <Card style={{ backgroundColor: item.color + 10 }} shadow='md' pos={'relative'} key={index} p={'md'}>
@@ -150,7 +151,7 @@ export default function TableInvoice() {
                   </Table.Td>
 
                   <Table.Td>
-                    <Text size='sm'>#{row?.orderId?.slice(-6)?.toUpperCase() || 'Đang cập nhật'}</Text>
+                    <Text size='sm'>{renderShortId('HD', 6, row?.id)}</Text>
                   </Table.Td>
 
                   <Table.Td>
@@ -166,9 +167,7 @@ export default function TableInvoice() {
 
                   <Table.Td>
                     <Text size='sm' fw={700} c='red'>
-                      {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: row.currency }).format(
-                        row.totalAmount
-                      )}
+                      {formatPriceLocaleVi(row.totalAmount)}
                     </Text>
                   </Table.Td>
 

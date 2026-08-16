@@ -5,12 +5,10 @@ import { api, HydrateClient } from '~/trpc/server';
 import { CreatePaymentButton } from './components/Button';
 import TablePayment from './components/Table/TablePayment';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Quản lý thanh toán '
 };
+
 export default async function PaymentManagementPage({
   searchParams
 }: {

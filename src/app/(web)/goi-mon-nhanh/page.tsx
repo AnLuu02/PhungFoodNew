@@ -4,9 +4,6 @@ import { api, HydrateClient } from '~/trpc/server';
 import { RecapCart } from '../../../components/RecapCart';
 import { QuickMenu } from './components/QuickMenu';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Gọi món nhanh - Phụng Food',
   description: 'Gọi món nhanh các món ăn miền Tây tại Phụng Food. Đặt hàng tiện lợi và nhanh chóng.'

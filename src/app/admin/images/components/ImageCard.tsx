@@ -5,7 +5,7 @@ import { ImageType } from '@prisma/client';
 import { IconAlertCircle, IconDotsVertical, IconLink, IconLinkOff, IconPencil, IconTrash } from '@tabler/icons-react';
 import Link from 'next/link';
 import { memo } from 'react';
-import { ConnectedState } from './ImageManager';
+import { ConnectedState } from '../../../../shared/types/image.types';
 
 interface ImageCardProps {
   image: any;

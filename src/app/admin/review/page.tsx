@@ -5,12 +5,10 @@ import { api, HydrateClient } from '~/trpc/server';
 import { CreateReviewButton } from './components/Button';
 import TableReview from './components/Table/TableReview';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Quản lý đánh giá'
 };
+
 export default async function ReviewManagementPage({
   searchParams
 }: {

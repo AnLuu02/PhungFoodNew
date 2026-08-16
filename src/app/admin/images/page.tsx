@@ -1,8 +1,12 @@
+import { Metadata } from 'next';
 import ImageManager from './components/ImageManager';
 
-export const revalidate = 60 * 60;
 export const dynamic = 'force-static';
 
-export default function ImageManagerPage() {
+export const metadata: Metadata = {
+  title: 'Quản lý hình ảnh & video'
+};
+
+export default async function ImageManagerPage() {
   return <ImageManager mode={'page'} />;
 }

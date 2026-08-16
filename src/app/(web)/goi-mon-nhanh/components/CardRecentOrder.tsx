@@ -7,6 +7,7 @@ import { IconEye, IconRefresh, IconSettings } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { renderShortId } from '~/lib/FuncHandler/renderShortId';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
 import { useCartStore } from '~/stores/cart.store';
@@ -79,7 +80,7 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
                 </Text>
 
                 <Text fw={900} className='text-slate-950 dark:text-white'>
-                  #{order?.id?.slice(-8).toUpperCase() || 'ĐANG CẬP NHẬT'}
+                  {renderShortId('DH', 6, order?.id)}
                 </Text>
               </Box>
               <Text size='sm' c='dimmed' mt={2}>

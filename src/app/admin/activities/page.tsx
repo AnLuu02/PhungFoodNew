@@ -3,10 +3,6 @@
 import { Badge, Box, Button, Card, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { IconBolt, IconClock, IconDatabase, IconLayersDifference, IconRefresh, IconUsers } from '@tabler/icons-react';
 
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 import { useCallback, useState } from 'react';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api } from '~/trpc/react';
@@ -21,9 +17,6 @@ export interface ActivityFilters {
   search?: string;
 }
 
-dayjs.extend(relativeTime);
-dayjs.extend(utc);
-dayjs.extend(timezone);
 const TABS = [
   {
     value: 'feed',

@@ -54,17 +54,6 @@ export const formatTransDate = (iso: string): string => {
   );
 };
 
-export const formatCustomTimestamp = (timestamp: string) => {
-  if (!timestamp || timestamp.length !== 14) return 'N/A';
-  const year = timestamp.slice(0, 4);
-  const month = timestamp.slice(4, 6);
-  const day = timestamp.slice(6, 8);
-  const hour = timestamp.slice(8, 10);
-  const minute = timestamp.slice(10, 12);
-  const second = timestamp.slice(12, 14);
-  return ` ${hour}:${minute}:${second}, ${day}/${month}/${year} `;
-};
-
 export const formatDataExcel = (mapFields: Record<string, string>, rows: any[]) => {
   return rows.map(row => {
     const formattedRow: Record<string, any> = {};

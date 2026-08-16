@@ -8,7 +8,7 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ImageInfoInput } from '~/shared/schema/image.info.schema';
 import { api } from '~/trpc/react';
-import { ConnectedStateWithEntity } from './ImageManager';
+import { ConnectedStateWithEntity } from '../../../../shared/types/image.types';
 
 interface UploadModalProps {
   connectedState: ConnectedStateWithEntity;

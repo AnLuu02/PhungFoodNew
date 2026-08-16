@@ -19,7 +19,7 @@ import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useCallback } from 'react';
+import { useEffect } from 'react';
 import { menuUserInfo } from '~/lib/ConfigUI';
 import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';
@@ -27,19 +27,16 @@ import { api } from '~/trpc/react';
 export default function UserSection({ responsive, width }: { responsive?: boolean; width?: string | number }) {
   const pathName = usePathname();
   const clearCart = useCartStore(s => s.clearCart);
-  const { data: session, status } = useSession();
-  const utils = api.useUtils();
-  const handlePrefetchInfoUser = useCallback(() => {
-    if (session?.user?.email) {
-      void utils.User.getOne.prefetch({ key: session?.user?.email || '', include: { orders: true } });
-      void utils.Order.getFilter.prefetch({ s: session?.user?.email || '' });
-      void utils.Voucher.getVoucherForUser.prefetch({
-        userId: session?.user?.id || ''
-      });
-    }
-  }, [session?.user?.email]);
 
-  const isAdmin = pathName.includes('/admin');
+  const { data: session, status } = useSession();
+  const email = session?.user?.email;
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (email) {
+      void utils.User.getOne.prefetch({ key: email || '', include: { orders: true } });
+    }
+  }, [email]);
 
   if (status === 'loading') {
     return (
@@ -108,7 +105,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
                   {session?.user?.name}
                 </Text>
                 <Text size='xs' fw={700} c={'dimmed'} lineClamp={1}>
-                  {session?.user?.email}
+                  {email}
                 </Text>
               </Box>
             </Flex>
@@ -152,7 +149,7 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
               <Group align='center' gap={5}>
                 <IconMail className='m-0 h-4 w-4 p-0 text-gray-600 dark:text-dark-text' />
                 <Text size='sm' className='italic text-gray-600 dark:text-dark-text'>
-                  {session?.user?.email}
+                  {email}
                 </Text>
               </Group>
             </Stack>
@@ -162,14 +159,9 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
           <Divider />
         </Box>
         {menuUserInfo.map((item, index) => {
-          if (item?.isClientOnly && isAdmin) return null;
+          if (item?.isClientOnly && pathName.includes('/admin')) return null;
           return (
-            <Link
-              href={item.href}
-              key={index}
-              onMouseEnter={() => item.href === '/thong-tin' && handlePrefetchInfoUser()}
-              onPointerDown={() => item.href === '/thong-tin' && handlePrefetchInfoUser()}
-            >
+            <Link href={item.href} key={index}>
               <Box key={index} className='flex items-center gap-4 hover:bg-mainColor/10' px={'lg'} py={'sm'}>
                 <Paper withBorder className='flex items-center justify-center bg-mainColor/10' w={40} h={40}>
                   <item.icon size={20} />

@@ -11,6 +11,12 @@ export type RawQuery = {
   date: Date;
   total: number;
 };
+
+type PageProps = {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
 export type CompareOptions = {
   period: Period;
   db: PrismaClient;

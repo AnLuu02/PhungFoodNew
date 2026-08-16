@@ -5,7 +5,7 @@ import { IconCloudUpload, IconSearch } from '@tabler/icons-react';
 import { Button, Group, MultiSelect, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { api } from '~/trpc/react';
-import { ImageFilterOptions } from '../types/image.types';
+import { ImageFilterOptions } from '../../../../shared/types/image.types';
 import { UploadModal } from './ImageUploadModal';
 
 export default function ImageFilters({

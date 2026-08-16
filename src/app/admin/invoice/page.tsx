@@ -6,12 +6,10 @@ import { api, HydrateClient } from '~/trpc/server';
 import { CreateInvoiceButton } from './components/Button';
 import TableInvoice from './components/Table/TableInvoice';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Quản lý hóa đơn '
 };
+
 export default async function InvoiceManagementPage({
   searchParams
 }: {

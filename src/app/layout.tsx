@@ -15,7 +15,6 @@ import { Quicksand } from 'next/font/google';
 import NextTopLoader from 'nextjs-toploader';
 import { TRPCReactProvider } from '~/trpc/react';
 
-import LoadingGlobal from '~/components/Loading/LoadingGlobal';
 import ScrollToTop from '~/components/ScrollToTop';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
@@ -116,12 +115,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>
-              <LoadingGlobal>
-                <UserProvider />
-                <FavoriteProvider favourites={favourites} />
-                {children}
-                <GlobalModalProvider />
-              </LoadingGlobal>
+              <UserProvider />
+              <FavoriteProvider favourites={favourites} />
+              {children}
+              <GlobalModalProvider />
             </ModalsProvider>
             <ScrollToTop />
           </MantineProvider>

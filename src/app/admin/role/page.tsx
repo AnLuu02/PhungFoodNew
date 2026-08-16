@@ -3,12 +3,10 @@ import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
 import RoleClient from './components/PageClient';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Quản lý phân quyền'
 };
+
 export default async function RoleManagementPage({
   searchParams
 }: {

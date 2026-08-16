@@ -3,6 +3,7 @@ import { Avatar, Badge, Box, Flex, Group, Paper, Progress, SimpleGrid, Stack, Te
 import { OrderStatus } from '@prisma/client';
 import { IconStar } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
+import { useEffect, useMemo } from 'react';
 import { AppSkeleton } from '~/components/Skeleton/AppSkeleton';
 import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -11,12 +12,15 @@ import { AlertUnpaidOrder } from './AlertUnpaidOrder';
 
 export const OverviewUser = () => {
   const { data: session } = useSession();
+
+  const id = session?.user?.id;
+
   const { data: overviewUser, isLoading } = api.User.getOverviewUser.useQuery(
     {
-      key: session?.user?.id || ''
+      key: id || ''
     },
     {
-      enabled: !!session?.user?.id
+      enabled: !!id
     }
   );
   const user = overviewUser?.user;
@@ -27,37 +31,49 @@ export const OverviewUser = () => {
     pointUser: user?.pointUser
   });
 
-  const completedOrders = orders.filter(order => order.status === OrderStatus.COMPLETED);
+  const overviewCards = useMemo(() => {
+    const completedOrders = (orders ?? []).filter(order => order?.status === OrderStatus.COMPLETED);
 
-  const completedOrdersCount = completedOrders.length;
+    const completedOrdersCount = completedOrders.length ?? 0;
 
-  const totalCompletedSpent = completedOrders.reduce((sum, order) => {
-    return sum + order?.finalAmount;
-  }, 0);
+    const totalCompletedSpent = completedOrders.reduce((sum, order) => {
+      return sum + order?.finalAmount;
+    }, 0);
+    const completedOrdersThisMonth = completedOrders.filter(order => {
+      const now = new Date();
+      return order?.createdAt?.getMonth() === now.getMonth() && order.createdAt.getFullYear() === now.getFullYear();
+    }).length;
 
-  const completedOrdersThisMonth = completedOrders.filter(order => {
-    const now = new Date();
-    return order?.createdAt?.getMonth() === now.getMonth() && order.createdAt.getFullYear() === now.getFullYear();
-  }).length;
+    return [
+      {
+        label: 'Đơn hoàn tất',
+        value: completedOrdersCount.toLocaleString('vi-VN'),
+        sub: 'Không tính đơn chưa thanh toán',
+        badge: completedOrdersThisMonth > 0 ? `+${completedOrdersThisMonth} tháng này` : undefined
+      },
+      {
+        label: 'Đã ghi nhận',
+        value: formatPriceLocaleVi(totalCompletedSpent),
+        sub: 'Chỉ tính từ đơn đã hoàn tất'
+      },
+      {
+        label: 'Điểm khả dụng',
+        value: user?.pointUser?.toLocaleString('vi-VN'),
+        sub: `Còn ${(100).toLocaleString('vi-VN')} điểm để lên hạng`
+      }
+    ];
+  }, [orders]);
 
-  const overviewCards = [
-    {
-      label: 'Đơn hoàn tất',
-      value: completedOrdersCount.toLocaleString('vi-VN'),
-      sub: 'Không tính đơn chưa thanh toán',
-      badge: completedOrdersThisMonth > 0 ? `+${completedOrdersThisMonth} tháng này` : undefined
-    },
-    {
-      label: 'Đã ghi nhận',
-      value: formatPriceLocaleVi(totalCompletedSpent),
-      sub: 'Chỉ tính từ đơn đã hoàn tất'
-    },
-    {
-      label: 'Điểm khả dụng',
-      value: user?.pointUser?.toLocaleString('vi-VN'),
-      sub: `Còn ${(100).toLocaleString('vi-VN')} điểm để lên hạng`
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (id) {
+      void utils.Order.getFilter.prefetch({ s: id || '' });
+      void utils.Voucher.getVoucherForUser.prefetch({
+        userId: id || ''
+      });
     }
-  ];
+  }, [id]);
+
   return (
     <>
       {isLoading ? (

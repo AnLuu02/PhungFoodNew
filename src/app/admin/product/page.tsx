@@ -6,9 +6,6 @@ import { api, HydrateClient } from '~/trpc/server';
 import { CreateProductButton } from './components/Button';
 import TableProduct from './components/Table/TableProduct';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Quản lý sản phẩm '
 };

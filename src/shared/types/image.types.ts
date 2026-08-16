@@ -55,3 +55,16 @@ export interface ImageUIState extends ImageWithAssociations {
   isLoading: boolean;
   error: string | null;
 }
+
+export type ConnectedState = {
+  opened: boolean;
+  imageId?: string;
+  imageType?: ImageType;
+  mode?: 'disconnect' | 'connect';
+  onRefetch?: () => void;
+};
+export type ConnectedStateWithEntity = ConnectedState & {
+  entityId?: string;
+  entityType?: EntityType;
+  imageForEntityId?: string;
+};

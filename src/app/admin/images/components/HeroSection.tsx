@@ -4,7 +4,7 @@ import { IconPhoto } from '@tabler/icons-react';
 
 import { Box, Card, Flex, Progress, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { useMemo } from 'react';
-import { ImageWithAssociations } from '../types/image.types';
+import { ImageWithAssociations } from '../../../../shared/types/image.types';
 
 export default function HeroSectionImages({
   imagesData

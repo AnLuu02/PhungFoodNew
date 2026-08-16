@@ -18,14 +18,14 @@ import {
   UnstyledButton
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { EntityType, ImageType } from '@prisma/client';
+import { ImageType } from '@prisma/client';
 import { useCallback, useState } from 'react';
 import { ConnectedModalPayload } from '~/components/Modals/ModalImageLibrary';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import PaginationLocal from '~/components/PaginationLocal';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
-import { ImageFilterOptions } from '../types/image.types';
+import { ConnectedState, ConnectedStateWithEntity, ImageFilterOptions } from '../../../../shared/types/image.types';
 import BulkActionsBar from './BulkActionsBar';
 import HeroSectionImages from './HeroSection';
 import ImageCard from './ImageCard';
@@ -40,20 +40,8 @@ const TABS = [
   { value: ImageType.GALLERY, label: 'Ảnh bổ sung' }
 ];
 
-export type ConnectedState = {
-  opened: boolean;
-  imageId?: string;
-  imageType?: ImageType;
-  mode?: 'disconnect' | 'connect';
-  onRefetch?: () => void;
-};
-export type ConnectedStateWithEntity = ConnectedState & {
-  entityId?: string;
-  entityType?: EntityType;
-  imageForEntityId?: string;
-};
 export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
-  const { data }: { data: ConnectedModalPayload } = useModalStore(s => s.data);
+  const { data }: { data: ConnectedModalPayload } = useModalStore(s => s.data) ?? {};
   const { data: imageForEntity, isLoading: isLoadingImageForEntity } = api.Images.getImageForEntity.useQuery(
     {
       entityId: data?.entityId || ''

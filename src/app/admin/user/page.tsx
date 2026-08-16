@@ -5,9 +5,6 @@ import { api, HydrateClient } from '~/trpc/server';
 import { CreateUserButton } from './components/Button';
 import TableUser from './components/Table/TableUser';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Quản lý người dùng '
 };

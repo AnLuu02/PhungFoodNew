@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { formatTimeAgo } from '~/lib/FuncHandler/Format';
 import { getActionDetails } from '~/lib/FuncHandler/getThemeActivity';
+import { renderShortId } from '~/lib/FuncHandler/renderShortId';
 import { DiffChange } from './DiffChange';
 
 interface ActivityItemProps {
@@ -48,7 +49,7 @@ export const ActivityItem = ({ log, checked, onCheckboxChange }: ActivityItemPro
                   {log.action}
                 </Badge>
                 <Text size='xs' c='dimmed' ff='monospace'>
-                  #{log.entityId.slice(-8)}
+                  {renderShortId('LOG', 6, log?.entityId)}
                 </Text>
               </Group>
 

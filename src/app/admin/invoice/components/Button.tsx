@@ -30,6 +30,8 @@ import Image from 'next/image';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { renderShortId } from '~/lib/FuncHandler/renderShortId';
+import { FindInvoice } from '~/shared/type-trpc/invoice.type-trpc';
 import InvoiceUpsert from './form/InvoiceUpsert';
 
 export function CreateInvoiceButton() {
@@ -111,7 +113,7 @@ export function DeleteInvoiceButton({ id }: { id: string }) {
     </>
   );
 }
-export function ViewInvoiceButton({ data }: { data: any }) {
+export function ViewInvoiceButton({ data }: { data: FindInvoice['invoices'][number] }) {
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -201,7 +203,7 @@ export function ViewInvoiceButton({ data }: { data: any }) {
                       <b>Phương thức:</b> {data.paymentMethod}
                     </Text>
                     <Text size='sm'>
-                      <b>Mã đơn hàng:</b> #{data.orderId.slice(-8).toUpperCase()}
+                      <b>Mã đơn hàng:</b> {renderShortId('HD', 6, data?.orderId)}
                     </Text>
                   </Box>
                 </Stack>

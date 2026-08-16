@@ -5,9 +5,6 @@ import { api, HydrateClient } from '~/trpc/server';
 import { CreateMaterialButton } from './components/Button';
 import TableMaterial from './components/Table/TableMaterial';
 
-export const revalidate = 60 * 60;
-export const dynamic = 'force-static';
-
 export const metadata: Metadata = {
   title: 'Quản lý nguyên liệu '
 };
