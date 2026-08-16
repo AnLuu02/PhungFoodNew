@@ -30,13 +30,16 @@ export default function UserSection({ responsive, width }: { responsive?: boolea
 
   const { data: session, status } = useSession();
   const email = session?.user?.email;
+  const userId = session?.user?.id;
 
   const utils = api.useUtils();
   useEffect(() => {
-    if (email) {
-      void utils.User.getOne.prefetch({ key: email || '', include: { orders: true } });
+    if (userId) {
+      void utils.User.getOverviewUser.prefetch({
+        key: userId ?? ''
+      });
     }
-  }, [email]);
+  }, [userId]);
 
   if (status === 'loading') {
     return (

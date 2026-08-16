@@ -160,12 +160,12 @@ const MemberGuestCard = () => {
 };
 export const SectionMember = () => {
   const { data: session } = useSession();
-  const { data: user, isLoading } = api.User.getOne.useQuery(
-    { key: session?.user?.id },
-    { enabled: !!session?.user?.id }
-  );
+  const userId = session?.user?.id;
+  const { data, isLoading } = api.User.getOverviewUser.useQuery({ key: userId ?? '' }, { enabled: !!userId });
 
   const isLoggedIn = !!session?.user;
+
+  const user = data?.user;
 
   const {
     progressRemainingValue,

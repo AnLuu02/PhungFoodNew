@@ -80,17 +80,18 @@ const pointExamples = [
 export default function InfoLevelUser() {
   const { data: session } = useSession();
 
-  const { data: userData, isLoading } = api.User.getOne.useQuery(
+  const userId = session?.user.email;
+
+  const { data, isLoading } = api.User.getOverviewUser.useQuery(
     {
-      key: session?.user.email || '',
-      include: {
-        orders: true
-      }
+      key: userId ?? ''
     },
     {
-      enabled: !!session?.user.email
+      enabled: !!userId
     }
   );
+
+  const userData = data?.user;
 
   const { currentPoint, pointRemaining, progressRemainingValue, currentLevel, nextLevel, levelText } =
     caculateLevelUser({

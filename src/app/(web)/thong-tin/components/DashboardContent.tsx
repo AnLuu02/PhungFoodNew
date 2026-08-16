@@ -43,7 +43,7 @@ export function DashboardContent() {
   const userId = session?.user?.id;
   const { data: overviewUser, isLoading } = api.User.getOverviewUser.useQuery(
     {
-      key: userId || ''
+      key: userId ?? ''
     },
     {
       enabled: !!userId

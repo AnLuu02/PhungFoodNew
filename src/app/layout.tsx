@@ -20,7 +20,6 @@ import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 import { FavoriteProvider } from '~/providers/favorite-provider';
 import { GlobalModalProvider } from '~/providers/global-modal-provider';
-import { UserProvider } from '~/providers/user-provider';
 import { getServerAuthSession } from '~/server/auth';
 import { api } from '~/trpc/server';
 import { mainTheme } from './theme';
@@ -115,7 +114,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <Notifications />
             <NextTopLoader />
             <ModalsProvider>
-              <UserProvider />
               <FavoriteProvider favourites={favourites} />
               {children}
               <GlobalModalProvider />

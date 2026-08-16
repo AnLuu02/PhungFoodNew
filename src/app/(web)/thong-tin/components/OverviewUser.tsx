@@ -13,14 +13,14 @@ import { AlertUnpaidOrder } from './AlertUnpaidOrder';
 export const OverviewUser = () => {
   const { data: session } = useSession();
 
-  const id = session?.user?.id;
+  const userId = session?.user?.id;
 
   const { data: overviewUser, isLoading } = api.User.getOverviewUser.useQuery(
     {
-      key: id || ''
+      key: userId ?? ''
     },
     {
-      enabled: !!id
+      enabled: !!userId
     }
   );
   const user = overviewUser?.user;
@@ -66,13 +66,13 @@ export const OverviewUser = () => {
 
   const utils = api.useUtils();
   useEffect(() => {
-    if (id) {
-      void utils.Order.getFilter.prefetch({ s: id || '' });
+    if (userId) {
+      void utils.Order.getFilter.prefetch({ s: userId || '' });
       void utils.Voucher.getVoucherForUser.prefetch({
-        userId: id || ''
+        userId: userId || ''
       });
     }
-  }, [id]);
+  }, [userId]);
 
   return (
     <>
