@@ -2,8 +2,10 @@ import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
 
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
+import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
 import { TUserRole, UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { FilterProductOptions } from '~/shared/schema/product.filter.schema';
@@ -163,6 +165,64 @@ export const findProductService = async (
       currentPage: page,
       totalPages,
       totalProducts: totalProductsQuery,
+      hasNext: Boolean(totalPages > page)
+    }
+  };
+};
+
+export const findProductMinimalService = async (db: PrismaClient, input: FilterProductOptions) => {
+  const { page, limit, sort } = input;
+
+  const filterParams = buildFilter(input);
+  const where: Prisma.ProductWhereInput = {
+    AND: filterParams.length > 0 ? filterParams : undefined
+  } as any;
+
+  const products = await db.product.findMany({
+    skip: (page - 1) * limit,
+    take: limit,
+    where,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      discount: true,
+      tag: true,
+      tags: true,
+      soldQuantity: true,
+      availableQuantity: true,
+      rating: true,
+      imageForEntities: {
+        where: { type: ImageType.THUMBNAIL },
+        select: {
+          image: {
+            select: { url: true }
+          }
+        },
+        take: 1
+      },
+      subCategory: {
+        select: {
+          name: true,
+          tag: true
+        }
+      }
+    },
+    orderBy:
+      sort && sort?.length > 0
+        ? buildSortFilter(sort, ['rating', 'updatedAt', 'soldQuantity', 'price', 'name'])
+        : { createdAt: 'desc' }
+  });
+
+  const totalPages = Math.ceil(products.length / limit);
+
+  return {
+    products: products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) })),
+    pagination: {
+      currentPage: page,
+      totalPages,
+      totalProducts: products.length,
       hasNext: Boolean(totalPages > page)
     }
   };
@@ -345,11 +405,19 @@ export const getOneProductService = async (
     }
   });
   if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Opps! Có vẻ như sản phẩm không tồn tại.' });
-  return {
-    ...product,
-    price: moneyToNumber(product.price),
-    discount: moneyToNumber(product.discount)
-  };
+
+  const redisKey = PRODUCT_KEY.detail(product.tag);
+  return await withRedisCache(
+    redisKey,
+    async () => {
+      return {
+        ...product,
+        price: moneyToNumber(product.price),
+        discount: moneyToNumber(product.discount)
+      };
+    },
+    60 * 60 * 2
+  );
 };
 export const getAllProductService = async (
   db: PrismaClient,
@@ -371,6 +439,10 @@ export const getAllProductService = async (
     }
   });
   return products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));
+};
+
+export const getUniqueKeyProductService = async (db: PrismaClient, options: Prisma.ProductFindManyArgs) => {
+  return db.product.findMany(options);
 };
 
 export const upsertProductToCloudinaryService = async (db: PrismaClient, input1: ProductFromDb) => {

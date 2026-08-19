@@ -3,7 +3,6 @@ import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } f
 import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import CardProductWrapper from '~/components/Card/CardProductWrapper';
 import Empty from '~/components/Empty';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -31,46 +30,44 @@ export default function SuggestionProducts({ data }: { data: NonNullable<GetInit
             <Empty />
           ) : (
             data?.map(product => (
-              <CardProductWrapper key={product?.id} slug={product?.id}>
-                <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
-                  <Paper p={0} m={0} w={60} h={60} pos={'relative'} className='overflow-hidden'>
-                    <Image
-                      loading='lazy'
-                      src={
-                        getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                        '/images/jpg/empty-300x240.jpg'
-                      }
-                      fill
-                      alt='Hình ảnh sản phẩm'
-                      className='object-cover'
-                    />
-                  </Paper>
-                  <Box>
-                    <Link href={`/san-pham/${product?.tag}`}>
-                      <Tooltip label={product?.name}>
-                        <Text
-                          lineClamp={1}
-                          size='md'
-                          fw={700}
-                          className='cursor-pointer text-black hover:text-mainColor dark:text-dark-text'
-                        >
-                          {product?.name || 'Cá thu'}
-                        </Text>
-                      </Tooltip>
-                    </Link>
-                    <Group gap='xs'>
-                      <Text className='text-red-600' fw={700}>
-                        {formatPriceLocaleVi(product.price - product.discount)}
+              <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
+                <Paper p={0} m={0} w={60} h={60} pos={'relative'} className='overflow-hidden'>
+                  <Image
+                    loading='lazy'
+                    src={
+                      getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) ||
+                      '/images/jpg/empty-300x240.jpg'
+                    }
+                    fill
+                    alt='Hình ảnh sản phẩm'
+                    className='object-cover'
+                  />
+                </Paper>
+                <Box>
+                  <Link href={`/san-pham/${product?.tag}`}>
+                    <Tooltip label={product?.name}>
+                      <Text
+                        lineClamp={1}
+                        size='md'
+                        fw={700}
+                        className='cursor-pointer text-black hover:text-mainColor dark:text-dark-text'
+                      >
+                        {product?.name || 'Cá thu'}
                       </Text>
-                      {product.discount > 0 && (
-                        <Text c='dimmed' td='line-through' size='sm'>
-                          {formatPriceLocaleVi(product.price)}
-                        </Text>
-                      )}
-                    </Group>
-                  </Box>
-                </Group>
-              </CardProductWrapper>
+                    </Tooltip>
+                  </Link>
+                  <Group gap='xs'>
+                    <Text className='text-red-600' fw={700}>
+                      {formatPriceLocaleVi(product.price - product.discount)}
+                    </Text>
+                    {product.discount > 0 && (
+                      <Text c='dimmed' td='line-through' size='sm'>
+                        {formatPriceLocaleVi(product.price)}
+                      </Text>
+                    )}
+                  </Group>
+                </Box>
+              </Group>
             ))
           )}
         </Stack>

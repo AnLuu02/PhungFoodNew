@@ -3,21 +3,30 @@ import { Box, Grid, Spoiler, Stack, Tabs, Title } from '@mantine/core';
 import { useState } from 'react';
 import Comments from '~/components/Comments/Comments';
 import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
-import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
+import { api } from '~/trpc/react';
 import GuideOrder from './GuideOrder';
 import RatingStatistics from './RatingStatistics';
 import SuggestionProducts from './SuggestionProducts';
 
 export const ProductInsights = ({
-  hintProducts,
+  categoryId,
   productId,
   productDescriptionDetailHtml
 }: {
-  hintProducts: NonNullable<GetInitProductDetail>['dataHintProducts'];
-  productId: string;
+  categoryId?: string;
+  productId?: string;
   productDescriptionDetailHtml: string;
 }) => {
+  const data = api.Product.getFilter.useSuspenseQuery({
+    keys: categoryId ? [categoryId] : [],
+    ...(productId ? { excludes: [productId] } : {})
+  });
+  const recommendedProducts = data[0];
   const [activeTab, setActiveTab] = useState('description');
+
+  const sizeRecommendedProducts = recommendedProducts?.length ?? 0;
+
+  if (!recommendedProducts || !productId) return;
 
   return (
     <Grid>
@@ -26,9 +35,9 @@ export const ProductInsights = ({
         className='h-fit'
         span={{
           base: 12,
-          sm: hintProducts?.length > 0 ? 7 : 12,
-          md: hintProducts?.length > 0 ? 8 : 12,
-          lg: hintProducts?.length > 0 ? 9 : 12
+          sm: sizeRecommendedProducts > 0 ? 7 : 12,
+          md: sizeRecommendedProducts > 0 ? 8 : 12,
+          lg: sizeRecommendedProducts > 0 ? 9 : 12
         }}
       >
         <Tabs
@@ -92,7 +101,7 @@ export const ProductInsights = ({
       </Grid.Col>
 
       <Grid.Col span={{ base: 12, sm: 5, md: 4, lg: 3 }}>
-        <SuggestionProducts data={hintProducts} />
+        <SuggestionProducts data={recommendedProducts} />
       </Grid.Col>
     </Grid>
   );

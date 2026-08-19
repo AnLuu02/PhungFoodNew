@@ -3,10 +3,18 @@ import { ImageFromDb } from '~/shared/schema/image.schema';
 import { getOptimizedUrl, OptimizeOptions } from '../Cloudinary/client';
 
 export const getImageProduct = (data: any, key: ImageType) => {
-  const image = data?.find((p: any) => p?.type === key);
-  if (image && image?.image?.url) {
-    return image?.image?.url;
+  const images = data ?? [];
+  const size = images.length;
+
+  if (size === 1) {
+    return images[0]?.image?.url;
+  } else {
+    const image = data?.find((p: any) => p?.type === key);
+    if (image && image?.image?.url) {
+      return image?.image?.url;
+    }
   }
+
   return '/images/jpg/empty-300x240.jpg';
 };
 
