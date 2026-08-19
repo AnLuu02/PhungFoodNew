@@ -11,7 +11,8 @@ import {
   getOneUserService,
   handleFailedLogin,
   handleUserLock,
-  updateUserCustomService
+  updateUserCustomService,
+  uploadImageUserService
 } from '../services/user.service';
 
 export const authOptions: NextAuthOptions = {
@@ -101,12 +102,14 @@ export const authOptions: NextAuthOptions = {
             },
             null
           );
-        }
-        if (!userFromDb?.imageForEntity && image) {
-          await updateUserCustomService(db, {
-            where: { email },
-            data: {
-              name: userFromDb?.name || 'Khách hàng'
+        } else if (!userFromDb.imageForEntity && image) {
+          await uploadImageUserService(db, {
+            email,
+            imgUrl: image,
+            meta: {
+              entityType: EntityType.USER,
+              altText: 'Ảnh đại diện của ' + name,
+              type: ImageType.THUMBNAIL
             }
           });
         }

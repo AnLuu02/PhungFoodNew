@@ -1,14 +1,12 @@
 'use client';
 
-import { Divider, Grid, GridCol, Paper } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+import { Box, Divider, Grid, GridCol, Paper } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
 import { useCartCount } from '~/components/Hooks/use-cart';
-import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { RecapCart } from '../../../components/RecapCart';
 import { RecapCartSkeleton } from '../../../components/RecapCartSkeleton';
-import { ShoppingCartMobile } from './components/CartMobile';
+import { ShoppingCartMobile, ShoppingCartMobileSkeleton } from './components/CartMobile';
 import { CartTable } from './components/CartTable';
 import { CartTableSkeleton } from './components/CartTableSkeleton';
 
@@ -16,7 +14,6 @@ export default function ShoppingCart() {
   const cartSize = useCartCount();
 
   const [isMounted, setIsMounted] = useState(false);
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
 
   useEffect(() => {
     setIsMounted(true);
@@ -26,20 +23,17 @@ export default function ShoppingCart() {
     return (
       <Grid>
         <GridCol span={{ base: 12, sm: 6, md: 8 }} className='h-fit' order={{ base: 2, sm: 1, md: 1, lg: 1 }}>
-          {isMobile ? (
-            <ShoppingCartMobile />
-          ) : (
-            <Paper shadow='xs' className='p-0 lg:p-6'>
-              <CartTableSkeleton />
-              <Divider mb={10} />
-            </Paper>
-          )}
+          <Box className='hidden h-fit md:block'>
+            <CartTableSkeleton />
+          </Box>
+          <Box className='h-fit md:hidden'>
+            <ShoppingCartMobileSkeleton />
+          </Box>
+          <Divider mb={10} />
         </GridCol>
         <GridCol
           span={{ base: 12, sm: 6, md: 4 }}
-          className='h-fit'
-          pos={isMobile ? 'relative' : 'sticky'}
-          top={isMobile ? 0 : TOP_POSITION_STICKY}
+          className='relative top-0 h-fit md:sticky md:top-[70px]'
           order={{ base: 1, sm: 2, md: 2, lg: 2 }}
         >
           <RecapCartSkeleton />
@@ -58,20 +52,17 @@ export default function ShoppingCart() {
   return (
     <Grid>
       <GridCol span={{ base: 12, sm: 6, md: 8 }} className='h-fit' order={{ base: 2, sm: 1, md: 1, lg: 1 }}>
-        {isMobile ? (
+        <Box className='md:hidden'>
           <ShoppingCartMobile />
-        ) : (
-          <Paper shadow='xs' className='p-0 lg:p-6'>
-            <CartTable />
-            <Divider mb={10} />
-          </Paper>
-        )}
+        </Box>
+        <Paper shadow='xs' className='hidden p-0 md:block lg:p-6'>
+          <CartTable />
+          <Divider mb={10} />
+        </Paper>
       </GridCol>
       <GridCol
         span={{ base: 12, sm: 6, md: 4 }}
-        className='h-fit'
-        pos={isMobile ? 'relative' : 'sticky'}
-        top={isMobile ? 0 : TOP_POSITION_STICKY}
+        className='relative top-0 h-fit md:sticky md:top-[70px]'
         order={{ base: 1, sm: 2, md: 2, lg: 2 }}
       >
         <RecapCart />

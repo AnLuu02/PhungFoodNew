@@ -3,6 +3,7 @@
 import { Badge, Box, Button, Flex, Group, Image, NumberInput, Paper, Text } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import { IconPlus, IconShoppingCartPlus } from '@tabler/icons-react';
+import Link from 'next/link';
 import { useState } from 'react';
 import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
@@ -46,7 +47,13 @@ export const QuickMenuItem = ({ product, index }: { product: FindInfiniteProduct
 
         <Box className='min-w-0 flex-1'>
           <Group gap='xs' mb={4}>
-            <Text fw={900} lineClamp={1} className='text-base text-slate-950 dark:text-white'>
+            <Text
+              component={Link}
+              href={`/san-pham/${product?.tag}`}
+              fw={900}
+              lineClamp={1}
+              className='text-base text-slate-950 hover:text-mainColor dark:text-white'
+            >
               {product?.name || 'Đang cập nhật'}
             </Text>
 

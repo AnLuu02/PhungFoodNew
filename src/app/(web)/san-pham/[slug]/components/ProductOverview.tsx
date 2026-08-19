@@ -21,12 +21,10 @@ import { ButtonAddToCart } from '~/components/Button/ButtonAddToCart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
 
-import { useMediaQuery } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { useMemo, useState } from 'react';
 import { ShareSocials } from '~/components/ShareSocial';
 import ViewingUser from '~/components/UserViewing';
-import { breakpoints, TOP_POSITION_STICKY } from '~/constants';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
 import { GetOneProduct } from '~/shared/type-trpc/product.type-trpc';
@@ -49,15 +47,9 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
     };
   }, [product]);
 
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   return (
     <Grid>
-      <Grid.Col
-        span={{ base: 12, sm: 6, md: 6 }}
-        pos={isMobile ? 'relative' : 'sticky'}
-        top={isMobile ? 0 : TOP_POSITION_STICKY}
-        className='h-fit'
-      >
+      <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='relative top-0 h-fit sm:sticky sm:top-[70px]'>
         <ProductImage
           thumbnail={thumbnail}
           gallery={(gallery?.length > 0 ? gallery : []) as { image: { url: string } }[]}

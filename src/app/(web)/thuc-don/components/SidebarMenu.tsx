@@ -1,10 +1,8 @@
 'use client';
-import { Button, Drawer, Flex, Stack, Title } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+import { Box, Button, Drawer, Flex, Stack, Title } from '@mantine/core';
 import { IconFilter } from '@tabler/icons-react';
 import { useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { breakpoints } from '~/constants';
 import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 import { GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
@@ -13,10 +11,10 @@ import { SidebarFilterContent } from './SidebarFilterContent';
 
 export function SidebarMenu({ categories, materials }: { categories: GetAllCategory; materials: GetAllMaterial }) {
   const [drawerOpened, setDrawerOpened] = useState(false);
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.sm}px)`);
-  if (isMobile) {
-    return (
-      <Stack mt={{ base: 0, sm: 'md' }} mb={{ base: 'md' }}>
+
+  return (
+    <>
+      <Stack mt={{ base: 0, sm: 'md' }} mb={{ base: 'md' }} className='md:hidden'>
         <Flex align='center' justify='space-between'>
           <Button leftSection={<IconFilter size={16} />} onClick={() => setDrawerOpened(true)} variant='outline'>
             Lọc sản phẩm
@@ -43,8 +41,10 @@ export function SidebarMenu({ categories, materials }: { categories: GetAllCateg
           <SidebarFilterContent categories={categories} materials={materials} />
         </Drawer>
       </Stack>
-    );
-  }
 
-  return <SidebarFilterContent categories={categories} materials={materials} />;
+      <Box className='hidden md:block'>
+        <SidebarFilterContent categories={categories} materials={materials} />
+      </Box>
+    </>
+  );
 }

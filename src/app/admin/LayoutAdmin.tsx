@@ -6,17 +6,18 @@ import { useSession } from 'next-auth/react';
 import Header from '~/components/Admin/Header';
 import Navbar from '~/components/Admin/Navbar';
 import { BreadcrumbsBase } from '~/components/Breadcrumbs/BreadcrumbsBase';
-import { ADMIN_ROLES } from '~/shared/constants/user.constants';
+import GlobalLoading from '~/components/Loading/LoadingGlobal';
 
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const role = session?.user?.role;
 
-  if (!role || !ADMIN_ROLES.includes(role)) {
-    return <Box>{children}</Box>;
-  }
+  if (status === 'loading') return <GlobalLoading />;
+
+  if (status === 'unauthenticated') return <Box>{children}</Box>;
+
   return (
     <AppShell
       header={{ height: 60 }}

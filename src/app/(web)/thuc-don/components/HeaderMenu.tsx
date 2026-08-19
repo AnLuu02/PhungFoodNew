@@ -1,10 +1,8 @@
 'use client';
 import { Box, Flex, Grid, GridCol, Group, Skeleton, Text, Title } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { breakpoints } from '~/constants';
 import tags from '~/constants/tags-vi.json';
 import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
 import ActiveFilters from './ActiveFilters';
@@ -16,7 +14,6 @@ export default function HeaderMenu({ totalProducts, isLoading }: { totalProducts
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('s');
   const activeTag = useMemo(() => getTagFromQuery(searchParams, tags), [searchParams, tags]);
-  const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   return (
     <>
       <HeaderSearchResults s={searchQuery} totalProducts={totalProducts} isLoading={isLoading} />
@@ -45,15 +42,13 @@ export default function HeaderMenu({ totalProducts, isLoading }: { totalProducts
                 </>
               </Flex>
             </GridCol>
-            {!isMobile && (
-              <GridCol span={{ base: 12, lg: 7 }} className='flex flex-wrap justify-end gap-2'>
-                <PriceRangeFilter />
-                <SortFilter />
-                <Box flex={1}>
-                  <SearchInput />
-                </Box>
-              </GridCol>
-            )}
+            <GridCol span={{ base: 12, lg: 7 }} className='hidden flex-wrap justify-end gap-2 md:flex'>
+              <PriceRangeFilter />
+              <SortFilter />
+              <Box flex={1}>
+                <SearchInput />
+              </Box>
+            </GridCol>
           </Grid>
         </GridCol>
         <ActiveFilters />

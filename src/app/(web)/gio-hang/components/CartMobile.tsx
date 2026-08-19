@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Flex, Group, NumberInput, Paper, Popover, Stack, Text } from '@mantine/core';
+import { Badge, Box, Button, Flex, Group, NumberInput, Paper, Popover, Skeleton, Stack, Text } from '@mantine/core';
 import { IconAlertSquareRounded, IconCheck, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useCartItems } from '~/components/Hooks/use-cart';
@@ -115,4 +115,48 @@ export const ShoppingCartMobile = () => {
       </Stack>
     </Paper>
   ));
+};
+
+export const ShoppingCartMobileSkeleton = () => {
+  return (
+    <Stack gap={0}>
+      {[
+        { name: '82%', price: 90 },
+        { name: '65%', price: 85 },
+        { name: '90%', price: 95 }
+      ].map((item, index) => (
+        <Paper key={index} shadow='xs' p='xs' mb='xs' withBorder>
+          <Stack gap={4}>
+            <Group wrap='nowrap' align='flex-start'>
+              <Paper w={80} h={80} className='flex shrink-0 items-center justify-center'>
+                <Skeleton w={65} h={65} radius='sm' />
+              </Paper>
+
+              <Stack gap={6} align='start' className='min-w-0 flex-1'>
+                <Skeleton h={18} w={item.name} radius='sm' />
+
+                <Group gap={6}>
+                  <Skeleton h={16} w={70} radius='sm' />
+                  <Skeleton h={18} w={item.price} radius='sm' />
+                </Group>
+
+                <Group gap={8}>
+                  <Skeleton h={30} w={80} radius='sm' />
+                  <Skeleton h={18} w={18} radius='sm' />
+                </Group>
+              </Stack>
+            </Group>
+
+            <Flex justify='space-between' align='center' gap={8}>
+              <Skeleton h={20} w={95} radius='sm' />
+
+              <Skeleton h={18} w={120} radius='sm' className='ml-auto' />
+
+              <Skeleton h={28} w={55} radius='sm' />
+            </Flex>
+          </Stack>
+        </Paper>
+      ))}
+    </Stack>
+  );
 };

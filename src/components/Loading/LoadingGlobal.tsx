@@ -5,7 +5,7 @@ import { IconChefHat, IconCoffee, IconPizza, IconSalad } from '@tabler/icons-rea
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
-export default function LoadingGlobal({ children }: { children?: React.ReactNode }) {
+export default function GlobalLoading() {
   const { status } = useSession();
   const isDone = status !== 'loading';
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function LoadingGlobal({ children }: { children?: React.ReactNode
     };
   }, []);
 
-  if (isDone) return <>{children ?? null}</>;
+  if (isDone) return null;
 
   return (
     <>

@@ -4,12 +4,8 @@ export function RecapCartSkeleton() {
   return (
     <Card shadow='sm' withBorder>
       <Stack gap='md'>
-        <Flex
-          align={{ base: 'flex-start', md: 'center' }}
-          justify='space-between'
-          direction={{ base: 'column-reverse', md: 'row' }}
-        >
-          <Skeleton height={28} width={180} />
+        <Flex align={{ base: 'flex-start', md: 'center' }} justify='space-between'>
+          <Skeleton height={28} width={140} />
 
           <Skeleton height={36} width={140} className='mb-2 md:mb-0' />
         </Flex>

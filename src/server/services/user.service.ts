@@ -443,6 +443,63 @@ export const updateUserCustomService = async (
   });
   return user;
 };
+
+export const uploadImageUserService = async (
+  db: PrismaClient,
+  data: {
+    email: string;
+    imgUrl: string;
+    meta?: {
+      publicId?: string;
+      entityType?: EntityType;
+      altText?: string;
+      type?: ImageType;
+    };
+  }
+) => {
+  const { email, imgUrl, meta } = data;
+
+  const type = meta?.type ?? ImageType.THUMBNAIL;
+  const entityType = meta?.entityType ?? EntityType.USER;
+  const altText = `Ảnh ${meta?.altText ?? `người dùng ${email}`}`;
+
+  const imageData = {
+    url: imgUrl,
+    altText,
+    type,
+    publicId: meta?.publicId ?? null
+  };
+
+  return db.user.update({
+    where: {
+      email
+    },
+    data: {
+      imageForEntity: {
+        upsert: {
+          create: {
+            entityType,
+            altText,
+            type,
+            image: {
+              create: imageData
+            }
+          },
+
+          update: {
+            entityType,
+            altText,
+            type,
+            image: {
+              create: imageData
+            }
+          }
+        }
+      }
+    }
+  });
+};
+
 export const deleteUserService = async (db: PrismaClient, input: { id: string }) => {
   const user = await db.user.findUnique({
     where: { id: input.id },
