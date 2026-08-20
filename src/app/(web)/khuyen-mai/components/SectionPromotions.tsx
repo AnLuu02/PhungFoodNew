@@ -4,9 +4,10 @@ import { useCallback, useState } from 'react';
 import { SectionHeading } from '~/components/SectionHeading';
 import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
 import { toNumber } from '~/lib/FuncHandler/Format';
+import { FindProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
-export const SectionPromotions = ({ initialData }: { initialData: any }) => {
+export const SectionPromotions = ({ initialData }: { initialData: FindProduct }) => {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(6);
 

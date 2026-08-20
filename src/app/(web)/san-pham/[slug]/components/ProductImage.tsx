@@ -15,14 +15,14 @@ export default function ProductImage({
   tag
 }: {
   thumbnail: string;
-  gallery: { image: { url: string } }[];
+  gallery: string[];
   discount?: number;
   tag: string;
 }) {
   const isDesktop = useMediaQuery(`(min-width:${breakpoints.md}px)`);
   const [currentImage, setCurrentImage] = useState(thumbnail);
   const [showFullImage, setShowFullImage] = useState(false);
-  const allImages = [{ image: { url: thumbnail } }, ...gallery];
+  const allImages = [{ image: { url: thumbnail } }, ...gallery.map(g => ({ image: { url: g } }))];
   const [displayImages, remainingCount] = useMemo(() => {
     const displayImages = allImages.slice(1, !isDesktop ? 3 : 4);
     const remainingCount = allImages.length > (!isDesktop ? 3 : 4) ? allImages.length - (!isDesktop ? 3 : 4) : 0;
@@ -148,7 +148,7 @@ export default function ProductImage({
           src: currentImage,
           alt: 'Ảnh chính sản phẩm'
         }}
-        gallery={[{ image: { url: thumbnail } }, ...gallery].map(item => ({
+        gallery={allImages.map(item => ({
           src: item?.image?.url,
           alt: 'Ảnh mô tả sản phẩm'
         }))}

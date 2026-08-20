@@ -3,8 +3,9 @@ import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 
-export default function ProductDetails({ product }: { product: any }) {
+export default function ProductDetails({ product }: { product: ProductBase }) {
   return (
     <Paper withBorder p='md'>
       <Stack>

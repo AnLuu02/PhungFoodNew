@@ -25,25 +25,27 @@ import { ImageType } from '@prisma/client';
 import { useMemo, useState } from 'react';
 import { ShareSocials } from '~/components/ShareSocial';
 import ViewingUser from '~/components/UserViewing';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
-import { GetOneProduct } from '~/shared/type-trpc/product.type-trpc';
+import type { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import ProductImage from './ProductImage';
 
-export const ProductOverview = ({ product }: { product: NonNullable<GetInitProductDetail>['product'] }) => {
+export const ProductOverview = ({ product }: { product: NonNullable<ProductBase> }) => {
   const [note, setNote] = useState('');
   const [quantity, setQuantity] = useState(1);
   const inStock = product?.availableQuantity > 0;
   const discount = product?.discount || 0;
   const { thumbnail, gallery } = useMemo(() => {
+    const { thumbnail, gallery } = product.imageForEntities.reduce(
+      (acc: { thumbnail: string; gallery: string[] }, item: (typeof product)['imageForEntities'][number]) => {
+        if (item.type === ImageType.THUMBNAIL) acc.thumbnail = item?.image?.url ?? '/images/jpg/empty-300x240.jpg';
+        else if (item.type === ImageType.GALLERY) acc.gallery.push(item?.image?.url ?? '/images/jpg/empty-300x240.jpg');
+        return acc;
+      },
+      { thumbnail: '/images/jpg/empty-300x240.jpg', gallery: [] }
+    );
+
     return {
-      thumbnail:
-        getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg',
-      gallery:
-        product?.imageForEntities?.filter(
-          (item: NonNullable<GetOneProduct>['imageForEntities'][number]) =>
-            item?.type !== ImageType.THUMBNAIL && item?.image?.url
-        ) || []
+      thumbnail,
+      gallery
     };
   }, [product]);
 
@@ -52,7 +54,7 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
       <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='relative top-0 h-fit sm:sticky sm:top-[70px]'>
         <ProductImage
           thumbnail={thumbnail}
-          gallery={(gallery?.length > 0 ? gallery : []) as { image: { url: string } }[]}
+          gallery={gallery}
           discount={product?.discount || 0}
           tag={product?.tag || ''}
         />
@@ -208,6 +210,7 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
               Đã bán: <b className='text-red-500'>{product?.soldQuantity || 0}</b> sản phẩm
             </Text>
           </Stack>
+          {/* tag */}
           <ShareSocials data={product} type='detail' />
           <Group mt={{ base: 20, sm: 'xs', md: 'xs', lg: 'xl' }} grow>
             <Stack align='center' gap={5}>

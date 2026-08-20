@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { api } from '~/trpc/server';
+import { db } from '~/server/db';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL_DEPLOY || 'http://localhost:3000';
@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/yeu-thich'
   ];
 
-  const products = await api.Product.getAll({});
+  const products = await db.product.findMany({ select: { tag: true } });
 
   const productRoutes = products.map(product => ({
     url: `${baseUrl}/san-pham/${product.tag}`,

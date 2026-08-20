@@ -5,9 +5,9 @@ import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } 
 import {
   deleteProductService,
   findInfiniteProductService,
-  findProductMinimalService,
   findProductService,
   getAllProductService,
+  getBaseProductService,
   getFilterProductService,
   getOneProductService,
   upsertProductToCloudinaryService
@@ -20,9 +20,6 @@ export const productRouter = createTRPCRouter({
   find: publicProcedure
     .input(productFilterSchema.extend({ include: z.custom<Prisma.ProductInclude>().optional() }))
     .query(async ({ ctx, input }) => await findProductService(ctx.db, input)),
-  findMinimal: publicProcedure
-    .input(productFilterSchema)
-    .query(async ({ ctx, input }) => await findProductMinimalService(ctx.db, input)),
   upsertToCloudinary: publicProcedure
     .use(requirePermission('update:product'))
     .use(requirePermission('create:product'))
@@ -47,6 +44,14 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getOneProductService(ctx.db, input)),
+  getBase: publicProcedure
+    .input(
+      z.object({
+        key: z.string(),
+        userRole: z.custom<TUserRole>().optional()
+      })
+    )
+    .query(async ({ ctx, input }) => await getBaseProductService(ctx.db, input)),
   getFilter: publicProcedure
     .input(
       z.object({
@@ -65,6 +70,7 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getAllProductService(ctx.db, input)),
+
   findInfiniteProduct: publicProcedure
     .input(
       z.object({

@@ -8,10 +8,10 @@ import { useState } from 'react';
 import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
+import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import { useCartStore } from '~/stores/cart.store';
 
-export const QuickMenuItem = ({ product, index }: { product: FindInfiniteProduct['items'][number]; index: number }) => {
+export const QuickMenuItem = ({ product, index }: { product: ProductBase; index: number }) => {
   const [quantity, setQuantity] = useState<number | string>(1);
   const updateCart = useCartStore(s => s.updateCart);
 

@@ -13,9 +13,10 @@ import { useFavorite } from '~/components/Hooks/use-favorite';
 import { breakpoints } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
+import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import { useModalStore } from '~/stores/modal.store';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
-const ProductCardCarouselVertical = ({ data }: { data?: any }) => {
+const ProductCardCarouselVertical = ({ data }: { data: ProductBase }) => {
   const router = useRouter();
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const openModal = useModalStore(s => s.open);

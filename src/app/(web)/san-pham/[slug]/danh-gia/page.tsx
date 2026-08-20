@@ -1,9 +1,8 @@
 'use client';
 
-import { Box, Divider, Grid, GridCol, ScrollAreaAutosize } from '@mantine/core';
+import { Box, Divider, Grid, GridCol } from '@mantine/core';
 import { notFound } from 'next/navigation';
-import { CommentsForm } from '~/components/Comments/CommentsForm';
-import { CommentsList } from '~/components/Comments/CommentsList';
+import Comments from '~/components/Comments/Comments';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { TOP_POSITION_STICKY } from '~/constants';
@@ -12,7 +11,7 @@ import RatingStatistics from '../components/RatingStatistics';
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const productTag = params.slug;
-  const { data: product, isLoading } = api.Product.getOne.useQuery({
+  const { data: product, isLoading } = api.Product.getBase.useQuery({
     key: productTag
   });
 
@@ -73,14 +72,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           span={{ base: 12, sm: 12, md: 6, lg: 6 }}
           mt={{ base: 'md', sm: 'md', md: 0, lg: 0 }}
         >
-          <>
+          <Comments productId={product?.id} max_height_scroll={500} />
+
+          {/* <>
             <ScrollAreaAutosize mah={500} scrollbarSize={5}>
               <Box pr={'xs'}>
                 <CommentsList productId={product?.id} />
               </Box>
             </ScrollAreaAutosize>
             <CommentsForm productId={product?.id} />
-          </>
+          </> */}
         </GridCol>
       </Grid>
     </Box>

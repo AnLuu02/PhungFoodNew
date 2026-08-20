@@ -4,7 +4,8 @@ import { IconStarFilled } from '@tabler/icons-react';
 import { GetReviewForOwner } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
 export default function RatingStatistics({ productId }: { productId: string }) {
-  const { data: reviews = [] } = api.Review.getForOwner.useQuery({ ownerId: productId });
+  const data = api.Review.getForOwner.useSuspenseQuery({ ownerId: productId });
+  const reviews = data?.[0];
   let ratingCountsDefault = [0, 0, 0, 0, 0];
   let ratings: number[] =
     reviews?.reduce((acc: number[], item: GetReviewForOwner[number]) => {
