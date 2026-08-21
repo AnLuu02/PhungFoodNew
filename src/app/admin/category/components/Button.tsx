@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryBasic } from '~/shared/type-trpc/category.type-trpc';
 import { api } from '~/trpc/react';
 import CategoryUpsert from './form/CategoryUpsert';
 import SubCategoryUpsert from './form/SubCategoryUpsert';
@@ -84,13 +84,13 @@ export function CreateManyCategoryButton() {
       NotifyError('Import thất bại! Sai định dạng dữ liệu.');
     }
   };
-  const fetchCategories = api.Category.getAll.useQuery();
+  const fetchCategories = api.Category.getCategoriesWithRelationBasic.useQuery();
   const handleExport = async () => {
     if (!fetchCategories.data || fetchCategories.data.length === 0) {
       return NotifyError('Không có dữ liệu để xuất.');
     }
     const XLSX = await import('xlsx');
-    const exportData = fetchCategories.data.map((item: GetAllCategory[number]) => ({
+    const exportData = fetchCategories.data.map((item: CategoryBasic) => ({
       ID: item.id,
       'Tên danh mục': item.name,
       Tag: item.tag,

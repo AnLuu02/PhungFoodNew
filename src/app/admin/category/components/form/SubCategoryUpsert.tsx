@@ -21,11 +21,14 @@ export default function SubCategoryUpsert({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const openModal = useModalStore(s => s.open);
-
-  const { data, isLoading: isLoadingDataSubCategory } = api.SubCategory.getOne.useQuery(
+  const { data: categoryData, isLoading } = api.Category.getCategoriesOnly.useQuery();
+  const { data, isLoading: isLoadingDataSubCategory } = api.SubCategory.getBasic.useQuery(
     { key: subCategoryId || '' },
     { enabled: !!subCategoryId }
   );
+
+  const categories = categoryData ?? [];
+
   const formFields = useForm<SubCategoryInput>({
     resolver: zodResolver(subCategoryInputSchema),
     defaultValues: {
@@ -58,7 +61,6 @@ export default function SubCategoryUpsert({
     }
   }, [data, formFields.reset]);
 
-  const { data: categoryData = [], isLoading } = api.Category.getAll.useQuery();
   const utils = api.useUtils();
   const updateMutation = api.SubCategory.upsert.useMutation({
     onSuccess: () => {
@@ -122,7 +124,7 @@ export default function SubCategoryUpsert({
                           disabled={isLoading}
                           label='Danh mục chính'
                           placeholder='Chọn danh mục cha'
-                          data={categoryData?.map(c => ({ value: c.id, label: c.name }))}
+                          data={categories.map(c => ({ value: c.id, label: c.name }))}
                           {...field}
                           error={errors.categoryId?.message}
                         />

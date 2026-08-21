@@ -6,17 +6,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
-import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
+import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
+import { api } from '~/trpc/react';
 import DynamicCartButton from '../components/DynamicCartButton';
 import NavigationHeader from '../components/NavigationHeader';
 import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
 
-const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; subCategories: GetAllSubCategory }) => {
+const Header3 = () => {
   const [imgMounted, setImgMounted] = useState(false);
-  const subCategoriesData = subCategories || [];
-  const categoriesData = categories || [];
   const [opened, { close, toggle }] = useDisclosure();
+  const { data, isLoading } = api.SubCategory.getSubCategoriesWithRelationBasic.useQuery();
+  const subCategories = data ?? [];
+
   return (
     <Flex
       px={{ base: 10, sm: 30, lg: 130 }}
@@ -74,8 +75,8 @@ const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; su
             <Menu.Dropdown className='bg-white p-0 shadow-md dark:bg-dark-card'>
               {imgMounted ? (
                 <ScrollAreaAutosize mah={{ base: 300, md: 400 }} scrollbarSize={5}>
-                  {subCategoriesData?.length > 0 ? (
-                    subCategoriesData?.map((item: GetAllSubCategory[number], index: number) => {
+                  {subCategories?.length > 0 ? (
+                    subCategories?.map((item: SubCategoryBasic, index: number) => {
                       return (
                         <Link href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`} key={index}>
                           <Menu.Item
@@ -116,9 +117,9 @@ const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; su
       </Flex>
 
       <Box className='order-2 hidden sm:block md:order-3'>
-        <NavigationHeader categories={categoriesData} />
+        <NavigationHeader />
       </Box>
-      <NavigationHeaderMobile opened={opened} close={close} categories={categoriesData} />
+      <NavigationHeaderMobile opened={opened} close={close} />
     </Flex>
   );
 };

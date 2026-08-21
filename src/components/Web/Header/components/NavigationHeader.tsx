@@ -7,9 +7,8 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
 import { navigationClientItem } from '~/lib/ConfigUI';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 
-function NavigationHeader({ categories }: { categories: GetAllCategory }) {
+function NavigationHeader() {
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -31,7 +30,7 @@ function NavigationHeader({ categories }: { categories: GetAllCategory }) {
             overlayProps={{
               zIndex: 99
             }}
-            disabled={!isDesktop || !categories?.length}
+            disabled={!isDesktop}
             width={1000}
             withArrow
             arrowSize={10}
@@ -58,9 +57,7 @@ function NavigationHeader({ categories }: { categories: GetAllCategory }) {
                 </Button>
               </Link>
             </Menu.Target>
-            <Menu.Dropdown className='dark:bg-dark-background'>
-              {imgMounted ? <MegaMenu categories={categories} /> : <Box></Box>}
-            </Menu.Dropdown>
+            <Menu.Dropdown className='dark:bg-dark-background'>{imgMounted ? <MegaMenu /> : <Box></Box>}</Menu.Dropdown>
           </Menu>
         ) : (
           <Link

@@ -22,32 +22,52 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
+import { AppSkeleton } from '~/components/Skeleton/AppSkeleton';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryWithRelationBasic } from '~/shared/type-trpc/category.type-trpc';
+import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { api } from '~/trpc/react';
 
-export default function MegaMenu({ categories }: { categories: GetAllCategory }) {
+export default function MegaMenu() {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<string | null>(null);
-  const [bestSellerProducts, categoriesItem] = useMemo(() => {
+  const { data: categoryData } = api.Category.getCategoriesWithRelationBasic.useQuery();
+  const { data: productData, isLoading: isLoadingProduct } = api.Product.find.useQuery(
+    {
+      page: 1,
+      limit: 8,
+      'danh-muc': activeTab ?? undefined,
+      loai: 'san-pham-ban-chay'
+    },
+    {
+      enabled: !!activeTab
+    }
+  );
+
+  const products = productData?.products ?? [];
+  const categories = categoryData ?? [];
+
+  const categoriesItem = useMemo(() => {
     if (categories && Array.isArray(categories)) {
-      const bestSellerProducts = categories.flatMap((item: GetAllCategory[number]) =>
-        activeTab === item?.tag
-          ? item?.subCategory.flatMap((subItem: GetAllCategory[number]['subCategory'][number]) => subItem?.products)
-          : []
-      );
-      const categoriesItem = categories.flatMap((item: GetAllCategory[number]) =>
+      const categoriesItem = categories.flatMap((item: CategoryWithRelationBasic[number]) =>
         activeTab === item?.tag ? item?.subCategory : []
       );
-      return [bestSellerProducts, categoriesItem];
+      return categoriesItem;
     }
-    return [[], []];
+    return [];
   }, [activeTab]);
 
   useEffect(() => {
     const active = searchParams.get('danh-muc') || (categories?.[0]?.tag as string);
     if (active) setActiveTab(active);
   }, [searchParams.get('danh-muc')?.toString()]);
+
+  useEffect(() => {
+    if (!activeTab && categories?.[0]?.tag) {
+      setActiveTab(categories?.[0]?.tag);
+    }
+  }, [categories]);
 
   return (
     <Tabs
@@ -74,7 +94,7 @@ export default function MegaMenu({ categories }: { categories: GetAllCategory })
           <ScrollAreaAutosize mah={'55vh'} scrollbarSize={5}>
             <Tabs.List>
               {categories?.length > 0 &&
-                categories?.map((item: GetAllCategory[number]) => (
+                categories?.map((item: CategoryWithRelationBasic[number]) => (
                   <Tabs.Tab
                     value={item.tag}
                     key={item.id + item.tag}
@@ -104,41 +124,43 @@ export default function MegaMenu({ categories }: { categories: GetAllCategory })
             <Tabs.Panel value={activeTab || categories?.[0]?.tag}>
               <Box p={'lg'}>
                 <Grid mb={'xs'}>
-                  {categoriesItem?.map((category: GetAllCategory[number]['subCategory'][number], index: number) => (
-                    <GridCol span={4} key={category.id + index} className='hover:scale-105'>
-                      <Link
-                        href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${category.tag}`}
-                        className={`dark:hover:shadow-md/80 flex animate-fadeUp items-center gap-4 rounded-lg bg-white p-2 shadow-sm transition-all hover:shadow-md dark:bg-dark-card ${
-                          searchParams.get('loai-san-pham') === category?.tag ? '!bg-mainColor/10' : ''
-                        }`}
-                        style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
-                      >
-                        <Card
-                          withBorder
-                          w={60}
-                          h={60}
-                          pos={'relative'}
-                          className='flex items-center justify-center shadow-none'
+                  {categoriesItem?.map(
+                    (category: CategoryWithRelationBasic[number]['subCategory'][number], index: number) => (
+                      <GridCol span={4} key={category.tag + index} className='hover:scale-105'>
+                        <Link
+                          href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${category.tag}`}
+                          className={`dark:hover:shadow-md/80 flex animate-fadeUp items-center gap-4 rounded-lg bg-white p-2 shadow-sm transition-all hover:shadow-md dark:bg-dark-card ${
+                            searchParams.get('loai-san-pham') === category?.tag ? '!bg-mainColor/10' : ''
+                          }`}
+                          style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
                         >
-                          <Image
-                            loading='lazy'
-                            src={category?.imageForEntity?.image?.url || '/images/png/momo.png'}
-                            alt={category?.name || 'Ảnh minh họa'}
-                            fill
-                            className='rounded-md object-cover'
-                          />
-                        </Card>
-                        <Stack gap={2}>
-                          <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
-                            {category.name}
-                          </Text>
-                          <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
-                            Số lượng: {category.products.length || 0}
-                          </Text>
-                        </Stack>
-                      </Link>
-                    </GridCol>
-                  ))}
+                          <Card
+                            withBorder
+                            w={60}
+                            h={60}
+                            pos={'relative'}
+                            className='flex items-center justify-center shadow-none'
+                          >
+                            <Image
+                              loading='lazy'
+                              src={category?.imageForEntity?.image?.url || '/images/png/momo.png'}
+                              alt={category?.name || 'Ảnh minh họa'}
+                              fill
+                              className='rounded-md object-cover'
+                            />
+                          </Card>
+                          <Stack gap={2}>
+                            <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
+                              {category.name}
+                            </Text>
+                            <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
+                              Số lượng: {category._count.products || 0}
+                            </Text>
+                          </Stack>
+                        </Link>
+                      </GridCol>
+                    )
+                  )}
                 </Grid>
                 <Center my={'md'}>
                   <Divider
@@ -177,52 +199,54 @@ export default function MegaMenu({ categories }: { categories: GetAllCategory })
                   </Box>
 
                   <Grid>
-                    {bestSellerProducts?.length > 0 ? (
-                      bestSellerProducts?.map(
-                        (product: GetAllCategory[number]['subCategory'][number]['products'][number], index: number) => (
-                          <GridCol
-                            span={3}
-                            key={product.id + product.tag}
-                            className='animate-fadeUp'
-                            style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
-                          >
-                            <Link href={`/san-pham/${product.tag}`}>
-                              <Stack gap={0}>
-                                <Paper
-                                  withBorder
-                                  w={'100%'}
-                                  h={120}
-                                  pos={'relative'}
-                                  className='overflow-hidden border border-transparent p-1 transition-all hover:border-red-500'
-                                >
-                                  <Box className='w-[calc(100%-20px] h-[100px]'>
-                                    <Image
-                                      loading='lazy'
-                                      src={
-                                        getImageProduct(product?.imageForEntities, ImageType.THUMBNAIL) ||
-                                        '/images/jpg/empty-300x240.jpg'
-                                      }
-                                      alt={product.name}
-                                      fill
-                                      style={{ objectFit: 'cover' }}
-                                    />
-                                  </Box>
-                                </Paper>
-                                <Stack gap={2} ml={4}>
-                                  <Tooltip label={product.name}>
-                                    <Text fw={700} size='sm' lineClamp={1}>
-                                      {product.name}
-                                    </Text>
-                                  </Tooltip>
-                                  <Text fw={700} size='sm' className='text-mainColor'>
-                                    {formatPriceLocaleVi(product?.price || 0)}
+                    {isLoadingProduct ? (
+                      <>
+                        <AppSkeleton />
+                      </>
+                    ) : products.length > 0 ? (
+                      products?.map((product: ProductBase, index: number) => (
+                        <GridCol
+                          span={3}
+                          key={product.id + product.tag}
+                          className='animate-fadeUp'
+                          style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+                        >
+                          <Link href={`/san-pham/${product.tag}`}>
+                            <Stack gap={0}>
+                              <Paper
+                                withBorder
+                                w={'100%'}
+                                h={120}
+                                pos={'relative'}
+                                className='overflow-hidden border border-transparent p-1 transition-all hover:border-red-500'
+                              >
+                                <Box className='w-[calc(100%-20px] h-[100px]'>
+                                  <Image
+                                    loading='lazy'
+                                    src={
+                                      getImageProduct(product?.imageForEntities, ImageType.THUMBNAIL) ||
+                                      '/images/jpg/empty-300x240.jpg'
+                                    }
+                                    alt={product.name}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                  />
+                                </Box>
+                              </Paper>
+                              <Stack gap={2} ml={4}>
+                                <Tooltip label={product.name}>
+                                  <Text fw={700} size='sm' lineClamp={1}>
+                                    {product.name}
                                   </Text>
-                                </Stack>
+                                </Tooltip>
+                                <Text fw={700} size='sm' className='text-mainColor'>
+                                  {formatPriceLocaleVi(product?.price || 0)}
+                                </Text>
                               </Stack>
-                            </Link>
-                          </GridCol>
-                        )
-                      )
+                            </Stack>
+                          </Link>
+                        </GridCol>
+                      ))
                     ) : (
                       <Empty
                         hasButton={false}

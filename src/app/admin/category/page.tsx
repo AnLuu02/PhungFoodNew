@@ -38,7 +38,7 @@ export default async function CategoryManagementPage({
   const status = (searchParams?.status as 'active' | 'inactive') ?? undefined;
   const category = searchParams?.category;
   await Promise.allSettled([
-    api.Category.getAll.prefetch(),
+    api.Category.getCategoriesWithRelationBasic.prefetch(),
     api.Category.find.prefetch({ page: +page, limit: +limit, s }),
     api.SubCategory.find.prefetch({ page: +page, limit: +limit, filters: { s, status, category } })
   ]);

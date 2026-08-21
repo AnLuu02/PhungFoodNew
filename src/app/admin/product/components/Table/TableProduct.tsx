@@ -16,7 +16,6 @@ import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { UserRole } from '~/shared/constants/user.constants';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
 import { FindProduct, getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
@@ -30,7 +29,7 @@ export default function TableProduct() {
   const limit = searchParams.get('limit') || '5';
   const filter = searchParams?.get('filter');
 
-  const { data: categories, isLoading } = api.Category.getAll.useQuery();
+  const { data: categoryData, isLoading } = api.Category.getCategoriesOnly.useQuery();
   const { data: dataClient, isLoading: isLoadingProduct } = api.Product.find.useQuery({
     page: +page,
     limit: +limit,
@@ -40,6 +39,7 @@ export default function TableProduct() {
   });
   const { data: allDataClient } = api.Product.getProductsOnly.useQuery({ userRole: UserRole.ADMIN });
   const currentItems = dataClient?.products || [];
+  const categories = categoryData ?? [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
@@ -152,7 +152,7 @@ export default function TableProduct() {
               }}
               data={[
                 { value: 'all', label: 'Tất cả danh mục' },
-                ...(categories || []).map((item: GetAllCategory[number]) => ({ value: item.tag, label: item.name }))
+                ...categories.map(item => ({ value: item.tag, label: item.name }))
               ]}
               nothingFoundMessage='Không tìm thấy'
             />

@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 };
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {
-  const [categories, materials] = await Promise.allSettled([
-    api.Category.getAll(),
-    api.Material.getAll(),
+  await Promise.allSettled([
+    api.Category.getCategoriesWithRelationBasic.prefetch(),
+    api.Material.getAll.prefetch(),
     api.Product.find.prefetch(defaultProductFilters, { staleTime: 30_000 })
   ]);
 
@@ -25,10 +25,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
       <Box className='relative' w={'100%'}>
         <Grid columns={24}>
           <GridCol span={{ base: 24, sm: 8, lg: 6 }} className='h-fit animate-fadeUp overflow-hidden'>
-            <SidebarMenu
-              materials={materials.status === 'fulfilled' ? materials.value : []}
-              categories={categories.status === 'fulfilled' ? categories.value : []}
-            />
+            <SidebarMenu />
           </GridCol>
           <GridCol
             span={{ base: 24, sm: 16, lg: 18 }}

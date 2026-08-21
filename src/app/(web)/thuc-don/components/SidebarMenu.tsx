@@ -3,13 +3,11 @@ import { Box, Button, Drawer, Flex, Stack, Title } from '@mantine/core';
 import { IconFilter } from '@tabler/icons-react';
 import { useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
-import { GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';
 import { SidebarFilterContent } from './SidebarFilterContent';
 
-export function SidebarMenu({ categories, materials }: { categories: GetAllCategory; materials: GetAllMaterial }) {
+export function SidebarMenu() {
   const [drawerOpened, setDrawerOpened] = useState(false);
 
   return (
@@ -38,12 +36,12 @@ export function SidebarMenu({ categories, materials }: { categories: GetAllCateg
             title: 'text-white'
           }}
         >
-          <SidebarFilterContent categories={categories} materials={materials} />
+          <SidebarFilterContent />
         </Drawer>
       </Stack>
 
       <Box className='hidden md:block'>
-        <SidebarFilterContent categories={categories} materials={materials} />
+        <SidebarFilterContent />
       </Box>
     </>
   );

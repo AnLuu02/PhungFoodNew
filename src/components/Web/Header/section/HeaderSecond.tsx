@@ -3,13 +3,11 @@ import { IconHome2, IconSearch } from '@tabler/icons-react';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 import SearchComponentClient from '~/components/Search/SearchClient';
-import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
 import CartButton from '../components/CartButton';
 import LikeButton from '../components/FavouriteButton';
 import PromotionButton from '../components/PromotionButton';
 
-const Header2 = ({ subCategories }: { subCategories: GetAllSubCategory }) => {
-  const dataSubCategories = subCategories || [];
+const Header2 = () => {
   return (
     <>
       <Flex
@@ -30,7 +28,7 @@ const Header2 = ({ subCategories }: { subCategories: GetAllSubCategory }) => {
           </div>
         </Link>
         <Box w={{ base: '100%', md: 450, lg: 600 }} className='hidden sm:block'>
-          <SearchComponentClient subCategories={dataSubCategories} />
+          <SearchComponentClient />
         </Box>
         <Divider
           variant='dashed'
@@ -67,7 +65,7 @@ const Header2 = ({ subCategories }: { subCategories: GetAllSubCategory }) => {
               </ActionIcon>
             </PopoverTarget>
             <PopoverDropdown className='rounded-xl' p={0}>
-              <SearchComponentClient subCategories={dataSubCategories} />
+              <SearchComponentClient />
             </PopoverDropdown>
           </Popover>
           <Box className='hidden animate-fadeUp lg:block' pos={'relative'} style={{ animationDuration: '0.5s' }}>

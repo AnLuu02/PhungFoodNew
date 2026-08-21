@@ -12,10 +12,12 @@ import {
   createManyCategoryService,
   deleteCategoryService,
   findCategoryService,
-  getAllCategoryService,
-  getOneCategoryService,
+  getBasicCategoryService,
+  getCategoriesOnlyService,
+  getCategoriesWithRelationBasicService,
   upsertCategoryService
 } from '~/server/services/category.service';
+import { CATEGORY_KEY } from '~/shared/constants/redis-keys';
 import { baseCategorySchema } from '~/shared/schema/category.schema';
 export const categoryRouter = createTRPCRouter({
   find: publicProcedure
@@ -39,26 +41,25 @@ export const categoryRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await deleteCategoryService(ctx.db, input, ctx.session)),
 
-  getOne: publicProcedure
+  getBasic: publicProcedure
     .input(
       z.object({
-        key: z.string(),
-        include: z.custom<Prisma.CategoryInclude>().optional()
+        key: z.string()
       })
     )
-    .query(async ({ ctx, input }) => await getOneCategoryService(ctx.db, input)),
-  getAll: publicProcedure
-    .input(
-      z
-        .object({
-          include: z.custom<Prisma.CategoryInclude>().optional()
-        })
-        .optional()
-    )
-    .query(
-      async ({ ctx, input }) =>
-        await withRedisCache('category:getAll', () => getAllCategoryService(ctx.db, input), 60 * 60 * 24)
-    ),
+    .query(async ({ ctx, input }) => await getBasicCategoryService(ctx.db, input)),
+  getCategoriesWithRelationBasic: publicProcedure.query(
+    async ({ ctx }) =>
+      await withRedisCache(
+        CATEGORY_KEY.withRelationBase,
+        () => getCategoriesWithRelationBasicService(ctx.db),
+        60 * 60 * 24
+      )
+  ),
+  getCategoriesOnly: publicProcedure.query(
+    async ({ ctx }) => await withRedisCache(CATEGORY_KEY.only, () => getCategoriesOnlyService(ctx.db), 60 * 60 * 24)
+  ),
+
   createMany: publicProcedure
     .use(requirePermission('create:category'))
     .input(

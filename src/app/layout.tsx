@@ -21,6 +21,7 @@ import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
 import { FavoriteProvider } from '~/providers/favorite-provider';
 import { GlobalModalProvider } from '~/providers/global-modal-provider';
 import { getServerAuthSession } from '~/server/auth';
+import { THEME_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
 import { mainTheme } from './theme';
 
@@ -65,7 +66,7 @@ export const metadata: Metadata = {
 };
 
 const getInitTheme = async () => {
-  return await withRedisCache('theme:default', () => api.Restaurant.getTheme(), 60 * 60 * 24);
+  return await withRedisCache(THEME_KEY.default, () => api.Restaurant.getTheme(), 60 * 60 * 24);
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
