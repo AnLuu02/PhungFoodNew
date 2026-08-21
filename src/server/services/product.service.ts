@@ -445,23 +445,17 @@ export const getBaseProductService = async (
     60 * 60 * 2
   );
 };
-export const getAllProductService = async (
+
+export const getProductsOnlyService = async (
   db: PrismaClient,
   input: {
     userRole?: TUserRole;
-    include?: Prisma.ProductInclude;
   }
 ) => {
-  const { include, userRole } = input;
+  const { userRole } = input;
   const products = await db.product.findMany({
     where: {
       ...(userRole && userRole != UserRole.CUSTOMER ? {} : { isActive: true })
-    },
-    include: {
-      ...(include ?? {}),
-      imageForEntities: { include: { image: true } },
-      materials: true,
-      favouriteFoods: true
     }
   });
   return products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));

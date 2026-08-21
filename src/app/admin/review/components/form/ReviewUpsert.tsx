@@ -6,7 +6,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserRole } from '~/shared/constants/user.constants';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
-import { GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
+import { getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
 import { GetAllUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
@@ -18,10 +18,7 @@ export default function ReviewUpsert({
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
   const { data } = api.Review.getOne.useQuery({ id: reviewId || '' }, { enabled: !!reviewId });
-  const { data: products } = api.Product.getAll.useQuery({
-    include: {
-      review: true
-    },
+  const { data: products } = api.Product.getProductsOnly.useQuery({
     userRole: UserRole.ADMIN
   });
   const { data: users } = api.User.getAll.useQuery();
@@ -83,7 +80,8 @@ export default function ReviewUpsert({
                 label='Product'
                 placeholder=' Chọn sản phẩm'
                 data={
-                  products?.map((product: GetAllProduct[number]) => ({ value: product.id, label: product.name })) || []
+                  products?.map((product: getProductsOnly[number]) => ({ value: product.id, label: product.name })) ||
+                  []
                 }
                 value={field.value}
                 onChange={field.onChange}

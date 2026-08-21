@@ -414,7 +414,7 @@ export default function SearchComponentClient({ subCategories }: { subCategories
                                   <Highlight lineClamp={2} fw={700} highlight={searchQuery}>
                                     {product.name}
                                   </Highlight>
-                                  <Text size='sm'>
+                                  <Text size='sm' c={'dimmed'}>
                                     <b className='m-0 p-0 text-mainColor'>{formatPriceLocaleVi(product.price)}</b> /phần
                                   </Text>
                                   {product.tags && product.tags.length > 0 && (

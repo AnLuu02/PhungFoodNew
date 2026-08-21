@@ -5,12 +5,7 @@ import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { UserRole } from '~/shared/constants/user.constants';
 import { Period } from '~/shared/types';
 import { getAllActivitiesService } from './activityLogger.service';
-import {
-  findProductService,
-  getAllProductService,
-  getFilterProductService,
-  getOneProductService
-} from './product.service';
+import { findProductService, getFilterProductService, getOneProductService } from './product.service';
 import { getOneBannerService } from './restaurant.banner.service';
 import { getOneActiveClientService } from './restaurant.service';
 import {
@@ -156,7 +151,6 @@ export const getInitProductDetailPageService = async (db: PrismaClient, input: {
 };
 export const getInitAdminPageService = async (db: PrismaClient) => {
   const results: any = await Promise.allSettled([
-    getAllProductService(db, { userRole: UserRole.ADMIN }),
     getOverviewRevenueService(db, { period: '_all' }),
     getAllActivitiesService(db, {
       limit: 10,
@@ -171,7 +165,6 @@ export const getInitAdminPageService = async (db: PrismaClient) => {
     item.status === 'fulfilled' ? item.value : []
   );
   return {
-    products,
     revenue,
     recentActivities
   };

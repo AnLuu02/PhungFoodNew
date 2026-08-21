@@ -5,7 +5,7 @@ import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
 import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
+import { getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
 const OrderItemForm = ({ index }: { index: number }) => {
@@ -15,23 +15,13 @@ const OrderItemForm = ({ index }: { index: number }) => {
     name: 'orderItems'
   });
   const [productOrderItem, setProductOrderItem] = useState<any>({});
-  const { data: products } = api.Product.getAll.useQuery({
-    include: {
-      subCategory: {
-        include: {
-          imageForEntity: { include: { image: true } },
-          category: true
-        }
-      },
-      review: true
-    }
-  });
+  const { data: products } = api.Product.getProductsOnly.useQuery({});
 
   const chooseProduct = watch(`orderItems.${index}.productId`);
   const chooseQuantity = watch(`orderItems.${index}.quantity`);
   const orderItems = watch(`orderItems`);
   useEffect(() => {
-    const p = products?.find((product: GetAllProduct[number]) => product.id === chooseProduct);
+    const p = products?.find((product: getProductsOnly[number]) => product.id === chooseProduct);
     if (p?.id) {
       setProductOrderItem(p);
       setValue(`orderItems.${index}.price`, p?.price);
@@ -71,7 +61,7 @@ const OrderItemForm = ({ index }: { index: number }) => {
                 searchable
                 {...field}
                 placeholder='Select products'
-                data={products?.map((product: GetAllProduct[number]) => ({
+                data={products?.map((product: getProductsOnly[number]) => ({
                   value: product.id,
                   label: product.name,
                   disabled:

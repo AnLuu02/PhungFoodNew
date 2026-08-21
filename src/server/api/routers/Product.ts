@@ -6,10 +6,10 @@ import {
   deleteProductService,
   findInfiniteProductService,
   findProductService,
-  getAllProductService,
   getBaseProductService,
   getFilterProductService,
   getOneProductService,
+  getProductsOnlyService,
   upsertProductToCloudinaryService
 } from '~/server/services/product.service';
 import { TUserRole } from '~/shared/constants/user.constants';
@@ -62,14 +62,14 @@ export const productRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getFilterProductService(ctx.db, input)),
-  getAll: publicProcedure
+
+  getProductsOnly: publicProcedure
     .input(
       z.object({
-        include: z.custom<Prisma.ProductInclude>().optional(),
         userRole: z.custom<TUserRole>().optional()
       })
     )
-    .query(async ({ ctx, input }) => await getAllProductService(ctx.db, input)),
+    .query(async ({ ctx, input }) => await getProductsOnlyService(ctx.db, input)),
 
   findInfiniteProduct: publicProcedure
     .input(

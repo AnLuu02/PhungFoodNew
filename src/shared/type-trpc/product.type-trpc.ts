@@ -1,7 +1,7 @@
 import { RouterOutputs } from '~/trpc/react';
 
 export type FindProduct = RouterOutputs['Product']['find'];
-export type GetAllProduct = RouterOutputs['Product']['getAll'];
+export type getProductsOnly = RouterOutputs['Product']['getProductsOnly'];
 export type FindInfiniteProduct = RouterOutputs['Product']['findInfiniteProduct'];
 
 //
