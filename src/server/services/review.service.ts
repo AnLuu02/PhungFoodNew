@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
+import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
 import { ReviewInput } from '~/shared/schema/review.schema';
 
 type ReviewScalarFieldEnum = 'userId' | 'productId' | 'id' | 'rating';
@@ -259,7 +260,7 @@ export const upsertReviewService = async (db: PrismaClient, input: ReviewInput) 
         totalRating: starReview.length
       }
     }),
-    delCache(`product:detail:${data.productId}`)
+    delCache(PRODUCT_KEY.detail(data.productId))
   ]);
 
   return {

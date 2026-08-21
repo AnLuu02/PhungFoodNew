@@ -6,10 +6,11 @@ import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import { HeaderClient } from '~/components/Web/Header/section/HeaderFirst';
 import ServiceComponent from '~/components/Web/Home/components/ServiceComponent';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { api, HydrateClient } from '~/trpc/server';
 
 const getInitRestaurant = async () => {
-  return await withRedisCache('restaurant:getOneActiveClient', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+  return await withRedisCache(RESTAURANT_KEY.active, () => api.Restaurant.getBaseActiveClient(), 60 * 60 * 24);
 };
 
 const Layout = async ({ children }: { children: React.ReactNode }) => {

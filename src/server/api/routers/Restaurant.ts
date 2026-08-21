@@ -10,8 +10,9 @@ import {
 } from '~/server/services/restaurant.banner.service';
 import { updateOpeningHoursService } from '~/server/services/restaurant.openingHours.service';
 import {
-  getOneActiveClientService,
-  getOneActiveService,
+  getBaseActiveAdminService,
+  getBaseRestaurantActiveClientService,
+  getRestaurantOnlyService,
   upsertRestaurantService
 } from '~/server/services/restaurant.service';
 import { deleteSocialService, upsertSocialService } from '~/server/services/restaurant.socials.service';
@@ -23,8 +24,9 @@ import { socialSchemaWithRestaurantId } from '~/shared/schema/restaurant.socials
 import { baseThemeSchema } from '~/shared/schema/restaurant.theme.schema';
 
 export const restaurantRouter = createTRPCRouter({
-  getOneActive: publicProcedure.query(async ({ ctx }) => await getOneActiveService(ctx.db)),
-  getOneActiveClient: publicProcedure.query(async ({ ctx }) => await getOneActiveClientService(ctx.db)),
+  getBaseActiveAdmin: publicProcedure.query(async ({ ctx }) => await getBaseActiveAdminService(ctx.db)),
+  getBaseActiveClient: publicProcedure.query(async ({ ctx }) => await getBaseRestaurantActiveClientService(ctx.db)),
+  getRestaurantOnly: publicProcedure.query(async ({ ctx }) => await getRestaurantOnlyService(ctx.db)),
   upsert: publicProcedure
     .use(requirePermission(undefined, { requiredAdmin: true }))
     .use(activityLogger)

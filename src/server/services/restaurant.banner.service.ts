@@ -130,13 +130,12 @@ export const upsertBannerService = async (db: PrismaClient, input: BannerReqClou
   };
 };
 
-export const getOneBannerService = async (
-  db: PrismaClient,
-  input: { isActive?: boolean; include?: Prisma.BannerInclude }
-) => {
+export const getOneBannerService = async (db: PrismaClient, input: { isActive?: boolean }) => {
   return await db.banner.findFirst({
     where: input.isActive ? { isActive: input.isActive } : undefined,
-    include: { ...(input.include ?? {}), imageForEntities: { include: { image: true } } }
+    include: {
+      imageForEntities: { select: { type: true, altText: true, image: { select: { url: true } } } }
+    }
   });
 };
 

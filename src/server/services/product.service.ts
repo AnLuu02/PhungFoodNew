@@ -395,18 +395,11 @@ export const getOneProductService = async (
   });
   if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Opps! Có vẻ như sản phẩm không tồn tại.' });
 
-  const redisKey = PRODUCT_KEY.full(product.tag);
-  return await withRedisCache(
-    redisKey,
-    async () => {
-      return {
-        ...product,
-        price: moneyToNumber(product.price),
-        discount: moneyToNumber(product.discount)
-      };
-    },
-    60 * 60 * 2
-  );
+  return {
+    ...product,
+    price: moneyToNumber(product.price),
+    discount: moneyToNumber(product.discount)
+  };
 };
 
 export const getBaseProductService = async (

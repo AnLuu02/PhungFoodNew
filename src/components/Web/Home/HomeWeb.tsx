@@ -2,11 +2,12 @@ import { Space } from '@mantine/core';
 import Reveal from '~/components/Reveal';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import cooking_guilds from '~/lib/HardData/cooking_guilds.json';
+import { GetInitPage } from '~/shared/type-trpc/page.type-trpc';
 import { PartnerCard } from '../Card/CardPartner';
 import ProductCardCarouselVertical from '../Card/CardProductCarouselVertical';
 import CardRecipe from '../Card/CardRecipe';
 import BannerSection from './Section/Banner-section';
-import CategoryCarouselHorizontal, { IDataCategory } from './Section/Category-Carousel-Horizontal';
+import CategoryCarouselHorizontal from './Section/Category-Carousel-Horizontal';
 import ReusablePromoBanner from './Section/Layout-Banner-Promotion';
 import LayoutGridCarouselOnly from './Section/Layout-Grid-Carousel-Only';
 import FastMenuSection from './Section/Layout-Menu-Quick-Sale-Order';
@@ -14,23 +15,11 @@ import LayoutProductCarouselWithImage from './Section/Layout-Product-Carousel-Wi
 import LayoutProductCarouselWithImage2 from './Section/Layout-Product-Carousel-With-Image-2';
 import LayoutPromotion from './Section/Layout-Promotion';
 import LayoutGrid3Col from './Section/LayoutGrid3Col';
-const HomeWeb = ({
-  data
-}: {
-  data: {
-    banner: any;
-    category: IDataCategory;
-    materials: any;
-    productDiscount: any;
-    productBestSaler: any;
-    productNew: any;
-    productHot: any;
-  };
-}) => {
+const HomeWeb = ({ data }: { data: GetInitPage }) => {
   const recipes = cooking_guilds;
   return (
     <>
-      {data.banner?.id && (
+      {data?.banner && (
         <>
           <BannerSection banner={data.banner} />
           <Space h='xl' />

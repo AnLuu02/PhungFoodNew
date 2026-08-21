@@ -2,12 +2,13 @@ import { PrismaClient } from '@prisma/client';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import dayjs from '~/lib/dayjs';
 import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { UserRole } from '~/shared/constants/user.constants';
 import { Period } from '~/shared/types';
 import { getAllActivitiesService } from './activityLogger.service';
 import { findProductService, getFilterProductService, getOneProductService } from './product.service';
 import { getOneBannerService } from './restaurant.banner.service';
-import { getOneActiveClientService } from './restaurant.service';
+import { getBaseRestaurantActiveClientService } from './restaurant.service';
 import {
   getDistributionProductsService,
   getOverviewRevenueService,
@@ -43,13 +44,13 @@ export const getInitPageService = async (db: PrismaClient) => {
         category: { tag: { in: categoryTags } }
       },
       include: {
-        category: true,
+        category: { select: { name: true, tag: true } },
         imageForEntity: {
           select: {
             altText: true,
+            type: true,
             image: {
               select: {
-                publicId: true,
                 url: true
               }
             }
@@ -60,8 +61,23 @@ export const getInitPageService = async (db: PrismaClient) => {
             isActive: true
           },
           include: {
-            favouriteFoods: true,
-            imageForEntities: { include: { image: true } }
+            favouriteFoods: {
+              select: {
+                productId: true,
+                userId: true
+              }
+            },
+            imageForEntities: {
+              select: {
+                altText: true,
+                type: true,
+                image: {
+                  select: {
+                    url: true
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -74,11 +90,25 @@ export const getInitPageService = async (db: PrismaClient) => {
       },
       take: 200,
       include: {
-        imageForEntities: { include: { image: true } },
+        imageForEntities: {
+          select: {
+            altText: true,
+            type: true,
+            image: {
+              select: {
+                url: true
+              }
+            }
+          }
+        },
         materials: true,
-        subCategory: { include: { category: true } },
+        subCategory: {
+          include: {
+            category: { select: { name: true, tag: true } }
+          }
+        },
         review: true,
-        favouriteFoods: true
+        favouriteFoods: { select: { productId: true, userId: true } }
       }
     })
   ]);
@@ -212,7 +242,7 @@ export const getInitReportPageService = async (
 
 export const getInitAboutUs = async (db: PrismaClient) => {
   const [restaurant, productBestSaler, topReviews] = await Promise.all([
-    withRedisCache('restaurant:getOneActiveClient', () => getOneActiveClientService(db), 60 * 60 * 24),
+    withRedisCache(RESTAURANT_KEY.active, () => getBaseRestaurantActiveClientService(db), 60 * 60 * 24),
     findProductService(db, {
       limit: 3,
       page: 1,

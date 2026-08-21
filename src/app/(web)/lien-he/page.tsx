@@ -2,6 +2,7 @@ import { Flex, Grid, GridCol, Text, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
 import { FormContact } from './components/FormContact';
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 const getInitRestaurant = async () => {
-  return await withRedisCache('restaurant:getOneActiveClient', () => api.Restaurant.getOneActiveClient(), 60 * 60 * 24);
+  return await withRedisCache(RESTAURANT_KEY.active, () => api.Restaurant.getBaseActiveClient(), 60 * 60 * 24);
 };
 
 const Contact = async () => {

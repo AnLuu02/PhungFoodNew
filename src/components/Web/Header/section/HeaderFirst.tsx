@@ -8,16 +8,16 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 import NotificationDialog from '~/components/NotificationDialog';
 import UserSection from '~/components/UserSection';
-import { TGetOneActiveClient } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantBase } from '~/shared/type-trpc/restaurant.type-trpc';
 import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 
-export const HeaderClient = ({ restaurant }: { restaurant: TGetOneActiveClient }) => {
+export const HeaderClient = ({ restaurant }: { restaurant: RestaurantBase }) => {
   const [language, setLanguage] = useLocalStorage<'vn' | 'us'>({ key: 'language', defaultValue: 'vn' });
   const timeOpen = useMemo(() => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurant?.openingHours ?? [];
     const timeOpen = timeOpens?.find(
-      (item: NonNullable<TGetOneActiveClient>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
+      (item: NonNullable<RestaurantBase>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
     );
     return {
       ...timeOpen,

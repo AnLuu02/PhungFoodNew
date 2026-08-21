@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { SocialWithRestaurantId } from '~/shared/schema/restaurant.socials.schema';
 
 export const upsertSocialService = async (db: PrismaClient, input: SocialWithRestaurantId) => {
@@ -47,7 +48,7 @@ export const upsertSocialService = async (db: PrismaClient, input: SocialWithRes
     }
   });
 
-  await Promise.all([delCache('restaurant:getOneActive'), delCache('restaurant:getOneActiveClient')]);
+  await Promise.all([delCache(RESTAURANT_KEY.full), delCache(RESTAURANT_KEY.active)]);
 
   return {
     metaData: {
@@ -66,7 +67,7 @@ export const deleteSocialService = async (db: PrismaClient, input: { id: string;
   const deleted = await db.social.delete({
     where: { id: input.id }
   });
-  await Promise.all([delCache('restaurant:getOneActive'), delCache('restaurant:getOneActiveClient')]);
+  await Promise.all([delCache(RESTAURANT_KEY.full), delCache(RESTAURANT_KEY.active)]);
   return {
     metaData: {
       before: deleted ?? {},

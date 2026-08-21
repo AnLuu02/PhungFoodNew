@@ -2,6 +2,11 @@ export const THEME_KEY = {
   default: `theme:default`
 };
 
+export const RESTAURANT_KEY = {
+  active: 'restaurant:active',
+  full: `restaurant:full:active`
+};
+
 export const PRODUCT_KEY = {
   all: ['all'],
   detail: (slug: string) => `product:${slug}`,

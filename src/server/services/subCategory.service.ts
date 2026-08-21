@@ -74,16 +74,25 @@ export const findSubCategoryService = async (
         }
       : {})
   };
-  const subCategories = await db.subCategory.findMany({
-    skip: (page - 1) * limit,
-    take: limit,
-    where,
-    include: BASIC_INCLUDE,
-    orderBy: {
-      createdAt: 'desc'
-    }
-  });
-  const totalPages = Math.ceil(subCategories.length / limit);
+
+  const [totalSubCategory, totalSubCategoryQuery, subCategories] = await db.$transaction([
+    db.subCategory.count(),
+    db.subCategory.count({
+      where
+    }),
+    db.subCategory.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      where,
+      include: BASIC_INCLUDE,
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+  ]);
+  const totalPages = Math.ceil(
+    filters ? (totalSubCategoryQuery == 0 ? 1 : totalSubCategoryQuery / limit) : totalSubCategory / limit
+  );
 
   return {
     subCategories,

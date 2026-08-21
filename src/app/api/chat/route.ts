@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const lastUserMessage = [...messages].reverse().find(message => message.role === 'user')?.content || '';
 
-    const restaurant = await api.Restaurant.getOneActiveClient();
+    const restaurant = await api.Restaurant.getBaseActiveClient();
 
     let keywords: Record<string, any> = {};
 
