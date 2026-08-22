@@ -1,6 +1,6 @@
 'use client';
 import { Paper, Stack } from '@mantine/core';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SectionHeading } from '~/components/SectionHeading';
 import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
 import { toNumber } from '~/lib/FuncHandler/Format';
@@ -31,6 +31,18 @@ export const SectionPromotions = ({ initialData }: { initialData: FindProduct })
   const onSetPerpage = useCallback((value: string) => {
     setPerPage(toNumber(value) ?? 4);
   }, []);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.Product.find.prefetch({
+        page: page + 1,
+        limit: perPage,
+        loai: 'san-pham-giam-gia'
+      });
+    }
+  }, [page]);
+
   return (
     <>
       <Stack gap={'xl'}>

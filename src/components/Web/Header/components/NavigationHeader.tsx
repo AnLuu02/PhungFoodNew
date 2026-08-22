@@ -4,14 +4,31 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
+import { useCallback, useState } from 'react';
+import MegaMenu from '~/components/Web/Header/components/MegaMenu';
 import { navigationClientItem } from '~/lib/ConfigUI';
+import { api } from '~/trpc/react';
 
 function NavigationHeader() {
+  const { data: categories } = api.Category.getCategoriesWithRelationBasic.useQuery();
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+
+  const utils = api.useUtils();
+  const handlePrefetchMegaMenu = useCallback(() => {
+    if (categories?.length) {
+      categories.forEach(c => {
+        void utils.Product.find.prefetch({
+          page: 1,
+          limit: 8,
+          'danh-muc': c?.tag,
+          loai: 'san-pham-ban-chay'
+        });
+      });
+    }
+  }, [categories]);
+
   return (
     <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }}>
       {navigationClientItem.map((item, index) =>
@@ -22,6 +39,7 @@ function NavigationHeader() {
             withOverlay
             onOpen={() => {
               setImgMounted(true);
+              handlePrefetchMegaMenu();
               document.body.style.overflow = 'hidden';
             }}
             onClose={() => {
@@ -35,7 +53,7 @@ function NavigationHeader() {
             withArrow
             arrowSize={10}
             offset={10}
-            transitionProps={{ transition: 'fade-up', duration: 300 }}
+            transitionProps={{ transition: 'fade-up', duration: 500 }}
           >
             <Menu.Target>
               <Link key={index} href={item.href} style={{ transition: 'all 0.3s' }} className='h-[max-content]'>

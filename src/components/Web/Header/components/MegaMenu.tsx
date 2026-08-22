@@ -48,12 +48,12 @@ export default function MegaMenu() {
   const products = productData?.products ?? [];
   const categories = categoryData ?? [];
 
-  const categoriesItem = useMemo(() => {
+  const subCategories = useMemo(() => {
     if (categories && Array.isArray(categories)) {
-      const categoriesItem = categories.flatMap((item: CategoryWithRelationBasic[number]) =>
+      const subCategories = categories.flatMap((item: CategoryWithRelationBasic[number]) =>
         activeTab === item?.tag ? item?.subCategory : []
       );
-      return categoriesItem;
+      return subCategories;
     }
     return [];
   }, [activeTab]);
@@ -124,13 +124,13 @@ export default function MegaMenu() {
             <Tabs.Panel value={activeTab || categories?.[0]?.tag}>
               <Box p={'lg'}>
                 <Grid mb={'xs'}>
-                  {categoriesItem?.map(
-                    (category: CategoryWithRelationBasic[number]['subCategory'][number], index: number) => (
-                      <GridCol span={4} key={category.tag + index} className='hover:scale-105'>
+                  {subCategories?.map(
+                    (subCaegory: CategoryWithRelationBasic[number]['subCategory'][number], index: number) => (
+                      <GridCol span={4} key={subCaegory.tag + index} className='hover:scale-105'>
                         <Link
-                          href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${category.tag}`}
+                          href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${subCaegory.tag}`}
                           className={`dark:hover:shadow-md/80 flex animate-fadeUp items-center gap-4 rounded-lg bg-white p-2 shadow-sm transition-all hover:shadow-md dark:bg-dark-card ${
-                            searchParams.get('loai-san-pham') === category?.tag ? '!bg-mainColor/10' : ''
+                            searchParams.get('loai-san-pham') === subCaegory?.tag ? '!bg-mainColor/10' : ''
                           }`}
                           style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
                         >
@@ -143,18 +143,18 @@ export default function MegaMenu() {
                           >
                             <Image
                               loading='lazy'
-                              src={category?.imageForEntity?.image?.url || '/images/png/momo.png'}
-                              alt={category?.name || 'Ảnh minh họa'}
+                              src={subCaegory?.imageForEntity?.image?.url || '/images/png/momo.png'}
+                              alt={subCaegory?.name || 'Ảnh minh họa'}
                               fill
                               className='rounded-md object-cover'
                             />
                           </Card>
                           <Stack gap={2}>
                             <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
-                              {category.name}
+                              {subCaegory.name}
                             </Text>
                             <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
-                              Số lượng: {category._count.products || 0}
+                              Số lượng: {subCaegory._count.products || 0}
                             </Text>
                           </Stack>
                         </Link>
