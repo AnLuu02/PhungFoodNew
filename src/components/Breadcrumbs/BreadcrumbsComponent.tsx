@@ -5,12 +5,14 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
+import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
+import { api } from '~/trpc/react';
 import { ActiveMenuPageText } from './ActiveMenuPageText';
 import { BreadcrumbsBase } from './BreadcrumbsBase';
-export const BreadcrumbsComponent = ({ subCategories }: { subCategories: GetAllSubCategory }) => {
+export const BreadcrumbsComponent = () => {
+  const { data, isLoading } = api.SubCategory.getSubCategoriesWithRelationBasic.useQuery();
+  const subCategories = data ?? [];
   const pathname = usePathname();
-  const subCategoriesData = subCategories || [];
   return pathname === '/' ? (
     ''
   ) : pathname !== '/thuc-don' ? (
@@ -64,7 +66,7 @@ export const BreadcrumbsComponent = ({ subCategories }: { subCategories: GetAllS
               control: 'h-[40px] w-[40px] rounded-full bg-mainColor text-white'
             }}
           >
-            {subCategoriesData?.length === 0
+            {isLoading || subCategories?.length === 0
               ? [1, 2, 3, 4, 5, 6].map(item => (
                   <Carousel.Slide key={item}>
                     <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>
@@ -75,7 +77,7 @@ export const BreadcrumbsComponent = ({ subCategories }: { subCategories: GetAllS
                     </Card>
                   </Carousel.Slide>
                 ))
-              : subCategoriesData.map((item: GetAllSubCategory[number], index: number) => (
+              : subCategories.map((item: SubCategoryBasic, index: number) => (
                   <Carousel.Slide
                     key={item.id}
                     className='animate-fadeUp'

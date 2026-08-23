@@ -111,6 +111,27 @@ export const userRouter = createTRPCRouter({
       });
       return user;
     }),
+  getUsersOnly: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.user.findMany({});
+  }),
+  getUsersWithRelationBase: publicProcedure.query(async ({ ctx }) => {
+    return await ctx.db.user.findMany({
+      include: {
+        role: true,
+        imageForEntity: {
+          select: {
+            type: true,
+            altText: true,
+            image: {
+              select: {
+                url: true
+              }
+            }
+          }
+        }
+      }
+    });
+  }),
   getNotGuest: publicProcedure
     .input(z.object({ include: z.custom<Prisma.UserInclude>().optional() }).optional())
     .query(async ({ ctx, input }) => await getNotGuestService(ctx.db, input)),

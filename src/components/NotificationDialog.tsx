@@ -34,12 +34,15 @@ declare global {
 }
 
 function NotificationDialog() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
+
+  const userId = session?.user?.id;
+
   const { data, isLoading } = api.Notification.getByUser.useQuery(
-    { userId: session?.user?.id || '' },
+    { userId: userId || '' },
     {
-      enabled: !!session?.user?.id
+      enabled: !!userId
     }
   );
   const notificationsData = data ?? [];
@@ -76,23 +79,27 @@ function NotificationDialog() {
   const unreadCount = notifications.filter(n => !n?.recipients?.[0]?.clickedAt)?.length || 0;
 
   useRealtimeNotification({
-    userId: session?.user?.id,
+    userId,
     onReceive: async (data: any) => {
       setIsNotify(true);
       setNotifications(prev => [...prev, data]);
       await updateActionClient({
         mutationUpdateAction,
         data,
-        session,
+        userId,
         action: 'delivered'
       });
     }
   });
   useEffect(() => {
-    setNotifications([...(notificationsData as any)]);
-  }, [notificationsData?.length]);
+    if (!userId) return;
+    if (notificationsData) {
+      setNotifications([...(notificationsData as any)]);
+    }
+  }, [notificationsData]);
 
   useEffect(() => {
+    if (!userId) return;
     if (isNotify) {
       const timeout = setTimeout(() => {
         setIsNotify(false);
@@ -101,20 +108,22 @@ function NotificationDialog() {
       return () => clearTimeout(timeout);
     }
   }, [isNotify]);
+
   useEffect(() => {
+    if (!userId) return;
     (async () => {
       setLoading(true);
       const syncOfflineData = await mutationSyncOffline.mutateAsync({
-        userId: session?.user?.id
+        userId: userId
       });
       if (syncOfflineData?.length) {
         setNotifications(prev => [...prev, ...(syncOfflineData as any)]);
         setLoading(false);
       }
     })();
-  }, []);
+  }, [userId]);
 
-  if (loading && isLoading) {
+  if (status === 'loading' || status === 'unauthenticated' || (loading && isLoading)) {
     return null;
   }
 
@@ -187,7 +196,7 @@ function NotificationDialog() {
                       onClick={async () => {
                         await deleteMutation.mutateAsync({
                           where: {
-                            userId: session?.user?.id
+                            userId
                           }
                         });
 
@@ -248,7 +257,7 @@ function NotificationDialog() {
                                   await updateActionClient({
                                     mutationUpdateAction,
                                     data: notification,
-                                    session,
+                                    userId,
                                     action: 'clicked'
                                   });
                                   setNotifications(
@@ -378,7 +387,7 @@ function NotificationDialog() {
                                       await updateActionClient({
                                         mutationUpdateAction,
                                         data: notification,
-                                        session,
+                                        userId,
                                         action: 'read'
                                       });
                                     }

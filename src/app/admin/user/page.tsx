@@ -36,7 +36,7 @@ export default async function UserManagementPage({
       sort: sortArr,
       filter
     }),
-    api.User.getAll.prefetch()
+    api.User.getUsersWithRelationBase.prefetch()
   ]);
 
   return (

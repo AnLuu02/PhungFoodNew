@@ -22,6 +22,8 @@ export const CartTable = () => {
   const cart = useCartItems();
   const updateCart = useCartStore(s => s.updateCart);
   const removeCart = useCartStore(s => s.removeCart);
+  console.log('re-render');
+
   return (
     <Table className='mb-6'>
       <Table.Thead>
@@ -146,10 +148,11 @@ export const CartTable = () => {
                 clampBehavior='strict'
                 value={item.quantity}
                 onChange={quantity => {
-                  if (Number(quantity) === 0) {
+                  const value = Number(quantity);
+                  if (value === 0) {
                     removeCart(item.product.id);
                   }
-                  updateCart({ productId: item.product.id, quantity: Number(quantity) });
+                  updateCart({ productId: item.product.id, note: item.note, quantity: Number(quantity) });
                 }}
                 min={0}
                 max={20}

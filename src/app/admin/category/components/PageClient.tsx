@@ -4,7 +4,7 @@ import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-r
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryBasic } from '~/shared/type-trpc/category.type-trpc';
 import { api } from '~/trpc/react';
 import { CreateCategoryButton, CreateSubCategoryButton } from './Button';
 import TableCategory from './Table/TableCategory';
@@ -15,7 +15,7 @@ export default function CategoryClientManagementPage() {
   const params = new URLSearchParams(searchParams);
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'category' | 'subCategory'>('category');
-  const { data: allDataClient } = api.Category.getAll.useQuery(undefined);
+  const { data: allDataClient } = api.Category.getCategoriesWithRelationBasic.useQuery(undefined);
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient?.reduce(
@@ -26,14 +26,14 @@ export default function CategoryClientManagementPage() {
           totalSubCate: number;
           activeSubCate: number;
         },
-        item: GetAllCategory[number]
+        item: CategoryBasic
       ) => {
         acc.totalCate += 1;
         acc.totalSubCate += item.subCategory?.length || 0;
         if (item.isActive) {
           acc.activeCate += 1;
         }
-        item.subCategory?.forEach((subCategory: GetAllCategory[number]['subCategory'][number]) => {
+        item.subCategory?.forEach((subCategory: CategoryBasic['subCategory'][number]) => {
           if (subCategory.isActive) {
             acc.activeSubCate += 1;
           }
@@ -166,7 +166,7 @@ export default function CategoryClientManagementPage() {
                     }}
                     data={[
                       { value: 'all', label: 'Tất cả' },
-                      ...(allDataClient ?? []).map((item: GetAllCategory[number]) => {
+                      ...(allDataClient ?? []).map((item: CategoryBasic) => {
                         return {
                           label: item.name,
                           value: item.tag

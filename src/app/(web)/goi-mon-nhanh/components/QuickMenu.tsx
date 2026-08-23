@@ -8,13 +8,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { breakpoints } from '~/constants';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryBasic } from '~/shared/type-trpc/category.type-trpc';
 import { api } from '~/trpc/react';
 import { QuickMenuItem } from './QuickMenuItem';
 import { QuickMenuItemSkeleton } from './QuickMenuItemSkeleton';
 
 const LIMIT_VISIBLE_CATEGORY = 2;
-export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: GetAllCategory; LIMIT_DATA: number }) => {
+export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: CategoryBasic[]; LIMIT_DATA: number }) => {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const utils = api.useUtils();
   const searchParams = useSearchParams();

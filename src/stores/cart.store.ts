@@ -61,8 +61,8 @@ export const useCartStore = create<CartStorage>()(
               ...state.items,
               [productId]: {
                 ...existed,
-                quantity: existed.quantity + quantity,
-                note: note ?? existed.note
+                quantity,
+                note
               }
             }
           };

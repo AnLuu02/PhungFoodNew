@@ -6,8 +6,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserRole } from '~/shared/constants/user.constants';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
-import { GetAllProduct } from '~/shared/type-trpc/product.type-trpc';
-import { GetAllUser } from '~/shared/type-trpc/user.type-trpc';
+import { getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function ReviewUpsert({
@@ -17,14 +16,11 @@ export default function ReviewUpsert({
   reviewId?: string;
   setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-  const { data } = api.Review.getOne.useQuery({ id: reviewId || '' }, { enabled: !!reviewId });
-  const { data: products } = api.Product.getAll.useQuery({
-    include: {
-      review: true
-    },
+  const { data } = api.Review.getBase.useQuery({ key: reviewId || '' }, { enabled: !!reviewId });
+  const { data: products } = api.Product.getProductsOnly.useQuery({
     userRole: UserRole.ADMIN
   });
-  const { data: users } = api.User.getAll.useQuery();
+  const { data: users } = api.User.getUsersOnly.useQuery();
 
   const {
     handleSubmit,
@@ -83,7 +79,8 @@ export default function ReviewUpsert({
                 label='Product'
                 placeholder=' Chọn sản phẩm'
                 data={
-                  products?.map((product: GetAllProduct[number]) => ({ value: product.id, label: product.name })) || []
+                  products?.map((product: getProductsOnly[number]) => ({ value: product.id, label: product.name })) ||
+                  []
                 }
                 value={field.value}
                 onChange={field.onChange}
@@ -102,7 +99,7 @@ export default function ReviewUpsert({
                 searchable
                 label='user'
                 placeholder=' Chọn khách hàng'
-                data={users?.map((user: GetAllUser[number]) => ({ value: user.id, label: user.name })) || []}
+                data={(users ?? []).map(user => ({ value: user.id, label: user.name })) || []}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}

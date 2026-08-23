@@ -24,7 +24,7 @@ import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { RestaurantInput, restaurantInputSchema } from '~/shared/schema/restaurant.schema';
-import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 import RestaurantInformationSkeleton from '../Skeleton/RestaurantInformationSkeleton';
 import ContactTab from './Tabs/ContactTab';
@@ -41,7 +41,7 @@ const TABS = {
 const DEFAULT_TAB = TABS?.['basic']?.value || 'basic';
 
 export default function RestaurantInfoSettings() {
-  const { data, isLoading } = api.Restaurant.getOneActive.useQuery();
+  const { data, isLoading } = api.Restaurant.getBaseActiveAdmin.useQuery();
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const formFields = useForm<RestaurantInput>({
     resolver: zodResolver(restaurantInputSchema),
@@ -61,7 +61,7 @@ export default function RestaurantInfoSettings() {
     const timeIndex = new Date().getDay();
     const timeOpens = data?.openingHours ?? [];
     const timeOpen = timeOpens?.find(
-      (item: NonNullable<TGetOneActive>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
+      (item: NonNullable<RestaurantDetail>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
     );
     return {
       ...timeOpen,

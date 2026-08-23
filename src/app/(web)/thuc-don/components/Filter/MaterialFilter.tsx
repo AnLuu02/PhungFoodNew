@@ -4,8 +4,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
 import { GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
+import { api } from '~/trpc/react';
 
-export const MaterialFilter = ({ materials }: { materials: GetAllMaterial }) => {
+export const MaterialFilter = () => {
+  const { data, isLoading } = api.Material.getAll.useQuery();
+  const materials = data ?? [];
   const params = useSearchParams();
   const [valueMaterials, setValueMaterials] = useState<string[]>([]);
   const router = useRouter();

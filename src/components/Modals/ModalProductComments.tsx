@@ -2,7 +2,7 @@
 import { Alert, Flex, Grid, Group, Modal, Title } from '@mantine/core';
 import { IconAlertSquareRounded } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import RatingStatistics from '~/app/(web)/san-pham/[slug]/components/RatingStatistics';
+import RatingStatistics from '~/app/(web)/san-pham/[slug]/components/client-component/RatingStatistics';
 import { ModalProps } from '~/types/modal';
 import Comments from '../Comments/Comments';
 import ProductCardCarouselVertical from '../Web/Card/CardProductCarouselVertical';

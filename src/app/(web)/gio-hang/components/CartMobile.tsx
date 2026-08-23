@@ -58,7 +58,7 @@ export const ShoppingCartMobile = () => {
                   if (Number(quantity) === 0) {
                     removeCart(item?.product?.id);
                   }
-                  updateCart({ productId: item?.product?.id, quantity: Number(quantity) });
+                  updateCart({ productId: item?.product?.id, note: item.note, quantity: Number(quantity) });
                 }}
                 min={0}
                 max={20}

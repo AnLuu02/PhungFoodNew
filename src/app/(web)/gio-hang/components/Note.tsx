@@ -29,7 +29,7 @@ export const Note = ({ productId }: { productId: string }) => {
           disabled={!note}
           w={'max-content'}
           size='xs'
-          onClick={() => updateCart({ productId, quantity: 0, note })}
+          onClick={() => updateCart({ productId, quantity: item?.quantity ?? 1, note })}
         >
           Áp dụng
         </Button>
@@ -39,7 +39,7 @@ export const Note = ({ productId }: { productId: string }) => {
           variant='danger'
           size='xs'
           onClick={() => {
-            updateCart({ productId, note: undefined, quantity: 0 });
+            updateCart({ productId, note: undefined, quantity: item?.quantity ?? 1 });
             setNote('');
           }}
         >

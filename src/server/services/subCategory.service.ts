@@ -1,9 +1,20 @@
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { SubCategoryInput } from '~/shared/schema/subCategory.schema';
+
+const BASIC_INCLUDE = {
+  category: { select: { name: true, tag: true } },
+  imageForEntity: {
+    select: {
+      id: true,
+      type: true,
+      altText: true,
+      image: { select: { url: true } }
+    }
+  }
+};
 
 export const findSubCategoryService = async (
   db: PrismaClient,
@@ -15,10 +26,9 @@ export const findSubCategoryService = async (
       status?: 'active' | 'inactive';
       category?: string;
     };
-    include?: Prisma.SubCategoryInclude;
   }
 ) => {
-  const { page, limit, filters, include } = input;
+  const { page, limit, filters } = input;
   const searchQuery = filters?.s?.trim();
   const where: Prisma.SubCategoryWhereInput = {
     ...(filters
@@ -64,6 +74,7 @@ export const findSubCategoryService = async (
         }
       : {})
   };
+
   const [totalSubCategory, totalSubCategoryQuery, subCategories] = await db.$transaction([
     db.subCategory.count(),
     db.subCategory.count({
@@ -73,30 +84,7 @@ export const findSubCategoryService = async (
       skip: (page - 1) * limit,
       take: limit,
       where,
-      include: {
-        ...(include ?? {}),
-        category: true,
-        imageForEntity: {
-          select: {
-            altText: true,
-            image: {
-              select: {
-                publicId: true,
-                url: true
-              }
-            }
-          }
-        },
-        products: {
-          where: {
-            isActive: true
-          },
-          include: {
-            favouriteFoods: true,
-            imageForEntities: { include: { image: true } }
-          }
-        }
-      },
+      include: BASIC_INCLUDE,
       orderBy: {
         createdAt: 'desc'
       }
@@ -107,10 +95,7 @@ export const findSubCategoryService = async (
   );
 
   return {
-    subCategories: subCategories.map(sub => ({
-      ...sub,
-      products: sub.products.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
-    })),
+    subCategories,
     pagination: {
       hasNext: Boolean(totalPages > page),
       totalPages
@@ -127,15 +112,15 @@ export const deleteSubCategoryService = async (db: PrismaClient, input: { id: st
     }
   };
 };
-export const getOneSubCategoryService = async (
+
+export const getBasicSubCategoryService = async (
   db: PrismaClient,
   input: {
     key: string;
-    include?: Prisma.SubCategoryInclude;
   }
 ) => {
-  const { key, include } = input;
-  const subCategory = await db.subCategory.findFirst({
+  const { key } = input;
+  return await db.subCategory.findFirst({
     where: {
       OR: [
         { id: key },
@@ -144,29 +129,16 @@ export const getOneSubCategoryService = async (
         }
       ]
     },
-    include: {
-      ...(include ?? {}),
-      category: true,
-      imageForEntity: {
-        include: {
-          image: true
-        }
-      }
-    }
+    include: BASIC_INCLUDE
   });
+};
 
-  return subCategory;
-};
-export const getAllSubCategoryService = async (
-  db: PrismaClient,
-  input?: {
-    include?: Prisma.SubCategoryInclude;
-  }
-) => {
-  return await db.subCategory.findMany({
-    include: { ...(input?.include ?? {}), imageForEntity: { include: { image: true } }, category: true }
+export const getSubCategoriesWithRelationBasicService = async (db: PrismaClient) => {
+  return db.subCategory.findMany({
+    include: BASIC_INCLUDE
   });
 };
+
 export const upsertSubCategoryService = async (db: PrismaClient, input: SubCategoryInput) => {
   const { id, imageForEntity, categoryId, ...data } = input;
   let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;

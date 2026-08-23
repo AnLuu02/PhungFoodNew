@@ -5,6 +5,7 @@ import { IconBolt } from '@tabler/icons-react';
 import React, { useEffect } from 'react';
 import PaginationLocal from '~/components/PaginationLocal';
 import Reveal from '~/components/Reveal';
+import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 import { CardProductHorizontalSkeleton } from '../../Card/CardProductHorizontalSkeleton';
 
@@ -12,7 +13,7 @@ const LayoutPromotion = ({
   data,
   withPagination
 }: {
-  data: any;
+  data: ProductBase[];
   withPagination?: {
     loading: boolean;
     totalPages: number;

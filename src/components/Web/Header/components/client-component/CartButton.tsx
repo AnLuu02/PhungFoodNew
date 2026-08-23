@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useCartAmount, useCartItems } from '~/components/Hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { useCartStore } from '~/stores/cart.store';
-import CartItemFastMenu from '../../Home/components/CartItemFastMenu';
+import CartItemFastMenu from '../../../Home/components/CartItemFastMenu';
 
 const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
   const isDesktop = useMediaQuery(`(min-width: 1024px)`);
@@ -74,7 +74,8 @@ const CartButton = ({ notResponsive }: { notResponsive?: boolean }) => {
                     onQuantityChange={value =>
                       updateCart({
                         productId: item?.product.id,
-                        quantity: value
+                        quantity: value,
+                        note: item?.note
                       })
                     }
                     onDelete={() => removeCart(item?.product.id)}

@@ -26,7 +26,7 @@ import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { INFO_LEVEL_USER, UserRole } from '~/shared/constants/user.constants';
-import { FindUser, GetAllUser } from '~/shared/type-trpc/user.type-trpc';
+import { FindUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
 export default function TableUser() {
@@ -47,13 +47,13 @@ export default function TableUser() {
     sort: sortArr,
     filter
   });
-  const { data: allDataClient } = api.User.getAll.useQuery(undefined);
+  const { data: allDataClient } = api.User.getUsersWithRelationBase.useQuery(undefined);
   const currentItems = dataClient?.users || [];
 
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: { total: number; customers: number; staff: number; block: number }, item: GetAllUser[number]) => {
+      (acc: { total: number; customers: number; staff: number; block: number }, item) => {
         acc.total += 1;
         if (item.role?.name === UserRole.CUSTOMER) {
           acc.customers += 1;

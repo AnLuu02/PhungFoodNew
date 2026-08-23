@@ -1,8 +1,9 @@
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { RESTAURANT_KEY, THEME_KEY } from '~/shared/constants/redis-keys';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { RestaurantInput } from '~/shared/schema/restaurant.schema';
-export const createInitRestaurant = async (db: PrismaClient) => {
+export const createInitRestaurant = async (tx: Prisma.TransactionClient) => {
   const openingHoursData = [
     { dayOfWeek: '0', viNameDay: 'Chủ nhật', openTime: '08:00', closeTime: '22:00' },
     { dayOfWeek: '1', viNameDay: 'Thứ hai', openTime: '08:00', closeTime: '22:00' },
@@ -12,7 +13,7 @@ export const createInitRestaurant = async (db: PrismaClient) => {
     { dayOfWeek: '5', viNameDay: 'Thứ sáu', openTime: '09:00', closeTime: '23:00' },
     { dayOfWeek: '6', viNameDay: 'Thứ bảy', openTime: '09:00', closeTime: '21:00' }
   ];
-  await db.restaurant.create({
+  await tx.restaurant.create({
     data: {
       name: 'PhungFood',
       isActive: true,
@@ -69,26 +70,12 @@ export const createInitRestaurant = async (db: PrismaClient) => {
       }
     }
   });
-  const result = await db.restaurant.findFirst({
-    where: { isActive: true },
-    include: {
-      imageForEntity: {
-        include: { image: true }
-      },
-      socials: true,
-      theme: true,
-      openingHours: true,
-      banners: { include: { imageForEntities: { include: { image: true } } } }
-    }
-  });
-  return result;
 };
 
-export const getOneActiveService = async (db: PrismaClient, input?: { include?: Prisma.RestaurantInclude }) => {
+export const getBaseActiveAdminService = async (db: PrismaClient) => {
   const result = await db.restaurant.findFirst({
     where: { isActive: true },
     include: {
-      ...(input?.include ?? {}),
       imageForEntity: { include: { image: true } },
       socials: {
         orderBy: {
@@ -101,16 +88,39 @@ export const getOneActiveService = async (db: PrismaClient, input?: { include?: 
     }
   });
   if (!result) {
-    return await createInitRestaurant(db);
+    return await db.$transaction(async tx => {
+      await createInitRestaurant(tx);
+      return tx.restaurant.findFirst({
+        where: { isActive: true },
+        include: {
+          imageForEntity: { include: { image: true } },
+          socials: {
+            orderBy: {
+              createdAt: 'desc'
+            }
+          },
+          theme: true,
+          openingHours: true,
+          banners: { include: { imageForEntities: { include: { image: true } } } }
+        }
+      });
+    });
   }
   return result;
 };
-export const getOneActiveClientService = async (db: PrismaClient, input?: { include?: Prisma.RestaurantInclude }) => {
+
+export const getBaseRestaurantActiveClientService = async (db: PrismaClient) => {
   const result = await db.restaurant.findFirst({
     where: { isActive: true },
     include: {
-      ...(input?.include ?? {}),
-      imageForEntity: { include: { image: true } },
+      imageForEntity: {
+        select: {
+          id: true,
+          type: true,
+          altText: true,
+          image: { select: { url: true } }
+        }
+      },
       socials: {
         where: { isActive: true },
         orderBy: {
@@ -122,13 +132,71 @@ export const getOneActiveClientService = async (db: PrismaClient, input?: { incl
       banners: {
         where: { isActive: true },
         include: {
-          imageForEntities: { include: { image: true } }
+          imageForEntities: {
+            select: {
+              id: true,
+              type: true,
+              altText: true,
+              image: { select: { url: true } }
+            }
+          }
         }
       }
     }
   });
   if (!result) {
-    return await createInitRestaurant(db);
+    return await db.$transaction(async tx => {
+      await createInitRestaurant(tx);
+      return tx.restaurant.findFirst({
+        where: { isActive: true },
+        include: {
+          imageForEntity: {
+            select: {
+              id: true,
+              type: true,
+              altText: true,
+              image: { select: { url: true } }
+            }
+          },
+          socials: {
+            where: { isActive: true },
+            orderBy: {
+              createdAt: 'desc'
+            }
+          },
+          theme: true,
+          openingHours: true,
+          banners: {
+            where: { isActive: true },
+            include: {
+              imageForEntities: {
+                select: {
+                  id: true,
+                  type: true,
+                  altText: true,
+                  image: { select: { url: true } }
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  }
+  return result;
+};
+
+export const getRestaurantOnlyService = async (db: PrismaClient) => {
+  const result = await db.restaurant.findFirst({
+    where: { isActive: true }
+  });
+  if (!result) {
+    return await db.$transaction(async tx => {
+      await createInitRestaurant(tx);
+      return tx.restaurant.findFirst({
+        where: { isActive: true }
+      });
+    });
   }
   return result;
 };
@@ -283,11 +351,7 @@ export const upsertRestaurantService = async (db: PrismaClient, input: Restauran
     });
     return { oldData, newData };
   });
-  await Promise.all([
-    delCache('theme:default'),
-    delCache('restaurant:getOneActive'),
-    delCache('restaurant:getOneActiveClient')
-  ]);
+  await Promise.all([delCache(THEME_KEY.default), delCache(RESTAURANT_KEY.full), delCache(RESTAURANT_KEY.active)]);
   return {
     metaData: {
       before: result.oldData ?? {},

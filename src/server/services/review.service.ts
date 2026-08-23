@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
+import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
 import { ReviewInput } from '~/shared/schema/review.schema';
 
 type ReviewScalarFieldEnum = 'userId' | 'productId' | 'id' | 'rating';
@@ -14,13 +15,12 @@ export const findReviewService = async (
     s?: string;
     relationId?: string;
     sort?: string[];
-    include?: Prisma.ReviewInclude;
     options?: {
       distinct?: Prisma.Enumerable<ReviewScalarFieldEnum>;
     };
   }
 ) => {
-  const { page, limit, s, relationId, sort, include, options } = input;
+  const { page, limit, s, relationId, sort, options } = input;
   const searchQuery = s?.trim();
   const filterStar = s?.includes('-star') ? +s?.split('-')?.[0]! : undefined;
   const where: Prisma.ReviewWhereInput = {
@@ -96,7 +96,6 @@ export const findReviewService = async (
       where,
       orderBy: sort && sort?.length > 0 ? buildSortFilter(sort, ['rating']) : { createdAt: 'desc' },
       include: {
-        ...(include ?? {}),
         user: {
           select: {
             id: true,
@@ -104,7 +103,7 @@ export const findReviewService = async (
             email: true,
             level: true,
             pointUser: true,
-            imageForEntity: { include: { image: true } }
+            imageForEntity: { select: { type: true, altText: true, image: { select: { url: true } } } }
           }
         },
         product: {
@@ -112,7 +111,7 @@ export const findReviewService = async (
             id: true,
             name: true,
             tag: true,
-            imageForEntities: { include: { image: true } }
+            imageForEntities: { select: { type: true, altText: true, image: { select: { url: true } } } }
           }
         }
       }
@@ -184,7 +183,7 @@ export const getReviewForOwnerService = async (
         ...(include ?? {}),
         user: {
           include: {
-            imageForEntity: { include: { image: true } }
+            imageForEntity: { select: { type: true, altText: true, image: { select: { url: true } } } }
           }
         }
       }
@@ -196,17 +195,37 @@ export const getReviewForOwnerService = async (
     });
   }
 };
-export const getOneReviewService = async (db: PrismaClient, input: { id: string; include?: Prisma.ReviewInclude }) => {
+
+export const getBaseReviewService = async (db: PrismaClient, input: { key: string }) => {
+  const key = input.key || '';
   try {
-    return await db.review.findUnique({
+    return await db.review.findFirst({
       where: {
-        id: input.id || ''
+        OR: [
+          {
+            id: key
+          },
+          {
+            userId: key
+          },
+          {
+            productId: key
+          }
+        ]
       },
       include: {
-        ...(input.include ?? {}),
         user: {
-          include: {
-            imageForEntity: { include: { image: true } }
+          select: {
+            name: true,
+            email: true,
+            imageForEntity: { select: { type: true, altText: true, image: { select: { url: true } } } }
+          }
+        },
+        product: {
+          select: {
+            name: true,
+            tag: true,
+            description: true
           }
         }
       }
@@ -218,14 +237,9 @@ export const getOneReviewService = async (db: PrismaClient, input: { id: string;
     });
   }
 };
-export const getAllReviewService = async (
-  db: PrismaClient,
-  input?: {
-    include?: Prisma.ReviewInclude;
-  }
-) => {
+export const getReviewsOnlyService = async (db: PrismaClient) => {
   try {
-    return await db.review.findMany({ include: input?.include });
+    return await db.review.findMany();
   } catch {
     throw new TRPCError({
       code: 'BAD_REQUEST',
@@ -259,7 +273,7 @@ export const upsertReviewService = async (db: PrismaClient, input: ReviewInput) 
         totalRating: starReview.length
       }
     }),
-    delCache(`product:detail:${data.productId}`)
+    delCache(PRODUCT_KEY.detail(data.productId))
   ]);
 
   return {

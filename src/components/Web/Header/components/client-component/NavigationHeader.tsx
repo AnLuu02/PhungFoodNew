@@ -4,15 +4,31 @@ import { useMediaQuery } from '@mantine/hooks';
 import { IconCaretDown } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import MegaMenu from '~/app/(web)/thuc-don/components/MegaMenu';
+import { useCallback, useState } from 'react';
+import MegaMenu from '~/components/Web/Header/components/client-component/MegaMenu';
 import { navigationClientItem } from '~/lib/ConfigUI';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
+import { api } from '~/trpc/react';
 
-function NavigationHeader({ categories }: { categories: GetAllCategory }) {
+function NavigationHeader() {
+  const { data: categories } = api.Category.getCategoriesWithRelationBasic.useQuery();
   const [imgMounted, setImgMounted] = useState(false);
   const pathname = usePathname();
   const isDesktop = useMediaQuery('(min-width: 1024px)');
+
+  const utils = api.useUtils();
+  const handlePrefetchMegaMenu = useCallback(() => {
+    if (categories?.length) {
+      categories.forEach(c => {
+        void utils.Product.find.prefetch({
+          page: 1,
+          limit: 8,
+          'danh-muc': c?.tag,
+          loai: 'san-pham-ban-chay'
+        });
+      });
+    }
+  }, [categories]);
+
   return (
     <Flex gap={'md'} align={'center'} style={{ transition: 'all 0.3s' }}>
       {navigationClientItem.map((item, index) =>
@@ -23,6 +39,7 @@ function NavigationHeader({ categories }: { categories: GetAllCategory }) {
             withOverlay
             onOpen={() => {
               setImgMounted(true);
+              handlePrefetchMegaMenu();
               document.body.style.overflow = 'hidden';
             }}
             onClose={() => {
@@ -31,12 +48,12 @@ function NavigationHeader({ categories }: { categories: GetAllCategory }) {
             overlayProps={{
               zIndex: 99
             }}
-            disabled={!isDesktop || !categories?.length}
+            disabled={!isDesktop}
             width={1000}
             withArrow
             arrowSize={10}
             offset={10}
-            transitionProps={{ transition: 'fade-up', duration: 300 }}
+            transitionProps={{ transition: 'fade-up', duration: 500 }}
           >
             <Menu.Target>
               <Link key={index} href={item.href} style={{ transition: 'all 0.3s' }} className='h-[max-content]'>
@@ -58,9 +75,7 @@ function NavigationHeader({ categories }: { categories: GetAllCategory }) {
                 </Button>
               </Link>
             </Menu.Target>
-            <Menu.Dropdown className='dark:bg-dark-background'>
-              {imgMounted ? <MegaMenu categories={categories} /> : <Box></Box>}
-            </Menu.Dropdown>
+            <Menu.Dropdown className='dark:bg-dark-background'>{imgMounted ? <MegaMenu /> : <Box></Box>}</Menu.Dropdown>
           </Menu>
         ) : (
           <Link

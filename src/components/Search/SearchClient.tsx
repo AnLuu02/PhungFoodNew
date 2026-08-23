@@ -30,16 +30,17 @@ import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { Search } from '~/shared/type-trpc/search.type-trpc';
-import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
+import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
 
-export default function SearchComponentClient({ subCategories }: { subCategories: GetAllSubCategory }) {
+export default function SearchComponentClient() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [historySearch, setHistorySearch] = useLocalStorage<string[]>({ key: 'historySearch', defaultValue: [] });
   const [debounced] = useDebouncedValue(searchQuery, 500);
+  const { data: subCategories } = api.SubCategory.getSubCategoriesWithRelationBasic.useQuery();
   const { data, isLoading } = api.Search.search.useQuery({ s: debounced ?? '' }, { enabled: !!debounced });
 
   const productData = data?.products || [];
@@ -109,7 +110,7 @@ export default function SearchComponentClient({ subCategories }: { subCategories
         left={0}
       >
         {subCategories &&
-          subCategories.map((item: GetAllSubCategory[number], index: number) => {
+          subCategories.map((item: SubCategoryBasic, index: number) => {
             return (
               index < 8 && (
                 <Tooltip
@@ -317,7 +318,7 @@ export default function SearchComponentClient({ subCategories }: { subCategories
                       </Text>
                       <Flex gap={8} wrap='wrap'>
                         {subCategories &&
-                          subCategories.map((term: GetAllSubCategory[number], index: number) => (
+                          subCategories.map((term: SubCategoryBasic, index: number) => (
                             <Link href={`/thuc-don?s=${encodeURIComponent(term?.name)}`} key={index}>
                               <Badge
                                 key={index}
@@ -414,7 +415,7 @@ export default function SearchComponentClient({ subCategories }: { subCategories
                                   <Highlight lineClamp={2} fw={700} highlight={searchQuery}>
                                     {product.name}
                                   </Highlight>
-                                  <Text size='sm'>
+                                  <Text size='sm' c={'dimmed'}>
                                     <b className='m-0 p-0 text-mainColor'>{formatPriceLocaleVi(product.price)}</b> /phần
                                   </Text>
                                   {product.tags && product.tags.length > 0 && (

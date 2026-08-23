@@ -1,6 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { RESTAURANT_KEY, THEME_KEY } from '~/shared/constants/redis-keys';
 import { ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
 
 export const changeThemeService = async (db: PrismaClient, input: ThemeWithRestaurantId) => {
@@ -19,11 +20,7 @@ export const changeThemeService = async (db: PrismaClient, input: ThemeWithResta
       });
       return { oldData, newData };
     });
-    await Promise.all([
-      delCache('theme:default'),
-      delCache('restaurant:getOneActive'),
-      delCache('restaurant:getOneActiveClient')
-    ]);
+    await Promise.all([delCache(THEME_KEY.default), delCache(RESTAURANT_KEY.full), delCache(RESTAURANT_KEY.active)]);
     return {
       metaData: {
         before: result.oldData ?? {},

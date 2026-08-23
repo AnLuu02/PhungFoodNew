@@ -102,7 +102,7 @@ export default function OrderUpsert({
   }, [data, formFields.reset]);
 
   const { data: payments = [] } = api.Payment.getAll.useQuery();
-  const { data: users = [] } = api.User.getAll.useQuery();
+  const { data: users = [] } = api.User.getUsersOnly.useQuery();
   const utils = api.useUtils();
   const updateMutation = api.Order.upsert.useMutation({
     onSuccess: () => {

@@ -1,13 +1,15 @@
-'use client';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Carousel-Only';
-import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
+import { api } from '~/trpc/server';
 
-export default function RelatedProducts({
-  relatedProducts
-}: {
-  relatedProducts: NonNullable<GetInitProductDetail>['dataRelatedProducts'];
-}) {
+export default async function RelatedProducts({ productId, subCateTag }: { productId?: string; subCateTag?: string }) {
+  const relatedProducts = await api.Product.getFilter({
+    keys: subCateTag ? [subCateTag] : [],
+    ...(productId ? { excludes: [productId] } : {})
+  });
+
+  if (!relatedProducts) return;
+
   return (
     <LayoutGridCarouselOnly
       title='Sản phẩm liên quan'

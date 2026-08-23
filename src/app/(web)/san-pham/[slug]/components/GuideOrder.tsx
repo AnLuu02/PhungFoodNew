@@ -1,5 +1,3 @@
-'use client';
-
 import { Spoiler, Stack, Text } from '@mantine/core';
 
 export default function GuideOrder() {

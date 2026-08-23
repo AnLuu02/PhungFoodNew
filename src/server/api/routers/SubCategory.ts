@@ -1,14 +1,15 @@
-import { Prisma } from '@prisma/client';
 import { z } from 'zod';
+import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
   deleteSubCategoryService,
   findSubCategoryService,
-  getAllSubCategoryService,
-  getOneSubCategoryService,
+  getBasicSubCategoryService,
+  getSubCategoriesWithRelationBasicService,
   upsertSubCategoryService
 } from '~/server/services/subCategory.service';
+import { SUBCATEGORY_KEY } from '~/shared/constants/redis-keys';
 import { subCategoryInputSchema } from '~/shared/schema/subCategory.schema';
 
 export const subCategoryRouter = createTRPCRouter({
@@ -23,8 +24,7 @@ export const subCategoryRouter = createTRPCRouter({
             status: z.enum(['active', 'inactive']).optional(),
             category: z.string().optional()
           })
-          .optional(),
-        include: z.custom<Prisma.SubCategoryInclude>().optional()
+          .optional()
       })
     )
     .query(async ({ ctx, input }) => await findSubCategoryService(ctx.db, input)),
@@ -37,23 +37,28 @@ export const subCategoryRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await deleteSubCategoryService(ctx.db, input)),
-  getOne: publicProcedure
+
+  getBasic: publicProcedure
     .input(
       z.object({
-        key: z.string(),
-        include: z.custom<Prisma.SubCategoryInclude>().optional()
+        key: z.string()
       })
     )
-    .query(async ({ ctx, input }) => await getOneSubCategoryService(ctx.db, input)),
-  getAll: publicProcedure
-    .input(
-      z
-        .object({
-          include: z.custom<Prisma.SubCategoryInclude>().optional()
-        })
-        .optional()
-    )
-    .query(async ({ ctx, input }) => await getAllSubCategoryService(ctx.db, input)),
+    .query(async ({ ctx, input }) => await getBasicSubCategoryService(ctx.db, input)),
+
+  getSubCategoriesOnly: publicProcedure.query(async ({ ctx }) => {
+    return await withRedisCache(SUBCATEGORY_KEY.only, () => ctx.db.subCategory.findMany({}), 60 * 60 * 24);
+  }),
+
+  getSubCategoriesWithRelationBasic: publicProcedure.query(
+    async ({ ctx }) =>
+      await withRedisCache(
+        SUBCATEGORY_KEY.withRelationBase,
+        () => getSubCategoriesWithRelationBasicService(ctx.db),
+        60 * 60 * 24
+      )
+  ),
+
   upsert: publicProcedure
     .use(requirePermission('update:subCategory'))
     .use(requirePermission('create:subCategory'))

@@ -4,7 +4,7 @@ import cloudinary from '~/lib/Cloudinary/cloudinary';
 import { ImageFromDb } from '~/shared/schema/image.schema';
 import { ImageAssociation, ImageWithAssociations } from '~/shared/types/image.types';
 import { getOneBannerService } from './restaurant.banner.service';
-import { getOneActiveClientService } from './restaurant.service';
+import { getRestaurantOnlyService } from './restaurant.service';
 import { getOneUserService } from './user.service';
 
 export const checkExistingImageService = async (db: PrismaClient, input: { publicId: string }) => {
@@ -661,7 +661,7 @@ export const connectedEntityService = async (
       }
       return;
     case EntityType.RESTAURANT:
-      const restaurant = await getOneActiveClientService(db);
+      const restaurant = await getRestaurantOnlyService(db);
       if (restaurant) {
         return await db.$transaction(
           images

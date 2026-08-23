@@ -7,7 +7,7 @@ import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { FindSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
+import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
 import { api } from '~/trpc/react';
 import { DeleteSubCategoryButton, UpdateSubCategoryButton } from '../Button';
 
@@ -56,7 +56,7 @@ export default function TableSubCategory() {
                 </Table.Td>
               </Table.Tr>
             ) : currentItems.length > 0 ? (
-              currentItems.map((item: FindSubCategory['subCategories'][number], index: number) => (
+              currentItems.map((item: SubCategoryBasic, index: number) => (
                 <Table.Tr key={item.id + index}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>

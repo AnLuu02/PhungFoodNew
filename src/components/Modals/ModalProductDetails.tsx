@@ -26,7 +26,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { NotifySuccess } from '~/lib/FuncHandler/toast';
 import { ModalProps } from '~/types/modal';
 import { ButtonAddToCart } from '../Button/ButtonAddToCart';
 import { ShareSocials } from '../ShareSocial';
@@ -227,7 +226,10 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                       fullWidth: true
                     }}
                     handleAfterAdd={onClose}
-                    notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}
+                    notifySuccess={{
+                      title: 'Cập nhật giỏ hàng thành công',
+                      message: 'Sản phẩm đã được thêm vào giỏ hàng. Có thể truy cập giỏ hàng để hoàn tất thanh toán.'
+                    }}
                   />
                 </Flex>
                 <Stack gap={5}>

@@ -1,22 +1,21 @@
 'use client';
-import { ActionIcon, Box, Button, Flex, Menu, Paper, ScrollAreaAutosize, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { IconCategory, IconChevronCompactDown, IconMenu3 } from '@tabler/icons-react';
+import { Box, Button, Flex, Menu, Paper, ScrollAreaAutosize, Text } from '@mantine/core';
+import { IconCategory, IconChevronCompactDown } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
-import { GetAllCategory } from '~/shared/type-trpc/category.type-trpc';
-import { GetAllSubCategory } from '~/shared/type-trpc/subCategory.type-trpc';
-import DynamicCartButton from '../components/DynamicCartButton';
-import NavigationHeader from '../components/NavigationHeader';
-import NavigationHeaderMobile from '../components/NavigationHeaderMobile';
+import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
+import { api } from '~/trpc/react';
+import DynamicCartButton from '../components/client-component/DynamicCartButton';
+import NavigationHeader from '../components/client-component/NavigationHeader';
+import NavigationHeaderMobile from '../components/client-component/NavigationHeaderMobile';
 
-const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; subCategories: GetAllSubCategory }) => {
+const Header3 = () => {
   const [imgMounted, setImgMounted] = useState(false);
-  const subCategoriesData = subCategories || [];
-  const categoriesData = categories || [];
-  const [opened, { close, toggle }] = useDisclosure();
+  const { data, isLoading } = api.SubCategory.getSubCategoriesWithRelationBasic.useQuery();
+  const subCategories = data ?? [];
+
   return (
     <Flex
       px={{ base: 10, sm: 30, lg: 130 }}
@@ -27,17 +26,7 @@ const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; su
       className='sticky top-0 z-[100] bg-white text-black dark:bg-dark-background dark:text-dark-text'
       direction={{ base: 'row', md: 'row' }}
     >
-      <ActionIcon
-        variant='default'
-        size='xl'
-        onClick={toggle}
-        className='border border-gray-100 bg-gray-50 shadow-[4px_4px_10px_rgba(0,0,0,0.1),-4px_-4px_10px_rgba(255,255,255,0.9)] transition-all hover:shadow-[2px_2px_5px_rgba(0,0,0,0.1)] active:translate-y-0.5 active:shadow-inner dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-[4px_4px_12px_rgba(0,0,0,0.5),-1px_-1px_10px_rgba(255,255,255,0.02)] dark:hover:shadow-[2px_2px_8px_rgba(0,0,0,0.6)] dark:active:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.7)] md:hidden'
-        classNames={{
-          icon: 'text-mainColor'
-        }}
-      >
-        <IconMenu3 size={32} />
-      </ActionIcon>
+      <NavigationHeaderMobile />
       <Flex
         gap={{ base: 'md', lg: 0, xl: 'md' }}
         className='order-3 md:order-1'
@@ -74,8 +63,8 @@ const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; su
             <Menu.Dropdown className='bg-white p-0 shadow-md dark:bg-dark-card'>
               {imgMounted ? (
                 <ScrollAreaAutosize mah={{ base: 300, md: 400 }} scrollbarSize={5}>
-                  {subCategoriesData?.length > 0 ? (
-                    subCategoriesData?.map((item: GetAllSubCategory[number], index: number) => {
+                  {subCategories?.length > 0 ? (
+                    subCategories?.map((item: SubCategoryBasic, index: number) => {
                       return (
                         <Link href={`/thuc-don?danh-muc=${item?.category?.tag}&loai-san-pham=${item?.tag}`} key={index}>
                           <Menu.Item
@@ -116,9 +105,8 @@ const Header3 = ({ categories, subCategories }: { categories: GetAllCategory; su
       </Flex>
 
       <Box className='order-2 hidden sm:block md:order-3'>
-        <NavigationHeader categories={categoriesData} />
+        <NavigationHeader />
       </Box>
-      <NavigationHeaderMobile opened={opened} close={close} categories={categoriesData} />
     </Flex>
   );
 };

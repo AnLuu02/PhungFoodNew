@@ -22,9 +22,9 @@ import {
   IconSpacingVertical,
   IconUpload
 } from '@tabler/icons-react';
-import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
 
-export default function SecuritySettingsManagement({ restaurant }: { restaurant: NonNullable<TGetOneActive> }) {
+export default function SecuritySettingsManagement({ restaurant }: { restaurant: NonNullable<RestaurantDetail> }) {
   return (
     <>
       <Paper withBorder p='md'>

@@ -8,20 +8,35 @@ import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useRef } from 'react';
+import { GetInitPage } from '~/shared/type-trpc/page.type-trpc';
 
-export default function BannerSection({ banner }: any) {
+export default function BannerSection({ banner }: { banner: NonNullable<GetInitPage['banner']> }) {
   const autoplay = useRef(Autoplay({ delay: 5000 }));
-  const [gallery, banners] = useMemo(() => {
-    return banner?.imageForEntities?.reduce(
-      (acc: any, item: any) => {
-        if (item?.type === ImageType.GALLERY) {
-          acc[0].push(item?.image);
-        } else if (item?.type === ImageType.THUMBNAIL) {
-          acc[1].push(item?.image);
+  const { gallery, banners } = useMemo(() => {
+    const initial = { gallery: [], banners: [] };
+    const images = banner?.imageForEntities;
+
+    if (!images?.length) return initial;
+
+    return images.reduce(
+      (acc: { gallery: { url: string; altText: string }[]; banners: { url: string; altText: string }[] }, item) => {
+        const url = item?.image?.url;
+        if (!url) return acc;
+
+        const formattedImage = {
+          url,
+          altText: item.altText ?? 'Đang cập nhật ảnh'
+        };
+
+        if (item.type === ImageType.GALLERY) {
+          acc.gallery.push(formattedImage);
+        } else if (item.type === ImageType.THUMBNAIL) {
+          acc.banners.push(formattedImage);
         }
+
         return acc;
       },
-      [[], []]
+      initial
     );
   }, [banner]);
 
@@ -51,9 +66,9 @@ export default function BannerSection({ banner }: any) {
               indicator: 'mx-[6px] h-[8px] w-[20px] rounded-full bg-mainColor transition duration-200'
             }}
           >
-            {(gallery?.length > 0 ? gallery : [{ url: '/images/jpg/empty-300x240.jpg', altText: 'empty' }])?.map(
-              (slide: any) => (
-                <Carousel.Slide key={slide.id}>
+            {(gallery.length > 0 ? gallery : [{ url: '/images/jpg/empty-300x240.jpg', altText: 'empty' }])?.map(
+              slide => (
+                <Carousel.Slide key={slide.url + slide.altText}>
                   <Paper m={0} p={0} className='relative h-[160px] overflow-hidden sm:h-[400px]'>
                     <Image
                       style={{ objectFit: 'fill' }}
@@ -80,8 +95,8 @@ export default function BannerSection({ banner }: any) {
             { url: '/images/jpg/empty-300x240.jpg', altText: 'empty_banner1' },
             { url: '/images/jpg/empty-300x240.jpg', altText: 'empty_banner2' }
           ]
-            ?.slice(0, 2)
-            ?.map((banner: any, index: number) => (
+            .slice(0, 2)
+            .map((banner, index: number) => (
               <Paper
                 key={index}
                 w={'100%'}

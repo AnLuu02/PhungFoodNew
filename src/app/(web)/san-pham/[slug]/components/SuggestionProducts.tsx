@@ -1,15 +1,24 @@
-'use client';
 import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
-import CardProductWrapper from '~/components/Card/CardProductWrapper';
 import Empty from '~/components/Empty';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
-export default function SuggestionProducts({ data }: { data: NonNullable<GetInitProductDetail>['dataHintProducts'] }) {
+import { api } from '~/trpc/server';
+export default async function SuggestionProducts({
+  categoryId,
+  productId
+}: {
+  categoryId?: string;
+  productId?: string;
+}) {
+  const data = await api.Product.getFilter({
+    keys: categoryId ? [categoryId] : [],
+    ...(productId ? { excludes: [productId] } : {})
+  });
+
   return (
     <Paper
       withBorder
@@ -17,7 +26,7 @@ export default function SuggestionProducts({ data }: { data: NonNullable<GetInit
       pos={'sticky'}
       top={TOP_POSITION_STICKY}
       right={0}
-      className='h-fit'
+      className={`h-fit ${data.length == 0 ? 'hidden sm:block' : ''}`}
       mt={{ base: 50, sm: 0, md: 0, lg: 0 }}
     >
       <Center className='rounded-t-md bg-mainColor p-2 text-white'>
@@ -28,49 +37,47 @@ export default function SuggestionProducts({ data }: { data: NonNullable<GetInit
       <ScrollAreaAutosize mah={350} scrollbarSize={5}>
         <Stack p='md'>
           {!data || data?.length <= 0 ? (
-            <Empty />
+            <Empty title='Oops! Trống rỗng.' content='Không có sản phẩm phù hợp' size='sm' />
           ) : (
             data?.map(product => (
-              <CardProductWrapper key={product?.id} slug={product?.id}>
-                <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
-                  <Paper p={0} m={0} w={60} h={60} pos={'relative'} className='overflow-hidden'>
-                    <Image
-                      loading='lazy'
-                      src={
-                        getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                        '/images/jpg/empty-300x240.jpg'
-                      }
-                      fill
-                      alt='Hình ảnh sản phẩm'
-                      className='object-cover'
-                    />
-                  </Paper>
-                  <Box>
-                    <Link href={`/san-pham/${product?.tag}`}>
-                      <Tooltip label={product?.name}>
-                        <Text
-                          lineClamp={1}
-                          size='md'
-                          fw={700}
-                          className='cursor-pointer text-black hover:text-mainColor dark:text-dark-text'
-                        >
-                          {product?.name || 'Cá thu'}
-                        </Text>
-                      </Tooltip>
-                    </Link>
-                    <Group gap='xs'>
-                      <Text className='text-red-600' fw={700}>
-                        {formatPriceLocaleVi(product.price - product.discount)}
+              <Group key={product.id} wrap='nowrap' className='cursor-pointer'>
+                <Paper p={0} m={0} w={60} h={60} pos={'relative'} className='overflow-hidden'>
+                  <Image
+                    loading='lazy'
+                    src={
+                      getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) ||
+                      '/images/jpg/empty-300x240.jpg'
+                    }
+                    fill
+                    alt='Hình ảnh sản phẩm'
+                    className='object-cover'
+                  />
+                </Paper>
+                <Box>
+                  <Link href={`/san-pham/${product?.tag}`}>
+                    <Tooltip label={product?.name}>
+                      <Text
+                        lineClamp={1}
+                        size='md'
+                        fw={700}
+                        className='cursor-pointer text-black hover:text-mainColor dark:text-dark-text'
+                      >
+                        {product?.name || 'Cá thu'}
                       </Text>
-                      {product.discount > 0 && (
-                        <Text c='dimmed' td='line-through' size='sm'>
-                          {formatPriceLocaleVi(product.price)}
-                        </Text>
-                      )}
-                    </Group>
-                  </Box>
-                </Group>
-              </CardProductWrapper>
+                    </Tooltip>
+                  </Link>
+                  <Group gap='xs'>
+                    <Text className='text-red-600' fw={700}>
+                      {formatPriceLocaleVi(product.price - product.discount)}
+                    </Text>
+                    {product.discount > 0 && (
+                      <Text c='dimmed' td='line-through' size='sm'>
+                        {formatPriceLocaleVi(product.price)}
+                      </Text>
+                    )}
+                  </Group>
+                </Box>
+              </Group>
             ))
           )}
         </Stack>

@@ -29,7 +29,7 @@ const FastMenu = async ({
   };
 
   const [categoriesData, _] = await Promise.all([
-    api.Category.getAll(),
+    api.Category.getCategoriesWithRelationBasic(),
     api.Product.findInfiniteProduct.prefetchInfinite({
       limit: LIMIT_DATA,
       filters

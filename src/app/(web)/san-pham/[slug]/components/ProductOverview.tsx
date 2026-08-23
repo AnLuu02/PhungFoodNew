@@ -1,63 +1,53 @@
-'use client';
-
 import {
   Badge,
   Card,
   Divider,
   Flex,
   Grid,
+  GridCol,
   Group,
-  NumberInput,
   Rating,
   Select,
   Spoiler,
   Stack,
   Text,
-  Textarea,
   Title
 } from '@mantine/core';
-import { IconPencil, IconRefresh, IconShieldCheck, IconShoppingCartPlus, IconTruck } from '@tabler/icons-react';
+import { IconRefresh, IconShieldCheck, IconShoppingCartPlus, IconTruck } from '@tabler/icons-react';
 import { ButtonAddToCart } from '~/components/Button/ButtonAddToCart';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { NotifySuccess } from '~/lib/FuncHandler/toast';
 
 import { ImageType } from '@prisma/client';
-import { useMemo, useState } from 'react';
 import { ShareSocials } from '~/components/ShareSocial';
 import ViewingUser from '~/components/UserViewing';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
-import { GetInitProductDetail } from '~/shared/type-trpc/page.type-trpc';
-import { GetOneProduct } from '~/shared/type-trpc/product.type-trpc';
-import ProductImage from './ProductImage';
+import type { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import InputNoteProduct from './client-component/InputNoteProduct';
+import InputQuantityProduct from './client-component/InputQuantityProduct';
+import ProductImage from './client-component/ProductImage';
 
-export const ProductOverview = ({ product }: { product: NonNullable<GetInitProductDetail>['product'] }) => {
-  const [note, setNote] = useState('');
-  const [quantity, setQuantity] = useState(1);
+export const ProductOverview = ({ product }: { product: NonNullable<ProductBase> }) => {
   const inStock = product?.availableQuantity > 0;
   const discount = product?.discount || 0;
-  const { thumbnail, gallery } = useMemo(() => {
-    return {
-      thumbnail:
-        getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg',
-      gallery:
-        product?.imageForEntities?.filter(
-          (item: NonNullable<GetOneProduct>['imageForEntities'][number]) =>
-            item?.type !== ImageType.THUMBNAIL && item?.image?.url
-        ) || []
-    };
-  }, [product]);
+  const { thumbnail, gallery } = product.imageForEntities.reduce(
+    (acc: { thumbnail: string; gallery: string[] }, item: (typeof product)['imageForEntities'][number]) => {
+      if (item.type === ImageType.THUMBNAIL) acc.thumbnail = item?.image?.url ?? '/images/jpg/empty-300x240.jpg';
+      else if (item.type === ImageType.GALLERY) acc.gallery.push(item?.image?.url ?? '/images/jpg/empty-300x240.jpg');
+      return acc;
+    },
+    { thumbnail: '/images/jpg/empty-300x240.jpg', gallery: [] }
+  );
 
   return (
     <Grid>
-      <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='relative top-0 h-fit sm:sticky sm:top-[70px]'>
+      <GridCol span={{ base: 12, sm: 6, md: 6 }} className='relative top-0 h-fit sm:sticky sm:top-[70px]'>
         <ProductImage
           thumbnail={thumbnail}
-          gallery={(gallery?.length > 0 ? gallery : []) as { image: { url: string } }[]}
+          gallery={gallery}
           discount={product?.discount || 0}
           tag={product?.tag || ''}
         />
-      </Grid.Col>
-      <Grid.Col span={{ base: 12, sm: 6, md: 6 }} className='h-fit'>
+      </GridCol>
+      <GridCol span={{ base: 12, sm: 6, md: 6 }} className='h-fit'>
         <Stack gap='md'>
           <Flex align='center' gap={'xs'}>
             <Badge className={`${inStock ? 'bg-mainColor' : 'bg-red-500'}`} size='md'>
@@ -135,29 +125,11 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
             <Text size='sm' fw={700}>
               Ghi chú:
             </Text>
-            <Textarea
-              placeholder='Thêm ghi chú sản phẩm'
-              value={note}
-              onChange={e => setNote(e.target.value)}
-              leftSection={<IconPencil size={16} />}
-            />
+            <InputNoteProduct productId={product.id} />
           </Stack>
           <Flex align='flex-end' gap={'md'} wrap={{ base: 'wrap', md: 'nowrap' }}>
             <Group gap='xs'>
-              <NumberInput
-                label={
-                  <Text size='sm' fw={700}>
-                    Số lượng:
-                  </Text>
-                }
-                value={quantity}
-                onChange={(value: any) => setQuantity(value)}
-                thousandSeparator=','
-                min={0}
-                max={Number(product?.availableQuantity) || 100}
-                clampBehavior='strict'
-                className='w-[80px]'
-              />
+              <InputQuantityProduct productId={product.id} />
             </Group>
             <Group gap='xs'>
               <Select
@@ -181,8 +153,12 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
                   name: product?.name,
                   thumbnail
                 },
-                note,
-                quantity
+                note: '',
+                quantity: 0
+              }}
+              notifySuccess={{
+                title: 'Cập nhật giỏ hàng thành công',
+                message: 'Sản phẩm đã được thêm vào giỏ hàng. Có thể truy cập giỏ hàng để hoàn tất thanh toán.'
               }}
               style={{
                 children: 'Mua hàng',
@@ -190,8 +166,6 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
                 fullWidth: true,
                 leftSection: <IconShoppingCartPlus size={20} className='mr-2 font-bold' />
               }}
-              handleAfterAdd={() => {}}
-              notify={() => NotifySuccess('Đã thêm vào giỏ hàng', 'Sản phẩm đã được Thêm.')}
             />
           </Flex>
           <Stack gap={5}>
@@ -208,6 +182,7 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
               Đã bán: <b className='text-red-500'>{product?.soldQuantity || 0}</b> sản phẩm
             </Text>
           </Stack>
+          {/* tag */}
           <ShareSocials data={product} type='detail' />
           <Group mt={{ base: 20, sm: 'xs', md: 'xs', lg: 'xl' }} grow>
             <Stack align='center' gap={5}>
@@ -230,7 +205,7 @@ export const ProductOverview = ({ product }: { product: NonNullable<GetInitProdu
             </Stack>
           </Group>
         </Stack>
-      </Grid.Col>
+      </GridCol>
     </Grid>
   );
 };

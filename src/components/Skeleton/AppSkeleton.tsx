@@ -9,10 +9,6 @@ export function AppSkeleton({ height }: { height?: MantineSize }) {
       p={{ base: 'md', sm: 'xl' }}
       className='relative overflow-hidden border border-slate-200/70 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.10)] dark:border-white/10 dark:bg-dark-card dark:shadow-[0_18px_55px_rgba(0,0,0,0.36)]'
     >
-      <Box className='absolute -right-24 -top-24 h-72 w-72 rounded-full bg-mainColor/10 blur-3xl' />
-
-      <Box className='absolute -bottom-28 left-16 h-64 w-64 rounded-full bg-mainColor/10 blur-3xl' />
-
       <Stack gap='lg' className='relative z-10'>
         <Flex
           direction={{ base: 'column', lg: 'row' }}
@@ -21,14 +17,6 @@ export function AppSkeleton({ height }: { height?: MantineSize }) {
           gap='xl'
         >
           <Group gap='md' align='center' wrap='nowrap'>
-            <Box className='relative shrink-0'>
-              <Skeleton circle height={84} />
-
-              <Box className='absolute -bottom-1 -right-1'>
-                <Skeleton circle height={32} />
-              </Box>
-            </Box>
-
             <Box className='min-w-0 flex-1'>
               <Group gap='xs' mb={10}>
                 <Skeleton h={34} w={220} radius='md' />

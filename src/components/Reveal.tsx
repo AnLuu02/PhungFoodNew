@@ -1,17 +1,19 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { Box } from '@mantine/core';
+import { memo, useEffect, useRef } from 'react';
 import { observeElement, unobserveElement } from '../lib/observer';
 
-type Props = {
+type RevealProps = {
   children: React.ReactNode;
   delay?: number;
   y?: number;
   x?: number;
   z?: number;
+  onReveal?: () => void;
 };
 
-export default function Reveal({ children, delay = 0, y = 0, x = 0, z = 0 }: Props) {
+function Reveal({ children, delay = 0, y = 0, x = 0, z = 0, onReveal }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -22,13 +24,14 @@ export default function Reveal({ children, delay = 0, y = 0, x = 0, z = 0 }: Pro
       el.style.opacity = '1';
       el.style.transform = 'translate3d(0,0,0)';
       el.style.transitionDelay = `${delay}s`;
+      onReveal?.();
     });
 
     return () => unobserveElement(el);
   }, [delay]);
 
   return (
-    <div
+    <Box
       ref={ref}
       style={{
         opacity: 0,
@@ -38,6 +41,7 @@ export default function Reveal({ children, delay = 0, y = 0, x = 0, z = 0 }: Pro
       }}
     >
       {children}
-    </div>
+    </Box>
   );
 }
+export default memo(Reveal);

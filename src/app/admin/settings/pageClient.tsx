@@ -13,7 +13,7 @@ import {
 } from '@tabler/icons-react';
 import { ForwardRefExoticComponent, RefAttributes, useCallback } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
-import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 import BannerManagement from './components/Section/Banner/BannerRestautant';
 import EmailSettingsManagement from './components/Section/EmailRestautant';
@@ -36,7 +36,7 @@ const TABS: Record<
 };
 const DEFAULT_TAB = TABS?.['general']?.value || 'general';
 export default function SettingPageClient() {
-  const { data: restaurant } = api.Restaurant.getOneActive.useQuery();
+  const { data: restaurant } = api.Restaurant.getBaseActiveAdmin.useQuery();
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const renderTabItem = useCallback(
     (activeTab: string) => {
@@ -49,17 +49,17 @@ export default function SettingPageClient() {
           return (
             <ThemeSettingsManagement
               restaurantId={restaurant?.id || ''}
-              theme={restaurant?.theme as NonNullable<TGetOneActive>['theme']}
+              theme={restaurant?.theme as NonNullable<RestaurantDetail>['theme']}
             />
           );
         case 'email':
-          return <EmailSettingsManagement restaurant={restaurant as NonNullable<TGetOneActive>} />;
+          return <EmailSettingsManagement />;
         case 'payment':
           return <PaymentSettingsManagement />;
         case 'security':
-          return <SecuritySettingsManagement restaurant={restaurant as NonNullable<TGetOneActive>} />;
+          return <SecuritySettingsManagement restaurant={restaurant as NonNullable<RestaurantDetail>} />;
         case 'performance':
-          return <PerformanceSettingsManagement restaurant={restaurant as NonNullable<TGetOneActive>} />;
+          return <PerformanceSettingsManagement restaurant={restaurant as NonNullable<RestaurantDetail>} />;
         default:
           return <RestaurantInfoSettings />;
       }

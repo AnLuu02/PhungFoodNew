@@ -3,13 +3,13 @@ import { IconLink, IconPhone, IconTruck } from '@tabler/icons-react';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
-import { TGetOneActiveClient } from '~/shared/type-trpc/restaurant.type-trpc';
-export default async function FooterWeb({ restaurant }: { restaurant: TGetOneActiveClient }) {
+import { RestaurantBase } from '~/shared/type-trpc/restaurant.type-trpc';
+export default async function FooterWeb({ restaurant }: { restaurant: RestaurantBase }) {
   const timeOpen = () => {
     const timeIndex = new Date().getDay();
     const timeOpens = restaurant?.openingHours ?? [];
     const timeOpen = timeOpens?.find(
-      (item: NonNullable<TGetOneActiveClient>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
+      (item: NonNullable<RestaurantBase>['openingHours'][number]) => item?.dayOfWeek === timeIndex?.toString()
     );
     return {
       ...timeOpen,
@@ -171,7 +171,7 @@ export default async function FooterWeb({ restaurant }: { restaurant: TGetOneAct
                 </Title>
                 <SimpleGrid cols={{ base: 7, md: 4, lg: 5 }}>
                   {restaurant?.socials &&
-                    restaurant?.socials?.map((item: NonNullable<TGetOneActiveClient>['socials'][number]) => {
+                    restaurant?.socials?.map((item: NonNullable<RestaurantBase>['socials'][number]) => {
                       const { icon: IconComponent, color } = iconMap[item?.platform] || {
                         icon: IconLink,
                         color: 'black'

@@ -4,10 +4,11 @@ import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { memo, useCallback, useMemo } from 'react';
 import { NotifyError } from '~/lib/FuncHandler/toast';
+import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import { useFavoriteStore } from '~/stores/favorite.store';
 import { api } from '~/trpc/react';
 import { useFavorite } from '../Hooks/use-favorite';
-const ButtonToggleLike = ({ product, isLiked }: { product: any; isLiked?: boolean }) => {
+const ButtonToggleLike = ({ product, isLiked }: { product: ProductBase; isLiked?: boolean }) => {
   const { data: session } = useSession();
   const toggle = useFavoriteStore(state => state.toggle);
   const utils = api.useUtils();

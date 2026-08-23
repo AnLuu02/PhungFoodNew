@@ -55,12 +55,12 @@ export const notificationTypeOptions = {
 export const updateActionClient = async ({
   mutationUpdateAction,
   data,
-  session,
+  userId,
   action
 }: {
   mutationUpdateAction: any;
   data: NotificationClient;
-  session: any;
+  userId: string;
   action: 'sent' | 'delivered' | 'read' | 'clicked';
 }) => {
   await mutationUpdateAction.mutateAsync({
@@ -75,11 +75,11 @@ export const updateActionClient = async ({
           where: {
             notificationId_userId: {
               notificationId: data.id,
-              userId: session.user.id
+              userId
             }
           },
           create: {
-            user: { connect: { id: session.user.id } },
+            user: { connect: { id: userId } },
             [action + 'At']: new Date()
           },
           update: {

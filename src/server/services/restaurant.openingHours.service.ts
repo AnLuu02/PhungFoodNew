@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { OpeningHourWithRestaurantId } from '~/shared/schema/restaurant.openingHours.schema';
 
 export const updateOpeningHoursService = async (db: PrismaClient, input: { data: OpeningHourWithRestaurantId[] }) => {
@@ -19,7 +20,7 @@ export const updateOpeningHoursService = async (db: PrismaClient, input: { data:
     return changes;
   });
   if (result?.length > 0) {
-    await Promise.all([delCache('restaurant:getOneActive'), delCache('restaurant:getOneActiveClient')]);
+    await Promise.all([delCache(RESTAURANT_KEY.full), delCache(RESTAURANT_KEY.active)]);
   }
   return result?.map(item => ({
     metaData: {

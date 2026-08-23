@@ -41,7 +41,7 @@ export default function ProductUpsert({
   const openModal = useModalStore(s => s.open);
 
   const [imageDeleted, setImageDeleted] = useState<string[]>([]);
-  const { data: categories } = api.SubCategory.getAll.useQuery();
+  const { data: subCategories } = api.SubCategory.getSubCategoriesWithRelationBasic.useQuery();
   const { data: materials } = api.Material.getAll.useQuery();
   const { data, isLoading } = api.Product.getOne.useQuery(
     { key: productId || '', userRole: UserRole.ADMIN },
@@ -280,7 +280,7 @@ export default function ProductUpsert({
                   label='Danh mục'
                   placeholder=' Chọn danh mục'
                   searchable
-                  data={categories?.map(category => ({
+                  data={subCategories?.map(category => ({
                     value: category.id,
                     label: category.name + ` (${category.category.name})`
                   }))}

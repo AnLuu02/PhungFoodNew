@@ -12,7 +12,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { FindReview, GetAllReview } from '~/shared/type-trpc/review.type-trpc';
+import { FindReview } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function TableReview() {
@@ -26,13 +26,13 @@ export default function TableReview() {
   const sortArr = searchParams.getAll('sort');
 
   const { data: dataClient, isLoading } = api.Review.find.useQuery({ page: +page, limit: +limit, s, sort: sortArr });
-  const { data: allDataClient } = api.Review.getAll.useQuery(undefined);
+  const { data: allDataClient } = api.Review.getReviewsOnly.useQuery(undefined);
 
   const currentItems = dataClient?.reviews || [];
   const dataFilter = useMemo(() => {
     if (!allDataClient) return [];
     const summary = allDataClient.reduce(
-      (acc: { total: number; gte4star: number; from2to4: number; poorStar: number }, item: GetAllReview[number]) => {
+      (acc: { total: number; gte4star: number; from2to4: number; poorStar: number }, item) => {
         acc.total += 1;
         if (item.rating > 4) {
           acc.gte4star += 1;

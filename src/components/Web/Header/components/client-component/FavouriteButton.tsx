@@ -10,9 +10,9 @@ import { api } from '~/trpc/react';
 const LikeButton = () => {
   const count = useFavoriteCount();
 
-  const { data: session } = useSession();
-
   const utils = api.useUtils();
+
+  const { data: session } = useSession();
 
   const userId = session?.user?.id;
 

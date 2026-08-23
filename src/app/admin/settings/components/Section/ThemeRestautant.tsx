@@ -21,7 +21,7 @@ import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { themeSchemaWithRestaurantId, ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
-import { TGetOneActive } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function ThemeSettingsManagement({
@@ -29,7 +29,7 @@ export default function ThemeSettingsManagement({
   theme
 }: {
   restaurantId: string;
-  theme: NonNullable<TGetOneActive>['theme'];
+  theme: NonNullable<RestaurantDetail>['theme'];
 }) {
   const {
     control,

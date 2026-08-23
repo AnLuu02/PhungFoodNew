@@ -7,15 +7,14 @@ import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { FindReview } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
-import { CommentsSkeleton } from './CommentsSkeleton';
 
 export const CommentsList = ({ productId }: { productId: string }) => {
-  const { data, isLoading } = api.Review.find.useQuery({
+  const data = api.Review.find.useSuspenseQuery({
     page: 1,
     limit: 100,
     ...(productId ? { relationId: productId } : {})
   });
-  const reviews = data?.reviews || [];
+  const reviews = data?.[0]?.reviews || [];
   const { data: user } = useSession();
   const utils = api.useUtils();
   const mutationDelete = api.Review.delete.useMutation({
@@ -37,15 +36,7 @@ export const CommentsList = ({ productId }: { productId: string }) => {
     );
   }
 
-  return isLoading ? (
-    <Stack gap='md'>
-      {Array(3)
-        .fill(0)
-        .map((_, index) => (
-          <CommentsSkeleton key={index} />
-        ))}
-    </Stack>
-  ) : (
+  return (
     <>
       <Stack>
         {reviews.map((comment: FindReview['reviews'][number]) => (

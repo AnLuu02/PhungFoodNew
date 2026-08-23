@@ -45,7 +45,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
     if (noteDebounced) {
       updateCart({
         productId: item?.product?.id,
-        quantity: 0,
+        quantity: item.quantity,
         note
       });
     }
@@ -134,7 +134,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                   if (item) {
                     updateCart({
                       productId: item.product.id,
-                      quantity: 0,
+                      quantity: item.quantity,
                       note
                     });
                   }

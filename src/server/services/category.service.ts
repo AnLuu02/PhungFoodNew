@@ -3,14 +3,11 @@ import { TRPCError } from '@trpc/server';
 import { Session } from 'next-auth';
 import { delCache } from '~/lib/CacheConfig/withRedisCache';
 import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { CATEGORY_KEY } from '~/shared/constants/redis-keys';
 import { CategoryInput } from '~/shared/schema/category.schema';
 
-export const findCategoryService = async (
-  db: PrismaClient,
-  input: { page: number; limit: number; s?: string; include?: Prisma.CategoryInclude }
-) => {
-  const { page, limit, s, include } = input;
+export const findCategoryService = async (db: PrismaClient, input: { page: number; limit: number; s?: string }) => {
+  const { page, limit, s } = input;
   const searchQuery = s?.trim();
   const where: Prisma.CategoryWhereInput = {
     OR: [
@@ -38,7 +35,6 @@ export const findCategoryService = async (
         createdAt: 'desc'
       },
       include: {
-        ...(include ?? {}),
         subCategory: {
           select: {
             id: true,
@@ -78,7 +74,7 @@ export const deleteCategoryService = async (db: PrismaClient, input: { id: strin
   }
 
   ManageTagVi('delete', { oldTag: category.tag });
-  await delCache('category:getAll');
+  await Promise.all([delCache(CATEGORY_KEY.only), delCache(CATEGORY_KEY.withRelationBase)]);
   return {
     metaData: {
       before: category ?? {},
@@ -87,46 +83,55 @@ export const deleteCategoryService = async (db: PrismaClient, input: { id: strin
   };
 };
 
-export const getOneCategoryService = async (
-  db: PrismaClient,
-  input: { key: string; include?: Prisma.CategoryInclude }
-) => {
-  const { key, include } = input;
-  const category = await db.category.findFirst({
+export const getBasicCategoryService = async (db: PrismaClient, input: { key: string }) => {
+  const { key } = input;
+  return await db.category.findFirst({
     where: {
       OR: [{ id: key }, { tag: key }]
     },
-    include
+    include: {
+      subCategory: {
+        select: {
+          name: true,
+          tag: true,
+          isActive: true
+        }
+      }
+    }
   });
-  return category;
 };
 
-export const getAllCategoryService = async (db: PrismaClient, input?: { include?: Prisma.CategoryInclude }) => {
-  let categories = await db.category.findMany({
+export const getCategoriesOnlyService = async (db: PrismaClient) => {
+  return await db.category.findMany({});
+};
+
+export const getCategoriesWithRelationBasicService = async (db: PrismaClient) => {
+  return db.category.findMany({
     include: {
-      ...(input?.include ?? {}),
       subCategory: {
-        include: {
-          imageForEntity: { include: { image: true } },
-          products: {
-            where: {
-              isActive: true
-            },
-            include: {
-              imageForEntities: { include: { image: true } }
+        select: {
+          name: true,
+          tag: true,
+          isActive: true,
+          _count: {
+            select: { products: true }
+          },
+          imageForEntity: {
+            select: {
+              id: true,
+              type: true,
+              altText: true,
+              image: {
+                select: {
+                  url: true
+                }
+              }
             }
           }
         }
       }
     }
   });
-  return categories.map(c => ({
-    ...c,
-    subCategory: c.subCategory.map(sc => ({
-      ...sc,
-      products: sc.products.map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
-    }))
-  }));
 };
 
 export const upsertCategoryService = async (db: PrismaClient, input: CategoryInput) => {
@@ -154,7 +159,7 @@ export const upsertCategoryService = async (db: PrismaClient, input: CategoryInp
     newTag: upserted.tag,
     newName: upserted.name
   });
-  await delCache('category:getAll');
+  await Promise.all([delCache(CATEGORY_KEY.only), delCache(CATEGORY_KEY.withRelationBase)]);
   return {
     metaData: {
       before: existed ?? {},

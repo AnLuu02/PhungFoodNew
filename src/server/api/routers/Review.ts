@@ -5,8 +5,7 @@ import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } 
 import {
   deleteReviewService,
   findReviewService,
-  getAllReviewService,
-  getOneReviewService,
+  getBaseReviewService,
   getReviewForOwnerService,
   upsertReviewService
 } from '~/server/services/review.service';
@@ -20,8 +19,7 @@ export const reviewRouter = createTRPCRouter({
         limit: z.number().default(5),
         s: z.string().optional(),
         relationId: z.string().optional(),
-        sort: z.array(z.string()).optional(),
-        include: z.custom<Prisma.ReviewInclude>().optional()
+        sort: z.array(z.string()).optional()
       })
     )
     .query(async ({ ctx, input }) => await findReviewService(ctx.db, input)),
@@ -44,23 +42,36 @@ export const reviewRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getReviewForOwnerService(ctx.db, input)),
-  getOne: publicProcedure
+  getReviewsOnlyForOwner: publicProcedure
     .input(
       z.object({
-        id: z.string(),
-        include: z.custom<Prisma.ReviewInclude>().optional()
+        ownerId: z.string()
       })
     )
-    .query(async ({ ctx, input }) => await getOneReviewService(ctx.db, input)),
-  getAll: publicProcedure
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.review.findMany({
+        where: {
+          OR: [
+            { productId: input.ownerId },
+            {
+              userId: input.ownerId
+            }
+          ]
+        }
+      });
+    }),
+
+  getReviewsOnly: publicProcedure.query(async ({ ctx, input }) => {
+    return await ctx.db.review.findMany({});
+  }),
+
+  getBase: publicProcedure
     .input(
-      z
-        .object({
-          include: z.custom<Prisma.ReviewInclude>().optional()
-        })
-        .optional()
+      z.object({
+        key: z.string()
+      })
     )
-    .query(async ({ ctx, input }) => await getAllReviewService(ctx.db, input)),
+    .query(async ({ ctx, input }) => await getBaseReviewService(ctx.db, input)),
 
   upsert: publicProcedure
     .use(requirePermission('update:review'))

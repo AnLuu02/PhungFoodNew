@@ -27,7 +27,7 @@ export default async function ReviewManagementPage({
   )?.filter(Boolean);
 
   await Promise.allSettled([
-    api.Review.getAll.prefetch(),
+    api.Review.getReviewsOnly.prefetch(),
     api.Review.find.prefetch({ page: +page, limit: +limit, s, sort: sortArr })
   ]);
 

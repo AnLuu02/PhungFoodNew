@@ -1,16 +1,22 @@
 'use client';
 import { Group, Paper, Progress, Stack, Text } from '@mantine/core';
 import { IconStarFilled } from '@tabler/icons-react';
-import { GetReviewForOwner } from '~/shared/type-trpc/review.type-trpc';
 import { api } from '~/trpc/react';
 export default function RatingStatistics({ productId }: { productId: string }) {
-  const { data: reviews = [] } = api.Review.getForOwner.useQuery({ ownerId: productId });
-  let ratingCountsDefault = [0, 0, 0, 0, 0];
-  let ratings: number[] =
-    reviews?.reduce((acc: number[], item: GetReviewForOwner[number]) => {
-      item.rating && acc[item.rating - 1] ? (acc[item.rating - 1]! += 1) : null;
+  const data = api.Review.getReviewsOnlyForOwner.useSuspenseQuery({ ownerId: productId });
+  const reviews = data?.[0];
+
+  const ratings = reviews?.reduce(
+    (acc, item) => {
+      const index = item.rating - 1;
+      if (index >= 0 && index < acc.length) {
+        acc[index]!++;
+      }
       return acc;
-    }, ratingCountsDefault) || ratingCountsDefault;
+    },
+    [0, 0, 0, 0, 0]
+  ) ?? [0, 0, 0, 0, 0];
+
   let totalRating: number = ratings.reduce((sum, count) => sum + count, 0) || 0;
   let averageRating = totalRating
     ? ratings.reduce((sum, count, index) => sum + count * (index + 1), 0) / totalRating

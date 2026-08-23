@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Quản lý cài đặt '
 };
 export default async function SettingPage() {
-  await api.Restaurant.getOneActive.prefetch();
+  await api.Restaurant.getBaseActiveAdmin.prefetch();
   return (
     <HydrateClient>
       <SettingPageClient />

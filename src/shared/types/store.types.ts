@@ -25,3 +25,9 @@ export type VoucherItem = {
   type: VoucherType;
   discountValue: number;
 };
+
+export type CartItemTempo = {
+  productId: string;
+  quantity: number;
+  note?: string;
+};

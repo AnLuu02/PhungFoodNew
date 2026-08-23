@@ -20,7 +20,6 @@ export const ApplyVoucher = ({ totalOrderPrice }: { totalOrderPrice: number }) =
   const appliedVouchers = useVoucherItems();
   const removeVoucher = useCartStore(s => s.removeVoucher);
   const addVoucher = useCartStore(s => s.addVoucher);
-  console.log(1);
   const utils = api.useUtils();
 
   const handleApplyVoucher = async () => {
