@@ -1,29 +1,12 @@
-import {
-  Badge,
-  Card,
-  Divider,
-  Flex,
-  Grid,
-  GridCol,
-  Group,
-  Rating,
-  Select,
-  Spoiler,
-  Stack,
-  Text,
-  Title
-} from '@mantine/core';
-import { IconRefresh, IconShieldCheck, IconShoppingCartPlus, IconTruck } from '@tabler/icons-react';
-import { ButtonAddToCart } from '~/components/Button/ButtonAddToCart';
+import { Badge, Divider, Flex, Grid, GridCol, Group, Rating, Stack, Text, Title } from '@mantine/core';
+import { IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 import { ImageType } from '@prisma/client';
 import { ShareSocials } from '~/components/ShareSocial';
-import ViewingUser from '~/components/UserViewing';
 import type { ProductBase } from '~/shared/type-trpc/product.type-trpc';
-import InputNoteProduct from './client-component/InputNoteProduct';
-import InputQuantityProduct from './client-component/InputQuantityProduct';
 import ProductImage from './client-component/ProductImage';
+import PurchaseAction from './client-component/PurchaseActions';
 
 export const ProductOverview = ({ product }: { product: NonNullable<ProductBase> }) => {
   const inStock = product?.availableQuantity > 0;
@@ -101,73 +84,18 @@ export const ProductOverview = ({ product }: { product: NonNullable<ProductBase>
             </Text>
           )}
 
-          <ViewingUser productId={product?.id || ''} />
+          <PurchaseAction
+            product={{
+              id: product?.id,
+              name: product?.name,
+              price: product?.price,
+              discount: product?.discount,
+              description: product?.description,
+              availableQuantity: product?.availableQuantity,
+              thumbnail
+            }}
+          />
 
-          <Card
-            withBorder
-            className='border-0 border-l-2 border-mainColor bg-gray-100 dark:bg-dark-card'
-            p={'xs'}
-            my={'xs'}
-          >
-            <Spoiler
-              maxHeight={60}
-              showLabel='Xem thêm'
-              hideLabel='Ẩn'
-              classNames={{
-                control: 'text-lg font-bold text-mainColor'
-              }}
-            >
-              <Text size='sm'>{product?.description || 'Đang cập nhật'}</Text>
-            </Spoiler>
-          </Card>
-
-          <Stack gap='xs'>
-            <Text size='sm' fw={700}>
-              Ghi chú:
-            </Text>
-            <InputNoteProduct productId={product.id} />
-          </Stack>
-          <Flex align='flex-end' gap={'md'} wrap={{ base: 'wrap', md: 'nowrap' }}>
-            <Group gap='xs'>
-              <InputQuantityProduct productId={product.id} />
-            </Group>
-            <Group gap='xs'>
-              <Select
-                disabled
-                label={
-                  <Text size='sm' fw={700}>
-                    Kích cỡ:
-                  </Text>
-                }
-                searchable
-                placeholder='Chọn'
-                data={['1 người ăn', '2 người ăn', '3 người ăn', '5 người ']}
-              />
-            </Group>
-            <ButtonAddToCart
-              item={{
-                product: {
-                  id: product?.id,
-                  price: product?.price ?? 0,
-                  discount: product?.discount ?? 0,
-                  name: product?.name,
-                  thumbnail
-                },
-                note: '',
-                quantity: 0
-              }}
-              notifySuccess={{
-                title: 'Cập nhật giỏ hàng thành công',
-                message: 'Sản phẩm đã được thêm vào giỏ hàng. Có thể truy cập giỏ hàng để hoàn tất thanh toán.'
-              }}
-              style={{
-                children: 'Mua hàng',
-                size: 'md',
-                fullWidth: true,
-                leftSection: <IconShoppingCartPlus size={20} className='mr-2 font-bold' />
-              }}
-            />
-          </Flex>
           <Stack gap={5}>
             <Text c={'dimmed'} size='sm'>
               Thương hiệu: Phụng Food Việt Nam

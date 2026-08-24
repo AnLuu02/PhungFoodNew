@@ -7,7 +7,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     '/',
     '/gioi-thieu',
-    '/san-pham',
     '/thuc-don',
     '/tin-tuc',
     '/lien-he',
@@ -21,12 +20,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/yeu-thich'
   ];
 
-  const products = await db.product.findMany({ select: { tag: true } });
+  const products = await db.product.findMany({
+    where: {
+      tag: { not: undefined }
+    },
+    select: { tag: true }
+  });
 
-  const productRoutes = products.map(product => ({
-    url: `${baseUrl}/san-pham/${product.tag}`,
-    lastModified: new Date().toISOString()
-  }));
+  const productRoutes = products
+    .filter(product => product.tag)
+    .map(product => ({
+      url: `${baseUrl}/san-pham/${product.tag}`,
+      lastModified: new Date().toISOString()
+    }));
 
   const staticEntries = staticRoutes.map(route => ({
     url: `${baseUrl}${route}`,
