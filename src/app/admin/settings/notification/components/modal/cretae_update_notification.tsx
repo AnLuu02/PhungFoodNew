@@ -55,6 +55,7 @@ export const NotificationModal = ({
   const { data: templates, isLoading: isLoadingTemplate } = api.NotificationTemplate.getAll.useQuery(undefined, {
     enabled: !!opened
   });
+
   const templateData = templates?.data || [];
   const utils = api.useUtils();
   const mutationCreate = api.Notification.create.useMutation({
@@ -63,7 +64,7 @@ export const NotificationModal = ({
       NotifySuccess('Tạo thông báo thanh cong');
     },
     onError: e => {
-      NotifySuccess('Tạo thông báo that bai', e.message);
+      NotifyError('Tạo thông báo thất bại', e.message);
     }
   });
   const mutationUpdate = api.Notification.update.useMutation({
@@ -72,7 +73,7 @@ export const NotificationModal = ({
       NotifySuccess('Cập nhật thông báo thanh cong');
     },
     onError: e => {
-      NotifySuccess('Cập nhật thông báo that bai', e.message);
+      NotifyError('Cập nhật thông báo thất bại', e.message);
     }
   });
 
@@ -81,7 +82,7 @@ export const NotificationModal = ({
       utils.Notification.invalidate();
     },
     onError: e => {
-      NotifySuccess('Cập nhật thông báo that bai', e.message);
+      NotifyError('Cập nhật thông báo thất bại', e.message);
     }
   });
   useEffect(() => {

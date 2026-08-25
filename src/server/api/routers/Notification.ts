@@ -6,10 +6,7 @@ import {
   deleteNotificationByIdService,
   deleteNotificationRecipientService,
   getAllNotificationService,
-  getFilterNotificationService,
-  getNotificationByIdService,
-  getNotificationByUserService,
-  markAsReadNotificationService,
+  getNotificationByUserWithRelationBaseService,
   pushOnlineNotificationService,
   syncOfflineNotificationService,
   updateActionUserService,
@@ -37,25 +34,14 @@ export const notificationRouter = createTRPCRouter({
   syncOffline: publicProcedure
     .input(z.object({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => await syncOfflineNotificationService(ctx.db, input)),
-  markAsRead: publicProcedure
-    .input(z.object({ notificationId: z.string(), userId: z.string() }))
-    .mutation(async ({ input, ctx }) => await markAsReadNotificationService(ctx.db, input)),
-  getById: publicProcedure
+
+  getNotificationsByUserWithRelationBase: publicProcedure
     .input(
       z.object({
-        id: z.string(),
-        include: z.custom<Prisma.NotificationInclude>().optional()
+        userId: z.string()
       })
     )
-    .query(async ({ ctx, input }) => await getNotificationByIdService(ctx.db, input)),
-  getByUser: publicProcedure
-    .input(
-      z.object({
-        userId: z.string(),
-        include: z.custom<Prisma.NotificationInclude>().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => await getNotificationByUserService(ctx.db, input)),
+    .query(async ({ ctx, input }) => await getNotificationByUserWithRelationBaseService(ctx.db, input)),
 
   update: publicProcedure
     .use(activityLogger)
@@ -65,8 +51,9 @@ export const notificationRouter = createTRPCRouter({
     .use(activityLogger)
     .input(
       z.object({
-        where: z.custom<Prisma.NotificationWhereUniqueInput>(),
-        data: z.custom<Prisma.NotificationUpdateInput>()
+        notificationId: z.string(),
+        userId: z.string(),
+        action: z.enum(['sent', 'delivered', 'read', 'clicked'])
       })
     )
     .mutation(async ({ ctx, input }) => await updateActionUserService(ctx.db, input)),
@@ -82,18 +69,31 @@ export const notificationRouter = createTRPCRouter({
     .use(activityLogger)
     .input(
       z.object({
-        where: z.custom<Prisma.NotificationRecipientWhereInput>()
+        notifications: z.object({
+          ids: z.array(z.string()).default([]),
+          recipientIds: z.array(z.string()).default([]),
+          userId: z.string()
+        })
       })
     )
     .mutation(async ({ ctx, input }) => await deleteNotificationRecipientService(ctx.db, input)),
-  getFilter: publicProcedure
-    .input(
-      z.object({
-        where: z.custom<Prisma.NotificationWhereInput>(),
-        take: z.number().optional(),
-        skip: z.number().optional(),
-        include: z.custom<Prisma.NotificationInclude>().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => await getFilterNotificationService(ctx.db, input))
+
+  getBase: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    return await ctx.db.notification.findUnique({
+      where: {
+        id: input.id
+      },
+      include: {
+        analytics: true,
+        recipients: {
+          select: {
+            id: true,
+            clickedAt: true,
+            readAt: true,
+            deliveredAt: true
+          }
+        }
+      }
+    });
+  })
 });

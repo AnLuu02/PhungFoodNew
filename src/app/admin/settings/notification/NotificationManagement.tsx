@@ -9,7 +9,7 @@ import { GetAllNotification } from '~/shared/type-trpc/notification.type-trpc';
 import { api } from '~/trpc/react';
 import { ResponseTRPC } from '~/types/ResponseFetcher';
 import { NotificationModal } from './components/modal/cretae_update_notification';
-import { ViewModal } from './components/modal/ViewModal';
+import { ViewNotificationDetail } from './components/modal/ViewNotificationDetail';
 import { AnalyticsTabSection } from './components/section/AnalyticsTabSection';
 import { HistoryTabSection } from './components/section/HistoryTabSection';
 import { SendTabSection } from './components/section/SendTabSection';
@@ -149,10 +149,10 @@ export default function NotificationManagement({
             <SettingsTabSection />
           </TabsPanel>
 
-          <ViewModal
+          <ViewNotificationDetail
             opened={showViewDialog.open}
             onClose={() => setShowViewDialog({ open: false })}
-            selectedNotification={showViewDialog.notification}
+            selectedNotification={showViewDialog.notification as any}
             role='admin'
           />
         </Tabs>

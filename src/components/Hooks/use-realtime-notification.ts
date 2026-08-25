@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { pusherClient } from '~/lib/PusherConfig/client';
+import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
 
 interface UseRealtimeNotificationProps {
   userId?: string;
-  onReceive: (data: any) => Promise<void> | void;
+  onReceive: (data: NotificationBase) => Promise<void> | void;
 }
 
 export function useRealtimeNotification({ userId, onReceive }: UseRealtimeNotificationProps) {

@@ -12,18 +12,16 @@ import {
   Paper,
   ScrollAreaAutosize,
   Stack,
-  Text,
-  UnstyledButton
+  Text
 } from '@mantine/core';
 import { IconBell, IconCheck, IconInfoCircle, IconTrash, IconTrashX, IconX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
-import { useEffect, useRef, useState } from 'react';
-import { ViewModal } from '~/app/admin/settings/notification/components/modal/ViewModal';
-import { updateActionClient } from '~/app/admin/settings/notification/helpers';
+import { useEffect, useState } from 'react';
+import { ViewNotificationDetail } from '~/app/admin/settings/notification/components/modal/ViewNotificationDetail';
 import { formatTimeAgo } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { pusherClient } from '~/lib/PusherConfig/client';
-import { NotificationClient, NotificationRecipient } from '~/shared/schema/notification.schema';
+import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
 import { api } from '~/trpc/react';
 import { useRealtimeNotification } from './Hooks/use-realtime-notification';
 
@@ -39,64 +37,72 @@ function NotificationDialog() {
 
   const userId = session?.user?.id;
 
-  const { data, isLoading } = api.Notification.getByUser.useQuery(
+  const { data, isLoading } = api.Notification.getNotificationsByUserWithRelationBase.useQuery(
     { userId: userId || '' },
     {
       enabled: !!userId
     }
   );
-  const notificationsData = data ?? [];
-  const [notifications, setNotifications] = useState<NotificationClient[]>([]);
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const notifications = data ?? [];
+  const [selectedIds, setSelectedIds] = useState<{ notificationId: string; recipientId: string }[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isNotify, setIsNotify] = useState(false);
-  const hasClicked = useRef(false);
   const [showViewDialog, setShowViewDialog] = useState<{
     open: boolean;
-    notification: NotificationClient;
+    notification: NotificationBase;
   }>({
     open: false,
-    notification: {} as NotificationClient
+    notification: {} as NotificationBase
   });
+
+  const utils = api.useUtils();
   const mutationUpdateAction = api.Notification.updateActionUser.useMutation({
-    onError: error => {
-      NotifyError('Thất bại!', error?.message);
+    onSuccess: () => {
+      utils.Notification.getNotificationsByUserWithRelationBase.invalidate();
     }
   });
   const deleteMutation = api.Notification.deleteNotificationRecipient.useMutation({
-    onError: error => {
-      console.error(error.message);
-      NotifyError('Thất bại!', 'Xem chi tiết lỗi trong console browser.');
+    onMutate: async newTodo => {
+      await utils.Notification.getNotificationsByUserWithRelationBase.cancel();
+      const prevData = utils.Notification.getNotificationsByUserWithRelationBase.getData({ userId: userId || '' });
+
+      utils.Notification.getNotificationsByUserWithRelationBase.setData({ userId: userId || '' }, oldData => {
+        if (!oldData) return oldData;
+
+        const recipientIds = new Set(newTodo.notifications.recipientIds);
+        const newData = oldData.filter(i => !recipientIds.has(i.recipients?.[0]?.id as string));
+        return newData;
+      });
+      return { prevData };
+    },
+    onSettled: () => {
+      utils.Notification.getNotificationsByUserWithRelationBase.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
     }
   });
 
   const mutationSyncOffline = api.Notification.syncOffline.useMutation({
-    onError: error => {
-      console.error(error.message);
-      NotifyError('Thất bại!', 'Xem chi tiết lỗi trong console browser.');
+    onSuccess: () => {
+      utils.Notification.getNotificationsByUserWithRelationBase.invalidate();
+      setLoading(false);
     }
   });
   const unreadCount = notifications.filter(n => !n?.recipients?.[0]?.clickedAt)?.length || 0;
 
   useRealtimeNotification({
     userId,
-    onReceive: async (data: any) => {
+    onReceive: async (data: NotificationBase) => {
       setIsNotify(true);
-      setNotifications(prev => [...prev, data]);
-      await updateActionClient({
-        mutationUpdateAction,
-        data,
+      utils.Notification.getNotificationsByUserWithRelationBase.invalidate();
+      await mutationUpdateAction.mutateAsync({
+        notificationId: data.id,
         userId,
         action: 'delivered'
       });
     }
   });
-  useEffect(() => {
-    if (!userId) return;
-    if (notificationsData) {
-      setNotifications([...(notificationsData as any)]);
-    }
-  }, [notificationsData]);
 
   useEffect(() => {
     if (!userId) return;
@@ -107,21 +113,60 @@ function NotificationDialog() {
 
       return () => clearTimeout(timeout);
     }
-  }, [isNotify]);
+  }, [isNotify, userId?.toString()]);
 
   useEffect(() => {
     if (!userId) return;
-    (async () => {
-      setLoading(true);
-      const syncOfflineData = await mutationSyncOffline.mutateAsync({
-        userId: userId
-      });
-      if (syncOfflineData?.length) {
-        setNotifications(prev => [...prev, ...(syncOfflineData as any)]);
-        setLoading(false);
+    try {
+      (async () => {
+        setLoading(true);
+        await mutationSyncOffline.mutateAsync({
+          userId
+        });
+      })();
+    } catch {
+      throw new Error();
+    } finally {
+      setLoading(false);
+    }
+  }, [userId?.toString()]);
+
+  const handleDeleteNotifications = async (notificationId?: string, recipientId?: string) => {
+    try {
+      if (notificationId && recipientId) {
+        await deleteMutation.mutateAsync({
+          notifications: {
+            userId,
+            ids: [notificationId],
+            recipientIds: [recipientId]
+          }
+        });
+        setSelectedIds(prev => prev.filter(n => n.recipientId !== recipientId));
+      } else if (selectedIds.length > 0) {
+        const { notificationIds, recipientIds } = selectedIds.reduce(
+          (acc: { notificationIds: string[]; recipientIds: string[] }, item) => {
+            acc.notificationIds.push(item.notificationId);
+            acc.recipientIds.push(item.recipientId);
+            return acc;
+          },
+          { notificationIds: [], recipientIds: [] }
+        );
+        await deleteMutation.mutateAsync({
+          notifications: {
+            userId,
+            ids: notificationIds,
+            recipientIds: recipientIds
+          }
+        });
+        setSelectedIds([]);
       }
-    })();
-  }, [userId]);
+
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.', undefined, 'top-center');
+    } catch (error) {
+      console.error('Lỗi khi xóa thông báo:', error);
+      NotifyError('Đã có lỗi xảy ra khi xóa thông báo. Vui lòng thử lại!', undefined, 'top-center');
+    }
+  };
 
   if (status === 'loading' || status === 'unauthenticated' || (loading && isLoading)) {
     return null;
@@ -171,45 +216,16 @@ function NotificationDialog() {
                   <Text fw={600} size='md'>
                     Thông báo
                   </Text>
-                  <Group gap='xs'>
-                    {selectedIds.length > 0 && (
-                      <Button
-                        color='red'
-                        size='xs'
-                        onClick={async () => {
-                          await deleteMutation.mutateAsync({
-                            where: {
-                              id: { in: selectedIds }
-                            }
-                          });
-                          setNotifications(notifications.filter(n => !selectedIds.includes(n.id as string)));
-                          setSelectedIds([]);
-                          NotifySuccess(`Chúc mừng bạn đã thao tác thành công.`);
-                        }}
-                      >
-                        Xóa ({selectedIds.length})
-                      </Button>
-                    )}
-                    <Button
-                      variant='danger'
-                      size='xs'
-                      onClick={async () => {
-                        await deleteMutation.mutateAsync({
-                          where: {
-                            userId
-                          }
-                        });
-
-                        setNotifications([]);
-                        setSelectedIds([]);
-                        NotifySuccess(`Chúc mừng bạn đã thao tác thành công.`);
-                      }}
-                      disabled={notifications.length === 0}
-                      leftSection={<IconTrashX size={16} />}
-                    >
-                      Xóa tất cả
-                    </Button>
-                  </Group>
+                  <Button
+                    variant={'filled'}
+                    color={selectedIds.length > 0 ? 'red' : undefined}
+                    size='xs'
+                    onClick={() => handleDeleteNotifications()}
+                    disabled={notifications.length === 0 || selectedIds.length === 0}
+                    leftSection={<IconTrashX size={16} />}
+                  >
+                    {selectedIds.length > 0 ? `Xóa (${selectedIds.length})` : 'Chọn để xóa'}
+                  </Button>
                 </Group>
 
                 <Divider />
@@ -223,7 +239,12 @@ function NotificationDialog() {
                           if (selectedIds.length === notifications.length) {
                             setSelectedIds([]);
                           } else {
-                            setSelectedIds(notifications.map(n => n.id as string));
+                            setSelectedIds(
+                              notifications.map(n => ({
+                                notificationId: n.id,
+                                recipientId: n?.recipients?.[0]?.id as string
+                              }))
+                            );
                           }
                         }}
                         label='Chọn tất cả'
@@ -248,159 +269,145 @@ function NotificationDialog() {
 
                     <ScrollAreaAutosize mah={300} scrollbarSize={8}>
                       <Stack gap={0}>
-                        {notifications.map(notification => (
-                          <Box key={notification.id}>
-                            <UnstyledButton
-                              w='100%'
-                              onClick={async () => {
-                                if (!notification?.recipients?.[0]?.clickedAt) {
-                                  await updateActionClient({
-                                    mutationUpdateAction,
-                                    data: notification,
-                                    userId,
-                                    action: 'clicked'
-                                  });
-                                  setNotifications(
-                                    notifications.map(n =>
-                                      n?.id === (notification.id as string)
-                                        ? {
-                                            ...n,
-                                            analytics: { ...n?.analytics, clicked: n?.analytics?.clicked + 1 },
-                                            recipients: [
-                                              {
-                                                ...n?.recipients?.[0],
-                                                clickedAt: new Date()
-                                              } as NotificationRecipient
-                                            ]
-                                          }
-                                        : n
-                                    )
-                                  );
-                                }
-                              }}
-                              pos='relative'
-                              p='md'
-                              className='hover:bg-mainColor/10 dark:bg-dark-card dark:text-dark-text dark:hover:bg-[rgba(255,255,255,0.2)]'
-                            >
-                              <Group align='flex-start' gap='md'>
-                                <Checkbox
-                                  checked={selectedIds.includes(notification.id as string)}
-                                  onChange={event => {
-                                    event.stopPropagation();
-
-                                    if (selectedIds.includes(notification.id as string)) {
-                                      setSelectedIds(
-                                        selectedIds.filter(selectedId => selectedId !== (notification.id as string))
-                                      );
-                                    } else {
-                                      setSelectedIds([...selectedIds, notification.id as string]);
-                                    }
-                                  }}
-                                  size='xs'
-                                  mt={4}
-                                />
-
-                                <Box style={{ flex: 1, minWidth: 0 }}>
-                                  <Group align='flex-start' justify='space-between' wrap='nowrap'>
-                                    <Box style={{ flex: 1, minWidth: 0 }}>
-                                      <Text
-                                        size='sm'
-                                        fw={!notification?.recipients?.[0]?.clickedAt ? 700 : 500}
-                                        style={{
-                                          display: '-webkit-box',
-                                          WebkitLineClamp: 1,
-                                          WebkitBoxOrient: 'vertical',
-                                          overflow: 'hidden',
-                                          textOverflow: 'ellipsis',
-                                          wordBreak: 'break-word'
-                                        }}
-                                      >
-                                        {notification.title}
-                                      </Text>
-
-                                      <Text
-                                        size='xs'
-                                        c='dimmed'
-                                        style={{
-                                          display: '-webkit-box',
-                                          WebkitLineClamp: 1,
-                                          WebkitBoxOrient: 'vertical',
-                                          overflow: 'hidden',
-                                          textOverflow: 'ellipsis',
-                                          wordBreak: 'break-word'
-                                        }}
-                                      >
-                                        {notification.message}
-                                      </Text>
-                                    </Box>
-
-                                    <Group gap={4} flex='none'>
-                                      {!notification?.recipients?.[0]?.clickedAt ? (
-                                        <Box
-                                          style={{
-                                            height: 8,
-                                            width: 8,
-                                            borderRadius: '50%',
-                                            backgroundColor: 'var(--mantine-color-blue-6)',
-                                            marginTop: 4
-                                          }}
-                                        />
-                                      ) : (
-                                        <IconCheck size={16} color='var(--mantine-color-gray-6)' />
-                                      )}
-                                    </Group>
-                                  </Group>
-
-                                  <Text size='xs' c='dimmed' mt={4}>
-                                    {formatTimeAgo(
-                                      notification?.recipients?.[0]?.deliveredAt || notification.createdAt
-                                    )}
-                                  </Text>
-                                </Box>
-
-                                <ActionIcon
-                                  variant='subtle'
-                                  color='gray'
-                                  size='sm'
-                                  loading={deleteMutation.isPending}
-                                  onClick={async e => {
-                                    e.stopPropagation();
-                                    await deleteMutation.mutateAsync({
-                                      where: { id: notification?.recipients?.[0]?.id as string }
+                        {notifications.map(notification => {
+                          const recipient = notification?.recipients?.[0];
+                          if (!recipient) return null;
+                          return (
+                            <Box key={notification.id}>
+                              <Box
+                                w='100%'
+                                onClick={async () => {
+                                  if (!recipient?.clickedAt) {
+                                    await mutationUpdateAction.mutateAsync({
+                                      notificationId: notification.id,
+                                      userId,
+                                      action: 'clicked'
                                     });
-                                    setNotifications(notifications.filter(n => n.id !== notification.id));
-                                    setSelectedIds(selectedIds.filter(id => id !== notification.id));
-                                    NotifySuccess(`Chúc mừng bạn đã thao tác thành công.`);
-                                  }}
-                                >
-                                  <IconTrash size={16} color='red' />
-                                </ActionIcon>
-                              </Group>
+                                  }
+                                }}
+                                pos='relative'
+                                p='md'
+                                className='hover:bg-mainColor/10 dark:bg-dark-card dark:text-dark-text dark:hover:bg-[rgba(255,255,255,0.2)]'
+                              >
+                                <Group align='flex-start' gap='md'>
+                                  <Checkbox
+                                    checked={selectedIds.some(s => s.recipientId === (recipient?.id as string))}
+                                    onChange={event => {
+                                      event.stopPropagation();
 
-                              <Flex justify='flex-end'>
-                                <Button
-                                  size='xs'
-                                  onClick={async () => {
-                                    setShowViewDialog({ open: true, notification });
-                                    if (!notification?.recipients?.[0]?.readAt && !hasClicked.current) {
-                                      hasClicked.current = true;
-                                      await updateActionClient({
-                                        mutationUpdateAction,
-                                        data: notification,
-                                        userId,
-                                        action: 'read'
-                                      });
-                                    }
-                                  }}
-                                >
-                                  Chi tiết
-                                </Button>
-                              </Flex>
-                            </UnstyledButton>
+                                      if (selectedIds.some(s => s.recipientId === (recipient?.id as string))) {
+                                        setSelectedIds(prev =>
+                                          prev.filter(
+                                            selectedId => selectedId.recipientId !== (recipient?.id as string)
+                                          )
+                                        );
+                                      } else {
+                                        setSelectedIds(prev => [
+                                          ...prev,
+                                          {
+                                            notificationId: notification.id,
+                                            recipientId: recipient?.id as string
+                                          }
+                                        ]);
+                                      }
+                                    }}
+                                    size='xs'
+                                    mt={4}
+                                  />
 
-                            <Divider />
-                          </Box>
-                        ))}
+                                  <Box style={{ flex: 1, minWidth: 0 }}>
+                                    <Group align='flex-start' justify='space-between' wrap='nowrap'>
+                                      <Box style={{ flex: 1, minWidth: 0 }}>
+                                        <Text
+                                          size='sm'
+                                          fw={!recipient?.clickedAt ? 700 : 500}
+                                          style={{
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 1,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            wordBreak: 'break-word'
+                                          }}
+                                        >
+                                          {notification.title}
+                                        </Text>
+
+                                        <Text
+                                          size='xs'
+                                          c='dimmed'
+                                          style={{
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 1,
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            wordBreak: 'break-word'
+                                          }}
+                                        >
+                                          {notification.message}
+                                        </Text>
+                                      </Box>
+
+                                      <Group gap={4} flex='none'>
+                                        {!recipient?.clickedAt ? (
+                                          <Box
+                                            style={{
+                                              height: 8,
+                                              width: 8,
+                                              borderRadius: '50%',
+                                              backgroundColor: 'var(--mantine-color-blue-6)',
+                                              marginTop: 4
+                                            }}
+                                          />
+                                        ) : (
+                                          <IconCheck size={16} color='var(--mantine-color-gray-6)' />
+                                        )}
+                                      </Group>
+                                    </Group>
+
+                                    <Text size='xs' c='dimmed' mt={4}>
+                                      {formatTimeAgo(recipient?.deliveredAt || notification.createdAt)}
+                                    </Text>
+                                  </Box>
+
+                                  <ActionIcon
+                                    variant='subtle'
+                                    color='gray'
+                                    size='sm'
+                                    loading={deleteMutation.isPending}
+                                    onClick={async e => {
+                                      e.stopPropagation();
+                                      handleDeleteNotifications(notification.id, recipient?.id);
+                                    }}
+                                  >
+                                    <IconTrash size={16} color='red' />
+                                  </ActionIcon>
+                                </Group>
+
+                                <Flex justify='flex-end'>
+                                  <Button
+                                    size='xs'
+                                    onClick={async () => {
+                                      setShowViewDialog({ open: true, notification });
+                                      if (!recipient?.readAt) {
+                                        await mutationUpdateAction.mutateAsync({
+                                          notificationId: notification.id,
+                                          userId,
+                                          action: 'read'
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    Chi tiết
+                                  </Button>
+                                </Flex>
+                              </Box>
+
+                              <Divider />
+                            </Box>
+                          );
+                        })}
                       </Stack>
                     </ScrollAreaAutosize>
                   </>
@@ -437,9 +444,9 @@ function NotificationDialog() {
           </Paper>
         )}
       </Box>
-      <ViewModal
+      <ViewNotificationDetail
         opened={showViewDialog.open}
-        onClose={() => setShowViewDialog({ open: false, notification: {} as NotificationClient })}
+        onClose={() => setShowViewDialog({ open: false, notification: {} as NotificationBase })}
         selectedNotification={showViewDialog.notification}
       />
     </>

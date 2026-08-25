@@ -4,27 +4,46 @@ import { pusherServer } from '~/lib/PusherConfig/server';
 import { Notification } from '~/shared/schema/notification.schema';
 
 export const createNotificationService = async (db: PrismaClient, input: Notification) => {
-  const notification = await db.notification.create({
-    data: {
-      title: input.title,
-      message: input.message,
-      type: input.type,
-      recipient: input.recipient,
-      status: input.status,
-      priority: input.priority,
-      channels: input.channels,
-      createdAt: new Date(),
-      template: input.templateId
-        ? {
-            connect: { id: input.templateId }
+  const notification = await db.$transaction(async tx => {
+    const countUsers =
+      input.recipient === 'all'
+        ? await db.user.count({
+            where: {
+              email: {
+                not: {
+                  contains: '@quickbuy.local'
+                }
+              }
+            }
+          })
+        : undefined;
+
+    return await tx.notification.create({
+      data: {
+        title: input.title,
+        message: input.message,
+        type: input.type,
+        recipient: input.recipient,
+        status: input.status,
+        priority: input.priority,
+        channels: input.channels,
+        createdAt: new Date(),
+        template: input.templateId
+          ? {
+              connect: { id: input.templateId }
+            }
+          : undefined,
+        scheduledAt: input.scheduledAt,
+        tags: input.tags,
+        analytics: {
+          create: {
+            sent: countUsers ?? input.userIds.length ?? 0
           }
-        : undefined,
-      scheduledAt: input.scheduledAt,
-      tags: input.tags,
-      analytics: input.analytics,
-      recipients:
-        input.recipient !== 'all' ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) } : undefined
-    }
+        },
+        recipients:
+          input.recipient !== 'all' ? { create: input.userIds?.map(id => ({ user: { connect: { id } } })) } : undefined
+      }
+    });
   });
   return {
     metaData: {
@@ -65,10 +84,13 @@ export const pushOnlineNotificationService = async (
   const notification = await db.notification.findUnique({
     where: { id: input.notificationId },
     include: {
-      template: {
+      analytics: true,
+      recipients: {
         select: {
-          category: true,
-          variables: true
+          id: true,
+          clickedAt: true,
+          readAt: true,
+          deliveredAt: true
         }
       }
     }
@@ -99,70 +121,64 @@ export const pushOnlineNotificationService = async (
 };
 
 export const syncOfflineNotificationService = async (db: PrismaClient, input: { userId: string }) => {
-  const missed = await db.notification.findMany({
-    where: {
-      recipient: 'all',
-      recipients: { none: { userId: input.userId } }
-    },
-    include: {
-      recipients: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              email: true
-            }
-          }
-        }
-      }
-    }
-  });
+  const { userId } = input;
 
-  await Promise.all(
-    missed.map(n =>
-      db.notificationRecipient.create({
+  return await db.$transaction(async tx => {
+    const [missed, _] = await Promise.all([
+      tx.notification.findMany({
+        where: {
+          recipient: 'all',
+          recipients: { none: { userId } },
+          dismissed: { none: { userId } }
+        },
+        select: {
+          id: true,
+          createdAt: true,
+          analytics: true
+        }
+      }),
+      tx.notificationRecipient.updateMany({
+        where: {
+          userId,
+          deliveredAt: null
+        },
         data: {
-          notificationId: n.id,
-          userId: input.userId,
-          deliveredAt: new Date(),
-          sentAt: missed?.[0]?.createdAt || null
+          deliveredAt: new Date()
         }
       })
-    )
-  );
+    ]);
 
-  return missed;
-};
+    if (!missed || missed.length === 0) {
+      return [];
+    }
 
-export const markAsReadNotificationService = async (
-  db: PrismaClient,
-  input: {
-    userId: string;
-    notificationId: string;
-  }
-) => {
-  return db.notificationRecipient.updateMany({
-    where: {
-      notificationId: input.notificationId,
-      userId: input.userId
-    },
-    data: { readAt: new Date() }
+    await tx.notificationRecipient.createMany({
+      data: missed.map(n => ({
+        notificationId: n.id,
+        userId,
+        deliveredAt: new Date(),
+        sentAt: n.createdAt
+      })),
+      skipDuplicates: true
+    });
+
+    await Promise.all(
+      missed.map(m => {
+        return tx.notificationAnalytics.update({
+          where: { notificationId: m.id },
+          data: {
+            delivered: { increment: 1 }
+          }
+        });
+      })
+    );
+
+    return missed;
   });
 };
 
-export const getNotificationByIdService = async (
-  db: PrismaClient,
-  input: { id: string; include?: Prisma.NotificationInclude }
-) => {
-  const { id, include } = input;
-  return await db.notification.findUnique({ where: { id }, include });
-};
-
-export const getNotificationByUserService = async (
-  db: PrismaClient,
-  input: { userId: string; include?: Prisma.NotificationInclude }
-) => {
-  const { userId, include } = input;
+export const getNotificationByUserWithRelationBaseService = async (db: PrismaClient, input: { userId: string }) => {
+  const { userId } = input;
   const items = await db.notification.findMany({
     where: {
       recipients: {
@@ -172,10 +188,16 @@ export const getNotificationByUserService = async (
       }
     },
     include: {
-      ...(include ?? {}),
+      analytics: true,
       recipients: {
         where: {
           userId
+        },
+        select: {
+          id: true,
+          clickedAt: true,
+          readAt: true,
+          deliveredAt: true
         }
       }
     },
@@ -219,23 +241,59 @@ export const updateNotificationService = async (
 
 export const updateActionUserService = async (
   db: PrismaClient,
-  input: { where: Prisma.NotificationWhereUniqueInput; data: Prisma.NotificationUpdateInput }
+  input: {
+    notificationId: string;
+    userId: string;
+    action: 'sent' | 'delivered' | 'read' | 'clicked';
+  }
 ) => {
-  const { where, data } = input;
+  const { notificationId, userId, action } = input;
 
-  const result = await db.$transaction(async tx => {
-    const oldData = tx.notification.findUnique({ where });
-    const newData = tx.notification.update({
-      where,
-      data
-    });
-    return { oldData, newData };
-  });
+  const [oldData, newData] = await Promise.all([
+    db.notification.findUnique({
+      where: {
+        id: notificationId
+      }
+    }),
+    db.notification.update({
+      where: {
+        id: notificationId
+      },
+      data: {
+        analytics: {
+          update: {
+            data: {
+              [action]: {
+                increment: 1
+              }
+            }
+          }
+        },
+        recipients: {
+          upsert: {
+            where: {
+              notificationId_userId: {
+                notificationId,
+                userId
+              }
+            },
+            create: {
+              userId,
+              [action + 'At']: new Date()
+            },
+            update: {
+              [action + 'At']: new Date()
+            }
+          }
+        }
+      }
+    })
+  ]);
 
   return {
     metaData: {
-      before: result.oldData ?? {},
-      after: result.newData
+      before: oldData ?? {},
+      after: newData
     }
   };
 };
@@ -253,12 +311,32 @@ export const deleteNotificationByIdService = async (db: PrismaClient, input: { i
 export const deleteNotificationRecipientService = async (
   db: PrismaClient,
   input: {
-    where: Prisma.NotificationRecipientWhereInput;
+    notifications: {
+      ids: string[];
+      recipientIds: string[];
+      userId: string;
+    };
   }
 ) => {
-  const { where } = input;
-  const deleted = await db.notificationRecipient.deleteMany({
-    where
+  const {
+    notifications: { ids, recipientIds, userId }
+  } = input;
+
+  const deleted = await db.$transaction(async tx => {
+    const deleted = await tx.notificationRecipient.deleteMany({
+      where: { id: { in: recipientIds } }
+    });
+    if (deleted.count) {
+      await tx.notificationDismissed.createMany({
+        data: ids.map(notificationId => ({
+          dismissedAt: new Date(),
+          userId,
+          notificationId
+        }))
+      });
+    }
+
+    return deleted;
   });
 
   return {
@@ -267,22 +345,4 @@ export const deleteNotificationRecipientService = async (
       after: []
     }
   };
-};
-
-export const getFilterNotificationService = async (
-  db: PrismaClient,
-  input: {
-    where: Prisma.NotificationWhereInput;
-    take?: number;
-    skip?: number;
-    include?: Prisma.NotificationInclude;
-  }
-) => {
-  const { where, skip, take, include } = input;
-  return await db.notification.findMany({
-    where,
-    skip,
-    take,
-    include
-  });
 };

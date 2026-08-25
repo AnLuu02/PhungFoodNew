@@ -8,7 +8,6 @@ import {
   IconEye,
   IconInfoCircle
 } from '@tabler/icons-react';
-import { NotificationClient } from '~/shared/schema/notification.schema';
 
 export const getTypeIcon = (type: string) => {
   switch (type) {
@@ -49,46 +48,6 @@ export const notificationTypeOptions = {
   [NotificationType.SECURITY]: { viName: 'Bảo mật' },
   [NotificationType.SUPPORT]: { viName: 'Hỗ trợ' },
   [NotificationType.REMINDER]: { viName: 'Nhắc nhở' }
-};
-
-//
-export const updateActionClient = async ({
-  mutationUpdateAction,
-  data,
-  userId,
-  action
-}: {
-  mutationUpdateAction: any;
-  data: NotificationClient;
-  userId: string;
-  action: 'sent' | 'delivered' | 'read' | 'clicked';
-}) => {
-  await mutationUpdateAction.mutateAsync({
-    where: { id: data.id },
-    data: {
-      analytics: {
-        ...data.analytics,
-        [action]: (data.analytics?.[action] || 0) + 1
-      },
-      recipients: {
-        upsert: {
-          where: {
-            notificationId_userId: {
-              notificationId: data.id,
-              userId
-            }
-          },
-          create: {
-            user: { connect: { id: userId } },
-            [action + 'At']: new Date()
-          },
-          update: {
-            [action + 'At']: new Date()
-          }
-        }
-      }
-    }
-  });
 };
 
 export function extractVariables(template: string): string[] {

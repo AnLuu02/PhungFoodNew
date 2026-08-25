@@ -27,28 +27,19 @@ export const notificationSchema = z.object({
   recipient: z.nativeEnum(RecipientType),
 
   userIds: z.array(z.string()).optional().default([]),
-  variables: z.object({}).optional().default({}),
+  variables: z.object({}).nullish(),
 
   status: z.nativeEnum(NotificationStatus).default(NotificationStatus.sent),
   priority: z.nativeEnum(NotificationPriority),
   channels: z.array(z.nativeEnum(NotificationChannel)).default([]),
 
-  scheduledAt: z.date().optional(),
+  scheduledAt: z.date().nullish(),
   createdAt: z.date().default(() => new Date()),
 
   template: notificationTemplateSchema.optional(),
   templateId: z.string().optional(),
 
-  tags: z.array(z.string()).default([]),
-
-  analytics: z
-    .object({
-      sent: z.number().default(0),
-      delivered: z.number().default(0),
-      read: z.number().default(0),
-      clicked: z.number().default(0)
-    })
-    .default({ sent: 0, delivered: 0, read: 0, clicked: 0 })
+  tags: z.array(z.string()).default([])
 });
 
 export const notificationRecipientSchema = z.object({

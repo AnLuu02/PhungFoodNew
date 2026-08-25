@@ -687,10 +687,21 @@ model Notification {
   createdAt              DateTime                @default(now())
   scheduledAt            DateTime?
   tags                   String[]
-  analytics              Json
   recipients             NotificationRecipient[]
   template               NotificationTemplate?   @relation(fields: [notificationTemplateId], references: [id])
+  dismissed              NotificationDismissed[]
   notificationTemplateId String?
+  analytics              NotificationAnalytics?
+}
+
+model NotificationAnalytics {
+  id             String       @id @default(cuid())
+  read           Int          @default(0)
+  clicked        Int          @default(0)
+  delivered      Int          @default(0)
+  sent           Int          @default(0)
+  notificationId String       @unique
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
 }
 
 model NotificationRecipient {
@@ -704,6 +715,16 @@ model NotificationRecipient {
   deliveredAt    DateTime?
   clickedAt      DateTime?
   status         NotificationRecipientStatus @default(PENDING)
+
+  @@unique([notificationId, userId])
+}
+
+model NotificationDismissed {
+  id             String        @id @default(cuid())
+  userId         String
+  dismissedAt    DateTime
+  notification   Notification? @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notificationId String?
 
   @@unique([notificationId, userId])
 }

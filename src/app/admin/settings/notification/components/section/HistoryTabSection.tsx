@@ -56,10 +56,10 @@ export const HistoryTabSection = ({
     }
   });
 
-  const handleDeleteNotification = async (ids: string[]) => {
+  const handleDeleteNotification = (ids: string[]) => {
     setLoading(true);
     setSelectedNotifications([]);
-    await mutationDelete.mutateAsync({ ids });
+    mutationDelete.mutate({ ids });
   };
 
   const filterNotifications = useMemo(() => {
