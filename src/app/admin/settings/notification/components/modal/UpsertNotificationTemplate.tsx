@@ -12,11 +12,10 @@ import { TemplateTextarea } from '../TemplateTextarea';
 interface Props {
   opened: boolean;
   onClose: () => void;
-  defaultValues?: Partial<NotificationTemplate>;
+  defaultValues?: Partial<NotificationTemplate> & { templateId?: string };
   mode?: 'create' | 'update';
 }
-
-export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode = 'create' }: Props) => {
+export const UpsertNotificationTemplate = ({ opened, onClose, defaultValues, mode = 'create' }: Props) => {
   const {
     control,
     handleSubmit,
@@ -65,6 +64,7 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
       reset({});
     }
   }, [opened]);
+
   const onSubmit: SubmitHandler<NotificationTemplate> = async formData => {
     try {
       if (mode === 'create') {
@@ -116,6 +116,7 @@ export const NotificationTemplateModal = ({ opened, onClose, defaultValues, mode
           />
 
           <TemplateTextarea name='message' control={control} label='Nội dung' />
+
           <Controller
             name='type'
             control={control}

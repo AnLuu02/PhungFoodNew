@@ -6,6 +6,9 @@ export const metadata: Metadata = {
 };
 
 export default async function NotificationPage() {
-  const [notifications, templates] = await Promise.all([api.Notification.getAll(), api.NotificationTemplate.getAll()]);
+  const [notifications, templates] = await Promise.all([
+    api.Notification.getAll(),
+    api.NotificationTemplate.getTemplatesBase()
+  ]);
   return <NotificationManagement initData={{ notifications, templates }} />;
 }

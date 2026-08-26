@@ -386,8 +386,9 @@ function NotificationDialog() {
                                 </Group>
 
                                 <Flex justify='flex-end'>
-                                  <Button
-                                    size='xs'
+                                  <Text
+                                    size='sm'
+                                    className='cursor-pointer font-medium text-blue-500 transition-all duration-200 hover:scale-105 hover:underline'
                                     onClick={async () => {
                                       setShowViewDialog({ open: true, notification });
                                       if (!recipient?.readAt) {
@@ -400,7 +401,7 @@ function NotificationDialog() {
                                     }}
                                   >
                                     Chi tiết
-                                  </Button>
+                                  </Text>
                                 </Flex>
                               </Box>
 

@@ -85,22 +85,24 @@ export const SendTabSection = ({
                         <Text className='text-sm'>{notification?.message.slice(0, 60)}...</Text>
                       </Box>
                     </Box>
-                    <Box className='flex items-center gap-2'>
-                      {
-                        notificationStatusInfo?.[
-                          notification?.status as 'draft' | 'scheduled' | 'sent' | 'delivered' | 'read' | 'failed'
-                        ]?.icon
-                      }
-                      <Badge variant='outline' className={priority?.color}>
-                        {priority?.viName}
-                      </Badge>
-                    </Box>
-                    <Button
-                      variant='outline'
-                      onClick={() => setShowSendDialog({ open: true, typeAction: 'update', notification })}
-                    >
-                      Gửi lại
-                    </Button>
+                    <Group>
+                      <Box className='flex items-center gap-2'>
+                        {
+                          notificationStatusInfo?.[
+                            notification?.status as 'draft' | 'scheduled' | 'sent' | 'delivered' | 'read' | 'failed'
+                          ]?.icon
+                        }
+                        <Badge variant='outline' className={priority?.color}>
+                          {priority?.viName}
+                        </Badge>
+                      </Box>
+                      <Button
+                        variant='transparent'
+                        onClick={() => setShowSendDialog({ open: true, typeAction: 'update', notification })}
+                      >
+                        Gửi lại
+                      </Button>
+                    </Group>
                   </Paper>
                 );
               })

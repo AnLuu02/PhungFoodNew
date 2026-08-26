@@ -90,7 +90,8 @@ export const notificationRouter = createTRPCRouter({
             id: true,
             clickedAt: true,
             readAt: true,
-            deliveredAt: true
+            deliveredAt: true,
+            sentAt: true
           }
         }
       }

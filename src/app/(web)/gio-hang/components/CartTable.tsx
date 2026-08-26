@@ -22,7 +22,6 @@ export const CartTable = () => {
   const cart = useCartItems();
   const updateCart = useCartStore(s => s.updateCart);
   const removeCart = useCartStore(s => s.removeCart);
-  console.log('re-render');
 
   return (
     <Table className='mb-6'>

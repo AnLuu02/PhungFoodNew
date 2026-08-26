@@ -20,7 +20,7 @@ const showNotification = ({
 }) => {
   notifications.show({
     id,
-    position: pos ?? 'top-right',
+    position: pos ?? 'top-center',
     withCloseButton: true,
     autoClose: 2000,
     title: (

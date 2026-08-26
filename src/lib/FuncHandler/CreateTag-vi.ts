@@ -44,3 +44,31 @@ export const ManageTagVi = async (action: 'upsert' | 'delete' = 'upsert', data: 
     return { success: false, error };
   }
 };
+
+export const SyncFieldFromDb = async (entity: string, fields: string[]) => {
+  const filePath = path.join(process.cwd(), 'src', 'constants', 'fields-db.json');
+
+  try {
+    let currentFields: Record<string, string[]> = {};
+
+    try {
+      const fileContent = await fs.readFile(filePath, 'utf8');
+      currentFields = JSON.parse(fileContent);
+    } catch (e) {
+      currentFields = {};
+    }
+
+    if (!currentFields[entity]) {
+      currentFields[entity] = [];
+    }
+
+    currentFields[entity] = Array.from(new Set([...currentFields[entity], ...fields]));
+
+    await fs.writeFile(filePath, JSON.stringify(currentFields, null, 2), 'utf8');
+
+    return { success: true, count: fields.length };
+  } catch (error) {
+    console.error(`[Error] Sync field from db to json file failed:`, error);
+    return { success: false, error };
+  }
+};

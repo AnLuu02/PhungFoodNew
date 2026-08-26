@@ -11,7 +11,7 @@ import { formatTransDate } from '~/lib/FuncHandler/Format';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { api, RouterOutputs } from '~/trpc/react';
-import { NotificationModal } from '../../settings/notification/components/modal/cretae_update_notification';
+import { UpsertNotificationModal } from '../../settings/notification/components/modal/UpsertNotification';
 import OrderUpsert from './form/OrderUpsert';
 export function CreateOrderButton() {
   const [opened, setOpened] = useState(false);
@@ -211,7 +211,7 @@ export function SendMessageAllUserAdvanced() {
         </Button>
       </Tooltip>
 
-      <NotificationModal opened={opened} onClose={() => setOpened(false)} recipient='all' />
+      <UpsertNotificationModal opened={opened} onClose={() => setOpened(false)} recipient='all' />
     </>
   );
 }
@@ -226,7 +226,7 @@ export function SendMessageOrderButton({ user }: { user: any }) {
         </Button>
       </Tooltip>
 
-      <NotificationModal
+      <UpsertNotificationModal
         opened={opened}
         onClose={() => setOpened(false)}
         recipient='individual'

@@ -90,6 +90,94 @@ export const notificationTemplateRouter = createTRPCRouter({
     return { code: 'OK', message: 'Lấy danh sách template thành công.', data: data || [] };
   }),
 
+  getTemplateWithRelationBase: publicProcedure
+    .input(z.object({ templateId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { templateId } = input;
+      return await ctx.db.notificationTemplate.findUnique({
+        where: {
+          id: templateId
+        },
+        include: {
+          notifications: true
+        }
+      });
+    }),
+
+  getTemplatesBase: publicProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.notificationTemplate.findMany({ orderBy: { createdAt: 'desc' } });
+    if (data.length === 0) {
+      const seedTemplates = [
+        {
+          name: 'system_announcement',
+          title: 'Thông báo hệ thống',
+          message: 'Xin chào {{userName}}, hệ thống vừa được cập nhật với những cải tiến mới. Hãy kiểm tra ngay!',
+          category: 'Hệ thống',
+          type: NotificationType.SYSTEM,
+          variables: ['userName']
+        },
+        {
+          name: 'order_status_update',
+          title: 'Cập nhật trạng thái đơn hàng',
+          message: 'Đơn hàng #{{orderId}} của bạn hiện đang ở trạng thái "{{orderStatus}}".',
+          category: 'Đơn hàng',
+          type: NotificationType.ORDER,
+          variables: ['orderId', 'orderStatus']
+        },
+        {
+          name: 'promotion_offer',
+          title: 'Ưu đãi đặc biệt dành cho bạn 🎁',
+          message: 'Xin chào {{userName}}, bạn nhận được ưu đãi {{discountPercent}}% cho đơn hàng tiếp theo!',
+          category: 'Khuyến mãi',
+          type: NotificationType.PROMOTION,
+          variables: ['userName', 'discountPercent']
+        },
+        {
+          name: 'user_login_detected',
+          title: 'Hoạt động đăng nhập mới',
+          message: 'Chúng tôi phát hiện đăng nhập từ thiết bị {{deviceName}} lúc {{loginTime}}.',
+          category: 'Hoạt động người dùng',
+          variables: ['deviceName', 'loginTime'],
+          type: NotificationType.USER_ACTIVITY
+        },
+        {
+          name: 'password_changed',
+          title: 'Mật khẩu đã được thay đổi',
+          message:
+            'Tài khoản của bạn vừa được thay đổi mật khẩu lúc {{changeTime}}. Nếu không phải bạn, hãy liên hệ hỗ trợ ngay.',
+          category: 'Bảo mật',
+          variables: ['changeTime'],
+          type: NotificationType.SECURITY
+        },
+        {
+          name: 'support_ticket_reply',
+          title: 'Phản hồi từ bộ phận hỗ trợ',
+          message: 'Yêu cầu hỗ trợ #{{ticketId}} của bạn đã được phản hồi. Hãy kiểm tra chi tiết.',
+          category: 'Hỗ trợ',
+          variables: ['ticketId'],
+          type: NotificationType.SUPPORT
+        },
+        {
+          name: 'event_reminder',
+          title: 'Nhắc nhở sự kiện sắp diễn ra',
+          message: 'Sự kiện "{{eventName}}" của bạn sẽ bắt đầu vào {{eventTime}}.',
+          category: 'Nhắc nhở',
+          variables: ['eventName', 'eventTime'],
+          type: NotificationType.REMINDER
+        }
+      ];
+
+      return await ctx.db.$transaction(async tx => {
+        await tx.notificationTemplate.createMany({
+          data: seedTemplates
+        });
+        return tx.notificationTemplate.findMany({ orderBy: { createdAt: 'desc' } });
+      });
+    }
+
+    return data;
+  }),
+
   update: publicProcedure
     .use(activityLogger)
     .input(z.object({ id: z.string(), data: notificationTemplateSchema.partial() }))

@@ -6,16 +6,17 @@ import { IconPlus } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Empty from '~/components/Empty';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotificationTemplateBase } from '~/shared/type-trpc/notification.type-trpc';
 import { api } from '~/trpc/react';
 import { getTypeIcon } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
-import { NotificationTemplateModal } from '../modal/cretae_update_notification_template';
+import { UpsertNotificationTemplate } from '../modal/UpsertNotificationTemplate';
 
 export const TemplatesTabSection = ({
   templates,
   setShowSendDialog
 }: {
-  templates: any[];
+  templates: NotificationTemplateBase[];
   setShowSendDialog: Dispatch<SetStateAction<SendNotificationStateProps>>;
 }) => {
   const [loading, setLoading] = useState(false);
@@ -65,9 +66,9 @@ export const TemplatesTabSection = ({
           </Button>
         </Box>
         <Box>
-          {templates?.length > 0 ? (
-            <Box className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-              {templates.map((template: any) => (
+          {templates.length > 0 ? (
+            <Box className='grid gap-4 md:grid-cols-2'>
+              {templates.map(template => (
                 <Card withBorder key={template.id} className='cursor-pointer transition-shadow hover:shadow-md'>
                   <Box className='pb-3'>
                     <Box className='flex items-center justify-between'>
@@ -89,7 +90,7 @@ export const TemplatesTabSection = ({
                       <Box>
                         <Text className='mb-1 text-xs font-medium'>Biến số:</Text>
                         <Box className='flex flex-wrap gap-1'>
-                          {template.variables.map((variable: any, index: number) => (
+                          {template.variables.map((variable, index: number) => (
                             <Badge key={index} className='text-xs'>
                               {`{${variable}}`}
                             </Badge>
@@ -101,7 +102,11 @@ export const TemplatesTabSection = ({
                       <Button
                         className='w-2/5'
                         onClick={() =>
-                          setShowSendDialog({ open: true, notification: template, typeAction: 'template' })
+                          setShowSendDialog({
+                            open: true,
+                            notification: { ...template, templateId: template.id } as any,
+                            typeAction: 'template'
+                          })
                         }
                       >
                         Sử dụng mẫu
@@ -131,7 +136,7 @@ export const TemplatesTabSection = ({
         </Box>
       </Card>
 
-      <NotificationTemplateModal
+      <UpsertNotificationTemplate
         opened={showTemplateModal.open}
         defaultValues={showTemplateModal.template}
         mode={showTemplateModal.typeAction}

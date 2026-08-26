@@ -90,7 +90,8 @@ export const pushOnlineNotificationService = async (
           id: true,
           clickedAt: true,
           readAt: true,
-          deliveredAt: true
+          deliveredAt: true,
+          sentAt: true
         }
       }
     }
@@ -197,7 +198,8 @@ export const getNotificationByUserWithRelationBaseService = async (db: PrismaCli
           id: true,
           clickedAt: true,
           readAt: true,
-          deliveredAt: true
+          deliveredAt: true,
+          sentAt: true
         }
       }
     },

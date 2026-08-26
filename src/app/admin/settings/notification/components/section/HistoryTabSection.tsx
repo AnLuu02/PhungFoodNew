@@ -21,7 +21,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { NotificationClient } from '~/shared/schema/notification.schema';
+import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
 import { api } from '~/trpc/react';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
@@ -31,8 +31,8 @@ export const HistoryTabSection = ({
   setShowViewDialog,
   setShowSendDialog
 }: {
-  notifications: any[];
-  setShowViewDialog: Dispatch<SetStateAction<{ open: boolean; notification?: NotificationClient }>>;
+  notifications: NotificationBase[];
+  setShowViewDialog: Dispatch<SetStateAction<{ open: boolean; notification?: NotificationBase }>>;
   setShowSendDialog: Dispatch<SetStateAction<SendNotificationStateProps>>;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -160,7 +160,7 @@ export const HistoryTabSection = ({
         <ScrollAreaAutosize mah={1500} scrollbarSize={5}>
           <Box className='space-y-4' pr={'md'}>
             {filterNotifications?.length > 0 ? (
-              filterNotifications.map((notification: any) => {
+              filterNotifications.map(notification => {
                 const priories =
                   notificationPriorityInfo?.[notification?.priority as 'low' | 'medium' | 'high' | 'urgent'];
                 const status =
@@ -182,8 +182,8 @@ export const HistoryTabSection = ({
                           <Box className='flex items-center gap-4 text-xs'>
                             <span className='flex items-center gap-1'>
                               <IconCalendar className='h-3 w-3' />
-                              {notification?.sentAt
-                                ? formatDateViVN(notification?.sentAt)
+                              {notification.recipients?.[0]?.sentAt
+                                ? formatDateViVN(notification.recipients?.[0]?.sentAt)
                                 : notification?.scheduledAt
                                   ? `Scheduled: ${formatDateViVN(notification?.scheduledAt)}`
                                   : formatDateViVN(notification?.createdAt)}
@@ -198,7 +198,7 @@ export const HistoryTabSection = ({
                                 ? 'Tất cả người dùng'
                                 : notification?.recipient === 'individual'
                                   ? notification?.recipients?.length + ' người dùng'
-                                  : `Group: ${notification?.recipientDetails}`}
+                                  : `Nhóm`}
                             </span>
                           </Box>
                         </Box>
@@ -273,15 +273,13 @@ export const HistoryTabSection = ({
                       <Box className='flex gap-2'>
                         <Button
                           leftSection={<IconEye className='mr-1 h-4 w-4' />}
-                          onClick={() => setShowViewDialog({ open: true, notification: notification })}
+                          onClick={() => setShowViewDialog({ open: true, notification })}
                         >
                           Xem
                         </Button>
                         <Button
                           leftSection={<IconEdit className='mr-1 h-4 w-4' />}
-                          onClick={() =>
-                            setShowSendDialog({ open: true, typeAction: 'update', notification: notification })
-                          }
+                          onClick={() => setShowSendDialog({ open: true, typeAction: 'update', notification })}
                         >
                           Chỉnh sửa
                         </Button>

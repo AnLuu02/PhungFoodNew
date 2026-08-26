@@ -1,14 +1,24 @@
 'use client';
 
-import { Box, Stack, Tabs, TabsList, TabsPanel, TabsTab, Text } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { Box, Button, Center, Paper, Stack, Tabs, Text } from '@mantine/core';
+import {
+  IconAnalyze,
+  IconBell,
+  IconBrandZapier,
+  IconHistory,
+  IconSend2,
+  IconSettings,
+  IconTemplate
+} from '@tabler/icons-react';
+import { useCallback, useState } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { NotificationClient } from '~/shared/schema/notification.schema';
-import { GetAllNotification } from '~/shared/type-trpc/notification.type-trpc';
+import {
+  GetAllNotification,
+  NotificationBase,
+  NotificationTemplateBase
+} from '~/shared/type-trpc/notification.type-trpc';
 import { api } from '~/trpc/react';
-import { ResponseTRPC } from '~/types/ResponseFetcher';
-import { NotificationModal } from './components/modal/cretae_update_notification';
+import { UpsertNotificationModal } from './components/modal/UpsertNotification';
 import { ViewNotificationDetail } from './components/modal/ViewNotificationDetail';
 import { AnalyticsTabSection } from './components/section/AnalyticsTabSection';
 import { HistoryTabSection } from './components/section/HistoryTabSection';
@@ -19,31 +29,30 @@ export interface SendNotificationStateProps {
   open: boolean;
   typeAction: 'create' | 'update' | 'template';
   recipient?: 'all' | 'individual' | undefined;
-  notification?: NotificationClient;
+  notification?: NotificationBase & { templateId?: string };
 }
 
 const TABS = {
-  send: { value: 'send', label: 'Gửi' },
-  history: { value: 'history', label: 'Lịch sử' },
-  templates: { value: 'templates', label: 'Mẫu' },
-  analytics: { value: 'analytics', label: 'Phân tích' },
-  settings: { value: 'settings', label: 'Cài đặt' }
+  send: { value: 'send', label: 'Gửi thông báo', icon: IconSend2 },
+  history: { value: 'history', label: 'Lịch sử đã gửi', icon: IconHistory },
+  templates: { value: 'templates', label: 'Mẫu có sẵn', icon: IconTemplate },
+  analytics: { value: 'analytics', label: 'Phân tích hành vi', icon: IconAnalyze },
+  settings: { value: 'settings', label: 'Cài đặt thông báo', icon: IconSettings }
 };
 const DEFAULT_TAB = TABS?.['send']?.value || 'send';
 export default function NotificationManagement({
   initData
 }: {
-  initData: { notifications: GetAllNotification; templates: ResponseTRPC };
+  initData: { notifications: GetAllNotification; templates: NotificationTemplateBase[] };
 }) {
   const { data: notificationData } = api.Notification.getAll.useQuery(undefined, {
     initialData: initData.notifications
   });
-  const { data: notificationTemplateData } = api.NotificationTemplate.getAll.useQuery(undefined, {
+  const { data: notificationTemplateData } = api.NotificationTemplate.getTemplatesBase.useQuery(undefined, {
     initialData: initData.templates
   });
-  const [mounted, setMounted] = useState(false);
   const notifications = notificationData ?? [];
-  const templates = notificationTemplateData.data ?? [];
+  const templates = notificationTemplateData ?? [];
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
   const [showSendDialog, setShowSendDialog] = useState<SendNotificationStateProps>({
     open: false,
@@ -51,61 +60,97 @@ export default function NotificationManagement({
   });
   const [showViewDialog, setShowViewDialog] = useState<{
     open: boolean;
-    notification?: NotificationClient;
+    notification?: NotificationBase;
   }>({
     open: false
   });
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+
+  const renderTabItem = useCallback(
+    (activeTab: string) => {
+      switch (activeTab) {
+        case 'send':
+          return (
+            <SendTabSection changeTab={changeTab} setShowSendDialog={setShowSendDialog} notifications={notifications} />
+          );
+        case 'history':
+          return (
+            <HistoryTabSection
+              setShowViewDialog={setShowViewDialog}
+              notifications={notifications}
+              setShowSendDialog={setShowSendDialog}
+            />
+          );
+        case 'templates':
+          return <TemplatesTabSection templates={templates} setShowSendDialog={setShowSendDialog} />;
+        case 'analytics':
+          return <AnalyticsTabSection />;
+        case 'settings':
+          return <SettingsTabSection />;
+
+        default:
+          return (
+            <SendTabSection changeTab={changeTab} setShowSendDialog={setShowSendDialog} notifications={notifications} />
+          );
+      }
+    },
+    [activeTab]
+  );
 
   return (
-    <Box className='space-y-6' mb={'xl'} pb={'xl'}>
-      <Box className='flex items-center justify-between'>
-        <Stack gap={'xs'}>
-          <Text className='text-3xl font-bold'>Quản lý thông báo</Text>
-          <Text>Gửi và quản lý thông báo cho khách hàng của bạn</Text>
-        </Stack>
-        <Box className='flex gap-2'>
-          {/* <Button
-            leftSection={<IconBell size={20} />}
-            variant='outline'
-            // onClick={() => setShowPreferencesDialog(true)}
-          >
-            Ưu tiên
-          </Button>
-          <Button
-            leftSection={<IconBrandZapier size={20} />}
-            variant='outline'
-            onClick={() => setShowAutoRulesDialog(true)}
-          >
-            Quy tắc tự động
-          </Button> */}
-          {/* {selectedNotifications.length > 0 && (
-            <Button
-              variant='outline'
-              //  onClick={() => setShowBulkDialog(true)}
-            >
-              Hành động hàng loạt ({selectedNotifications.length})
-            </Button>
-          )} */}
-
-          <NotificationModal
-            opened={showSendDialog.open}
-            defaultValues={showSendDialog.notification}
-            mode={showSendDialog.typeAction}
-            recipient={showSendDialog.recipient}
-            onClose={() => setShowSendDialog({ open: false, typeAction: 'create' })}
-          />
+    <>
+      <UpsertNotificationModal
+        opened={showSendDialog.open}
+        defaultValues={showSendDialog.notification}
+        mode={showSendDialog.typeAction}
+        recipient={showSendDialog.recipient}
+        onClose={() => setShowSendDialog({ open: false, typeAction: 'create' })}
+      />
+      <ViewNotificationDetail
+        opened={showViewDialog.open}
+        onClose={() => setShowViewDialog({ open: false })}
+        selectedNotification={showViewDialog.notification as any}
+        role='admin'
+      />
+      <Stack>
+        <Box className='space-y-6'>
+          <Box className='flex items-center justify-between'>
+            <Stack gap={'xs'}>
+              <Text className='text-3xl font-bold'>Quản lý thông báo</Text>
+              <Text size='sm' c={'dimmed'}>
+                Gửi và quản lý thông báo cho khách hàng của bạn
+              </Text>
+            </Stack>
+            <Box className='flex gap-2'>
+              <Button
+                leftSection={<IconBell size={20} />}
+                variant='outline'
+                // onClick={() => setShowPreferencesDialog(true)}
+              >
+                Ưu tiên
+              </Button>
+              <Button
+                leftSection={<IconBrandZapier size={20} />}
+                variant='outline'
+                // onClick={() => setShowAutoRulesDialog(true)}
+              >
+                Quy tắc tự động
+              </Button>
+              {/* {selectedNotifications.length > 0 && ( */}
+              <Button
+                variant='outline'
+                //  onClick={() => setShowBulkDialog(true)}
+              >
+                Hành động hàng loạt (10)
+              </Button>
+              {/* )}  */}
+            </Box>
+          </Box>
         </Box>
-      </Box>
 
-      {!mounted ? (
-        <LoadingSpiner />
-      ) : (
         <Tabs
           value={activeTab}
           onChange={value => changeTab(value!)}
+          orientation='vertical'
           variant='pills'
           styles={{
             tab: {
@@ -117,46 +162,34 @@ export default function NotificationManagement({
             tab: `!border-[#e5e5e5] !font-bold hover:bg-mainColor/10 data-[active=true]:!border-mainColor data-[active=true]:!bg-mainColor data-[active=true]:!text-white dark:!border-dark-dimmed dark:text-dark-text`
           }}
         >
-          <TabsList className='grid w-full grid-cols-5' mb={'md'}>
-            {Object.values(TABS).map(({ value, label }) => (
-              <TabsTab key={value} value={value}>
-                {label}
-              </TabsTab>
-            ))}
-          </TabsList>
+          <Paper withBorder shadow='md' p={'sm'} mr={'md'} className='sticky top-[80px] h-fit'>
+            <Text size='md' fw={700} mb={'sm'}>
+              Danh mục cài đặt
+            </Text>
+            <Tabs.List w={230}>
+              <Stack gap={'md'}>
+                {Object.values(TABS).map(tab => {
+                  const Icon = tab.icon;
+                  return (
+                    <Tabs.Tab key={tab.value} m={0} value={tab.value} leftSection={<Icon size={16} />}>
+                      {tab.label}
+                    </Tabs.Tab>
+                  );
+                })}
+              </Stack>
+              <Center mt={'md'}>
+                <Text size='xs' c={'dimmed'}>
+                  © 2025 PhungFood. All rights reserved.
+                </Text>
+              </Center>
+            </Tabs.List>
+          </Paper>
 
-          <TabsPanel value='send' className='space-y-6'>
-            <SendTabSection changeTab={changeTab} setShowSendDialog={setShowSendDialog} notifications={notifications} />
-          </TabsPanel>
-
-          <TabsPanel value='history' className='space-y-6'>
-            <HistoryTabSection
-              setShowViewDialog={setShowViewDialog}
-              notifications={notifications}
-              setShowSendDialog={setShowSendDialog}
-            />
-          </TabsPanel>
-
-          <TabsPanel value='templates' className='space-y-6'>
-            <TemplatesTabSection templates={templates} setShowSendDialog={setShowSendDialog} />
-          </TabsPanel>
-
-          <TabsPanel value='analytics' className='space-y-6'>
-            <AnalyticsTabSection />
-          </TabsPanel>
-
-          <TabsPanel value='settings' className='space-y-6'>
-            <SettingsTabSection />
-          </TabsPanel>
-
-          <ViewNotificationDetail
-            opened={showViewDialog.open}
-            onClose={() => setShowViewDialog({ open: false })}
-            selectedNotification={showViewDialog.notification as any}
-            role='admin'
-          />
+          <Tabs.Panel value={activeTab} className='h-fit'>
+            <Stack>{renderTabItem(activeTab)}</Stack>
+          </Tabs.Panel>
         </Tabs>
-      )}
-    </Box>
+      </Stack>
+    </>
   );
 }
