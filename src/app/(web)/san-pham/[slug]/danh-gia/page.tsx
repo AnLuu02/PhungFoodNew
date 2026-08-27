@@ -73,15 +73,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           mt={{ base: 'md', sm: 'md', md: 0, lg: 0 }}
         >
           <Comments productId={product?.id} max_height_scroll={500} />
-
-          {/* <>
-            <ScrollAreaAutosize mah={500} scrollbarSize={5}>
-              <Box pr={'xs'}>
-                <CommentsList productId={product?.id} />
-              </Box>
-            </ScrollAreaAutosize>
-            <CommentsForm productId={product?.id} />
-          </> */}
         </GridCol>
       </Grid>
     </Box>

@@ -1,77 +1,58 @@
 'use client';
 
-import { Box, Button, Group, Paper, Stack, Text } from '@mantine/core';
-import { IconHeadphones, IconHome, IconReload } from '@tabler/icons-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { Button, Center, Image, Stack, Text, Title } from '@mantine/core';
+import { IconArrowLeftToArc, IconRefresh } from '@tabler/icons-react';
 
-interface ErrorProps {
-  error: Error & { digest?: string };
-  reset: () => void;
-}
-
-export default function Error({ error, reset }: ErrorProps) {
-  const router = useRouter();
-
-  useEffect(() => {
-    console.error('Error:', error);
-  }, [error]);
-
+export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <main className='flex min-h-screen items-center justify-center px-4'>
-      <div className='max-w-lg text-center'>
-        <div className='relative'>
-          <Group gap={2} justify='center' align='center'>
-            <Box className='animate-shake text-8xl font-bold text-red-500 md:text-9xl'>E</Box>
-            <Box className='animate-shake text-8xl font-bold text-red-500 [animation-delay:0.25s] md:text-9xl'>r</Box>
-            <Box className='animate-shake text-8xl font-bold text-red-500 [animation-delay:0.5s] md:text-9xl'>r</Box>
-            <Box className='animate-shake text-8xl font-bold text-red-500 [animation-delay:0.75s] md:text-9xl'>o</Box>
-            <Box className='animate-shake text-8xl font-bold text-red-500 [animation-delay:1s] md:text-9xl'>r</Box>
-          </Group>
-        </div>
+    <Center className='min-h-[calc(100dvh-var(--header-height,0px))] w-full bg-white px-5 py-10'>
+      <Stack align='center' gap={0} className='w-full max-w-5xl text-center'>
+        <Image
+          src='/images/png/500-illustration.png'
+          alt='500 - Lỗi máy chủ nội bộ'
+          fit='contain'
+          loading='eager'
+          fetchPriority='high'
+          className='w-full max-w-[720px] sm:max-w-[760px] lg:max-w-[820px]'
+        />
 
-        <Stack gap='xs'>
-          <h3 className='text-foreground text-balance text-3xl font-bold'>Something Went Wrong</h3>
+        <Title
+          order={1}
+          className='mt-2 font-quicksand text-3xl font-bold tracking-tight text-[#353268] sm:text-4xl md:text-[42px]'
+        >
+          Đã có lỗi xảy ra...
+        </Title>
 
-          <Text className='text-lg text-gray-600'>Sorry, an unexpected error occurred. We're working to fix it.</Text>
-        </Stack>
+        <Text className='mt-4 max-w-[620px] px-2 text-sm leading-7 text-[#56536f] sm:text-base sm:leading-8'>
+          Chúng tôi đang gặp sự cố máy chủ nội bộ.
+          <br className='hidden sm:block' />
+          Vui lòng thử lại sau hoặc quay về trang chủ.
+        </Text>
 
-        <Paper withBorder className='bg-gray-50 p-4'>
-          <Text className='text-sm font-medium text-gray-700'>Error Message:</Text>
-          <Text className='mt-1 truncate text-sm text-red-600'>{error?.message || 'Unknown error occurred'}</Text>
-        </Paper>
-
-        <Group justify='center' gap='md' className='pt-4' wrap='nowrap'>
-          <Button variant='danger' size='md' onClick={reset} leftSection={<IconReload size={20} />}>
-            Try Again
+        <div className='mt-8 flex flex-col items-center gap-3 sm:flex-row'>
+          <Button
+            size='lg'
+            radius='xl'
+            leftSection={<IconRefresh size={20} stroke={2} />}
+            onClick={() => reset()}
+            className='h-14 min-w-[190px] border-0 bg-[#19b5d1] px-8 font-quicksand text-base font-bold text-white shadow-[0_12px_30px_rgba(25,181,209,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#13a8c3] hover:shadow-[0_16px_35px_rgba(25,181,209,0.38)] active:translate-y-0 sm:min-w-[210px]'
+          >
+            Thử lại
           </Button>
 
-          <Link href={'/'}>
-            <Button size='md' variant='outline' leftSection={<IconHome size={20} />}>
-              Back to Home
-            </Button>
-          </Link>
-        </Group>
-
-        <div className='mt-8 border-t border-gray-200 pt-6'>
-          <Stack gap='md'>
-            <Button
-              component='a'
-              href='mailto:anluu099@gmail.com'
-              variant='subtle'
-              leftSection={<IconHeadphones size={20} />}
-              className='text-orange-600 hover:bg-orange-50 hover:text-orange-700'
-            >
-              Contact Support
-            </Button>
-
-            <Text size='sm' c='dimmed'>
-              Need help? Try refreshing the page or return to the homepage
-            </Text>
-          </Stack>
+          <Button
+            component='a'
+            href='/'
+            size='lg'
+            radius='xl'
+            variant='subtle'
+            leftSection={<IconArrowLeftToArc size={20} stroke={2} />}
+            className='h-14 min-w-[190px] px-8 font-quicksand text-base font-semibold text-[#353268] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#353268]/5 active:translate-y-0 sm:min-w-[210px]'
+          >
+            Quay lại trang chủ
+          </Button>
         </div>
-      </div>
-    </main>
+      </Stack>
+    </Center>
   );
 }

@@ -1,7 +1,3 @@
-const withBundleAnalyzer = (await import('@next/bundle-analyzer')).default({
-  enabled: process.env.ANALYZE === 'true'
-});
-
 await import('./src/env.js');
 
 /** @type {import("next").NextConfig} */
@@ -45,4 +41,4 @@ const config = {
   }
 };
 
-export default withBundleAnalyzer(config);
+export default config;

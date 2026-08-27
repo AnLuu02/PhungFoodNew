@@ -20,7 +20,11 @@ import { NotificationType } from '@prisma/client';
 import { IconArrowUpRight, IconCheck, IconMail, IconSend, IconTag, IconUsers } from '@tabler/icons-react';
 import { useState } from 'react';
 import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
-import { notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
+import {
+  notificationPriorityInfo,
+  notificationStatusInfo,
+  notificationTypeOptions
+} from '../../app/admin/settings/notification/helpers';
 
 interface ViewNotificationDetailProps {
   opened: boolean;
@@ -63,7 +67,6 @@ export const ViewNotificationDetail = ({
     >
       {opened && selectedNotification ? (
         <Stack gap='md' className='pt-2'>
-          {/* Thông tin chính */}
           <Card padding='lg' radius='md' withBorder className='shadow-sm'>
             <Stack gap='md'>
               <Box>
@@ -128,7 +131,6 @@ export const ViewNotificationDetail = ({
             </Stack>
           </Card>
 
-          {/* Thông tin admin chi tiết */}
           {isAdmin && (
             <Card padding='lg' radius='md' withBorder className='shadow-sm'>
               <Stack gap='md'>
@@ -169,7 +171,6 @@ export const ViewNotificationDetail = ({
                   </Box>
                 </SimpleGrid>
 
-                {/* Phân tích nếu đã gửi */}
                 {selectedNotification.status === 'sent' && (
                   <Box>
                     <Text fw={600} size='sm' className='mb-2 text-gray-500'>
@@ -200,7 +201,6 @@ export const ViewNotificationDetail = ({
                   </Box>
                 )}
 
-                {/* Tags */}
                 {selectedNotification.tags?.length > 0 && (
                   <Flex align='center' gap='xs'>
                     <IconTag size={16} className='text-gray-500' />
@@ -220,7 +220,6 @@ export const ViewNotificationDetail = ({
             </Card>
           )}
 
-          {/* Danh sách người dùng chi tiết */}
           {isAdmin && viewDetail && (
             <Card padding='lg' radius='md' withBorder className='shadow-sm'>
               <Stack gap='md'>

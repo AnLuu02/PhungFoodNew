@@ -2,7 +2,7 @@
 import { Box, Grid, Spoiler, Stack, Tabs, Title } from '@mantine/core';
 import { Suspense, useState } from 'react';
 import Comments from '~/components/Comments/Comments';
-import { AppSkeleton } from '~/components/Skeleton/AppSkeleton';
+import { AppSkeleton } from '~/components/Loading/AppSkeleton';
 import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
 import GuideOrder from '../GuideOrder';
 import RatingStatistics from './RatingStatistics';

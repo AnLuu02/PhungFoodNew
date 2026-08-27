@@ -12,9 +12,9 @@ import {
   getProductsOnlyService,
   upsertProductToCloudinaryService
 } from '~/server/services/product.service';
-import { TUserRole } from '~/shared/constants/user.constants';
 import { productFilterSchema } from '~/shared/schema/product.filter.schema';
 import { productFromDbSchema } from '~/shared/schema/product.schema';
+import { TUserRole } from '~/shared/type-trpc/user.type-trpc';
 
 export const productRouter = createTRPCRouter({
   find: publicProcedure

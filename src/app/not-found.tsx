@@ -1,53 +1,52 @@
-import { Box, Button, Group } from '@mantine/core';
-import { IconArrowLeft } from '@tabler/icons-react';
+import { Button, Center, Image, Stack, Text, Title } from '@mantine/core';
+import { IconArrowLeftToArc } from '@tabler/icons-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const dynamic = 'force-static';
 
-export default function NotFound() {
+export const metadata: Metadata = {
+  title: 'Không tìm thấy trang',
+  description: 'Trang bạn đang tìm kiếm không tồn tại hoặc đã bị di chuyển.'
+};
+
+export default function NotFoundPage() {
   return (
-    <main className='flex min-h-screen items-center justify-center px-4'>
-      <Box className='w-full max-w-2xl space-y-8 text-center'>
-        <Box className='space-y-4'>
-          <Group gap={2} justify='center' align='center'>
-            <Box className='animate-shake text-9xl font-bold text-mainColor opacity-30'>4</Box>
-            <Box className='animate-shake text-9xl font-bold text-mainColor opacity-30 [animation-delay:0.25s]'>0</Box>
-            <Box className='animate-shake text-9xl font-bold text-mainColor opacity-30 [animation-delay:0.5s]'>4</Box>
-          </Group>
-          <h1 className='text-foreground text-balance text-5xl font-bold md:text-6xl'>Page Not Found</h1>
-          <p className='mx-auto max-w-md text-xl leading-relaxed'>
-            Sorry, we couldn't find the page you're looking for. It might have been moved or deleted.
-          </p>
-        </Box>
+    <Center className='min-h-[calc(100dvh-var(--header-height,0px))] w-full bg-white px-5 py-10'>
+      <Stack align='center' gap={0} className='w-full max-w-5xl text-center'>
+        <Image
+          src='/images/jpg/404-illustration.jpg'
+          alt='404 - Không tìm thấy trang'
+          fit='contain'
+          loading='eager'
+          fetchPriority='high'
+          className='w-full max-w-[720px]'
+        />
 
-        <Box className='flex justify-center gap-2 py-4 sm:py-8'>
-          <Box className='h-2 w-2 rounded-full bg-mainColor opacity-60'></Box>
-          <Box className='h-2 w-2 rounded-full bg-mainColor opacity-40'></Box>
-          <Box className='h-2 w-2 rounded-full bg-mainColor opacity-20'></Box>
-        </Box>
+        <Title
+          order={1}
+          className='font-quicksand text-3xl font-bold tracking-tight text-[#353268] sm:text-4xl md:text-[42px]'
+        >
+          Rất tiếc...
+        </Title>
 
-        <Box className='flex flex-col justify-center gap-4 sm:flex-row sm:pt-4'>
-          <Link href='/'>
-            <Button leftSection={<IconArrowLeft className='h-5 w-5' />} size='lg'>
-              Back to Home
-            </Button>
-          </Link>
-          <Link href='/lien-he'>
-            <Button variant='transparent' leftSection={<IconArrowLeft className='h-5 w-5' />} size='lg'>
-              Contact Support
-            </Button>
-          </Link>
-        </Box>
+        <Text className='mt-4 max-w-[620px] px-2 text-sm leading-7 text-[#56536f] sm:text-base sm:leading-8'>
+          Trang bạn đang tìm kiếm không tồn tại hoặc có thể đã bị di chuyển.
+          <br className='hidden sm:block' />
+          Vui lòng kiểm tra lại đường dẫn hoặc quay về trang chủ.
+        </Text>
 
-        <Box className='border-border border-t sm:pt-8'>
-          <p className='text-sm'>
-            Need help? Try searching or{' '}
-            <Link href='/' className='font-semibold text-mainColor hover:underline'>
-              return to the homepage
-            </Link>
-          </p>
-        </Box>
-      </Box>
-    </main>
+        <Button
+          component={Link}
+          href='/'
+          size='lg'
+          radius='xl'
+          leftSection={<IconArrowLeftToArc size={20} stroke={2} />}
+          className='mt-8 h-14 min-w-[190px] border-0 bg-[#19b5d1] px-8 font-quicksand text-base font-bold text-white shadow-[0_12px_30px_rgba(25,181,209,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#13a8c3] hover:shadow-[0_16px_35px_rgba(25,181,209,0.38)] active:translate-y-0 sm:min-w-[210px]'
+        >
+          Quay lại trang chủ
+        </Button>
+      </Stack>
+    </Center>
   );
 }

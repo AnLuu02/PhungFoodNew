@@ -4,7 +4,7 @@ import { Box, Divider, Flex, Paper, Stack, Tabs, Text, ThemeIcon } from '@mantin
 import { IconChartBar, IconChevronRight, IconGift, IconShoppingCart, IconUser } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
-import { AppSkeleton } from '~/components/Skeleton/AppSkeleton';
+import { AppSkeleton } from '~/components/Loading/AppSkeleton';
 import { api } from '~/trpc/react';
 import { OrderList } from './OrderList';
 import { Promotions } from './Promotion';

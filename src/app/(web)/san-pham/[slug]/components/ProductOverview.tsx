@@ -110,7 +110,6 @@ export const ProductOverview = ({ product }: { product: NonNullable<ProductBase>
               Đã bán: <b className='text-red-500'>{product?.soldQuantity || 0}</b> sản phẩm
             </Text>
           </Stack>
-          {/* tag */}
           <ShareSocials data={product} type='detail' />
           <Group mt={{ base: 20, sm: 'xs', md: 'xs', lg: 'xl' }} grow>
             <Stack align='center' gap={5}>

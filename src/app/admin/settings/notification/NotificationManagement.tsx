@@ -18,8 +18,8 @@ import {
   NotificationTemplateBase
 } from '~/shared/type-trpc/notification.type-trpc';
 import { api } from '~/trpc/react';
+import { ViewNotificationDetail } from '../../../../components/Modals/ViewNotificationDetail';
 import { UpsertNotificationModal } from './components/modal/UpsertNotification';
-import { ViewNotificationDetail } from './components/modal/ViewNotificationDetail';
 import { AnalyticsTabSection } from './components/section/AnalyticsTabSection';
 import { HistoryTabSection } from './components/section/HistoryTabSection';
 import { SendTabSection } from './components/section/SendTabSection';

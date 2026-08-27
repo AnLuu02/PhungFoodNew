@@ -1,4 +1,10 @@
-import { UserLevel } from '@prisma/client';
+export const UserLevel = {
+  BRONZE: 'BRONZE',
+  SILVER: 'SILVER',
+  GOLD: 'GOLD',
+  PLATINUM: 'PLATINUM',
+  DIAMOND: 'DIAMOND'
+} as const;
 
 export const UserRole = {
   SUPER_ADMIN: 'SUPER_ADMIN',
@@ -8,8 +14,6 @@ export const UserRole = {
 } as const;
 
 export const ADMIN_ROLES = ['SUPER_ADMIN', 'ADMIN', 'STAFF'] as const;
-
-export type TUserRole = (typeof UserRole)[keyof typeof UserRole];
 
 export const INFO_LEVEL_USER = {
   [UserLevel.BRONZE]: {

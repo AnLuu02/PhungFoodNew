@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
-import { AppSkeleton } from '~/components/Skeleton/AppSkeleton';
+import { AppSkeleton } from '~/components/Loading/AppSkeleton';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { CategoryWithRelationBasic } from '~/shared/type-trpc/category.type-trpc';

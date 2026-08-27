@@ -17,7 +17,7 @@ import {
 import { IconBell, IconCheck, IconInfoCircle, IconTrash, IconTrashX, IconX } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { ViewNotificationDetail } from '~/app/admin/settings/notification/components/modal/ViewNotificationDetail';
+import { ViewNotificationDetail } from '~/components/Modals/ViewNotificationDetail';
 import { formatTimeAgo } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { pusherClient } from '~/lib/PusherConfig/client';

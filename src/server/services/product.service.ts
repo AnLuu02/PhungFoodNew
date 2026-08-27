@@ -6,10 +6,11 @@ import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
-import { TUserRole, UserRole } from '~/shared/constants/user.constants';
+import { UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { FilterProductOptions } from '~/shared/schema/product.filter.schema';
 import { ProductFromDb } from '~/shared/schema/product.schema';
+import { TUserRole } from '~/shared/type-trpc/user.type-trpc';
 
 const BASE_SELECT = {
   id: true,

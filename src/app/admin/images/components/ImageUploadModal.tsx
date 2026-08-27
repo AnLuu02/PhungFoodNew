@@ -122,14 +122,6 @@ export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
               />
             </GridCol>
             <GridCol span={5}>
-              {/* <Dropzone
-                onDrop={files => formFields.setValue('urlFile', files[0] as File)}
-                onReject={() => NotifyError('File không hợp lệ')}
-                maxFiles={1}
-                accept={['image/*']}
-                disabled={isUploading}
-              >
-              </Dropzone> */}
               <ThumbnailUpsert nameField='' size={'100%'} />
             </GridCol>
           </Grid>

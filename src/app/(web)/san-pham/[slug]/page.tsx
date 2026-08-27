@@ -2,7 +2,7 @@ import { Grid, GridCol, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache, Suspense } from 'react';
-import { AppSkeleton } from '~/components/Skeleton/AppSkeleton';
+import { AppSkeleton } from '~/components/Loading/AppSkeleton';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { db } from '~/server/db';
 import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
