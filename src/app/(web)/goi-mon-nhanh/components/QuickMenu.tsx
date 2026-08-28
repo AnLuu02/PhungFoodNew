@@ -1,34 +1,51 @@
 'use client';
 
-import { Box, Button, Divider, Flex, Group, Menu, Paper, Stack, Text, TextInput } from '@mantine/core';
-import { useDebouncedValue, useInViewport, useMediaQuery } from '@mantine/hooks';
+import { Box, Button, Divider, Flex, Group, Menu, Paper, Stack, Text } from '@mantine/core';
+import { useInViewport, useMediaQuery } from '@mantine/hooks';
 import { IconAlertCircle, IconChevronDown, IconSearch } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo } from 'react';
 import Empty from '~/components/Empty';
+import { SearchInput } from '~/components/Search/SearchInput';
 import { breakpoints } from '~/constants';
 import { CategoryBasic } from '~/shared/type-trpc/category.type-trpc';
+import { FindInfiniteProduct } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
 import { QuickMenuItem } from './QuickMenuItem';
 import { QuickMenuItemSkeleton } from './QuickMenuItemSkeleton';
 
 const LIMIT_VISIBLE_CATEGORY = 2;
-export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: CategoryBasic[]; LIMIT_DATA: number }) => {
+export const QuickMenu = ({
+  categories,
+  LIMIT_DATA,
+  initData
+}: {
+  categories: CategoryBasic[];
+  LIMIT_DATA: number;
+  initData: FindInfiniteProduct;
+}) => {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const utils = api.useUtils();
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const params = new URLSearchParams(searchParams);
   const { ref, inViewport } = useInViewport();
 
-  const [keyword, setKeyword] = useState('');
-
-  const [searchDebouceValue] = useDebouncedValue(keyword, 500);
   const currentCategory = searchParams.get('danh-muc');
   const searchQuery = searchParams.get('s');
-  const visibleCategories = categories?.slice(0, isMobile ? 1 : LIMIT_VISIBLE_CATEGORY) || [];
-  const moreCategories = categories?.slice(isMobile ? 1 : LIMIT_VISIBLE_CATEGORY) || [];
+
+  const limit = isMobile ? 1 : LIMIT_VISIBLE_CATEGORY;
+
+  const [visibleCategories, moreCategories] = (categories || []).reduce(
+    (result: [CategoryBasic[], CategoryBasic[]], category, index) => {
+      if (index < limit) {
+        result[0].push(category);
+      } else {
+        result[1].push(category);
+      }
+      return result;
+    },
+    [[], []]
+  );
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, error } =
     api.Product.findInfiniteProduct.useInfiniteQuery(
@@ -40,15 +57,22 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: CategoryBasi
         }
       },
       {
+        initialData: !searchQuery
+          ? {
+              pages: [
+                {
+                  items: [...initData.items],
+                  nextCursor: initData.nextCursor
+                }
+              ],
+              pageParams: [undefined]
+            }
+          : undefined,
+
         getNextPageParam: lastPage => lastPage.nextCursor,
         staleTime: 1000 * 60 * 5
       }
     );
-
-  useEffect(() => {
-    searchDebouceValue ? params.set('s', searchDebouceValue.toString()) : params.delete('s');
-    router.push(`${window.location.pathname}?${params}`, { scroll: false });
-  }, [searchDebouceValue]);
 
   useEffect(() => {
     if (inViewport && hasNextPage && !isFetchingNextPage) {
@@ -219,9 +243,7 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: CategoryBasi
                 </Menu>
               )}
             </Flex>
-            <TextInput
-              value={keyword}
-              onChange={event => setKeyword(event.currentTarget.value)}
+            <SearchInput
               leftSection={<IconSearch size={18} />}
               placeholder='Tìm món đang hiển thị...'
               size='md'
@@ -270,13 +292,13 @@ export const QuickMenu = ({ categories, LIMIT_DATA }: { categories: CategoryBasi
               hasButton={false}
               size='md'
               title='Không tìm thấy món phù hợp'
-              content={keyword ? 'Thử nhập từ khóa khác hoặc đổi danh mục món.' : 'Vui lòng chọn danh mục khác.'}
+              content={searchQuery ? 'Thử nhập từ khóa khác hoặc đổi danh mục món.' : 'Vui lòng chọn danh mục khác.'}
             />
           )}
         </Stack>
       </Paper>
 
-      {hasNextPage && !keyword.trim() && (
+      {hasNextPage && !searchQuery?.trim() && (
         <Stack ref={ref} gap='sm'>
           {Array.from({ length: 4 }).map((_, index) => (
             <QuickMenuItemSkeleton key={index} />

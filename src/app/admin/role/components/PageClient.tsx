@@ -112,7 +112,7 @@ export default function RoleClient() {
 
       <Paper withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
-          <SearchInput width={500} />
+          <SearchInput w={500} />
           {activeTab === 'role' ? (
             <>
               <CreateManyRoleButton />

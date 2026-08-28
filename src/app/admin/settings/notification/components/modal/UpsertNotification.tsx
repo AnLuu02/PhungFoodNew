@@ -179,8 +179,6 @@ export const UpsertNotificationModal = ({
     }
   };
 
-  console.log(watch());
-
   return (
     <Modal
       opened={opened}

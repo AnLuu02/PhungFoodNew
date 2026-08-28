@@ -132,7 +132,7 @@ export default function CategoryClientManagementPage() {
               </Tabs.Tab>
             </Group>
             <Group>
-              <SearchInput width={300} />
+              <SearchInput w={300} />
 
               {activeTab === 'category' ? (
                 <CreateCategoryButton />

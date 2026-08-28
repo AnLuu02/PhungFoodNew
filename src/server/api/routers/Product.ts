@@ -81,8 +81,7 @@ export const productRouter = createTRPCRouter({
             search: z.string().optional(),
             'danh-muc': z.string().nullish()
           })
-          .optional(),
-        include: z.custom<Prisma.ProductInclude>().optional()
+          .optional()
       })
     )
     .query(async ({ ctx, input }) => await findInfiniteProductService(ctx.db, input))

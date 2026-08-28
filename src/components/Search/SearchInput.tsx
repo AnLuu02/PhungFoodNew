@@ -1,11 +1,11 @@
 'use client';
-import { Box, TextInput } from '@mantine/core';
+import { Box, TextInput, TextInputProps } from '@mantine/core';
 import { useDebouncedCallback, useWindowEvent } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
-export function SearchInput({ width }: { width?: string | number | undefined }) {
+export function SearchInput(props: TextInputProps) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -39,13 +39,9 @@ export function SearchInput({ width }: { width?: string | number | undefined }) 
 
   return (
     <TextInput
-      ref={searchInputRef}
       placeholder='Tìm kiếm'
-      defaultValue={searchParams.get('s') || ''}
-      onChange={event => handleSearch(event.currentTarget.value)}
       leftSection={<IconSearch size={16} className='text-gray-300 dark:text-dark-text' />}
       rightSectionWidth={40}
-      w={width}
       rightSection={
         <Box
           style={{
@@ -62,6 +58,10 @@ export function SearchInput({ width }: { width?: string | number | undefined }) 
           /
         </Box>
       }
+      {...props}
+      ref={searchInputRef}
+      defaultValue={searchParams.get('s') || ''}
+      onChange={event => handleSearch(event.currentTarget.value)}
     />
   );
 }

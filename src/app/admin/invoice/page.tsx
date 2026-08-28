@@ -42,7 +42,7 @@ export default async function InvoiceManagementPage({
           </Box>
           <Group>
             <PageSizeSelector />
-            <SearchInput width={300} />
+            <SearchInput w={300} />
             <CreateInvoiceButton />
           </Group>
         </Flex>

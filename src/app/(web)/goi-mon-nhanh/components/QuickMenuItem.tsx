@@ -13,12 +13,14 @@ import { useCartStore } from '~/stores/cart.store';
 
 export const QuickMenuItem = ({ product, index }: { product: ProductBase; index: number }) => {
   const [quantity, setQuantity] = useState<number | string>(1);
-  const updateCart = useCartStore(s => s.updateCart);
+  const addCart = useCartStore(s => s.addCart);
 
   const price = Number(product?.price || 0);
   const discount = Number(product?.discount || 0);
   const finalPrice = discount > 0 ? price - discount : price;
 
+  const thumbnail =
+    getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/food-placeholder.jpg';
   return (
     <Paper
       p='sm'
@@ -30,10 +32,7 @@ export const QuickMenuItem = ({ product, index }: { product: ProductBase; index:
       <Flex gap='md' align='center' direction={{ base: 'column', sm: 'row' }}>
         <Box className='relative h-[130px] w-full shrink-0 overflow-hidden rounded-2xl sm:h-[92px] sm:w-[112px]'>
           <Image
-            src={
-              getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) ||
-              '/images/jpg/food-placeholder.jpg'
-            }
+            src={thumbnail}
             alt={product?.name || 'Món ăn'}
             className='h-full w-full object-cover transition duration-300 group-hover:scale-105'
           />
@@ -98,7 +97,19 @@ export const QuickMenuItem = ({ product, index }: { product: ProductBase; index:
             <Button
               size='sm'
               leftSection={<IconPlus size={16} />}
-              onClick={() => updateCart({ productId: product.id, quantity: Number(quantity || 1) })}
+              onClick={() =>
+                addCart({
+                  product: {
+                    id: product.id,
+                    name: product.name,
+                    discount: product?.discount ?? 0,
+                    price: product?.price ?? 0,
+                    thumbnail
+                  },
+                  note: undefined,
+                  quantity: Number(quantity || 1)
+                })
+              }
               className='bg-mainColor text-white hover:bg-mainColor'
             >
               Thêm
@@ -111,7 +122,19 @@ export const QuickMenuItem = ({ product, index }: { product: ProductBase; index:
             size='xs'
             variant='subtle'
             leftSection={<IconShoppingCartPlus size={15} />}
-            onClick={() => updateCart({ productId: product.id, quantity: 1 })}
+            onClick={() =>
+              addCart({
+                product: {
+                  id: product.id,
+                  name: product.name,
+                  discount: product?.discount ?? 0,
+                  price: product?.price ?? 0,
+                  thumbnail
+                },
+                note: undefined,
+                quantity: 1
+              })
+            }
             className='text-mainColor hover:bg-mainColor/10'
           >
             Thêm nhanh 1 phần

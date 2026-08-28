@@ -114,7 +114,7 @@ export default function TableContact() {
       </SimpleGrid>
       <Paper withBorder shadow='md' p={'md'}>
         <Group justify='space-between'>
-          <SearchInput width={400} />
+          <SearchInput w={400} />
           <Group>
             <Select
               allowDeselect={false}
