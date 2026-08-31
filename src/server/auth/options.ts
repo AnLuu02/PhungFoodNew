@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions = {
             db,
             {
               email,
-              name: name ?? '',
+              name: name ?? 'Khách hàng ' + email,
               isActive: true,
               gender: Gender.OTHER,
               pointUser: 0,
@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
                 : undefined,
               phone: ''
             },
-            null
+            false
           );
         } else if (!userFromDb.imageForEntity && image) {
           await uploadImageUserService(db, {

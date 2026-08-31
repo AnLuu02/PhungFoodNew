@@ -160,9 +160,9 @@ model Invoice {
   orderId        String?       @unique
   order          Order?        @relation(fields: [orderId], references: [id], onDelete: SetNull)
   sellerId       String
-  seller         User          @relation("SellerInvoices", fields: [sellerId], references: [id])
+  seller         User          @relation("SellerInvoices", fields: [sellerId], references: [id], onDelete: SetNull)
   customerId     String?
-  customer       User?         @relation("CustomerInvoices", fields: [customerId], references: [id])
+  customer       User?         @relation("CustomerInvoices", fields: [customerId], references: [id], onDelete: SetNull)
   buyerName      String
   buyerEmail     String?
   buyerPhone     String?
@@ -275,13 +275,13 @@ model Material {
 
 model Review {
   id        String    @id @default(cuid())
-  userId    String
+  userId    String?
   productId String
   rating    Float     @default(5.0)
   comment   String?
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
-  user      User      @relation(fields: [userId], references: [id])
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
   product   Product   @relation(fields: [productId], references: [id])
 
   @@index([userId], map: "Review_userId_fkey_unique")
@@ -312,6 +312,7 @@ model User {
   address            Address?
   createdAt          DateTime?               @default(now())
   updatedAt          DateTime?               @updatedAt
+  deletedAt          DateTime?
   voucherForUser     VoucherForUser[]
   voucherForUserId   String?
   userPermissions    UserPermission[]
@@ -454,6 +455,7 @@ model Role {
   id          String       @id @default(cuid())
   name        String       @unique
   viName      String?
+  default     Boolean      @default(false)
   permissions Permission[]
   users       User[]
   createdAt   DateTime?    @default(now())

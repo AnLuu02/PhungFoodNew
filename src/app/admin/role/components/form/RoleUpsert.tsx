@@ -1,11 +1,25 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Box, Button, Center, Divider, Flex, Grid, Group, ScrollAreaAutosize, Text, TextInput } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Center,
+  Divider,
+  Flex,
+  Grid,
+  Group,
+  ScrollAreaAutosize,
+  Switch,
+  Text,
+  TextInput
+} from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
+import { IconReload, IconTrash } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
+import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseRoleSchema, RoleInput } from '~/shared/schema/role.schema';
 import { api } from '~/trpc/react';
@@ -27,13 +41,15 @@ export default function RoleUpsert({
   );
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();
-  const [seletedPermissions, setSeletedPermissions] = useState<SelectedPermissions[]>([]);
+  const [selectedPermissions, setSelectedPermissions] = useState<SelectedPermissions[]>([]);
 
   const [searchDebouceValue] = useDebouncedValue(searchValue, 1000);
 
+  const defaultPermissions = useRef<Map<string, SelectedPermissions>>(new Map());
+
   const hasChange = useMemo(() => {
-    return seletedPermissions?.length > 0;
-  }, [seletedPermissions]);
+    return syncPermissions(defaultPermissions.current, selectedPermissions).length > 0;
+  }, [selectedPermissions]);
 
   const {
     control,
@@ -46,20 +62,27 @@ export default function RoleUpsert({
       id: undefined,
       name: '',
       viName: '',
-      permissionIds: []
+      permissionPayload: []
     }
   });
 
   useEffect(() => {
     if (role) {
-      const rolePermission = role?.permissions ?? [];
-      setSeletedPermissions([
-        ...rolePermission.map(({ id, name, description }) => ({
-          id,
-          name,
-          description
-        }))
-      ]);
+      const userPermission: SelectedPermissions[] = [];
+
+      (role?.permissions ?? []).forEach(up => {
+        const item = {
+          id: up?.id,
+          name: up?.name,
+          description: up?.description ?? null,
+          type: 'default' as const
+        };
+
+        userPermission.push(item);
+        defaultPermissions.current.set(item.id, item);
+      });
+
+      setSelectedPermissions(userPermission);
       reset({
         ...role,
         viName: role?.viName || 'Đang cập nhật.'
@@ -83,7 +106,7 @@ export default function RoleUpsert({
     try {
       await createRoleMutation.mutateAsync({
         ...formData,
-        permissionIds: seletedPermissions?.map(({ id }) => id)?.filter(Boolean) || []
+        permissionPayload: selectedPermissions?.map(({ id, type }) => ({ id, type }))?.filter(Boolean) || []
       });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');
@@ -96,8 +119,8 @@ export default function RoleUpsert({
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
-  const handleSeletedPermission = useCallback((values: SelectedPermissions[]) => {
-    setSeletedPermissions(values);
+  const handleSelectedPermission = useCallback((values: SelectedPermissions[]) => {
+    setSelectedPermissions(values);
   }, []);
 
   if (isLoadingRole || isLoading) {
@@ -106,7 +129,7 @@ export default function RoleUpsert({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid gutter='md'>
-        <Grid.Col span={6}>
+        <Grid.Col span={4}>
           <Controller
             control={control}
             name='name'
@@ -122,7 +145,7 @@ export default function RoleUpsert({
             )}
           />
         </Grid.Col>
-        <Grid.Col span={6}>
+        <Grid.Col span={4}>
           <Controller
             control={control}
             name='viName'
@@ -137,7 +160,28 @@ export default function RoleUpsert({
               />
             )}
           />
-          <Controller control={control} name='permissionIds' render={({ field }) => <input {...field} hidden />} />
+        </Grid.Col>
+        <Grid.Col span={4} className='flex flex-col items-center justify-end'>
+          <Controller
+            control={control}
+            name='default'
+            render={({ field: { value, onChange, ...restField } }) => (
+              <Switch
+                {...restField}
+                label='Đặt làm mặc định'
+                size='sm'
+                checked={!!value}
+                onChange={event => {
+                  const checked = typeof event === 'boolean' ? event : event.target.checked;
+                  onChange(checked);
+                }}
+                classNames={{
+                  label: 'font-bold'
+                }}
+                error={errors.default?.message}
+              />
+            )}
+          />
         </Grid.Col>
         <Grid.Col span={12}>
           <Center>
@@ -152,17 +196,43 @@ export default function RoleUpsert({
                 <Text fw={700} size='md'>
                   Quyền người dùng
                 </Text>
-                <Text size='sm'>(Có {seletedPermissions?.length} quyền)</Text>
+                <Text size='sm'>(Có {selectedPermissions?.length} quyền)</Text>
               </Group>
-              <FilterSection onFilterValue={handleFilter} onSearchValue={handleSearch} />
+              <Group>
+                <Group align='center' gap={4}>
+                  <Text size={'sm'} fw={600}>
+                    Áp dụng tất cả
+                  </Text>
+                  <Switch
+                    size='sm'
+                    checked={selectedPermissions.length === permissions.length}
+                    onChange={event => {
+                      if (event.currentTarget.checked) {
+                        const newData = permissions.map(({ id, name, description }) => {
+                          const hasDefault = defaultPermissions.current.has(id);
+                          if (hasDefault) {
+                            return { id, name, description, type: 'default' as const };
+                          }
+                          return { id, name, description, type: 'added' as const };
+                        });
+                        setSelectedPermissions(newData);
+                      } else {
+                        setSelectedPermissions([...defaultPermissions.current.values()]);
+                      }
+                    }}
+                  />
+                </Group>
+                <FilterSection onFilterValue={handleFilter} onSearchValue={handleSearch} />
+              </Group>
             </Flex>
 
             <ScrollAreaAutosize mah={320} scrollbarSize={5}>
               <PermissionSection
                 searchValue={searchDebouceValue}
                 filter={filter}
-                seletedPermissions={seletedPermissions}
-                onSeletedPermissions={handleSeletedPermission}
+                selectedPermissions={selectedPermissions}
+                defaultPermissions={defaultPermissions.current}
+                onSelectedPermissions={handleSelectedPermission}
               />
             </ScrollAreaAutosize>
           </Box>
@@ -171,22 +241,32 @@ export default function RoleUpsert({
 
       <Group align='center' justify='flex-end' className='mt-4'>
         <Button
+          variant='danger'
+          size='xs'
+          leftSection={<IconTrash size={12} />}
+          onClick={() => {
+            setSelectedPermissions([]);
+            setSearchValue('');
+          }}
+          disabled={!selectedPermissions.length}
+          className='disabled:border-1 disabled:border-solid disabled:border-gray-400 disabled:text-gray-400'
+        >
+          Xóa tất cả quyền
+        </Button>
+        <Button
           variant='outline'
           size='xs'
+          leftSection={<IconReload size={12} />}
           onClick={() => {
-            setSeletedPermissions([]);
+            setSelectedPermissions([...defaultPermissions.current.values()]);
             setSearchValue('');
           }}
           disabled={!hasChange}
           className='disabled:border-1 disabled:border-solid disabled:border-gray-400 disabled:text-gray-400'
         >
-          Đặt lại
+          Đặt về ban đầu
         </Button>
-        <Button
-          type='submit'
-          loading={isSubmitting}
-          disabled={!isDirty && seletedPermissions.length === permissions.length}
-        >
+        <Button type='submit' loading={isSubmitting} disabled={!isDirty && !hasChange}>
           Tạo mới / Cập nhật
         </Button>
       </Group>

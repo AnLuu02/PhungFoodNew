@@ -52,7 +52,7 @@ export const CommentsList = ({ productId }: { productId: string }) => {
                 />
                 <Box className='hidden text-left sm:block'>
                   <Text fw={700} size='sm' lh={1} className='text-black dark:text-dark-text'>
-                    {comment?.user?.name}
+                    {comment?.user?.name ?? 'Khách hàng'}
                   </Text>
                   <Text size='xs' fw={700} className='text-gray-500 dark:text-dark-text'>
                     {comment?.user?.email}
@@ -75,14 +75,14 @@ export const CommentsList = ({ productId }: { productId: string }) => {
             <Text size='xs' className='absolute bottom-2 right-2 text-gray-500 dark:text-dark-text'>
               {formatDateViVN(comment.createdAt || new Date())}
             </Text>
-            {comment.user.id === user?.user?.id && (
+            {comment?.user?.id === user?.user?.id && (
               <Box className='absolute right-2 top-2'>
                 <Button
                   variant='transparent'
                   size='xs'
                   className='text-red-600'
                   onClick={() => {
-                    if (comment.id && comment.user.id === user?.user?.id) {
+                    if (comment.id && comment?.user?.id === user?.user?.id) {
                       onHandleModalAction({
                         type: 'delete',
                         customProps: {

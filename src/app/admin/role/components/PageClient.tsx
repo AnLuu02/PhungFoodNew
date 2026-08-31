@@ -24,17 +24,14 @@ export default function RoleClient() {
 
   const { activeTab, changeTab } = useHashTabs(Object.keys(TABS), DEFAULT_TAB);
 
-  const { data: allDataClient } = api.RolePermission.getAllRole.useQuery(undefined);
+  const { data: roles } = api.RolePermission.getAllRole.useQuery(undefined);
+  const { data: permissions } = api.RolePermission.getAllPermission.useQuery(undefined);
 
   const dataFilter = useMemo(() => {
-    if (!allDataClient) return [];
-    const summary = allDataClient.reduce(
-      (
-        acc: { totalRole: number; customers: number; staff: number; totlePermissions: number },
-        item: GetAllRole[number]
-      ) => {
+    if (!roles) return [];
+    const summary = roles.reduce(
+      (acc: { totalRole: number; customers: number; staff: number }, item: GetAllRole[number]) => {
         acc.totalRole += 1;
-        acc.totlePermissions += item.permissions?.length || 0;
         item?.users?.forEach((user: GetAllRole[number]['users'][number]) => {
           if (user.role?.name === UserRole.CUSTOMER) {
             acc.customers += 1;
@@ -45,7 +42,7 @@ export default function RoleClient() {
 
         return acc;
       },
-      { totalRole: 0, customers: 0, staff: 0, totlePermissions: 0 }
+      { totalRole: 0, customers: 0, staff: 0 }
     );
 
     return [
@@ -58,7 +55,7 @@ export default function RoleClient() {
 
       {
         label: 'Tổng số các quyền',
-        value: summary.totlePermissions,
+        value: (permissions ?? []).length,
         icon: IconCategoryPlus,
         color: '#C0A453'
       },
@@ -75,7 +72,7 @@ export default function RoleClient() {
         color: '#CA041D'
       }
     ];
-  }, [allDataClient]);
+  }, [roles, permissions]);
 
   return (
     <>

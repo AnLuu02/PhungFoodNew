@@ -3,7 +3,6 @@ import { TRPCError } from '@trpc/server';
 import { compare, hash } from 'bcryptjs';
 import crypto, { randomInt } from 'crypto';
 import dayjs from 'dayjs';
-import { Session } from 'next-auth';
 import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
@@ -156,10 +155,12 @@ export const findUserService = async (
     }
   };
 };
-export const createUserService = async (db: PrismaClient, input: UserInput, session: Session | null) => {
+export const createUserService = async (db: PrismaClient, input: UserInput, isCredential: boolean) => {
   const { id, imageForEntity, address, roleId, ...data } = input;
 
-  const [existed, roles] = await db.$transaction([
+  const isAdmin = input?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN;
+
+  const [existed, defaultRole] = await Promise.all([
     db.user.findFirst({
       where: {
         email: input.email
@@ -168,7 +169,7 @@ export const createUserService = async (db: PrismaClient, input: UserInput, sess
         imageForEntity: { include: { image: true } }
       }
     }),
-    db.role.findMany({})
+    db.role.findFirst({ where: isAdmin ? { name: UserRole.ADMIN } : { default: true } })
   ]);
   let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;
   if (imageForEntity && imageForEntity?.status) {
@@ -176,16 +177,7 @@ export const createUserService = async (db: PrismaClient, input: UserInput, sess
     statusFromReq = status;
     imageDb = data;
   }
-  let defaultRole;
-  if (roles.length > 0) {
-    if (input.roleId) {
-      defaultRole = { id: input.roleId };
-    } else if (input?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN) {
-      defaultRole = roles.find(role => role.name === UserRole.ADMIN);
-    } else {
-      defaultRole = roles.find(role => role.name === UserRole.CUSTOMER);
-    }
-  }
+
   if (existed) {
     if (!existed.isActive) {
       throw new TRPCError({
@@ -209,7 +201,7 @@ export const createUserService = async (db: PrismaClient, input: UserInput, sess
   let otpExpired = dayjs().toDate(),
     otpHash = '',
     otp = '';
-  if (!regexCheckGuest.test(input.email) && session?.user?.email !== process.env.NEXT_PUBLIC_EMAIL_ADMIN) {
+  if (!regexCheckGuest.test(input.email) && isCredential) {
     ({ otp, otpExpired, otpHash } = createOTP());
     const emailContent = getOtpEmail(otp, input, 3);
     await sendEmail(input.email, 'Mã OTP kích hoạt tài khoản', emailContent);
@@ -248,7 +240,7 @@ export const createUserService = async (db: PrismaClient, input: UserInput, sess
                 image: {
                   connectOrCreate: {
                     where: {
-                      publicId: imageDb?.image?.publicId
+                      publicId: imageDb?.image?.publicId ?? 'default_public_id'
                     },
                     create: {
                       ...(imageDb?.image ?? {}),
@@ -261,18 +253,17 @@ export const createUserService = async (db: PrismaClient, input: UserInput, sess
               }
             : undefined
       },
-      role:
-        roles.length > 0
-          ? {
-              connect: {
-                id: defaultRole?.id
-              }
+      role: defaultRole?.id
+        ? {
+            connect: {
+              id: defaultRole?.id
             }
-          : {
-              create: {
-                name: UserRole.ADMIN
-              }
+          }
+        : {
+            create: {
+              name: isAdmin ? UserRole.ADMIN : UserRole.CUSTOMER
             }
+          }
     }
   });
 
@@ -331,7 +322,7 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
                 image: {
                   connectOrCreate: {
                     where: {
-                      publicId: imageDb?.image?.publicId
+                      publicId: imageDb?.image?.publicId ?? 'default_public_id'
                     },
                     create: {
                       ...(imageDb?.image ?? {}),
@@ -387,7 +378,7 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
                         ? {
                             connectOrCreate: {
                               where: {
-                                publicId: imageDb.image.publicId
+                                publicId: imageDb.image.publicId ?? 'default_public_id'
                               },
                               create: {
                                 ...imageDb.image,
@@ -406,7 +397,7 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
                         ? {
                             connectOrCreate: {
                               where: {
-                                publicId: imageDb.image.publicId
+                                publicId: imageDb.image.publicId ?? 'default_public_id'
                               },
                               create: {
                                 ...imageDb.image,

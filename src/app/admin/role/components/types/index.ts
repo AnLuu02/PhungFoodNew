@@ -11,4 +11,5 @@ export type SelectedPermissions = {
   id: string;
   name: string;
   description: string | null;
+  type: 'deleted' | 'added' | 'default';
 };

@@ -1,6 +1,6 @@
 'use client';
 import { Box, Button, Flex, Group, Paper, Switch, Text } from '@mantine/core';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
@@ -29,19 +29,31 @@ export default function UpdatePermissionForRole({
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();
-  const [seletedPermissions, setSeletedPermissions] = useState<SelectedPermissions[]>([]);
-  const [initPermissions, setInitPermissions] = useState<SelectedPermissions[]>([]);
+  const [selectedPermissions, setSelectedPermissions] = useState<SelectedPermissions[]>([]);
+
+  const defaultPermissions = useRef<Map<string, SelectedPermissions>>(new Map());
 
   useEffect(() => {
-    const rolePermission = role?.permissions ?? [];
-    const dataState = [...rolePermission.map(({ id, name, description }) => ({ id, name, description }))];
-    setSeletedPermissions(dataState);
-    setInitPermissions(dataState);
+    const userPermission: SelectedPermissions[] = [];
+
+    (role?.permissions ?? []).forEach(up => {
+      const item = {
+        id: up?.id,
+        name: up?.name,
+        description: up?.description ?? null,
+        type: 'default' as const
+      };
+
+      userPermission.push(item);
+      defaultPermissions.current.set(item.id, item);
+    });
+
+    setSelectedPermissions(userPermission);
   }, [role]);
 
   const hasChange = useMemo(() => {
-    return syncPermissions(initPermissions, seletedPermissions).length > 0;
-  }, [seletedPermissions, initPermissions]);
+    return syncPermissions(defaultPermissions.current, selectedPermissions).length > 0;
+  }, [selectedPermissions]);
 
   const utils = api.useUtils();
   const mutationUpdate = api.RolePermission.upsertRole.useMutation({
@@ -63,7 +75,7 @@ export default function UpdatePermissionForRole({
         name: role?.name,
         id: id || '',
         viName: role?.viName || '',
-        permissionIds: seletedPermissions.map((item: SelectedPermissions) => item.id) ?? []
+        permissionPayload: selectedPermissions.map(({ id, type }: SelectedPermissions) => ({ id, type })) ?? []
       });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. ', 'Cập nhật quyền không thành công');
@@ -77,8 +89,8 @@ export default function UpdatePermissionForRole({
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
-  const handleSeletedPermission = useCallback((values: SelectedPermissions[]) => {
-    setSeletedPermissions(values);
+  const handleSelectedPermission = useCallback((values: SelectedPermissions[]) => {
+    setSelectedPermissions(values);
   }, []);
 
   if (isLoadingRole || isLoading) {
@@ -103,14 +115,19 @@ export default function UpdatePermissionForRole({
               <Switch
                 label='Áp dụng tất cả'
                 size='sm'
-                checked={seletedPermissions.length === permissions.length}
+                checked={selectedPermissions.length === permissions.length}
                 onChange={event => {
                   if (event.currentTarget.checked) {
-                    setSeletedPermissions([
-                      ...permissions.map(({ id, name, description }) => ({ id, name, description }))
-                    ]);
+                    const newData = permissions.map(({ id, name, description }) => {
+                      const hasDefault = defaultPermissions.current.has(id);
+                      if (hasDefault) {
+                        return { id, name, description, type: 'default' as const };
+                      }
+                      return { id, name, description, type: 'added' as const };
+                    });
+                    setSelectedPermissions(newData);
                   } else {
-                    setSeletedPermissions([]);
+                    setSelectedPermissions([]);
                   }
                 }}
               />
@@ -121,7 +138,7 @@ export default function UpdatePermissionForRole({
                 variant='outline'
                 size='xs'
                 onClick={() => {
-                  setSeletedPermissions([...initPermissions]);
+                  setSelectedPermissions([...defaultPermissions.current.values()]);
                 }}
                 disabled={!hasChange}
                 className='disabled:border-1 disabled:border-solid disabled:border-gray-400 disabled:text-gray-400'
@@ -137,7 +154,7 @@ export default function UpdatePermissionForRole({
                 <Text fw={700} size='md'>
                   Quyền người dùng
                 </Text>
-                <Text size='sm'>(Có {seletedPermissions?.length} quyền)</Text>
+                <Text size='sm'>(Có {selectedPermissions?.length} quyền)</Text>
               </Group>
               <FilterSection onFilterValue={handleFilter} onSearchValue={handleSearch} />
             </Flex>
@@ -145,8 +162,9 @@ export default function UpdatePermissionForRole({
             <PermissionSection
               searchValue={searchValue}
               filter={filter}
-              seletedPermissions={seletedPermissions}
-              onSeletedPermissions={handleSeletedPermission}
+              selectedPermissions={selectedPermissions}
+              defaultPermissions={defaultPermissions.current}
+              onSelectedPermissions={handleSelectedPermission}
             />
           </Box>
         </Box>

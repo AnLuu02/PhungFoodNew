@@ -56,19 +56,38 @@ export const requirePermission = (
 ) =>
   t.middleware(async ({ ctx, next }) => {
     const user = ctx.session?.user;
-    const isSuperAdmin = user?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN;
-    if (options?.requiredAdmin && (user?.role === 'ADMIN' || isSuperAdmin)) {
+
+    const isAdmin = user?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN;
+
+    if (options?.requiredAdmin && !isAdmin) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Thao tác này chỉ dành cho Admin.'
+      });
+    }
+
+    if (isAdmin) {
       return next({ ctx: { ...ctx, user } });
     }
-    const userPerms = user && user?.permissions ? user?.permissions : [];
-    const reqList = Array.isArray(required) ? required : [required];
-    const hasAll = reqList.every(p => userPerms.includes(p));
-    const hasSome = reqList.some(p => userPerms.includes(p));
-    if ((options?.requireAll ? !hasAll : !hasSome) && !isSuperAdmin)
+
+    const reqList = (Array.isArray(required) ? required : [required]).filter(Boolean) as string[];
+
+    if (reqList.length === 0) {
+      return next({ ctx: { ...ctx, user } });
+    }
+
+    const userPerms = new Set(user?.permissions || []);
+
+    const hasAll = reqList.every(p => userPerms.has(p));
+    const hasSome = reqList.some(p => userPerms.has(p));
+    const isAuthorized = options?.requireAll ? hasAll : hasSome;
+
+    if (!isAuthorized) {
       throw new TRPCError({
         code: 'FORBIDDEN',
         message: 'Bạn không có quyền thực hiện thao tác này. Liên hệ Admin để được hỗ trợ.'
       });
+    }
 
     return next({ ctx: { ...ctx, user } });
   });

@@ -33,15 +33,7 @@ export const rolePermissionRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => await findRoleService(ctx.db, input)),
 
-  getAllRole: publicProcedure
-    .input(
-      z
-        .object({
-          include: z.custom<Prisma.RoleInclude>().optional()
-        })
-        .optional()
-    )
-    .query(async ({ ctx, input }) => await getAllRoleService(ctx.db, input)),
+  getAllRole: publicProcedure.query(async ({ ctx }) => await getAllRoleService(ctx.db)),
   getOne: publicProcedure
     .input(z.object({ id: z.string(), include: z.custom<Prisma.RoleInclude>().optional() }))
     .query(async ({ ctx, input }) => await getOneRoleService(ctx.db, input)),

@@ -42,7 +42,7 @@ export default function ReviewUpsert({
     if (data) {
       reset({
         id: data?.id,
-        userId: data?.userId,
+        userId: data?.userId ?? undefined,
         productId: data?.productId,
         rating: data?.rating,
         comment: data?.comment || ''

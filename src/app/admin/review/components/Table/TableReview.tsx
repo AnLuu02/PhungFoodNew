@@ -198,7 +198,7 @@ export default function TableReview() {
                 <Table.Tr key={item.id}>
                   <Table.Td className='text-sm'>
                     <Highlight size='sm' highlight={s}>
-                      {item.user?.name}
+                      {item.user?.name ?? 'Khách hàng'}
                     </Highlight>
                   </Table.Td>
                   <Table.Td className='text-sm'>

@@ -5,6 +5,7 @@ import {
   Badge,
   Box,
   Card,
+  Divider,
   Flex,
   Group,
   Highlight,
@@ -199,95 +200,122 @@ export default function TableUser() {
             <Paper
               key={item.id}
               withBorder
-              radius='xl'
-              p='md'
-              pos={'relative'}
-              className={`shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${
-                item.role?.name !== UserRole.CUSTOMER ? 'bg-red-100 dark:bg-transparent' : 'bg-white dark:bg-dark-card'
+              radius='lg'
+              p='lg'
+              pos='relative'
+              className={`overflow-hidden border-slate-200/80 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:bg-dark-card ${
+                item.role?.name !== UserRole.CUSTOMER ? 'border-l-4 border-l-red-500' : 'border-l-4 border-l-blue-500'
               }`}
             >
-              <Stack className='min-w-0 flex-1'>
-                <Group justify='space-between' align='flex-start' wrap='wrap'>
-                  <Stack gap={3}>
-                    <Highlight size='sm' fw={700} highlight={s}>
+              <Group
+                gap={4}
+                pos='absolute'
+                top={16}
+                right={16}
+                className='backdrop-blur-xs shadow-2xs z-10 rounded-lg border border-slate-100 bg-white/80 p-1 dark:bg-dark-card/80'
+              >
+                <UpdatePermissions email={item.email} />
+                <UpdateUserButton email={item.email} />
+                <DeleteUserButton id={item.id} />
+              </Group>
+
+              <Stack gap='md'>
+                <div className='flex flex-col justify-between gap-3 pr-28 sm:flex-row sm:items-center'>
+                  <Stack gap={2}>
+                    <Highlight
+                      size='md'
+                      fw={700}
+                      highlight={s}
+                      className='tracking-tight text-slate-900 dark:text-white'
+                    >
                       {item.name || 'Đang cập nhật...'}
                     </Highlight>
-
-                    <Highlight size='xs' c='dimmed' highlight={s}>
+                    <Highlight size='xs' c='dimmed' highlight={s} className='font-medium'>
                       {item.email || 'Đang cập nhật...'}
                     </Highlight>
                   </Stack>
-                </Group>
 
-                <Group gap='80px' wrap='wrap' align='flex-start'>
+                  <Group gap={6} wrap='wrap'>
+                    <Badge
+                      size='sm'
+                      variant='light'
+                      color={item.role?.name !== UserRole.ADMIN ? 'blue' : 'red'}
+                      className='px-2.5 font-semibold'
+                    >
+                      {item.role?.viName || 'Đang cập nhật...'}
+                    </Badge>
+
+                    <Badge
+                      size='sm'
+                      variant='dot'
+                      color={item.isActive ? 'teal' : 'red'}
+                      className='bg-slate-50 font-medium dark:bg-slate-800'
+                    >
+                      {item.isActive ? 'Hoạt động' : 'Bị cấm'}
+                    </Badge>
+                  </Group>
+                </div>
+
+                <Divider className='my-0 border-slate-100 dark:border-slate-800' />
+
+                <div className='grid grid-cols-2 items-start gap-4 sm:grid-cols-3 lg:grid-cols-5'>
                   <Stack gap={2}>
-                    <Text size='xs' c='dimmed' fw={600}>
+                    <Text size='xs' c='dimmed' fw={600} className='text-[11px] uppercase tracking-wider'>
                       Điện thoại
                     </Text>
-                    <Highlight size='sm' highlight={s}>
+                    <Highlight size='sm' highlight={s} className='font-medium text-slate-700 dark:text-slate-200'>
                       {item.phone || 'Đang cập nhật...'}
                     </Highlight>
                   </Stack>
 
                   <Stack gap={2}>
-                    <Text size='xs' c='dimmed' fw={600}>
+                    <Text size='xs' c='dimmed' fw={600} className='text-[11px] uppercase tracking-wider'>
                       Ngày tạo
                     </Text>
-                    <Text size='sm'>{formatDateViVN(item.createdAt)}</Text>
-                  </Stack>
-
-                  <Stack gap={2}>
-                    <Text size='xs' c='dimmed' fw={600}>
-                      Điểm
+                    <Text size='sm' className='font-medium text-slate-700 dark:text-slate-200'>
+                      {formatDateViVN(item.createdAt)}
                     </Text>
-                    <Text size='sm'>{item.pointUser}</Text>
                   </Stack>
 
                   <Stack gap={2}>
-                    <Text size='xs' c='dimmed' fw={600}>
+                    <Text size='xs' c='dimmed' fw={600} className='text-[11px] uppercase tracking-wider'>
+                      Điểm tích lũy
+                    </Text>
+                    <Text size='sm' className='font-semibold text-blue-600 dark:text-blue-400'>
+                      {item.pointUser} pts
+                    </Text>
+                  </Stack>
+
+                  <Stack gap={2}>
+                    <Text size='xs' c='dimmed' fw={600} className='text-[11px] uppercase tracking-wider'>
                       Cấp điểm
                     </Text>
-                    <Text size='sm'>{INFO_LEVEL_USER[item.level || UserLevel.BRONZE]?.viName}</Text>
+                    <Text size='sm' fw={600} className='text-amber-600 dark:text-amber-400'>
+                      {INFO_LEVEL_USER[item.level || UserLevel.BRONZE]?.viName}
+                    </Text>
                   </Stack>
-                  <Stack gap={2} flex={1}>
-                    <Text size='xs' c='dimmed' fw={600}>
+
+                  <Stack gap={2} className='col-span-2 sm:col-span-3 lg:col-span-1'>
+                    <Text size='xs' c='dimmed' fw={600} className='text-[11px] uppercase tracking-wider'>
                       Địa chỉ
                     </Text>
-
                     <Spoiler
                       maxHeight={22}
                       showLabel={'Xem tất cả'}
                       hideLabel={'Thu gọn'}
                       p={0}
                       m={0}
-                      mb={10}
                       classNames={{
-                        control: 'flex w-full justify-end text-xs text-mainColor'
+                        control: 'mt-0.5 text-xs font-medium text-blue-600 hover:underline dark:text-blue-400'
                       }}
                     >
-                      <Highlight size='sm' highlight={s}>
+                      <Highlight size='sm' highlight={s} className='leading-snug text-slate-700 dark:text-slate-200'>
                         {item.address?.fullAddress || 'Đang cập nhật...'}
                       </Highlight>
                     </Spoiler>
                   </Stack>
-                  <Group gap={8}>
-                    <Badge p='sm' color={item.role?.name !== UserRole.ADMIN ? '#195EFE' : 'red'}>
-                      {' '}
-                      {item.role?.viName || 'Đang cập nhật...'}{' '}
-                    </Badge>
-
-                    <Badge variant='filled' color={item.isActive ? 'blue' : 'red'} radius='md' px='sm'>
-                      {item.isActive ? 'Hoạt động' : 'Bị cấm'}
-                    </Badge>
-                  </Group>
-                </Group>
+                </div>
               </Stack>
-
-              <Group gap='xs' wrap='nowrap' pos={'absolute'} top={16} right={20}>
-                <UpdatePermissions email={item.email} />
-                <UpdateUserButton email={item.email} />
-                <DeleteUserButton id={item.id} />
-              </Group>
             </Paper>
           ))
         ) : (

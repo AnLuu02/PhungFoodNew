@@ -1,13 +1,12 @@
 'use client';
 import { Box, Button, Flex, Group, Paper, Text } from '@mantine/core';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import FilterSection from '~/app/admin/role/components/Section/FilterSection';
 import PermissionSection from '~/app/admin/role/components/Section/PermissionSection';
-import { FilterPermission } from '~/app/admin/role/components/types';
+import { FilterPermission, SelectedPermissions } from '~/app/admin/role/components/types';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { GetOneUser } from '~/shared/type-trpc/user.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function UpdatePermissionUser({
@@ -21,18 +20,31 @@ export default function UpdatePermissionUser({
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [filter, setFilter] = useState<FilterPermission>();
-  const [seletedPermissions, setSeletedPermissions] = useState<any>([]);
-  const [initPermissions, setInitPermissions] = useState<NonNullable<GetOneUser>['role']['permissions']>([]);
+  const [selectedPermissions, setSelectedPermissions] = useState<SelectedPermissions[]>([]);
+
+  const defaultPermissions = useRef<Map<string, SelectedPermissions>>(new Map());
 
   useEffect(() => {
-    const userPermission = user?.role?.permissions ?? [];
-    setSeletedPermissions(userPermission);
-    setInitPermissions(userPermission);
+    const userPermission: SelectedPermissions[] = [];
+
+    (user?.role?.permissions ?? []).forEach(up => {
+      const item = {
+        id: up?.id,
+        name: up?.name,
+        description: up?.description ?? null,
+        type: 'default' as const
+      };
+
+      userPermission.push(item);
+      defaultPermissions.current.set(item.id, item);
+    });
+
+    setSelectedPermissions(userPermission);
   }, [user]);
 
   const hasChange = useMemo(() => {
-    return syncPermissions(initPermissions, seletedPermissions).length > 0;
-  }, [seletedPermissions, initPermissions]);
+    return syncPermissions(defaultPermissions.current, selectedPermissions).length > 0;
+  }, [selectedPermissions]);
 
   const utils = api.useUtils();
   const mutationUpdate = api.RolePermission.updateUserPermissions.useMutation({
@@ -48,12 +60,12 @@ export default function UpdatePermissionUser({
     e.preventDefault();
     try {
       setLoading(true);
-      const usePermissions = syncPermissions(initPermissions, seletedPermissions);
+      const usePermissions = syncPermissions(defaultPermissions.current, selectedPermissions);
       if (!user?.id) return;
       await mutationUpdate.mutateAsync(
         usePermissions
-          .filter((item: any) => !!item.id && typeof item.granted === 'boolean')
-          .map((item: any) => ({
+          .filter(item => !!item.id && typeof item.granted === 'boolean')
+          .map(item => ({
             userId: user.id as string,
             permissionId: String(item.id),
             granted: Boolean(item.granted)
@@ -74,8 +86,8 @@ export default function UpdatePermissionUser({
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
-  const handleSeletedPermission = useCallback((value: any) => {
-    setSeletedPermissions(value);
+  const handleSelectedPermission = useCallback((value: any) => {
+    setSelectedPermissions(value);
   }, []);
 
   if (isLoadingUser) {
@@ -109,7 +121,7 @@ export default function UpdatePermissionUser({
                 variant='outline'
                 size='xs'
                 onClick={() => {
-                  setSeletedPermissions([...initPermissions]);
+                  setSelectedPermissions([...defaultPermissions.current.values()]);
                 }}
                 disabled={!hasChange}
                 className='disabled:border-1 disabled:border-solid disabled:border-gray-400 disabled:text-gray-400'
@@ -125,7 +137,7 @@ export default function UpdatePermissionUser({
                 <Text fw={700} size='md'>
                   Quyền người dùng
                 </Text>
-                <Text size='sm'>(Có {seletedPermissions?.length} quyền)</Text>
+                <Text size='sm'>(Có {selectedPermissions?.length} quyền)</Text>
               </Group>
               <FilterSection onFilterValue={handleFilter} onSearchValue={handleSearch} />
             </Flex>
@@ -133,8 +145,9 @@ export default function UpdatePermissionUser({
             <PermissionSection
               searchValue={searchValue}
               filter={filter}
-              seletedPermissions={seletedPermissions}
-              onSeletedPermissions={handleSeletedPermission}
+              selectedPermissions={selectedPermissions}
+              defaultPermissions={defaultPermissions.current}
+              onSelectedPermissions={handleSelectedPermission}
             />
           </Box>
         </Box>

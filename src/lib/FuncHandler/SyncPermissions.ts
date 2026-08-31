@@ -1,17 +1,23 @@
-export function syncPermissions(init: any[], dynamic: any[]): any[] {
-  const initMap = new Map(init.map(p => [p.id, p]));
+import { SelectedPermissions } from '~/app/admin/role/components/types';
 
-  const result: any[] = [];
+type Result = SelectedPermissions & { granted: boolean };
+
+export function syncPermissions(initMap: Map<string, SelectedPermissions>, dynamic: SelectedPermissions[]): Result[] {
+  if (!dynamic.length) {
+    return [...initMap.values()].map(i => ({ ...i, granted: false }));
+  }
+
+  let result: Result[] = [];
 
   for (const d of dynamic) {
     if (!initMap.has(d.id)) {
-      result.push({ ...d, granted: true });
+      result.push({ ...d, type: 'added' as const, granted: true });
     } else {
-      initMap.delete(d.id);
+      const init = initMap.get(d.id);
+      if (init?.type !== d.type) {
+        result.push({ ...d, granted: false });
+      }
     }
-  }
-  for (const [, p] of initMap) {
-    result.push({ ...p, granted: false });
   }
 
   return result;

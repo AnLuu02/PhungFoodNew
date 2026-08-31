@@ -8,38 +8,42 @@ import { api } from '~/trpc/react';
 import { FilterPermission, SelectedPermissions } from '../types';
 
 export default function PermissionSection({
-  onSeletedPermissions,
-  seletedPermissions,
+  onSelectedPermissions,
+  selectedPermissions,
+  defaultPermissions,
   searchValue,
   filter
 }: {
   filter: FilterPermission;
   searchValue: string;
-  seletedPermissions: SelectedPermissions[];
-  onSeletedPermissions: (values: SelectedPermissions[]) => void;
+  defaultPermissions: Map<string, SelectedPermissions>;
+  selectedPermissions: SelectedPermissions[];
+  onSelectedPermissions: (values: SelectedPermissions[]) => void;
 }) {
   const { data: user } = useSession();
-  const { data: permissions = [], isLoading } = api.RolePermission.getAllPermission.useQuery(undefined, {});
+  const { data, isLoading } = api.RolePermission.getAllPermission.useQuery(undefined, {});
+  const permissions = data ?? [];
+
   const permissionsRender = useMemo(() => {
     let dataRender = [...permissions.map(({ id, name, description }) => ({ id, name, description }))];
 
     if (searchValue) {
       const search = searchValue.toLowerCase();
-      dataRender = dataRender.filter((item: SelectedPermissions) => item.name.toLowerCase().includes(search));
+      dataRender = dataRender.filter(item => item.name.toLowerCase().includes(search));
     }
     if (filter) {
-      const permissionNames = seletedPermissions.map((item: SelectedPermissions) => item.name) ?? [];
+      const permissionNames = selectedPermissions.map((item: SelectedPermissions) => item.name) ?? [];
 
       switch (filter) {
         case 'hasNotPermission':
-          dataRender = dataRender.filter((item: SelectedPermissions) => !permissionNames.includes(item.name));
+          dataRender = dataRender.filter(item => !permissionNames.includes(item.name));
 
           break;
         case 'hasPermission':
-          dataRender = [...seletedPermissions];
+          dataRender = [...selectedPermissions];
           break;
         default:
-          dataRender = dataRender.filter((item: SelectedPermissions) => item.name.includes(filter));
+          dataRender = dataRender.filter(item => item.name.includes(filter));
       }
     }
     return dataRender;
@@ -49,7 +53,7 @@ export default function PermissionSection({
     <LoadingSpiner />
   ) : permissionsRender?.length > 0 ? (
     <SimpleGrid cols={2}>
-      {permissionsRender.map((item: SelectedPermissions) => {
+      {permissionsRender.map(item => {
         return (
           <label htmlFor={`${item.id}`}>
             <Paper p={'md'} withBorder shadow='md' key={item.id} className='flex items-center justify-between'>
@@ -60,12 +64,30 @@ export default function PermissionSection({
               <Switch
                 id={`${item.id}`}
                 disabled={user?.user.role !== UserRole.ADMIN}
-                checked={seletedPermissions?.some((p: SelectedPermissions) => p.name === item.name)}
+                checked={selectedPermissions?.some(
+                  (p: SelectedPermissions) => p.name === item.name && p.type !== 'deleted'
+                )}
                 onChange={checked => {
+                  const hasDefault = defaultPermissions.has(item.id);
                   if (checked.target.checked) {
-                    onSeletedPermissions([...seletedPermissions, item]);
+                    if (hasDefault) {
+                      const updated = selectedPermissions.map(p =>
+                        p.id === item.id ? { ...p, type: 'default' as const } : p
+                      );
+                      onSelectedPermissions(updated);
+                    } else {
+                      onSelectedPermissions([...selectedPermissions, { ...item, type: 'added' as const }]);
+                    }
                   } else {
-                    onSeletedPermissions(seletedPermissions.filter((p: SelectedPermissions) => p?.name !== item.name));
+                    if (hasDefault) {
+                      const updated = selectedPermissions.map(p =>
+                        p.id === item.id ? { ...p, type: 'deleted' as const } : p
+                      );
+                      onSelectedPermissions(updated);
+                    } else {
+                      const filtered = selectedPermissions.filter(p => p.id !== item.id);
+                      onSelectedPermissions(filtered);
+                    }
                   }
                 }}
               />

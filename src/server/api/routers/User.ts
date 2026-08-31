@@ -35,7 +35,7 @@ export const userRouter = createTRPCRouter({
     .use(activityLogger)
     .input(userInputSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await createUserService(ctx.db, input, ctx.session);
+      const user = await createUserService(ctx.db, input, true);
       return user;
     }),
 

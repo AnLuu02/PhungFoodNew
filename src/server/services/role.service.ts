@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { UserRole } from '~/shared/constants/user.constants';
 import { RoleInput } from '~/shared/schema/role.schema';
 
 export const findRoleService = async (
@@ -56,10 +57,9 @@ export const findRoleService = async (
     }
   };
 };
-export const getAllRoleService = async (db: PrismaClient, input?: { include?: Prisma.RoleInclude }) => {
+export const getAllRoleService = async (db: PrismaClient) => {
   let roles = await db.role.findMany({
     include: {
-      ...(input?.include ?? {}),
       permissions: true,
       users: {
         include: {
@@ -70,6 +70,7 @@ export const getAllRoleService = async (db: PrismaClient, input?: { include?: Pr
   });
   return roles;
 };
+
 export const getOneRoleService = async (db: PrismaClient, input: { id: string; include?: Prisma.RoleInclude }) => {
   try {
     return await db.role.findUnique({
@@ -91,63 +92,77 @@ export const createManyRoleService = async (db: PrismaClient, input: { data: Rol
     }
   });
 
-  const existingSet = new Set(existing.map(item => item.name));
-  const newData = input.data.filter(item => !existingSet.has(item.name));
+  const existedMap = new Map(existing.map(item => [item.name, item]));
+  const newData = input.data.filter(item => !existedMap.has(item.name));
 
   if (newData.length === 0) {
     throw new TRPCError({ code: 'CONFLICT', message: 'Tất cả vai trò đều đã tồn tại.' });
   }
-  const permissions = await Promise.all(
+  return await Promise.all(
     newData.map(async item => {
       const role = await db.role.create({
         data: {
           name: item.name,
           viName: item.viName,
           permissions: {
-            connect: item.permissionIds.map(id => ({ id }))
+            connect: item.permissionPayload.map(({ id }) => ({ id }))
           }
         }
       });
       return role;
     })
   );
-
-  return newData;
 };
 
 export const upsertRoleService = async (db: PrismaClient, input: RoleInput) => {
-  const { id, permissionIds, ...data } = input;
+  const { id, permissionPayload, ...data } = input;
   try {
+    const isDeletedAll = permissionPayload.length === 0;
+    const isSetDefault = input.default;
+    if (isSetDefault && input.name === UserRole.ADMIN) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Không thể thiết lập mặc định cho trường Admin.'
+      });
+    }
     const result = await db.$transaction(async tx => {
       const oldData = id ? await tx.role.findUnique({ where: { id } }) : null;
-      const newData = await db.role.upsert({
+
+      const connectIds = [];
+      const disconnectIds = [];
+
+      if (!isDeletedAll) {
+        for (const { type, id } of permissionPayload) {
+          if (type === 'added') connectIds.push({ id });
+          else if (type === 'deleted') disconnectIds.push({ id });
+        }
+      }
+
+      if (isSetDefault && !oldData?.default) {
+        await tx.role.updateMany({
+          data: {
+            default: false
+          }
+        });
+      }
+
+      const newData = await tx.role.upsert({
         where: { id: input.id || '' },
         create: {
           ...data,
-          permissions: {
-            connect: permissionIds.map(id => ({ id }))
-          }
+          permissions: { connect: connectIds }
         },
         update: {
           ...data,
-          permissions: {
-            connect: permissionIds.map(id => ({ id })),
-            disconnect: (
-              await db.permission.findMany({
-                where: {
-                  roles: {
-                    some: { id: input.id || '' }
-                  },
-                  id: {
-                    notIn: permissionIds
-                  }
-                },
-                select: { id: true }
-              })
-            ).map(p => ({ id: p.id }))
-          }
+          permissions: isDeletedAll
+            ? { set: [] }
+            : {
+                connect: connectIds,
+                disconnect: disconnectIds
+              }
         }
       });
+
       return { oldData, newData };
     });
     return {
@@ -163,6 +178,7 @@ export const upsertRoleService = async (db: PrismaClient, input: RoleInput) => {
     });
   }
 };
+
 export const deleteRoleService = async (db: PrismaClient, input: { id: string }) => {
   const deleted = await db.role.delete({
     where: { id: input.id }

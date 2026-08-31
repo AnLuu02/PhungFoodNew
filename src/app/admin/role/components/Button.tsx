@@ -6,12 +6,14 @@ import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { RoleInput } from '~/shared/schema/role.schema';
 import { GetAllPermission, GetAllRole } from '~/shared/type-trpc/role-permission.type-trpc';
 import { api } from '~/trpc/react';
 import RoleUpsert from './form/RoleUpsert';
 import PermissionUpsert from './form/permission/PermissionUpsert';
 const mapFieldsRole: Record<string, string> = {
   'Vai trò': 'name',
+  'Phiên âm': 'viName',
   Quyền: 'permissionId'
 };
 
@@ -79,15 +81,17 @@ export function CreateManyRoleButton() {
     try {
       setLoading(true);
       const formatData_: any = formatDataExcel(mapFieldsRole, data);
-      let reduceData = formatData_.reduce((acc: any[], row: any) => {
+      let reduceData: RoleInput[] = formatData_.reduce((acc: RoleInput[], row: any) => {
         const existingRole = acc.find(item => item['name'] === row['name']);
 
         if (existingRole) {
-          existingRole['permissionIds'].push(row['permissionId']);
+          existingRole['permissionPayload'].push({ ...row['permissionId'], type: 'default' as const });
         } else {
           acc.push({
             name: row['name'],
-            permissionIds: [row['permissionId']]
+            viName: row['viName'],
+            default: false,
+            permissionPayload: [{ ...row['permissionId'], type: 'default' as const }]
           });
         }
         return acc;

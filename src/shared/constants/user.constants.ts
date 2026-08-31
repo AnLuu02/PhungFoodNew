@@ -7,13 +7,12 @@ export const UserLevel = {
 } as const;
 
 export const UserRole = {
-  SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
   STAFF: 'STAFF',
   CUSTOMER: 'CUSTOMER'
 } as const;
 
-export const ADMIN_ROLES = ['SUPER_ADMIN', 'ADMIN', 'STAFF'] as const;
+export const ADMIN_ROLES = ['ADMIN', 'STAFF'] as const;
 
 export const INFO_LEVEL_USER = {
   [UserLevel.BRONZE]: {

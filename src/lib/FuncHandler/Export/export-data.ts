@@ -78,8 +78,8 @@ export async function getReviewData({ limit, page, s }: { limit: number; page: n
   });
   return data.reviews.map(item => ({
     ID: item.id,
-    'Người dùng': item.user.name,
-    'Email người dùng': item.user.email,
+    'Người dùng': item?.user?.name ?? 'Khách hàng',
+    'Email người dùng': item?.user?.email ?? 'Đang cập nhật',
     'Bình luận': item.comment,
     'Đánh giá': item.rating + ' sao',
     'Sản phẩm đánh giá': item.product.name,
