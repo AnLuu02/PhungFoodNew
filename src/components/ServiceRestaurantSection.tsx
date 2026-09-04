@@ -23,7 +23,7 @@ const serviceData = [
     description: 'webp/hotline: 1900 6750'
   }
 ];
-const ServiceComponent = () => {
+export const ServiceRestaurantSection = () => {
   return (
     <Grid py={50}>
       {serviceData.map((service, index) => (
@@ -46,5 +46,3 @@ const ServiceComponent = () => {
     </Grid>
   );
 };
-
-export default ServiceComponent;

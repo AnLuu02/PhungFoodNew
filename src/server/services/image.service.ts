@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import cloudinary from '~/lib/Cloudinary/cloudinary';
 import { ImageFromDb } from '~/shared/schema/image.schema';
 import { ImageAssociation, ImageWithAssociations } from '~/shared/types/image.types';
+import { getServerAuthSession } from '../auth';
 import { getOneBannerService } from './restaurant.banner.service';
 import { getRestaurantOnlyService } from './restaurant.service';
 import { getOneUserService } from './user.service';
@@ -423,6 +424,8 @@ export const connectedEntityService = async (
   }
 ) => {
   const { entityId, entityType, images } = input;
+  const session = await getServerAuthSession();
+
   if (!entityId || !images) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Du lieu khong hop le.' });
 
   switch (entityType) {
@@ -497,7 +500,7 @@ export const connectedEntityService = async (
       }
       return;
     case EntityType.BANNER:
-      const banner = await getOneBannerService(db, { isActive: true });
+      const banner = await getOneBannerService(db, session);
       if (banner) {
         return await db.$transaction(
           images

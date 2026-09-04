@@ -1,10 +1,10 @@
 import { Box } from '@mantine/core';
 import FloatingWidget from '~/components/FloatingWidget';
+import { ServiceRestaurantSection } from '~/components/ServiceRestaurantSection';
 import FooterWeb from '~/components/Web/Footer/FooterWeb';
 import { NavigationFixed } from '~/components/Web/Header/components/client-component/NavigationFIxed';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import { HeaderClient } from '~/components/Web/Header/section/HeaderFirst';
-import ServiceComponent from '~/components/Web/Home/components/ServiceComponent';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
@@ -24,7 +24,7 @@ const Layout = async ({ children }: { children: React.ReactNode }) => {
           {children}
         </Box>
         <Box px={{ base: 20, lg: 130 }}>
-          <ServiceComponent />
+          <ServiceRestaurantSection />
         </Box>
         <FloatingWidget restaurant={restaurant} />
         <FooterWeb restaurant={restaurant} />

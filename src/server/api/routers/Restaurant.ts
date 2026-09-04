@@ -64,14 +64,7 @@ export const restaurantRouter = createTRPCRouter({
     .use(activityLogger)
     .input(bannerReqSchemaCloudinary)
     .mutation(async ({ ctx, input }) => await upsertBannerService(ctx.db, input)),
-  getOneBanner: publicProcedure
-    .input(
-      z.object({
-        isActive: z.boolean().optional(),
-        include: z.custom<Prisma.BannerInclude>().optional()
-      })
-    )
-    .query(async ({ ctx, input }) => await getOneBannerService(ctx.db, input)),
+  getOneBanner: publicProcedure.query(async ({ ctx, input }) => await getOneBannerService(ctx.db, ctx.session)),
 
   setDefaultBanner: publicProcedure
     .use(activityLogger)

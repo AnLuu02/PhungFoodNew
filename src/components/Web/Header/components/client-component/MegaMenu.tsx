@@ -36,7 +36,7 @@ export default function MegaMenu() {
   const { data: productData, isLoading: isLoadingProduct } = api.Product.find.useQuery(
     {
       page: 1,
-      limit: 8,
+      limit: 6,
       'danh-muc': activeTab ?? undefined,
       loai: 'san-pham-ban-chay'
     },
@@ -50,7 +50,7 @@ export default function MegaMenu() {
 
   const subCategories = useMemo(() => {
     if (categories && Array.isArray(categories)) {
-      const subCategories = categories.flatMap((item: CategoryWithRelationBasic[number]) =>
+      const subCategories = categories.flatMap((item: CategoryWithRelationBasic) =>
         activeTab === item?.tag ? item?.subCategory : []
       );
       return subCategories;
@@ -94,7 +94,7 @@ export default function MegaMenu() {
           <ScrollAreaAutosize mah={'55vh'} scrollbarSize={5}>
             <Tabs.List>
               {categories?.length > 0 &&
-                categories?.map((item: CategoryWithRelationBasic[number]) => (
+                categories?.map((item: CategoryWithRelationBasic) => (
                   <Tabs.Tab
                     value={item.tag}
                     key={item.id + item.tag}
@@ -124,43 +124,41 @@ export default function MegaMenu() {
             <Tabs.Panel value={activeTab || categories?.[0]?.tag}>
               <Box p={'lg'}>
                 <Grid mb={'xs'}>
-                  {subCategories?.map(
-                    (subCaegory: CategoryWithRelationBasic[number]['subCategory'][number], index: number) => (
-                      <GridCol span={4} key={subCaegory.tag + index} className='hover:scale-105'>
-                        <Link
-                          href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${subCaegory.tag}`}
-                          className={`dark:hover:shadow-md/80 flex animate-fadeUp items-center gap-4 rounded-lg bg-white p-2 shadow-sm transition-all hover:shadow-md dark:bg-dark-card ${
-                            searchParams.get('loai-san-pham') === subCaegory?.tag ? '!bg-mainColor/10' : ''
-                          }`}
-                          style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+                  {subCategories?.map((subCaegory: CategoryWithRelationBasic['subCategory'][number], index: number) => (
+                    <GridCol span={4} key={subCaegory.tag + index} className='hover:scale-105'>
+                      <Link
+                        href={`/thuc-don?danh-muc=${activeTab}&loai-san-pham=${subCaegory.tag}`}
+                        className={`dark:hover:shadow-md/80 flex animate-fadeUp items-center gap-4 rounded-lg bg-white p-2 shadow-sm transition-all hover:shadow-md dark:bg-dark-card ${
+                          searchParams.get('loai-san-pham') === subCaegory?.tag ? '!bg-mainColor/10' : ''
+                        }`}
+                        style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+                      >
+                        <Card
+                          withBorder
+                          w={60}
+                          h={60}
+                          pos={'relative'}
+                          className='flex items-center justify-center shadow-none'
                         >
-                          <Card
-                            withBorder
-                            w={60}
-                            h={60}
-                            pos={'relative'}
-                            className='flex items-center justify-center shadow-none'
-                          >
-                            <Image
-                              loading='lazy'
-                              src={subCaegory?.imageForEntity?.image?.url || '/images/png/momo.png'}
-                              alt={subCaegory?.name || 'Ảnh minh họa'}
-                              fill
-                              className='rounded-md object-cover'
-                            />
-                          </Card>
-                          <Stack gap={2}>
-                            <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
-                              {subCaegory.name}
-                            </Text>
-                            <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
-                              Số lượng: {subCaegory._count.products || 0}
-                            </Text>
-                          </Stack>
-                        </Link>
-                      </GridCol>
-                    )
-                  )}
+                          <Image
+                            loading='lazy'
+                            src={subCaegory?.imageForEntity?.image?.url || '/images/png/momo.png'}
+                            alt={subCaegory?.name || 'Ảnh minh họa'}
+                            fill
+                            className='rounded-md object-cover'
+                          />
+                        </Card>
+                        <Stack gap={2}>
+                          <Text size='sm' fw={700} className='text-gray-800 dark:text-dark-text'>
+                            {subCaegory.name}
+                          </Text>
+                          <Text size='xs' className='flex items-center text-mainColor dark:text-dark-text'>
+                            Số lượng: {subCaegory._count.products || 0}
+                          </Text>
+                        </Stack>
+                      </Link>
+                    </GridCol>
+                  ))}
                 </Grid>
                 <Center my={'md'}>
                   <Divider

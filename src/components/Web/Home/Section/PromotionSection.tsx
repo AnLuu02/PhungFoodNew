@@ -2,27 +2,53 @@
 
 import { Card, Flex, Grid, GridCol, Group, Paper, Text, Title } from '@mantine/core';
 import { IconBolt } from '@tabler/icons-react';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PaginationLocal from '~/components/PaginationLocal';
 import Reveal from '~/components/Reveal';
-import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { toNumber } from '~/lib/FuncHandler/Format';
+import { api } from '~/trpc/react';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 import { CardProductHorizontalSkeleton } from '../../Card/CardProductHorizontalSkeleton';
 
-const LayoutPromotion = ({
-  data,
-  withPagination
-}: {
-  data: ProductBase[];
-  withPagination?: {
-    loading: boolean;
-    totalPages: number;
-    page: number;
-    perPage: number;
-    onChangePage: (page: number) => void;
-    onSetPerpage: (perPage: string) => void;
-  };
-}) => {
+export const PromotionSection = () => {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(6);
+
+  const { data, isLoading, isFetching } = api.Product.find.useQuery(
+    {
+      page: page,
+      limit: perPage,
+      loai: 'san-pham-giam-gia'
+    },
+    {
+      placeholderData: previousData => previousData
+    }
+  );
+
+  const products = data?.products ?? [];
+
+  const totalPages = data?.pagination?.totalPages ?? 0;
+
+  const onChangePage = useCallback((value: number) => {
+    setPage(value);
+  }, []);
+
+  const onSetPerpage = useCallback((value: string) => {
+    setPerPage(toNumber(value) ?? 4);
+  }, []);
+
+  const utils = api.useUtils();
+
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.Product.find.prefetch({
+        page: page + 1,
+        limit: perPage,
+        loai: 'san-pham-giam-gia'
+      });
+    }
+  }, [page]);
+
   const [timeExpire, setTimeExpire] = React.useState({
     day: 0,
     hour: 0,
@@ -141,9 +167,9 @@ const LayoutPromotion = ({
         </Flex>
 
         <Grid p={'sm'}>
-          {withPagination?.loading ? (
+          {isLoading ? (
             <>
-              {Array.from({ length: Number(withPagination.perPage) }, (_, idex) => {
+              {Array.from({ length: Number(perPage) }, (_, idex) => {
                 return (
                   <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={idex} mih={162}>
                     <CardProductHorizontalSkeleton />
@@ -152,8 +178,13 @@ const LayoutPromotion = ({
               })}
             </>
           ) : (
-            data?.map((item: any, index: number) => (
-              <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={item.id} mih={162}>
+            products.map((item, index: number) => (
+              <GridCol
+                span={{ base: 12, xs: 6, xl: 4 }}
+                key={item.id}
+                mih={162}
+                style={{ opacity: isFetching ? 0.6 : 1, transition: 'opacity 0.2s' }}
+              >
                 <Reveal x={(index + 1) * 2} delay={index * 0.01}>
                   <ProductCardCarouselHorizontal data={item} key={item.id} />
                 </Reveal>
@@ -162,18 +193,14 @@ const LayoutPromotion = ({
           )}
         </Grid>
 
-        {withPagination && (
-          <PaginationLocal
-            page={withPagination?.page}
-            perPage={withPagination?.perPage}
-            totalPages={withPagination?.totalPages}
-            onChangePage={withPagination?.onChangePage}
-            onSetPerpage={value => withPagination?.onSetPerpage(String(value))}
-          />
-        )}
+        <PaginationLocal
+          page={page}
+          perPage={perPage}
+          totalPages={totalPages}
+          onChangePage={onChangePage}
+          onSetPerpage={value => onSetPerpage(String(value))}
+        />
       </Flex>
     </Card>
   );
 };
-
-export default LayoutPromotion;

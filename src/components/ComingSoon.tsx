@@ -2,7 +2,7 @@ import { Button, Center, Image, Stack, Text, Title } from '@mantine/core';
 import { IconArrowLeftToArc, IconBellRinging } from '@tabler/icons-react';
 import Link from 'next/link';
 
-export default function ComingSoonPage() {
+export const ComingSoonPage = () => {
   return (
     <Center className='min-h-[calc(100dvh-var(--header-height,0px))] w-full bg-white px-5 py-10'>
       <Stack align='center' gap={0} className='w-full max-w-5xl text-center'>
@@ -53,4 +53,4 @@ export default function ComingSoonPage() {
       </Stack>
     </Center>
   );
-}
+};

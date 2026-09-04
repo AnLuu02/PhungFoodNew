@@ -1,13 +1,25 @@
 'use client';
 import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
-import { ActionIcon, Box, Center, Divider, Flex, Group, Text } from '@mantine/core';
+import { ActionIcon, Box, Center, Divider, Group } from '@mantine/core';
 import { IconCheese, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
-import Image from 'next/image';
 import { memo, useCallback, useEffect, useState } from 'react';
+import Empty from '~/components/Empty';
 import Reveal from '~/components/Reveal';
+import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
+import { CarouselSkeleton } from './CarouselSkeleton';
 
-const TabsPanelCarousel = ({ data }: any) => {
+const TabsPanelCarousel = ({
+  data,
+  loading,
+  fetching,
+  posNav = 'left'
+}: {
+  data: ProductBase[];
+  loading: boolean;
+  fetching: boolean;
+  posNav?: 'left' | 'right' | 'none';
+}) => {
   const [embla, setEmbla] = useState<Embla | null>(null);
   const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
   const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
@@ -48,47 +60,41 @@ const TabsPanelCarousel = ({ data }: any) => {
           }
         />
       </Center>
-      <Center mb={{ base: 20, md: 0 }} className='hidden sm:block'>
-        <Group
-          gap={5}
-          pos={{ base: 'relative', sm: 'absolute', md: 'absolute' }}
-          top={{ base: 0, sm: 20, md: 20 }}
-          left={{ base: 0, sm: 10, md: 20 }}
-        >
-          <ActionIcon
-            radius={'50%'}
-            size={'lg'}
-            onClick={scrollPrev}
-            className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
-            disabled={!prevBtnEnabled}
+      {posNav !== 'none' && (
+        <Center mb={{ base: 20, md: 0 }} className='hidden sm:block'>
+          <Group
+            gap={5}
+            pos={{ base: 'relative', sm: 'absolute', md: 'absolute' }}
+            top={{ base: 0, sm: 20, md: 20 }}
+            className={`${posNav === 'left' ? 'left-0 sm:left-[10px] md:left-[20px]' : 'md:right[-2px]0 right-0 sm:right-[10px]'}`}
           >
-            <IconChevronLeft size={30} />
-          </ActionIcon>
-          <ActionIcon
-            radius={'50%'}
-            size={'lg'}
-            onClick={scrollNext}
-            className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
-            disabled={!nextBtnEnabled}
-          >
-            <IconChevronRight size={30} />
-          </ActionIcon>
-        </Group>
-      </Center>
-      {data?.length === 0 ? (
-        <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
-          <Image
-            style={{ objectFit: 'cover' }}
-            loading='lazy'
-            src={'/images/png/empty_cart.png'}
-            width={100}
-            height={100}
-            alt={'empty cart'}
-          />
-          <Text size='xl' fw={700} c={'dimmed'}>
-            Không có sản phẩm phù hợp
-          </Text>
-        </Flex>
+            <ActionIcon
+              radius={'50%'}
+              size={'lg'}
+              onClick={scrollPrev}
+              className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
+              disabled={!prevBtnEnabled}
+            >
+              <IconChevronLeft size={30} />
+            </ActionIcon>
+            <ActionIcon
+              radius={'50%'}
+              size={'lg'}
+              onClick={scrollNext}
+              className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
+              disabled={!nextBtnEnabled}
+            >
+              <IconChevronRight size={30} />
+            </ActionIcon>
+          </Group>
+        </Center>
+      )}
+      {loading ? (
+        <>
+          <CarouselSkeleton />
+        </>
+      ) : data?.length === 0 ? (
+        <Empty content='' title='Không có sản phẩm phù hợp' hasButton={false} />
       ) : (
         <Carousel
           w='100%'
@@ -102,8 +108,8 @@ const TabsPanelCarousel = ({ data }: any) => {
           getEmblaApi={setEmbla}
           containScroll='trimSnaps'
         >
-          {data.map((product: any, index: number) => (
-            <CarouselSlide key={index} h={320}>
+          {data.map((product, index: number) => (
+            <CarouselSlide key={index} h={320} style={{ opacity: fetching ? 0.6 : 1, transition: 'opacity 0.2s' }}>
               <Reveal key={product.id + index} x={(index + 1) * 2} delay={index * 0.01}>
                 <ProductCardCarouselVertical data={product} key={product.id} />
               </Reveal>

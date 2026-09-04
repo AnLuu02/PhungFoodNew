@@ -16,37 +16,45 @@ import {
 } from '@mantine/core';
 import { IconChevronRightFilled, IconShoppingCart } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
-import TabsPanelCarousel from './TabsPanel';
-const LayoutProductCarouselWithImage = ({
+import { Fragment, useCallback, useState } from 'react';
+import { _LOAI } from '~/shared/schema/product.filter.schema';
+import { CategoryProps } from '~/shared/type-trpc/category.type-trpc';
+import { api } from '~/trpc/react';
+import TabsPanelCarousel from '../components/CarouselSection';
+
+type Props = {
+  title?: string;
+  content?: string;
+  imageUrl?: string;
+  loai: _LOAI;
+  reverseGrid?: boolean;
+  categories: CategoryProps;
+};
+
+export const ProductCarouselWithSidebarBannerSection = ({
   title,
   content,
   loai,
   imageUrl,
-  data,
-  reverseGrid
-}: {
-  title?: string;
-  content?: string;
-  imageUrl?: string;
-  loai: string;
-  data: any;
-  reverseGrid?: boolean;
-}) => {
-  const [active, setActive] = useState<'danh-muc-an-vat-trang-mieng' | 'danh-muc-mon-chinh' | 'danh-muc-mon-chay'>(
-    'danh-muc-an-vat-trang-mieng'
+  reverseGrid,
+  categories
+}: Props) => {
+  const [active, setActive] = useState<string>(categories.init.tag);
+
+  const { data, isLoading, isFetching } = api.Product.find.useQuery(
+    { page: 1, limit: 6, loai, 'danh-muc': active },
+    { enabled: !!active, placeholderData: previousData => previousData }
   );
 
-  const activeMap: Record<string, string> = {
-    'danh-muc-an-vat-trang-mieng': 'danh-muc-an-vat-trang-mieng',
-    'danh-muc-mon-chinh': 'danh-muc-mon-chinh',
-    'danh-muc-mon-chay': 'danh-muc-mon-chay'
-  };
-  const dataProps = useMemo(() => {
-    if (!data) return [];
-    const tag = activeMap[active] || 'danh-muc-an-vat-trang-mieng';
-    return data.filter((i: any) => i.subCategory.category.tag === tag);
-  }, [active]);
+  const products = data?.products ?? [];
+
+  const utils = api.useUtils();
+
+  const handlePrefetch = useCallback((categoryTag: string) => {
+    if (active === categoryTag) return;
+    void utils.Product.find.prefetch({ page: 1, limit: 6, loai, 'danh-muc': categoryTag });
+  }, []);
+
   return (
     <Card mih={500} h={{ base: 'max-content', md: 500 }} className='bg-gray-100 dark:bg-dark-background' p={0}>
       <Flex h={'100%'} direction={{ base: 'column', md: reverseGrid ? 'row-reverse' : 'row' }}>
@@ -77,7 +85,7 @@ const LayoutProductCarouselWithImage = ({
           </Stack>
         </BackgroundImage>
         <Tabs
-          defaultValue='danh-muc-an-vat-trang-mieng'
+          defaultValue={categories.init.tag}
           value={active}
           onChange={(value: any) => setActive(value)}
           variant='pills'
@@ -98,32 +106,30 @@ const LayoutProductCarouselWithImage = ({
             <Box></Box>
             <TabsList justify='center'>
               <Flex align={'center'}>
-                <TabsTab value='danh-muc-an-vat-trang-mieng' size={'xl'}>
-                  <Text size='md' fw={700}>
-                    Ăn vặt
-                  </Text>
-                </TabsTab>
-                <Text size='xs' p={0} m={0} c={'dimmed'}>
-                  //
-                </Text>
-                <TabsTab value='danh-muc-mon-chinh' size={'xl'}>
-                  <Text size='md' fw={700}>
-                    Món chính
-                  </Text>
-                </TabsTab>
-                <Text size='xs' p={0} m={0} c={'dimmed'}>
-                  //
-                </Text>
-                <TabsTab value='danh-muc-mon-chay' size={'xl'}>
-                  <Text size='md' fw={700}>
-                    Món chay
-                  </Text>
-                </TabsTab>
+                {categories.priorityCategories.map((c, index) => (
+                  <Fragment key={c.tag + c.name}>
+                    <TabsTab
+                      value={c.tag}
+                      size={'xl'}
+                      onMouseEnter={() => handlePrefetch(c.tag)}
+                      onPointerDown={() => handlePrefetch(c.tag)}
+                    >
+                      <Text size='md' fw={700}>
+                        {c.name}
+                      </Text>
+                    </TabsTab>
+                    {index < categories.priorityCategories.length - 1 && (
+                      <Text size='xs' p={0} m={0} c={'dimmed'} key={c.tag + c.name + 'text'}>
+                        //
+                      </Text>
+                    )}
+                  </Fragment>
+                ))}
               </Flex>
             </TabsList>
           </Flex>
           <TabsPanel value={active} mih={320}>
-            <TabsPanelCarousel data={dataProps} />
+            <TabsPanelCarousel data={products} loading={isLoading} fetching={isFetching} />
           </TabsPanel>
 
           <Flex align={'center'} justify={'center'} mt={30}>
@@ -144,5 +150,3 @@ const LayoutProductCarouselWithImage = ({
     </Card>
   );
 };
-
-export default LayoutProductCarouselWithImage;

@@ -19,3 +19,5 @@ export const productFilterSchema = z.object({
 export const defaultProductFilters = productFilterSchema.parse({});
 
 export type FilterProductOptions = z.infer<typeof productFilterSchema>;
+
+export type _LOAI = 'san-pham-ban-chay' | 'san-pham-giam-gia' | 'san-pham-moi' | 'san-pham-hot';

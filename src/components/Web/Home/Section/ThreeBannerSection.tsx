@@ -1,7 +1,7 @@
 import { Box, Button, Card, Grid, GridCol, Title } from '@mantine/core';
 import Link from 'next/link';
 
-const LayoutGrid3Col = () => {
+export const ThreeBannerSection = () => {
   return (
     <Grid>
       <GridCol span={{ base: 12, xs: 6, xl: 4 }}>
@@ -75,5 +75,3 @@ const LayoutGrid3Col = () => {
     </Grid>
   );
 };
-
-export default LayoutGrid3Col;

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-type ReusablePromoBannerProps = {
+type Props = {
   title: string;
   subtitle?: React.ReactNode | string;
   buttonText?: string;
@@ -21,7 +21,7 @@ type ReusablePromoBannerProps = {
   textColor?: string;
 };
 
-export default function ReusablePromoBanner({
+export const ReusablePromoBanner = ({
   title,
   subtitle,
   buttonText = 'Khám phá ngay',
@@ -35,7 +35,7 @@ export default function ReusablePromoBanner({
   reverse = false,
   bgColor = '#f8f9fa',
   textColor = 'text-gray-900 dark:text-dark-text'
-}: ReusablePromoBannerProps) {
+}: Props) => {
   if (backgroundImage) {
     return (
       <Card className='relative overflow-hidden rounded-2xl border-0 shadow-2xl' p={0}>
@@ -153,4 +153,4 @@ export default function ReusablePromoBanner({
       </Box>
     </Card>
   );
-}
+};

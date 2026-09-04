@@ -4,4 +4,11 @@ export type FindCategory = RouterOutputs['Category']['find'];
 
 export type CategoryBasic = NonNullable<RouterOutputs['Category']['getBasic']>;
 export type CategoryOnly = NonNullable<RouterOutputs['Category']['getCategoriesOnly']>;
-export type CategoryWithRelationBasic = NonNullable<RouterOutputs['Category']['getCategoriesWithRelationBasic']>;
+export type CategoryWithRelationBasic = NonNullable<
+  RouterOutputs['Category']['getCategoriesWithRelationBasic']
+>[number];
+
+export type CategoryProps = {
+  init: CategoryWithRelationBasic;
+  priorityCategories: CategoryWithRelationBasic[];
+};

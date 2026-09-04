@@ -1,48 +1,10 @@
 'use client';
 import { Paper, Stack } from '@mantine/core';
-import { useCallback, useEffect, useState } from 'react';
 import { SectionHeading } from '~/components/SectionHeading';
-import LayoutPromotion from '~/components/Web/Home/Section/Layout-Promotion';
-import { toNumber } from '~/lib/FuncHandler/Format';
+import { PromotionSection } from '~/components/Web/Home/Section/PromotionSection';
 import { FindProduct } from '~/shared/type-trpc/product.type-trpc';
-import { api } from '~/trpc/react';
 
 export const SectionPromotions = ({ initialData }: { initialData: FindProduct }) => {
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(6);
-
-  const { data, isLoading } = api.Product.find.useQuery(
-    {
-      page: page,
-      limit: perPage,
-      loai: 'san-pham-giam-gia'
-    },
-    {
-      initialData: page === 1 ? initialData : undefined,
-      staleTime: 0,
-      placeholderData: previousData => previousData
-    }
-  );
-  const productData = data?.products ?? [];
-  const totalPages = data?.pagination?.totalPages ?? 0;
-  const onChangePage = useCallback((value: number) => {
-    setPage(value);
-  }, []);
-  const onSetPerpage = useCallback((value: string) => {
-    setPerPage(toNumber(value) ?? 4);
-  }, []);
-
-  const utils = api.useUtils();
-  useEffect(() => {
-    if (data?.pagination.hasNext) {
-      void utils.Product.find.prefetch({
-        page: page + 1,
-        limit: perPage,
-        loai: 'san-pham-giam-gia'
-      });
-    }
-  }, [page]);
-
   return (
     <>
       <Stack gap={'xl'}>
@@ -53,21 +15,9 @@ export const SectionPromotions = ({ initialData }: { initialData: FindProduct })
           description=' Nhanh tay săn ngay những ưu đãi hấp dẫn này trước khi biến mất! Số lượng có hạn.'
         />
 
-        {productData?.length > 0 && (
-          <Paper radius={'xl'} withBorder className='mb-16 overflow-hidden border-2 border-dashed border-mainColor'>
-            <LayoutPromotion
-              data={productData}
-              withPagination={{
-                totalPages,
-                onChangePage,
-                onSetPerpage,
-                page,
-                perPage,
-                loading: isLoading
-              }}
-            />
-          </Paper>
-        )}
+        <Paper radius={'xl'} withBorder className='mb-16 overflow-hidden border-2 border-dashed border-mainColor'>
+          <PromotionSection />
+        </Paper>
       </Stack>
     </>
   );

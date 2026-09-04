@@ -10,7 +10,7 @@ import {
 import { Period } from '~/shared/types';
 
 export const pageRouter = createTRPCRouter({
-  getInit: publicProcedure.query(async ({ ctx }) => await getInitPageService(ctx.db)),
+  getInit: publicProcedure.query(async ({ ctx }) => await getInitPageService(ctx.db, null)),
   getInitAboutUs: publicProcedure.query(async ({ ctx }) => await getInitAboutUs(ctx.db)),
   getInitProductDetail: publicProcedure
     .input(z.object({ slug: z.string() }))

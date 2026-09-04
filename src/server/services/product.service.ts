@@ -123,9 +123,18 @@ const buildFilter = (input: FilterProductOptions) => {
       ? {
           materials: {
             some: {
-              tag: {
-                in: nguyenLieu
-              }
+              OR: [
+                {
+                  tag: {
+                    in: nguyenLieu
+                  }
+                },
+                {
+                  category: {
+                    in: nguyenLieu
+                  }
+                }
+              ]
             }
           }
         }
@@ -191,6 +200,30 @@ export const findProductService = async (db: PrismaClient, input: FilterProductO
       hasNext: Boolean(totalPages > page)
     }
   };
+};
+export const getGroupedByCategoriesService = async (
+  db: PrismaClient,
+  input: { categoryIds: string[]; limit: number }
+) => {
+  const { categoryIds, limit } = input;
+
+  return await Promise.all(
+    categoryIds.map(async id => {
+      const products = await db.product.findMany({
+        where: {
+          subCategory: {
+            categoryId: id
+          }
+        },
+        take: limit,
+        select: BASE_SELECT
+      });
+      return {
+        categoryId: id,
+        products: products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }))
+      };
+    })
+  );
 };
 
 export const findProductMinimalService = async (db: PrismaClient, input: FilterProductOptions) => {

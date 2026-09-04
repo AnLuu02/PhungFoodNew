@@ -1,27 +1,52 @@
 import { Space } from '@mantine/core';
 import Reveal from '~/components/Reveal';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import cooking_guilds from '~/lib/HardData/cooking_guilds.json';
-import { GetInitPage } from '~/shared/type-trpc/page.type-trpc';
+
+import { Suspense } from 'react';
+import { ComingSoonPage } from '~/components/ComingSoon';
+import { AppSkeleton } from '~/components/Loading/AppSkeleton';
+import { CategoryWithRelationBasic } from '~/shared/type-trpc/category.type-trpc';
+import { GetOneBanner } from '~/shared/type-trpc/restaurant.type-trpc';
+import { api, HydrateClient } from '~/trpc/server';
 import { PartnerCard } from '../Card/CardPartner';
-import ProductCardCarouselVertical from '../Card/CardProductCarouselVertical';
-import CardRecipe from '../Card/CardRecipe';
-import BannerSection from './Section/Banner-section';
-import CategoryCarouselHorizontal from './Section/Category-Carousel-Horizontal';
-import ReusablePromoBanner from './Section/Layout-Banner-Promotion';
-import LayoutGridCarouselOnly from './Section/Layout-Grid-Carousel-Only';
-import FastMenuSection from './Section/Layout-Menu-Quick-Sale-Order';
-import LayoutProductCarouselWithImage from './Section/Layout-Product-Carousel-With-Image';
-import LayoutProductCarouselWithImage2 from './Section/Layout-Product-Carousel-With-Image-2';
-import LayoutPromotion from './Section/Layout-Promotion';
-import LayoutGrid3Col from './Section/LayoutGrid3Col';
-const HomeWeb = ({ data }: { data: GetInitPage }) => {
-  const recipes = cooking_guilds;
+import { CarouselListBase } from './components/CarouselListBase';
+import { ReusablePromoBanner } from './components/ReusablePromoBanner';
+import { BannerSection } from './Section/BannerSection';
+import { CategoryCarouselSection } from './Section/CategoryCarouselSection';
+import { MultiCategoryListSection } from './Section/MultiCategoryListSection';
+import { ProductCarouselWithSidebarBannerSection } from './Section/ProductCarouselWithSidebarBannerSection';
+import { ProductCarouselWithTopTitleSection } from './Section/ProductCarouselWithTopTitleSection';
+import { ProductHotSection } from './Section/ProductHotSection';
+import { ProductNewSection } from './Section/ProductNewSection';
+import { PromotionSection } from './Section/PromotionSection';
+import { RecipeInstructionsSection } from './Section/RecipeInstructionsSection';
+import { ThreeBannerSection } from './Section/ThreeBannerSection';
+const HomeWeb = async ({ banners, categories }: { banners: GetOneBanner; categories: CategoryWithRelationBasic[] }) => {
+  const priorityCategories = categories.slice(0, 3);
+  const initCategory = priorityCategories?.[0];
+
+  if (!priorityCategories || priorityCategories.length === 0 || !initCategory) return <ComingSoonPage />;
+
+  const categoryProps = {
+    init: initCategory,
+    priorityCategories
+  };
+
+  const initLoai = ['san-pham-moi', 'san-pham-hot', 'san-pham-ban-chay'] as const;
+
+  const initMaterials = ['rau-cu', 'hai-san'];
+
+  await Promise.all([
+    ...initLoai.map(loai => api.Product.find.prefetch({ page: 1, limit: 6, loai, 'danh-muc': initCategory.tag })),
+    ...initMaterials.map(material => api.Product.find.prefetch({ page: 1, limit: 6, 'nguyen-lieu': [material] })),
+    api.Product.find.prefetch({ page: 1, limit: 6, loai: 'san-pham-giam-gia' })
+  ]);
+
   return (
-    <>
-      {data?.banner && (
+    <HydrateClient>
+      {banners && (
         <>
-          <BannerSection banner={data.banner} />
+          <BannerSection banner={banners} />
           <Space h='xl' />
         </>
       )}
@@ -47,156 +72,94 @@ const HomeWeb = ({ data }: { data: GetInitPage }) => {
         />
       </Reveal>
       <Space h='xl' />
-      {data.category?.anVat && (
-        <Reveal z={50}>
-          <CategoryCarouselHorizontal data={data.category} />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
-      {data.productBestSaler?.products?.length > 0 && (
-        <Reveal z={50}>
-          <LayoutProductCarouselWithImage
-            imageUrl='/images/jpg/best-saller.jpg'
-            data={data.productBestSaler?.products}
-            loai='san-pham-ban-chay'
-          />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
       <Reveal z={50}>
-        <LayoutGrid3Col />
+        <CategoryCarouselSection categories={categoryProps} />
         <Space h='xl' />
       </Reveal>
 
-      {data.productDiscount?.products?.length > 0 && (
-        <Reveal z={50}>
-          <LayoutPromotion data={data.productDiscount?.products} />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
-      {data.productHot?.products?.length > 0 && (
-        <Reveal z={50}>
-          <LayoutProductCarouselWithImage
-            imageUrl='/images/jpg/hot.jpg'
-            data={data.productHot?.products}
-            reverseGrid={true}
-            title='Sản phẩm nổi bật trong cửa hàng'
-            content='Ưu đãi độc quyền - Giảm giá cho hóa đơn trên 100.000 VNĐ'
-            loai='san-pham-hot'
-          />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
-      {data.productHot?.products?.length > 0 && (
-        <Reveal z={50}>
-          <LayoutGridCarouselOnly
-            title='Sản phẩm nổi bật'
-            data={data.productHot?.products}
-            navigation={{
-              href: '/thuc-don?loai=san-pham-hot',
-              label: 'Xem tất cả'
-            }}
-            CardElement={ProductCardCarouselVertical}
-          />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
-      {data.productNew?.products?.length > 0 && (
-        <Reveal z={50}>
-          <LayoutGridCarouselOnly
-            title='Sản phẩm mới'
-            data={data.productNew?.products}
-            navigation={{
-              href: '/thuc-don?loai=san-pham-moi',
-              label: 'Xem tất cả'
-            }}
-            CardElement={ProductCardCarouselVertical}
-          />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
-      {data.materials?.rauCu?.products?.length > 0 && (
-        <Reveal z={50}>
-          <LayoutProductCarouselWithImage2
-            data={{ 'rau-cu': data.materials.rauCu, 'cac-loai-nam': data.materials.cacLoaiNam }}
-            title='Thanh đạm'
-            navbar={[
-              { label: 'Rau củ', key: 'rau-cu', url: 'rau-cu' },
-              { label: 'Các loại nấm', key: 'cac-loai-nam', url: 'cac-loai-nam' }
-            ]}
-          />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
-      {data.materials?.thitTuoi?.products?.length > 0 && (
-        <Reveal z={50}>
-          <LayoutProductCarouselWithImage2
-            data={{ 'hai-san': data.materials.haiSan, 'thit-tuoi': data.materials.thitTuoi }}
-            title='Tươi ngon'
-            imgaePositon={'right'}
-            navbar={[
-              { label: 'Thịt tươi', key: 'thit-tuoi', url: 'thit-tuoi' },
-              { label: 'Hải sản', key: 'hai-san', url: 'hai-san' }
-            ]}
-          />
-          <Space h='xl' />
-        </Reveal>
-      )}
-
       <Reveal z={50}>
-        <LayoutGridCarouselOnly
-          title='Video hướng dẫn'
-          data={recipes}
-          configs={{
-            slideSize: { base: Boolean(recipes?.length > 1) ? '70%' : '100%', sm: '50%', md: '25%' },
-            h: 'max-content'
-          }}
-          navigation={{
-            href: '/',
-            label: 'Xem tất cả'
-          }}
-          CardElement={CardRecipe}
+        <ProductCarouselWithSidebarBannerSection
+          imageUrl='/images/jpg/best-saller.jpg'
+          categories={categoryProps}
+          loai='san-pham-ban-chay'
         />
         <Space h='xl' />
       </Reveal>
-      {/* <>
-          <LayoutGridCarouselOnly
-            title='Tin tức tiêu dùng'
-            data={data.news?.news}
-            configs={{
-              slideSize: { base: '100%', sm: '50%', md: '25%' },
-              h: 'max-content'
-            }}
-            navigation={{
-              href: '/tin-tuc',
-              label: 'Xem tất cả'
-            }}
-            CardElement={ConsumerCard}
-          />
-          <Space h='xl' />
-        </> */}
 
-      {(data.category.anVat || data.category.thucUong || data.category.monChinh) && (
+      <Reveal z={50}>
+        <ThreeBannerSection />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <PromotionSection />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ProductCarouselWithSidebarBannerSection
+          imageUrl='/images/jpg/hot.jpg'
+          reverseGrid={true}
+          categories={categoryProps}
+          title='Sản phẩm nổi bật trong cửa hàng'
+          content='Ưu đãi độc quyền - Giảm giá cho hóa đơn trên 100.000 VNĐ'
+          loai='san-pham-hot'
+        />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <Suspense fallback={<AppSkeleton />}>
+          <ProductHotSection />
+        </Suspense>
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <Suspense fallback={<AppSkeleton />}>
+          <ProductNewSection />
+        </Suspense>
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ProductCarouselWithTopTitleSection
+          title='Thanh đạm'
+          categories={[
+            { name: 'Rau củ', tag: 'rau-cu' },
+            { name: 'Các loại nấm', tag: 'cac-loai-nam' }
+          ]}
+        />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ProductCarouselWithTopTitleSection
+          categories={[
+            { name: 'Hải sản', tag: 'hai-san' },
+            { name: 'Thịt tươi', tag: 'thit-tuoi' }
+          ]}
+          title='Tươi ngon'
+          imgaePositon={'right'}
+        />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <Suspense fallback={<AppSkeleton />}>
+          <RecipeInstructionsSection />
+        </Suspense>
+        <Space h='xl' />
+      </Reveal>
+
+      <Suspense fallback={<AppSkeleton />}>
         <Reveal z={50}>
-          <FastMenuSection
-            data={{
-              anVat: data.category.anVat,
-              thucUong: data.category.thucUong,
-              monChinh: data.category.monChinh
-            }}
-          />
+          <MultiCategoryListSection categories={categoryProps} />
         </Reveal>
-      )}
+      </Suspense>
       <Reveal z={50}>
         <Space h='xl' />
-        <LayoutGridCarouselOnly
+        <CarouselListBase
           title='Đối tác của chúng tôi'
           data={Array.from({ length: 7 }, (_, i) => `/images/webp/img_brand_${i + 1}.webp`)}
           configs={{
@@ -207,7 +170,7 @@ const HomeWeb = ({ data }: { data: GetInitPage }) => {
           CardElement={PartnerCard}
         />
       </Reveal>
-    </>
+    </HydrateClient>
   );
 };
 

@@ -1,0 +1,197 @@
+'use client';
+import { Carousel, CarouselSlide, Embla } from '@mantine/carousel';
+import {
+  ActionIcon,
+  Box,
+  Card,
+  CardSection,
+  Center,
+  Flex,
+  Group,
+  Stack,
+  Tabs,
+  TabsList,
+  TabsPanel,
+  TabsTab,
+  Text,
+  Title,
+  Tooltip
+} from '@mantine/core';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Image from 'next/image';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Empty from '~/components/Empty';
+import Reveal from '~/components/Reveal';
+import { CategoryProps } from '~/shared/type-trpc/category.type-trpc';
+
+export const CategoryCarouselSection = ({ categories }: { categories: CategoryProps }) => {
+  const [active, setActive] = useState<string>(categories.init.tag);
+  const [embla, setEmbla] = useState<Embla | null>(null);
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+
+  const scrollPrev = useCallback(() => embla && embla.scrollPrev(), [embla]);
+  const scrollNext = useCallback(() => embla && embla.scrollNext(), [embla]);
+
+  const onSelect = useCallback(() => {
+    if (!embla) return;
+    setPrevBtnEnabled(embla.canScrollPrev());
+    setNextBtnEnabled(embla.canScrollNext());
+  }, [embla]);
+
+  useEffect(() => {
+    if (embla) {
+      embla.on('select', onSelect);
+      onSelect();
+    }
+  }, [embla, onSelect]);
+
+  const dataProps = useMemo(() => {
+    if (!active) return;
+    return categories.priorityCategories.find(c => c.tag === active);
+  }, [active, categories]);
+
+  return (
+    <Tabs
+      className='relative'
+      defaultValue={categories.init.tag}
+      variant='pills'
+      classNames={{
+        tab: `hover:bg-transparent hover:text-subColor data-[active=true]:bg-transparent data-[active=true]:text-subColor`
+      }}
+      value={active}
+      onChange={(value: any) => setActive(value)}
+    >
+      <Flex
+        align='center'
+        justify='space-between'
+        direction={{ base: 'column', sm: 'row', lg: 'row', md: 'row' }}
+        gap={'md'}
+        pb={{ base: 0, md: 'sm' }}
+      >
+        <Title
+          order={2}
+          w={{ base: '100%', sm: 'max-content', md: '33.33333%' }}
+          className='cursor-pointer text-center font-quicksand font-bold hover:text-mainColor sm:text-left'
+        >
+          Danh mục nổi bật
+        </Title>
+        <TabsList justify='center' w={{ base: '100%', sm: 'max-content', md: '33.33333%' }}>
+          {categories.priorityCategories.map(c => (
+            <TabsTab value={c.tag} key={c.tag} size={'xl'}>
+              <Text size='md' fw={700}>
+                {c.name}
+              </Text>
+            </TabsTab>
+          ))}
+        </TabsList>
+        <Box w={{ base: '100%', sm: 'max-content', md: '33.33333%' }}></Box>
+      </Flex>
+
+      <TabsPanel value={active} mih={200}>
+        {!dataProps ? (
+          <Empty size={'sm'} />
+        ) : (
+          <>
+            <Center mb={{ base: 20, md: 0 }} className='hidden sm:block'>
+              <Group
+                gap={5}
+                pos={{ base: 'relative', sm: 'absolute', md: 'absolute' }}
+                top={{ base: 0, sm: 8, md: 0 }}
+                right={0}
+              >
+                <ActionIcon
+                  radius={'50%'}
+                  size={'lg'}
+                  onClick={scrollPrev}
+                  className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
+                  disabled={!prevBtnEnabled}
+                >
+                  <IconChevronLeft size={30} />
+                </ActionIcon>
+                <ActionIcon
+                  radius={'50%'}
+                  size={'lg'}
+                  onClick={scrollNext}
+                  className='bg-mainColor duration-200 hover:bg-subColor disabled:bg-transparent'
+                  disabled={!nextBtnEnabled}
+                >
+                  <IconChevronRight size={30} />
+                </ActionIcon>
+              </Group>
+            </Center>
+            {dataProps.subCategory.length === 0 ? (
+              <Flex direction={'column'} justify={'center'} align={'center'} py={10}>
+                <Image
+                  style={{ objectFit: 'cover' }}
+                  loading='lazy'
+                  src={'/images/png/empty_cart.png'}
+                  width={100}
+                  height={100}
+                  alt={'empty cart'}
+                />
+                <Text size='xl' fw={700} c={'dimmed'}>
+                  Không có sản phẩm phù hợp
+                </Text>
+              </Flex>
+            ) : (
+              <Carousel
+                slideSize={{
+                  base: Boolean(dataProps?.subCategory.length > 1) ? '50%' : '100%',
+                  xl: '11.11%',
+                  sm: '25%',
+                  md: '20%'
+                }}
+                slideGap='4px'
+                h={200}
+                align='start'
+                withControls={false}
+                withIndicators
+                slidesToScroll={1}
+                getEmblaApi={setEmbla}
+                containScroll='trimSnaps'
+              >
+                {dataProps?.subCategory.map((item, index: number) => (
+                  <CarouselSlide key={item.tag}>
+                    <Reveal key={item.tag + index} x={(index + 1) * 2} delay={index * 0.01}>
+                      <Card
+                        padding='lg'
+                        component='a'
+                        withBorder
+                        h={200}
+                        href={`/thuc-don?danh-muc=${dataProps?.tag}&loai-san-pham=${item?.tag}`}
+                        className='hover:border-10 cursor-pointer bg-gray-100 duration-150 hover:border-mainColor hover:shadow-lg dark:bg-dark-card dark:hover:border-mainColor/50 dark:hover:shadow-lg'
+                      >
+                        <CardSection>
+                          <Box w={'100%'} h={120} pos={'relative'}>
+                            <Image
+                              style={{ objectFit: 'cover' }}
+                              loading='lazy'
+                              src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                              fill
+                              alt={item?.name || 'Cà chua'}
+                            />
+                          </Box>
+                        </CardSection>
+                        <Stack gap={1} mt={'xs'} align='center'>
+                          <Tooltip label={item?.name || 'Cà chua'} withArrow>
+                            <Text size={'md'} fw={700} lineClamp={1} className='hover:text-mainColor'>
+                              {item?.name || 'Cà chua'}
+                            </Text>
+                          </Tooltip>
+                          <Text c='dimmed' size='xs'>
+                            {item._count.products || 0} sản phẩm
+                          </Text>
+                        </Stack>
+                      </Card>
+                    </Reveal>
+                  </CarouselSlide>
+                ))}
+              </Carousel>
+            )}
+          </>
+        )}
+      </TabsPanel>
+    </Tabs>
+  );
+};

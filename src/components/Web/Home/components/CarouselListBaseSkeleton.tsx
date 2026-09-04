@@ -1,7 +1,7 @@
 'use client';
 import { Card, Flex, Skeleton, Stack } from '@mantine/core';
 
-const LayoutGridCarouselOnlySkeleton = ({ minHeight }: { minHeight?: string | number }) => {
+export const CarouselListBaseSkeleton = ({ minHeight }: { minHeight?: string | number }) => {
   return (
     <Card mih={minHeight || 500} className='bg-gray-100 dark:bg-dark-background' p='lg'>
       <Flex direction='column' h='100%' w='100%' gap='md'>
@@ -31,5 +31,3 @@ const LayoutGridCarouselOnlySkeleton = ({ minHeight }: { minHeight?: string | nu
     </Card>
   );
 };
-
-export default LayoutGridCarouselOnlySkeleton;

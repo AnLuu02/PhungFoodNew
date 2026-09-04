@@ -1,5 +1,7 @@
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
+import { Session } from 'next-auth';
+import { UserRole } from '~/shared/constants/user.constants';
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { BannerReqCloudinary } from '~/shared/schema/restaurant.banner.schema';
 
@@ -130,9 +132,14 @@ export const upsertBannerService = async (db: PrismaClient, input: BannerReqClou
   };
 };
 
-export const getOneBannerService = async (db: PrismaClient, input: { isActive?: boolean }) => {
+export const getOneBannerService = async (db: PrismaClient, session: Session | null) => {
+  const isManagers =
+    session &&
+    (session?.user.role !== UserRole.CUSTOMER ||
+      ['update:banner', 'create:banner'].includes(session?.user.permissions));
+
   return await db.banner.findFirst({
-    where: input.isActive ? { isActive: input.isActive } : undefined,
+    where: !isManagers ? { isActive: true } : undefined,
     include: {
       imageForEntities: { select: { type: true, altText: true, image: { select: { url: true } } } }
     }

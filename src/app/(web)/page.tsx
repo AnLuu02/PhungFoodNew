@@ -2,6 +2,7 @@ import { Box } from '@mantine/core';
 import { Metadata } from 'next';
 import HomeWeb from '~/components/Web/Home/HomeWeb';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { PAGE_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
 
 export const revalidate = 60 * 60;
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
 
 const getInit = async () => {
   try {
-    return await withRedisCache('page:homeWeb', () => api.Page.getInit(), 60 * 60);
+    return await withRedisCache(PAGE_KEY.home, () => api.Page.getInit(), 60 * 60);
   } catch {
     return await api.Page.getInit();
   }
@@ -22,9 +23,10 @@ const getInit = async () => {
 
 const HomePage = async () => {
   const data = await getInit();
+
   return (
     <Box className='relative w-full overflow-hidden'>
-      <HomeWeb data={data} />;
+      <HomeWeb banners={data?.banners} categories={data?.categories} />;
     </Box>
   );
 };

@@ -19,7 +19,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback, useEffect, useState } from 'react';
 
-const LayoutGridCarouselOnly = ({
+export const CarouselListBase = ({
   data,
   title,
   navigation,
@@ -180,5 +180,3 @@ const LayoutGridCarouselOnly = ({
     </Card>
   );
 };
-
-export default LayoutGridCarouselOnly;

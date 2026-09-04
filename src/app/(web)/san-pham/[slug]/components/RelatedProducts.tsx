@@ -1,5 +1,5 @@
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
-import LayoutGridCarouselOnly from '~/components/Web/Home/Section/Layout-Grid-Carousel-Only';
+import { CarouselListBase } from '~/components/Web/Home/components/CarouselListBase';
 import { api } from '~/trpc/server';
 
 export default async function RelatedProducts({ productId, subCateTag }: { productId?: string; subCateTag?: string }) {
@@ -11,7 +11,7 @@ export default async function RelatedProducts({ productId, subCateTag }: { produ
   if (!relatedProducts) return;
 
   return (
-    <LayoutGridCarouselOnly
+    <CarouselListBase
       title='Sản phẩm liên quan'
       data={relatedProducts}
       navigation={{

@@ -8,6 +8,7 @@ import {
   findProductService,
   getBaseProductService,
   getFilterProductService,
+  getGroupedByCategoriesService,
   getOneProductService,
   getProductsOnlyService,
   upsertProductToCloudinaryService
@@ -20,6 +21,16 @@ export const productRouter = createTRPCRouter({
   find: publicProcedure
     .input(productFilterSchema.extend({ include: z.custom<Prisma.ProductInclude>().optional() }))
     .query(async ({ ctx, input }) => await findProductService(ctx.db, input)),
+
+  getGroupedByCategories: publicProcedure
+    .input(
+      z.object({
+        categoryIds: z.array(z.string()),
+        limit: z.number().default(10)
+      })
+    )
+    .query(async ({ ctx, input }) => await getGroupedByCategoriesService(ctx.db, input)),
+
   upsertToCloudinary: publicProcedure
     .use(requirePermission('update:product'))
     .use(requirePermission('create:product'))

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { Session } from 'next-auth';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import dayjs from '~/lib/dayjs';
 import { moneyToNumber } from '~/lib/FuncHandler/Format';
@@ -6,6 +7,7 @@ import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { UserRole } from '~/shared/constants/user.constants';
 import { Period } from '~/shared/types';
 import { getAllActivitiesService } from './activityLogger.service';
+import { getCategoriesWithRelationBasicService } from './category.service';
 import { findProductService, getFilterProductService, getOneProductService } from './product.service';
 import { getOneBannerService } from './restaurant.banner.service';
 import { getBaseRestaurantActiveClientService } from './restaurant.service';
@@ -20,138 +22,18 @@ import {
 import { findReviewService } from './review.service';
 import { getVoucherAppliedAllService } from './voucher.service';
 
-export const getInitPageService = async (db: PrismaClient) => {
-  const last7Days = new Date();
-  last7Days.setDate(last7Days.getDate() - 7);
-
-  const categoryTags = ['danh-muc-an-vat-trang-mieng', 'danh-muc-mon-chinh', 'danh-muc-mon-chay', 'danh-muc-do-uong'];
-  const materialsTags = ['thit-tuoi', 'hai-san', 'rau-cu', 'cac-loai-nam'];
-  const productConditions = [
-    { discount: { gt: 0 } },
-    { soldQuantity: { gt: 20 } },
-    { updatedAt: { gte: last7Days } },
-    { rating: { gte: 4 } },
-    ...materialsTags.map(m => {
-      return { materials: { some: { tag: m } } };
-    })
-  ];
-
-  const [banner, subCategories, products] = await Promise.all([
-    getOneBannerService(db, { isActive: true }),
-
-    db.subCategory.findMany({
-      where: {
-        category: { tag: { in: categoryTags } }
-      },
-      include: {
-        category: { select: { name: true, tag: true } },
-        imageForEntity: {
-          select: {
-            altText: true,
-            type: true,
-            image: {
-              select: {
-                url: true
-              }
-            }
-          }
-        },
-        products: {
-          where: {
-            isActive: true
-          },
-          include: {
-            favouriteFoods: {
-              select: {
-                productId: true,
-                userId: true
-              }
-            },
-            imageForEntities: {
-              select: {
-                altText: true,
-                type: true,
-                image: {
-                  select: {
-                    url: true
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }),
-
-    db.product.findMany({
-      where: {
-        isActive: true,
-        OR: productConditions
-      },
-      take: 200,
-      include: {
-        imageForEntities: {
-          select: {
-            altText: true,
-            type: true,
-            image: {
-              select: {
-                url: true
-              }
-            }
-          }
-        },
-        materials: true,
-        subCategory: {
-          include: {
-            category: { select: { name: true, tag: true } }
-          }
-        },
-        review: true,
-        favouriteFoods: { select: { productId: true, userId: true } }
-      }
-    })
+export const getInitPageService = async (db: PrismaClient, session: Session | null) => {
+  const [banners, categories] = await Promise.all([
+    getOneBannerService(db, session),
+    getCategoriesWithRelationBasicService(db)
   ]);
 
-  const pick = (fn: (p: any) => boolean) =>
-    products
-      .map(p => ({ ...p, price: moneyToNumber(p.price), discount: moneyToNumber(p.discount) }))
-      .filter(fn)
-      .slice(0, 10)
-      .map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));
-
-  const byMaterial = (tag: string) => pick(p => p.materials?.some((m: any) => m.tag === tag));
-
-  const category = (tag: string) =>
-    subCategories
-      .filter(sc => sc.category?.tag === tag)
-      .slice(0, 10)
-      .map(s => ({
-        ...s,
-        products: s.products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }))
-      }));
   return {
-    banner,
-    category: {
-      anVat: category('danh-muc-an-vat-trang-mieng'),
-      monChinh: category('danh-muc-mon-chinh'),
-      monChay: category('danh-muc-mon-chay'),
-      thucUong: category('danh-muc-do-uong')
-    },
-
-    materials: {
-      thitTuoi: { products: byMaterial('thit-tuoi') },
-      haiSan: { products: byMaterial('hai-san') },
-      rauCu: { products: byMaterial('rau-cu') },
-      cacLoaiNam: { products: byMaterial('cac-loai-nam') }
-    },
-
-    productDiscount: { products: pick(p => p.discount > 0) },
-    productBestSaler: { products: pick(p => p.soldQuantity > 20) },
-    productNew: { products: pick(p => new Date(p.updatedAt) >= last7Days) },
-    productHot: { products: pick(p => p.rating >= 4) }
+    banners,
+    categories
   };
 };
+
 export const getInitProductDetailPageService = async (db: PrismaClient, input: { slug: string }) => {
   const product = await getOneProductService(db, {
     key: input.slug

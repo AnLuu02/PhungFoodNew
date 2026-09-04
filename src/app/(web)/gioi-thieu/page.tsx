@@ -33,6 +33,7 @@ import Reveal from '~/components/Reveal';
 import { TextTyping } from '~/components/TextTyping';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { journey, signatures, stats } from '~/shared/constants/about-us.constants';
+import { PAGE_KEY } from '~/shared/constants/redis-keys';
 import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
 import { api } from '~/trpc/server';
 import { SectionHeading } from '../../../components/SectionHeading';
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
 
 const getInitAboutUs = async () => {
   try {
-    return await withRedisCache('page:InitAboutUs', () => api.Page.getInitAboutUs(), 60 * 60);
+    return await withRedisCache(PAGE_KEY.about, () => api.Page.getInitAboutUs(), 60 * 60);
   } catch {
     return await api.Page.getInitAboutUs();
   }

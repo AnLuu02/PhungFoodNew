@@ -8,9 +8,9 @@ import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useRef } from 'react';
-import { GetInitPage } from '~/shared/type-trpc/page.type-trpc';
+import { GetOneBanner } from '~/shared/type-trpc/restaurant.type-trpc';
 
-export default function BannerSection({ banner }: { banner: NonNullable<GetInitPage['banner']> }) {
+export const BannerSection = ({ banner }: { banner: NonNullable<GetOneBanner> }) => {
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { gallery, banners } = useMemo(() => {
     const initial = { gallery: [], banners: [] };
@@ -153,4 +153,4 @@ export default function BannerSection({ banner }: { banner: NonNullable<GetInitP
       </Box>
     </Box>
   );
-}
+};
