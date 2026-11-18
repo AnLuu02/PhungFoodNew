@@ -34,7 +34,7 @@ import { notFound } from 'next/navigation';
 //         data &&
 //         !hasSent.current
 //       ) {
-//         const order: TGetOneOrder = data;
+//         const order: GetOneOrder = data;
 //         hasSent.current = true;
 //         const transDate = formatTransDate(order.transDate ? order.transDate.toString() : '');
 //         fetch('/api/send-invoice', {

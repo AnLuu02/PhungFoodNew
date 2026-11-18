@@ -22,7 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { TFindOrder, TGetAllOrder } from '~/shared/type-trpc/order.type-trpc';
+import { FindOrder, GetAllOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 
 export default function TableOrder() {
@@ -58,7 +58,7 @@ export default function TableOrder() {
           [OrderStatus.CANCELLED]: number;
           [OrderStatus.CONFIRMED]: number;
         },
-        item: TGetAllOrder[number]
+        item: GetAllOrder[number]
       ) => {
         acc.total += 1;
         item.status ? (acc[item.status as OrderStatus] += 1) : null;
@@ -194,7 +194,7 @@ export default function TableOrder() {
         {isLoading ? (
           <CommonSkeleton.Table count={5} />
         ) : currentItems.length > 0 ? (
-          currentItems.map((order: TFindOrder['orders'][number]) => {
+          currentItems.map((order: FindOrder['orders'][number]) => {
             const statusInfo = getStatusInfo(order.status as OrderStatus);
 
             return (

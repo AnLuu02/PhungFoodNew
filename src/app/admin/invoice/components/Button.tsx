@@ -29,7 +29,6 @@ import { Box, Card, Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { renderShortId } from '~/lib/FuncHandler/renderShortId';
 import { FindInvoice } from '~/shared/type-trpc/invoice.type-trpc';
 import InvoiceUpsert from './form/InvoiceUpsert';
@@ -214,36 +213,29 @@ export function ViewInvoiceButton({ data }: { data: FindInvoice['invoices'][numb
                   Chi tiết hàng hóa
                 </Title>
                 <Stack gap='xs'>
-                  {data.order?.orderItems?.map((item: any, idx: number) => (
+                  {data.order?.orderItems?.map((item, idx: number) => (
                     <Card key={idx} withBorder p='sm' className='transition-colors hover:bg-gray-50'>
                       <Flex justify='space-between' align='center'>
                         <Group>
                           <Paper w={50} h={50} pos={'relative'} className='overflow-hidden'>
-                            <Image
-                              src={
-                                getImageProduct(item?.product?.imageForEntities, 'THUMBNAIL') ||
-                                '/images/png/empty_cart.png'
-                              }
-                              fill
-                              alt='Anh mon an'
-                            />
+                            <Image src={item?.productImage || '/images/png/empty_cart.png'} fill alt='Anh mon an' />
                           </Paper>
                           <Box>
                             <Text fw={600} size='sm'>
-                              {item.product.name}
+                              {item.productName}
                             </Text>
                             <Text size='xs' c='dimmed'>
-                              Số lượng: {item.quantity} x {formatPriceLocaleVi(item.originalPrice)}
+                              Số lượng: {item.quantity} x {formatPriceLocaleVi(item.unitPrice)}
                             </Text>
                           </Box>
                         </Group>
                         <Box className='text-right'>
-                          {item.discountAmount > 0 && (
+                          {item.discount > 0 && (
                             <Text size='xs' c='red' td='line-through'>
-                              -{formatPriceLocaleVi(item.discountAmount * item.quantity)}
+                              -{formatPriceLocaleVi(item.discount * item.quantity)}
                             </Text>
                           )}
-                          <Text fw={700}>{formatPriceLocaleVi(item.subTotal)}</Text>
+                          <Text fw={700}>{formatPriceLocaleVi(item.totalPrice)}</Text>
                         </Box>
                       </Flex>
                     </Card>

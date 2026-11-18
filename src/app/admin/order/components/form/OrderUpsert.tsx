@@ -95,7 +95,7 @@ export default function OrderUpsert({
           id: item.id,
           productId: item.productId,
           quantity: item.quantity,
-          price: item.price
+          unitPrice: item.unitPrice
         }))
       });
     }
@@ -344,10 +344,12 @@ export default function OrderUpsert({
                 type='button'
                 onClick={() =>
                   appendOrderItem({
-                    id: undefined,
                     productId: '',
                     quantity: 1,
-                    price: 0
+                    unitPrice: 0,
+                    discount: 0,
+                    totalPrice: 0,
+                    productName: ''
                   })
                 }
                 variant='outline'

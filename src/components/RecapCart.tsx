@@ -39,6 +39,24 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
       });
     }, [JSON.stringify(cart), JSON.stringify(appliedVouchers)]);
 
+  const dataCheckout = cart.map(item => {
+    const quantity = item?.quantity ?? 0;
+    const unitPrice = item?.product.price ?? 0;
+    const discount = item?.product.discount ?? 0;
+
+    const totalPrice = unitPrice * quantity - discount * quantity;
+    return {
+      productId: item?.product.id || '',
+      note: item?.note ?? '',
+      unitPrice,
+      discount,
+      totalPrice,
+      quantity,
+      productName: item.product.name,
+      productImage: item.product.thumbnail
+    };
+  });
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -140,12 +158,7 @@ export const RecapCart = ({ quickOrder, limit }: { quickOrder?: boolean; limit?:
               finalAmount={finalAmount}
               originalAmount={totalOriginalPrice}
               discountAmount={totalDiscountAmount}
-              data={cart.map(item => ({
-                productId: item?.product.id || '',
-                note: item?.note ?? '',
-                price: item?.product.price ?? 0,
-                quantity: item?.quantity ?? 0
-              }))}
+              data={dataCheckout}
               taxAmount={tax}
               stylesButtonCheckout={{ children: 'Xác nhận', fullWidth: true, size: 'md' }}
             />

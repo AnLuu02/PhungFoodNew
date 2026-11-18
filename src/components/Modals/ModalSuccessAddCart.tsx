@@ -2,14 +2,12 @@
 
 import { Box, Button, Group, Modal, Paper, Stack, Text, Textarea } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
 import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { useCartStore } from '~/stores/cart.store';
 import { ModalProps } from '~/types/modal';
 import { useCartItem, useCartItems } from '../Hooks/use-cart';
@@ -33,6 +31,24 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
       vouchers: []
     });
   }, [item?.product?.id, item?.product?.price, item?.quantity]);
+
+  const dataCheckout = cart.map(item => {
+    const quantity = item?.quantity ?? 0;
+    const unitPrice = item?.product.price ?? 0;
+    const discount = item?.product.discount ?? 0;
+
+    const totalPrice = unitPrice * quantity - discount * quantity;
+    return {
+      productId: item?.product.id || '',
+      note: item?.note ?? '',
+      unitPrice,
+      discount,
+      totalPrice,
+      quantity,
+      productName: item.product.name,
+      productImage: item.product.thumbnail
+    };
+  });
 
   useEffect(() => {
     if (opened) {
@@ -89,9 +105,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
             >
               <Image
                 loading='lazy'
-                src={
-                  getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-                }
+                src={data?.thumbnailUrl || '/images/jpg/empty-300x240.jpg'}
                 alt={data?.name || 'Hành tây'}
                 fill
                 style={{ objectFit: 'cover' }}
@@ -152,12 +166,7 @@ export default function ModalSuccessAddToCart({ type, opened, onClose, data }: M
                 size: 'xs',
                 disabled: !note ? false : note === noteDebounced ? false : true
               }}
-              data={cart.map(item => ({
-                productId: item?.product.id || '',
-                note: item?.note ?? '',
-                price: item?.product.price ?? 0,
-                quantity: item?.quantity ?? 0
-              }))}
+              data={dataCheckout}
               finalAmount={finalAmount}
               originalAmount={totalOriginalPrice}
               taxAmount={tax}

@@ -8,8 +8,8 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
   try {
     const { discount, originalAmount } = invoiceData?.orderItems?.reduce(
       (acc: { discount: number; originalAmount: number }, item: any) => {
-        acc.discount += (item.discount || item.product?.discount || 0) * (item.quantity || 1);
-        acc.originalAmount += (item.price || 0) * (item.quantity || 1);
+        acc.discount += (item.discount || 0) * (item.quantity || 1);
+        acc.originalAmount += (item.unitPrice || 0) * (item.quantity || 1);
         return {
           discount: acc.discount,
           originalAmount: acc.originalAmount
@@ -191,10 +191,6 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
 
     if (invoiceData?.orderItems && invoiceData.orderItems.length > 0) {
       invoiceData.orderItems.forEach((item: any, index: number) => {
-        const itemTotal = item.price * item.quantity;
-        const itemDiscount = (item.discount || item.product?.discount || 0) * item.quantity;
-        const finalItemTotal = itemTotal - itemDiscount;
-
         page.drawRectangle({
           x: margin,
           y: y - rowHeight,
@@ -208,9 +204,9 @@ export const generatePDF = async (invoiceData: any): Promise<Buffer> => {
           (index + 1).toString(),
           item.product?.name || 'SP Không xác định',
           item.quantity.toString(),
-          formatPriceLocaleVi(item.price),
-          formatPriceLocaleVi(item.discount || item.product?.discount || 0),
-          formatPriceLocaleVi(finalItemTotal)
+          formatPriceLocaleVi(item.unitPrice),
+          formatPriceLocaleVi(item.discount || 0),
+          formatPriceLocaleVi(item?.totalPrice || 0)
         ];
 
         rowData.forEach((value, i) => {

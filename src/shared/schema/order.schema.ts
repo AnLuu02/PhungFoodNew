@@ -1,5 +1,6 @@
 import { OrderStatus } from '@prisma/client';
 import z from 'zod';
+import { moneySchema } from './base.schema';
 import { baseDeliverySchema } from './delivery.schema';
 
 export const baseOrderItemSchema = z.object({
@@ -8,10 +9,11 @@ export const baseOrderItemSchema = z.object({
   orderId: z.string().optional(),
   quantity: z.coerce.number({ required_error: 'Số lượng là bắt buộc' }).min(1, 'Số lượng phải ít nhất là 1'),
   note: z.string().optional(),
-  price: z
-    .number({ required_error: 'Giá trị phải lớn hơn hoặc bằng 1.000' })
-    .min(1000, 'Giá trị phải lớn hơn hoặc bằng 1.000')
-    .default(1000)
+  productName: z.string(),
+  productImage: z.string().optional(),
+  unitPrice: moneySchema,
+  discount: moneySchema,
+  totalPrice: moneySchema
 });
 
 export const baseOrderSchema = z.object({

@@ -17,13 +17,11 @@ export default function InvoicePrintTemplate(props: invoicePrintProps) {
 
   const { finalAmount, tax, totalProductDiscount, totalOriginalPrice, totalVoucherAmount } = useMemo(() => {
     return caculateAmount({
-      products: [
-        {
-          discount: productSale?.discount ?? 0,
-          price: productSale?.price ?? 0,
-          quantity: productSale?.quantity ?? 1
-        }
-      ],
+      products: productSale.map((p: any) => ({
+        discount: p?.discount ?? 0,
+        price: p?.unitPrice ?? 0,
+        quantity: p?.quantity ?? 1
+      })),
       vouchers: (data?.vouchers ?? [])?.map((voucher: any) => ({
         discountValue: voucher?.discountValue ?? 0,
         maxDiscount: voucher?.maxDiscount ?? 0,

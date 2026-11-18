@@ -102,7 +102,7 @@ export default function ProductUpsert({
     }
   }, [data, formFields.reset]);
   const utils = api.useUtils();
-  const updateMutation = api.Product.upsertToCloudinary.useMutation({
+  const updateMutation = api.Product.upsert.useMutation({
     onSuccess: () => {
       NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
       setOpened(false);
@@ -192,7 +192,8 @@ export default function ProductUpsert({
       ...formDataWithImageUrlAsString,
       id: formData?.id || '',
       descriptionDetailJson: formData.descriptionDetailJson,
-      descriptionDetailHtml: formData.descriptionDetailHtml
+      descriptionDetailHtml: formData.descriptionDetailHtml,
+      thumbnailUrl: thumbnailItem?.image?.url
     });
   };
   useEffect(() => {

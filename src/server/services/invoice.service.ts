@@ -99,7 +99,9 @@ export const findInvoiceService = async (
         shippingAmount: moneyToNumber(item.order?.shippingAmount),
         orderItems: item.order?.orderItems.map(orItem => ({
           ...orItem,
-          price: moneyToNumber(orItem.price),
+          unitPrice: moneyToNumber(orItem.unitPrice),
+          discount: moneyToNumber(orItem.discount),
+          totalPrice: moneyToNumber(orItem.totalPrice),
           product: {
             ...orItem.product,
             price: moneyToNumber(orItem.product.price),

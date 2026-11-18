@@ -7,13 +7,11 @@ import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
 import { ActionIcon, Card, Divider, Flex, Paper, Select, SimpleGrid, Stack, Title } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { UserRole } from '~/shared/constants/user.constants';
 import { FindProduct, getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
@@ -174,7 +172,7 @@ export default function TableProduct() {
               <Group justify='space-between' align='flex-start' wrap='nowrap'>
                 <Group align='flex-start' wrap='nowrap'>
                   <Avatar
-                    src={getImageProduct(item?.imageForEntities ?? [], ImageType.THUMBNAIL)}
+                    src={item?.thumbnailUrl || '/images/jpg/empty-300x240.jpg'}
                     alt={item.name}
                     size={64}
                     radius='md'

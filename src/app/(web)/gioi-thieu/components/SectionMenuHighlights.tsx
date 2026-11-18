@@ -1,10 +1,8 @@
 import { Box, Button, Group, SimpleGrid } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
 import { CardFeaturedOffer } from '~/components/Web/Card/CardFeaturedOffer';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
 import { SectionHeading } from '../../../../components/SectionHeading';
 const menuHighlights = [
@@ -53,9 +51,7 @@ export const SectionMenuHighlights = ({
                 key={item?.id}
                 bestDeal={{
                   id: item.id,
-                  image:
-                    getImageProduct(item?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                    '/images/jpg/empty-300x240.jpg',
+                  image: item.thumbnailUrl || '/images/jpg/empty-300x240.jpg',
                   name: item.name ?? 'Đang cập nhật',
                   price: (item?.price || 0) - (item?.discount || 0),
                   oldPrice: item?.price ?? 0,

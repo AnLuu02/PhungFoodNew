@@ -142,7 +142,9 @@ export const findOrderService = async (
       shippingAmount: moneyToNumber(item?.shippingAmount),
       orderItems: item.orderItems.map(orItem => ({
         ...orItem,
-        price: moneyToNumber(orItem.price),
+        unitPrice: moneyToNumber(orItem.unitPrice),
+        discount: moneyToNumber(orItem.discount),
+        totalPrice: moneyToNumber(orItem.totalPrice),
         product: {
           ...orItem.product,
           price: moneyToNumber(orItem.product.price),
@@ -280,7 +282,12 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
         originalAmount: moneyToNumber(oldData?.originalAmount),
         taxAmount: moneyToNumber(oldData?.taxAmount),
         shippingAmount: moneyToNumber(oldData?.shippingAmount),
-        orderItems: oldData?.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) }))
+        orderItems: oldData?.orderItems.map(orItem => ({
+          ...orItem,
+          unitPrice: moneyToNumber(orItem.unitPrice),
+          discount: moneyToNumber(orItem.discount),
+          totalPrice: moneyToNumber(orItem.totalPrice)
+        }))
       },
       newData: {
         ...newData,
@@ -289,7 +296,12 @@ export const upsertOrderService = async (db: PrismaClient, input: OrderInput) =>
         originalAmount: moneyToNumber(newData?.originalAmount),
         taxAmount: moneyToNumber(newData?.taxAmount),
         shippingAmount: moneyToNumber(newData?.shippingAmount),
-        orderItems: newData?.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) }))
+        orderItems: newData?.orderItems.map(orItem => ({
+          ...orItem,
+          unitPrice: moneyToNumber(orItem.unitPrice),
+          discount: moneyToNumber(orItem.discount),
+          totalPrice: moneyToNumber(orItem.totalPrice)
+        }))
       }
     };
   });
@@ -353,7 +365,12 @@ export const updateOrderService = async (
   }
   return {
     ...order,
-    orderItems: order.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) })),
+    orderItems: order.orderItems.map(orItem => ({
+      ...orItem,
+      unitPrice: moneyToNumber(orItem.unitPrice),
+      discount: moneyToNumber(orItem.discount),
+      totalPrice: moneyToNumber(orItem.totalPrice)
+    })),
     discountAmount: moneyToNumber(order?.discountAmount),
     finalAmount: moneyToNumber(order?.finalAmount),
     originalAmount: moneyToNumber(order?.originalAmount),
@@ -495,7 +512,9 @@ export const getFilterOrderService = async (
     ...item,
     orderItems: item.orderItems.map(orItem => ({
       ...orItem,
-      price: moneyToNumber(orItem.price),
+      unitPrice: moneyToNumber(orItem.unitPrice),
+      discount: moneyToNumber(orItem.discount),
+      totalPrice: moneyToNumber(orItem.totalPrice),
       product: {
         ...orItem.product,
         price: moneyToNumber(orItem.product.price),
@@ -551,7 +570,9 @@ export const getOneOrderService = async (db: PrismaClient, input: { key: string;
     ...order,
     orderItems: order.orderItems.map(orItem => ({
       ...orItem,
-      price: moneyToNumber(orItem.price),
+      unitPrice: moneyToNumber(orItem.unitPrice),
+      discount: moneyToNumber(orItem.discount),
+      totalPrice: moneyToNumber(orItem.totalPrice),
       product: {
         ...orItem.product,
         price: moneyToNumber(orItem.product.price),
@@ -601,7 +622,9 @@ export const getAllOrderService = async (
     ...item,
     orderItems: item.orderItems.map(orItem => ({
       ...orItem,
-      price: moneyToNumber(orItem.price),
+      unitPrice: moneyToNumber(orItem.unitPrice),
+      discount: moneyToNumber(orItem.discount),
+      totalPrice: moneyToNumber(orItem.totalPrice),
       product: {
         ...orItem.product,
         price: moneyToNumber(orItem.product.price),

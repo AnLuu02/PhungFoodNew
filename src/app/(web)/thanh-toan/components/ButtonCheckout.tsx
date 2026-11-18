@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useVoucherItems } from '~/components/Hooks/use-cart';
 import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredentials';
 import { NotifyError } from '~/lib/FuncHandler/toast';
+import { OrderItemInput } from '~/shared/schema/order.schema';
 import { api } from '~/trpc/react';
 
 export const ButtonCheckout = ({
@@ -17,12 +18,7 @@ export const ButtonCheckout = ({
   onClick
 }: {
   stylesButtonCheckout: ButtonProps;
-  data: {
-    productId: string;
-    quantity: number;
-    note: string;
-    price: number;
-  }[];
+  data: OrderItemInput[];
   finalAmount: number;
   taxAmount: number;
   originalAmount: number;
@@ -85,11 +81,15 @@ export const ButtonCheckout = ({
           discountAmount,
           status: OrderStatus.UNPAID,
           userId: userId || '',
-          orderItems: orderItems?.map(item => ({
+          orderItems: orderItems.map(item => ({
             productId: item.productId,
             quantity: item.quantity,
             note: item.note,
-            price: Number(item.price) || 0
+            productName: item.productName,
+            discount: Number(item.discount) || 0,
+            productImage: item?.productImage,
+            totalPrice: Number(item.totalPrice) || 0,
+            unitPrice: Number(item.unitPrice) || 0
           })),
           vouchers
         });

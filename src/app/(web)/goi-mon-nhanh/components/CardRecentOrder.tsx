@@ -2,17 +2,16 @@
 
 import { Badge, Box, Button, Card, Divider, Group, Image, Modal, Paper, ScrollArea, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ImageType, OrderStatus } from '@prisma/client';
+import { OrderStatus } from '@prisma/client';
 import { IconEye, IconRefresh, IconSettings } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { renderShortId } from '~/lib/FuncHandler/renderShortId';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { GetFilterOrder, GetFilterOrderItem } from '~/shared/type-trpc/order.type-trpc';
 import { useCartStore } from '~/stores/cart.store';
 
-export default function CardRecentOrder({ order }: { order: TGetFilterOrder[number] }) {
+export default function CardRecentOrder({ order }: { order: GetFilterOrder[number] }) {
   const reBuild = useCartStore(s => s.reBuild);
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
@@ -25,13 +24,13 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
 
   const handleRebuildCart = () => {
     reBuild(
-      order?.orderItems?.map((item: TGetFilterOrder[number]['orderItems'][number]) => ({
+      order.orderItems?.map((item: GetFilterOrderItem) => ({
         product: {
-          id: item?.product?.id,
-          name: item?.product?.name,
-          price: item?.product?.price,
-          discount: item?.product?.discount,
-          thumbnail: getImageProduct(item?.product?.imageForEntities ?? [], ImageType.THUMBNAIL) ?? ''
+          id: item?.productId,
+          name: item?.productName,
+          price: item?.unitPrice,
+          discount: item?.discount,
+          thumbnail: item?.productImage ?? ''
         },
         quantity: item?.quantity || 1,
         note: item?.note || ''
@@ -188,12 +187,8 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
 
             <ScrollArea.Autosize mah={340} type='auto'>
               <Stack gap='sm'>
-                {order?.orderItems?.map((item: TGetFilterOrder[number]['orderItems'][number], index: number) => {
-                  const product = item?.product;
+                {order?.orderItems?.map((item: GetFilterOrderItem, index: number) => {
                   const quantity = Number(item?.quantity || 1);
-                  const price = Number(item?.price || product?.price || 0);
-                  const discount = Number(item?.product?.discount || 0);
-                  const total = Math.max(price - discount, 0) * quantity;
 
                   return (
                     <Paper
@@ -204,18 +199,15 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
                       <Group align='center' wrap='nowrap'>
                         <Box className='h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100 dark:bg-white/10'>
                           <Image
-                            src={
-                              getImageProduct(item?.product?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                              '/images/jpg/food-placeholder.jpg'
-                            }
-                            alt={product?.name || 'Món ăn'}
+                            src={item?.productImage || '/images/jpg/food-placeholder.jpg'}
+                            alt={item?.productName || 'Món ăn'}
                             className='h-full w-full object-cover'
                           />
                         </Box>
 
                         <Box className='min-w-0 flex-1'>
                           <Text fw={800} lineClamp={1}>
-                            {product?.name || 'Món ăn đã đặt'}
+                            {item?.productName || 'Món ăn đã đặt'}
                           </Text>
 
                           <Text size='xs' c='dimmed'>
@@ -225,18 +217,18 @@ export default function CardRecentOrder({ order }: { order: TGetFilterOrder[numb
 
                           <Group gap='xs' mt={4}>
                             <Text size='sm' fw={800} className='text-mainColor'>
-                              {formatPriceLocaleVi(price - discount)}
+                              {formatPriceLocaleVi(item.unitPrice)}
                             </Text>
 
-                            {discount > 0 && (
+                            {item.discount > 0 && (
                               <Text size='xs' c='dimmed' td='line-through'>
-                                {formatPriceLocaleVi(price)}
+                                {formatPriceLocaleVi(item.discount)}
                               </Text>
                             )}
                           </Group>
                         </Box>
 
-                        <Text fw={900}>{formatPriceLocaleVi(total)}</Text>
+                        <Text fw={900}>{formatPriceLocaleVi(item.totalPrice)}</Text>
                       </Group>
                     </Paper>
                   );

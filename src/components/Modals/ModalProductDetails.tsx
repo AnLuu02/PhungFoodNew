@@ -25,7 +25,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { ModalProps } from '~/types/modal';
 import { ButtonAddToCart } from '../Button/ButtonAddToCart';
 import { ShareSocials } from '../ShareSocial';
@@ -37,8 +36,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
   const [showfullImage, setShowfullImage] = useState(false);
   const inStock = data?.availableQuantity > 0;
 
-  const thumbnail =
-    getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/png/delicious-burger-fries.png';
+  const thumbnail = data?.thumbnailUrl || '/images/png/delicious-burger-fries.png';
 
   useEffect(() => {
     setQuantity(1);
@@ -72,7 +70,7 @@ function ModalProductDetails({ type, opened, onClose, data }: ModalProps<any>) {
                   className='cursor-pointer object-cover'
                   fill
                   onClick={() => {
-                    setCurrentImage(getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '');
+                    setCurrentImage(data?.thumbnailUrl || '/images/jpg/empty-300x240.jpg');
                     setShowfullImage(true);
                   }}
                 />

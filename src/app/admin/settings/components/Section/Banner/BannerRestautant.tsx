@@ -12,7 +12,7 @@ import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toa
 import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
 import { ImageFromDb } from '~/shared/schema/image.schema';
 import { BannerInput, bannerInputSchema } from '~/shared/schema/restaurant.banner.schema';
-import { TGetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
+import { GetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 import BannerInputSection from './BannerInput';
 import { CarouselGallery } from './CarouselGallery';
@@ -242,7 +242,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
     });
   };
 
-  const handleSetDefaultBanner = useCallback((banner: TGetAllBanner[number]) => {
+  const handleSetDefaultBanner = useCallback((banner: GetAllBanner[number]) => {
     setActiveBanner(banner);
   }, []);
   const handleDeleteBanner = useCallback(() => {

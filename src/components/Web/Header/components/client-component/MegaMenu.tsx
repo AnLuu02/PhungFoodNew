@@ -15,7 +15,6 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { IconCheese, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -24,7 +23,6 @@ import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { AppSkeleton } from '~/components/Loading/AppSkeleton';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { CategoryWithRelationBasic } from '~/shared/type-trpc/category.type-trpc';
 import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import { api } from '~/trpc/react';
@@ -221,10 +219,7 @@ export default function MegaMenu() {
                                 <Box className='w-[calc(100%-20px] h-[100px]'>
                                   <Image
                                     loading='lazy'
-                                    src={
-                                      getImageProduct(product?.imageForEntities, ImageType.THUMBNAIL) ||
-                                      '/images/jpg/empty-300x240.jpg'
-                                    }
+                                    src={product?.thumbnailUrl || '/images/jpg/empty-300x240.jpg'}
                                     alt={product.name}
                                     fill
                                     style={{ objectFit: 'cover' }}

@@ -152,11 +152,11 @@ export const getTopProductsService = async (db: PrismaClient, input: { startTime
           acc.push({
             product: { ...item?.product, price: moneyToNumber(item?.product.price) },
             soldQuantity: item?.quantity,
-            profit: moneyToNumber(item?.price) * item?.quantity || 0
+            profit: moneyToNumber(item?.totalPrice)
           });
         } else {
           existed.soldQuantity += item?.quantity || 0;
-          existed.profit += moneyToNumber(item?.price) * item?.quantity || 0;
+          existed.profit += moneyToNumber(item?.totalPrice);
         }
         return acc;
       },
@@ -176,11 +176,11 @@ export const getDistributionProductsService = async (
     by: ['productId'],
     where: where as any,
     _sum: {
-      price: true
+      totalPrice: true
     },
     orderBy: {
       _sum: {
-        price: 'desc'
+        totalPrice: 'desc'
       }
     },
     take: 5
@@ -264,8 +264,7 @@ export const getRevenueByCategoryService = async (
 
   const revenueByCategory = data.reduce((acc: any, item: (typeof data)[number]) => {
     const categoryName = item?.product?.subCategory?.name || 'Khác';
-    const total = moneyToNumber(item.price) * item.quantity;
-
+    const total = moneyToNumber(item.totalPrice);
     if (!acc[categoryName]) {
       acc[categoryName] = 0;
     }
@@ -486,7 +485,7 @@ export const getOverviewDetailRevenueService = async (
       ? categories.value.reduce(
           (acc: { category: string; revenue: number }[], item: (typeof categories.value)[number]) => {
             const categoryName = item?.product?.subCategory?.name || 'Khác';
-            const total = moneyToNumber(item.price) * item.quantity;
+            const total = moneyToNumber(item.totalPrice);
             const existed = acc.find((item: { category: string; revenue: number }) => item.category === categoryName);
             if (!existed) {
               acc.push({

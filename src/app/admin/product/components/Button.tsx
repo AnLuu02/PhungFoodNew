@@ -61,7 +61,7 @@ export function UpdateProductButton({ id }: { id: string }) {
 
 export function DeleteProductButton({ id }: { id: string }) {
   const utils = api.useUtils();
-  const mutationDelete = api.Product.delete.useMutation({
+  const mutationSoftDelete = api.Product.softDelete.useMutation({
     onSuccess: () => {
       utils.Product.invalidate();
     }
@@ -77,7 +77,7 @@ export function DeleteProductButton({ id }: { id: string }) {
               type: 'delete',
               customProps: {
                 onConfirm: async () => {
-                  await mutationDelete.mutateAsync({ id });
+                  await mutationSoftDelete.mutateAsync({ id });
                 }
               }
             });

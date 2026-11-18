@@ -21,14 +21,12 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useDebouncedValue, useLocalStorage } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconClock, IconSearch, IconX, IconXboxXFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { Search } from '~/shared/type-trpc/search.type-trpc';
 import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
 import { api } from '~/trpc/react';
@@ -402,10 +400,7 @@ export default function SearchComponentClient() {
                                 >
                                   <Image
                                     loading='lazy'
-                                    src={
-                                      getImageProduct(product.imageForEntities, ImageType.THUMBNAIL) ||
-                                      '/images/png/momo.png'
-                                    }
+                                    src={product?.thumbnailUrl || '/images/jpg/empty-300x240.jpg'}
                                     alt={product.name}
                                     fill
                                     className='object-cover'

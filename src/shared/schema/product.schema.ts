@@ -8,6 +8,7 @@ export const baseProductSchema = z.object({
   description: z.string().optional(),
   descriptionDetailJson: z.any().optional().nullable(),
   descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
+  thumbnailUrl: z.string().optional(),
   region: z.string({ required_error: 'Món ăn này là của miền nào đây?' }).min(1, 'Món ăn này là của miền nào đây?'),
   tag: z.string().optional(),
   tags: z.array(z.string()),

@@ -24,6 +24,7 @@ const BASE_SELECT = {
   availableQuantity: true,
   discount: true,
   descriptionDetailHtml: true,
+  thumbnailUrl: true,
   subCategory: {
     select: {
       id: true,
@@ -258,11 +259,11 @@ export const findProductMinimalService = async (db: PrismaClient, input: FilterP
   };
 };
 
-export const deleteProductService = async (db: PrismaClient, input: { id: string }) => {
-  const productDeleted = await db.product.delete({
+export const softDeleteProductService = async (db: PrismaClient, input: { id: string }) => {
+  const productDeleted = await db.product.update({
     where: { id: input.id },
-    include: {
-      imageForEntities: { include: { image: true } }
+    data: {
+      deletedAt: new Date()
     }
   });
   return {
@@ -488,7 +489,7 @@ export const getProductsOnlyService = async (
   return products.map(p => ({ ...p, discount: moneyToNumber(p.discount), price: moneyToNumber(p.price) }));
 };
 
-export const upsertProductToCloudinaryService = async (db: PrismaClient, input1: ProductFromDb) => {
+export const upsertProductService = async (db: PrismaClient, input1: ProductFromDb) => {
   const { id, subCategoryId, imageForEntities, ...data } = input1;
   const existed = id
     ? await db.product.findUnique({
@@ -517,6 +518,152 @@ export const upsertProductToCloudinaryService = async (db: PrismaClient, input1:
     create: {
       ...data,
       tag: data.tag || 'san-pham',
+      thumbnailUrl: '',
+      subCategory: {
+        connect: {
+          id: subCategoryId
+        }
+      },
+      materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
+      imageForEntities: newImages?.length
+        ? {
+            create: newImages.map(({ status, ...item }: any) => ({
+              id: undefined,
+              entityType: EntityType.PRODUCT,
+              altText: `Ảnh  ${data.name}`,
+              type: item?.image?.type || ImageType.THUMBNAIL,
+              image: {
+                connectOrCreate: {
+                  where: {
+                    publicId: item?.image?.publicId
+                  },
+                  create: {
+                    ...(item?.image ?? {}),
+                    url: item?.image?.url || '',
+                    altText: item?.image?.altText || 'Ảnh của sản phẩm ' + (data?.name || ''),
+                    type: item?.image?.type || ImageType.THUMBNAIL
+                  }
+                }
+              }
+            }))
+          }
+        : undefined
+    },
+    update: {
+      ...data,
+      subCategory: {
+        connect: {
+          id: subCategoryId
+        }
+      },
+      materials: data.materials ? { connect: data.materials.map((item: any) => ({ id: item })) } : undefined,
+      imageForEntities: {
+        ...(newImages?.length
+          ? {
+              upsert: newImages.map(({ status, ...item }: any) => ({
+                where: {
+                  id: item?.id || 'default_id'
+                },
+                create: {
+                  entityType: EntityType.PRODUCT,
+                  altText: `Ảnh  ${data.name}`,
+                  type: item?.image?.type || ImageType.THUMBNAIL,
+                  image: {
+                    connectOrCreate: {
+                      where: {
+                        publicId: item?.image?.publicId
+                      },
+                      create: {
+                        ...(item?.image ?? {}),
+                        url: item?.image?.url || '',
+                        altText: item?.image?.altText || 'Ảnh của sản phẩm ' + (data?.name || ''),
+                        type: item?.image?.type || ImageType.THUMBNAIL
+                      }
+                    }
+                  }
+                },
+                update: {
+                  entityType: EntityType.PRODUCT,
+                  altText: `Ảnh  ${data.name}`,
+                  type: item?.image?.type || ImageType.THUMBNAIL,
+                  image: {
+                    connectOrCreate: {
+                      where: {
+                        publicId: item?.image?.publicId
+                      },
+                      create: {
+                        ...(item?.image ?? {}),
+                        url: item?.image?.url || '',
+                        altText: item?.image?.altText || 'Ảnh của sản phẩm ' + (data?.name || ''),
+                        type: item?.image?.type || ImageType.THUMBNAIL
+                      }
+                    }
+                  }
+                }
+              }))
+            }
+          : {}),
+        delete: deleteImages ? deleteImages?.map(item => ({ id: item?.id })) : undefined
+      }
+    },
+    include: { imageForEntities: { include: { image: true } } }
+  });
+
+  if (upserted?.tag) {
+    ManageTagVi('upsert', {
+      oldTag: existed?.tag,
+      newTag: upserted.tag,
+      newName: upserted.name
+    });
+  }
+  return {
+    metaData: {
+      before: existed
+        ? {
+            ...existed,
+            price: moneyToNumber(existed.price),
+            discount: moneyToNumber(existed.discount)
+          }
+        : {},
+      after: {
+        ...upserted,
+        discount: moneyToNumber(upserted.discount),
+        price: moneyToNumber(upserted.price)
+      }
+    }
+  };
+};
+
+export const createProductService = async (db: PrismaClient, input1: ProductFromDb) => {
+  const { id, subCategoryId, imageForEntities, ...data } = input1;
+  const existed = id
+    ? await db.product.findUnique({
+        where: { id },
+        include: { imageForEntities: { include: { image: true } } }
+      })
+    : null;
+
+  if (!id || (existed && existed.tag !== data.tag)) {
+    const duplicateProduct = await db.product.findUnique({
+      where: { tag_subCategoryId: { tag: data.tag, subCategoryId } }
+    });
+
+    if (duplicateProduct) {
+      throw new TRPCError({ code: 'CONFLICT', message: 'Sản phẩm đã tồn tại.' });
+    }
+  }
+
+  const inputImageForEntities = [...(imageForEntities || [])];
+  const newImages = inputImageForEntities.filter(i => i?.status === StatusImage.NEW) || [];
+  const deleteImages = inputImageForEntities.filter(i => i?.status === StatusImage.DELETED) || [];
+  const upserted = await db.product.upsert({
+    where: {
+      id: id || ''
+    },
+    create: {
+      ...data,
+      tag: data.tag || 'san-pham',
+      thumbnailUrl: '',
       subCategory: {
         connect: {
           id: subCategoryId

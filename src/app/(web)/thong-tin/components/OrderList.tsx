@@ -32,10 +32,10 @@ import SearchLocal from '~/components/Search/SearchLocal';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
-import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { GetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
-type DisplayOrder = TGetFilterOrder[number] & {
+type DisplayOrder = GetFilterOrder[number] & {
   date: string | undefined;
 };
 
@@ -105,7 +105,7 @@ export function OrderList({ session }: { session: Session | null }) {
       orderCompletedRate,
       orderCancledRate,
       orderData:
-        orders?.map((order: TGetFilterOrder[number]) => ({
+        orders?.map((order: GetFilterOrder[number]) => ({
           ...order,
           date: new Date(order.createdAt || new Date()).toISOString().split('T')[0],
           finalAmount: order?.finalAmount || 0,
@@ -145,7 +145,7 @@ export function OrderList({ session }: { session: Session | null }) {
 
   const statusObj = useMemo(() => {
     const orderData =
-      orders?.map((order: TGetFilterOrder[number]) => ({
+      orders?.map((order: GetFilterOrder[number]) => ({
         id: order.id,
         date: new Date(order.createdAt ? order.createdAt : new Date()).toISOString().split('T')[0],
 

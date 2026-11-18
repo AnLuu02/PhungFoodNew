@@ -1,11 +1,9 @@
 import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import Empty from '~/components/Empty';
 import { TOP_POSITION_STICKY } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { api } from '~/trpc/server';
 export default async function SuggestionProducts({
   categoryId,
@@ -44,10 +42,7 @@ export default async function SuggestionProducts({
                 <Paper p={0} m={0} w={60} h={60} pos={'relative'} className='overflow-hidden'>
                   <Image
                     loading='lazy'
-                    src={
-                      getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                      '/images/jpg/empty-300x240.jpg'
-                    }
+                    src={product?.thumbnailUrl || '/images/jpg/empty-300x240.jpg'}
                     fill
                     alt='Hình ảnh sản phẩm'
                     className='object-cover'

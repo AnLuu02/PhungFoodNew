@@ -200,18 +200,22 @@ model Delivery {
 }
 
 model OrderItem {
-  id        String    @id @default(cuid())
-  productId String
-  quantity  Int       @default(1)
-  price     Decimal   @default(0)
-  note      String?   @default("")
-  orderId   String
-  product   Product   @relation(fields: [productId], references: [id])
-  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productName  String
+  productImage String?
+  unitPrice    Decimal  @default(0) @db.Decimal(12, 0)
+  discount     Decimal  @default(0) @db.Decimal(12, 0)
+  totalPrice   Decimal  @default(0) @db.Decimal(12, 0)
+  quantity     Int      @default(1)
+  note         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  @@index([orderId], map: "Order_item_orderId_fkey_unique")
+  @@index([orderId])
 }
 
 model Payment {
@@ -238,6 +242,7 @@ model Product {
   description           String?
   descriptionDetailJson Json?
   descriptionDetailHtml String?          @default("<p>Đang cập nhật</p>")
+  thumbnailUrl          String?          @db.Text
   price                 Decimal          @default(0)
   discount              Decimal          @default(0)
   tag                   String           @unique
@@ -257,6 +262,7 @@ model Product {
   imageForEntities      ImageForEntity[]
   createdAt             DateTime?        @default(now())
   updatedAt             DateTime?        @updatedAt
+  deletedAt             DateTime?
 
   @@unique([tag, subCategoryId])
   @@index([subCategoryId], map: "Product_categoryId_fkey_unique")

@@ -1,7 +1,6 @@
 'use client';
 import { ActionIcon, Badge, Box, Card, Flex, Group, Rating, Text, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { ImageType } from '@prisma/client';
 import { IconHeartFilled } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,7 +11,6 @@ import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import { useFavorite } from '~/components/Hooks/use-favorite';
 import { breakpoints } from '~/constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import { useModalStore } from '~/stores/modal.store';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
@@ -21,8 +19,7 @@ const ProductCardCarouselVertical = ({ data }: { data: ProductBase }) => {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);
   const openModal = useModalStore(s => s.open);
   const isLiked = useFavorite(data?.id);
-  const thumbnail =
-    getImageProduct(data?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg';
+  const thumbnail = data?.thumbnailUrl || '/images/jpg/empty-300x240.jpg';
 
   return (
     <Card

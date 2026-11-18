@@ -13,7 +13,6 @@ import {
   Text,
   Title
 } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -22,10 +21,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { baseDeliverySchema, DeliveryCheckout } from '~/shared/schema/delivery.schema';
-import { TGetOneOrder } from '~/shared/type-trpc/order.type-trpc';
+import { GetOneOrder } from '~/shared/type-trpc/order.type-trpc';
 import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';
@@ -52,7 +50,7 @@ const handlePayWithVnpay = async (orderId: string) => {
   window.location.href = data.paymentUrl;
 };
 
-export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOrder> }) {
+export default function CheckoutClient({ order }: { order: NonNullable<GetOneOrder> }) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
 
@@ -73,12 +71,12 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
   const { finalAmount, tax, totalOriginalPrice, totalVoucherAmount, totalProductDiscount } = useMemo(() => {
     return caculateAmount({
       products: (order?.orderItems ?? [])?.map(c => ({
-        discount: c.product?.discount ?? 0,
-        price: c.product?.price ?? 0,
+        discount: c?.discount ?? 0,
+        price: c?.unitPrice ?? 0,
         quantity: c?.quantity ?? 1
       })),
       vouchers: (order?.voucherUsages ?? []).flatMap(
-        (item: NonNullable<NonNullable<TGetOneOrder>['voucherUsages']>[number]) => {
+        (item: NonNullable<NonNullable<GetOneOrder>['voucherUsages']>[number]) => {
           return item?.discount ? [item?.discount] : [];
         }
       )
@@ -150,17 +148,17 @@ export default function CheckoutClient({ order }: { order: NonNullable<TGetOneOr
               <ScrollAreaAutosize mah={220} px='0' scrollbarSize={5}>
                 <Stack gap={'md'} py={'sm'} className='overflow-x-hidden'>
                   {order?.orderItems?.map(
-                    (item: NonNullable<NonNullable<TGetOneOrder>['orderItems']>[number], index: number) => (
+                    (item: NonNullable<NonNullable<GetOneOrder>['orderItems']>[number], index: number) => (
                       <CartItemPayment
                         key={index}
                         isPayment={true}
                         item={{
                           product: {
-                            id: item?.product?.id,
-                            name: item?.product?.name,
-                            price: item?.product?.price,
-                            discount: item?.product?.discount,
-                            thumbnail: getImageProduct(item?.product?.imageForEntities ?? [], ImageType.THUMBNAIL)
+                            id: item?.productId,
+                            name: item?.productName,
+                            price: item?.unitPrice,
+                            discount: item?.discount,
+                            thumbnail: item?.productImage ?? ''
                           },
                           note: item?.note ?? undefined,
                           quantity: item.quantity

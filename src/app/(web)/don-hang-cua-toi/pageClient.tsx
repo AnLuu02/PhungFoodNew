@@ -32,7 +32,7 @@ import { TOP_POSITION_STICKY } from '~/constants';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { TGetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { GetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 
@@ -47,14 +47,14 @@ export default function MyOrderPageClient({ session }: { session: Session | null
   const filteredOrders = useMemo(() => {
     if (!selectedStatus) return orders;
     return orders.filter(
-      (order: TGetFilterOrder[number]) => order.status.toLowerCase() === selectedStatus.toLowerCase()
+      (order: GetFilterOrder[number]) => order.status.toLowerCase() === selectedStatus.toLowerCase()
     );
   }, [orders, selectedStatus]);
 
   const filteredOrdersSearch = useMemo(() => {
     if (!valueSearch) return filteredOrders;
     const search = valueSearch.toLowerCase();
-    return filteredOrders.filter((order: TGetFilterOrder[number]) =>
+    return filteredOrders.filter((order: GetFilterOrder[number]) =>
       [
         order?.payment?.name,
         order?.status,
@@ -80,7 +80,7 @@ export default function MyOrderPageClient({ session }: { session: Session | null
 
   const statusCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    orders.forEach((order: TGetFilterOrder[number]) => {
+    orders.forEach((order: GetFilterOrder[number]) => {
       counts[order.status] = (counts[order.status] || 0) + 1;
     });
     return Object.entries(counts).map(([status, count]) => ({ status, count }));
@@ -89,7 +89,7 @@ export default function MyOrderPageClient({ session }: { session: Session | null
   const totalOrders = orders.length || 0;
   const totalAmount = useMemo(
     () =>
-      orders.reduce((sum: number, order: TGetFilterOrder[number]) => {
+      orders.reduce((sum: number, order: GetFilterOrder[number]) => {
         if (order.status === OrderStatus.COMPLETED) {
           return sum + order.finalAmount;
         }
@@ -226,7 +226,7 @@ export default function MyOrderPageClient({ session }: { session: Session | null
                       </Table.Td>
                     </Table.Tr>
                   ) : (
-                    displayedOrders.map((order: TGetFilterOrder[number]) => {
+                    displayedOrders.map((order: GetFilterOrder[number]) => {
                       const statusInfo = getStatusInfo(order.status as OrderStatus);
                       return (
                         <Table.Tr key={order.id}>

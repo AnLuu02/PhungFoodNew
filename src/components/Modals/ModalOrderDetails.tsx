@@ -20,10 +20,9 @@ import {
   Tooltip
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { ImageType, OrderStatus, VoucherType } from '@prisma/client';
+import { OrderStatus, VoucherType } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
 import { ModalProps } from '~/types/modal';
 import InvoiceToPrint from '../InvoceToPrint';
@@ -250,19 +249,13 @@ function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {
                     <Table.Tbody>
                       {data?.orderItems.map((item: any) => (
                         <Table.Tr key={item.id}>
-                          <Table.Td w={'40%'}>{item.product.name}</Table.Td>
+                          <Table.Td w={'40%'}>{item.productName}</Table.Td>
                           <Table.Td className='text-sm'>
-                            <Avatar
-                              size={40}
-                              src={
-                                getImageProduct(item?.product?.imageForEntities || [], ImageType.THUMBNAIL) ||
-                                '/images/jpg/empty-300x240.jpg'
-                              }
-                            />
+                            <Avatar size={40} src={item?.productImage || '/images/jpg/empty-300x240.jpg'} />
                           </Table.Td>
 
                           <Table.Td className='text-sm'>{item.quantity}</Table.Td>
-                          <Table.Td className='text-sm'>{formatPriceLocaleVi(item.price)}</Table.Td>
+                          <Table.Td className='text-sm'>{formatPriceLocaleVi(item.unitPrice)}</Table.Td>
                         </Table.Tr>
                       ))}
                     </Table.Tbody>

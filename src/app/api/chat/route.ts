@@ -1,7 +1,5 @@
-import { ImageType } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { callOpenRouter, cleanJSON, parseProductFilter } from '~/lib/FuncHandler/Chat';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { db } from '~/server/db';
 import { findProductService } from '~/server/services/product.service';
 import { api } from '~/trpc/server';
@@ -76,7 +74,7 @@ export async function POST(req: Request) {
         price: product.price,
         discount: product.discount,
         finalPrice: product.discount ? product.price - product.discount : product.price,
-        image: getImageProduct(product.imageForEntities || [], ImageType.THUMBNAIL),
+        image: product?.thumbnailUrl,
         url: `${baseUrl}/san-pham/${product.tag}`
       })) || [];
 

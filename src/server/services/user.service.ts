@@ -601,7 +601,12 @@ export const getOneUserService = async (db: PrismaClient, input: { key: string; 
     ...user,
     orders: user.orders.map(item => ({
       ...item,
-      orderItems: item.orderItems.map(orItem => ({ ...orItem, price: moneyToNumber(orItem.price) })),
+      orderItems: item.orderItems.map(orItem => ({
+        ...orItem,
+        unitPrice: moneyToNumber(orItem.unitPrice),
+        discount: moneyToNumber(orItem.discount),
+        totalPrice: moneyToNumber(orItem.totalPrice)
+      })),
       discountAmount: moneyToNumber(item?.discountAmount),
       finalAmount: moneyToNumber(item?.finalAmount),
       originalAmount: moneyToNumber(item?.originalAmount),

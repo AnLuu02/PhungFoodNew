@@ -1,13 +1,11 @@
 'use client';
 
 import { Badge, Box, Button, Flex, Group, Image, NumberInput, Paper, Text } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import { IconPlus, IconShoppingCartPlus } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 import { useCartStore } from '~/stores/cart.store';
 
@@ -19,8 +17,7 @@ export const QuickMenuItem = ({ product, index }: { product: ProductBase; index:
   const discount = Number(product?.discount || 0);
   const finalPrice = discount > 0 ? price - discount : price;
 
-  const thumbnail =
-    getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/food-placeholder.jpg';
+  const thumbnail = product?.thumbnailUrl || '/images/jpg/food-placeholder.jpg';
   return (
     <Paper
       p='sm'

@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
-  deleteProductService,
   findInfiniteProductService,
   findProductService,
   getBaseProductService,
@@ -11,7 +10,8 @@ import {
   getGroupedByCategoriesService,
   getOneProductService,
   getProductsOnlyService,
-  upsertProductToCloudinaryService
+  softDeleteProductService,
+  upsertProductService
 } from '~/server/services/product.service';
 import { productFilterSchema } from '~/shared/schema/product.filter.schema';
 import { productFromDbSchema } from '~/shared/schema/product.schema';
@@ -31,14 +31,14 @@ export const productRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => await getGroupedByCategoriesService(ctx.db, input)),
 
-  upsertToCloudinary: publicProcedure
+  upsert: publicProcedure
     .use(requirePermission('update:product'))
     .use(requirePermission('create:product'))
     .use(activityLogger)
     .input(productFromDbSchema)
-    .mutation(async ({ ctx, input }) => await upsertProductToCloudinaryService(ctx.db, input)),
+    .mutation(async ({ ctx, input }) => await upsertProductService(ctx.db, input)),
 
-  delete: publicProcedure
+  softDelete: publicProcedure
     .use(requirePermission('delete:product'))
     .use(activityLogger)
     .input(
@@ -46,7 +46,7 @@ export const productRouter = createTRPCRouter({
         id: z.string()
       })
     )
-    .mutation(async ({ ctx, input }) => await deleteProductService(ctx.db, input)),
+    .mutation(async ({ ctx, input }) => await softDeleteProductService(ctx.db, input)),
   getOne: publicProcedure
     .input(
       z.object({

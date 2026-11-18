@@ -7,7 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { TGetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
+import { GetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
 import ModalViewBanner from '../ModalViewBanner';
 import { bannerdefaultValues } from './BannerRestautant';
@@ -16,21 +16,21 @@ export default function ListBannerTemplate({
   onSetDefaultBanner,
   onDeletedBanner
 }: {
-  onSetDefaultBanner: (banner: TGetAllBanner[number]) => void;
+  onSetDefaultBanner: (banner: GetAllBanner[number]) => void;
   onDeletedBanner: () => void;
 }) {
-  const [viewBanner, setViewBanner] = useState<{ isOpened: boolean; activeBanner: TGetAllBanner[number] | null }>({
+  const [viewBanner, setViewBanner] = useState<{ isOpened: boolean; activeBanner: GetAllBanner[number] | null }>({
     isOpened: false,
     activeBanner: null
   });
-  const [activeBanner, setActiveBanner] = useState<TGetAllBanner[number] | null>(null);
+  const [activeBanner, setActiveBanner] = useState<GetAllBanner[number] | null>(null);
   const formFields = useFormContext();
   const [loading, setLoading] = useState<{ type: 'set-default' | 'delete'; value: boolean } | null>(null);
   const { data: dataClient = [], isLoading } = api.Restaurant.getAllBanner.useQuery();
   const utils = api.useUtils();
   useEffect(() => {
     if (Array.isArray(dataClient) && dataClient.length > 0) {
-      const bannerActive = dataClient.find((banner: TGetAllBanner[number]) => banner.isActive) || null;
+      const bannerActive = dataClient.find((banner: GetAllBanner[number]) => banner.isActive) || null;
       setActiveBanner(bannerActive);
     }
   }, [dataClient]);
@@ -85,7 +85,7 @@ export default function ListBannerTemplate({
       <Box>
         {dataClient?.length > 0 && (
           <Box className='mb-4 grid grid-cols-3 gap-4'>
-            {dataClient.map((banner: TGetAllBanner[number], index: number) => (
+            {dataClient.map((banner: GetAllBanner[number], index: number) => (
               <Card
                 key={banner.id + index}
                 pos='relative'

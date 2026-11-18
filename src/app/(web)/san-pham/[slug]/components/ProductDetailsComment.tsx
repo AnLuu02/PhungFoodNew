@@ -1,8 +1,6 @@
 import { Badge, Group, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
-import { ImageType } from '@prisma/client';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getImageProduct } from '~/lib/FuncHandler/getImageProduct';
 import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
 
 export default function ProductDetails({ product }: { product: ProductBase }) {
@@ -12,9 +10,7 @@ export default function ProductDetails({ product }: { product: ProductBase }) {
         <Paper w={300} h={300} pos={'relative'} className='overflow-hidden'>
           <Image
             loading='lazy'
-            src={
-              getImageProduct(product?.imageForEntities || [], ImageType.THUMBNAIL) || '/images/jpg/empty-300x240.jpg'
-            }
+            src={product?.thumbnailUrl || '/images/jpg/empty-300x240.jpg'}
             fill
             alt='Hình ảnh sản phẩm'
             className='object-cover'
