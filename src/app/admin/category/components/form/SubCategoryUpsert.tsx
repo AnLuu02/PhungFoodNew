@@ -38,7 +38,7 @@ export default function SubCategoryUpsert({
       isActive: true,
       description: '',
       categoryId: undefined,
-      imageForEntity: undefined
+      image: undefined
     }
   });
 
@@ -51,12 +51,7 @@ export default function SubCategoryUpsert({
         tag: data?.tag,
         description: data?.description || '',
         categoryId: data?.categoryId as string,
-        imageForEntity: data?.imageForEntity
-          ? {
-              ...data?.imageForEntity,
-              image: data?.imageForEntity?.image ? { ...data?.imageForEntity?.image } : undefined
-            }
-          : undefined
+        image: data?.image ? data?.image : undefined
       } as any);
     }
   }, [data, formFields.reset]);
@@ -73,8 +68,8 @@ export default function SubCategoryUpsert({
     }
   });
   const onSubmit: SubmitHandler<SubCategoryInput> = async formData => {
-    const acceptedFiles = formFields.getValues('imageForEntity.image.urlFile');
-    const imagePublicId = formFields.getValues('imageForEntity.image.publicId');
+    const acceptedFiles = formFields.getValues('image.urlFile');
+    const imagePublicId = formFields.getValues('image.publicId');
     let imagesToSave: UploadedImage | undefined = acceptedFiles
       ? await handleUploadFromClient(acceptedFiles, utils, {
           folder: EntityType.CATEGORY + '/' + ImageType.THUMBNAIL
@@ -82,23 +77,17 @@ export default function SubCategoryUpsert({
       : undefined;
     await updateMutation.mutateAsync({
       ...formData,
-      imageForEntity: imagesToSave
+      image: imagesToSave
         ? {
-            id: formData?.imageForEntity?.id,
-            altText: formData?.imageForEntity?.altText || 'Ảnh của danh mục ' + (formData?.name || ''),
-            type: formData?.imageForEntity?.type || ImageType.THUMBNAIL,
-            entityType: formData?.imageForEntity?.entityType || EntityType.CATEGORY,
+            ...imagesToSave,
             status: StatusImage.NEW,
-            image: {
-              ...imagesToSave,
-              id: undefined,
-              altText: formData?.imageForEntity?.altText || 'Ảnh của danh mục ' + (formData?.name || ''),
-              type: formData?.imageForEntity?.type || ImageType.THUMBNAIL
-            }
+            id: undefined,
+            altText: formData?.image?.altText || 'Ảnh của danh mục ' + (formData?.name || ''),
+            type: formData?.image?.type || ImageType.THUMBNAIL
           }
-        : data?.imageForEntity?.id && !imagePublicId
+        : data?.image?.id && !imagePublicId
           ? {
-              id: data?.imageForEntity?.id,
+              id: data?.image?.id,
               status: StatusImage.DELETED
             }
           : undefined
@@ -188,7 +177,7 @@ export default function SubCategoryUpsert({
                   Ảnh đại diện
                 </Text>
                 <Stack>
-                  <ThumbnailUpsert nameField='imageForEntity.image' size={'100%'} />
+                  <ThumbnailUpsert nameField='image' size={'100%'} />
                   <Button
                     variant='outline'
                     size='sm'

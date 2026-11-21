@@ -1,5 +1,5 @@
 import { api } from '~/trpc/react';
-import { calculateHash } from '../FuncHandler/hashFileToMD5';
+import { createHashWithMd5 } from '../FuncHandler/hashFileToMD5';
 
 interface CloudinaryUploadResult {
   public_id: string;
@@ -32,6 +32,8 @@ export interface OptimizeOptions {
   height?: number;
   fit?: 'fill' | 'scale' | 'crop' | 'thumb' | 'pad';
 }
+
+export type TRPCUtils = ReturnType<typeof api.useUtils>;
 
 export async function uploadToCloudinary(file: File, options: UploadOptions = {}): Promise<CloudinaryUploadResult> {
   const formData = new FormData();
@@ -97,7 +99,7 @@ export const getOptimizedUrl = (url: string, options: OptimizeOptions = {}): str
 
   return url.replace('/upload/', `/upload/${transformParams}/`);
 };
-export type TRPCUtils = ReturnType<typeof api.useUtils>;
+
 export const handleUploadFromClient = async (
   acceptedFiles: File | null | undefined,
   utils: TRPCUtils,
@@ -105,7 +107,7 @@ export const handleUploadFromClient = async (
 ): Promise<UploadedImage | undefined> => {
   try {
     if (acceptedFiles && acceptedFiles instanceof File) {
-      const hash = await calculateHash(acceptedFiles);
+      const hash = await createHashWithMd5(acceptedFiles);
       const publicId = options.folder ? options.folder + '/' + hash : hash;
       const { exists, image } = await utils.Images.checkExisting.fetch({ publicId });
       if (exists && image) {

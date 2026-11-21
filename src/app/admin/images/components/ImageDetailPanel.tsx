@@ -92,6 +92,7 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
   const detachAllMutation = api.Images.detachAllAssociations.useMutation({
     onSuccess: () => {
       onRefresh();
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
     }
   });
   const handleDeleteImage = useCallback(
@@ -102,8 +103,8 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
   );
 
   const handleDetachImage = useCallback(
-    (imageId: string, entityType: EntityType, entityId: string) => {
-      detachMutation.mutate({ imageId, entityType, entityId });
+    (imageId: string, imageForEntityId: string, entityType: EntityType, entityId: string) => {
+      detachMutation.mutate({ imageId, imageForEntityId, entityType, entityId });
     },
     [detachMutation]
   );
@@ -291,7 +292,9 @@ export default function ImageDetailPanel({ imageId, onClose, onRefresh }: ImageD
                             color='red'
                             variant='subtle'
                             loading={detachMutation.isPending}
-                            onClick={() => handleDetachImage(imageId, assoc.type, assoc.id)}
+                            onClick={() => {
+                              handleDetachImage(imageId, assoc.imageForEntityId, assoc.type, assoc.id);
+                            }}
                           >
                             Gỡ
                           </Button>

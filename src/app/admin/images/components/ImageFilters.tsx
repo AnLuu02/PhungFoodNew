@@ -2,7 +2,7 @@
 
 import { IconCloudUpload, IconSearch } from '@tabler/icons-react';
 
-import { Button, Group, MultiSelect, TextInput } from '@mantine/core';
+import { Button, Group, Select, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { api } from '~/trpc/react';
 import { ImageFilterOptions } from '../../../../shared/types/image.types';
@@ -36,21 +36,21 @@ export default function ImageFilters({
           value={filters.searchQuery}
           onChange={e => onFilters('searchQuery', e.currentTarget.value)}
         />
-        <MultiSelect
+        <Select
           radius={'xl'}
           placeholder='Tất cả các loại'
           data={imageTypeOptions}
-          value={filters.imageTypes}
-          onChange={val => onFilters('imageTypes', val)}
+          value={filters.imageType ? filters.imageType : null}
+          onChange={val => onFilters('imageType', val)}
           searchable
           clearable
         />
-        <MultiSelect
+        <Select
           radius={'xl'}
           placeholder='Tất cả đối tượng'
           data={entityTypeOptions}
-          value={filters.entityTypes}
-          onChange={val => onFilters('entityTypes', val)}
+          value={filters.entityType ? filters.entityType : null}
+          onChange={val => onFilters('entityType', val)}
           searchable
           clearable
         />

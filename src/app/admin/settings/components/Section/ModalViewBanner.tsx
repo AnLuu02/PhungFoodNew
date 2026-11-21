@@ -3,7 +3,7 @@
 import { Flex, Modal, Text } from '@mantine/core';
 import { ImageType } from '@prisma/client';
 import { Dispatch, SetStateAction, useMemo } from 'react';
-import { ImageInfoFromDb } from '~/shared/schema/image.info.schema';
+import { ImageInfoServerInput } from '~/shared/schema/image.info.schema';
 import BannerInputSection from './Banner/BannerInput';
 import { CarouselGallery } from './Banner/CarouselGallery';
 
@@ -19,10 +19,10 @@ export default function ModalViewBanner({
       ? viewBanner?.activeBanner?.imageForEntities?.reduce(
           (
             acc: {
-              banners: ImageInfoFromDb[];
-              galleries: ImageInfoFromDb[];
+              banners: ImageInfoServerInput[];
+              galleries: ImageInfoServerInput[];
             },
-            item: ImageInfoFromDb
+            item: ImageInfoServerInput
           ) => {
             item?.type === ImageType.THUMBNAIL && acc.banners?.push(item);
             item?.type === ImageType.GALLERY && acc.galleries?.push(item);

@@ -55,17 +55,19 @@ model Category {
 }
 
 model SubCategory {
-  id             String          @id @default(cuid())
-  name           String
-  tag            String
-  isActive       Boolean?        @default(true)
-  categoryId     String
-  description    String?
-  imageForEntity ImageForEntity?
-  products       Product[]
-  category       Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt      DateTime?       @default(now())
-  updatedAt      DateTime?       @updatedAt
+  id           String    @id @default(cuid())
+  name         String
+  tag          String
+  isActive     Boolean?  @default(true)
+  categoryId   String
+  description  String?
+  imageId      String?
+  image        Image?    @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  imageAltText String?   @db.Text
+  products     Product[]
+  category     Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt    DateTime? @default(now())
+  updatedAt    DateTime? @updatedAt
 
   @@unique([tag, categoryId])
 }
@@ -243,6 +245,7 @@ model Product {
   descriptionDetailJson Json?
   descriptionDetailHtml String?          @default("<p>Đang cập nhật</p>")
   thumbnailUrl          String?          @db.Text
+  thumbnailAlt          String?          @db.Text
   price                 Decimal          @default(0)
   discount              Decimal          @default(0)
   tag                   String           @unique
@@ -312,7 +315,8 @@ model User {
   review             Review[]
   favouriteFoods     FavouriteFood[]
   revenue            Revenue[]
-  imageForEntity     ImageForEntity?
+  avatarImageId      String?
+  avatarImage        Image?                  @relation(fields: [avatarImageId], references: [id], onDelete: SetNull)
   roleId             String?
   role               Role?                   @relation(fields: [roleId], references: [id])
   address            Address?
@@ -365,21 +369,22 @@ model Address {
 }
 
 model Restaurant {
-  id             String          @id @default(cuid())
-  isActive       Boolean         @default(false)
-  name           String
-  description    String?
-  imageForEntity ImageForEntity?
-  email          String          @unique
-  phone          String
-  website        String?
-  socials        Social[]
-  banners        Banner[]
-  address        String
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  theme          Theme?
-  openingHours   OpeningHour[]
+  id           String        @id @default(cuid())
+  isActive     Boolean       @default(false)
+  name         String
+  description  String?
+  logoImageId  String?
+  logoImage    Image?        @relation(fields: [logoImageId], references: [id], onDelete: SetNull)
+  email        String        @unique
+  phone        String
+  website      String?
+  socials      Social[]
+  banners      Banner[]
+  address      String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  theme        Theme?
+  openingHours OpeningHour[]
 }
 
 model OpeningHour {
@@ -528,6 +533,7 @@ model Image {
   id               String           @id @default(cuid())
   url              String           @db.Text
   publicId         String?          @unique
+  fileHash         String?          @unique
   width            Int?
   height           Int?
   format           String?
@@ -536,42 +542,33 @@ model Image {
   createdAt        DateTime?        @default(now())
   updatedAt        DateTime?        @updatedAt
   imageForEntities ImageForEntity[]
+  subCategories    SubCategory[]
+  users            User[]
+  restaurants      Restaurant[]
 
   @@index([publicId])
   @@index([url])
 }
 
 model ImageForEntity {
-  id            String       @id @default(cuid())
-  altText       String?      @db.Text
-  type          ImageType    @default(OTHER)
-  entityType    EntityType   @default(UNASSIGNED)
-  bannerId      String?
-  banner        Banner?      @relation(fields: [bannerId], references: [id], onDelete: Cascade)
-  subCategoryId String?      @unique
-  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  restaurantId  String?      @unique
-  restaurant    Restaurant?  @relation(fields: [restaurantId], references: [id])
-  userId        String?      @unique
-  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId     String?
-  product       Product?     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt     DateTime?    @default(now())
-  updatedAt     DateTime?    @updatedAt
-  image         Image?       @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  imageId       String?
+  id         String     @id @default(cuid())
+  altText    String?    @db.Text
+  type       ImageType  @default(OTHER)
+  entityType EntityType @default(UNASSIGNED)
+  bannerId   String?
+  banner     Banner?    @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  productId  String?
+  product    Product?   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt  DateTime?  @default(now())
+  updatedAt  DateTime?  @updatedAt
+  image      Image?     @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  imageId    String?
 
-  @@unique([id, userId, entityType, type])
-  @@unique([id, productId, entityType, type])
-  @@unique([id, bannerId, entityType, type])
-  @@index([userId, entityType])
   @@index([productId, entityType])
   @@index([type])
   @@index([entityType])
   @@index([productId])
   @@index([bannerId])
-  @@index([userId])
-  @@index([restaurantId])
 }
 
 enum ImageType {

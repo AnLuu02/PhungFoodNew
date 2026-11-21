@@ -1,6 +1,7 @@
 import z from 'zod';
 import { createTag } from '~/lib/FuncHandler/generateTag';
-import { imageInfoInputSchema } from './image.info.schema';
+import { StatusImage } from './image.info.schema';
+import { imageClientInputSchema } from './image.schema';
 
 export const baseSubCategorySchema = z.object({
   id: z.string().optional(),
@@ -15,7 +16,11 @@ export const baseSubCategorySchema = z.object({
 
 export const subCategoryInputSchema = baseSubCategorySchema
   .extend({
-    imageForEntity: imageInfoInputSchema.optional()
+    image: imageClientInputSchema
+      .extend({
+        status: z.nativeEnum(StatusImage).optional()
+      })
+      .optional()
   })
   .transform(data => ({
     ...data,

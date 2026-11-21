@@ -25,6 +25,7 @@ const BASE_SELECT = {
   discount: true,
   descriptionDetailHtml: true,
   thumbnailUrl: true,
+  thumbnailAlt: true,
   subCategory: {
     select: {
       id: true,
@@ -420,8 +421,8 @@ export const getOneProductService = async (
         select: {
           name: true,
           tag: true,
-          imageForEntity: {
-            select: { type: true, image: { select: { url: true } } }
+          image: {
+            select: { type: true, url: true }
           },
           categoryId: true
         }

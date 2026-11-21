@@ -89,10 +89,10 @@ export const BreadcrumbsComponent = () => {
                           <Image
                             loading='lazy'
                             style={{ objectFit: 'cover' }}
-                            src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                            src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                             height={130}
                             width={130}
-                            alt={item.name || 'Ảnh minh họa'}
+                            alt={item?.image?.altText || 'Ảnh minh họa ' + item.name}
                             className='rounded-full'
                           />
                         </Card.Section>

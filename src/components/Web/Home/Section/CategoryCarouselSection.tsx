@@ -167,7 +167,7 @@ export const CategoryCarouselSection = ({ categories }: { categories: CategoryPr
                             <Image
                               style={{ objectFit: 'cover' }}
                               loading='lazy'
-                              src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                              src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                               fill
                               alt={item?.name || 'Cà chua'}
                             />

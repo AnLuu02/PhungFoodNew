@@ -48,7 +48,7 @@ export default function RegisterForm() {
       id: '',
       name: '',
       email: '',
-      imageForEntity: undefined,
+      avatarImage: undefined,
       gender: Gender.OTHER,
       dateOfBirth: new Date(),
       isActive: true,
@@ -77,7 +77,7 @@ export default function RegisterForm() {
     try {
       await mutation.mutateAsync({
         ...formData,
-        imageForEntity: undefined
+        avatarImage: undefined
       });
     } catch {
       NotifyError('Đã xảy ra ngoại lệ. Hãy kiểm tra lại.');

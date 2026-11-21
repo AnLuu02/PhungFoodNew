@@ -56,7 +56,7 @@ export default function UserUpsert({
       id: '',
       name: '',
       email: '',
-      imageForEntity: undefined,
+      avatarImage: undefined,
       gender: Gender.OTHER,
       dateOfBirth: new Date('2000-01-01'),
       isActive: true,
@@ -78,15 +78,13 @@ export default function UserUpsert({
         dateOfBirth: user?.dateOfBirth || new Date(),
         gender: user?.gender || Gender.OTHER,
         phone: user?.phone || '',
-        imageForEntity: user?.imageForEntity
+        avatarImage: user?.avatarImage
           ? ({
-              ...user?.imageForEntity,
-              image: {
-                url: user?.imageForEntity?.image?.url || '',
-                publicId: user?.imageForEntity?.image?.publicId || '',
-                altText: user?.imageForEntity?.image?.altText || 'Ảnh đại diện của ' + user?.name,
-                type: user?.imageForEntity?.image?.type || ImageType.THUMBNAIL
-              }
+              ...user?.avatarImage,
+              url: user?.avatarImage?.url || '',
+              publicId: user?.avatarImage?.publicId || '',
+              altText: user?.avatarImage?.altText || 'Ảnh đại diện của ' + user?.name,
+              type: user?.avatarImage?.type || ImageType.THUMBNAIL
             } as any)
           : undefined,
         roleId: user?.roleId || '',
@@ -114,30 +112,24 @@ export default function UserUpsert({
   });
 
   const onSubmit: SubmitHandler<UserInput> = async formData => {
-    const imageFile = formFields.getValues('imageForEntity.image.urlFile');
-    const imagePublicId = formFields.getValues('imageForEntity.image.publicId');
+    const imageFile = formFields.getValues('avatarImage.urlFile');
+    const imagePublicId = formFields.getValues('avatarImage.publicId');
     const imageToSave = await handleUploadFromClient(imageFile, utils, {
       folder: EntityType.USER + '/' + ImageType.THUMBNAIL
     });
     await upsertMutation.mutateAsync({
       ...formData,
-      imageForEntity: imageToSave
+      avatarImage: imageToSave
         ? {
-            id: formData?.imageForEntity?.id,
-            altText: formData?.imageForEntity?.altText || 'Ảnh đại diện của ' + (formData?.name || ''),
-            type: formData?.imageForEntity?.type || ImageType.THUMBNAIL,
-            entityType: formData?.imageForEntity?.entityType || EntityType.USER,
+            ...imageToSave,
             status: StatusImage.NEW,
-            image: {
-              ...imageToSave,
-              id: undefined,
-              altText: formData?.imageForEntity?.altText || 'Ảnh đại diện của ' + (formData?.name || ''),
-              type: formData?.imageForEntity?.type || ImageType.THUMBNAIL
-            }
+            id: undefined,
+            altText: formData?.avatarImage?.altText || 'Ảnh đại diện của ' + (formData?.name || ''),
+            type: formData?.avatarImage?.type || ImageType.THUMBNAIL
           }
-        : user?.imageForEntity?.id && !imagePublicId
+        : user?.avatarImage?.id && !imagePublicId
           ? {
-              id: user?.imageForEntity?.id,
+              id: user?.avatarImage?.id,
               status: StatusImage.DELETED
             }
           : undefined
@@ -377,7 +369,7 @@ export default function UserUpsert({
               Ảnh đại diện
             </Text>
             <Stack>
-              <ThumbnailUpsert nameField={'imageForEntity.image'} size={'100%'} />
+              <ThumbnailUpsert nameField={'avatarImage'} size={'100%'} />
               <Button
                 variant='outline'
                 size='sm'

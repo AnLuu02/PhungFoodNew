@@ -15,20 +15,20 @@ import {
   deleteImageService,
   detachAllAssociationsService,
   detachImageFromEntityService,
-  getAllImageService,
+  findImageService,
   getImageByIdService,
   getImageForEntityService,
   updateImageMetadataService,
   upsertImageService
 } from '~/server/services/image.service';
-import { imageFromDbSchema } from '~/shared/schema/image.schema';
+import { imageServerInputSchema } from '~/shared/schema/image.schema';
 export const imagesRouter = createTRPCRouter({
   checkExisting: publicProcedure
     .input(z.object({ publicId: z.string() }))
     .query(async ({ ctx, input }) => await checkExistingImageService(ctx.db, input)),
   upsert: publicProcedure
     .use(activityLogger)
-    .input(imageFromDbSchema)
+    .input(imageServerInputSchema)
     .mutation(async ({ ctx, input }) => await upsertImageService(ctx.db, input)),
 
   delete: publicProcedure
@@ -37,19 +37,18 @@ export const imagesRouter = createTRPCRouter({
     .input(z.object({ publicId: z.string() }))
     .mutation(async ({ ctx, input }) => await deleteImageService(ctx.db, input)),
 
-  getAllImages: protectedProcedure
+  find: protectedProcedure
     .input(
       z.object({
-        imageTypes: z.array(z.nativeEnum(ImageType)).optional(),
-        entityTypes: z.array(z.nativeEnum(EntityType)).optional(),
+        imageType: z.nativeEnum(ImageType).optional(),
+        entityType: z.nativeEnum(EntityType).optional(),
         showOrphanedOnly: z.boolean().optional().default(false),
         searchQuery: z.string().optional(),
         skip: z.number().optional().default(0),
-        take: z.number().optional().default(24),
-        include: z.custom<Prisma.ImageInclude>().optional()
+        take: z.number().optional().default(24)
       })
     )
-    .query(async ({ ctx, input }) => await getAllImageService(ctx.db, input)),
+    .query(async ({ ctx, input }) => await findImageService(ctx.db, input)),
   getImageForEntity: protectedProcedure
     .input(
       z.object({
@@ -59,7 +58,7 @@ export const imagesRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => await getImageForEntityService(ctx.db, input)),
   getImageById: protectedProcedure
-    .input(z.object({ id: z.string().cuid(), include: z.custom<Prisma.ImageInclude>().optional() }))
+    .input(z.object({ id: z.string().cuid() }))
     .query(async ({ ctx, input }) => await getImageByIdService(ctx.db, input)),
 
   updateImageMetadata: protectedProcedure
@@ -77,6 +76,7 @@ export const imagesRouter = createTRPCRouter({
       z.object({
         imageId: z.string().cuid(),
         entityId: z.string(),
+        imageForEntityId: z.string(),
         entityType: z.nativeEnum(EntityType)
       })
     )

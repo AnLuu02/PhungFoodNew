@@ -65,8 +65,8 @@ export default function TableSubCategory() {
                   </Table.Td>
                   <Table.Td className='text-sm'>
                     <Avatar
-                      src={item.imageForEntity?.image?.url}
-                      alt={item?.imageForEntity?.altText || 'Đang cập nhật ảnh danh mục'}
+                      src={item.image?.url}
+                      alt={item?.image?.altText || 'Đang cập nhật ảnh danh mục'}
                       size={40}
                     />
                   </Table.Td>

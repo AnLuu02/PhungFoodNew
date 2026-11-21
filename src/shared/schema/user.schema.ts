@@ -1,7 +1,8 @@
 import { Gender, UserLevel } from '@prisma/client';
 import z from 'zod';
 import { baseAddressSchema } from './address.schema';
-import { imageInfoInputSchema } from './image.info.schema';
+import { StatusImage } from './image.info.schema';
+import { imageClientInputSchema } from './image.schema';
 
 export const baseUserSchema = z.object({
   id: z.string().optional(),
@@ -26,7 +27,11 @@ export const baseUserSchema = z.object({
 });
 
 export const userInputSchema = baseUserSchema.extend({
-  imageForEntity: imageInfoInputSchema.optional()
+  avatarImage: imageClientInputSchema
+    .extend({
+      status: z.nativeEnum(StatusImage).optional()
+    })
+    .optional()
 });
 
 export type UserInput = z.infer<typeof userInputSchema>;

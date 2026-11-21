@@ -1,6 +1,6 @@
 import z from 'zod';
 import { createTag } from '~/lib/FuncHandler/generateTag';
-import { imageInfoFromDbSchema, imageInfoInputSchema } from './image.info.schema';
+import { imageInfoClientInputSchema, imageInfoServerInputSchema } from './image.info.schema';
 
 export const baseProductSchema = z.object({
   id: z.string().optional(),
@@ -9,6 +9,7 @@ export const baseProductSchema = z.object({
   descriptionDetailJson: z.any().optional().nullable(),
   descriptionDetailHtml: z.string().default('<p>Đang cập nhật</p>'),
   thumbnailUrl: z.string().optional(),
+  thumbnailAlt: z.string().optional(),
   region: z.string({ required_error: 'Món ăn này là của miền nào đây?' }).min(1, 'Món ăn này là của miền nào đây?'),
   tag: z.string().optional(),
   tags: z.array(z.string()),
@@ -32,8 +33,8 @@ export const baseProductSchema = z.object({
 
 export const productInputSchema = baseProductSchema
   .extend({
-    thumbnail: imageInfoInputSchema.optional(),
-    gallery: z.array(imageInfoInputSchema).optional(),
+    thumbnail: imageInfoClientInputSchema.optional(),
+    gallery: z.array(imageInfoClientInputSchema).optional(),
     galleryInput: z.array(z.instanceof(File)).optional()
   })
   .transform(data => ({
@@ -47,7 +48,7 @@ export const productInputSchema = baseProductSchema
 
 export const productFromDbSchema = baseProductSchema
   .extend({
-    imageForEntities: z.array(imageInfoFromDbSchema).optional()
+    imageForEntities: z.array(imageInfoServerInputSchema).optional()
   })
   .transform(data => ({
     ...data,

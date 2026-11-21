@@ -1,6 +1,6 @@
 import SparkMD5 from 'spark-md5';
 
-export const calculateHash = (file: File): Promise<string> => {
+export const createHashWithMd5 = (file: File): Promise<string> => {
   return new Promise(resolve => {
     const reader = new FileReader();
     reader.onload = e => {

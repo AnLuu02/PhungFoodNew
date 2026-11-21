@@ -47,7 +47,7 @@ export const CommentsList = ({ productId }: { productId: string }) => {
                   className='rounded-full object-cover'
                   width={30}
                   height={30}
-                  src={comment?.user?.imageForEntity?.image?.url || '/images/webp/user-default.webp'}
+                  src={comment?.user?.avatarImage?.url || '/images/webp/user-default.webp'}
                   alt='User avatar'
                 />
                 <Box className='hidden text-left sm:block'>

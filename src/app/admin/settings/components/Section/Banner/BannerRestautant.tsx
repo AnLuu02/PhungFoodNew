@@ -9,8 +9,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { handleUploadFromClient, UploadedImage, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
-import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
-import { ImageFromDb } from '~/shared/schema/image.schema';
+import { ImageInfoServerInput, StatusImage } from '~/shared/schema/image.info.schema';
+import { ImageServerInput } from '~/shared/schema/image.schema';
 import { BannerInput, bannerInputSchema } from '~/shared/schema/restaurant.banner.schema';
 import { GetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
 import { api } from '~/trpc/react';
@@ -66,10 +66,10 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
           ? activeBanner?.imageForEntities?.reduce(
               (
                 acc: {
-                  bannerFromDb: ImageInfoFromDb[];
-                  galleryFromDb: ImageInfoFromDb[];
+                  bannerFromDb: ImageInfoServerInput[];
+                  galleryFromDb: ImageInfoServerInput[];
                 },
-                item: ImageInfoFromDb
+                item: ImageInfoServerInput
               ) => {
                 item?.type === ImageType.THUMBNAIL && acc.bannerFromDb?.push(item);
                 item?.type === ImageType.GALLERY && acc.galleryFromDb?.push(item);
@@ -95,7 +95,7 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
             : undefined,
         gallery:
           galleryFromDb && galleryFromDb?.length > 0
-            ? galleryFromDb?.map((item: ImageFromDb) => ({
+            ? galleryFromDb?.map((item: ImageServerInput) => ({
                 ...item,
                 id: item?.id || ''
               }))
@@ -130,10 +130,10 @@ export default function BannerManagement({ restaurantId }: { restaurantId: strin
         ? activeBanner?.imageForEntities?.reduce(
             (
               acc: {
-                bannerFromDb: ImageInfoFromDb[];
-                galleryFromDb: ImageInfoFromDb[];
+                bannerFromDb: ImageInfoServerInput[];
+                galleryFromDb: ImageInfoServerInput[];
               },
-              item: ImageInfoFromDb
+              item: ImageInfoServerInput
             ) => {
               item?.type === ImageType.THUMBNAIL && acc.bannerFromDb?.push(item);
               item?.type === ImageType.GALLERY && acc.galleryFromDb?.push(item);

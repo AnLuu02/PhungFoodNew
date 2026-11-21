@@ -1,5 +1,6 @@
 import z from 'zod';
-import { imageInfoInputSchema } from './image.info.schema';
+import { StatusImage } from './image.info.schema';
+import { imageClientInputSchema } from './image.schema';
 import { baseOpeningHourSchema } from './restaurant.openingHours.schema';
 import { baseSocialSchema } from './restaurant.socials.schema';
 import { baseThemeSchema } from './restaurant.theme.schema';
@@ -18,7 +19,11 @@ export const baseRestaurantSchema = z.object({
 });
 
 export const restaurantInputSchema = baseRestaurantSchema.extend({
-  imageForEntity: imageInfoInputSchema.optional()
+  logoImage: imageClientInputSchema
+    .extend({
+      status: z.nativeEnum(StatusImage).optional()
+    })
+    .optional()
 });
 
 export type RestaurantInput = z.infer<typeof restaurantInputSchema>;

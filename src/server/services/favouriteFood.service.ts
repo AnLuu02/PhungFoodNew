@@ -146,7 +146,7 @@ export const getFilterFavouriteFoodService = async (db: PrismaClient, input: { s
           id: true,
           name: true,
           email: true,
-          imageForEntity: { include: { image: true } }
+          avatarImage: true
         }
       }
     }
@@ -185,7 +185,7 @@ export const getProductOwnerService = async (db: PrismaClient, input: { userId: 
           id: true,
           name: true,
           email: true,
-          imageForEntity: { include: { image: true } }
+          avatarImage: true
         }
       }
     }

@@ -33,7 +33,7 @@ import { ImageConnectedInfoModal } from './ImageConnectedInfoModal';
 import ImageDetailPanel from './ImageDetailPanel';
 import ImageFilters from './ImageFilters';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 const TABS = [
   { value: 'all', label: 'Tất cả' },
   { value: ImageType.THUMBNAIL, label: 'Ảnh minh họa' },
@@ -52,12 +52,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(ITEMS_PER_PAGE);
   const [selectedImages, setSelectedImages] = useState<Set<string>>(new Set());
-  const [filters, setFilters] = useState<ImageFilterOptions>({
-    imageTypes: [],
-    entityTypes: [],
-    showOrphanedOnly: false,
-    searchQuery: ''
-  });
+  const [filters, setFilters] = useState<ImageFilterOptions>({});
   const [deleteConfirmOpened, { open: openDeleteConfirm, close: closeDeleteConfirm }] = useDisclosure(false);
   const [bulkDeleteOrphaned, setBulkDeleteOrphaned] = useState(false);
   const [connectedState, setConnectedState] = useState<ConnectedStateWithEntity>({
@@ -69,7 +64,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
     data: imagesData,
     isLoading,
     refetch
-  } = api.Images.getAllImages.useQuery({
+  } = api.Images.find.useQuery({
     skip: (page - 1) * perPage,
     take: perPage,
     ...filters
@@ -86,9 +81,9 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
       refetch();
     }
   });
-  const handleSelectAll = useCallback(() => {
+  const toggleSelectAll = useCallback(() => {
     if (imagesData?.data) {
-      if (selectedImages.size === imagesData.data.length) {
+      if (selectedImages.size === imagesData?.data?.length) {
         setSelectedImages(new Set());
       } else {
         setSelectedImages(new Set(imagesData.data.map(img => img.id)));
@@ -98,7 +93,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
   const handleFilterChange = useCallback((key: keyof ImageFilterOptions, value: any) => {
     setFilters(prev => ({
       ...prev,
-      [key]: value
+      [key]: value ? value : undefined
     }));
     setPage(1);
   }, []);
@@ -122,6 +117,8 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
       onRefetch: data?.onRefetch
     }));
   }, []);
+
+  console.log(filters);
 
   const handleSelectImage = useCallback((imageId: string) => {
     setSelectedImages(prev => {
@@ -153,15 +150,12 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
             <Group gap={12} wrap='wrap'>
               <Box className='flex w-fit rounded-full bg-[#f3f4f6] p-1 dark:bg-dark-card'>
                 {TABS.map(tab => {
-                  const isActive =
-                    tab.value === 'all' && filters.imageTypes.length === 0
-                      ? true
-                      : filters.imageTypes.includes(tab.value as ImageType);
+                  const isActive = tab.value === 'all' && !filters.imageType ? true : filters.imageType === tab.value;
 
                   return (
                     <UnstyledButton
                       key={tab.value}
-                      onClick={() => handleFilterChange('imageTypes', tab.value === 'all' ? [] : [tab.value])}
+                      onClick={() => handleFilterChange('imageType', tab.value === 'all' ? undefined : tab.value)}
                       className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
                         isActive
                           ? 'text-primary bg-white font-bold shadow-sm dark:bg-dark-background'
@@ -184,17 +178,17 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
                   gap={'sm'}
                   className='h-[42px] flex-1 cursor-pointer rounded-full border border-solid border-gray-200 px-6 text-sm font-bold text-gray-800 hover:bg-gray-200 hover:font-bold dark:border-dark-card dark:hover:bg-dark-background lg:flex-none'
                 >
+                  <Text size='sm' c={'dimmed'}>
+                    {selectedImages.size > 0 ? `${selectedImages.size} ảnh đã chọn` : 'Chọn tất cả'}
+                  </Text>
                   <Checkbox
                     id='select_all_image_delete'
                     checked={selectedImages.size === imagesData?.data?.length && imagesData?.data?.length > 0}
-                    onChange={handleSelectAll}
+                    onChange={toggleSelectAll}
                     p={0}
                     m={0}
                     className='h-4 w-4 rounded border-gray-300'
                   />
-                  <Text size='sm' c={'dimmed'}>
-                    {selectedImages.size > 0 ? `${selectedImages.size} ảnh đã chọn` : 'Chọn tất cả'}
-                  </Text>
                 </Flex>
               )}
               <Tooltip label='Bật/tắt bộ lọc'>
@@ -222,7 +216,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
           <>
             {isLoading || isLoadingImageForEntity ? (
               <ModalUpsertSkeleton />
-            ) : imagesData?.data.length === 0 ? (
+            ) : imagesData?.data?.length === 0 ? (
               <Center py={120}>
                 <Stack align='center'>
                   <IconAlertTriangle size={48} color='var(--mantine-color-gray-4)' />
@@ -232,7 +226,7 @@ export default function ImageManager({ mode }: { mode: 'library' | 'page' }) {
             ) : (
               <>
                 <SimpleGrid cols={{ base: 2, sm: 3, md: 4 }} spacing='md' mb='xl'>
-                  {imagesData?.data.map(image => {
+                  {(imagesData?.data ?? []).map(image => {
                     return (
                       <ImageCard
                         key={`${image.id}`}

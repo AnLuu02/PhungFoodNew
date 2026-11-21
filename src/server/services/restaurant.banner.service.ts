@@ -2,14 +2,14 @@ import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { Session } from 'next-auth';
 import { UserRole } from '~/shared/constants/user.constants';
-import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
+import { ImageInfoServerInput, StatusImage } from '~/shared/schema/image.info.schema';
 import { BannerReqCloudinary } from '~/shared/schema/restaurant.banner.schema';
 
 export const upsertBannerService = async (db: PrismaClient, input: BannerReqCloudinary) => {
   const { id, imageForEntities, restaurantId, ...data } = input;
   const imagesInput = imageForEntities || [];
   const { newImages, deleteImages } = imagesInput.reduce(
-    (acc: { newImages: ImageInfoFromDb[]; deleteImages: ImageInfoFromDb[] }, item: ImageInfoFromDb) => {
+    (acc: { newImages: ImageInfoServerInput[]; deleteImages: ImageInfoServerInput[] }, item: ImageInfoServerInput) => {
       item?.status === StatusImage.NEW && acc.newImages?.push(item);
       item?.status === StatusImage.DELETED && acc.deleteImages?.push(item);
       return acc;

@@ -53,7 +53,7 @@ export const ButtonCheckout = ({
         email,
         name: 'Khách hàng - ' + email,
         password,
-        imageForEntity: undefined,
+        avatarImage: undefined,
         phone
       });
       userId = responseGuest.id;

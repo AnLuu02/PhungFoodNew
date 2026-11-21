@@ -1,6 +1,6 @@
 import { EntityType, ImageType } from '@prisma/client';
 import z from 'zod';
-import { imageFromDbSchema, imageInputSchema } from './image.schema';
+import { imageClientInputSchema, imageServerInputSchema } from './image.schema';
 
 export enum StatusImage {
   NEW = 'NEW',
@@ -15,13 +15,13 @@ export const baseImageInfoSchema = z.object({
   entityType: z.nativeEnum(EntityType).optional(),
   status: z.nativeEnum(StatusImage).optional()
 });
-export const imageInfoFromDbSchema = baseImageInfoSchema.extend({
-  image: imageFromDbSchema.optional()
+export const imageInfoServerInputSchema = baseImageInfoSchema.extend({
+  image: imageServerInputSchema.optional()
 });
 
-export const imageInfoInputSchema = baseImageInfoSchema.extend({
-  image: imageInputSchema.optional()
+export const imageInfoClientInputSchema = baseImageInfoSchema.extend({
+  image: imageClientInputSchema.optional()
 });
 
-export type ImageInfoFromDb = z.infer<typeof imageInfoFromDbSchema>;
-export type ImageInfoInput = z.infer<typeof imageInfoInputSchema>;
+export type ImageInfoServerInput = z.infer<typeof imageInfoServerInputSchema>;
+export type ImageInfoClientInput = z.infer<typeof imageInfoClientInputSchema>;

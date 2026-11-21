@@ -58,7 +58,7 @@ export const CartTable = () => {
                       src={item.product.thumbnail}
                       fill
                       className='object-cover'
-                      alt={item.product.name}
+                      alt={'Ảnh sản phẩm ' + item.product.name}
                     />
                   </Paper>
                 </Paper>

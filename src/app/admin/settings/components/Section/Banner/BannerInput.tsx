@@ -4,14 +4,14 @@ import { ActionIcon, Box, FileInput, Flex, Image, Paper, Text, Tooltip } from '@
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { ImageFromDb } from '~/shared/schema/image.schema';
+import { ImageServerInput } from '~/shared/schema/image.schema';
 
 export default function BannerInputSection({
   mode = 'edit',
   banners
 }: {
   mode?: 'view' | 'edit';
-  banners?: ImageFromDb[];
+  banners?: ImageServerInput[];
 }) {
   const formFields = useFormContext();
   const banner_1 = mode === 'edit' ? formFields.watch('banner1') : banners?.[0];

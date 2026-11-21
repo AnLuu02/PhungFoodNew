@@ -154,7 +154,7 @@ export const getAllActivitiesService = async (
     include: {
       ...(input.include ?? {}),
       user: {
-        select: { id: true, name: true, email: true, imageForEntity: { select: { image: true } } }
+        select: { id: true, name: true, email: true, avatarImage: true }
       }
     },
     orderBy: { createdAt: 'desc' },

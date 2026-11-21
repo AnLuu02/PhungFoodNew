@@ -103,7 +103,7 @@ export const findReviewService = async (
             email: true,
             level: true,
             pointUser: true,
-            imageForEntity: { select: { type: true, altText: true, image: { select: { url: true } } } }
+            avatarImage: { select: { type: true, altText: true, url: true } }
           }
         },
         product: {
@@ -183,7 +183,7 @@ export const getReviewForOwnerService = async (
         ...(include ?? {}),
         user: {
           include: {
-            imageForEntity: { select: { type: true, altText: true, image: { select: { url: true } } } }
+            avatarImage: { select: { type: true, altText: true, url: true } }
           }
         }
       }
@@ -218,7 +218,7 @@ export const getBaseReviewService = async (db: PrismaClient, input: { key: strin
           select: {
             name: true,
             email: true,
-            imageForEntity: { select: { type: true, altText: true, image: { select: { url: true } } } }
+            avatarImage: { select: { type: true, altText: true, url: true } }
           }
         },
         product: {

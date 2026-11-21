@@ -8,7 +8,8 @@ import { regexCheckGuest } from '~/lib/FuncHandler/generateGuestCredentials';
 import { getOtpEmail, sendEmail } from '~/lib/FuncHandler/MailHelpers/sendEmail';
 import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
 import { UserRole } from '~/shared/constants/user.constants';
-import { ImageInfoFromDb, StatusImage } from '~/shared/schema/image.info.schema';
+import { StatusImage } from '~/shared/schema/image.info.schema';
+import { ImageClientInput } from '~/shared/schema/image.schema';
 import { UserInput } from '~/shared/schema/user.schema';
 import { db } from '../db';
 
@@ -156,7 +157,7 @@ export const findUserService = async (
   };
 };
 export const createUserService = async (db: PrismaClient, input: UserInput, isCredential: boolean) => {
-  const { id, imageForEntity, address, roleId, ...data } = input;
+  const { id, avatarImage, address, roleId, ...data } = input;
 
   const isAdmin = input?.email === process.env.NEXT_PUBLIC_EMAIL_ADMIN;
 
@@ -166,14 +167,14 @@ export const createUserService = async (db: PrismaClient, input: UserInput, isCr
         email: input.email
       },
       include: {
-        imageForEntity: { include: { image: true } }
+        avatarImage: true
       }
     }),
     db.role.findFirst({ where: isAdmin ? { name: UserRole.ADMIN } : { default: true } })
   ]);
-  let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;
-  if (imageForEntity && imageForEntity?.status) {
-    const { status, ...data } = imageForEntity;
+  let imageDb: ImageClientInput | undefined, statusFromReq;
+  if (avatarImage && avatarImage?.status) {
+    const { status, ...data } = avatarImage;
     statusFromReq = status;
     imageDb = data;
   }
@@ -228,31 +229,17 @@ export const createUserService = async (db: PrismaClient, input: UserInput, isCr
         : undefined,
       pointUser: input.pointUser,
       level: input.level,
-      imageForEntity: {
-        create:
-          statusFromReq === StatusImage.NEW && imageDb
-            ? {
+      avatarImage:
+        statusFromReq === StatusImage.NEW && imageDb
+          ? {
+              create: {
                 ...imageDb,
-                id: undefined,
-                entityType: EntityType.USER,
-                altText: `Ảnh ${data.name}`,
-                type: ImageType.THUMBNAIL,
-                image: {
-                  connectOrCreate: {
-                    where: {
-                      publicId: imageDb?.image?.publicId ?? 'default_public_id'
-                    },
-                    create: {
-                      ...(imageDb?.image ?? {}),
-                      url: imageDb?.image?.url || '',
-                      altText: imageDb?.image?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
-                      type: imageDb?.image?.type || ImageType.THUMBNAIL
-                    }
-                  }
-                }
+                url: imageDb?.url || '',
+                altText: imageDb?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
+                type: imageDb?.type || ImageType.THUMBNAIL
               }
-            : undefined
-      },
+            }
+          : undefined,
       role: defaultRole?.id
         ? {
             connect: {
@@ -271,7 +258,7 @@ export const createUserService = async (db: PrismaClient, input: UserInput, isCr
 };
 
 export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
-  const { id, imageForEntity, address, roleId, ...data } = input;
+  const { id, avatarImage, address, roleId, ...data } = input;
   const existed = await db.user.findUnique({
     where: {
       id: id || 'default_id_findUnique'
@@ -283,9 +270,9 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
       message: 'Email này đã tồn tại. Hãy thử lại.'
     });
   }
-  let imageDb: Omit<ImageInfoFromDb, 'status'> | undefined, statusFromReq;
-  if (imageForEntity && imageForEntity?.status) {
-    const { status, ...data } = imageForEntity;
+  let imageDb: ImageClientInput | undefined, statusFromReq;
+  if (avatarImage && avatarImage?.status) {
+    const { status, ...data } = avatarImage;
     statusFromReq = status;
     imageDb = data;
   }
@@ -298,7 +285,7 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
       role: roleId
         ? {
             connect: {
-              id: roleId || 'default_role_id_connected'
+              id: roleId
             }
           }
         : undefined,
@@ -310,38 +297,25 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
             }
           }
         : undefined,
-      imageForEntity: {
-        create:
-          statusFromReq === StatusImage.NEW && imageDb
-            ? {
+      avatarImage:
+        statusFromReq === StatusImage.NEW && imageDb
+          ? {
+              create: {
                 ...imageDb,
                 id: undefined,
-                entityType: EntityType.USER,
-                altText: `Ảnh ${data.name}`,
-                type: ImageType.THUMBNAIL,
-                image: {
-                  connectOrCreate: {
-                    where: {
-                      publicId: imageDb?.image?.publicId ?? 'default_public_id'
-                    },
-                    create: {
-                      ...(imageDb?.image ?? {}),
-                      url: imageDb?.image?.url || '',
-                      altText: imageDb?.image?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
-                      type: imageDb?.image?.type || ImageType.THUMBNAIL
-                    }
-                  }
-                }
+                url: imageDb?.url || '',
+                altText: imageDb?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
+                type: imageDb?.type || ImageType.THUMBNAIL
               }
-            : undefined
-      }
+            }
+          : undefined
     },
     update: {
       ...data,
       role: roleId
         ? {
             connect: {
-              id: roleId || 'default_role_id_connected'
+              id: roleId
             }
           }
         : undefined,
@@ -349,7 +323,7 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
         ? {
             upsert: {
               where: {
-                id: address?.id || 'default_address_id_upsert'
+                id: String(address?.id)
               },
               create: {
                 ...address,
@@ -362,52 +336,26 @@ export const upsertUserService = async (db: PrismaClient, input: UserInput) => {
             }
           }
         : undefined,
-      imageForEntity:
+      avatarImage:
         statusFromReq === StatusImage.DELETED && imageDb?.id
           ? {
               delete: { id: imageDb.id }
             }
-          : imageDb
+          : statusFromReq === StatusImage.NEW && imageDb
             ? {
                 upsert: {
                   where: { id: imageDb.id },
                   update: {
                     ...imageDb,
-                    image:
-                      statusFromReq === StatusImage.NEW && imageDb.image
-                        ? {
-                            connectOrCreate: {
-                              where: {
-                                publicId: imageDb.image.publicId ?? 'default_public_id'
-                              },
-                              create: {
-                                ...imageDb.image,
-                                url: imageDb?.image?.url || '',
-                                altText: imageDb?.image?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
-                                type: imageDb?.image?.type || ImageType.THUMBNAIL
-                              }
-                            }
-                          }
-                        : undefined
+                    url: imageDb?.url || '',
+                    altText: imageDb?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
+                    type: imageDb?.type || ImageType.THUMBNAIL
                   },
                   create: {
                     ...imageDb,
-                    image:
-                      statusFromReq === StatusImage.NEW && imageDb.image
-                        ? {
-                            connectOrCreate: {
-                              where: {
-                                publicId: imageDb.image.publicId ?? 'default_public_id'
-                              },
-                              create: {
-                                ...imageDb.image,
-                                url: imageDb.image.url || '',
-                                altText: imageDb?.image?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
-                                type: imageDb?.image?.type || ImageType.THUMBNAIL
-                              }
-                            }
-                          }
-                        : undefined
+                    url: imageDb?.url || '',
+                    altText: imageDb?.altText || 'Ảnh đại diện của ' + (data?.name || ''),
+                    type: imageDb?.type || ImageType.THUMBNAIL
                   }
                 }
               }
@@ -451,7 +399,6 @@ export const uploadImageUserService = async (
   const { email, imgUrl, meta } = data;
 
   const type = meta?.type ?? ImageType.THUMBNAIL;
-  const entityType = meta?.entityType ?? EntityType.USER;
   const altText = `Ảnh ${meta?.altText ?? `người dùng ${email}`}`;
 
   const imageData = {
@@ -466,26 +413,8 @@ export const uploadImageUserService = async (
       email
     },
     data: {
-      imageForEntity: {
-        upsert: {
-          create: {
-            entityType,
-            altText,
-            type,
-            image: {
-              create: imageData
-            }
-          },
-
-          update: {
-            entityType,
-            altText,
-            type,
-            image: {
-              create: imageData
-            }
-          }
-        }
+      avatarImage: {
+        create: imageData
       }
     }
   });
@@ -494,7 +423,7 @@ export const uploadImageUserService = async (
 export const deleteUserService = async (db: PrismaClient, input: { id: string }) => {
   const user = await db.user.findUnique({
     where: { id: input.id },
-    include: { imageForEntity: { include: { image: true } } }
+    include: { avatarImage: true }
   });
 
   if (!user) {
@@ -560,7 +489,7 @@ export const getOneUserService = async (db: PrismaClient, input: { key: string; 
     },
     include: {
       orders: { include: { orderItems: true } },
-      imageForEntity: { include: { image: true } },
+      avatarImage: true,
       role: {
         include: {
           permissions: true

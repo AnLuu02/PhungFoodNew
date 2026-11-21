@@ -15,16 +15,7 @@
     "createdAt",
     "updatedAt"
   ],
-  "Category": [
-    "id",
-    "name",
-    "isActive",
-    "tag",
-    "description",
-    "subCategory",
-    "createdAt",
-    "updatedAt"
-  ],
+  "Category": ["id", "name", "isActive", "tag", "description", "subCategory", "createdAt", "updatedAt"],
   "SubCategory": [
     "id",
     "name",
@@ -32,7 +23,7 @@
     "isActive",
     "categoryId",
     "description",
-    "imageForEntity",
+    "image",
     "products",
     "category",
     "createdAt",
@@ -61,16 +52,7 @@
     "updatedAt",
     "voucherUsages"
   ],
-  "VoucherForUser": [
-    "id",
-    "user",
-    "voucher",
-    "quantityForUser",
-    "createdAt",
-    "updatedAt",
-    "userId",
-    "voucherId"
-  ],
+  "VoucherForUser": ["id", "user", "voucher", "quantityForUser", "createdAt", "updatedAt", "userId", "voucherId"],
   "VoucherUsage": [
     "id",
     "orderId",
@@ -137,18 +119,7 @@
     "createdAt",
     "updatedAt"
   ],
-  "Delivery": [
-    "id",
-    "name",
-    "email",
-    "phone",
-    "address",
-    "note",
-    "orderId",
-    "order",
-    "createdAt",
-    "updatedAt"
-  ],
+  "Delivery": ["id", "name", "email", "phone", "address", "note", "orderId", "order", "createdAt", "updatedAt"],
   "OrderItem": [
     "id",
     "productId",
@@ -204,27 +175,8 @@
     "createdAt",
     "updatedAt"
   ],
-  "Material": [
-    "id",
-    "name",
-    "tag",
-    "category",
-    "description",
-    "createdAt",
-    "updatedAt",
-    "products"
-  ],
-  "Review": [
-    "id",
-    "userId",
-    "productId",
-    "rating",
-    "comment",
-    "createdAt",
-    "updatedAt",
-    "user",
-    "product"
-  ],
+  "Material": ["id", "name", "tag", "category", "description", "createdAt", "updatedAt", "products"],
+  "Review": ["id", "userId", "productId", "rating", "comment", "createdAt", "updatedAt", "user", "product"],
   "User": [
     "id",
     "name",
@@ -244,7 +196,7 @@
     "review",
     "favouriteFoods",
     "revenue",
-    "imageForEntity",
+    "avatarImage",
     "roleId",
     "role",
     "address",
@@ -260,16 +212,7 @@
     "activityLogs",
     "voucherUsages"
   ],
-  "Token": [
-    "id",
-    "email",
-    "tokenHash",
-    "type",
-    "expires",
-    "isRevoked",
-    "createdAt",
-    "user"
-  ],
+  "Token": ["id", "email", "tokenHash", "type", "expires", "isRevoked", "createdAt", "user"],
   "Address": [
     "id",
     "type",
@@ -294,7 +237,7 @@
     "isActive",
     "name",
     "description",
-    "imageForEntity",
+    "logoImage",
     "email",
     "phone",
     "website",
@@ -355,47 +298,10 @@
     "restaurant",
     "restaurantId"
   ],
-  "Contact": [
-    "id",
-    "fullName",
-    "email",
-    "phone",
-    "subject",
-    "message",
-    "type",
-    "responded",
-    "createdAt",
-    "updatedAt"
-  ],
-  "Role": [
-    "id",
-    "name",
-    "viName",
-    "permissions",
-    "users",
-    "createdAt",
-    "updatedAt"
-  ],
-  "Permission": [
-    "id",
-    "name",
-    "viName",
-    "description",
-    "roles",
-    "userPermissions",
-    "createdAt",
-    "updatedAt"
-  ],
-  "UserPermission": [
-    "id",
-    "userId",
-    "permissionId",
-    "user",
-    "permission",
-    "granted",
-    "createdAt",
-    "updatedAt"
-  ],
+  "Contact": ["id", "fullName", "email", "phone", "subject", "message", "type", "responded", "createdAt", "updatedAt"],
+  "Role": ["id", "name", "viName", "permissions", "users", "createdAt", "updatedAt"],
+  "Permission": ["id", "name", "viName", "description", "roles", "userPermissions", "createdAt", "updatedAt"],
+  "UserPermission": ["id", "userId", "permissionId", "user", "permission", "granted", "createdAt", "updatedAt"],
   "Revenue": [
     "id",
     "userId",
@@ -412,15 +318,7 @@
     "createdAt",
     "updatedAt"
   ],
-  "FavouriteFood": [
-    "id",
-    "userId",
-    "productId",
-    "user",
-    "product",
-    "createdAt",
-    "updatedAt"
-  ],
+  "FavouriteFood": ["id", "userId", "productId", "user", "product", "createdAt", "updatedAt"],
   "Image": [
     "id",
     "url",
@@ -473,15 +371,7 @@
     "notificationTemplateId",
     "analytics"
   ],
-  "NotificationAnalytics": [
-    "id",
-    "read",
-    "clicked",
-    "delivered",
-    "sent",
-    "notificationId",
-    "notification"
-  ],
+  "NotificationAnalytics": ["id", "read", "clicked", "delivered", "sent", "notificationId", "notification"],
   "NotificationRecipient": [
     "id",
     "notification",
@@ -494,13 +384,7 @@
     "clickedAt",
     "status"
   ],
-  "NotificationDismissed": [
-    "id",
-    "userId",
-    "dismissedAt",
-    "notification",
-    "notificationId"
-  ],
+  "NotificationDismissed": ["id", "userId", "dismissedAt", "notification", "notificationId"],
   "NotificationTemplate": [
     "id",
     "name",

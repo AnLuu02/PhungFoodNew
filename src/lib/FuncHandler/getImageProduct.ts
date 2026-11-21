@@ -1,5 +1,5 @@
 import { ImageType } from '@prisma/client';
-import { ImageFromDb } from '~/shared/schema/image.schema';
+import { ImageServerInput } from '~/shared/schema/image.schema';
 import { getOptimizedUrl, OptimizeOptions } from '../Cloudinary/client';
 
 export const getImageUrl = (data: { type: ImageType; url: string }[], key: ImageType) => {
@@ -11,7 +11,7 @@ export const getImageUrl = (data: { type: ImageType; url: string }[], key: Image
 };
 
 export const getInjectedImageUrl = (
-  imagesData: ImageFromDb[] | null | undefined,
+  imagesData: ImageServerInput[] | null | undefined,
   type: ImageType | string,
   options: OptimizeOptions = {}
 ): string => {

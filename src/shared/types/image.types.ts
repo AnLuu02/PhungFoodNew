@@ -1,4 +1,15 @@
-import { EntityType, ImageType, Image as PrismaImage } from '@prisma/client';
+import {
+  Banner,
+  EntityType,
+  Image,
+  ImageForEntity,
+  ImageType,
+  Image as PrismaImage,
+  Product,
+  Restaurant,
+  SubCategory,
+  User
+} from '@prisma/client';
 
 export interface ImageWithAssociations extends PrismaImage {
   associations: ImageAssociation[];
@@ -7,9 +18,10 @@ export interface ImageWithAssociations extends PrismaImage {
 }
 
 export interface ImageAssociation {
+  id: string;
+  imageForEntityId: string;
   type: EntityType;
   name: string;
-  id: string;
   label: string;
 }
 
@@ -28,11 +40,18 @@ export interface ImageDetailState {
   isOrphaned: boolean;
 }
 
+export type ImageWithAssociationInput = Image & {
+  users?: User[] | null;
+  restaurants?: Restaurant[] | null;
+  subCategories?: SubCategory[] | null;
+  imageForEntities?: (ImageForEntity & { banner?: Banner | null; product?: Product | null })[] | null;
+};
+
 export interface ImageFilterOptions {
-  imageTypes: ImageType[];
-  entityTypes: EntityType[];
-  showOrphanedOnly: boolean;
-  searchQuery: string;
+  imageType?: ImageType;
+  entityType?: EntityType;
+  showOrphanedOnly?: boolean;
+  searchQuery?: string;
 }
 
 export interface BulkImageAction {

@@ -32,7 +32,6 @@ export const restaurantRouter = createTRPCRouter({
     .use(activityLogger)
     .input(restaurantInputSchema)
     .mutation(async ({ ctx, input }) => await upsertRestaurantService(ctx.db, input)),
-  /////////////////////////////// theme//////////////////////////////////
   changeTheme: publicProcedure
     .input(
       baseThemeSchema.extend({
@@ -49,7 +48,6 @@ export const restaurantRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx }) => await getThemeService(ctx.db)),
-  /////////////////////////////// banners//////////////////////////////////
   getAllBanner: publicProcedure
     .input(
       z
@@ -80,12 +78,9 @@ export const restaurantRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string()
-        // otherId: z.string().optional()
       })
     )
     .mutation(async ({ ctx, input }) => await deleteBannerService(ctx.db, input)),
-
-  ///////////////////////////////socials//////////////////////////////////
 
   upsertSocial: publicProcedure
     .use(activityLogger)
@@ -100,7 +95,6 @@ export const restaurantRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => await deleteSocialService(ctx.db, input)),
-  ///////////////////////////////   opening hour //////////////////////////////////
   updateOpeningHours: publicProcedure
     .use(activityLogger)
     .input(

@@ -74,9 +74,9 @@ const Header3 = () => {
                                 <Image
                                   key={index}
                                   loading='lazy'
-                                  src={item?.imageForEntity?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                                  src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
                                   style={{ objectFit: 'cover' }}
-                                  alt={item?.imageForEntity?.altText || 'Ảnh minh họa'}
+                                  alt={item?.image?.altText || 'Ảnh minh họa'}
                                   fill
                                 />
                               </Paper>

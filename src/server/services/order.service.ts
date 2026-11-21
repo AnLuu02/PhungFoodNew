@@ -110,7 +110,7 @@ export const findOrderService = async (
         payment: true,
         user: {
           include: {
-            imageForEntity: { include: { image: true } },
+            avatarImage: true,
             address: true
           }
         },
@@ -495,7 +495,7 @@ export const getFilterOrderService = async (
       voucherUsages: true,
       user: {
         include: {
-          imageForEntity: { include: { image: true } },
+          avatarImage: true,
           address: true
         }
       },
@@ -553,7 +553,7 @@ export const getOneOrderService = async (db: PrismaClient, input: { key: string;
       voucherUsages: true,
       user: {
         include: {
-          imageForEntity: { include: { image: true } },
+          avatarImage: true,
           address: true
         }
       },

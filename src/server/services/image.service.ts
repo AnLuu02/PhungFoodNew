@@ -1,12 +1,22 @@
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import cloudinary from '~/lib/Cloudinary/cloudinary';
-import { ImageFromDb } from '~/shared/schema/image.schema';
-import { ImageAssociation, ImageWithAssociations } from '~/shared/types/image.types';
+import { ImageServerInput } from '~/shared/schema/image.schema';
+import { ImageAssociation, ImageWithAssociationInput, ImageWithAssociations } from '~/shared/types/image.types';
 import { getServerAuthSession } from '../auth';
 import { getOneBannerService } from './restaurant.banner.service';
 import { getRestaurantOnlyService } from './restaurant.service';
 import { getOneUserService } from './user.service';
+
+const ENTITY_RELATION_MAP: Partial<
+  Record<EntityType, { type: 'N_TO_N'; fkField: string; selectField: string } | { type: 'DIRECT'; fieldName: string }>
+> = {
+  [EntityType.PRODUCT]: { type: 'N_TO_N', fkField: 'productId', selectField: 'product' },
+  [EntityType.BANNER]: { type: 'N_TO_N', fkField: 'bannerId', selectField: 'banner' },
+  [EntityType.CATEGORY]: { type: 'DIRECT', fieldName: 'subCategories' },
+  [EntityType.USER]: { type: 'DIRECT', fieldName: 'users' },
+  [EntityType.RESTAURANT]: { type: 'DIRECT', fieldName: 'restaurants' }
+};
 
 export const checkExistingImageService = async (db: PrismaClient, input: { publicId: string }) => {
   const existingImage = await db.image.findUnique({
@@ -40,13 +50,13 @@ export const deleteImageService = async (db: PrismaClient, input: { publicId: st
   };
 };
 
-export const upsertImageService = async (db: PrismaClient, input: ImageFromDb) => {
+export const upsertImageService = async (db: PrismaClient, input: ImageServerInput) => {
   const { id, ...data } = input;
   const result = await db.$transaction(async tx => {
     const oldData = id ? await tx.image.findUnique({ where: { id } }) : null;
     const newData = await tx.image.upsert({
       where: {
-        id: id || 'Default_image_id'
+        id: String(id)
       },
       create: {
         ...data,
@@ -66,48 +76,94 @@ export const upsertImageService = async (db: PrismaClient, input: ImageFromDb) =
   };
 };
 
-export const bulkUpsertImageService = async (db: PrismaClient, input: ImageFromDb[]) => {
-  if (!input || input?.length <= 0)
-    throw new TRPCError({ code: 'BAD_REQUEST', message: 'Giá trị đầu vào không hợp lệ.' });
-  return await db.$transaction(
-    input.map(({ id, ...rest }, index) =>
-      db.image.upsert({
-        where: {
-          id: id || 'default_id_image' + index
-        },
-        create: {
-          ...rest,
-          url: rest?.url || '',
-          type: ImageType.OTHER
-        },
-        update: rest
-      })
-    )
-  );
+const FILTER_ENTITY_MAP: Record<EntityType, Prisma.ImageWhereInput> = {
+  [EntityType.PRODUCT]: {
+    imageForEntities: {
+      some: {
+        entityType: EntityType.PRODUCT
+      }
+    }
+  },
+  [EntityType.BANNER]: {
+    imageForEntities: {
+      some: {
+        entityType: EntityType.BANNER
+      }
+    }
+  },
+
+  [EntityType.USER]: {
+    users: {
+      some: {
+        avatarImageId: { not: null }
+      }
+    }
+  },
+
+  [EntityType.CATEGORY]: {
+    subCategories: {
+      some: {
+        imageId: { not: null }
+      }
+    }
+  },
+
+  [EntityType.RESTAURANT]: {
+    restaurants: {
+      some: {
+        logoImageId: { not: null }
+      }
+    }
+  },
+  [EntityType.UNASSIGNED]: {
+    imageForEntities: {
+      none: {}
+    },
+    users: {
+      none: {}
+    },
+    restaurants: { none: {} },
+    subCategories: { none: {} }
+  }
 };
 
-export const getAllImageService = async (
+export const findImageService = async (
   db: PrismaClient,
   input: {
-    imageTypes?: ImageType[];
-    entityTypes?: EntityType[];
+    imageType?: ImageType;
+    entityType?: EntityType;
     showOrphanedOnly?: boolean;
     searchQuery?: string;
     skip: number;
     take: number;
-    include?: Prisma.ImageInclude;
   }
 ) => {
-  const { imageTypes, entityTypes, showOrphanedOnly, searchQuery, skip, take } = input;
+  const { imageType, entityType, showOrphanedOnly, searchQuery, skip, take } = input;
 
   const where: Prisma.ImageWhereInput = {
     AND: [
+      entityType ? FILTER_ENTITY_MAP[entityType] : {},
       {
         url: {
           contains: 'res.cloudinary.com'
         }
       },
-      imageTypes?.length ? { type: { in: imageTypes } } : {},
+      imageType
+        ? {
+            OR: [
+              {
+                type: imageType
+              },
+              {
+                imageForEntities: {
+                  some: {
+                    type: imageType
+                  }
+                }
+              }
+            ]
+          }
+        : {},
       searchQuery
         ? {
             OR: [
@@ -130,14 +186,13 @@ export const getAllImageService = async (
     db.image.findMany({
       where,
       include: {
-        ...(input?.include ?? {}),
+        users: true,
+        restaurants: true,
+        subCategories: true,
         imageForEntities: {
           include: {
             product: true,
-            banner: true,
-            user: true,
-            restaurant: true,
-            subCategory: true
+            banner: true
           }
         }
       },
@@ -170,19 +225,10 @@ export const getImageForEntityService = async (
     where: {
       OR: [
         {
-          subCategoryId: entityId
-        },
-        {
           bannerId: entityId
         },
         {
-          restaurantId: entityId
-        },
-        {
           productId: entityId
-        },
-        {
-          userId: entityId
         }
       ]
     },
@@ -194,20 +240,18 @@ export const getImageByIdService = async (
   db: PrismaClient,
   input: {
     id: string;
-    include?: Prisma.ImageInclude;
   }
 ) => {
   const image = await db.image.findUnique({
     where: { id: input.id },
     include: {
-      ...(input?.include ?? {}),
+      users: true,
+      restaurants: true,
+      subCategories: true,
       imageForEntities: {
         include: {
           product: true,
-          banner: true,
-          user: true,
-          restaurant: true,
-          subCategory: true
+          banner: true
         }
       }
     }
@@ -237,13 +281,13 @@ export const updateImageMetadataService = async (
       updatedAt: new Date()
     },
     include: {
+      users: true,
+      restaurants: true,
+      subCategories: true,
       imageForEntities: {
         include: {
           product: true,
-          banner: true,
-          user: true,
-          restaurant: true,
-          subCategory: true
+          banner: true
         }
       }
     }
@@ -252,81 +296,89 @@ export const updateImageMetadataService = async (
   return enrichImageWithAssociations(updated);
 };
 
+function isOneToManyOnImage(fieldName: string): boolean {
+  const imageModel = Prisma.dmmf.datamodel.models.find(m => m.name === 'Image');
+  const field = imageModel?.fields.find(f => f.name === fieldName);
+  return Boolean(field?.isList);
+}
+
 export const detachImageFromEntityService = async (
   db: PrismaClient,
   input: {
     imageId: string;
+    imageForEntityId: string;
     entityId: string;
     entityType: EntityType;
   }
 ) => {
-  const { imageId, entityId, entityType } = input;
+  const { imageId, imageForEntityId, entityId, entityType } = input;
+
+  if (entityType === EntityType.UNASSIGNED) {
+    const currentImage = await db.image.findUnique({ where: { id: imageId } });
+    if (!currentImage) throw new TRPCError({ code: 'NOT_FOUND', message: 'Image not found' });
+    return enrichImageWithAssociations(currentImage);
+  }
+
+  const config = ENTITY_RELATION_MAP[entityType];
+  if (!config) {
+    throw new TRPCError({ code: 'BAD_REQUEST', message: 'Loại thực thể không được hỗ trợ' });
+  }
+
+  const include: Prisma.ImageInclude =
+    config.type === 'N_TO_N'
+      ? { imageForEntities: { select: { [config.selectField]: true } } }
+      : { [config.fieldName]: true };
+
   const image = await db.image.findUnique({
     where: { id: imageId },
-    include: {
-      imageForEntities: {
-        include: {
-          product: true,
-          banner: true,
-          user: true,
-          restaurant: true,
-          subCategory: true
-        }
-      }
-    }
+    include
   });
 
   if (!image) {
-    throw new TRPCError({
-      code: 'NOT_FOUND',
-      message: 'Image not found'
+    throw new TRPCError({ code: 'NOT_FOUND', message: 'Image not found' });
+  }
+
+  let detached;
+
+  if (config.type === 'N_TO_N') {
+    detached = await db.$transaction(async tx => {
+      await tx.imageForEntity.delete({
+        where: {
+          id: imageForEntityId,
+          [config.fkField]: entityId,
+          imageId
+        }
+      });
+      return tx.image.findUnique({
+        where: { id: imageId },
+        include
+      });
+    });
+  } else {
+    const isList = isOneToManyOnImage(config.fieldName);
+
+    detached = await db.image.update({
+      where: { id: imageId },
+      data: {
+        [config.fieldName]: {
+          disconnect: isList ? { id: entityId } : true
+        }
+      },
+      include
     });
   }
 
-  const detachData: Prisma.ImageForEntityDeleteArgs = { where: { id: '' } };
-
-  switch (entityType) {
-    case EntityType.PRODUCT:
-      detachData.where = {
-        productId: entityId,
-        imageId
-      } as any;
-    case EntityType.CATEGORY:
-      detachData.where = {
-        subCategoryId: entityId,
-        imageId
-      };
-      break;
-    case EntityType.BANNER:
-      detachData.where = {
-        bannerId: entityId,
-        imageId
-      } as any;
-      break;
-    case EntityType.USER:
-      detachData.where = {
-        userId: entityId,
-        imageId
-      };
-      break;
-    case EntityType.RESTAURANT:
-      detachData.where = {
-        restaurantId: entityId,
-        imageId
-      };
-      break;
+  if (!detached) {
+    throw new TRPCError({ code: 'BAD_REQUEST', message: 'Không thể gỡ liên kết. Thử lại sau.' });
   }
 
-  const deleted = await db.imageForEntity.delete({
-    ...detachData
-  });
-
-  return enrichImageWithAssociations(deleted);
+  return enrichImageWithAssociations(detached);
 };
 
 export const detachAllAssociationsService = async (db: PrismaClient, input: { imageId: string }) => {
+  const { imageId } = input;
   const image = await db.image.findUnique({
-    where: { id: input.imageId }
+    where: { id: imageId }
   });
 
   if (!image) {
@@ -336,11 +388,31 @@ export const detachAllAssociationsService = async (db: PrismaClient, input: { im
     });
   }
 
-  const deleted = await db.imageForEntity.deleteMany({
-    where: { imageId: input.imageId }
+  const detached = await db.$transaction(async tx => {
+    await Promise.all([
+      tx.imageForEntity.deleteMany({
+        where: {
+          imageId
+        }
+      }),
+      tx.image.update({
+        where: {
+          id: imageId
+        },
+        data: {
+          users: { set: [] },
+          restaurants: { set: [] },
+          subCategories: { set: [] }
+        }
+      })
+    ]);
+    return await db.image.findUnique({
+      where: { id: input.imageId }
+    });
   });
 
-  return enrichImageWithAssociations(deleted);
+  if (!detached) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Không thể gỡ liên kết. Thử lại sau.' });
+  return enrichImageWithAssociations(detached);
 };
 
 export const bulkDeleteImagesService = async (
@@ -359,6 +431,21 @@ export const bulkDeleteImagesService = async (
         OR: [
           {
             imageForEntities: {
+              some: {}
+            }
+          },
+          {
+            users: {
+              some: {}
+            }
+          },
+          {
+            restaurants: {
+              some: {}
+            }
+          },
+          {
+            subCategories: {
               some: {}
             }
           }
@@ -426,7 +513,11 @@ export const connectedEntityService = async (
   const { entityId, entityType, images } = input;
   const session = await getServerAuthSession();
 
-  if (!entityId || !images) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Du lieu khong hop le.' });
+  if (!entityId || !images)
+    throw new TRPCError({
+      code: 'BAD_REQUEST',
+      message: 'Dữ liệu đầu vào không hợp lệ. Hãy kiểm tra entityId và images truyền vào'
+    });
 
   switch (entityType) {
     case EntityType.PRODUCT:
@@ -454,7 +545,7 @@ export const connectedEntityService = async (
               if (img.mode === 'connect') {
                 return db.imageForEntity.upsert({
                   where: {
-                    id: img?.imageForEntityId || 'default'
+                    id: String(img?.imageForEntityId)
                   },
                   create: {
                     altText: img.altText || 'Ảnh ' + img.type + ' của sản phẩm ' + product.name,
@@ -490,7 +581,7 @@ export const connectedEntityService = async (
               } else {
                 return db.imageForEntity.deleteMany({
                   where: {
-                    id: img?.imageForEntityId || 'default'
+                    id: String(img?.imageForEntityId)
                   }
                 });
               }
@@ -508,7 +599,7 @@ export const connectedEntityService = async (
               if (img.mode === 'connect') {
                 return db.imageForEntity.upsert({
                   where: {
-                    id: img?.imageForEntityId || 'default'
+                    id: String(img?.imageForEntityId)
                   },
                   create: {
                     altText: img.altText || 'Ảnh ' + img.type + ' của nhà hàng ',
@@ -544,7 +635,7 @@ export const connectedEntityService = async (
               } else {
                 return db.imageForEntity.delete({
                   where: {
-                    id: img?.imageForEntityId || 'default'
+                    id: String(img?.imageForEntityId)
                   }
                 });
               }
@@ -558,53 +649,28 @@ export const connectedEntityService = async (
       const subCategory = await db.subCategory.findUnique({ where: { id: entityId } });
       if (subCategory) {
         return await db.$transaction(
-          images
-            .map(img => {
-              if (img.mode === 'connect') {
-                return db.imageForEntity.upsert({
-                  where: {
-                    id: img?.imageForEntityId || 'default_id'
-                  },
-                  create: {
-                    altText: img.altText || 'Ảnh ' + img.type + ' của danh mục ' + subCategory.name,
-                    type: img.type,
-                    entityType,
-                    subCategory: {
-                      connect: {
-                        id: entityId
-                      }
-                    },
-                    image: {
-                      connect: {
-                        id: img.id
-                      }
-                    }
-                  },
+          images.map(img => {
+            return db.image.update({
+              where: {
+                id: String(img.id)
+              },
+              data: {
+                subCategories: {
+                  ...(img.mode === 'connect' ? { connect: { id: entityId } } : { disconnect: { id: entityId } }),
                   update: {
-                    altText: img.altText || 'Ảnh ' + img.type + ' của danh mục ' + subCategory.name,
-                    type: img.type,
-                    entityType,
-                    subCategory: {
-                      connect: {
-                        id: entityId
-                      }
-                    },
-                    image: {
-                      connect: {
-                        id: img.id
-                      }
+                    where: { id: entityId },
+                    data: {
+                      ...(img.mode === 'connect'
+                        ? {
+                            imageAltText: 'Ảnh mô tả danh mục ' + subCategory.name
+                          }
+                        : { imageAltText: null })
                     }
                   }
-                });
-              } else {
-                return db.imageForEntity.delete({
-                  where: {
-                    id: img?.imageForEntityId || 'default'
-                  }
-                });
+                }
               }
-            })
-            .filter(Boolean)
+            });
+          })
         );
       }
       return;
@@ -613,107 +679,38 @@ export const connectedEntityService = async (
       const user = await getOneUserService(db, { key: entityId });
       if (user) {
         return await db.$transaction(
-          images
-            .map(img => {
-              if (img.mode === 'connect') {
-                return db.imageForEntity.upsert({
-                  where: {
-                    id: img?.imageForEntityId || 'default_id'
-                  },
-                  create: {
-                    altText: img.altText || 'Ảnh ' + img.type + ' của người dùng' + (user?.name ?? ''),
-                    type: img.type,
-                    entityType,
-                    user: {
-                      connect: {
-                        id: entityId
-                      }
-                    },
-                    image: {
-                      connect: {
-                        id: img.id
-                      }
-                    }
-                  },
-                  update: {
-                    altText: img.altText || 'Ảnh ' + img.type + ' của danh mục ' + (user?.name ?? ''),
-                    type: img.type,
-                    entityType,
-                    user: {
-                      connect: {
-                        id: entityId
-                      }
-                    },
-                    image: {
-                      connect: {
-                        id: img.id
-                      }
-                    }
-                  }
-                });
-              } else {
-                return db.imageForEntity.delete({
-                  where: {
-                    id: img?.imageForEntityId || 'default'
-                  }
-                });
+          images.map(img => {
+            return db.image.update({
+              where: {
+                id: String(img.id)
+              },
+              data: {
+                users: {
+                  ...(img.mode === 'connect' ? { connect: { id: entityId } } : { disconnect: { id: entityId } })
+                }
               }
-            })
-            .filter(Boolean)
+            });
+          })
         );
       }
       return;
+
     case EntityType.RESTAURANT:
       const restaurant = await getRestaurantOnlyService(db);
       if (restaurant) {
         return await db.$transaction(
-          images
-            .map(img => {
-              if (img.mode === 'connect') {
-                return db.imageForEntity.upsert({
-                  where: {
-                    id: img?.imageForEntityId || 'default_id'
-                  },
-                  create: {
-                    altText: img.altText || 'Ảnh ' + img.type + ' của nhà hàng' + (user?.name ?? ''),
-                    type: img.type,
-                    entityType,
-                    restaurant: {
-                      connect: {
-                        id: entityId
-                      }
-                    },
-                    image: {
-                      connect: {
-                        id: img.id
-                      }
-                    }
-                  },
-                  update: {
-                    altText: img.altText || 'Ảnh ' + img.type + ' của nhà hàng ' + (user?.name ?? ''),
-                    type: img.type,
-                    entityType,
-                    restaurant: {
-                      connect: {
-                        id: entityId
-                      }
-                    },
-                    image: {
-                      connect: {
-                        id: img.id
-                      }
-                    }
-                  }
-                });
-              } else {
-                return db.imageForEntity.delete({
-                  where: {
-                    id: img?.imageForEntityId || 'default'
-                  }
-                });
+          images.map(img => {
+            return db.image.update({
+              where: {
+                id: String(img.id)
+              },
+              data: {
+                restaurants: {
+                  ...(img.mode === 'connect' ? { connect: { id: entityId } } : { disconnect: { id: entityId } })
+                }
               }
-            })
-            .filter(Boolean)
+            });
+          })
         );
       }
       return;
@@ -721,7 +718,7 @@ export const connectedEntityService = async (
       return;
   }
 };
-export async function deleteFromCloudinary(db: PrismaClient, imageIds: string[]) {
+export const deleteFromCloudinary = async (db: PrismaClient, imageIds: string[]) => {
   const publicIds = await db.image.findMany({
     where: { id: { in: imageIds } },
     select: { publicId: true }
@@ -729,57 +726,66 @@ export async function deleteFromCloudinary(db: PrismaClient, imageIds: string[])
   for (const { publicId } of publicIds) {
     if (publicId) await cloudinary.api.delete_resources([publicId]);
   }
-}
-export function enrichImageWithAssociations(image: any): ImageWithAssociations {
+};
+
+export function enrichImageWithAssociations(image: ImageWithAssociationInput): ImageWithAssociations {
   const associations: ImageAssociation[] = [];
 
   if (image && image?.imageForEntities) {
-    image?.imageForEntities?.map((img: any) => {
-      if (img.product) {
+    image?.imageForEntities?.map(imgForEntity => {
+      if (imgForEntity?.product) {
         associations.push({
+          id: imgForEntity.product.id,
+          imageForEntityId: imgForEntity.id,
           type: EntityType.PRODUCT,
-          name: img.product.name,
-          id: img.product.id,
-          label: `Product: ${img.product.name}`
+          name: imgForEntity.product.name,
+          label: `Product: ${imgForEntity.product.name}`
         });
       }
 
-      if (img.banner) {
+      if (imgForEntity?.banner) {
         associations.push({
+          id: imgForEntity.banner.id,
+          imageForEntityId: imgForEntity.id,
           type: EntityType.BANNER,
-          name: img.banner.title || 'Untitled Banner',
-          id: img.banner.id,
-          label: `Banner: ${img.banner.title || 'Untitled'}`
-        });
-      }
-
-      if (img.user) {
-        associations.push({
-          type: EntityType.USER,
-          name: img.user.name || img.user.email,
-          id: img.user.id,
-          label: `User: ${img.user.name || img.user.email}`
-        });
-      }
-
-      if (img.restaurant) {
-        associations.push({
-          type: EntityType.RESTAURANT,
-          name: img.restaurant.name,
-          id: img.restaurant.id,
-          label: `Restaurant: ${img.restaurant.name}`
-        });
-      }
-
-      if (img.subCategory) {
-        associations.push({
-          type: EntityType.CATEGORY,
-          name: img.subCategory.name,
-          id: img.subCategory.id,
-          label: `Category: ${img.subCategory.name}`
+          name: imgForEntity.altText || 'Untitled Banner',
+          label: `Banner: ${imgForEntity.altText || 'Untitled'}`
         });
       }
     });
+  }
+  if (image?.users && Array.isArray(image?.users)) {
+    image?.users.map(user =>
+      associations.push({
+        id: user.id,
+        imageForEntityId: '',
+        type: EntityType.USER,
+        name: user.name || user.email,
+        label: `User: ${user.name || user.email}`
+      })
+    );
+  }
+  if (image?.restaurants && Array.isArray(image?.restaurants)) {
+    image?.restaurants.map(restaurant =>
+      associations.push({
+        id: restaurant.id,
+        imageForEntityId: '',
+        type: EntityType.RESTAURANT,
+        name: restaurant.name,
+        label: `Restaurant: ${restaurant.name}`
+      })
+    );
+  }
+  if (image?.subCategories && Array.isArray(image?.subCategories)) {
+    image?.subCategories.map(subCategory =>
+      associations.push({
+        id: subCategory.id,
+        imageForEntityId: '',
+        type: EntityType.CATEGORY,
+        name: subCategory.name,
+        label: `Category: ${subCategory.name}`
+      })
+    );
   }
 
   return {

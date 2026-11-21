@@ -9,7 +9,7 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError } from '~/lib/FuncHandler/toast';
-import { ImageInput } from '~/shared/schema/image.schema';
+import { ImageClientInput } from '~/shared/schema/image.schema';
 import { api } from '~/trpc/react';
 
 interface UploadModalProps {
@@ -35,7 +35,7 @@ const entityTypes: EntityType[] = ['PRODUCT', 'BANNER', 'USER', 'CATEGORY', 'RES
 
 export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
   const [isUploading, setIsUploading] = useState(false);
-  const formFields = useForm<ImageInput>({
+  const formFields = useForm<ImageClientInput>({
     defaultValues: {
       url: undefined,
       urlFile: undefined,
@@ -57,7 +57,7 @@ export function UploadModal({ opened, onClose, onSuccess }: UploadModalProps) {
 
   const utils = api.useUtils();
 
-  const onSubmit: SubmitHandler<ImageInput> = async formData => {
+  const onSubmit: SubmitHandler<ImageClientInput> = async formData => {
     if (!formData.urlFile) return;
 
     setIsUploading(true);

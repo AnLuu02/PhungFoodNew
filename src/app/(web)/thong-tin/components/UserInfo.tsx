@@ -24,6 +24,7 @@ import { IconCircleCheck, IconUpload } from '@tabler/icons-react';
 import { Session } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
+import { userInfo } from 'os';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
 import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
@@ -72,8 +73,8 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                   className='rounded-full object-cover'
                   width={90}
                   height={90}
-                  src={userInfor?.imageForEntity?.image?.url || '/images/webp/user-default.webp'}
-                  alt='User avatar'
+                  src={userInfor?.avatarImage?.url || '/images/webp/user-default.webp'}
+                  alt={userInfor?.avatarImage?.altText || 'Ảnh đại diện ' + userInfo?.name}
                 />
                 <Flex
                   onClick={() => setOpened(true)}

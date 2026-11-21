@@ -118,15 +118,11 @@ export const userRouter = createTRPCRouter({
     return await ctx.db.user.findMany({
       include: {
         role: true,
-        imageForEntity: {
+        avatarImage: {
           select: {
             type: true,
             altText: true,
-            image: {
-              select: {
-                url: true
-              }
-            }
+            url: true
           }
         }
       }

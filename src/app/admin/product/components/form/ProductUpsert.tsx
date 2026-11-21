@@ -65,6 +65,8 @@ export default function ProductUpsert({
       descriptionDetailJson: {},
       descriptionDetailHtml: '<p>Đang cập nhật</p>',
       thumbnail: undefined,
+      thumbnailUrl: undefined,
+      thumbnailAlt: undefined,
       gallery: [],
       subCategoryId: '',
       materials: []
@@ -90,6 +92,8 @@ export default function ProductUpsert({
         materials: Array.isArray(data?.materials) ? data.materials.map((material: any) => material.id) : [],
         descriptionDetailJson: data?.descriptionDetailJson || {},
         descriptionDetailHtml: data?.descriptionDetailHtml || '<p>Đang cập nhật</p>',
+        thumbnailUrl: data?.thumbnailUrl ?? undefined,
+        thumbnailAlt: data?.thumbnailAlt ?? undefined,
         thumbnail:
           data?.imageForEntities?.length > 0
             ? (data?.imageForEntities?.find(item => item?.type === ImageType.THUMBNAIL) as any)
@@ -134,6 +138,8 @@ export default function ProductUpsert({
 
     const formDataWithImageUrlAsString = {
       ...formData,
+      thumbnailUrl: thumbnailToSave?.url ? thumbnailToSave?.url : undefined,
+      thumbnailAlt: thumbnailToSave?.url ? 'Ảnh thumbnail của sản phẩm ' + formData?.name : undefined,
       imageForEntities: [
         ...(thumbnailToSave
           ? [

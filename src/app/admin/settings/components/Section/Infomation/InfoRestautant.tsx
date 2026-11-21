@@ -53,7 +53,7 @@ export default function RestaurantInfoSettings() {
       socials: [],
       theme: undefined,
       description: undefined,
-      imageForEntity: undefined,
+      logoImage: undefined,
       openingHours: undefined
     }
   });
@@ -72,12 +72,9 @@ export default function RestaurantInfoSettings() {
     if (data) {
       formFields.reset({
         ...data,
-        imageForEntity: {
-          ...data?.imageForEntity,
-          image: {
-            url: data?.imageForEntity?.image?.url || '',
-            publicId: data?.imageForEntity?.image?.publicId || ''
-          }
+        logoImage: {
+          ...data?.logoImage,
+          publicId: data?.logoImage?.publicId || ''
         } as any
       });
     }
@@ -93,30 +90,24 @@ export default function RestaurantInfoSettings() {
     }
   });
   const onSubmit: SubmitHandler<RestaurantInput> = async formData => {
-    const imageFile = formFields.getValues('imageForEntity.image.urlFile');
-    const imagePublicId = formFields.getValues('imageForEntity.image.publicId');
+    const imageFile = formFields.getValues('logoImage.urlFile');
+    const imagePublicId = formFields.getValues('logoImage.publicId');
     const imagesToSave = await handleUploadFromClient(imageFile, utils, {
       folder: EntityType.RESTAURANT + '/' + ImageType.THUMBNAIL
     });
     await upsertMutation.mutateAsync({
       ...formData,
-      imageForEntity: imagesToSave
+      logoImage: imagesToSave
         ? {
-            id: formData?.imageForEntity?.id,
-            altText: formData?.imageForEntity?.altText || 'Ảnh Logo nhà hàng ' + (formData?.name || ''),
-            type: formData?.imageForEntity?.type || ImageType.THUMBNAIL,
-            entityType: formData?.imageForEntity?.entityType || EntityType.RESTAURANT,
+            ...imagesToSave,
             status: StatusImage.NEW,
-            image: {
-              ...imagesToSave,
-              id: undefined,
-              altText: formData?.imageForEntity?.altText || 'Ảnh Logo nhà hàng ' + (formData?.name || ''),
-              type: ImageType.THUMBNAIL
-            }
+            id: undefined,
+            altText: formData?.logoImage?.altText || 'Ảnh Logo nhà hàng ' + (formData?.name || ''),
+            type: ImageType.THUMBNAIL
           }
-        : data?.imageForEntity?.id && !imagePublicId
+        : data?.logoImage?.id && !imagePublicId
           ? {
-              id: data?.imageForEntity?.id,
+              id: data?.logoImage?.id,
               status: StatusImage.DELETED
             }
           : undefined

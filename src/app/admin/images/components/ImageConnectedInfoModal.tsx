@@ -6,7 +6,7 @@ import { EntityType, ImageType } from '@prisma/client';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { ImageInfoInput } from '~/shared/schema/image.info.schema';
+import { ImageInfoClientInput } from '~/shared/schema/image.info.schema';
 import { api } from '~/trpc/react';
 import { ConnectedStateWithEntity } from '../../../../shared/types/image.types';
 
@@ -29,7 +29,7 @@ const imageTypes: { label: string; value: ImageType }[] = [
   }
 ];
 export function ImageConnectedInfoModal({ connectedState, onClose }: UploadModalProps) {
-  const formFields = useForm<ImageInfoInput>({
+  const formFields = useForm<ImageInfoClientInput>({
     defaultValues: {
       id: undefined,
       altText: '',
@@ -49,7 +49,7 @@ export function ImageConnectedInfoModal({ connectedState, onClose }: UploadModal
       NotifyError(e.message);
     }
   });
-  const onSubmit: SubmitHandler<ImageInfoInput> = async formData => {
+  const onSubmit: SubmitHandler<ImageInfoClientInput> = async formData => {
     if (connectedState.entityId && connectedState.imageId) {
       await connectImageFromLibraryMutation.mutateAsync({
         entityId: connectedState.entityId,

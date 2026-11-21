@@ -116,16 +116,12 @@ export const getCategoriesWithRelationBasicService = async (db: PrismaClient) =>
           _count: {
             select: { products: true }
           },
-          imageForEntity: {
+          image: {
             select: {
               id: true,
               type: true,
               altText: true,
-              image: {
-                select: {
-                  url: true
-                }
-              }
+              url: true
             }
           }
         }

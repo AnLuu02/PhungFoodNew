@@ -100,8 +100,8 @@ export default function MegaMenu() {
                     className='hover:bg-mainColor/10'
                     leftSection={
                       <Image
-                        src={item?.subCategory?.[0]?.imageForEntity?.image?.url || '/images/png/momo.png'}
-                        alt={item?.subCategory?.[0]?.imageForEntity?.altText || 'Ảnh minh họa'}
+                        src={item?.subCategory?.[0]?.image?.url || '/images/png/momo.png'}
+                        alt={item?.subCategory?.[0]?.image?.altText || 'Ảnh minh họa'}
                         width={30}
                         height={30}
                         className='rounded-md object-cover'
@@ -140,8 +140,8 @@ export default function MegaMenu() {
                         >
                           <Image
                             loading='lazy'
-                            src={subCaegory?.imageForEntity?.image?.url || '/images/png/momo.png'}
-                            alt={subCaegory?.name || 'Ảnh minh họa'}
+                            src={subCaegory?.image?.url || '/images/png/momo.png'}
+                            alt={subCaegory?.image?.altText || 'Ảnh minh họa' + subCaegory?.name}
                             fill
                             className='rounded-md object-cover'
                           />

@@ -68,7 +68,12 @@ export default function TimelineRecentActivity({
             >
               <Group justify='space-between' wrap='nowrap' align='center'>
                 <Group gap='sm' wrap='nowrap' className='min-w-0'>
-                  <Avatar src={item?.user?.imageForEntity?.image?.url} radius='xl' size={36}>
+                  <Avatar
+                    src={item?.user?.avatarImage?.url}
+                    radius='xl'
+                    size={36}
+                    alt={item?.user?.avatarImage?.altText}
+                  >
                     {(item.user.name || item.user.email)?.charAt(0)}
                   </Avatar>
 

@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           id: user?.id,
           name: user?.name,
           email: user?.email,
-          image: user?.imageForEntity?.image?.url,
+          image: user?.avatarImage?.url,
           role: user?.role?.name,
           permissions: user?.role?.permissions.map(p => p.name)
         };
@@ -85,24 +85,19 @@ export const authOptions: NextAuthOptions = {
               pointUser: 0,
               level: UserLevel.BRONZE,
               password: randomPass,
-              imageForEntity: image
+              avatarImage: image
                 ? {
-                    entityType: EntityType.USER,
-                    altText: `Ảnh ${user?.name}`,
-                    type: ImageType.THUMBNAIL,
                     status: StatusImage.NEW,
-                    image: {
-                      url: image,
-                      type: ImageType.THUMBNAIL,
-                      altText: `Ảnh ${user?.name}`
-                    }
+                    url: image,
+                    type: ImageType.THUMBNAIL,
+                    altText: `Ảnh ${user?.name}`
                   }
                 : undefined,
               phone: ''
             },
             false
           );
-        } else if (!userFromDb.imageForEntity && image) {
+        } else if (!userFromDb.avatarImage && image) {
           await uploadImageUserService(db, {
             email,
             imgUrl: image,
@@ -129,7 +124,7 @@ export const authOptions: NextAuthOptions = {
         if (userFromDb?.id) {
           token.role = userFromDb?.role?.name;
           token.id = userFromDb?.id;
-          token.picture = userFromDb?.imageForEntity?.image?.url;
+          token.picture = userFromDb?.avatarImage?.url;
           token.permissions = userFromDb?.role?.permissions.map(p => p.name);
         }
       } catch (error) {
