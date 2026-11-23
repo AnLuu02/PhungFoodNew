@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import RegisterForm from '../components/RegisterForm';
+import RegisterForm from '~/app/(web)/(auth)/components/register-form';
 
 export const dynamic = 'force-static';
 

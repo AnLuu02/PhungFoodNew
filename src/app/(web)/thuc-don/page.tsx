@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useProductFilters } from '~/components/hooks/use-product-filter';
 import { FindProduct } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';
-import HeaderMenu from './components/HeaderMenu';
-import { MenuList } from './components/MenuList';
+import HeaderMenu from '~/app/(web)/thuc-don/components/header-menu';
+import { MenuList } from '~/app/(web)/thuc-don/components/menu-list';
 
 export default function MenuSection() {
   const filter = useProductFilters();

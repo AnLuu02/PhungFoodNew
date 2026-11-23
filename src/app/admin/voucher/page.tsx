@@ -2,8 +2,8 @@ import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateVoucherButton } from './components/Button';
-import VoucherClient from './components/PageClient';
+import { CreateVoucherButton } from '~/app/admin/voucher/components/button';
+import VoucherClient from '~/app/admin/voucher/components/page-client';
 
 export const metadata: Metadata = {
   title: 'Quản lý khuyến mãi '

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import SettingPageClient from './pageClient';
+import SettingPageClient from '~/app/admin/settings/page-client';
 
 export const dynamic = 'force-static';
 

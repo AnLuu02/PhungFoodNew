@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { api } from '~/trpc/server';
-import NotificationManagement from './NotificationManagement';
+import NotificationManagement from '~/app/admin/settings/notification/notification-management';
 export const metadata: Metadata = {
   title: 'Cài đặt thông báo'
 };

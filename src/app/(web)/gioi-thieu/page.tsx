@@ -37,12 +37,12 @@ import { PAGE_KEY } from '~/shared/constants/redis-keys';
 import { GetInitAboutUs } from '~/shared/types/trpc/page.types';
 import { api } from '~/trpc/server';
 import { SectionHeading } from '~/components/common/section-heading';
-import { SectionFaqs } from './components/SectionFaqs';
-import { SectionMember } from './components/SectionMember';
-import { SectionMenuHighlights } from './components/SectionMenuHighlights';
-import { SectionProcessSteps } from './components/SectionProcessSteps';
-import AboutReviewBlock from './components/SectionTestimonials';
-import { SectionValues } from './components/SectionValues';
+import { SectionFaqs } from '~/app/(web)/gioi-thieu/components/section-faqs';
+import { SectionMember } from '~/app/(web)/gioi-thieu/components/section-member';
+import { SectionMenuHighlights } from '~/app/(web)/gioi-thieu/components/section-menu-highlights';
+import { SectionProcessSteps } from '~/app/(web)/gioi-thieu/components/section-process-steps';
+import AboutReviewBlock from '~/app/(web)/gioi-thieu/components/section-testimonials';
+import { SectionValues } from '~/app/(web)/gioi-thieu/components/section-values';
 
 export const dynamic = 'force-static';
 

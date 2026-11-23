@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { api } from '~/trpc/server';
-import FormResetPassword from './components/Form';
+import FormResetPassword from '~/app/(web)/(auth)/reset-password/components/form';
 export const metadata: Metadata = {
   title: 'Đặt lại mật khẩu',
   description: 'Nhập email để nhận liên kết đặt lại mật khẩu',

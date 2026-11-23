@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import CustomPagination from '~/components/common/pagination';
 import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { api } from '~/trpc/server';
-import { NewsFeed } from './components/NewsFeed';
-import { NewsList } from './components/NewsList';
+import { NewsFeed } from '~/app/(web)/tin-tuc/components/news-feed';
+import { NewsList } from '~/app/(web)/tin-tuc/components/news-list';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Tin tức - Món ngon miền Tây',

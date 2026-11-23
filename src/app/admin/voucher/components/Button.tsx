@@ -3,7 +3,7 @@
 import { Button, Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
-import CreateVoucher from './form/CreateVoucher';
+import CreateVoucher from '~/app/admin/voucher/components/forms/create-voucher';
 
 export function CreateVoucherButton() {
   const [opened, setOpened] = useState(false);

@@ -1,4 +1,4 @@
-import StorePolicyPageClient from './pageClient';
+import StorePolicyPageClient from '~/app/(web)/chinh-sach/page-client';
 
 export const dynamic = 'force-static';
 

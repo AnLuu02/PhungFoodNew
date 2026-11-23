@@ -3,8 +3,8 @@ import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { UserRole } from '~/shared/constants/user.constants';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateProductButton } from './components/Button';
-import TableProduct from './components/Table/TableProduct';
+import { CreateProductButton } from '~/app/admin/product/components/button';
+import TableProduct from '~/app/admin/product/components/tables/table-product';
 
 export const metadata: Metadata = {
   title: 'Quản lý sản phẩm '

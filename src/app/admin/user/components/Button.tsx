@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { NotifyError } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
-import UpdatePermissionUser from './form/UpdatePermissionUser';
-import UserUpsert from './form/UserUpsert';
+import UpdatePermissionUser from '~/app/admin/user/components/forms/update-permission-user';
+import UserUpsert from '~/app/admin/user/components/forms/user-upsert';
 
 export function CreateUserButton() {
   const [opened, setOpened] = useState(false);

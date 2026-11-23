@@ -23,7 +23,7 @@ import { GlobalModalProvider } from '~/providers/global-modal-provider';
 import { getServerAuthSession } from '~/server/auth';
 import { THEME_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
-import { mainTheme } from './theme';
+import { mainTheme } from '~/app/theme';
 
 const quickSandFont = Quicksand({
   subsets: ['latin'],

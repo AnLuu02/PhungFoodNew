@@ -7,7 +7,7 @@ import ProductCardCarouselVertical from '~/components/web/cards/card-product-car
 import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { api } from '~/trpc/react';
-import RatingStatistics from '../components/client-component/RatingStatistics';
+import RatingStatistics from '~/app/(web)/san-pham/[slug]/components/client/rating-statistics';
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const productTag = params.slug;

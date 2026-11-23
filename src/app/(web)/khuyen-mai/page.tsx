@@ -22,10 +22,10 @@ import { benefitLevel } from '~/lib/data/promotion-level';
 import { api } from '~/trpc/server';
 import { SectionHeading } from '~/components/common/section-heading';
 import { TextTyping } from '~/components/common/text-typing';
-import FooterSection from './components/FooterSection';
-import InfoLevelUser from './components/InfoLevelUser';
-import PromotionsReviewBlock from './components/PromotionsReviewBlock';
-import { SectionPromotions } from './components/SectionPromotions';
+import FooterSection from '~/app/(web)/khuyen-mai/components/footer-section';
+import InfoLevelUser from '~/app/(web)/khuyen-mai/components/info-level-user';
+import PromotionsReviewBlock from '~/app/(web)/khuyen-mai/components/promotions-review-block';
+import { SectionPromotions } from '~/app/(web)/khuyen-mai/components/section-promotions';
 
 export const dynamic = 'force-static';
 

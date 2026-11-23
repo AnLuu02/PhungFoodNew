@@ -2,7 +2,7 @@ import { Box, Button, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import TableContact from './components/Table/TableContact';
+import TableContact from '~/app/admin/contact/components/tables/table-contact';
 
 export const metadata: Metadata = {
   title: 'Quản lý liên hệ của khách ahngf '

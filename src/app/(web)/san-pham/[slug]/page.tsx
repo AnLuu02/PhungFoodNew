@@ -8,11 +8,11 @@ import { db } from '~/server/db';
 import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
 import { ProductBase } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/server';
-import { ProductInsights } from './components/client-component/ProductInsights';
-import DiscountCodes from './components/DiscountCodes';
-import { ProductOverview } from './components/ProductOverview';
-import RelatedProducts from './components/RelatedProducts';
-import SuggestionProducts from './components/SuggestionProducts';
+import { ProductInsights } from '~/app/(web)/san-pham/[slug]/components/client/product-insights';
+import DiscountCodes from '~/app/(web)/san-pham/[slug]/components/discount-codes';
+import { ProductOverview } from '~/app/(web)/san-pham/[slug]/components/product-overview';
+import RelatedProducts from '~/app/(web)/san-pham/[slug]/components/related-products';
+import SuggestionProducts from '~/app/(web)/san-pham/[slug]/components/suggestion-products';
 
 export const revalidate = 60 * 60;
 

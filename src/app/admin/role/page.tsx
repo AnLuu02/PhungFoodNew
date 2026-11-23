@@ -1,7 +1,7 @@
 import { Box, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import RoleClient from './components/PageClient';
+import RoleClient from '~/app/admin/role/components/page-client';
 
 export const metadata: Metadata = {
   title: 'Quản lý phân quyền'

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import ImageManager from './components/ImageManager';
+import ImageManager from '~/app/admin/images/components/image-manager';
 
 export const dynamic = 'force-static';
 

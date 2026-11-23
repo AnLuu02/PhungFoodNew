@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import LayoutAdmin from './LayoutAdmin';
+import LayoutAdmin from '~/app/admin/layout-admin';
 
 export const revalidate = 60 * 60;
 export const dynamic = 'force-static';

@@ -8,8 +8,8 @@ import { formatDataExcel } from '~/lib/utils/format';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { CategoryBasic } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
-import CategoryUpsert from './form/CategoryUpsert';
-import SubCategoryUpsert from './form/SubCategoryUpsert';
+import CategoryUpsert from '~/app/admin/category/components/forms/category-upsert';
+import SubCategoryUpsert from '~/app/admin/category/components/forms/sub-category-upsert';
 const mapFields: Record<string, string> = {
   'Tên danh mục': 'name',
   Tag: 'tag',

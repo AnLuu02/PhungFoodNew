@@ -2,12 +2,12 @@ import { Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { Period } from '~/shared/types';
 import { api, HydrateClient } from '~/trpc/server';
-import ReportChartCompare from './components/ReportChartCompare';
-import ReportDetailPageClient from './components/ReportDetail';
-import { FilterSectionReport } from './components/ReportFilterSection';
-import ReportOverviewPageClient from './components/ReportOverview';
-import ReportRevenuePageClient from './components/ReportRevenue';
-import { ReportStatistics } from './components/ReportStatistics';
+import ReportChartCompare from '~/app/admin/(dashboard)/reports/components/report-chart-compare';
+import ReportDetailPageClient from '~/app/admin/(dashboard)/reports/components/report-detail';
+import { FilterSectionReport } from '~/app/admin/(dashboard)/reports/components/report-filter-section';
+import ReportOverviewPageClient from '~/app/admin/(dashboard)/reports/components/report-overview';
+import ReportRevenuePageClient from '~/app/admin/(dashboard)/reports/components/report-revenue';
+import { ReportStatistics } from '~/app/admin/(dashboard)/reports/components/report-statistics';
 
 export const revalidate = 60 * 60;
 export const dynamic = 'force-static';

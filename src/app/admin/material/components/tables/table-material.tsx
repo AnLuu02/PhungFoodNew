@@ -1,0 +1,218 @@
+'use client';
+import {
+  ActionIcon,
+  Badge,
+  Box,
+  Card,
+  Flex,
+  Group,
+  Highlight,
+  Paper,
+  Select,
+  SimpleGrid,
+  Spoiler,
+  Table,
+  Text,
+  Title
+} from '@mantine/core';
+import { IconMeat } from '@tabler/icons-react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
+import { SearchInput } from '~/components/search/search-input';
+import { categoryMaterials } from '~/shared/constants/common.constants';
+import { formatDateViVN } from '~/lib/utils/format';
+import { randomColorHex } from '~/lib/utils/random-color-hex';
+import { BADGE_COLORS } from '~/shared/constants/helper.constants';
+import { FindMaterial, GetAllMaterial } from '~/shared/types/trpc/material.types';
+import { api } from '~/trpc/react';
+import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '~/app/admin/material/components/button';
+
+type CategoryMaterialType = typeof categoryMaterials;
+type KeyCategory = keyof CategoryMaterialType;
+
+export default function TableMaterial() {
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+  const router = useRouter();
+
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') ?? '5';
+
+  const { data: dataClient, isLoading } = api.Material.find.useQuery({ page: +page, limit: +limit, s });
+  const { data: allDataClient } = api.Material.getAll.useQuery(undefined);
+
+  const currentItems = dataClient?.materials || [];
+  const dataFilter = useMemo(() => {
+    let keys: any = {};
+    Object.keys(categoryMaterials)?.map(k => {
+      keys[k] = 0;
+    });
+    if (!allDataClient) return [];
+    const summary = allDataClient.reduce((acc: any, item: GetAllMaterial[number]) => {
+      item.category ? (acc[item.category] += 1) : null;
+      return acc;
+    }, keys);
+
+    return Object.entries(categoryMaterials).map(([key, value]) => ({
+      label: value,
+      tag: key,
+      value: summary?.[key],
+      icon: IconMeat,
+      color: randomColorHex()
+    }));
+  }, [allDataClient]);
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (dataClient?.pagination.hasNext) {
+      void utils.Material.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
+
+  return (
+    <>
+      <SimpleGrid cols={5}>
+        {dataFilter?.map((item, index) => {
+          const IconR = item.icon;
+          return (
+            <Link href={`/admin/material?s=${item.tag}`}>
+              <Card style={{ backgroundColor: item.color + 10 }} shadow='md' pos={'relative'} key={index} p={'md'}>
+                <Flex align={'center'} gap={'md'}>
+                  <ActionIcon variant='light' size={'xl'} color={item.color}>
+                    <IconR size={20} />
+                  </ActionIcon>
+                  <Box>
+                    <Title order={6} className='font-quicksand'>
+                      {item.label}
+                    </Title>
+                    <Title order={3} className='font-quicksand'>
+                      {item.value}
+                    </Title>
+                  </Box>
+                </Flex>
+              </Card>
+            </Link>
+          );
+        })}
+      </SimpleGrid>
+      <Paper withBorder shadow='md' p={'md'}>
+        <Group justify='space-between'>
+          <SearchInput w={400} />
+          <Group>
+            <Select
+              allowDeselect={false}
+              value={searchParams.get('s') || 'all'}
+              onChange={value => {
+                if (value === 'all') params.delete('s');
+                else {
+                  params.set('s', value as string);
+                  params.delete('page');
+                }
+                const url = `${location.pathname}?${params.toString()}`;
+                router.push(url, { scroll: false });
+              }}
+              data={[
+                { value: 'all', label: 'Tất cả danh mục' },
+                ...Object.entries(categoryMaterials)?.map(([value, label]) => ({
+                  value,
+                  label
+                }))
+              ]}
+              nothingFoundMessage='Không tìm thấy'
+            />
+            <CreateManyMaterialButton />
+          </Group>
+        </Group>
+      </Paper>
+      <Box className={`tableAdmin w-full overflow-x-auto`}>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead className='text-sm uppercase leading-normal'>
+            <Table.Tr>
+              <Table.Th className='text-sm' style={{ width: '15%' }}>
+                Tên
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: '50%' }}>
+                Mô tả
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: '15%' }}>
+                Danh mục
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: '10%' }}>
+                Ngày tạo
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: '10%' }}>
+                Thao tác
+              </Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+
+          <Table.Tbody>
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={5}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
+              currentItems.map((row: FindMaterial['materials'][number], index: number) => (
+                <Table.Tr key={index}>
+                  <Table.Td className='text-sm'>
+                    <Highlight size='sm' highlight={s}>
+                      {row.name}
+                    </Highlight>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Spoiler
+                      maxHeight={22}
+                      showLabel={'Xem tất cả'}
+                      hideLabel={'Thu gọn'}
+                      classNames={{
+                        control: 'flex w-full justify-end text-sm text-mainColor'
+                      }}
+                    >
+                      <Highlight size='sm' highlight={s}>
+                        {row.description || 'Đang cập nhật'}
+                      </Highlight>
+                    </Spoiler>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Badge bg={BADGE_COLORS?.[index % BADGE_COLORS.length]}>
+                      {categoryMaterials?.[row.category as KeyCategory]}
+                    </Badge>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>{formatDateViVN(row.createdAt)}</Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Group className='text-center'>
+                      <Group>
+                        <UpdateMaterialButton id={row.id} />
+                        <DeleteMaterialButton id={row.id} />
+                      </Group>
+                    </Group>
+                  </Table.Td>
+                </Table.Tr>
+              ))
+            ) : (
+              <Table.Tr>
+                <Table.Td colSpan={5} className='bg-gray-100 text-center dark:bg-dark-card'>
+                  <Text size='md' c='dimmed'>
+                    Không có bản ghi phù hợp.
+                  </Text>
+                </Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </Box>
+
+      <Group justify='space-between' align='center' my={'md'}>
+        <PageSizeSelector />
+        <CustomPagination totalPages={dataClient?.pagination.totalPages || 1} />
+      </Group>
+    </>
+  );
+}

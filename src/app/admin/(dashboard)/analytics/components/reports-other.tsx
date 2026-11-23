@@ -1,10 +1,10 @@
 'use client';
 import { Grid, Stack } from '@mantine/core';
-import DeviceBreakdownChart from './DeviceBreakdownChart';
-import ReportSnapshotChart from './ReportSnapshot';
-import ReturningUserChart from './ReturningUserChart';
-import StatsSection from './StatsSection';
-import UserChart from './UserChart';
+import DeviceBreakdownChart from '~/app/admin/(dashboard)/analytics/components/device-breakdown-chart';
+import ReportSnapshotChart from '~/app/admin/(dashboard)/analytics/components/report-snapshot';
+import ReturningUserChart from '~/app/admin/(dashboard)/analytics/components/returning-user-chart';
+import StatsSection from '~/app/admin/(dashboard)/analytics/components/stats-section';
+import UserChart from '~/app/admin/(dashboard)/analytics/components/user-chart';
 
 export const ReportsOther = () => {
   return (

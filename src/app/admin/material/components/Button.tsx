@@ -19,7 +19,7 @@ import { formatDataExcel } from '~/lib/utils/format';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { GetAllMaterial } from '~/shared/types/trpc/material.types';
 import { api } from '~/trpc/react';
-import MaterialUpsert from './form/MaterialUpsert';
+import MaterialUpsert from '~/app/admin/material/components/forms/material-upsert';
 const mapFields: Record<string, string> = {
   'Tên nguyên liệu': 'name',
   Tag: 'tag',

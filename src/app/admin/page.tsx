@@ -36,7 +36,7 @@ import { formatMoneyShort } from '~/lib/utils/format';
 import { buildChangeRateData } from '~/lib/helpers/statistics';
 import { Period } from '~/shared/types';
 import { api } from '~/trpc/server';
-import { AnalyticsMetricCard } from './(dashboard)/components/AnalyticsMetricCard';
+import { AnalyticsMetricCard } from '~/app/admin/(dashboard)/components/analytics-metric-card';
 
 export const revalidate = 60 * 60;
 export const dynamic = 'force-static';

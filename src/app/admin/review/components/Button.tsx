@@ -5,7 +5,7 @@ import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { api } from '~/trpc/react';
-import ReviewUpsert from './form/ReviewUpsert';
+import ReviewUpsert from '~/app/admin/review/components/forms/review-upsert';
 
 export function CreateReviewButton() {
   const [opened, setOpened] = useState(false);

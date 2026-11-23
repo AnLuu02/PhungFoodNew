@@ -4,7 +4,7 @@ import { Alert, Box, Button, Center, Group, Modal, PinInput, Stack, Text, Title 
 import { TokenType } from '@prisma/client';
 import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import PeriodControl from '~/app/(web)/(auth)/components/PeriodControl';
+import PeriodControl from '~/app/(web)/(auth)/components/period-control';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 const formatTime = (seconds: number) => {

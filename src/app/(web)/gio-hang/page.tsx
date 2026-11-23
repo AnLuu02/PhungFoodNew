@@ -6,9 +6,9 @@ import Empty from '~/components/common/empty';
 import { useCartCount } from '~/components/hooks/use-cart';
 import { RecapCart } from '~/components/domain/recap-cart';
 import { RecapCartSkeleton } from '~/components/domain/recap-cart-skeleton';
-import { ShoppingCartMobile, ShoppingCartMobileSkeleton } from './components/CartMobile';
-import { CartTable } from './components/CartTable';
-import { CartTableSkeleton } from './components/CartTableSkeleton';
+import { ShoppingCartMobile, ShoppingCartMobileSkeleton } from '~/app/(web)/gio-hang/components/cart-mobile';
+import { CartTable } from '~/app/(web)/gio-hang/components/cart-table';
+import { CartTableSkeleton } from '~/app/(web)/gio-hang/components/cart-table-skeleton';
 
 export default function ShoppingCart() {
   const cartSize = useCartCount();

@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
-import PeriodControl from '../../components/PeriodControl';
+import PeriodControl from '~/app/(web)/(auth)/components/period-control';
 
 export default function FormResetPassword({ email, token }: { email: string; token: string }) {
   const { data: user } = useSession();

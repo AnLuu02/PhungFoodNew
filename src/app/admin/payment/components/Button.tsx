@@ -5,7 +5,7 @@ import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { api } from '~/trpc/react';
-import PaymentUpsert from './form/PaymentUpsert';
+import PaymentUpsert from '~/app/admin/payment/components/forms/payment-upsert';
 
 export function CreatePaymentButton() {
   const [opened, setOpened] = useState(false);

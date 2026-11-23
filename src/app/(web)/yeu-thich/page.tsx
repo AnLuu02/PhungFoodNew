@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import FavouritePageClient from './pageClient';
+import FavouritePageClient from '~/app/(web)/yeu-thich/page-client';
 
 export const dynamic = 'force-static';
 

@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import OtpModal from '~/components/modals/modal-otp';
 import { NotifyError } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
-import PeriodControl from '../../components/PeriodControl';
+import PeriodControl from '~/app/(web)/(auth)/components/period-control';
 
 const TIME_EXPIRED_MINUTES = 3;
 

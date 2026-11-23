@@ -4,7 +4,7 @@ import { Group, Modal, ScrollAreaAutosize, ThemeIcon, Title } from '@mantine/cor
 import { useMediaQuery } from '@mantine/hooks';
 import { EntityType, ImageType } from '@prisma/client';
 import { IconPictureInPicture } from '@tabler/icons-react';
-import ImageManager from '~/app/admin/images/components/ImageManager';
+import ImageManager from '~/app/admin/images/components/image-manager';
 import { ModalProps } from '~/shared/types/modal.types';
 export interface ConnectedModalPayload {
   entityId?: string;

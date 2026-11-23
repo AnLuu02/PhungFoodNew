@@ -1,0 +1,107 @@
+'use client';
+import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
+import { formatDateViVN } from '~/lib/utils/format';
+import { FindCategory } from '~/shared/types/trpc/category.types';
+import { api } from '~/trpc/react';
+import { DeleteCategoryButton, UpdateCategoryButton } from '~/app/admin/category/components/button';
+
+export default function TableCategory() {
+  const searchParams = useSearchParams();
+  const s = searchParams.get('s') || '';
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') || '5';
+  const { data, isLoading } = api.Category.find.useQuery({ page: +page, limit: +limit, s });
+  const currentItems = data?.categories || [];
+
+  const utils = api.useUtils();
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.Category.find.prefetch({ page: +page + 1, limit: +limit, s });
+    }
+  }, [page]);
+
+  return (
+    <>
+      <Box className={`tableAdmin w-full overflow-x-auto`}>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead className='text-sm uppercase leading-normal'>
+            <Table.Tr>
+              <Table.Th className='text-sm' style={{ width: 100 }}>
+                Tên
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: 200 }}>
+                Mô tả
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: 100 }}>
+                Trạng thái
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: 100 }}>
+                Ngày tạo
+              </Table.Th>
+              <Table.Th className='text-sm' style={{ width: 100 }}>
+                Thao tác
+              </Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+
+          <Table.Tbody>
+            {isLoading ? (
+              <Table.Tr>
+                <Table.Td colSpan={5}>
+                  <CommonSkeleton.Table count={5} />
+                </Table.Td>
+              </Table.Tr>
+            ) : currentItems.length > 0 ? (
+              currentItems.map((row: FindCategory['categories'][number], index: number) => (
+                <Table.Tr key={row.name + index}>
+                  <Table.Td className='text-sm'>
+                    <Highlight size='sm' highlight={s}>
+                      {row.name}
+                    </Highlight>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Highlight size='sm' highlight={s}>
+                      {row.description || 'Đang cập nhật'}
+                    </Highlight>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Badge p='sm' color={row.isActive ? '#195EFE' : 'red'}>
+                      {row.isActive ? 'Hoạt động' : 'Bị cấm'}
+                    </Badge>
+                  </Table.Td>
+                  <Table.Td className='text-sm'>{formatDateViVN(row.createdAt)}</Table.Td>
+                  <Table.Td className='text-sm'>
+                    <Group>
+                      <Group>
+                        <UpdateCategoryButton id={row.id} />
+                        <DeleteCategoryButton id={row.id} />
+                      </Group>
+                    </Group>
+                  </Table.Td>
+                </Table.Tr>
+              ))
+            ) : (
+              <Table.Tr>
+                <Table.Td colSpan={3} className='bg-gray-100 text-center dark:bg-dark-card'>
+                  <Text size='md' c='dimmed'>
+                    Không có bản ghi phù hợp.
+                  </Text>
+                </Table.Td>
+              </Table.Tr>
+            )}
+          </Table.Tbody>
+        </Table>
+      </Box>
+
+      <Group justify='space-between' align='center' my={'md'}>
+        <PageSizeSelector />
+        <CustomPagination totalPages={data?.pagination.totalPages || 1} />
+      </Group>
+    </>
+  );
+}

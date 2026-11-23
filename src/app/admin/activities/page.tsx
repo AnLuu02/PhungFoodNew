@@ -6,8 +6,8 @@ import { IconBolt, IconClock, IconDatabase, IconLayersDifference, IconRefresh, I
 import { useCallback, useState } from 'react';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
-import { ActivityFeed } from './components/ActivityFeed';
-import ActivityFilter from './components/ActivityFilter';
+import { ActivityFeed } from '~/app/admin/activities/components/activity-feed';
+import ActivityFilter from '~/app/admin/activities/components/activity-filter';
 export interface ActivityFilters {
   entityType?: string;
   action?: string;

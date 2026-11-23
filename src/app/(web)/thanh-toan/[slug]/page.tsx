@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { formatTransDate } from '~/lib/utils/format';
 import { api } from '~/trpc/server';
-import CheckoutClient from '../components/CheckoutClient';
+import CheckoutClient from '~/app/(web)/thanh-toan/components/checkout-client';
 
 export const metadata: Metadata = {
   title: 'Thanh toán - Phụng Food',

@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import PageSizeSelector from '~/components/common/per-page';
 import { SearchInput } from '~/components/search/search-input';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateInvoiceButton } from './components/Button';
-import TableInvoice from './components/Table/TableInvoice';
+import { CreateInvoiceButton } from '~/app/admin/invoice/components/button';
+import TableInvoice from '~/app/admin/invoice/components/tables/table-invoice';
 
 export const metadata: Metadata = {
   title: 'Quản lý hóa đơn '

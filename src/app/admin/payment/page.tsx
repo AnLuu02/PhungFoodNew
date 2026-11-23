@@ -2,8 +2,8 @@ import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { SearchInput } from '~/components/search/search-input';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreatePaymentButton } from './components/Button';
-import TablePayment from './components/Table/TablePayment';
+import { CreatePaymentButton } from '~/app/admin/payment/components/button';
+import TablePayment from '~/app/admin/payment/components/tables/table-payment';
 
 export const metadata: Metadata = {
   title: 'Quản lý thanh toán '

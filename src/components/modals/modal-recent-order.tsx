@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import LoadingSpiner from '~/components/loading/loading-spinner';
 import { api } from '~/trpc/react';
-import CardRecentOrder from '~/app/(web)/goi-mon-nhanh/components/CardRecentOrder';
+import CardRecentOrder from '~/app/(web)/goi-mon-nhanh/components/card-recent-order';
 
 export const ModalRecentOrder = ({ opened, onClose }: { opened: boolean; onClose: () => void }) => {
   const { data: session } = useSession();

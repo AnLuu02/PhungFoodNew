@@ -9,8 +9,8 @@ import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { RoleInput } from '~/shared/schema/role.schema';
 import { GetAllPermission, GetAllRole } from '~/shared/types/trpc/role-permission.types';
 import { api } from '~/trpc/react';
-import RoleUpsert from './form/RoleUpsert';
-import PermissionUpsert from './form/permission/PermissionUpsert';
+import RoleUpsert from '~/app/admin/role/components/forms/role-upsert';
+import PermissionUpsert from '~/app/admin/role/components/forms/permission/permission-upsert';
 const mapFieldsRole: Record<string, string> = {
   'Vai trò': 'name',
   'Phiên âm': 'viName',

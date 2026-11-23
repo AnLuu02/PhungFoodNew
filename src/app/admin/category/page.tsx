@@ -15,7 +15,7 @@ import {
 import { IconDownload, IconFileTypeXls } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import CategoryClientManagementPage from './components/PageClient';
+import CategoryClientManagementPage from '~/app/admin/category/components/page-client';
 
 export const metadata: Metadata = {
   title: 'Quản lý danh mục'

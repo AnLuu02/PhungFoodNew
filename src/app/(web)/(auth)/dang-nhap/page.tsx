@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '~/app/(web)/(auth)/components/login-form';
 
 export const dynamic = 'force-static';
 

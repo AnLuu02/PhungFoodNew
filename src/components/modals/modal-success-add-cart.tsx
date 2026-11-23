@@ -5,7 +5,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
-import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout';
+import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/button-checkout';
 import { caculateAmount } from '~/lib/helpers/user/calculate-level';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { useCartStore } from '~/stores/cart.store';

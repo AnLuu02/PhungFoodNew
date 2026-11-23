@@ -1,8 +1,8 @@
 import { Box } from '@mantine/core';
 import { Metadata } from 'next';
 
-import { DashboardContent } from './components/DashboardContent';
-import { OverviewUser } from './components/OverviewUser';
+import { DashboardContent } from '~/app/(web)/thong-tin/components/dashboard-content';
+import { OverviewUser } from '~/app/(web)/thong-tin/components/overview-user';
 
 export const revalidate = 60 * 60;
 export const dynamic = 'force-static';

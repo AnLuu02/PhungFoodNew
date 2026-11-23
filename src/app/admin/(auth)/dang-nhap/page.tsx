@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import AdminLoginForm from '../components/AdminLoginForm';
+import AdminLoginForm from '~/app/admin/(auth)/components/admin-login-form';
 
 export const dynamic = 'force-static';
 

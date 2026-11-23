@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
-import { FormContact } from './components/FormContact';
+import { FormContact } from '~/app/(web)/lien-he/components/form-contact';
 
 export const dynamic = 'force-static';
 

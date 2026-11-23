@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { FindContact } from '~/shared/types/trpc/contact.types';
 import { api } from '~/trpc/react';
-import MailResponse from './form/MailResponse';
+import MailResponse from '~/app/admin/contact/components/forms/mail-response';
 
 export function SendMailButton({ userContactInfo }: { userContactInfo: FindContact['contacts'][number] }) {
   const [opened, setOpened] = useState(false);

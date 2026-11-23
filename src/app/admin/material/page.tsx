@@ -2,8 +2,8 @@ import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateMaterialButton } from './components/Button';
-import TableMaterial from './components/Table/TableMaterial';
+import { CreateMaterialButton } from '~/app/admin/material/components/button';
+import TableMaterial from '~/app/admin/material/components/tables/table-material';
 
 export const metadata: Metadata = {
   title: 'Quản lý nguyên liệu '

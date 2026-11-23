@@ -2,7 +2,7 @@ import { Box, Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
 import { api } from '~/trpc/server';
 import { RecapCart } from '~/components/domain/recap-cart';
-import { QuickMenu } from './components/QuickMenu';
+import { QuickMenu } from '~/app/(web)/goi-mon-nhanh/components/quick-menu';
 
 export const revalidate = 60 * 60;
 export const dynamic = 'force-static';

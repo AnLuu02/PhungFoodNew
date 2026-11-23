@@ -2,8 +2,8 @@ import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateUserButton } from './components/Button';
-import TableUser from './components/Table/TableUser';
+import { CreateUserButton } from '~/app/admin/user/components/button';
+import TableUser from '~/app/admin/user/components/tables/table-user';
 
 export const metadata: Metadata = {
   title: 'Quản lý người dùng '

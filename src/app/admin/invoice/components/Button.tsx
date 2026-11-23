@@ -31,7 +31,7 @@ import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
 import { renderShortId } from '~/lib/utils/render-short-id';
 import { FindInvoice } from '~/shared/types/trpc/invoice.types';
-import InvoiceUpsert from './form/InvoiceUpsert';
+import InvoiceUpsert from '~/app/admin/invoice/components/forms/invoice-upsert';
 
 export function CreateInvoiceButton() {
   const [opened, setOpened] = useState(false);

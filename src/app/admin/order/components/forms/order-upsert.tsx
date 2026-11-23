@@ -1,0 +1,376 @@
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  Grid,
+  GridCol,
+  Group,
+  NumberInput,
+  Select,
+  Stack,
+  Textarea,
+  TextInput,
+  Title
+} from '@mantine/core';
+import { AddressType, OrderStatus } from '@prisma/client';
+import { IconInfoCircle, IconMail, IconPhone } from '@tabler/icons-react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
+import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import AddressSection from '~/components/forms/address-section';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
+import { getStatusInfo } from '~/lib/helpers/order/status-order';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
+import { baseOrderSchema, OrderInput } from '~/shared/schema/order.schema';
+import { api } from '~/trpc/react';
+import OrderItemForm from '~/app/admin/order/components/forms/order-item-form';
+
+export default function OrderUpsert({
+  orderId,
+  setOpened
+}: {
+  orderId?: string;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}) {
+  const { data, isLoading } = api.Order.getOne.useQuery(
+    { key: orderId || '' },
+    {
+      enabled: !!orderId
+    }
+  );
+  const formFields = useForm<OrderInput>({
+    resolver: zodResolver(baseOrderSchema),
+    defaultValues: {
+      id: undefined,
+      finalAmount: 0,
+      taxAmount: 0,
+      discountAmount: 0,
+      originalAmount: 0,
+      shippingAmount: 0,
+      status: OrderStatus.UNPAID,
+      userId: '',
+      paymentId: '',
+      orderItems: [],
+      delivery: {
+        address: {
+          provinceId: '',
+          districtId: '',
+          wardId: '',
+          detail: '',
+          postalCode: '',
+          fullAddress: '',
+          type: AddressType.DELIVERY,
+          province: '',
+          district: '',
+          ward: ''
+        },
+        name: '',
+        phone: '',
+        email: ''
+      }
+    }
+  });
+
+  const { fields: orderItemFields, append: appendOrderItem } = useFieldArray({
+    control: formFields.control,
+    name: 'orderItems'
+  });
+
+  useEffect(() => {
+    if (data?.id) {
+      formFields.reset({
+        id: data?.id,
+        finalAmount: data?.finalAmount,
+        taxAmount: data?.taxAmount,
+        discountAmount: data?.discountAmount,
+        originalAmount: data?.originalAmount,
+        shippingAmount: data?.shippingAmount,
+        status: data?.status,
+        userId: data?.userId || '',
+        paymentId: data?.paymentId || '',
+        delivery: data?.delivery as any,
+        orderItems: (data as any).orderItems?.map((item: any) => ({
+          id: item.id,
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice
+        }))
+      });
+    }
+  }, [data, formFields.reset]);
+
+  const { data: payments = [] } = api.Payment.getAll.useQuery();
+  const { data: users = [] } = api.User.getUsersOnly.useQuery();
+  const utils = api.useUtils();
+  const updateMutation = api.Order.upsert.useMutation({
+    onSuccess: () => {
+      NotifySuccess('Chúc mừng bạn đã thao tác thành công.');
+      setOpened(false);
+      utils.Order.invalidate();
+    },
+    onError: e => {
+      NotifyError(e.message);
+    }
+  });
+
+  const onSubmit: SubmitHandler<OrderInput> = async formData => {
+    try {
+      await updateMutation.mutateAsync(formData);
+    } catch {
+      NotifyError('Đã xây ra ngoại lệ. Vui lòng kiểm tra lai.');
+    }
+  };
+
+  if (isLoading) return <ModalUpsertSkeleton />;
+
+  return (
+    <FormProvider {...formFields}>
+      <form onSubmit={formFields.handleSubmit(onSubmit)}>
+        <Grid>
+          <GridCol span={6}>
+            <Card shadow='sm' padding='lg' withBorder>
+              <Group justify='space-between' align='center'>
+                <Title order={2} className='mb-4 font-quicksand text-xl'>
+                  Thông tin vận chuyển
+                </Title>
+                <Button
+                  variant='outline'
+                  disabled={Boolean(formFields.watch('userId'))}
+                  onClick={() => {
+                    formFields.reset({
+                      finalAmount: 0,
+                      taxAmount: 0,
+                      discountAmount: 0,
+                      originalAmount: 0,
+                      status: OrderStatus.UNPAID,
+                      userId: users?.[0]?.id,
+                      paymentId: payments?.[0]?.id,
+                      orderItems: [],
+                      delivery: {
+                        email: 'anluu099@gmail.com',
+                        phone: '0918064618',
+                        name: 'Luu Truong An',
+                        note: 'Làm nóng món ăn giúp mình nhé quán. Cảm ơn nhiều.♥♥',
+                        address: {
+                          type: AddressType.DELIVERY,
+                          provinceId: '1',
+                          districtId: '1',
+                          wardId: '1',
+                          province: 'Thành phố Hà Nội',
+                          district: 'Quận Ba Đình',
+                          ward: 'Phường Phúc Xá',
+                          detail: '215-7',
+                          fullAddress: '215-7, Phường Phúc Xá, Quận Ba Đình, Thành phố Hà Nội'
+                        }
+                      }
+                    });
+                  }}
+                >
+                  Dữ liệu mẫu
+                </Button>
+              </Group>
+              <Stack gap='md'>
+                <Group grow>
+                  <Controller
+                    name='delivery.email'
+                    control={formFields.control}
+                    render={({ field, fieldState }) => (
+                      <TextInput
+                        label='Email'
+                        placeholder='Email'
+                        type='email'
+                        leftSection={<IconMail size={18} stroke={1.5} />}
+                        {...field}
+                        error={fieldState.error?.message}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name='delivery.name'
+                    control={formFields.control}
+                    render={({ field, fieldState }) => (
+                      <TextInput
+                        label='Họ và tên'
+                        placeholder='Họ và tên'
+                        {...field}
+                        error={fieldState.error?.message}
+                      />
+                    )}
+                  />
+                </Group>
+
+                <Group grow>
+                  <Controller
+                    name='delivery.phone'
+                    control={formFields.control}
+                    defaultValue=''
+                    render={({ field, fieldState }) => (
+                      <TextInput
+                        {...field}
+                        label='Số điện thoại'
+                        leftSection={<IconPhone size={18} stroke={1.5} />}
+                        placeholder='Số điện thoại (tùy chọn)'
+                        error={fieldState.error?.message}
+                      />
+                    )}
+                  />
+                </Group>
+
+                <Box w={'100%'}>
+                  <AddressSection control={formFields.control} setValue={formFields.setValue} name={`delivery`} />
+                </Box>
+
+                <Controller
+                  name='delivery.note'
+                  control={formFields.control}
+                  defaultValue=''
+                  render={({ field }) => (
+                    <Textarea resize='block' label='Ghi chú' placeholder='Ghi chú (tùy chọn)' {...field} />
+                  )}
+                />
+              </Stack>
+            </Card>
+          </GridCol>
+          <GridCol span={6}>
+            <Grid gutter='md'>
+              <GridCol span={6}>
+                <Controller
+                  name='userId'
+                  control={formFields.control}
+                  render={({ field }) => (
+                    <Select
+                      label='Khách hàng'
+                      searchable
+                      placeholder=' Chọn khách hàng'
+                      data={users?.map(user => ({ value: user.id, label: user.name }))}
+                      {...field}
+                      error={formFields.formState.errors.userId?.message}
+                    />
+                  )}
+                />
+              </GridCol>
+              <GridCol span={6}>
+                <Controller
+                  name='paymentId'
+                  control={formFields.control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label='Phương thức thanh toán'
+                      searchable
+                      placeholder=' Chọn phương thức thanh toán'
+                      data={payments?.map(payment => ({ value: payment.id, label: payment.name }))}
+                      error={formFields.formState.errors.paymentId?.message}
+                    />
+                  )}
+                />
+              </GridCol>
+              <GridCol span={4}>
+                <Controller
+                  control={formFields.control}
+                  name='finalAmount'
+                  render={({ field: { onChange, onBlur, value, name } }) => (
+                    <NumberInput
+                      thousandSeparator=','
+                      hideControls
+                      clampBehavior='strict'
+                      readOnly
+                      label='Tổng tiền (chỉ đọc)'
+                      placeholder='Sẽ được tính ngay sau khi gọi món.'
+                      error={formFields.formState.errors.finalAmount?.message}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      name={name}
+                    />
+                  )}
+                />
+              </GridCol>
+              <GridCol span={4}>
+                <Controller
+                  control={formFields.control}
+                  name='taxAmount'
+                  render={({ field: { onChange, onBlur, value, name } }) => (
+                    <NumberInput
+                      thousandSeparator=','
+                      hideControls
+                      clampBehavior='strict'
+                      readOnly
+                      label='Thuế (10%)'
+                      placeholder='Sẽ được tính ngay sau khi gọi món.'
+                      error={formFields.formState.errors.taxAmount?.message}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      name={name}
+                    />
+                  )}
+                />
+              </GridCol>
+              <GridCol span={4}>
+                <Controller
+                  name='status'
+                  control={formFields.control}
+                  render={({ field }) => (
+                    <Select
+                      label='Trạng thái (chỉ đọc)'
+                      placeholder=' Chọn trạng thái'
+                      data={Object.values(OrderStatus).map(status => ({
+                        value: status,
+                        label: getStatusInfo(status as OrderStatus).label
+                      }))}
+                      {...field}
+                      error={formFields.formState.errors.status?.message}
+                    />
+                  )}
+                />
+              </GridCol>
+              <Title order={3} mt='lg' className='font-quicksand'>
+                Món ăn
+              </Title>
+              <GridCol span={12}>
+                {formFields.formState.errors.orderItems?.message && (
+                  <Alert w={'100%'} variant='light' color='yellow' title='Cảnh báo' icon={<IconInfoCircle />}>
+                    {formFields.formState.errors.orderItems?.message}
+                  </Alert>
+                )}
+              </GridCol>
+              {orderItemFields.map((field, index) => (
+                <OrderItemForm key={field.id} {...field} index={index} />
+              ))}
+              <Button
+                type='button'
+                onClick={() =>
+                  appendOrderItem({
+                    productId: '',
+                    quantity: 1,
+                    unitPrice: 0,
+                    discount: 0,
+                    totalPrice: 0,
+                    productName: ''
+                  })
+                }
+                variant='outline'
+                w={'100%'}
+                m={10}
+              >
+                Thêm món
+              </Button>
+            </Grid>
+          </GridCol>
+        </Grid>
+        <Button
+          type='submit'
+          className='mt-4'
+          loading={formFields.formState.isSubmitting}
+          fullWidth
+          disabled={!formFields.formState.isDirty}
+        >
+          Cập nhật
+        </Button>
+      </form>
+    </FormProvider>
+  );
+}

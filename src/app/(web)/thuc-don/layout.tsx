@@ -2,8 +2,8 @@ import { Box, Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
 import { defaultProductFilters } from '~/shared/schema/product.filter.schema';
 import { api, HydrateClient } from '~/trpc/server';
-import { CartFloating } from './components/CartFloating';
-import { SidebarMenu } from './components/SidebarMenu';
+import { CartFloating } from '~/app/(web)/thuc-don/components/cart-floating';
+import { SidebarMenu } from '~/app/(web)/thuc-don/components/sidebar-menu';
 
 export const dynamic = 'force-static';
 export const revalidate = 60 * 60;

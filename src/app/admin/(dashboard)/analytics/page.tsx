@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import AnalyticsDashboard from './components/AnalyticsDashboard';
+import AnalyticsDashboard from '~/app/admin/(dashboard)/analytics/components/analytics-dashboard';
 
 export const metadata: Metadata = {
   title: 'Analytics | Admin Dashboard',

@@ -3,8 +3,8 @@ import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { SearchInput } from '~/components/search/search-input';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateOrderButton, SendMessageAllUserAdvanced } from './components/Button';
-import TableOrder from './components/Table/TableOrder';
+import { CreateOrderButton, SendMessageAllUserAdvanced } from '~/app/admin/order/components/button';
+import TableOrder from '~/app/admin/order/components/tables/table-order';
 export const metadata: Metadata = {
   title: 'Quản lý hóa đơn '
 };

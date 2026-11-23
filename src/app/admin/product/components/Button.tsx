@@ -5,7 +5,7 @@ import { IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { api } from '~/trpc/react';
-import ProductUpsert from './form/ProductUpsert';
+import ProductUpsert from '~/app/admin/product/components/forms/product-upsert';
 
 export function CreateProductButton() {
   const [opened, setOpened] = useState(false);

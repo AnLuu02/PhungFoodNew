@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import ThemeManagementAdvance from './components/theme-restautant-advance';
+import ThemeManagementAdvance from '~/app/admin/settings/theme-advance/components/theme-restaurant-advance';
 export const metadata: Metadata = {
   title: 'Tùy chỉnh nâng cap'
 };

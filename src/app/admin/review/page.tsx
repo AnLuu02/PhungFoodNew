@@ -2,8 +2,8 @@ import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateReviewButton } from './components/Button';
-import TableReview from './components/Table/TableReview';
+import { CreateReviewButton } from '~/app/admin/review/components/button';
+import TableReview from '~/app/admin/review/components/tables/table-review';
 
 export const metadata: Metadata = {
   title: 'Quản lý đánh giá'
