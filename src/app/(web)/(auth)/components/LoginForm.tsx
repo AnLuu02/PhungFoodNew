@@ -23,7 +23,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { checkLoginCooldown, setLoginCooldown } from '~/lib/helpers/auth/login-limiter';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
-import LoginServices from '../../../../components/Auth/LoginServices';
+import LoginServices from '~/components/auth/login-services';
 
 export default function LoginForm() {
   const [error, setError] = useState('');

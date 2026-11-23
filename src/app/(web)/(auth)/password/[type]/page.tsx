@@ -7,7 +7,7 @@ import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import OtpModal from '~/components/Modals/ModalOtp';
+import OtpModal from '~/components/modals/modal-otp';
 import { NotifyError } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 import PeriodControl from '../../components/PeriodControl';

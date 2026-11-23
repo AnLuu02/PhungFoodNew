@@ -18,7 +18,7 @@ import { IconReload, IconTrash } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
 import { syncPermissions } from '~/lib/helpers/auth/sync-permissions';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { baseRoleSchema, RoleInput } from '~/shared/schema/role.schema';

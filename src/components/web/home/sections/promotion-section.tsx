@@ -1,0 +1,206 @@
+'use client';
+
+import { Card, Flex, Grid, GridCol, Group, Paper, Text, Title } from '@mantine/core';
+import { IconBolt } from '@tabler/icons-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import PaginationLocal from '~/components/common/pagination-local';
+import Reveal from '~/components/common/reveal';
+import { toNumber } from '~/lib/utils/format';
+import { api } from '~/trpc/react';
+import ProductCardCarouselHorizontal from '~/components/web/cards/card-product-carousel-horizontal';
+import { CardProductHorizontalSkeleton } from '~/components/web/cards/card-product-horizontal-skeleton';
+
+export const PromotionSection = () => {
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(6);
+
+  const { data, isLoading, isFetching } = api.Product.find.useQuery(
+    {
+      page: page,
+      limit: perPage,
+      loai: 'san-pham-giam-gia'
+    },
+    {
+      placeholderData: previousData => previousData
+    }
+  );
+
+  const products = data?.products ?? [];
+
+  const totalPages = data?.pagination?.totalPages ?? 0;
+
+  const onChangePage = useCallback((value: number) => {
+    setPage(value);
+  }, []);
+
+  const onSetPerpage = useCallback((value: string) => {
+    setPerPage(toNumber(value) ?? 4);
+  }, []);
+
+  const utils = api.useUtils();
+
+  useEffect(() => {
+    if (data?.pagination.hasNext) {
+      void utils.Product.find.prefetch({
+        page: page + 1,
+        limit: perPage,
+        loai: 'san-pham-giam-gia'
+      });
+    }
+  }, [page]);
+
+  const [timeExpire, setTimeExpire] = React.useState({
+    day: 0,
+    hour: 0,
+    minute: 0,
+    second: 0
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const day = 30 - new Date().getDate();
+      const hour = 23 - new Date().getHours();
+      const minute = 59 - new Date().getMinutes();
+      const second = 59 - new Date().getSeconds();
+      if (day < 0 && hour < 0 && minute < 0 && second < 0) {
+        clearInterval(interval);
+        return;
+      }
+      setTimeExpire({ day, hour, minute, second });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <Card
+      mih={270}
+      h={'max-content'}
+      withBorder
+      className='border-2 border-dashed border-mainColor bg-gray-200 dark:bg-dark-background'
+      p={0}
+    >
+      <Flex h={'100%'} direction={'column'}>
+        <Flex
+          align={'center'}
+          justify={'space-between'}
+          direction={{ base: 'column', sm: 'row', md: 'row' }}
+          className='bg-mainColor'
+          h={{ base: 'max-content', md: 75 }}
+          p={'lg'}
+          gap={'md'}
+        >
+          <Flex direction={'column'}>
+            <Group gap={0}>
+              <Title
+                order={2}
+                className='cursor-pointer font-quicksand text-subColor transition-all duration-300 hover:text-white'
+              >
+                Khuyến mãi đặc biệt
+              </Title>
+              <IconBolt size={33} className='animate-wiggle text-subColor' />
+            </Group>
+            <Text size='lg' p={0} className='text-white' fw={500}>
+              Đừng bỏ lỡ cơ hội giảm giá đặc biệt!
+            </Text>
+          </Flex>
+
+          <Flex align={'center'} gap={'lg'}>
+            <Group gap={'xs'}>
+              <Paper
+                m={0}
+                p={0}
+                w={50}
+                h={60}
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
+                  {timeExpire.day < 10 ? `0${timeExpire.day}` : timeExpire.day}
+                </Text>
+                <Text size='xs' className='text-white'>
+                  Ngày
+                </Text>
+              </Paper>
+              <Paper
+                m={0}
+                p={0}
+                w={50}
+                h={60}
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
+                  {timeExpire.hour < 10 ? `0${timeExpire.hour}` : timeExpire.hour}
+                </Text>
+                <Text size='xs' className='text-white'>
+                  Giờ
+                </Text>
+              </Paper>
+              <Paper
+                m={0}
+                p={0}
+                w={50}
+                h={60}
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
+                  {timeExpire.minute < 10 ? `0${timeExpire.minute}` : timeExpire.minute}
+                </Text>
+                <Text size='xs' className='text-white'>
+                  Phút
+                </Text>
+              </Paper>
+              <Paper
+                m={0}
+                p={0}
+                w={50}
+                h={60}
+                className='flex flex-col items-center justify-center bg-[rgba(255,255,255,0.1)]'
+              >
+                <Text size='lg' className='text-white' fw={700}>
+                  {timeExpire.second < 10 ? `0${timeExpire.second}` : timeExpire.second}
+                </Text>
+                <Text size='xs' className='text-white'>
+                  Giây
+                </Text>
+              </Paper>
+            </Group>
+          </Flex>
+        </Flex>
+
+        <Grid p={'sm'}>
+          {isLoading ? (
+            <>
+              {Array.from({ length: Number(perPage) }, (_, idex) => {
+                return (
+                  <GridCol span={{ base: 12, xs: 6, xl: 4 }} key={idex} mih={162}>
+                    <CardProductHorizontalSkeleton />
+                  </GridCol>
+                );
+              })}
+            </>
+          ) : (
+            products.map((item, index: number) => (
+              <GridCol
+                span={{ base: 12, xs: 6, xl: 4 }}
+                key={item.id}
+                mih={162}
+                style={{ opacity: isFetching ? 0.6 : 1, transition: 'opacity 0.2s' }}
+              >
+                <Reveal x={(index + 1) * 2} delay={index * 0.01}>
+                  <ProductCardCarouselHorizontal data={item} key={item.id} />
+                </Reveal>
+              </GridCol>
+            ))
+          )}
+        </Grid>
+
+        <PaginationLocal
+          page={page}
+          perPage={perPage}
+          totalPages={totalPages}
+          onChangePage={onChangePage}
+          onSetPerpage={value => onSetPerpage(String(value))}
+        />
+      </Flex>
+    </Card>
+  );
+};

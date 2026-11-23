@@ -3,10 +3,10 @@ import { ActionIcon, Box, Card, Divider, Group, Highlight, Modal, Text, Title, T
 import { IconEdit, IconSettings, IconShield, IconTrash } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Empty from '~/components/Empty';
-import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import CustomPagination from '~/components/Pagination';
-import PageSizeSelector from '~/components/Perpage';
+import Empty from '~/components/common/empty';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { FindRole } from '~/shared/types/trpc/role-permission.types';

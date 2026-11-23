@@ -1,7 +1,7 @@
 'use client';
 import { Box, Button, Flex, Group, Paper, Switch, Text } from '@mantine/core';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
 import { syncPermissions } from '~/lib/helpers/auth/sync-permissions';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';

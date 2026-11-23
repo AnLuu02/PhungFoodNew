@@ -2,7 +2,7 @@
 import { Box, Flex, Text } from '@mantine/core';
 import { IconBell, IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useCartAmount } from '~/components/Hooks/use-cart';
+import { useCartAmount } from '~/components/hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 export function CartFloating() {

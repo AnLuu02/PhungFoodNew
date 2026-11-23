@@ -18,7 +18,7 @@ import { IconAlertCircle, IconLock, IconMail } from '@tabler/icons-react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import LoginServices from '~/components/Auth/LoginServices';
+import LoginServices from '~/components/auth/login-services';
 
 export default function AdminLoginForm() {
   const router = useRouter();

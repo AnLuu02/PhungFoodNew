@@ -2,7 +2,7 @@
 import { Checkbox, CheckIcon, Flex, Group, ScrollAreaAutosize, Stack, Text } from '@mantine/core';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Empty from '~/components/Empty';
+import Empty from '~/components/common/empty';
 import { GetAllMaterial } from '~/shared/types/trpc/material.types';
 import { api } from '~/trpc/react';
 

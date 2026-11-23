@@ -4,17 +4,17 @@ import dynamic from 'next/dynamic';
 import React from 'react';
 import { useModalStore } from '~/stores/modal.store';
 
-const ModalProductComments = dynamic(() => import('~/components/Modals/ModalProductComments'), { ssr: false });
+const ModalProductComments = dynamic(() => import('~/components/modals/modal-product-comments'), { ssr: false });
 
-const ModalProductDetails = dynamic(() => import('~/components/Modals/ModalProductDetails'), { ssr: false });
+const ModalProductDetails = dynamic(() => import('~/components/modals/modal-product-details'), { ssr: false });
 
-const ModalOrderDetails = dynamic(() => import('~/components/Modals/ModalOrderDetails'), { ssr: false });
+const ModalOrderDetails = dynamic(() => import('~/components/modals/modal-order-details'), { ssr: false });
 
-const ModalVoucherDetail = dynamic(() => import('~/components/Modals/ModalVoucherDetail'), { ssr: false });
+const ModalVoucherDetail = dynamic(() => import('~/components/modals/modal-voucher-detail'), { ssr: false });
 
-const ModalSuccessAddToCart = dynamic(() => import('~/components/Modals/ModalSuccessAddCart'), { ssr: false });
+const ModalSuccessAddToCart = dynamic(() => import('~/components/modals/modal-success-add-cart'), { ssr: false });
 
-const ModalImageLibrary = dynamic(() => import('~/components/Modals/ModalImageLibrary'), { ssr: false });
+const ModalImageLibrary = dynamic(() => import('~/components/modals/modal-image-library'), { ssr: false });
 
 export const GlobalModalProvider: React.FC = () => {
   const { opened, type, data, close } = useModalStore();

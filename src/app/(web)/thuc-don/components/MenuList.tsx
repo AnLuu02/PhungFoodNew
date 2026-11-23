@@ -1,9 +1,9 @@
 import { Box, Center, Divider, Flex, Grid, GridCol } from '@mantine/core';
 import { IconSoup } from '@tabler/icons-react';
-import Empty from '~/components/Empty';
-import CustomPagination from '~/components/Pagination';
-import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
-import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
+import Empty from '~/components/common/empty';
+import CustomPagination from '~/components/common/pagination';
+import ProductCardCarouselVertical from '~/components/web/cards/card-product-carousel-vertical';
+import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { FindProduct } from '~/shared/types/trpc/product.types';
 
 export const MenuList = ({

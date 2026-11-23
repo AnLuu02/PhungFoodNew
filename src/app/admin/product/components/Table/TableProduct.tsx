@@ -1,8 +1,8 @@
 'use client';
 
 import { Avatar, Badge, Box, Group, Highlight, Spoiler, Text, Tooltip } from '@mantine/core';
-import CustomPagination from '~/components/Pagination';
-import PageSizeSelector from '~/components/Perpage';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
@@ -10,8 +10,8 @@ import { ActionIcon, Card, Divider, Flex, Paper, Select, SimpleGrid, Stack, Titl
 import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { SearchInput } from '~/components/Search/SearchInput';
-import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
+import { SearchInput } from '~/components/search/search-input';
+import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { randomColorHex } from '~/lib/utils/random-color-hex';
 import { UserRole } from '~/shared/constants/user.constants';
 import { FindProduct, getProductsOnly } from '~/shared/types/trpc/product.types';

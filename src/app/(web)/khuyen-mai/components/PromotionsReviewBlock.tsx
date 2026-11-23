@@ -1,5 +1,5 @@
 'use client';
-import { TestimonialItem, TestimonialSection } from '../../../../components/TestimonialSection';
+import { TestimonialItem, TestimonialSection } from '~/components/domain/testimonial-section';
 
 const promotionTestimonials: TestimonialItem[] = [
   {

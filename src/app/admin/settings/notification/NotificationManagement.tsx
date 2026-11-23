@@ -11,14 +11,14 @@ import {
   IconTemplate
 } from '@tabler/icons-react';
 import { useCallback, useState } from 'react';
-import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
+import { useHashTabs } from '~/components/hooks/use-hash-tabs';
 import {
   GetAllNotification,
   NotificationBase,
   NotificationTemplateBase
 } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';
-import { ViewNotificationDetail } from '../../../../components/Modals/ViewNotificationDetail';
+import { ViewNotificationDetail } from '~/components/modals/view-notification-detail';
 import { UpsertNotificationModal } from './components/modal/UpsertNotification';
 import { AnalyticsTabSection } from './components/section/AnalyticsTabSection';
 import { HistoryTabSection } from './components/section/HistoryTabSection';

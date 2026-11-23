@@ -1,7 +1,7 @@
 import { Card, Grid, GridCol, Stack, Textarea, TextInput, Title } from '@mantine/core';
 import { IconMail, IconPhone, IconUser } from '@tabler/icons-react';
 import { Control, Controller, UseFormSetValue } from 'react-hook-form';
-import AddressSection from '~/components/AdressSection';
+import AddressSection from '~/components/forms/address-section';
 import { DeliveryCheckout } from '~/shared/schema/delivery.schema';
 
 export function DeliveryCard({

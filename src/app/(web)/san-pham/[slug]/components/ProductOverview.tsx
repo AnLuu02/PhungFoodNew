@@ -3,7 +3,7 @@ import { IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 import { ImageType } from '@prisma/client';
-import { ShareSocials } from '~/components/ShareSocial';
+import { ShareSocials } from '~/components/common/share-social';
 import type { ProductBase } from '~/shared/types/trpc/product.types';
 import ProductImage from './client-component/ProductImage';
 import PurchaseAction from './client-component/PurchaseActions';

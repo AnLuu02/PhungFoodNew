@@ -25,10 +25,10 @@ import { IconCheck, IconChevronDown, IconMoodEmpty, IconTrash } from '@tabler/ic
 import { Session } from 'next-auth';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import InvoiceToPrint from '~/components/InvoceToPrint';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import PaginationLocal from '~/components/PaginationLocal';
-import SearchLocal from '~/components/Search/SearchLocal';
+import InvoiceToPrint from '~/components/domain/invoice-to-print';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import PaginationLocal from '~/components/common/pagination-local';
+import SearchLocal from '~/components/search/search-local';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';

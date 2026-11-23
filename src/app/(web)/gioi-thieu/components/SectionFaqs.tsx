@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { IconArrowRight, IconMessageQuestion } from '@tabler/icons-react';
 import Link from 'next/link';
-import Reveal from '~/components/Reveal';
+import Reveal from '~/components/common/reveal';
 
 const faqs = [
   {

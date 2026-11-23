@@ -4,11 +4,11 @@ import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Title } 
 import { IconActivity, IconAlertTriangle, IconCircleCheck, IconGift } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import Empty from '~/components/Empty';
-import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import CustomPagination from '~/components/Pagination';
-import PageSizeSelector from '~/components/Perpage';
-import { SearchInput } from '~/components/Search/SearchInput';
+import Empty from '~/components/common/empty';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
+import { SearchInput } from '~/components/search/search-input';
 import { STATUS_FILTER_VOUCHER } from '~/shared/constants/voucher.constants';
 import { FindVoucher, GetAllVoucher } from '~/shared/types/trpc/voucher.types';
 import { api } from '~/trpc/react';

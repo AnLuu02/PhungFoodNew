@@ -1,6 +1,6 @@
 import { Box } from '@mantine/core';
 import { Metadata } from 'next';
-import HomeWeb from '~/components/Web/Home/HomeWeb';
+import HomeWeb from '~/components/web/home/home-web';
 import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 import { PAGE_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';

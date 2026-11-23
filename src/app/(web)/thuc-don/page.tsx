@@ -1,7 +1,7 @@
 'use client';
 import { Box } from '@mantine/core';
 import { useEffect } from 'react';
-import { useProductFilters } from '~/components/Hooks/use-product-filter';
+import { useProductFilters } from '~/components/hooks/use-product-filter';
 import { FindProduct } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';
 import HeaderMenu from './components/HeaderMenu';

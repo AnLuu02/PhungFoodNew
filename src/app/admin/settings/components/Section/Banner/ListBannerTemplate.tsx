@@ -4,7 +4,7 @@ import { ActionIcon, Badge, Box, Button, Card, Group, Image, SimpleGrid, Stack }
 import { IconEye, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
+import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { formatDateViVN } from '~/lib/utils/format';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { GetAllBanner } from '~/shared/types/trpc/restaurant.types';

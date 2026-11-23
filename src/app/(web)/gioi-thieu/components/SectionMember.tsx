@@ -3,7 +3,7 @@ import { Badge, Box, Button, Group, Paper, SimpleGrid, Skeleton, Stack, Text, Th
 import { IconArrowRight, IconCake, IconGift, IconTicket, IconTruckDelivery } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import Reveal from '~/components/Reveal';
+import Reveal from '~/components/common/reveal';
 import { caculateLevelUser } from '~/lib/helpers/user/calculate-level';
 import { api } from '~/trpc/react';
 const guestBenefits = [

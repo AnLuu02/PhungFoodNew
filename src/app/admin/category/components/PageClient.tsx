@@ -3,7 +3,7 @@ import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Tabs, Ti
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { SearchInput } from '~/components/Search/SearchInput';
+import { SearchInput } from '~/components/search/search-input';
 import { CategoryBasic } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
 import { CreateCategoryButton, CreateSubCategoryButton } from './Button';

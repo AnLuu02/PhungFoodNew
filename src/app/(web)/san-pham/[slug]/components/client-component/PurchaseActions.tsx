@@ -1,11 +1,11 @@
 'use client';
 import { Card, Flex, Group, NumberInput, Select, Spoiler, Stack, Text, Textarea } from '@mantine/core';
 import { IconPencil, IconShoppingCartPlus } from '@tabler/icons-react';
-import { ButtonAddToCart } from '~/components/Button/ButtonAddToCart';
+import { ButtonAddToCart } from '~/components/buttons/add-to-cart-button';
 
 import { useDebouncedValue } from '@mantine/hooks';
 import { memo, useEffect, useState } from 'react';
-import ViewingUser from '~/components/UserViewing';
+import ViewingUser from '~/components/common/user-viewing';
 import { toNumber } from '~/lib/utils/format';
 import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useCartStore } from '~/stores/cart.store';

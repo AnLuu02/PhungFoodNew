@@ -2,7 +2,7 @@
 import { Box, Button, Drawer, Flex, Stack, Title } from '@mantine/core';
 import { IconFilter } from '@tabler/icons-react';
 import { useState } from 'react';
-import { SearchInput } from '~/components/Search/SearchInput';
+import { SearchInput } from '~/components/search/search-input';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';
 import { SidebarFilterContent } from './SidebarFilterContent';

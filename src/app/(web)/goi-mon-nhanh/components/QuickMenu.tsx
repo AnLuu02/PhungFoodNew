@@ -6,8 +6,8 @@ import { IconAlertCircle, IconChevronDown, IconSearch } from '@tabler/icons-reac
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo } from 'react';
-import Empty from '~/components/Empty';
-import { SearchInput } from '~/components/Search/SearchInput';
+import Empty from '~/components/common/empty';
+import { SearchInput } from '~/components/search/search-input';
 import { breakpoints } from '~/shared/constants/common.constants';
 import { CategoryBasic } from '~/shared/types/trpc/category.types';
 import { FindInfiniteProduct } from '~/shared/types/trpc/product.types';

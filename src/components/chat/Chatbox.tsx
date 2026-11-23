@@ -30,8 +30,8 @@ import {
   IconX
 } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';
-import { FoodCard } from './FoodCardChatBox';
-import { TypingIndicator } from './TypingIndicator';
+import { FoodCard } from '~/components/chat/food-card-chatbox';
+import { TypingIndicator } from '~/components/chat/typing-indicator';
 
 export type ChatMessage = {
   sender: 'User' | 'Bot';

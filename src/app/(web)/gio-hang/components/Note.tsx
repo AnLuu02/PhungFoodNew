@@ -1,7 +1,7 @@
 'use client';
 import { Button, Group, Stack, Textarea } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { useCartItem } from '~/components/Hooks/use-cart';
+import { useCartItem } from '~/components/hooks/use-cart';
 import { useCartStore } from '~/stores/cart.store';
 export const Note = ({ productId }: { productId: string }) => {
   const [note, setNote] = useState<string>('');

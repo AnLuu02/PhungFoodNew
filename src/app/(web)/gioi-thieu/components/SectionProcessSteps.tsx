@@ -1,8 +1,8 @@
 import { Box, Group, Paper, SimpleGrid, Text, ThemeIcon } from '@mantine/core';
 import { IconFlame, IconMoodSmile, IconPackage, IconShieldCheck } from '@tabler/icons-react';
 
-import Reveal from '~/components/Reveal';
-import { SectionHeading } from '~/components/SectionHeading';
+import Reveal from '~/components/common/reveal';
+import { SectionHeading } from '~/components/common/section-heading';
 
 const processSteps = [
   {

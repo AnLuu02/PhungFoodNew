@@ -1,6 +1,6 @@
 import { Grid, GridCol, Group, Paper, Spoiler, Stack, Text, ThemeIcon, Title } from '@mantine/core';
 import { IconGift } from '@tabler/icons-react';
-import VoucherTemplate from '~/components/Template/VoucherTemplate';
+import VoucherTemplate from '~/components/templates/voucher-template';
 import { api } from '~/trpc/server';
 
 export default async function DiscountCodes() {

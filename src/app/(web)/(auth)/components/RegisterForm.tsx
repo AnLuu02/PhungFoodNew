@@ -21,12 +21,12 @@ import { IconCalendar, IconInfoCircle, IconKey, IconMail, IconPhone } from '@tab
 import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import OtpModal from '~/components/Modals/ModalOtp';
+import OtpModal from '~/components/modals/modal-otp';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { api } from '~/trpc/react';
 import { TRPCErrorCode } from '~/shared/types/response.types';
-import AddressSection from '../../../../components/AdressSection';
+import AddressSection from '~/components/forms/address-section';
 
 export default function RegisterForm() {
   const [opened, { open, close }] = useDisclosure();

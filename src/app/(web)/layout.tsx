@@ -1,10 +1,10 @@
 import { Box } from '@mantine/core';
-import FloatingWidget from '~/components/FloatingWidget';
-import { ServiceRestaurantSection } from '~/components/ServiceRestaurantSection';
-import FooterWeb from '~/components/Web/Footer/FooterWeb';
-import { NavigationFixed } from '~/components/Web/Header/components/client-component/NavigationFIxed';
-import HeaderWeb from '~/components/Web/Header/HeaderWeb';
-import { HeaderClient } from '~/components/Web/Header/section/HeaderFirst';
+import FloatingWidget from '~/components/common/floating-widget';
+import { ServiceRestaurantSection } from '~/components/domain/service-restaurant-section';
+import FooterWeb from '~/components/web/footer/footer-web';
+import { NavigationFixed } from '~/components/web/header/components/navigation-fixed';
+import HeaderWeb from '~/components/web/header/header-web';
+import { HeaderClient } from '~/components/web/header/sections/header-first';
 import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';

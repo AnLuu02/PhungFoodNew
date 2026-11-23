@@ -1,7 +1,7 @@
 import { Box, Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
 import { api } from '~/trpc/server';
-import { RecapCart } from '../../../components/RecapCart';
+import { RecapCart } from '~/components/domain/recap-cart';
 import { QuickMenu } from './components/QuickMenu';
 
 export const revalidate = 60 * 60;

@@ -4,7 +4,7 @@ import { OrderStatus } from '@prisma/client';
 import { IconStar } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo } from 'react';
-import { AppSkeleton } from '~/components/Loading/AppSkeleton';
+import { AppSkeleton } from '~/components/loading/app-skeleton';
 import { caculateLevelUser } from '~/lib/helpers/user/calculate-level';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { api } from '~/trpc/react';

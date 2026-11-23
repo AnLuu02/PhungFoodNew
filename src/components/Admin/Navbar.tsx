@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { breakpoints } from '~/shared/constants/common.constants';
 import { navItems } from '~/lib/config/ui';
-import { GlobalSearch } from '../Search/GlobalSearch';
-import UserSection from '../UserSection';
+import { GlobalSearch } from '~/components/search/global-search';
+import UserSection from '~/components/domain/user-section';
 
 export default function Navbar() {
   const isMobile = useMediaQuery(`(max-width: ${breakpoints.xs}px)`);

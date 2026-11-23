@@ -2,8 +2,8 @@
 
 import { Badge, Box, Divider, Group, Highlight, Paper, Stack, Text } from '@mantine/core';
 import { IconBellPause, IconCircleCheck, IconSum, IconTruckDelivery, IconXboxX } from '@tabler/icons-react';
-import CustomPagination from '~/components/Pagination';
-import PageSizeSelector from '~/components/Perpage';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';
 import {
@@ -20,8 +20,8 @@ import { OrderStatus } from '@prisma/client';
 import dayjs from 'dayjs';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import { SearchInput } from '~/components/Search/SearchInput';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import { SearchInput } from '~/components/search/search-input';
 import { FindOrder, GetAllOrder } from '~/shared/types/trpc/order.types';
 import { api } from '~/trpc/react';
 

@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { IconAlertSquareRounded, IconCheck, IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
-import { useCartItems } from '~/components/Hooks/use-cart';
+import { useCartItems } from '~/components/hooks/use-cart';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { useCartStore } from '~/stores/cart.store';
 import { Note } from './Note';

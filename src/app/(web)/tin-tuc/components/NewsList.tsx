@@ -4,7 +4,7 @@ import { IconClockHour10 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import Empty from '~/components/Empty';
+import Empty from '~/components/common/empty';
 import { formatDateViVN } from '~/lib/utils/format';
 import { FetchNews } from '~/shared/types/trpc/news.types';
 import { api } from '~/trpc/react';

@@ -4,7 +4,7 @@ import { ActionIcon, Button, Group, Modal, Text, Title, Tooltip } from '@mantine
 import { OrderStatus } from '@prisma/client';
 import { IconCopy, IconEdit, IconPlus, IconPrinter, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import InvoiceToPrint from '~/components/InvoceToPrint';
+import InvoiceToPrint from '~/components/domain/invoice-to-print';
 import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import dayjs from '~/lib/config/dayjs';
 import { formatTransDate } from '~/lib/utils/format';

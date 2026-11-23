@@ -1,10 +1,10 @@
 import { Box, Button, Group, SimpleGrid } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
-import Reveal from '~/components/Reveal';
-import { CardFeaturedOffer } from '~/components/Web/Card/CardFeaturedOffer';
+import Reveal from '~/components/common/reveal';
+import { CardFeaturedOffer } from '~/components/web/cards/card-featured-offer';
 import { GetInitAboutUs } from '~/shared/types/trpc/page.types';
-import { SectionHeading } from '../../../../components/SectionHeading';
+import { SectionHeading } from '~/components/common/section-heading';
 const menuHighlights = [
   {
     name: 'Burger bò sốt tiêu miền Tây',

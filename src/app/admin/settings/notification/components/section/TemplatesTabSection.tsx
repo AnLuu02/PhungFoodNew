@@ -4,7 +4,7 @@ import { Badge, Box, Button, Card, Text } from '@mantine/core';
 import { NotificationTemplate } from '@prisma/client';
 import { IconPlus } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
-import Empty from '~/components/Empty';
+import Empty from '~/components/common/empty';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { NotificationTemplateBase } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';

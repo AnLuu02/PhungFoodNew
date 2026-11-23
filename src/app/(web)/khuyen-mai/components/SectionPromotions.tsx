@@ -1,7 +1,7 @@
 'use client';
 import { Paper, Stack } from '@mantine/core';
-import { SectionHeading } from '~/components/SectionHeading';
-import { PromotionSection } from '~/components/Web/Home/Section/PromotionSection';
+import { SectionHeading } from '~/components/common/section-heading';
+import { PromotionSection } from '~/components/web/home/sections/promotion-section';
 import { FindProduct } from '~/shared/types/trpc/product.types';
 
 export const SectionPromotions = ({ initialData }: { initialData: FindProduct }) => {

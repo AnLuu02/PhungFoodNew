@@ -1,4 +1,4 @@
-import { TestimonialItem, TestimonialSection } from '~/components/TestimonialSection';
+import { TestimonialItem, TestimonialSection } from '~/components/domain/testimonial-section';
 
 const aboutTestimonials: TestimonialItem[] = [
   {

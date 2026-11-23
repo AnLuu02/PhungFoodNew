@@ -1,0 +1,177 @@
+import { Space } from '@mantine/core';
+import Reveal from '~/components/common/reveal';
+import { formatDateViVN } from '~/lib/utils/format';
+
+import { Suspense } from 'react';
+import { ComingSoonPage } from '~/components/common/coming-soon';
+import { AppSkeleton } from '~/components/loading/app-skeleton';
+import { CategoryWithRelationBasic } from '~/shared/types/trpc/category.types';
+import { GetOneBanner } from '~/shared/types/trpc/restaurant.types';
+import { api, HydrateClient } from '~/trpc/server';
+import { PartnerCard } from '~/components/web/cards/card-partner';
+import { CarouselListBase } from '~/components/web/home/components/carousel-list-base';
+import { ReusablePromoBanner } from '~/components/web/home/components/reusable-promo-banner';
+import { BannerSection } from '~/components/web/home/sections/banner-section';
+import { CategoryCarouselSection } from '~/components/web/home/sections/category-carousel-section';
+import { MultiCategoryListSection } from '~/components/web/home/sections/multi-category-list-section';
+import { ProductCarouselWithSidebarBannerSection } from '~/components/web/home/sections/product-carousel-with-sidebar-banner-section';
+import { ProductCarouselWithTopTitleSection } from '~/components/web/home/sections/product-carousel-with-top-title-section';
+import { ProductHotSection } from '~/components/web/home/sections/product-hot-section';
+import { ProductNewSection } from '~/components/web/home/sections/product-new-section';
+import { PromotionSection } from '~/components/web/home/sections/promotion-section';
+import { RecipeInstructionsSection } from '~/components/web/home/sections/recipe-instructions-section';
+import { ThreeBannerSection } from '~/components/web/home/sections/three-banner-section';
+const HomeWeb = async ({ banners, categories }: { banners: GetOneBanner; categories: CategoryWithRelationBasic[] }) => {
+  const priorityCategories = categories.slice(0, 3);
+  const initCategory = priorityCategories?.[0];
+
+  if (!priorityCategories || priorityCategories.length === 0 || !initCategory) return <ComingSoonPage />;
+
+  const categoryProps = {
+    init: initCategory,
+    priorityCategories
+  };
+
+  const initLoai = ['san-pham-moi', 'san-pham-hot', 'san-pham-ban-chay'] as const;
+
+  const initMaterials = ['rau-cu', 'hai-san'];
+
+  await Promise.all([
+    ...initLoai.map(loai => api.Product.find.prefetch({ page: 1, limit: 6, loai, 'danh-muc': initCategory.tag })),
+    ...initMaterials.map(material => api.Product.find.prefetch({ page: 1, limit: 6, 'nguyen-lieu': [material] })),
+    api.Product.find.prefetch({ page: 1, limit: 6, loai: 'san-pham-giam-gia' })
+  ]);
+
+  return (
+    <HydrateClient>
+      {banners && (
+        <>
+          <BannerSection banner={banners} />
+          <Space h='xl' />
+        </>
+      )}
+
+      <Reveal z={50}>
+        <ReusablePromoBanner
+          title='🎉 Ưu đãi đặc biệt 🎉'
+          subtitle={
+            <>
+              🔊 Từ ngày <b className='text-4xl italic text-yellow-500'>{formatDateViVN(new Date())}</b> đến hết ngày{' '}
+              <b className='text-4xl italic text-yellow-500'>
+                {formatDateViVN(new Date().setDate(new Date().getDate() + 1))}
+              </b>{' '}
+              giảm giá <b className='text-4xl italic text-yellow-500'> 15%</b> tất cả món ăn có trong cửa hàng.
+            </>
+          }
+          buttonText='Đặt ngay'
+          buttonLink='/thuc-don'
+          layout='center'
+          backgroundImage='/images/jpg/banner_food1.jpg'
+          height={400}
+          overlayColor='rgba(0,0,0,0.4)'
+        />
+      </Reveal>
+      <Space h='xl' />
+      <Reveal z={50}>
+        <CategoryCarouselSection categories={categoryProps} />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ProductCarouselWithSidebarBannerSection
+          imageUrl='/images/jpg/best-saller.jpg'
+          categories={categoryProps}
+          loai='san-pham-ban-chay'
+        />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ThreeBannerSection />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <PromotionSection />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ProductCarouselWithSidebarBannerSection
+          imageUrl='/images/jpg/hot.jpg'
+          reverseGrid={true}
+          categories={categoryProps}
+          title='Sản phẩm nổi bật trong cửa hàng'
+          content='Ưu đãi độc quyền - Giảm giá cho hóa đơn trên 100.000 VNĐ'
+          loai='san-pham-hot'
+        />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <Suspense fallback={<AppSkeleton />}>
+          <ProductHotSection />
+        </Suspense>
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <Suspense fallback={<AppSkeleton />}>
+          <ProductNewSection />
+        </Suspense>
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ProductCarouselWithTopTitleSection
+          title='Thanh đạm'
+          categories={[
+            { name: 'Rau củ', tag: 'rau-cu' },
+            { name: 'Các loại nấm', tag: 'cac-loai-nam' }
+          ]}
+        />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <ProductCarouselWithTopTitleSection
+          categories={[
+            { name: 'Hải sản', tag: 'hai-san' },
+            { name: 'Thịt tươi', tag: 'thit-tuoi' }
+          ]}
+          title='Tươi ngon'
+          imgaePositon={'right'}
+        />
+        <Space h='xl' />
+      </Reveal>
+
+      <Reveal z={50}>
+        <Suspense fallback={<AppSkeleton />}>
+          <RecipeInstructionsSection />
+        </Suspense>
+        <Space h='xl' />
+      </Reveal>
+
+      <Suspense fallback={<AppSkeleton />}>
+        <Reveal z={50}>
+          <MultiCategoryListSection categories={categoryProps} />
+        </Reveal>
+      </Suspense>
+      <Reveal z={50}>
+        <Space h='xl' />
+        <CarouselListBase
+          title='Đối tác của chúng tôi'
+          data={Array.from({ length: 7 }, (_, i) => `/images/webp/img_brand_${i + 1}.webp`)}
+          configs={{
+            slideSize: { base: '70%', sm: '50%', md: '16.6666667%' },
+            h: 'max-content'
+          }}
+          minHeight={180}
+          CardElement={PartnerCard}
+        />
+      </Reveal>
+    </HydrateClient>
+  );
+};
+
+export default HomeWeb;

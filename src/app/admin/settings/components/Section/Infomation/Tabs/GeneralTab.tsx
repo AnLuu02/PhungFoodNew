@@ -3,7 +3,7 @@
 import { Box, Button, Group, Paper, Stack, Text, Textarea, TextInput, Title } from '@mantine/core';
 import { IconRestore, IconSpacingVertical } from '@tabler/icons-react';
 import { Controller, useFormContext } from 'react-hook-form';
-import ThumbnailUpsert from '~/components/ImageFormUpsert';
+import ThumbnailUpsert from '~/components/forms/image-form-upsert';
 export default function GeneralTab() {
   const {
     control,

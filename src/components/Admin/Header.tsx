@@ -3,9 +3,9 @@ import { Badge, Flex } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import ButtonControlModeTheme from '../Button/ButtonControlModeTheme';
-import { GlobalSearch } from '../Search/GlobalSearch';
-import UserSection from '../UserSection';
+import ButtonControlModeTheme from '~/components/buttons/theme-mode-button';
+import { GlobalSearch } from '~/components/search/global-search';
+import UserSection from '~/components/domain/user-section';
 
 export default function Header() {
   const { data: session } = useSession();

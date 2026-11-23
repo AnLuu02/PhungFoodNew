@@ -6,7 +6,7 @@ import { OrderStatus } from '@prisma/client';
 import { IconArrowsHorizontal, IconRotateClockwise } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
 import dayjs from '~/lib/config/dayjs';
 import { formatDateViVN, formatPriceLocaleVi, toNumber } from '~/lib/utils/format';
 import { getDatesObjBetween } from '~/lib/helpers/statistics';

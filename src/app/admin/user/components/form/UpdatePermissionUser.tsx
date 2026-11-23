@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useS
 import FilterSection from '~/app/admin/role/components/Section/FilterSection';
 import PermissionSection from '~/app/admin/role/components/Section/PermissionSection';
 import { FilterPermission, SelectedPermissions } from '~/app/admin/role/components/types';
-import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
 import { syncPermissions } from '~/lib/helpers/auth/sync-permissions';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';

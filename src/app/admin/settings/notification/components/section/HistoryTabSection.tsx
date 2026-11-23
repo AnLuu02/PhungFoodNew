@@ -18,7 +18,7 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCalendar, IconEdit, IconEye, IconSearch, IconTrash, IconUser, IconUsers } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import Empty from '~/components/Empty';
+import Empty from '~/components/common/empty';
 import { formatDateViVN } from '~/lib/utils/format';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { NotificationBase } from '~/shared/types/trpc/notification.types';

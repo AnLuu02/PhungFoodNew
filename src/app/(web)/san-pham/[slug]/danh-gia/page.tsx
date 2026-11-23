@@ -2,9 +2,9 @@
 
 import { Box, Divider, Grid, GridCol } from '@mantine/core';
 import { notFound } from 'next/navigation';
-import Comments from '~/components/Comments/Comments';
-import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
-import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
+import Comments from '~/components/comments/comments';
+import ProductCardCarouselVertical from '~/components/web/cards/card-product-carousel-vertical';
+import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { api } from '~/trpc/react';
 import RatingStatistics from '../components/client-component/RatingStatistics';

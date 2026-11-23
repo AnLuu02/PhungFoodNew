@@ -4,8 +4,8 @@ import { Box, Flex, Paper, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import Image from 'next/image';
 import { memo, useState } from 'react';
-import { ImageZoomModal } from '~/components/Modals/ModalZoomImage';
-import { ShareSocials } from '~/components/ShareSocial';
+import { ImageZoomModal } from '~/components/modals/modal-zoom-image';
+import { ShareSocials } from '~/components/common/share-social';
 import { breakpoints } from '~/shared/constants/common.constants';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 export default memo(function ProductImage({

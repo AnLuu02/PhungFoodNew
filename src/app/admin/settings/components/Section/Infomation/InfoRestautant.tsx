@@ -19,7 +19,7 @@ import { EntityType, ImageType } from '@prisma/client';
 import { IconHome, IconSpacingVertical } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
+import { useHashTabs } from '~/components/hooks/use-hash-tabs';
 import { handleUploadFromClient } from '~/lib/config/cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { StatusImage } from '~/shared/schema/image.info.schema';

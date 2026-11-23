@@ -16,12 +16,12 @@ import {
 import { IconArrowRight, IconGift } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
-import { CardFeaturedOffer } from '~/components/Web/Card/CardFeaturedOffer';
+import { PromotionTabLayout } from '~/components/domain/promotion-tabs-layout';
+import { CardFeaturedOffer } from '~/components/web/cards/card-featured-offer';
 import { benefitLevel } from '~/lib/data/promotion-level';
 import { api } from '~/trpc/server';
-import { SectionHeading } from '../../../components/SectionHeading';
-import { TextTyping } from '../../../components/TextTyping';
+import { SectionHeading } from '~/components/common/section-heading';
+import { TextTyping } from '~/components/common/text-typing';
 import FooterSection from './components/FooterSection';
 import InfoLevelUser from './components/InfoLevelUser';
 import PromotionsReviewBlock from './components/PromotionsReviewBlock';

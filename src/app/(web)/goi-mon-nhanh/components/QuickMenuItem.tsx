@@ -4,7 +4,7 @@ import { Badge, Box, Button, Flex, Group, Image, NumberInput, Paper, Text } from
 import { IconPlus, IconShoppingCartPlus } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
+import ButtonToggleLike from '~/components/buttons/toggle-like-button';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useCartStore } from '~/stores/cart.store';

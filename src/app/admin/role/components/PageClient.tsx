@@ -3,8 +3,8 @@ import { ActionIcon, Box, Card, Divider, Flex, Group, Paper, Select, SimpleGrid,
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
-import { SearchInput } from '~/components/Search/SearchInput';
+import { useHashTabs } from '~/components/hooks/use-hash-tabs';
+import { SearchInput } from '~/components/search/search-input';
 import { UserRole } from '~/shared/constants/user.constants';
 import { GetAllRole } from '~/shared/types/trpc/role-permission.types';
 import { api } from '~/trpc/react';

@@ -1,8 +1,8 @@
 import { Box, Group, SimpleGrid, Stack, Text } from '@mantine/core';
 import { IconChefHat, IconHeartHandshake, IconTruckDelivery } from '@tabler/icons-react';
 
-import Reveal from '~/components/Reveal';
-import { SectionHeading } from '~/components/SectionHeading';
+import Reveal from '~/components/common/reveal';
+import { SectionHeading } from '~/components/common/section-heading';
 
 const values = [
   {

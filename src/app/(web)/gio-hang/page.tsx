@@ -2,10 +2,10 @@
 
 import { Box, Divider, Grid, GridCol, Paper } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import Empty from '~/components/Empty';
-import { useCartCount } from '~/components/Hooks/use-cart';
-import { RecapCart } from '../../../components/RecapCart';
-import { RecapCartSkeleton } from '../../../components/RecapCartSkeleton';
+import Empty from '~/components/common/empty';
+import { useCartCount } from '~/components/hooks/use-cart';
+import { RecapCart } from '~/components/domain/recap-cart';
+import { RecapCartSkeleton } from '~/components/domain/recap-cart-skeleton';
 import { ShoppingCartMobile, ShoppingCartMobileSkeleton } from './components/CartMobile';
 import { CartTable } from './components/CartTable';
 import { CartTableSkeleton } from './components/CartTableSkeleton';

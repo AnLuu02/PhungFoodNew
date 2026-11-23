@@ -1,9 +1,9 @@
 'use client';
 import { Grid, GridCol } from '@mantine/core';
 import { useSession } from 'next-auth/react';
-import Empty from '~/components/Empty';
-import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
-import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
+import Empty from '~/components/common/empty';
+import ProductCardCarouselVertical from '~/components/web/cards/card-product-carousel-vertical';
+import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { api } from '~/trpc/react';
 
 export default function FavouritePageClient() {

@@ -1,0 +1,33 @@
+'use client';
+import { Box, Button } from '@mantine/core';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import InvoicePrintTemplate from '~/components/templates/invoice-print-template';
+import { api } from '~/trpc/react';
+
+export default function InvoiceToPrint({ orderId }: { orderId: string }) {
+  const { data, isLoading } = api.Order.getOne.useQuery({ key: orderId });
+  const order = data || [];
+  const printRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    contentRef: printRef
+  });
+
+  return (
+    <Box>
+      <Box style={{ display: 'none' }}>
+        <InvoicePrintTemplate printRef={printRef} data={order} />
+      </Box>
+
+      <Button
+        onClick={() => handlePrint()}
+        size='sm'
+        variant='subtle'
+        loading={isLoading}
+        className={`!border-gray-300 !font-bold text-black duration-200 hover:bg-mainColor/10 hover:text-black/90 dark:!border-dark-dimmed dark:text-dark-text`}
+      >
+        In hóa đơn
+      </Button>
+    </Box>
+  );
+}

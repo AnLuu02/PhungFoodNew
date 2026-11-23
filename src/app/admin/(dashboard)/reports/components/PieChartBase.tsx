@@ -1,6 +1,6 @@
 import { PieChart, PieChartCell } from '@mantine/charts';
 import { Card, Group, Paper, Stack, Text, Title } from '@mantine/core';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { EmptyChart } from './EmptyChart';
 const colors = ['blue.6', 'green.6', 'orange.6', 'red.6', 'gray.6'];

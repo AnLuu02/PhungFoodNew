@@ -1,0 +1,111 @@
+'use client';
+import { Carousel } from '@mantine/carousel';
+import { BackgroundImage, Box, Card, Flex, Skeleton, Text } from '@mantine/core';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { SubCategoryBasic } from '~/shared/types/trpc/sub-category.types';
+import { api } from '~/trpc/react';
+import { ActiveMenuPageText } from '~/components/breadcrumbs/active-menu-page-text';
+import { BreadcrumbsBase } from '~/components/breadcrumbs/breadcrumbs-base';
+export const BreadcrumbsComponent = () => {
+  const { data, isLoading } = api.SubCategory.getSubCategoriesWithRelationBasic.useQuery();
+  const subCategories = data ?? [];
+  const pathname = usePathname();
+  return pathname === '/' ? (
+    ''
+  ) : pathname !== '/thuc-don' ? (
+    <Flex
+      px={{ base: 10, sm: 30, md: 30, lg: 130 }}
+      align={'center'}
+      justify={'space-between'}
+      py={'md'}
+      className='bg-gray-100 text-black dark:bg-dark-card dark:text-dark-text'
+    >
+      <BreadcrumbsBase />
+    </Flex>
+  ) : (
+    <Flex align={'center'} justify={'space-between'}>
+      <BackgroundImage src='/images/jpg/breadcrumb_bg.jpg' h={400} w={'100%'} pos={'relative'} py={'md'}>
+        <Flex direction={'column'} align={'center'} justify={'center'} className='relative z-10 py-8'>
+          <ActiveMenuPageText />
+          <Box className='mb-8'>
+            <BreadcrumbsBase />
+          </Box>
+
+          <Carousel
+            slideSize={{ base: '33.333333%', sm: '25%', md: '20%', lg: '14%' }}
+            slideGap={{ base: 8, sm: 16 }}
+            align='start'
+            w={{ base: '72%', sm: '85%', lg: '70%' }}
+            slidesToScroll={1}
+            controlsOffset='xs'
+            containScroll='trimSnaps'
+            withControls
+            previousControlIcon={<IconChevronLeft size={30} />}
+            nextControlIcon={<IconChevronRight size={30} />}
+            className='w-full'
+            styles={{
+              controls: {
+                left: -50,
+                right: -50,
+                top: 50,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                pointerEvents: 'none'
+              },
+              control: {
+                pointerEvents: 'all'
+              },
+              root: { overflow: 'visible' },
+              viewport: { overflow: 'hidden' }
+            }}
+            classNames={{
+              control: 'h-[40px] w-[40px] rounded-full bg-mainColor text-white'
+            }}
+          >
+            {isLoading || subCategories?.length === 0
+              ? [1, 2, 3, 4, 5, 6].map(item => (
+                  <Carousel.Slide key={item}>
+                    <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>
+                      <Card.Section>
+                        <Skeleton circle height={130} width={130} />
+                      </Card.Section>
+                      <Skeleton height={8} mt={20} width='70%' />
+                    </Card>
+                  </Carousel.Slide>
+                ))
+              : subCategories.map((item: SubCategoryBasic, index: number) => (
+                  <Carousel.Slide
+                    key={item.id}
+                    className='animate-fadeUp'
+                    style={{ animationDuration: `${index * 0.05 + 0.5}s` }}
+                  >
+                    <Link href={`/thuc-don?danh-muc=${item.category?.tag}&loai-san-pham=${item.tag}`}>
+                      <Card className='flex flex-col items-center justify-center bg-transparent text-white duration-100 ease-in-out hover:text-mainColor'>
+                        <Card.Section>
+                          <Image
+                            loading='lazy'
+                            style={{ objectFit: 'cover' }}
+                            src={item?.image?.url || '/images/jpg/empty-300x240.jpg'}
+                            height={130}
+                            width={130}
+                            alt={item?.image?.altText || 'Ảnh minh họa ' + item.name}
+                            className='rounded-full'
+                          />
+                        </Card.Section>
+                        <Text size='md' fw={700} mt={20} className='text-center'>
+                          {item.name}
+                        </Text>
+                      </Card>
+                    </Link>
+                  </Carousel.Slide>
+                ))}
+          </Carousel>
+        </Flex>
+      </BackgroundImage>
+    </Flex>
+  );
+};

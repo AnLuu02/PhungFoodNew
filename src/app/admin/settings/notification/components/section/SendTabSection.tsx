@@ -3,7 +3,7 @@
 import { Badge, Box, Button, Card, Group, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import { IconUser, IconUsers } from '@tabler/icons-react';
 import { Dispatch, SetStateAction } from 'react';
-import Empty from '~/components/Empty';
+import Empty from '~/components/common/empty';
 import { GetAllNotification } from '~/shared/types/trpc/notification.types';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';

@@ -1,5 +1,5 @@
-import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
-import { CarouselListBase } from '~/components/Web/Home/components/CarouselListBase';
+import ProductCardCarouselVertical from '~/components/web/cards/card-product-carousel-vertical';
+import { CarouselListBase } from '~/components/web/home/components/carousel-list-base';
 import { api } from '~/trpc/server';
 
 export default async function RelatedProducts({ productId, subCateTag }: { productId?: string; subCateTag?: string }) {

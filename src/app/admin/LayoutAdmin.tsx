@@ -3,10 +3,10 @@
 import { AppShell, Box, Burger } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useSession } from 'next-auth/react';
-import Header from '~/components/Admin/Header';
-import Navbar from '~/components/Admin/Navbar';
-import { BreadcrumbsBase } from '~/components/Breadcrumbs/BreadcrumbsBase';
-import GlobalLoading from '~/components/Loading/LoadingGlobal';
+import Header from '~/components/admin/header';
+import Navbar from '~/components/admin/navbar';
+import { BreadcrumbsBase } from '~/components/breadcrumbs/breadcrumbs-base';
+import GlobalLoading from '~/components/loading/loading-global';
 
 export default function LayoutAdmin({ children }: { children: React.ReactNode }) {
   const [opened, { toggle }] = useDisclosure();

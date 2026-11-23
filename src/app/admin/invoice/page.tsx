@@ -1,7 +1,7 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
-import PageSizeSelector from '~/components/Perpage';
-import { SearchInput } from '~/components/Search/SearchInput';
+import PageSizeSelector from '~/components/common/per-page';
+import { SearchInput } from '~/components/search/search-input';
 import { api, HydrateClient } from '~/trpc/server';
 import { CreateInvoiceButton } from './components/Button';
 import TableInvoice from './components/Table/TableInvoice';

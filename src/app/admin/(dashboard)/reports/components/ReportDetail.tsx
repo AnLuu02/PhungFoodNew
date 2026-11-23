@@ -11,7 +11,7 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import TimelineRecentActivity from '~/components/TimelineRecentActivity';
+import TimelineRecentActivity from '~/components/domain/timeline-recent-activity';
 import { toNumber } from '~/lib/utils/format';
 
 const navReportDetails = [

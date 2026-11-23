@@ -1,8 +1,8 @@
 'use client';
 
 import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
-import CustomPagination from '~/components/Pagination';
-import PageSizeSelector from '~/components/Perpage';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
 import { formatDateViVN } from '~/lib/utils/format';
 import { DeleteReviewButton, UpdateReviewButton } from '../Button';
 
@@ -10,8 +10,8 @@ import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@manti
 import { IconStar } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import { SearchInput } from '~/components/Search/SearchInput';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import { SearchInput } from '~/components/search/search-input';
 import { FindReview } from '~/shared/types/trpc/review.types';
 import { api } from '~/trpc/react';
 

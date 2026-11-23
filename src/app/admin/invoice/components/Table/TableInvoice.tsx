@@ -17,10 +17,10 @@ import { IconBrandCashapp, IconDumpling, IconMeat, IconMoneybag, IconMushroomFil
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { SendOrderButton } from '~/app/admin/order/components/Button';
-import InvoiceToPrint from '~/components/InvoceToPrint';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import CustomPagination from '~/components/Pagination';
-import PageSizeSelector from '~/components/Perpage';
+import InvoiceToPrint from '~/components/domain/invoice-to-print';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
 import { renderShortId } from '~/lib/utils/render-short-id';
 import { FindInvoice, GetAllInvoice } from '~/shared/types/trpc/invoice.types';

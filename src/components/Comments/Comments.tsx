@@ -1,8 +1,8 @@
 import { Box, Divider, ScrollAreaAutosize, Stack } from '@mantine/core';
 import { Suspense } from 'react';
-import { CommentsForm } from './CommentsForm';
-import { CommentsList } from './CommentsList';
-import { CommentsSkeleton } from './CommentsSkeleton';
+import { CommentsForm } from '~/components/comments/comments-form';
+import { CommentsList } from '~/components/comments/comments-list';
+import { CommentsSkeleton } from '~/components/comments/comments-skeleton';
 
 function Comments({ productId, max_height_scroll }: { productId: string; max_height_scroll?: number }) {
   return (

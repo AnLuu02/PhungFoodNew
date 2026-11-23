@@ -4,8 +4,8 @@ import { Button, Grid, GridCol, Paper, Select, Stack, Switch, Text, Textarea, Te
 import { EntityType, ImageType } from '@prisma/client';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import ThumbnailUpsert from '~/components/ImageFormUpsert';
-import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
+import ThumbnailUpsert from '~/components/forms/image-form-upsert';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
 import { handleUploadFromClient, UploadedImage } from '~/lib/config/cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { StatusImage } from '~/shared/schema/image.info.schema';

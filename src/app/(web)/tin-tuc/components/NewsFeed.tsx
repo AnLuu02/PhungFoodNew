@@ -2,7 +2,7 @@
 import { Box, Flex, Highlight, Image, Paper, Skeleton, Stack, Text } from '@mantine/core';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { SearchInput } from '~/components/Search/SearchInput';
+import { SearchInput } from '~/components/search/search-input';
 import { FetchNews } from '~/shared/types/trpc/news.types';
 import { api } from '~/trpc/react';
 

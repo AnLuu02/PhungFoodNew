@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { Session } from 'next-auth';
 import Link from 'next/link';
-import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
+import { PromotionTabLayout } from '~/components/domain/promotion-tabs-layout';
 
 export function Promotions({ session }: { session: Session | null }) {
   return (

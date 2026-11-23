@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { SearchInput } from '~/components/Search/SearchInput';
+import { SearchInput } from '~/components/search/search-input';
 import { api, HydrateClient } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserAdvanced } from './components/Button';
 import TableOrder from './components/Table/TableOrder';

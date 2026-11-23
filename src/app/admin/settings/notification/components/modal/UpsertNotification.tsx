@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import LoadingSpiner from '~/components/Loading/LoadingSpiner';
+import LoadingSpiner from '~/components/loading/loading-spinner';
 import { generateNotifyHtml } from '~/lib/integrations/mail/generate-notify-html';
 import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { Notification, notificationSchema } from '~/shared/schema/notification.schema';

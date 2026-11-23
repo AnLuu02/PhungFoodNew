@@ -1,9 +1,9 @@
 'use client';
 import { Box, Grid, Spoiler, Stack, Tabs, Title } from '@mantine/core';
 import { Suspense, useState } from 'react';
-import Comments from '~/components/Comments/Comments';
-import { AppSkeleton } from '~/components/Loading/AppSkeleton';
-import { TiptapViewer } from '~/components/Tiptap/TiptapViewer';
+import Comments from '~/components/comments/comments';
+import { AppSkeleton } from '~/components/loading/app-skeleton';
+import { TiptapViewer } from '~/components/tiptap/tiptap-viewer';
 import GuideOrder from '../GuideOrder';
 import RatingStatistics from './RatingStatistics';
 

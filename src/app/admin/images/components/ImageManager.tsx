@@ -20,9 +20,9 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { ImageType } from '@prisma/client';
 import { useCallback, useState } from 'react';
-import { ConnectedModalPayload } from '~/components/Modals/ModalImageLibrary';
-import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import PaginationLocal from '~/components/PaginationLocal';
+import { ConnectedModalPayload } from '~/components/modals/modal-image-library';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
+import PaginationLocal from '~/components/common/pagination-local';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 import { ConnectedState, ConnectedStateWithEntity, ImageFilterOptions } from '../../../../shared/types/image.types';

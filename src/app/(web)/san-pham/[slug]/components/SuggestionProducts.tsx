@@ -1,7 +1,7 @@
 import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';
-import Empty from '~/components/Empty';
+import Empty from '~/components/common/empty';
 import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { api } from '~/trpc/server';

@@ -3,9 +3,9 @@
 import { Badge, Box, Group, Table, Text } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import CustomPagination from '~/components/Pagination';
-import PageSizeSelector from '~/components/Perpage';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
 import { formatDateViVN } from '~/lib/utils/format';
 import { FindPayment } from '~/shared/types/trpc/payment.types';
 import { api } from '~/trpc/react';

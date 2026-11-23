@@ -6,7 +6,7 @@ import { EntityType, ImageType } from '@prisma/client';
 import { useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-import ThumbnailUpsert from '~/components/ImageFormUpsert';
+import ThumbnailUpsert from '~/components/forms/image-form-upsert';
 import { handleUploadFromClient } from '~/lib/config/cloudinary/client';
 import { NotifyError } from '~/lib/helpers/ui/toast';
 import { ImageClientInput } from '~/shared/schema/image.schema';

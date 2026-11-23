@@ -31,7 +31,7 @@ import {
   IconUserPlus
 } from '@tabler/icons-react';
 import Link from 'next/link';
-import TimelineRecentActivity from '~/components/TimelineRecentActivity';
+import TimelineRecentActivity from '~/components/domain/timeline-recent-activity';
 import { formatMoneyShort } from '~/lib/utils/format';
 import { buildChangeRateData } from '~/lib/helpers/statistics';
 import { Period } from '~/shared/types';
