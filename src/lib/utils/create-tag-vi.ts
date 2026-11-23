@@ -46,7 +46,7 @@ export const ManageTagVi = async (action: 'upsert' | 'delete' = 'upsert', data: 
 };
 
 export const SyncFieldFromDb = async (entity: string, fields: string[]) => {
-  const filePath = path.join(process.cwd(), 'src', 'constants', 'fields-db.json');
+  const filePath = path.join(process.cwd(), 'src', 'shared', 'constants', 'fields-db.json');
 
   try {
     let currentFields: Record<string, string[]> = {};
