@@ -4,7 +4,7 @@ import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-r
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { CategoryBasic } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryBasic } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
 import { CreateCategoryButton, CreateSubCategoryButton } from './Button';
 import TableCategory from './Table/TableCategory';

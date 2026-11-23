@@ -2,7 +2,7 @@ import { Box, Center, Group, Paper, ScrollAreaAutosize, Stack, Text, Tooltip } f
 import Image from 'next/image';
 import Link from 'next/link';
 import Empty from '~/components/Empty';
-import { TOP_POSITION_STICKY } from '~/constants';
+import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { api } from '~/trpc/server';
 export default async function SuggestionProducts({

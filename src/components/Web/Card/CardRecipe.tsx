@@ -4,7 +4,7 @@ import { Badge, Box, Card, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { IconChefHat, IconClock, IconPlayerPlay, IconUsers } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Recipe } from '~/types/recipe';
+import { Recipe } from '~/shared/types/recipe.types';
 const difficultyColors = {
   Dễ: 'bg-green-100 text-green-800',
   'Trung bình': 'bg-yellow-100 text-yellow-800',

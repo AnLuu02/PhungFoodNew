@@ -9,9 +9,9 @@ import { memo } from 'react';
 import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import { useFavorite } from '~/components/Hooks/use-favorite';
-import { breakpoints } from '~/constants';
+import { breakpoints } from '~/shared/constants/common.constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useModalStore } from '~/stores/modal.store';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';
 const ProductCardCarouselVertical = ({ data }: { data: ProductBase }) => {

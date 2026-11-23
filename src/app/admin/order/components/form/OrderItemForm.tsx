@@ -6,7 +6,7 @@ import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { OrderItemInput } from '~/shared/schema/order.schema';
-import { getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
+import { getProductsOnly } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';
 
 const OrderItemForm = ({ index }: { index: number }) => {

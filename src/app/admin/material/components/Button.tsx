@@ -17,7 +17,7 @@ import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
+import { GetAllMaterial } from '~/shared/types/trpc/material.types';
 import { api } from '~/trpc/react';
 import MaterialUpsert from './form/MaterialUpsert';
 const mapFields: Record<string, string> = {

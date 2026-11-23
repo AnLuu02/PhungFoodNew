@@ -24,7 +24,7 @@ import { handleUploadFromClient } from '~/lib/Cloudinary/client';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { RestaurantInput, restaurantInputSchema } from '~/shared/schema/restaurant.schema';
-import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/types/trpc/restaurant.types';
 import { api } from '~/trpc/react';
 import RestaurantInformationSkeleton from '../Skeleton/RestaurantInformationSkeleton';
 import ContactTab from './Tabs/ContactTab';

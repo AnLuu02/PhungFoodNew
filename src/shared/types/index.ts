@@ -1,69 +1,9 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import { IconProps } from '@tabler/icons-react';
-import { ForwardRefExoticComponent, RefAttributes } from 'react';
-
-export type MoneyValue = number | string | Prisma.Decimal | null | undefined;
-
-export type AggregateFn = 'COUNT' | 'SUM' | 'AVG';
-
-export type Period = '_today' | '7_day' | '15_day' | '1_month' | '3_month' | '6_month' | '1_year' | '_all' | '_custom';
-export type RawQuery = {
-  date: Date;
-  total: number;
-};
-
-type PageProps = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export type CompareOptions = {
-  period: Period;
-  db: PrismaClient;
-  model: Prisma.ModelName;
-  field?: string;
-  aggregateFn?: AggregateFn;
-  startDate?: Date;
-  endDate?: Date;
-};
-
-export type CompareReturn = {
-  current: {
-    value: number;
-    startDate: Date;
-    endDate: Date;
-    currentData: RawQuery[];
-    sparkline: number[];
-  };
-  previous: {
-    value: number;
-    startDate: Date;
-    endDate: Date;
-    previousData: RawQuery[];
-    sparkline: number[];
-  };
-  changeRate: number;
-};
-
-export type ChangeRateObj = {
-  value: number;
-  isIncrease: boolean;
-  color: 'green' | 'red' | 'gray';
-  label: string;
-  message: string;
-};
-export type FormatDateViVNOptions = {
-  hour?: boolean;
-  format?: string;
-  fallback?: string;
-  defaultTimeZone?: boolean;
-  timezone?: string;
-};
-
-export type RecentControlType = {
-  label: string;
-  des: string;
-  icon: ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
-  color: string;
-  href: string;
-};
+export type * from './analysis.types';
+export type * from './common.types';
+export type * from './image.types';
+export type * from './modal.types';
+export type * from './recipe.types';
+export type * from './response.types';
+export type * from './store.types';
+export type * from './theme.types';
+export type * from './trpc';

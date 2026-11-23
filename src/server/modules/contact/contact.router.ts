@@ -1,0 +1,34 @@
+import { z } from 'zod';
+import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import {
+  deleteContactService,
+  findContactService,
+  getAllContactService,
+  upsertContactService
+} from './contact.service';
+import { baseContactSchema } from '~/shared/schema/contact.schema';
+export const contactRouter = createTRPCRouter({
+  find: publicProcedure
+    .input(
+      z.object({
+        page: z.number().default(1),
+        limit: z.number().default(5),
+        s: z.string().optional()
+      })
+    )
+    .query(async ({ ctx, input }) => await findContactService(ctx.db, input)),
+
+  delete: publicProcedure
+    .use(activityLogger)
+    .input(
+      z.object({
+        id: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }) => await deleteContactService(ctx.db, input)),
+  getAll: publicProcedure.query(async ({ ctx }) => await getAllContactService(ctx.db)),
+  upsert: publicProcedure
+    .use(activityLogger)
+    .input(baseContactSchema)
+    .mutation(async ({ ctx, input }) => await upsertContactService(ctx.db, input))
+});

@@ -4,7 +4,7 @@ import Empty from '~/components/Empty';
 import CustomPagination from '~/components/Pagination';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
-import { FindProduct } from '~/shared/type-trpc/product.type-trpc';
+import { FindProduct } from '~/shared/types/trpc/product.types';
 
 export const MenuList = ({
   responseData,

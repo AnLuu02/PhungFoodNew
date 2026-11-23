@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { pusherClient } from '~/lib/PusherConfig/client';
-import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
+import { NotificationBase } from '~/shared/types/trpc/notification.types';
 
 interface UseRealtimeNotificationProps {
   userId?: string;

@@ -10,7 +10,7 @@ import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { STATUS_FILTER_VOUCHER } from '~/shared/constants/voucher.constants';
-import { FindVoucher, GetAllVoucher } from '~/shared/type-trpc/voucher.type-trpc';
+import { FindVoucher, GetAllVoucher } from '~/shared/types/trpc/voucher.types';
 import { api } from '~/trpc/react';
 import CardVoucher from './CardVoucher';
 import { UpdateVoucherModal } from './Modal/UpdateVoucherModal';

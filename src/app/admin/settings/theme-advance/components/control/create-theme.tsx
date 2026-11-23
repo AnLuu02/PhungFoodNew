@@ -4,7 +4,7 @@ import { Box, Button, Modal, Select, Text, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { ThemeConfig, ThemeTemplate } from '~/types/theme';
+import { ThemeConfig, ThemeTemplate } from '~/shared/types/theme.types';
 
 export const CreateTheme = ({
   theme,

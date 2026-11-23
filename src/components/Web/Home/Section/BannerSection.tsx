@@ -8,7 +8,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useRef } from 'react';
-import { GetOneBanner } from '~/shared/type-trpc/restaurant.type-trpc';
+import { GetOneBanner } from '~/shared/types/trpc/restaurant.types';
 
 export const BannerSection = ({ banner }: { banner: NonNullable<GetOneBanner> }) => {
   const autoplay = useRef(Autoplay({ delay: 5000 }));

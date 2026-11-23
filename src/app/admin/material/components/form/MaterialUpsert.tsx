@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { categoryMaterials } from '~/constants';
+import { categoryMaterials } from '~/shared/constants/common.constants';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { baseMaterialSchema, MaterialInput } from '~/shared/schema/material.schema';
 import { api } from '~/trpc/react';

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import Empty from '~/components/Empty';
-import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
+import { SubCategoryBasic } from '~/shared/types/trpc/sub-category.types';
 import { api } from '~/trpc/react';
 import DynamicCartButton from '../components/client-component/DynamicCartButton';
 import NavigationHeader from '../components/client-component/NavigationHeader';

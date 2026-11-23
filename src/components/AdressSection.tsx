@@ -3,7 +3,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Controller, useWatch } from 'react-hook-form';
 import { useDistricts, useProvinces, useWards } from '~/components/Hooks/use-fetch';
-import { District, Province, Ward } from '~/types/ResponseFetcher';
+import { District, Province, Ward } from '~/shared/types/response.types';
 
 export default function AddressSection({
   control,

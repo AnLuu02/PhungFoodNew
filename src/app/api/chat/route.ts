@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { callOpenRouter, cleanJSON, parseProductFilter } from '~/lib/FuncHandler/Chat';
 import { db } from '~/server/db';
-import { findProductService } from '~/server/services/product.service';
+import { findProductService } from '~/server/modules/product/product.service';
 import { api } from '~/trpc/server';
 
 export const runtime = 'nodejs';

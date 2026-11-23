@@ -18,7 +18,7 @@ import { IconChevronRightFilled, IconShoppingCart } from '@tabler/icons-react';
 import Link from 'next/link';
 import { Fragment, useCallback, useState } from 'react';
 import { _LOAI } from '~/shared/schema/product.filter.schema';
-import { CategoryProps } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryProps } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
 import TabsPanelCarousel from '../components/CarouselSection';
 

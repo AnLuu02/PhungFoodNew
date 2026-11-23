@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { allowedVoucher, calculateMoney, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
-import { ModalProps, VoucherModalDataProps } from '~/types/modal';
+import { ModalProps, VoucherModalDataProps } from '~/shared/types/modal.types';
 
 export default function ModalVoucherDetail({ type, data, opened, onClose }: ModalProps<VoucherModalDataProps>) {
   const voucher = data?.voucher;

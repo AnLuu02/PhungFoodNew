@@ -3,7 +3,7 @@ import { Checkbox, CheckIcon, Flex, Group, ScrollAreaAutosize, Stack, Text } fro
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
-import { GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
+import { GetAllMaterial } from '~/shared/types/trpc/material.types';
 import { api } from '~/trpc/react';
 
 export const MaterialFilter = () => {

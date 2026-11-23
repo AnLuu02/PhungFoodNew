@@ -19,7 +19,7 @@ import {
 import { NotificationType } from '@prisma/client';
 import { IconArrowUpRight, IconCheck, IconMail, IconSend, IconTag, IconUsers } from '@tabler/icons-react';
 import { useState } from 'react';
-import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
+import { NotificationBase } from '~/shared/types/trpc/notification.types';
 import {
   notificationPriorityInfo,
   notificationStatusInfo,

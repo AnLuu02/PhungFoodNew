@@ -5,7 +5,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { EntityType, ImageType } from '@prisma/client';
 import { IconPictureInPicture } from '@tabler/icons-react';
 import ImageManager from '~/app/admin/images/components/ImageManager';
-import { ModalProps } from '~/types/modal';
+import { ModalProps } from '~/shared/types/modal.types';
 export interface ConnectedModalPayload {
   entityId?: string;
   entityType: EntityType;

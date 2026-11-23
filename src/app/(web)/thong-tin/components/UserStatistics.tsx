@@ -11,7 +11,7 @@ import dayjs from '~/lib/dayjs';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getDatesObjBetween } from '~/lib/FuncHandler/Statistics';
 import { DATA_SELECT_PERIOD } from '~/shared/constants/filter.constants';
-import { GetOverviewUser } from '~/shared/type-trpc/user.type-trpc';
+import { GetOverviewUser } from '~/shared/types/trpc/user.types';
 import { Period } from '~/shared/types';
 import { api } from '~/trpc/react';
 

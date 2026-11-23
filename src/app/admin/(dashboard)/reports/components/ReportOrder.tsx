@@ -5,7 +5,7 @@ import { Card, Grid, GridCol, Paper, Title } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { formatPriceLocaleVi, toNumber } from '~/lib/FuncHandler/Format';
-import { GetInitReport } from '~/shared/type-trpc/page.type-trpc';
+import { GetInitReport } from '~/shared/types/trpc/page.types';
 
 const orderStatusData = [
   { name: 'Hoàn thành', value: 850, color: 'green.6' },

@@ -1,7 +1,7 @@
 import { Badge, Group, Paper, Rating, Spoiler, Stack, Text, Title } from '@mantine/core';
 import Image from 'next/image';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { ProductBase } from '~/shared/types/trpc/product.types';
 
 export default function ProductDetails({ product }: { product: ProductBase }) {
   return (

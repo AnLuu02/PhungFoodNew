@@ -1,7 +1,7 @@
 import { Box, Flex, Group, Text } from '@mantine/core';
 import NotificationDialog from '~/components/NotificationDialog';
 import UserSection from '~/components/UserSection';
-import { RestaurantBase } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantBase } from '~/shared/types/trpc/restaurant.types';
 import ButtonControlModeTheme from '../../../Button/ButtonControlModeTheme';
 import { TimeOpeningRestaurant } from '../components/client-component/TimeOpeningRestaurant';
 import { ToggleLanguage } from '../components/client-component/ToggleLanguage';

@@ -22,7 +22,7 @@ import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import Reveal from '~/components/Reveal';
-import { CategoryProps } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryProps } from '~/shared/types/trpc/category.types';
 
 export const CategoryCarouselSection = ({ categories }: { categories: CategoryProps }) => {
   const [active, setActive] = useState<string>(categories.init.tag);

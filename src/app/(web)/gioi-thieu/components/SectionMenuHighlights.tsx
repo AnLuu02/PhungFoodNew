@@ -3,7 +3,7 @@ import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
 import { CardFeaturedOffer } from '~/components/Web/Card/CardFeaturedOffer';
-import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
+import { GetInitAboutUs } from '~/shared/types/trpc/page.types';
 import { SectionHeading } from '../../../../components/SectionHeading';
 const menuHighlights = [
   {

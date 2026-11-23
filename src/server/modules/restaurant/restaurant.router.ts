@@ -1,0 +1,106 @@
+import { Prisma } from '@prisma/client';
+import { z } from 'zod';
+import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import {
+  deleteBannerService,
+  getAllBannerService,
+  getOneBannerService,
+  setDefaultBannerService,
+  upsertBannerService
+} from './restaurant.banner.service';
+import { updateOpeningHoursService } from './restaurant.openingHours.service';
+import {
+  getBaseActiveAdminService,
+  getBaseRestaurantActiveClientService,
+  getRestaurantOnlyService,
+  upsertRestaurantService
+} from './restaurant.service';
+import { deleteSocialService, upsertSocialService } from './restaurant.socials.service';
+import { changeThemeService, getThemeService } from './restaurant.theme.service';
+import { bannerReqSchemaCloudinary } from '~/shared/schema/restaurant.banner.schema';
+import { baseOpeningHourSchema } from '~/shared/schema/restaurant.openingHours.schema';
+import { restaurantInputSchema } from '~/shared/schema/restaurant.schema';
+import { socialSchemaWithRestaurantId } from '~/shared/schema/restaurant.socials.schema';
+import { baseThemeSchema } from '~/shared/schema/restaurant.theme.schema';
+
+export const restaurantRouter = createTRPCRouter({
+  getBaseActiveAdmin: publicProcedure.query(async ({ ctx }) => await getBaseActiveAdminService(ctx.db)),
+  getBaseActiveClient: publicProcedure.query(async ({ ctx }) => await getBaseRestaurantActiveClientService(ctx.db)),
+  getRestaurantOnly: publicProcedure.query(async ({ ctx }) => await getRestaurantOnlyService(ctx.db)),
+  upsert: publicProcedure
+    .use(requirePermission(undefined, { requiredAdmin: true }))
+    .use(activityLogger)
+    .input(restaurantInputSchema)
+    .mutation(async ({ ctx, input }) => await upsertRestaurantService(ctx.db, input)),
+  changeTheme: publicProcedure
+    .input(
+      baseThemeSchema.extend({
+        restaurantId: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }) => await changeThemeService(ctx.db, input)),
+  getTheme: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.ThemeInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx }) => await getThemeService(ctx.db)),
+  getAllBanner: publicProcedure
+    .input(
+      z
+        .object({
+          include: z.custom<Prisma.BannerInclude>().optional()
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => await getAllBannerService(ctx.db, input)),
+
+  upsertBanner: publicProcedure
+    .use(activityLogger)
+    .input(bannerReqSchemaCloudinary)
+    .mutation(async ({ ctx, input }) => await upsertBannerService(ctx.db, input)),
+  getOneBanner: publicProcedure.query(async ({ ctx, input }) => await getOneBannerService(ctx.db, ctx.session)),
+
+  setDefaultBanner: publicProcedure
+    .use(activityLogger)
+    .input(
+      z.object({
+        id: z.string(),
+        include: z.custom<Prisma.BannerInclude>().optional()
+      })
+    )
+    .mutation(async ({ ctx, input }) => await setDefaultBannerService(ctx.db, input)),
+  deleteBanner: publicProcedure
+    .use(activityLogger)
+    .input(
+      z.object({
+        id: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }) => await deleteBannerService(ctx.db, input)),
+
+  upsertSocial: publicProcedure
+    .use(activityLogger)
+    .input(socialSchemaWithRestaurantId)
+    .mutation(async ({ ctx, input }) => await upsertSocialService(ctx.db, input)),
+  deleteSocial: publicProcedure
+    .use(activityLogger)
+    .input(
+      z.object({
+        id: z.string(),
+        platform: z.string()
+      })
+    )
+    .mutation(async ({ ctx, input }) => await deleteSocialService(ctx.db, input)),
+  updateOpeningHours: publicProcedure
+    .use(activityLogger)
+    .input(
+      z.object({
+        data: z.array(baseOpeningHourSchema)
+      })
+    )
+    .mutation(async ({ ctx, input }) => await updateOpeningHoursService(ctx.db, input))
+});

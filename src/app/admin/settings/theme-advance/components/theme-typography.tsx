@@ -2,7 +2,7 @@
 
 import { Box, ColorInput, Paper, Select, Slider, Text, Title } from '@mantine/core';
 import { IconTypography } from '@tabler/icons-react';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ThemeTypography = ({
   theme,

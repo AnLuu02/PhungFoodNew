@@ -2,7 +2,7 @@
 
 import { Box, Divider, Paper, Select, Slider, Switch, Text, Title } from '@mantine/core';
 import { IconSettings } from '@tabler/icons-react';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ThemeAdvance = ({ theme, setTheme }: { theme: ThemeConfig; setTheme: (theme: ThemeConfig) => void }) => {
   const shadowOptions = [

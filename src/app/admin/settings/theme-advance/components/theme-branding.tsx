@@ -2,7 +2,7 @@
 
 import { Box, Paper, Select, Text, TextInput, Title } from '@mantine/core';
 import { IconBrush } from '@tabler/icons-react';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ThemeBranding = ({ theme, setTheme }: { theme: ThemeConfig; setTheme: (theme: ThemeConfig) => void }) => {
   const navigationStyleOptions = [

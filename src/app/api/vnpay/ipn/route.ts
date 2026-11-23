@@ -3,7 +3,7 @@ import { moneyToNumber } from '~/lib/FuncHandler/Format';
 import { VNPAY_CONFIG, assertVnpayConfig } from '~/lib/vnpay/config';
 import { extractVnpayParamsFromUrl, verifyVnpaySignature } from '~/lib/vnpay/utils';
 import { db } from '~/server/db';
-import { confirmVoucherUsageService, releaseVoucherUsageService } from '~/server/services/voucherUsage.service';
+import { confirmVoucherUsageService, releaseVoucherUsageService } from '~/server/modules/voucher-usage/voucher-usage.service';
 
 export const dynamic = 'force-dynamic';
 

@@ -4,7 +4,7 @@ import { ZodError } from 'zod';
 
 import { getServerAuthSession } from '../auth';
 import { db } from '../db';
-import { logActivity } from '../services/activityLogger.service';
+import { logActivity } from '~/server/modules/activity/activity.service';
 
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();

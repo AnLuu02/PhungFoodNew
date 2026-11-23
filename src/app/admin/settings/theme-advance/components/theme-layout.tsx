@@ -2,7 +2,7 @@
 
 import { Box, Button, Divider, Paper, Slider, Text, Title } from '@mantine/core';
 import { IconLayout } from '@tabler/icons-react';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ThemeLayout = ({ theme, setTheme }: { theme: ThemeConfig; setTheme: (theme: ThemeConfig) => void }) => {
   const layoutOptions = [

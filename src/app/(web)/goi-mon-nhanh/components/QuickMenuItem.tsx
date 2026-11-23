@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useCartStore } from '~/stores/cart.store';
 
 export const QuickMenuItem = ({ product, index }: { product: ProductBase; index: number }) => {

@@ -32,7 +32,7 @@ import SearchLocal from '~/components/Search/SearchLocal';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo, getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
-import { GetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { GetFilterOrder } from '~/shared/types/trpc/order.types';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 type DisplayOrder = GetFilterOrder[number] & {

@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import { GetFilterFavouriteFood } from '~/shared/type-trpc/favouriteFood.type-trpc';
+import { GetFilterFavouriteFood } from '~/shared/types/trpc/favourite-food.types';
 import { useFavoriteStore } from '~/stores/favorite.store';
 import { api } from '~/trpc/react';
 

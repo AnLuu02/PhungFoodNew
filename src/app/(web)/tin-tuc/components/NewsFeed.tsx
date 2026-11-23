@@ -3,7 +3,7 @@ import { Box, Flex, Highlight, Image, Paper, Skeleton, Stack, Text } from '@mant
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { FetchNews } from '~/shared/type-trpc/news.type-trpc';
+import { FetchNews } from '~/shared/types/trpc/news.types';
 import { api } from '~/trpc/react';
 
 export const NewsFeed = () => {

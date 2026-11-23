@@ -6,7 +6,7 @@ import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { FindCategory } from '~/shared/type-trpc/category.type-trpc';
+import { FindCategory } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
 import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';
 

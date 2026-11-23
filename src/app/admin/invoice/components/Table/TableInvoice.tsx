@@ -23,7 +23,7 @@ import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { renderShortId } from '~/lib/FuncHandler/renderShortId';
-import { FindInvoice, GetAllInvoice } from '~/shared/type-trpc/invoice.type-trpc';
+import { FindInvoice, GetAllInvoice } from '~/shared/types/trpc/invoice.types';
 import { api } from '~/trpc/react';
 import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '../Button';
 

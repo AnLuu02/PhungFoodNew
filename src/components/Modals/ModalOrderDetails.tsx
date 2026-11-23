@@ -24,7 +24,7 @@ import { OrderStatus, VoucherType } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { ModalProps } from '~/types/modal';
+import { ModalProps } from '~/shared/types/modal.types';
 import InvoiceToPrint from '../InvoceToPrint';
 
 function ModalOrderDetails({ type, data, opened, onClose }: ModalProps<any>) {

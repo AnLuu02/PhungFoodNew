@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Paper, Text, Textarea, Title } from '@mantine/core';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ThemeCustom = ({ theme, setTheme }: { theme: ThemeConfig; setTheme: (theme: ThemeConfig) => void }) => {
   return (

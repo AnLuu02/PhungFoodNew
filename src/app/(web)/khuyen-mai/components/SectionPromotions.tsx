@@ -2,7 +2,7 @@
 import { Paper, Stack } from '@mantine/core';
 import { SectionHeading } from '~/components/SectionHeading';
 import { PromotionSection } from '~/components/Web/Home/Section/PromotionSection';
-import { FindProduct } from '~/shared/type-trpc/product.type-trpc';
+import { FindProduct } from '~/shared/types/trpc/product.types';
 
 export const SectionPromotions = ({ initialData }: { initialData: FindProduct }) => {
   return (

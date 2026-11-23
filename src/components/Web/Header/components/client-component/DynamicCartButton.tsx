@@ -2,7 +2,7 @@
 import { Box, Button } from '@mantine/core';
 import { IconShoppingBag } from '@tabler/icons-react';
 import useScrollPosition from '~/components/Hooks/use-on-scroll';
-import { HEIGHT_HEADER } from '~/constants';
+import { HEIGHT_HEADER } from '~/shared/constants/common.constants';
 import CartButton from './CartButton';
 
 export default function DynamicCartButton({ heightShow }: { heightShow?: number }) {

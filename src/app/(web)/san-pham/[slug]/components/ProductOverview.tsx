@@ -4,7 +4,7 @@ import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 
 import { ImageType } from '@prisma/client';
 import { ShareSocials } from '~/components/ShareSocial';
-import type { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import type { ProductBase } from '~/shared/types/trpc/product.types';
 import ProductImage from './client-component/ProductImage';
 import PurchaseAction from './client-component/PurchaseActions';
 

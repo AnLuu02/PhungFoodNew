@@ -28,11 +28,11 @@ import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import InvoiceToPrint from '~/components/InvoceToPrint';
 import SearchLocal from '~/components/Search/SearchLocal';
-import { TOP_POSITION_STICKY } from '~/constants';
+import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { GetFilterOrder } from '~/shared/type-trpc/order.type-trpc';
+import { GetFilterOrder } from '~/shared/types/trpc/order.types';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
 

@@ -13,7 +13,7 @@ import {
 } from '@tabler/icons-react';
 import { ForwardRefExoticComponent, RefAttributes, useCallback } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
-import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/types/trpc/restaurant.types';
 import { api } from '~/trpc/react';
 import BannerManagement from './components/Section/Banner/BannerRestautant';
 import EmailSettingsManagement from './components/Section/EmailRestautant';

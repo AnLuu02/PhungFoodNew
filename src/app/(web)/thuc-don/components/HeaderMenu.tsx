@@ -3,7 +3,7 @@ import { Box, Flex, Grid, GridCol, Group, Skeleton, Text, Title } from '@mantine
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
-import tags from '~/constants/tags-vi.json';
+import tags from '~/shared/constants/tags-vi.json';
 import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
 import ActiveFilters from './ActiveFilters';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';

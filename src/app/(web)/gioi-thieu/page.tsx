@@ -34,7 +34,7 @@ import { TextTyping } from '~/components/TextTyping';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { journey, signatures, stats } from '~/shared/constants/about-us.constants';
 import { PAGE_KEY } from '~/shared/constants/redis-keys';
-import { GetInitAboutUs } from '~/shared/type-trpc/page.type-trpc';
+import { GetInitAboutUs } from '~/shared/types/trpc/page.types';
 import { api } from '~/trpc/server';
 import { SectionHeading } from '../../../components/SectionHeading';
 import { SectionFaqs } from './components/SectionFaqs';

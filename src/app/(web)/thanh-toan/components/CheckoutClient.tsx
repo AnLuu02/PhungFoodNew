@@ -23,7 +23,7 @@ import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError } from '~/lib/FuncHandler/toast';
 import { baseDeliverySchema, DeliveryCheckout } from '~/shared/schema/delivery.schema';
-import { GetOneOrder } from '~/shared/type-trpc/order.type-trpc';
+import { GetOneOrder } from '~/shared/types/trpc/order.types';
 import { api } from '~/trpc/react';
 import { CartItemPayment } from './CartItemPayment';
 import { DeliveryCard } from './DeliveryCard';

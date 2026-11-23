@@ -3,7 +3,7 @@
 import { Badge, Box, Button, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { IconDeviceMobile, IconDeviceTablet, IconEye, IconHeartRateMonitor } from '@tabler/icons-react';
 import { useState } from 'react';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ThemeLivePreview = ({ theme }: { theme: ThemeConfig }) => {
   const [previewDevice, setPreviewDevice] = useState('desktop');

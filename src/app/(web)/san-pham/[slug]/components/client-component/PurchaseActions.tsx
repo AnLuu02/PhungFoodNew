@@ -7,7 +7,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { memo, useEffect, useState } from 'react';
 import ViewingUser from '~/components/UserViewing';
 import { toNumber } from '~/lib/FuncHandler/Format';
-import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useCartStore } from '~/stores/cart.store';
 
 const PurchaseAction = ({

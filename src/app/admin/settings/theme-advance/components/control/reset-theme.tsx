@@ -1,7 +1,7 @@
 import { Button } from '@mantine/core';
 import { IconRotateClockwise } from '@tabler/icons-react';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
-import { ThemeConfig, ThemeTemplate } from '~/types/theme';
+import { ThemeConfig, ThemeTemplate } from '~/shared/types/theme.types';
 
 export const ResetTheme = ({
   templates,

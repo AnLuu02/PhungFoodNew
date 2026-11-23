@@ -9,7 +9,7 @@ import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toa
 import { allowedVoucher, hoursRemainingVoucher } from '~/lib/FuncHandler/vouchers-calculate';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
-import { VoucherModalDataProps } from '~/types/modal';
+import { VoucherModalDataProps } from '~/shared/types/modal.types';
 import { DateVoucher } from '../DateVoucher';
 
 const VoucherTemplate = ({ voucher, products }: VoucherModalDataProps) => {

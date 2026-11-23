@@ -22,7 +22,7 @@ import {
   IconSpacingVertical,
   IconUpload
 } from '@tabler/icons-react';
-import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/types/trpc/restaurant.types';
 
 export default function SecuritySettingsManagement({ restaurant }: { restaurant: NonNullable<RestaurantDetail> }) {
   return (

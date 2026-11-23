@@ -4,7 +4,7 @@ import { Badge, Box, Button, Card, Group, Paper, SimpleGrid, Stack, Text } from 
 import { IconUser, IconUsers } from '@tabler/icons-react';
 import { Dispatch, SetStateAction } from 'react';
 import Empty from '~/components/Empty';
-import { GetAllNotification } from '~/shared/type-trpc/notification.type-trpc';
+import { GetAllNotification } from '~/shared/types/trpc/notification.types';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';
 

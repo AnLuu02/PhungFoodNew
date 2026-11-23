@@ -24,7 +24,7 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { ContactTypeOptions } from '~/shared/constants/contact.constants';
-import { FindContact, GetAllContact } from '~/shared/type-trpc/contact.type-trpc';
+import { FindContact, GetAllContact } from '~/shared/types/trpc/contact.types';
 import { api } from '~/trpc/react';
 import { CallPhoneButton, DeleteContactButton, SendMailButton } from '../Button';
 

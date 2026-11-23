@@ -1,7 +1,7 @@
 import { Box, Flex, Paper, Radio, Skeleton, Stack, Text, Title } from '@mantine/core';
 import { Control, Controller } from 'react-hook-form';
 import { DeliveryCheckout } from '~/shared/schema/delivery.schema';
-import { GetAllPayment } from '~/shared/type-trpc/payment.type-trpc';
+import { GetAllPayment } from '~/shared/types/trpc/payment.types';
 import { api } from '~/trpc/react';
 
 export const PaymentForm = ({ control }: { control: Control<DeliveryCheckout, any, DeliveryCheckout> }) => {

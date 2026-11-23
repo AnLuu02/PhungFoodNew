@@ -30,7 +30,7 @@ import Image from 'next/image';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { renderShortId } from '~/lib/FuncHandler/renderShortId';
-import { FindInvoice } from '~/shared/type-trpc/invoice.type-trpc';
+import { FindInvoice } from '~/shared/types/trpc/invoice.types';
 import InvoiceUpsert from './form/InvoiceUpsert';
 
 export function CreateInvoiceButton() {

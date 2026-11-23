@@ -9,7 +9,7 @@ import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { FindRole } from '~/shared/type-trpc/role-permission.type-trpc';
+import { FindRole } from '~/shared/types/trpc/role-permission.types';
 import { api } from '~/trpc/react';
 import RoleUpsert from '../form/RoleUpsert';
 import UpdatePermissionForRole from '../form/UpdatePermissionForRole';

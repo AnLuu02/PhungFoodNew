@@ -9,7 +9,7 @@ import { ButtonCheckout } from '~/app/(web)/thanh-toan/components/ButtonCheckout
 import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { useCartStore } from '~/stores/cart.store';
-import { ModalProps } from '~/types/modal';
+import { ModalProps } from '~/shared/types/modal.types';
 import { useCartItem, useCartItems } from '../Hooks/use-cart';
 export default function ModalSuccessAddToCart({ type, opened, onClose, data }: ModalProps<any>) {
   const cart = useCartItems();

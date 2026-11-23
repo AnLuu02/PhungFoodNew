@@ -13,7 +13,7 @@ import {
   handleUserLock,
   updateUserCustomService,
   uploadImageUserService
-} from '../services/user.service';
+} from '~/server/modules/user/user.service';
 
 export const authOptions: NextAuthOptions = {
   session: {

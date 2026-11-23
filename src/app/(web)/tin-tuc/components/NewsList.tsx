@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import Empty from '~/components/Empty';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { FetchNews } from '~/shared/type-trpc/news.type-trpc';
+import { FetchNews } from '~/shared/types/trpc/news.types';
 import { api } from '~/trpc/react';
 import { NewsItemSkeleton } from './NewsItemSkeleton';
 

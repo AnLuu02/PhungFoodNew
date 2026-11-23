@@ -15,7 +15,7 @@ import {
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { GetOverviewUser } from '~/shared/type-trpc/user.type-trpc';
+import { GetOverviewUser } from '~/shared/types/trpc/user.types';
 
 export const AlertUnpaidOrder = ({ orders }: { orders: NonNullable<GetOverviewUser['user']>['orders'] }) => {
   const [openedUnpaidOrders, { toggle: toggleUnpaidOrders }] = useDisclosure(false);

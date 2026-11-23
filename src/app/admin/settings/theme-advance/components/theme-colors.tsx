@@ -3,7 +3,7 @@
 import { Box, Button, ColorInput, Divider, Paper, Switch, Text, Title } from '@mantine/core';
 import { IconPalette } from '@tabler/icons-react';
 import { NotifySuccess } from '~/lib/FuncHandler/toast';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ThemeColors = ({ theme, setTheme }: { theme: ThemeConfig; setTheme: (theme: ThemeConfig) => void }) => {
   const colorPresets = [

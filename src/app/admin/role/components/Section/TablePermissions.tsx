@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { FindPermission } from '~/shared/type-trpc/role-permission.type-trpc';
+import { FindPermission } from '~/shared/types/trpc/role-permission.types';
 import { api } from '~/trpc/react';
 import { DeletePermissionButton, UpdatePermissionButton } from '../Button';
 

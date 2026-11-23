@@ -3,7 +3,7 @@ import { IconLink, IconPhone, IconTruck } from '@tabler/icons-react';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
-import { RestaurantBase } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantBase } from '~/shared/types/trpc/restaurant.types';
 export default async function FooterWeb({ restaurant }: { restaurant: RestaurantBase }) {
   const timeOpen = () => {
     const timeIndex = new Date().getDay();

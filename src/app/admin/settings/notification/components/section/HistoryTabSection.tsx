@@ -21,7 +21,7 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
+import { NotificationBase } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';
 import { getTypeIcon, notificationPriorityInfo, notificationStatusInfo, notificationTypeOptions } from '../../helpers';
 import { SendNotificationStateProps } from '../../NotificationManagement';

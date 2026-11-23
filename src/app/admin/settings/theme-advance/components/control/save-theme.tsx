@@ -2,7 +2,7 @@ import { Button } from '@mantine/core';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { useState } from 'react';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { ThemeConfig } from '~/types/theme';
+import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const SaveTheme = ({
   theme,

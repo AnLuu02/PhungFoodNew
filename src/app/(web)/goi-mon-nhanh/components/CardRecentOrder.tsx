@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { renderShortId } from '~/lib/FuncHandler/renderShortId';
 import { getStatusInfo } from '~/lib/FuncHandler/status-order';
-import { GetFilterOrder, GetFilterOrderItem } from '~/shared/type-trpc/order.type-trpc';
+import { GetFilterOrder, GetFilterOrderItem } from '~/shared/types/trpc/order.types';
 import { useCartStore } from '~/stores/cart.store';
 
 export default function CardRecentOrder({ order }: { order: GetFilterOrder[number] }) {

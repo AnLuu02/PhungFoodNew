@@ -2,7 +2,7 @@
 
 import { Modal, ScrollAreaAutosize, Title } from '@mantine/core';
 import { Dispatch, SetStateAction } from 'react';
-import { FindVoucher } from '~/shared/type-trpc/voucher.type-trpc';
+import { FindVoucher } from '~/shared/types/trpc/voucher.types';
 import UpdateVoucher from '../form/UpdateVoucher';
 
 export const UpdateVoucherModal = ({

@@ -4,7 +4,7 @@ import { IconChevronCompactLeft, IconLink, IconMessageCircle, IconShoppingBagChe
 import Image from 'next/image';
 import Link from 'next/link';
 import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
-import { RestaurantBase } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantBase } from '~/shared/types/trpc/restaurant.types';
 import ModernChatbox from './chat/Chatbox';
 import { useCartCount } from './Hooks/use-cart';
 

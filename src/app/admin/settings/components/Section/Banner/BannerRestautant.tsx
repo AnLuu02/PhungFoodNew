@@ -12,7 +12,7 @@ import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toa
 import { ImageInfoServerInput, StatusImage } from '~/shared/schema/image.info.schema';
 import { ImageServerInput } from '~/shared/schema/image.schema';
 import { BannerInput, bannerInputSchema } from '~/shared/schema/restaurant.banner.schema';
-import { GetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
+import { GetAllBanner } from '~/shared/types/trpc/restaurant.types';
 import { api } from '~/trpc/react';
 import BannerInputSection from './BannerInput';
 import { CarouselGallery } from './CarouselGallery';

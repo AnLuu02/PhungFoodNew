@@ -14,7 +14,7 @@ import { SearchInput } from '~/components/Search/SearchInput';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { UserRole } from '~/shared/constants/user.constants';
-import { FindProduct, getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
+import { FindProduct, getProductsOnly } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';
 
 export default function TableProduct() {

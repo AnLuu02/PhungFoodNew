@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import VoucherTemplate from '~/components/Template/VoucherTemplate';
-import { VoucherForUser } from '~/shared/type-trpc/voucher.type-trpc';
+import { VoucherForUser } from '~/shared/types/trpc/voucher.types';
 import { api } from '~/trpc/react';
 import { CommonSkeleton } from './Loading/LoadingSkeleton';
 import PaginationLocal from './PaginationLocal';

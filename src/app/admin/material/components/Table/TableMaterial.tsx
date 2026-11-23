@@ -23,11 +23,11 @@ import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { categoryMaterials } from '~/constants';
+import { categoryMaterials } from '~/shared/constants/common.constants';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
 import { BADGE_COLORS } from '~/shared/constants/helper.constants';
-import { FindMaterial, GetAllMaterial } from '~/shared/type-trpc/material.type-trpc';
+import { FindMaterial, GetAllMaterial } from '~/shared/types/trpc/material.types';
 import { api } from '~/trpc/react';
 import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '../Button';
 

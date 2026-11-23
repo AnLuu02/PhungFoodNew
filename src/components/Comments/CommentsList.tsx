@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { FindReview } from '~/shared/type-trpc/review.type-trpc';
+import { FindReview } from '~/shared/types/trpc/review.types';
 import { api } from '~/trpc/react';
 
 export const CommentsList = ({ productId }: { productId: string }) => {

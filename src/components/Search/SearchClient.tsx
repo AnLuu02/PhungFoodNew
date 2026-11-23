@@ -27,8 +27,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { Search } from '~/shared/type-trpc/search.type-trpc';
-import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
+import { Search } from '~/shared/types/trpc/search.types';
+import { SubCategoryBasic } from '~/shared/types/trpc/sub-category.types';
 import { api } from '~/trpc/react';
 import VoiceSearchModal from './SearchAsVoice';
 

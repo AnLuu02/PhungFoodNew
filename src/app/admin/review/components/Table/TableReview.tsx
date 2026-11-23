@@ -12,7 +12,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { FindReview } from '~/shared/type-trpc/review.type-trpc';
+import { FindReview } from '~/shared/types/trpc/review.types';
 import { api } from '~/trpc/react';
 
 export default function TableReview() {

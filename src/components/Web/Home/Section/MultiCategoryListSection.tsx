@@ -2,7 +2,7 @@ import { Box, Button, Divider, Flex, Grid, GridCol, Title } from '@mantine/core'
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
-import { CategoryProps } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryProps } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/server';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 

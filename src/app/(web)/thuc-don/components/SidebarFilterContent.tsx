@@ -2,7 +2,7 @@
 import { Accordion, Box, Button, Card, Center, Divider, Paper, ScrollArea, Stack, Text } from '@mantine/core';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { CategoryBasic } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryBasic } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
 import { MaterialFilter } from './Filter/MaterialFilter';
 import { PriceCheckedFilter } from './Filter/PriceCheckedFilter';

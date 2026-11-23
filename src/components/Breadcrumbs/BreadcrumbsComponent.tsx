@@ -5,7 +5,7 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SubCategoryBasic } from '~/shared/type-trpc/subCategory.type-trpc';
+import { SubCategoryBasic } from '~/shared/types/trpc/sub-category.types';
 import { api } from '~/trpc/react';
 import { ActiveMenuPageText } from './ActiveMenuPageText';
 import { BreadcrumbsBase } from './BreadcrumbsBase';

@@ -4,7 +4,7 @@ import { IconLogout } from '@tabler/icons-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { breakpoints } from '~/constants';
+import { breakpoints } from '~/shared/constants/common.constants';
 import { navItems } from '~/lib/ConfigUI';
 import { GlobalSearch } from '../Search/GlobalSearch';
 import UserSection from '../UserSection';

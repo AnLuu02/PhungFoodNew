@@ -1,5 +1,5 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
-import tags from '~/constants/tags-vi.json';
+import tags from '~/shared/constants/tags-vi.json';
 
 export const createTag = (input: string): string => {
   return input

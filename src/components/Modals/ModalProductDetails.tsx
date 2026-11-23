@@ -25,7 +25,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { ModalProps } from '~/types/modal';
+import { ModalProps } from '~/shared/types/modal.types';
 import { ButtonAddToCart } from '../Button/ButtonAddToCart';
 import { ShareSocials } from '../ShareSocial';
 import { ImageZoomModal } from './ModalZoomImage';

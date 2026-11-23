@@ -3,7 +3,7 @@
 import { Box, Button, Grid, GridCol, Group, NumberInput, Paper, Stack, Switch, Text, Title } from '@mantine/core';
 import { IconBell, IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useState } from 'react';
-import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/types/trpc/restaurant.types';
 
 export default function PerformanceSettingsManagement({ restaurant }: { restaurant: NonNullable<RestaurantDetail> }) {
   const [notifications, setNotifications] = useState({

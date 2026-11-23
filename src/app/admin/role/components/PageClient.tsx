@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { useHashTabs } from '~/components/Hooks/use-hash-tabs';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { UserRole } from '~/shared/constants/user.constants';
-import { GetAllRole } from '~/shared/type-trpc/role-permission.type-trpc';
+import { GetAllRole } from '~/shared/types/trpc/role-permission.types';
 import { api } from '~/trpc/react';
 import { CreateManyPermissionButton, CreateManyRoleButton, CreatePermissionButton, CreateRoleButton } from './Button';
 import { RoleSection } from './Section/RoleSection';

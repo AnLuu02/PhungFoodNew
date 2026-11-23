@@ -27,7 +27,7 @@ import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { INFO_LEVEL_USER, UserRole } from '~/shared/constants/user.constants';
-import { FindUser } from '~/shared/type-trpc/user.type-trpc';
+import { FindUser } from '~/shared/types/trpc/user.types';
 import { api } from '~/trpc/react';
 import { DeleteUserButton, UpdatePermissions, UpdateUserButton } from '../Button';
 export default function TableUser() {

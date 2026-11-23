@@ -8,7 +8,7 @@ import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { getPromotionStatus, getStatusColor } from '~/lib/FuncHandler/vouchers-calculate';
-import { FindVoucher } from '~/shared/type-trpc/voucher.type-trpc';
+import { FindVoucher } from '~/shared/types/trpc/voucher.types';
 import { api } from '~/trpc/react';
 
 export default function CardVoucher({

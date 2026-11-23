@@ -25,7 +25,7 @@ import OtpModal from '~/components/Modals/ModalOtp';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { api } from '~/trpc/react';
-import { TRPCErrorCode } from '~/types/ResponseFetcher';
+import { TRPCErrorCode } from '~/shared/types/response.types';
 import AddressSection from '../../../../components/AdressSection';
 
 export default function RegisterForm() {

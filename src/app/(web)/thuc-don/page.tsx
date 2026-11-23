@@ -2,7 +2,7 @@
 import { Box } from '@mantine/core';
 import { useEffect } from 'react';
 import { useProductFilters } from '~/components/Hooks/use-product-filter';
-import { FindProduct } from '~/shared/type-trpc/product.type-trpc';
+import { FindProduct } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';
 import HeaderMenu from './components/HeaderMenu';
 import { MenuList } from './components/MenuList';

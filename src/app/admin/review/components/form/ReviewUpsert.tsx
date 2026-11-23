@@ -6,7 +6,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { UserRole } from '~/shared/constants/user.constants';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
-import { getProductsOnly } from '~/shared/type-trpc/product.type-trpc';
+import { getProductsOnly } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';
 
 export default function ReviewUpsert({

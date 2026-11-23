@@ -7,7 +7,7 @@ import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { RoleInput } from '~/shared/schema/role.schema';
-import { GetAllPermission, GetAllRole } from '~/shared/type-trpc/role-permission.type-trpc';
+import { GetAllPermission, GetAllRole } from '~/shared/types/trpc/role-permission.types';
 import { api } from '~/trpc/react';
 import RoleUpsert from './form/RoleUpsert';
 import PermissionUpsert from './form/permission/PermissionUpsert';

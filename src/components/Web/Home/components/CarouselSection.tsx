@@ -5,7 +5,7 @@ import { IconCheese, IconChevronLeft, IconChevronRight } from '@tabler/icons-rea
 import { memo, useCallback, useEffect, useState } from 'react';
 import Empty from '~/components/Empty';
 import Reveal from '~/components/Reveal';
-import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { ProductBase } from '~/shared/types/trpc/product.types';
 import ProductCardCarouselVertical from '../../Card/CardProductCarouselVertical';
 import { CarouselSkeleton } from './CarouselSkeleton';
 

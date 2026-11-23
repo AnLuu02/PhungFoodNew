@@ -31,7 +31,7 @@ import { StatusImage } from '~/shared/schema/image.info.schema';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { useModalStore } from '~/stores/modal.store';
 import { api } from '~/trpc/react';
-import { TRPCErrorCode } from '~/types/ResponseFetcher';
+import { TRPCErrorCode } from '~/shared/types/response.types';
 
 export default function UserUpsert({
   email,

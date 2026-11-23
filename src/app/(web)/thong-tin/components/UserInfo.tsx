@@ -31,7 +31,7 @@ import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
 import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
-import { GetOverviewUser } from '~/shared/type-trpc/user.type-trpc';
+import { GetOverviewUser } from '~/shared/types/trpc/user.types';
 
 export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>['user']; session: Session | null }) {
   const userInfor = user;

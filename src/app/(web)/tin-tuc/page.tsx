@@ -1,7 +1,7 @@
 import { Center, Grid, GridCol } from '@mantine/core';
 import { Metadata } from 'next';
 import CustomPagination from '~/components/Pagination';
-import { TOP_POSITION_STICKY } from '~/constants';
+import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { api } from '~/trpc/server';
 import { NewsFeed } from './components/NewsFeed';
 import { NewsList } from './components/NewsList';

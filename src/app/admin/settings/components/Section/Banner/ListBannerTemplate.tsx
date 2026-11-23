@@ -7,7 +7,7 @@ import { useFormContext } from 'react-hook-form';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
 import { formatDateViVN } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { GetAllBanner } from '~/shared/type-trpc/restaurant.type-trpc';
+import { GetAllBanner } from '~/shared/types/trpc/restaurant.types';
 import { api } from '~/trpc/react';
 import ModalViewBanner from '../ModalViewBanner';
 import { bannerdefaultValues } from './BannerRestautant';

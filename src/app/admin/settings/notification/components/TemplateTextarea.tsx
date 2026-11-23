@@ -17,7 +17,7 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { IconSearch, IconVariable } from '@tabler/icons-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import fields from '~/constants/fields-db.json';
+import fields from '~/shared/constants/fields-db.json';
 
 interface TemplateTextareaProps {
   name: string;

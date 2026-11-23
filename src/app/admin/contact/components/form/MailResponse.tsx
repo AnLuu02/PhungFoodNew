@@ -22,7 +22,7 @@ import { Video } from '~/components/Tiptap/extensions/VideoExtension';
 import { MediaButtons } from '~/components/Tiptap/MediaButtons';
 import { TiptapControl } from '~/components/Tiptap/TiptapControl';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { FindContact } from '~/shared/type-trpc/contact.type-trpc';
+import { FindContact } from '~/shared/types/trpc/contact.types';
 import { api } from '~/trpc/react';
 
 export default function MailResponse({

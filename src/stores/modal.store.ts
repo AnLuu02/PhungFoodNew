@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ModalType } from '~/types/modal';
+import { ModalType } from '~/shared/types/modal.types';
 
 type ModalStore = {
   type: ModalType | null;

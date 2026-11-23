@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import districtsData from '~/lib/HardData/provinces_vietnam/districts.json';
 import provincesData from '~/lib/HardData/provinces_vietnam/provinces.json';
 import wardsData from '~/lib/HardData/provinces_vietnam/wards.json';
-import { District, Province, Ward } from '~/types/ResponseFetcher';
+import { District, Province, Ward } from '~/shared/types/response.types';
 export const useProvinces = () => {
   const getProvince = (code: number, provincesData: Province[]) => {
     return provincesData.find(p => p.code == code)!;

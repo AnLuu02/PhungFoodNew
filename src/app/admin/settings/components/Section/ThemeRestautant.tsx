@@ -21,7 +21,7 @@ import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { themeSchemaWithRestaurantId, ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
-import { RestaurantDetail } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantDetail } from '~/shared/types/trpc/restaurant.types';
 import { api } from '~/trpc/react';
 
 export default function ThemeSettingsManagement({

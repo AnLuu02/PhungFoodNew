@@ -21,7 +21,7 @@ import { ViewNotificationDetail } from '~/components/Modals/ViewNotificationDeta
 import { formatTimeAgo } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { pusherClient } from '~/lib/PusherConfig/client';
-import { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
+import { NotificationBase } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';
 import { useRealtimeNotification } from './Hooks/use-realtime-notification';
 

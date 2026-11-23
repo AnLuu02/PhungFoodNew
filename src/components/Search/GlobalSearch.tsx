@@ -17,7 +17,7 @@ import {
 import { useDebouncedValue, useDisclosure, useWindowEvent } from '@mantine/hooks';
 import { IconBrandFacebook, IconCheese, IconHome, IconListTree, IconSearch, IconUser } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { SearchGlobal } from '~/shared/type-trpc/search.type-trpc';
+import { SearchGlobal } from '~/shared/types/trpc/search.types';
 import { api } from '~/trpc/react';
 type ResultSearch = {
   type: string;

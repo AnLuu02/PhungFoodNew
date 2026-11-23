@@ -19,7 +19,7 @@ import LoadingSpiner from '~/components/Loading/LoadingSpiner';
 import { generateNotifyHtml } from '~/lib/FuncHandler/MailHelpers/generateNotifyHtml';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
 import { Notification, notificationSchema } from '~/shared/schema/notification.schema';
-import type { NotificationBase } from '~/shared/type-trpc/notification.type-trpc';
+import type { NotificationBase } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';
 import { notificationTypeOptions } from '../../helpers';
 

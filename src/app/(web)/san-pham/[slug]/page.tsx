@@ -6,7 +6,7 @@ import { AppSkeleton } from '~/components/Loading/AppSkeleton';
 import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
 import { db } from '~/server/db';
 import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
-import { ProductBase } from '~/shared/type-trpc/product.type-trpc';
+import { ProductBase } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/server';
 import { ProductInsights } from './components/client-component/ProductInsights';
 import DiscountCodes from './components/DiscountCodes';

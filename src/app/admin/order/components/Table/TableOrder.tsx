@@ -22,7 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import { SearchInput } from '~/components/Search/SearchInput';
-import { FindOrder, GetAllOrder } from '~/shared/type-trpc/order.type-trpc';
+import { FindOrder, GetAllOrder } from '~/shared/types/trpc/order.types';
 import { api } from '~/trpc/react';
 
 export default function TableOrder() {

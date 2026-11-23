@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import Comments from '~/components/Comments/Comments';
 import ProductCardCarouselVertical from '~/components/Web/Card/CardProductCarouselVertical';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
-import { TOP_POSITION_STICKY } from '~/constants';
+import { TOP_POSITION_STICKY } from '~/shared/constants/common.constants';
 import { api } from '~/trpc/react';
 import RatingStatistics from '../components/client-component/RatingStatistics';
 

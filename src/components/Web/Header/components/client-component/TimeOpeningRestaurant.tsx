@@ -3,7 +3,7 @@
 import { Button } from '@mantine/core';
 import { IconClock } from '@tabler/icons-react';
 import { useMemo } from 'react';
-import { RestaurantBase } from '~/shared/type-trpc/restaurant.type-trpc';
+import { RestaurantBase } from '~/shared/types/trpc/restaurant.types';
 
 export const TimeOpeningRestaurant = ({ restaurant }: { restaurant: RestaurantBase }) => {
   const timeOpen = useMemo(() => {

@@ -4,7 +4,7 @@ import { Box, Group, Paper, Stack, Tabs, TabsList, TabsPanel, TabsTab, Text, Tit
 import { IconPalette } from '@tabler/icons-react';
 import { useState } from 'react';
 import { dataThemes } from '~/lib/HardData/theme';
-import { ThemeConfig, ThemeTemplate } from '~/types/theme';
+import { ThemeConfig, ThemeTemplate } from '~/shared/types/theme.types';
 import { CreateTheme } from './control/create-theme';
 import { EditTheme } from './control/edit-theme';
 import { ExportTheme } from './control/export-theme';

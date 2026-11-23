@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
 import { formatDataExcel } from '~/lib/FuncHandler/Format';
 import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { CategoryBasic } from '~/shared/type-trpc/category.type-trpc';
+import { CategoryBasic } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
 import CategoryUpsert from './form/CategoryUpsert';
 import SubCategoryUpsert from './form/SubCategoryUpsert';

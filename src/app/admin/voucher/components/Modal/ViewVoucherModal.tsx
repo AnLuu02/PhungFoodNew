@@ -5,7 +5,7 @@ import { VoucherType } from '@prisma/client';
 import { Dispatch, SetStateAction } from 'react';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 import { getPromotionStatus } from '~/lib/FuncHandler/vouchers-calculate';
-import { FindVoucher } from '~/shared/type-trpc/voucher.type-trpc';
+import { FindVoucher } from '~/shared/types/trpc/voucher.types';
 
 export const ViewVoucherModal = ({
   selectedPromotion,

@@ -18,7 +18,7 @@ import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
 import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';
-import { ModalProps } from '~/types/modal';
+import { ModalProps } from '~/shared/types/modal.types';
 import { useCartItems, useVoucherItems } from '../Hooks/use-cart';
 import LoadingSpiner from '../Loading/LoadingSpiner';
 import VoucherTemplate from '../Template/VoucherTemplate';

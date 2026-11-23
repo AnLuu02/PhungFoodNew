@@ -16,7 +16,7 @@ import {
   GetAllNotification,
   NotificationBase,
   NotificationTemplateBase
-} from '~/shared/type-trpc/notification.type-trpc';
+} from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';
 import { ViewNotificationDetail } from '../../../../components/Modals/ViewNotificationDetail';
 import { UpsertNotificationModal } from './components/modal/UpsertNotification';

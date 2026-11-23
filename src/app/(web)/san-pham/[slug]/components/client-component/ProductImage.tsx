@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { memo, useState } from 'react';
 import { ImageZoomModal } from '~/components/Modals/ModalZoomImage';
 import { ShareSocials } from '~/components/ShareSocial';
-import { breakpoints } from '~/constants';
+import { breakpoints } from '~/shared/constants/common.constants';
 import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
 export default memo(function ProductImage({
   thumbnail,
