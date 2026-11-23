@@ -5,8 +5,8 @@ import { IconStar } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo } from 'react';
 import { AppSkeleton } from '~/components/Loading/AppSkeleton';
-import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { caculateLevelUser } from '~/lib/helpers/user/calculate-level';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { api } from '~/trpc/react';
 import { AlertUnpaidOrder } from './AlertUnpaidOrder';
 

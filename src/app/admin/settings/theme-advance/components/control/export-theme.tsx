@@ -1,7 +1,7 @@
 import { Button } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { useState } from 'react';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { ThemeConfig } from '~/shared/types/theme.types';
 
 export const ExportTheme = ({ theme }: { theme: ThemeConfig }) => {

@@ -5,7 +5,7 @@ import { NotificationTemplate } from '@prisma/client';
 import { IconPlus } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Empty from '~/components/Empty';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { NotificationTemplateBase } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';
 import { getTypeIcon } from '../../helpers';

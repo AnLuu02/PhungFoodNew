@@ -5,7 +5,7 @@ import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { breakpoints } from '~/shared/constants/common.constants';
-import { navItems } from '~/lib/ConfigUI';
+import { navItems } from '~/lib/config/ui';
 import { GlobalSearch } from '../Search/GlobalSearch';
 import UserSection from '../UserSection';
 

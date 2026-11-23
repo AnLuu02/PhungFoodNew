@@ -1,5 +1,5 @@
 import z from 'zod';
-import { createTag } from '~/lib/FuncHandler/generateTag';
+import { createTag } from '~/lib/utils/generate-tag';
 import { imageInfoClientInputSchema, imageInfoServerInputSchema } from './image.info.schema';
 
 export const baseProductSchema = z.object({

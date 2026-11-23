@@ -62,8 +62,8 @@ import {
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useAnalyticsData } from '~/components/Hooks/use-analytics-data';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { buildChangeRateData } from '~/lib/FuncHandler/Statistics';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
+import { buildChangeRateData } from '~/lib/helpers/statistics';
 import { AnalyticsMetricCard } from '../../components/AnalyticsMetricCard';
 import { AIInsightHero } from './AIInsightHero';
 import { ConversionFunnel } from './ConversionFunnel';

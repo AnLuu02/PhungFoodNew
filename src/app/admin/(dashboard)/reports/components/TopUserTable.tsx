@@ -2,7 +2,7 @@
 
 import { Card, Table, Text, Title } from '@mantine/core';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { api } from '~/trpc/react';
 export const TopUserTable = ({ startTime, endTime }: { startTime?: number; endTime?: number }) => {
   const { data, isLoading } = api.Revenue.getTopUsers.useQuery({

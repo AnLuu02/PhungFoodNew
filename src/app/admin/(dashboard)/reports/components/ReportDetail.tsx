@@ -12,7 +12,7 @@ import {
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import TimelineRecentActivity from '~/components/TimelineRecentActivity';
-import { toNumber } from '~/lib/FuncHandler/Format';
+import { toNumber } from '~/lib/utils/format';
 
 const navReportDetails = [
   {

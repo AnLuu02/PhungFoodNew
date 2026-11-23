@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { callOpenRouter, cleanJSON, parseProductFilter } from '~/lib/FuncHandler/Chat';
+import { callOpenRouter, cleanJSON, parseProductFilter } from '~/lib/integrations/ai/chat';
 import { db } from '~/server/db';
 import { findProductService } from '~/server/modules/product/product.service';
 import { api } from '~/trpc/server';

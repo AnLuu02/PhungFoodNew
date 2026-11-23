@@ -2,8 +2,8 @@
 import { ActionIcon, Button, Modal, Title, Tooltip } from '@mantine/core';
 import { IconEdit, IconKey, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
-import { NotifyError } from '~/lib/FuncHandler/toast';
+import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
+import { NotifyError } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 import UpdatePermissionUser from './form/UpdatePermissionUser';
 import UserUpsert from './form/UserUpsert';

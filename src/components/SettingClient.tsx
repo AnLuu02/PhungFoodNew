@@ -28,7 +28,7 @@ import {
   IconTextDirectionRtl
 } from '@tabler/icons-react';
 import { useEffect } from 'react';
-import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
+import { hexToRgb } from '~/lib/utils/hex-to-rgb';
 export const COLOR_PALETTES = [
   { name: 'Ocean Blue', mainColor: '#5D87FF', subColor: '#A2B8FF' },
   { name: 'Sky Teal', mainColor: '#0074BA', subColor: '#56B5E5' },

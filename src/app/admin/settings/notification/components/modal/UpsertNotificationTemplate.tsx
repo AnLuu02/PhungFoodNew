@@ -3,7 +3,7 @@ import { Button, Group, Modal, MultiSelect, Select, Stack, TextInput, Title } fr
 import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect, useMemo } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { NotificationTemplate, notificationTemplateSchema } from '~/shared/schema/notification.schema';
 import { api } from '~/trpc/react';
 import { notificationTypeOptions } from '../../helpers';

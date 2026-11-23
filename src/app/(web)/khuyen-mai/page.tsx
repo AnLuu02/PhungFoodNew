@@ -18,7 +18,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { PromotionTabLayout } from '~/components/PromotionTabsLayout';
 import { CardFeaturedOffer } from '~/components/Web/Card/CardFeaturedOffer';
-import { benefitLevel } from '~/lib/HardData/promotion-level';
+import { benefitLevel } from '~/lib/data/promotion-level';
 import { api } from '~/trpc/server';
 import { SectionHeading } from '../../../components/SectionHeading';
 import { TextTyping } from '../../../components/TextTyping';

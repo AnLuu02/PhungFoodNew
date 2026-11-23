@@ -3,7 +3,7 @@ import { Skeleton, Text } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import tags from '~/shared/constants/tags-vi.json';
-import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
+import { getTagFromQuery } from '~/lib/utils/generate-tag';
 
 export const ActiveMenuPageText = () => {
   const [isMounted, setIsMounted] = useState(false);

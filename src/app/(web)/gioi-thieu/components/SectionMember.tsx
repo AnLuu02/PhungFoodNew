@@ -4,7 +4,7 @@ import { IconArrowRight, IconCake, IconGift, IconTicket, IconTruckDelivery } fro
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
-import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
+import { caculateLevelUser } from '~/lib/helpers/user/calculate-level';
 import { api } from '~/trpc/react';
 const guestBenefits = [
   {

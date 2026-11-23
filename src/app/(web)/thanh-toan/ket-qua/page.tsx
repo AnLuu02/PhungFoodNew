@@ -9,14 +9,14 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import { getVnpayResponseInfo, VNPAY_TRANSACTION_STATUS } from '~/lib/vnpay/codes';
-import { VNPAY_CONFIG } from '~/lib/vnpay/config';
+import { getVnpayResponseInfo, VNPAY_TRANSACTION_STATUS } from '~/lib/integrations/vnpay/codes';
+import { VNPAY_CONFIG } from '~/lib/integrations/vnpay/config';
 import {
   extractVnpayParamsFromUrl,
   formatVnpayPayDateToVi,
   fromVnpayAmount,
   verifyVnpaySignature
-} from '~/lib/vnpay/utils';
+} from '~/lib/integrations/vnpay/utils';
 
 type PaymentResultPageProps = {
   searchParams: Record<string, string | string[] | undefined>;

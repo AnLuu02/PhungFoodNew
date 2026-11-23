@@ -1,8 +1,8 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { Session } from 'next-auth';
-import { delCache } from '~/lib/CacheConfig/withRedisCache';
-import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { delCache } from '~/lib/config/cache/with-redis-cache';
+import { ManageTagVi } from '~/lib/utils/create-tag-vi';
 import { CATEGORY_KEY } from '~/shared/constants/redis-keys';
 import { CategoryInput } from '~/shared/schema/category.schema';
 

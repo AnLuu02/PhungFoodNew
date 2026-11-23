@@ -22,7 +22,7 @@ import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN } from '~/lib/utils/format';
 import { ContactTypeOptions } from '~/shared/constants/contact.constants';
 import { FindContact, GetAllContact } from '~/shared/types/trpc/contact.types';
 import { api } from '~/trpc/react';

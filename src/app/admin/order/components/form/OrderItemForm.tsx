@@ -2,9 +2,9 @@
 import { Box, Button, Grid, NumberInput, Select, Text, TextInput } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { NotifyError } from '~/lib/FuncHandler/toast';
+import { caculateAmount } from '~/lib/helpers/user/calculate-level';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
+import { NotifyError } from '~/lib/helpers/ui/toast';
 import { OrderItemInput } from '~/shared/schema/order.schema';
 import { getProductsOnly } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';

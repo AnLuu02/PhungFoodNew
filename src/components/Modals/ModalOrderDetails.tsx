@@ -22,8 +22,8 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import { OrderStatus, VoucherType } from '@prisma/client';
 import { IconCreditCard, IconPackage, IconTag, IconTruck } from '@tabler/icons-react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
+import { getStatusInfo } from '~/lib/helpers/order/status-order';
 import { ModalProps } from '~/shared/types/modal.types';
 import InvoiceToPrint from '../InvoceToPrint';
 

@@ -1,10 +1,10 @@
-import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { ManageTagVi } from '~/lib/utils/create-tag-vi';
 
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
-import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
+import { moneyToNumber } from '~/lib/utils/format';
+import { buildSortFilter } from '~/lib/helpers/prisma';
 import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
 import { UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';

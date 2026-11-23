@@ -4,7 +4,7 @@ import { Button, Grid, Switch, TextInput } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { basePaymentSchema, PaymentInput } from '~/shared/schema/payment.schema';
 import { api } from '~/trpc/react';
 

@@ -24,7 +24,7 @@ import { IconX } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { ModalProps } from '~/shared/types/modal.types';
 import { ButtonAddToCart } from '../Button/ButtonAddToCart';
 import { ShareSocials } from '../ShareSocial';

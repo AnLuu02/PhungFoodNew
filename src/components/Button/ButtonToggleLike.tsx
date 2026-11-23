@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@mantine/core';
 import { IconHeart, IconHeartFilled } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { memo, useCallback, useMemo } from 'react';
-import { NotifyError } from '~/lib/FuncHandler/toast';
+import { NotifyError } from '~/lib/helpers/ui/toast';
 import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useFavoriteStore } from '~/stores/favorite.store';
 import { api } from '~/trpc/react';

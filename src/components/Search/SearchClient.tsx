@@ -26,7 +26,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
 import { Search } from '~/shared/types/trpc/search.types';
 import { SubCategoryBasic } from '~/shared/types/trpc/sub-category.types';
 import { api } from '~/trpc/react';

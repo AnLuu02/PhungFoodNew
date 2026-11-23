@@ -3,8 +3,8 @@
 import { Badge, Box, Modal, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { Dispatch, SetStateAction } from 'react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getPromotionStatus } from '~/lib/FuncHandler/vouchers-calculate';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
+import { getPromotionStatus } from '~/lib/helpers/order/vouchers-calculate';
 import { FindVoucher } from '~/shared/types/trpc/voucher.types';
 
 export const ViewVoucherModal = ({

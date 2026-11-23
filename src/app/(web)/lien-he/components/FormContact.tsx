@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, GridCol, Select, Textarea, TextInput } from '@mantine/core';
 import { TypeContact } from '@prisma/client';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { ContactTypeOptions } from '~/shared/constants/contact.constants';
 import { baseContactSchema, ContactInput } from '~/shared/schema/contact.schema';
 import { api } from '~/trpc/react';

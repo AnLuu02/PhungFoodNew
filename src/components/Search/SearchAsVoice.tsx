@@ -4,7 +4,7 @@ import { ActionIcon, Box, Button, Flex, Group, List, Modal, Paper, Stack, Text, 
 import { IconDots, IconLighter, IconMicrophone, IconSquare, IconTrash, IconVolume } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { NotifyError } from '~/lib/FuncHandler/toast';
+import { NotifyError } from '~/lib/helpers/ui/toast';
 
 const initialState: any = {
   searchState: 'initial',

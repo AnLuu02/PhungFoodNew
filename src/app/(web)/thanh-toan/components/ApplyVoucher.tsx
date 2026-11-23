@@ -6,8 +6,8 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useVoucherItems } from '~/components/Hooks/use-cart';
 import ModalListVoucher from '~/components/Modals/ModalListVoucher';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';
 

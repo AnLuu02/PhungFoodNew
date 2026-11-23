@@ -5,7 +5,7 @@ import { Button, Flex, Rating, Text, Textarea } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess, NotifyWarning } from '~/lib/helpers/ui/toast';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
 import { api } from '~/trpc/react';
 

@@ -1,6 +1,6 @@
 import { Badge, Divider, Flex, Grid, GridCol, Group, Rating, Stack, Text, Title } from '@mantine/core';
 import { IconRefresh, IconShieldCheck, IconTruck } from '@tabler/icons-react';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 import { ImageType } from '@prisma/client';
 import { ShareSocials } from '~/components/ShareSocial';

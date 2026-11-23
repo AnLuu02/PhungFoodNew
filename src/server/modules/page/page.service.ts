@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { Session } from 'next-auth';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
-import dayjs from '~/lib/dayjs';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
+import dayjs from '~/lib/config/dayjs';
+import { moneyToNumber } from '~/lib/utils/format';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { UserRole } from '~/shared/constants/user.constants';
 import { Period } from '~/shared/types';

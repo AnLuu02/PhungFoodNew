@@ -3,7 +3,7 @@
 import { Badge, Box, Group, Highlight, Table, Text } from '@mantine/core';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN } from '~/lib/utils/format';
 import { DeleteReviewButton, UpdateReviewButton } from '../Button';
 
 import { ActionIcon, Card, Flex, Paper, Select, SimpleGrid, Title } from '@mantine/core';

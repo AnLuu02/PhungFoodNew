@@ -1,4 +1,4 @@
-import cooking_guilds from '~/lib/HardData/cooking_guilds.json';
+import cooking_guilds from '~/lib/data/cooking-guilds.json';
 import CardRecipe from '../../Card/CardRecipe';
 import { CarouselListBase } from '../components/CarouselListBase';
 

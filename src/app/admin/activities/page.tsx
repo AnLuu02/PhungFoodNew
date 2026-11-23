@@ -4,7 +4,7 @@ import { Badge, Box, Button, Card, Group, Paper, SimpleGrid, Stack, Text } from 
 import { IconBolt, IconClock, IconDatabase, IconLayersDifference, IconRefresh, IconUsers } from '@tabler/icons-react';
 
 import { useCallback, useState } from 'react';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 import { ActivityFeed } from './components/ActivityFeed';
 import ActivityFilter from './components/ActivityFilter';

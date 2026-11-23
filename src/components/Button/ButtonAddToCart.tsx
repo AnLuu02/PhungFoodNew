@@ -2,8 +2,8 @@
 
 import { Button, ButtonProps } from '@mantine/core';
 import { IconShoppingCartPlus } from '@tabler/icons-react';
-import { flyToCart, getVisibleToEl } from '~/lib/ButtonHandler/FlyToCart';
-import { NotifySuccess } from '~/lib/FuncHandler/toast';
+import { flyToCart, getVisibleToEl } from '~/lib/helpers/ui/fly-to-cart';
+import { NotifySuccess } from '~/lib/helpers/ui/toast';
 import { CartItem } from '~/shared/types/store.types';
 import { useCartStore } from '~/stores/cart.store';
 

@@ -21,7 +21,7 @@ import { ResizableImageExtension } from '~/components/Tiptap/extensions/Resizabl
 import { Video } from '~/components/Tiptap/extensions/VideoExtension';
 import { MediaButtons } from '~/components/Tiptap/MediaButtons';
 import { TiptapControl } from '~/components/Tiptap/TiptapControl';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { FindContact } from '~/shared/types/trpc/contact.types';
 import { api } from '~/trpc/react';
 

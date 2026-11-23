@@ -5,7 +5,7 @@ import { Button, Grid, GridCol, Group, Modal, Select, Stack, Text, Textarea, Tit
 import { EntityType, ImageType } from '@prisma/client';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { ImageInfoClientInput } from '~/shared/schema/image.info.schema';
 import { api } from '~/trpc/react';
 import { ConnectedStateWithEntity } from '../../../../shared/types/image.types';

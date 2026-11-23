@@ -22,7 +22,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { memo } from 'react';
 import Logo from '~/components/Logo';
 import UserSection from '~/components/UserSection';
-import { navigationClientItem } from '~/lib/ConfigUI';
+import { navigationClientItem } from '~/lib/config/ui';
 import PromotionButton from '../PromotionButton';
 import CartButton from './CartButton';
 

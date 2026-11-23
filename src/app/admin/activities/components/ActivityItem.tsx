@@ -5,9 +5,9 @@ import { IconChevronDown } from '@tabler/icons-react';
 
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { formatTimeAgo } from '~/lib/FuncHandler/Format';
-import { getActionDetails } from '~/lib/FuncHandler/getThemeActivity';
-import { renderShortId } from '~/lib/FuncHandler/renderShortId';
+import { formatTimeAgo } from '~/lib/utils/format';
+import { getActionDetails } from '~/lib/helpers/ui/get-theme-activity';
+import { renderShortId } from '~/lib/utils/render-short-id';
 import { DiffChange } from './DiffChange';
 
 interface ActivityItemProps {

@@ -1,6 +1,6 @@
 import { Space } from '@mantine/core';
 import Reveal from '~/components/Reveal';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN } from '~/lib/utils/format';
 
 import { Suspense } from 'react';
 import { ComingSoonPage } from '~/components/ComingSoon';

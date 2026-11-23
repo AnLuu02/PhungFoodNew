@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN } from '~/lib/utils/format';
 import { FindCategory } from '~/shared/types/trpc/category.types';
 import { api } from '~/trpc/react';
 import { DeleteCategoryButton, UpdateCategoryButton } from '../Button';

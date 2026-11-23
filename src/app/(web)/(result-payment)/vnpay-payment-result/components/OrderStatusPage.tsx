@@ -4,8 +4,8 @@ import { Badge, Box, Button, Card, Center, Flex, Paper, Text, Title } from '@man
 import { IconArrowBack, IconCreditCard } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { statusConfig } from '~/lib/FuncHandler/status-order';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
+import { statusConfig } from '~/lib/helpers/order/status-order';
 import { useCartStore } from '~/stores/cart.store';
 
 interface OrderStatusPageProps {

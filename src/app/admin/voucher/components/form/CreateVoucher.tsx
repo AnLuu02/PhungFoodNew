@@ -22,7 +22,7 @@ import { VoucherType } from '@prisma/client';
 import { IconCalendar, IconCheck, IconX } from '@tabler/icons-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { baseVoucherSchema, VoucherInput } from '~/shared/schema/voucher.schema';
 import { api } from '~/trpc/react';
 

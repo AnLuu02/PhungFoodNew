@@ -22,7 +22,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import Empty from '~/components/Empty';
 import { AppSkeleton } from '~/components/Loading/AppSkeleton';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { CategoryWithRelationBasic } from '~/shared/types/trpc/category.types';
 import { ProductBase } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';

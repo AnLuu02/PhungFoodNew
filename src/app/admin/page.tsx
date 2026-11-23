@@ -32,8 +32,8 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import TimelineRecentActivity from '~/components/TimelineRecentActivity';
-import { formatMoneyShort } from '~/lib/FuncHandler/Format';
-import { buildChangeRateData } from '~/lib/FuncHandler/Statistics';
+import { formatMoneyShort } from '~/lib/utils/format';
+import { buildChangeRateData } from '~/lib/helpers/statistics';
 import { Period } from '~/shared/types';
 import { api } from '~/trpc/server';
 import { AnalyticsMetricCard } from './(dashboard)/components/AnalyticsMetricCard';

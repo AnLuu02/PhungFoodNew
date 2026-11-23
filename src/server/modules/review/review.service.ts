@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { delCache } from '~/lib/CacheConfig/withRedisCache';
-import { buildSortFilter } from '~/lib/FuncHandler/PrismaHelper';
+import { delCache } from '~/lib/config/cache/with-redis-cache';
+import { buildSortFilter } from '~/lib/helpers/prisma';
 import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
 import { ReviewInput } from '~/shared/schema/review.schema';
 

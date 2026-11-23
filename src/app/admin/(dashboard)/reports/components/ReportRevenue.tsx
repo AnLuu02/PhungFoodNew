@@ -4,8 +4,8 @@ import { Divider, Grid, GridCol, Paper, SimpleGrid, Stack, Title } from '@mantin
 import { OrderStatus } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { toNumber } from '~/lib/FuncHandler/Format';
-import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { toNumber } from '~/lib/utils/format';
+import { getStatusInfo } from '~/lib/helpers/order/status-order';
 import { api } from '~/trpc/react';
 import { PieChartBase } from './PieChartBase';
 import { TopProductTable } from './TopProductTable';

@@ -4,7 +4,7 @@ import { LineChart, PieChart } from '@mantine/charts';
 import { Card, Grid, GridCol, Paper, Title } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
-import { formatPriceLocaleVi, toNumber } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi, toNumber } from '~/lib/utils/format';
 import { GetInitReport } from '~/shared/types/trpc/page.types';
 
 const orderStatusData = [

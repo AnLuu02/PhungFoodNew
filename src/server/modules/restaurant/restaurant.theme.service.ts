@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { delCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY, THEME_KEY } from '~/shared/constants/redis-keys';
 import { ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
 

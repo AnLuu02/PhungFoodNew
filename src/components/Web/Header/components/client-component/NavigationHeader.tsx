@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import MegaMenu from '~/components/Web/Header/components/client-component/MegaMenu';
-import { navigationClientItem } from '~/lib/ConfigUI';
+import { navigationClientItem } from '~/lib/config/ui';
 import { api } from '~/trpc/react';
 
 function NavigationHeader() {

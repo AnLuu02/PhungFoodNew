@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { ManageTagVi } from '~/lib/utils/create-tag-vi';
+import { moneyToNumber } from '~/lib/utils/format';
 import { MaterialInput } from '~/shared/schema/material.schema';
 
 export const findMaterialService = async (

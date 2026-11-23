@@ -1,5 +1,5 @@
 import z from 'zod';
-import { createTag } from '~/lib/FuncHandler/generateTag';
+import { createTag } from '~/lib/utils/generate-tag';
 
 export const baseCategorySchema = z
   .object({

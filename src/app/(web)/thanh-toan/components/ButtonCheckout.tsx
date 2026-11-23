@@ -3,8 +3,8 @@ import { OrderStatus } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useVoucherItems } from '~/components/Hooks/use-cart';
-import { generateGuestCredentials } from '~/lib/FuncHandler/generateGuestCredentials';
-import { NotifyError } from '~/lib/FuncHandler/toast';
+import { generateGuestCredentials } from '~/lib/helpers/auth/generate-guest-credentials';
+import { NotifyError } from '~/lib/helpers/ui/toast';
 import { OrderItemInput } from '~/shared/schema/order.schema';
 import { api } from '~/trpc/react';
 

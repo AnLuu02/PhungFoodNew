@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Grid, Textarea, TextInput } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { basePermissionSchema, PermissionInput } from '~/shared/schema/permission.schema';
 import { api } from '~/trpc/react';
 

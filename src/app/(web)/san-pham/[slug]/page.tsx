@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache, Suspense } from 'react';
 import { AppSkeleton } from '~/components/Loading/AppSkeleton';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 import { db } from '~/server/db';
 import { PRODUCT_KEY } from '~/shared/constants/redis-keys';
 import { ProductBase } from '~/shared/types/trpc/product.types';

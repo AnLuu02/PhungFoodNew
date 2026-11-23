@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { moneyToNumber } from '~/lib/utils/format';
 
 export const searchService = async (db: PrismaClient, input: { s?: string }) => {
   const { s } = input;

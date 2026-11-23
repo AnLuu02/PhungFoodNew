@@ -6,7 +6,7 @@ import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { NotifyError } from '~/lib/FuncHandler/toast';
+import { NotifyError } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 const OtpModal = dynamic(() => import('./ModalOtp'), {
   ssr: false

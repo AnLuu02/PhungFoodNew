@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { moneyToNumber } from '~/lib/utils/format';
 import { InvoiceInput } from '~/shared/schema/invoice.schema';
 
 export const findInvoiceService = async (

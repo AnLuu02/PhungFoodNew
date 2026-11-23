@@ -14,7 +14,7 @@ import {
 } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { GetOverviewUser } from '~/shared/types/trpc/user.types';
 
 export const AlertUnpaidOrder = ({ orders }: { orders: NonNullable<GetOverviewUser['user']>['orders'] }) => {

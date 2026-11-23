@@ -1,5 +1,5 @@
 import { ImageType, Prisma, PrismaClient } from '@prisma/client';
-import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { delCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY, THEME_KEY } from '~/shared/constants/redis-keys';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { ImageClientInput } from '~/shared/schema/image.schema';

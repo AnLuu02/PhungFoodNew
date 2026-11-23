@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import districtsData from '~/lib/HardData/provinces_vietnam/districts.json';
-import provincesData from '~/lib/HardData/provinces_vietnam/provinces.json';
-import wardsData from '~/lib/HardData/provinces_vietnam/wards.json';
+import districtsData from '~/lib/data/provinces-vietnam/districts.json';
+import provincesData from '~/lib/data/provinces-vietnam/provinces.json';
+import wardsData from '~/lib/data/provinces-vietnam/wards.json';
 import { District, Province, Ward } from '~/shared/types/response.types';
 export const useProvinces = () => {
   const getProvince = (code: number, provincesData: Province[]) => {

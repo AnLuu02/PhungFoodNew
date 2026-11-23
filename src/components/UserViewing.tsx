@@ -2,7 +2,7 @@
 import { Group, Text } from '@mantine/core';
 import { IconEye } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';
-import { pusherClient } from '~/lib/PusherConfig/client';
+import { pusherClient } from '~/lib/config/pusher/client';
 
 export default function ViewingUser({ productId }: { productId: string }) {
   const [viewers, setViewers] = useState(0);

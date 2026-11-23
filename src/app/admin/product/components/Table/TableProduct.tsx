@@ -3,7 +3,7 @@
 import { Avatar, Badge, Box, Group, Highlight, Spoiler, Text, Tooltip } from '@mantine/core';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
 import { DeleteProductButton, UpdateProductButton } from '../Button';
 
 import { ActionIcon, Card, Divider, Flex, Paper, Select, SimpleGrid, Stack, Title } from '@mantine/core';
@@ -12,7 +12,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
 import { CardSkeleton } from '~/components/Web/Card/CardSkeleton';
-import { randomColorHex } from '~/lib/FuncHandler/RandomColorHex';
+import { randomColorHex } from '~/lib/utils/random-color-hex';
 import { UserRole } from '~/shared/constants/user.constants';
 import { FindProduct, getProductsOnly } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';

@@ -3,7 +3,7 @@
 import { ActionIcon, Modal } from '@mantine/core';
 import { IconMail, IconPhone, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
-import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
+import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
 import { FindContact } from '~/shared/types/trpc/contact.types';
 import { api } from '~/trpc/react';
 import MailResponse from './form/MailResponse';

@@ -1,7 +1,7 @@
 import { OrderStatus } from '@prisma/client';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { formatTransDate } from '~/lib/FuncHandler/Format';
+import { formatTransDate } from '~/lib/utils/format';
 import { api } from '~/trpc/server';
 import CheckoutClient from '../components/CheckoutClient';
 

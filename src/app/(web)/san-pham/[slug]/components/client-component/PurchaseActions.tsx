@@ -6,7 +6,7 @@ import { ButtonAddToCart } from '~/components/Button/ButtonAddToCart';
 import { useDebouncedValue } from '@mantine/hooks';
 import { memo, useEffect, useState } from 'react';
 import ViewingUser from '~/components/UserViewing';
-import { toNumber } from '~/lib/FuncHandler/Format';
+import { toNumber } from '~/lib/utils/format';
 import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useCartStore } from '~/stores/cart.store';
 

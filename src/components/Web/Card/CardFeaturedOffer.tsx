@@ -1,7 +1,7 @@
 import { Badge, Box, Button, Card, Group, Image, Rating, Stack, Text, Title } from '@mantine/core';
 import { IconShoppingBag } from '@tabler/icons-react';
 import Link from 'next/link';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 type OfferProduct = {
   id: string | number;

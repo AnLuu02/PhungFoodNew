@@ -5,7 +5,7 @@ import { IconBolt } from '@tabler/icons-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import PaginationLocal from '~/components/PaginationLocal';
 import Reveal from '~/components/Reveal';
-import { toNumber } from '~/lib/FuncHandler/Format';
+import { toNumber } from '~/lib/utils/format';
 import { api } from '~/trpc/react';
 import ProductCardCarouselHorizontal from '../../Card/CardProductCarouselHorizontal';
 import { CardProductHorizontalSkeleton } from '../../Card/CardProductHorizontalSkeleton';

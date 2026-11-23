@@ -14,7 +14,7 @@ import {
 import { IconHelp } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { allowedVoucher } from '~/lib/FuncHandler/vouchers-calculate';
+import { allowedVoucher } from '~/lib/helpers/order/vouchers-calculate';
 import { VoucherApplyStorage } from '~/shared/types/store.types';
 import { useCartStore } from '~/stores/cart.store';
 import { api } from '~/trpc/react';

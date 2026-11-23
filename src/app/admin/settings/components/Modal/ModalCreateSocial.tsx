@@ -4,8 +4,8 @@ import { Alert, Button, Group, Modal, Select, SimpleGrid, Switch, Text, TextInpu
 import { IconAlertCircle } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { TEMPLATE_OPTIONS } from '~/lib/FuncHandler/generateSocial';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { TEMPLATE_OPTIONS } from '~/lib/helpers/ui/generate-social';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 
 export function SocialLinkModal({

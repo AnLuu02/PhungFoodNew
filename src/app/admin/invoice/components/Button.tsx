@@ -27,9 +27,9 @@ import { api } from '~/trpc/react';
 
 import { Box, Card, Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
-import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { renderShortId } from '~/lib/FuncHandler/renderShortId';
+import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
+import { renderShortId } from '~/lib/utils/render-short-id';
 import { FindInvoice } from '~/shared/types/trpc/invoice.types';
 import InvoiceUpsert from './form/InvoiceUpsert';
 

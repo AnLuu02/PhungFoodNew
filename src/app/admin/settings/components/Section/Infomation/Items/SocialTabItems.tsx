@@ -2,8 +2,8 @@ import { ActionIcon, Card, Group, Stack, Switch, Text, TextInput } from '@mantin
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { iconMap } from '~/lib/FuncHandler/generateSocial';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { iconMap } from '~/lib/helpers/ui/generate-social';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 
 export const SocialTabItem = ({ item, index, setOpenedSocial }: { item: any; index: number; setOpenedSocial: any }) => {

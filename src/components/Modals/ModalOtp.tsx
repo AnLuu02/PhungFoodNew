@@ -5,7 +5,7 @@ import { TokenType } from '@prisma/client';
 import { IconInfoCircle, IconMail } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import PeriodControl from '~/app/(web)/(auth)/components/PeriodControl';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);

@@ -24,8 +24,8 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import AddressSection from '~/components/AdressSection';
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import { handleUploadFromClient } from '~/lib/Cloudinary/client';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { handleUploadFromClient } from '~/lib/config/cloudinary/client';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { INFO_LEVEL_USER, UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';

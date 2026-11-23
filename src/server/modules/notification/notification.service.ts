@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { getOnlineUserIds } from '~/lib/PusherConfig/handler';
-import { pusherServer } from '~/lib/PusherConfig/server';
+import { getOnlineUserIds } from '~/lib/config/pusher/handler';
+import { pusherServer } from '~/lib/config/pusher/server';
 import { Notification } from '~/shared/schema/notification.schema';
 
 export const createNotificationService = async (db: PrismaClient, input: Notification) => {

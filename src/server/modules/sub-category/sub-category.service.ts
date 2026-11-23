@@ -1,6 +1,6 @@
 import { ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { ManageTagVi } from '~/lib/FuncHandler/CreateTag-vi';
+import { ManageTagVi } from '~/lib/utils/create-tag-vi';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { ImageClientInput } from '~/shared/schema/image.schema';
 import { SubCategoryInput } from '~/shared/schema/subCategory.schema';

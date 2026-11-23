@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
-import { handleUploadFromClient } from '~/lib/Cloudinary/client';
-import { NotifyError } from '~/lib/FuncHandler/toast';
+import { handleUploadFromClient } from '~/lib/config/cloudinary/client';
+import { NotifyError } from '~/lib/helpers/ui/toast';
 import { ImageClientInput } from '~/shared/schema/image.schema';
 import { api } from '~/trpc/react';
 

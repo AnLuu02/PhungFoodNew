@@ -2,7 +2,7 @@
 
 import { Box, Button, Card, Paper, Switch, Text, TextInput } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
-import { NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifySuccess } from '~/lib/helpers/ui/toast';
 
 export const SettingsTabSection = () => {
   const handleDeleteAutoRule = (ruleId: string) => {

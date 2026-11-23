@@ -3,7 +3,7 @@ import { Badge, Box, Button, Card, Text, Title, Tooltip } from '@mantine/core';
 import { IconClock } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN } from '~/lib/utils/format';
 
 export function ConsumerCard({
   data

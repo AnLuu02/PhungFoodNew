@@ -2,7 +2,7 @@
 import { ActionIcon, Box, Group, NumberInput, Paper, Text, Tooltip } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 interface CartItemProps {
   thumbnail: string;

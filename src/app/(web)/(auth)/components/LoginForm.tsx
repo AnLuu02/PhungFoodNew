@@ -21,8 +21,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { checkLoginCooldown, setLoginCooldown } from '~/lib/FuncHandler/HandleLockedUser/loginLimiter';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { checkLoginCooldown, setLoginCooldown } from '~/lib/helpers/auth/login-limiter';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import LoginServices from '../../../../components/Auth/LoginServices';
 
 export default function LoginForm() {

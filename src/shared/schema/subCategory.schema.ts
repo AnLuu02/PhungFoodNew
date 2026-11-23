@@ -1,5 +1,5 @@
 import z from 'zod';
-import { createTag } from '~/lib/FuncHandler/generateTag';
+import { createTag } from '~/lib/utils/generate-tag';
 import { StatusImage } from './image.info.schema';
 import { imageClientInputSchema } from './image.schema';
 

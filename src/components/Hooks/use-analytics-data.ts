@@ -1,6 +1,6 @@
 'use client';
 import { useMemo, useState } from 'react';
-import dayjs from '~/lib/dayjs';
+import dayjs from '~/lib/config/dayjs';
 import {
   anomalies,
   businessInsights,

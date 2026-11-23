@@ -1,6 +1,6 @@
 import { EntityType, ImageType, Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import cloudinary from '~/lib/Cloudinary/cloudinary';
+import cloudinary from '~/lib/config/cloudinary/server';
 import { ImageServerInput } from '~/shared/schema/image.schema';
 import { ImageAssociation, ImageWithAssociationInput, ImageWithAssociations } from '~/shared/types/image.types';
 import { getServerAuthSession } from '~/server/auth';

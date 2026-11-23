@@ -11,8 +11,8 @@ import {
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
-import { formatDateViVN, formatMoneyShort, toNumber } from '~/lib/FuncHandler/Format';
-import { buildChangeRateData } from '~/lib/FuncHandler/Statistics';
+import { formatDateViVN, formatMoneyShort, toNumber } from '~/lib/utils/format';
+import { buildChangeRateData } from '~/lib/helpers/statistics';
 import { Period } from '~/shared/types';
 import { api } from '~/trpc/react';
 import { AnalyticsMetricCard } from '../../components/AnalyticsMetricCard';

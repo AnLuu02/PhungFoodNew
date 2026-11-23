@@ -3,8 +3,8 @@
 import { Box, Button, Center, Flex, Group, Paper, Rating, Space, Spoiler, Stack, Text } from '@mantine/core';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { onHandleModalAction } from '~/lib/ButtonHandler/ButtonHandleAction';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { onHandleModalAction } from '~/lib/helpers/ui/button-action';
+import { formatDateViVN } from '~/lib/utils/format';
 import { FindReview } from '~/shared/types/trpc/review.types';
 import { api } from '~/trpc/react';
 

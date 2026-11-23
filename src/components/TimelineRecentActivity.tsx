@@ -2,7 +2,7 @@
 import { Avatar, Badge, Box, Button, Divider, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import Link from 'next/link';
-import { formatTimeAgo } from '~/lib/FuncHandler/Format';
+import { formatTimeAgo } from '~/lib/utils/format';
 import { api } from '~/trpc/react';
 import { CommonSkeleton } from './Loading/LoadingSkeleton';
 

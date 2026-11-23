@@ -4,8 +4,8 @@ import { Button, Grid, GridCol, NumberInput, Select, TextInput } from '@mantine/
 import { DateTimePicker } from '@mantine/dates';
 import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { generateInvoiceNumber } from '~/lib/FuncHandler/generateInvoiceNumber';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { generateInvoiceNumber } from '~/lib/helpers/order/generate-invoice-number';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { baseInvoiceSchema, InvoiceInput } from '~/shared/schema/invoice.schema';
 import { api } from '~/trpc/react';
 

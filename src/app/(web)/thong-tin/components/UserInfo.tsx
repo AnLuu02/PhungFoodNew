@@ -27,9 +27,9 @@ import Link from 'next/link';
 import { userInfo } from 'os';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/Button';
-import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
-import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
+import { caculateLevelUser } from '~/lib/helpers/user/calculate-level';
+import { formatDateViVN } from '~/lib/utils/format';
+import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';
 import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { GetOverviewUser } from '~/shared/types/trpc/user.types';
 

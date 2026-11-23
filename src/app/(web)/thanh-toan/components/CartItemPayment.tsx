@@ -1,7 +1,7 @@
 import { Badge, Box, Button, Group, Paper, Spoiler, Text, Tooltip } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import Image from 'next/image';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { CartItem } from '~/shared/types/store.types';
 import { useCartStore } from '~/stores/cart.store';
 

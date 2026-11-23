@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { CommonSkeleton } from '~/components/Loading/LoadingSkeleton';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN } from '~/lib/utils/format';
 import { FindPayment } from '~/shared/types/trpc/payment.types';
 import { api } from '~/trpc/react';
 import { DeletePaymentButton, UpdatePaymentButton } from '../Button';

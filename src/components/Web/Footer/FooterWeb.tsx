@@ -2,7 +2,7 @@ import { Badge, Box, Divider, Flex, Grid, GridCol, SimpleGrid, Text, Title, Tool
 import { IconLink, IconPhone, IconTruck } from '@tabler/icons-react';
 import Link from 'next/link';
 import Logo from '~/components/Logo';
-import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
+import { generateSocialUrl, iconMap } from '~/lib/helpers/ui/generate-social';
 import { RestaurantBase } from '~/shared/types/trpc/restaurant.types';
 export default async function FooterWeb({ restaurant }: { restaurant: RestaurantBase }) {
   const timeOpen = () => {

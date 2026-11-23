@@ -19,7 +19,7 @@ import {
 import { IconCreditCard, IconSpacingVertical } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { themeSchemaWithRestaurantId, ThemeWithRestaurantId } from '~/shared/schema/restaurant.theme.schema';
 import { RestaurantDetail } from '~/shared/types/trpc/restaurant.types';
 import { api } from '~/trpc/react';

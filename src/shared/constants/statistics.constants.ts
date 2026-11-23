@@ -1,4 +1,4 @@
-import dayjs from '~/lib/dayjs';
+import dayjs from '~/lib/config/dayjs';
 import { CompareReturn, Period } from '../types';
 export const defaultValueCompareReturn: CompareReturn = {
   current: {

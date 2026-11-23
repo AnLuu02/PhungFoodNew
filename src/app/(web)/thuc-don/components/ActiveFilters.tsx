@@ -3,8 +3,8 @@
 import { Button, Group, InputBase, Pill, Text } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getViTag } from '~/lib/FuncHandler/generateTag';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
+import { getViTag } from '~/lib/utils/generate-tag';
 const IGNORED_PARAMS = ['page', 'limit', 'maxPrice', 'minPrice', 's'];
 export default function ActiveFilters() {
   const [isMounted, setIsMounted] = useState(false);

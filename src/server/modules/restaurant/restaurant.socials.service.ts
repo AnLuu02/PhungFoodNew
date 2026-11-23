@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { delCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { SocialWithRestaurantId } from '~/shared/schema/restaurant.socials.schema';
 

@@ -5,9 +5,9 @@ import { useDisclosure } from '@mantine/hooks';
 import { OrderStatus } from '@prisma/client';
 import { IconEye, IconRefresh, IconSettings } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
-import { formatDateViVN, formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { renderShortId } from '~/lib/FuncHandler/renderShortId';
-import { getStatusInfo } from '~/lib/FuncHandler/status-order';
+import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
+import { renderShortId } from '~/lib/utils/render-short-id';
+import { getStatusInfo } from '~/lib/helpers/order/status-order';
 import { GetFilterOrder, GetFilterOrderItem } from '~/shared/types/trpc/order.types';
 import { useCartStore } from '~/stores/cart.store';
 

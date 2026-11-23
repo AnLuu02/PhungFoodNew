@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { seedPayments } from '~/lib/HardData/seed';
+import { seedPayments } from '~/lib/data/seed';
 import { PaymentInput } from '~/shared/schema/payment.schema';
 
 export const findPaymentService = async (

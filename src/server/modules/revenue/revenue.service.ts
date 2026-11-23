@@ -1,8 +1,8 @@
 import { OrderStatus, PrismaClient } from '@prisma/client';
-import dayjs from '~/lib/dayjs';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
-import { getCompare } from '~/lib/FuncHandler/PrismaHelper';
-import { getDatesObjBetween } from '~/lib/FuncHandler/Statistics';
+import dayjs from '~/lib/config/dayjs';
+import { moneyToNumber } from '~/lib/utils/format';
+import { getCompare } from '~/lib/helpers/prisma';
+import { getDatesObjBetween } from '~/lib/helpers/statistics';
 import { defaultValueCompareReturn } from '~/shared/constants/statistics.constants';
 import { Period } from '~/shared/types';
 

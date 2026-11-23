@@ -1,6 +1,6 @@
 import { OpenRouter } from '@openrouter/sdk';
 import { NextResponse } from 'next/server';
-import { callOpenRouter, cleanHTML } from '~/lib/FuncHandler/Chat';
+import { callOpenRouter, cleanHTML } from '~/lib/integrations/ai/chat';
 
 export const runtime = 'nodejs';
 const systemPrompt = `

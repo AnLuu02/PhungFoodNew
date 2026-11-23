@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { transporter } from '~/lib/FuncHandler/MailHelpers/sendEmail';
+import { transporter } from '~/lib/integrations/mail/send-email';
 
 export async function POST(req: NextRequest) {
   try {

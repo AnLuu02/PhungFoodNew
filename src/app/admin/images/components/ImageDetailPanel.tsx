@@ -27,7 +27,7 @@ import { EntityType, ImageType } from '@prisma/client';
 import { IconCopy, IconDownload, IconEdit, IconTrash, IconUnlink } from '@tabler/icons-react';
 import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 
 interface ImageDetailPanelProps {

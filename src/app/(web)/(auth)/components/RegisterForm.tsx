@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import OtpModal from '~/components/Modals/ModalOtp';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { UserInput, userInputSchema } from '~/shared/schema/user.schema';
 import { api } from '~/trpc/react';
 import { TRPCErrorCode } from '~/shared/types/response.types';

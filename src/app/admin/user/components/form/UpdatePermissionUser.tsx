@@ -5,8 +5,8 @@ import FilterSection from '~/app/admin/role/components/Section/FilterSection';
 import PermissionSection from '~/app/admin/role/components/Section/PermissionSection';
 import { FilterPermission, SelectedPermissions } from '~/app/admin/role/components/types';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { syncPermissions } from '~/lib/helpers/auth/sync-permissions';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 
 export default function UpdatePermissionUser({

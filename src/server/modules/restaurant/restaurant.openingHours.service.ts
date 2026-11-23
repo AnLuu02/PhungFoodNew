@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { delCache } from '~/lib/CacheConfig/withRedisCache';
+import { delCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { OpeningHourWithRestaurantId } from '~/shared/schema/restaurant.openingHours.schema';
 

@@ -2,7 +2,7 @@
 
 import { Box } from '@mantine/core';
 import { memo, useEffect, useRef } from 'react';
-import { observeElement, unobserveElement } from '../lib/observer';
+import { observeElement, unobserveElement } from '~/lib/config/observer';
 
 type RevealProps = {
   children: React.ReactNode;

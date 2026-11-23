@@ -3,7 +3,7 @@
 import { Avatar, Badge, Box, Button, Card, Divider, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
-import { formatMoneyShort } from '~/lib/FuncHandler/Format';
+import { formatMoneyShort } from '~/lib/utils/format';
 import { SectionHeading } from './SectionHeading';
 
 export type TestimonialItem = {

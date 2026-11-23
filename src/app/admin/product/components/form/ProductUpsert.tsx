@@ -21,9 +21,9 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 import ThumbnailUpsert from '~/components/ImageFormUpsert';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
 import { TiptapEditor } from '~/components/Tiptap/TiptapEditor';
-import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/Cloudinary/client';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { seedRegions } from '~/lib/HardData/seed';
+import { handleUploadFromClient, uploadMultipleToCloudinaryFromClient } from '~/lib/config/cloudinary/client';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
+import { seedRegions } from '~/lib/data/seed';
 import { UserRole } from '~/shared/constants/user.constants';
 import { StatusImage } from '~/shared/schema/image.info.schema';
 import { ProductInput, productInputSchema } from '~/shared/schema/product.schema';

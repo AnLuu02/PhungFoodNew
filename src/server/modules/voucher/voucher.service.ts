@@ -1,6 +1,6 @@
 import { Prisma, PrismaClient, VoucherType } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { moneyToNumber } from '~/lib/utils/format';
 import { STATUS_VOUCHER } from '~/shared/constants/voucher.constants';
 import { VoucherInput } from '~/shared/schema/voucher.schema';
 

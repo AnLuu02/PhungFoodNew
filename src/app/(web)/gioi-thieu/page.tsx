@@ -31,7 +31,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Reveal from '~/components/Reveal';
 import { TextTyping } from '~/components/TextTyping';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 import { journey, signatures, stats } from '~/shared/constants/about-us.constants';
 import { PAGE_KEY } from '~/shared/constants/redis-keys';
 import { GetInitAboutUs } from '~/shared/types/trpc/page.types';

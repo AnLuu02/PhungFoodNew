@@ -4,8 +4,8 @@ import { Badge, Box, Divider, Group, Highlight, Paper, Stack, Text } from '@mant
 import { IconBellPause, IconCircleCheck, IconSum, IconTruckDelivery, IconXboxX } from '@tabler/icons-react';
 import CustomPagination from '~/components/Pagination';
 import PageSizeSelector from '~/components/Perpage';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
-import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/FuncHandler/status-order';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
+import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';
 import {
   CopyOrderButton,
   DeleteOrderButton,

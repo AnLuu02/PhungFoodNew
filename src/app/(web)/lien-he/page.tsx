@@ -1,7 +1,7 @@
 import { Flex, Grid, GridCol, Text, ThemeIcon } from '@mantine/core';
 import { IconBrand4chan, IconLocation, IconPhone } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
 import { FormContact } from './components/FormContact';

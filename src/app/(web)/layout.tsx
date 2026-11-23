@@ -5,7 +5,7 @@ import FooterWeb from '~/components/Web/Footer/FooterWeb';
 import { NavigationFixed } from '~/components/Web/Header/components/client-component/NavigationFIxed';
 import HeaderWeb from '~/components/Web/Header/HeaderWeb';
 import { HeaderClient } from '~/components/Web/Header/section/HeaderFirst';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 import { RESTAURANT_KEY } from '~/shared/constants/redis-keys';
 import { api } from '~/trpc/server';
 

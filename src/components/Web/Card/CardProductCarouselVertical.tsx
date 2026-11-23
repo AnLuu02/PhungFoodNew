@@ -10,7 +10,7 @@ import ButtonToggleLike from '~/components/Button/ButtonToggleLike';
 import { ButtonViewProduct } from '~/components/Button/ButtonViewProduct';
 import { useFavorite } from '~/components/Hooks/use-favorite';
 import { breakpoints } from '~/shared/constants/common.constants';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { ProductBase } from '~/shared/types/trpc/product.types';
 import { useModalStore } from '~/stores/modal.store';
 import { ButtonAddToCart } from '../../Button/ButtonAddToCart';

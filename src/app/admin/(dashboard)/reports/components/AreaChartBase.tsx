@@ -1,8 +1,8 @@
 import { AreaChart } from '@mantine/charts';
 import { ActionIcon, Box, Card, Flex, Group, Text, Title, Tooltip } from '@mantine/core';
 import { IconRotateClockwise } from '@tabler/icons-react';
-import dayjs from '~/lib/dayjs';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import dayjs from '~/lib/config/dayjs';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 export const AreaChartBase = ({
   dataChart,

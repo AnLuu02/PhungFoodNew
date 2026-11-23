@@ -16,8 +16,8 @@ import {
 import { useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import LoadingSpiner from '~/components/Loading/LoadingSpiner';
-import { generateNotifyHtml } from '~/lib/FuncHandler/MailHelpers/generateNotifyHtml';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { generateNotifyHtml } from '~/lib/integrations/mail/generate-notify-html';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { Notification, notificationSchema } from '~/shared/schema/notification.schema';
 import type { NotificationBase } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';

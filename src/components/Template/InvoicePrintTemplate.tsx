@@ -2,8 +2,8 @@
 import { Box, Table, Text } from '@mantine/core';
 import { VoucherType } from '@prisma/client';
 import { useMemo } from 'react';
-import { caculateAmount } from '~/lib/FuncHandler/calculateLevel';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { caculateAmount } from '~/lib/helpers/user/calculate-level';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import Logo from '../Logo';
 
 type invoicePrintProps = {

@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { pusherServer } from '~/lib/PusherConfig/server';
+import { pusherServer } from '~/lib/config/pusher/server';
 import { authOptions } from '~/server/auth/options';
 
 export async function POST(req: Request) {

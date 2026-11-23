@@ -18,9 +18,9 @@ import { IconBell, IconCheck, IconInfoCircle, IconTrash, IconTrashX, IconX } fro
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { ViewNotificationDetail } from '~/components/Modals/ViewNotificationDetail';
-import { formatTimeAgo } from '~/lib/FuncHandler/Format';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
-import { pusherClient } from '~/lib/PusherConfig/client';
+import { formatTimeAgo } from '~/lib/utils/format';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
+import { pusherClient } from '~/lib/config/pusher/client';
 import { NotificationBase } from '~/shared/types/trpc/notification.types';
 import { api } from '~/trpc/react';
 import { useRealtimeNotification } from './Hooks/use-realtime-notification';

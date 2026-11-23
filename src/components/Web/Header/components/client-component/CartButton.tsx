@@ -5,7 +5,7 @@ import { IconShoppingBag } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCartAmount, useCartItems } from '~/components/Hooks/use-cart';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 import { useCartStore } from '~/stores/cart.store';
 import CartItemFastMenu from '../CartItemFastMenu';
 

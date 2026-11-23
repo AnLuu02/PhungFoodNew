@@ -43,7 +43,7 @@ import {
 } from '@tabler/icons-react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import cooking_guilds from '~/lib/HardData/cooking_guilds.json';
+import cooking_guilds from '~/lib/data/cooking-guilds.json';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const recipe = cooking_guilds.find(({ tag }) => params.slug === tag);

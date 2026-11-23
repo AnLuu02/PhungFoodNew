@@ -2,8 +2,8 @@
 import { Box, Button, Flex, Group, Paper, Switch, Text } from '@mantine/core';
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ModalUpsertSkeleton } from '~/components/ModelUpsertSkeleton';
-import { syncPermissions } from '~/lib/FuncHandler/SyncPermissions';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { syncPermissions } from '~/lib/helpers/auth/sync-permissions';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 import FilterSection from '../Section/FilterSection';
 import PermissionSection from '../Section/PermissionSection';

@@ -22,8 +22,8 @@ import { UserLevel } from '@prisma/client';
 import { IconLogin2 } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { caculateLevelUser } from '~/lib/FuncHandler/calculateLevel';
-import { benefitLevel } from '~/lib/HardData/promotion-level';
+import { caculateLevelUser } from '~/lib/helpers/user/calculate-level';
+import { benefitLevel } from '~/lib/data/promotion-level';
 import { api } from '~/trpc/react';
 
 const rewardRules = [

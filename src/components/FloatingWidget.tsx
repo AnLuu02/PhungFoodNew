@@ -3,7 +3,7 @@ import { Box, Button, Center, Menu, MenuDropdown, MenuItem, MenuTarget } from '@
 import { IconChevronCompactLeft, IconLink, IconMessageCircle, IconShoppingBagCheck } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { generateSocialUrl, iconMap } from '~/lib/FuncHandler/generateSocial';
+import { generateSocialUrl, iconMap } from '~/lib/helpers/ui/generate-social';
 import { RestaurantBase } from '~/shared/types/trpc/restaurant.types';
 import ModernChatbox from './chat/Chatbox';
 import { useCartCount } from './Hooks/use-cart';

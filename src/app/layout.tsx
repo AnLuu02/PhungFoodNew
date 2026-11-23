@@ -16,8 +16,8 @@ import NextTopLoader from 'nextjs-toploader';
 import { TRPCReactProvider } from '~/trpc/react';
 
 import ScrollToTop from '~/components/ScrollToTop';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
-import { hexToRgb } from '~/lib/FuncHandler/hexToRgb';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
+import { hexToRgb } from '~/lib/utils/hex-to-rgb';
 import { FavoriteProvider } from '~/providers/favorite-provider';
 import { GlobalModalProvider } from '~/providers/global-modal-provider';
 import { getServerAuthSession } from '~/server/auth';

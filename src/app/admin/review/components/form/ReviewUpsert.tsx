@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Flex, Grid, NumberInput, Rating, Select, Textarea } from '@mantine/core';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { UserRole } from '~/shared/constants/user.constants';
 import { baseReviewSchema, ReviewInput } from '~/shared/schema/review.schema';
 import { getProductsOnly } from '~/shared/types/trpc/product.types';

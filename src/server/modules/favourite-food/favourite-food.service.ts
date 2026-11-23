@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
-import { moneyToNumber } from '~/lib/FuncHandler/Format';
+import { moneyToNumber } from '~/lib/utils/format';
 export const toggleFavouriteFoodService = async (db: PrismaClient, input: { productId: string; userId: string }) => {
   const { userId, productId } = input;
   const favourite_food = await db.$transaction(async tx => {

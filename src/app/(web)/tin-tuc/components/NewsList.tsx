@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import Empty from '~/components/Empty';
-import { formatDateViVN } from '~/lib/FuncHandler/Format';
+import { formatDateViVN } from '~/lib/utils/format';
 import { FetchNews } from '~/shared/types/trpc/news.types';
 import { api } from '~/trpc/react';
 import { NewsItemSkeleton } from './NewsItemSkeleton';

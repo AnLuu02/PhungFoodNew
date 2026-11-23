@@ -3,7 +3,7 @@
 import { Card, Flex, Text } from '@mantine/core';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { navigationClientItem } from '~/lib/ConfigUI';
+import { navigationClientItem } from '~/lib/config/ui';
 
 export const NavigationFixed = () => {
   const pathname = usePathname();

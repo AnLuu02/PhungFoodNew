@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { withRedisCache } from '~/lib/CacheConfig/withRedisCache';
+import { withRedisCache } from '~/lib/config/cache/with-redis-cache';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {

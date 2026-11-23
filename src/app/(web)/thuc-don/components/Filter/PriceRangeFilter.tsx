@@ -2,7 +2,7 @@ import { Box, Button, Divider, Flex, Grid, GridCol, NumberInput, Popover, RangeS
 import { IconMoneybag } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { formatPriceLocaleVi } from '~/lib/FuncHandler/Format';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 export function PriceRangeFilter() {
   const [message, setMessage] = useState('');

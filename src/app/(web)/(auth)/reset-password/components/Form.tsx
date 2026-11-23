@@ -4,7 +4,7 @@ import { Button, Card, Center, Grid, GridCol, PasswordInput, TextInput, Title } 
 import { IconMail } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import { NotifyError, NotifySuccess } from '~/lib/FuncHandler/toast';
+import { NotifyError, NotifySuccess } from '~/lib/helpers/ui/toast';
 import { api } from '~/trpc/react';
 import PeriodControl from '../../components/PeriodControl';
 

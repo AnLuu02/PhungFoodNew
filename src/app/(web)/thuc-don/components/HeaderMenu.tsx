@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import { SearchInput } from '~/components/Search/SearchInput';
 import tags from '~/shared/constants/tags-vi.json';
-import { getTagFromQuery } from '~/lib/FuncHandler/generateTag';
+import { getTagFromQuery } from '~/lib/utils/generate-tag';
 import ActiveFilters from './ActiveFilters';
 import { PriceRangeFilter } from './Filter/PriceRangeFilter';
 import { SortFilter } from './Filter/SortFilter';
