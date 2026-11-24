@@ -24,21 +24,20 @@ import { IconCircleCheck, IconUpload } from '@tabler/icons-react';
 import { Session } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
-import { userInfo } from 'os';
 import { useMemo, useState } from 'react';
 import { UpdateUserButton } from '~/app/admin/user/components/button';
+import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';
 import { caculateLevelUser } from '~/lib/helpers/user/calculate-level';
 import { formatDateViVN } from '~/lib/utils/format';
-import { getTotalOrderStatus, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';
 import { INFO_LEVEL_USER } from '~/shared/constants/user.constants';
 import { GetOverviewUser } from '~/shared/types/trpc/user.types';
 
 export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>['user']; session: Session | null }) {
-  const userInfor = user;
+  const userInfo = user;
   const [opened, setOpened] = useState(false);
   const { statusObj } = useMemo(() => {
     const orderData =
-      userInfor?.orders?.map((order: NonNullable<GetOverviewUser['user']>['orders'][number]) => {
+      userInfo?.orders?.map((order: NonNullable<GetOverviewUser['user']>['orders'][number]) => {
         if (!order) return {};
         return {
           id: order.id,
@@ -49,10 +48,10 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
       }) || [];
     const statusObj = getTotalOrderStatus(orderData);
     return { statusObj };
-  }, [userInfor]);
+  }, [userInfo]);
   const { currentLevel, benefit, levelText, nextLevel, progressRemainingValue } = caculateLevelUser({
-    level: userInfor?.level,
-    pointUser: userInfor?.pointUser
+    level: userInfo?.level,
+    pointUser: userInfo?.pointUser
   });
 
   return (
@@ -60,11 +59,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
       <GridCol span={{ base: 12, sm: 12, md: 12, lg: 6 }}>
         <Card shadow='lg' pos='relative' bg={`${currentLevel.color}22`} className='h-full pt-10 sm:p-7'>
           <Box pos='absolute' top={10} right={4}>
-            <UpdateUserButton
-              email={userInfor?.email || ''}
-              openedFromClient={opened}
-              setOpenedFromClient={setOpened}
-            />
+            <UpdateUserButton email={userInfo?.email || ''} openedFromClient={opened} setOpenedFromClient={setOpened} />
           </Box>
           <Group mb='md' align='flex-start'>
             <Tooltip label='Đổi ảnh đại diện'>
@@ -73,8 +68,8 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                   className='rounded-full object-cover'
                   width={90}
                   height={90}
-                  src={userInfor?.avatarImage?.url || '/images/webp/user-default.webp'}
-                  alt={userInfor?.avatarImage?.altText || 'Ảnh đại diện ' + userInfo?.name}
+                  src={userInfo?.avatarImage?.url || '/images/webp/user-default.webp'}
+                  alt={userInfo?.avatarImage?.altText || 'Ảnh đại diện ' + userInfo?.name}
                 />
                 <Flex
                   onClick={() => setOpened(true)}
@@ -89,7 +84,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
             <Stack gap={6}>
               <Group align='center'>
                 <Text size='xl' fw={700}>
-                  {userInfor?.name}
+                  {userInfo?.name}
                 </Text>
               </Group>
               <Flex align='center' gap={10} pos={'relative'}>
@@ -107,7 +102,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                 </Box>
 
                 <Badge size='md' ml={5} variant='outline' color={currentLevel.color}>
-                  {userInfor?.pointUser} điểm
+                  {userInfo?.pointUser} điểm
                 </Badge>
               </Flex>
             </Stack>
@@ -119,7 +114,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                 Email
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.email}
+                {userInfo?.email}
               </Text>
             </Grid.Col>
             <Grid.Col span={6}>
@@ -127,7 +122,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                 Ngày sinh
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.dateOfBirth ? formatDateViVN(userInfor?.dateOfBirth) : 'Đang cập nhật'}
+                {userInfo?.dateOfBirth ? formatDateViVN(userInfo?.dateOfBirth) : 'Đang cập nhật'}
               </Text>
             </Grid.Col>
             <Grid.Col span={6}>
@@ -135,7 +130,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                 Số điện thoại
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.phone || 'Đang cập nhật'}
+                {userInfo?.phone || 'Đang cập nhật'}
               </Text>
             </Grid.Col>
             <Grid.Col span={6}>
@@ -143,7 +138,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                 Vai trò
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.role?.viName || 'Đang cập nhật'}
+                {userInfo?.role?.viName || 'Đang cập nhật'}
               </Text>
             </Grid.Col>
             <Grid.Col span={12}>
@@ -151,7 +146,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                 Địa chỉ
               </Text>
               <Text size='sm' c='dimmed'>
-                {userInfor?.address?.fullAddress || 'Đang cập nhật'}
+                {userInfo?.address?.fullAddress || 'Đang cập nhật'}
               </Text>
             </Grid.Col>
             <Grid.Col span={12}>
@@ -259,7 +254,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
                     </Text>
 
                     <Text mt={4} fw={900} className='font-quicksand text-lg text-slate-950 dark:text-white'>
-                      {userInfor?.pointUser || 0} điểm
+                      {userInfo?.pointUser || 0} điểm
                     </Text>
                   </Box>
 
@@ -372,7 +367,7 @@ export function UserInfo({ user, session }: { user: NonNullable<GetOverviewUser>
 
                 <Center mt='md'>
                   <Text size='sm' c='dimmed' ta='center'>
-                    <b>{userInfor?.pointUser || 0}</b> điểm tích lũy · <b>{currentLevel.viName}</b>
+                    <b>{userInfo?.pointUser || 0}</b> điểm tích lũy · <b>{currentLevel.viName}</b>
                   </Text>
                 </Center>
               </Box>

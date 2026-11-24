@@ -1,19 +1,31 @@
 'use client';
 
 import { Badge, Grid, Group, Tooltip as MantineTooltip, Paper, Text, ThemeIcon } from '@mantine/core';
-import { IconInfoCircle, IconTrendingDown, IconTrendingUp } from '@tabler/icons-react';
+import {
+  IconChartBar,
+  IconCurrencyDollar,
+  IconInfoCircle,
+  IconReceipt,
+  IconReport,
+  IconShoppingBag,
+  IconTrendingDown,
+  IconTrendingUp,
+  IconUserCheck,
+  IconUserPlus,
+  IconUsers
+} from '@tabler/icons-react';
 import { Area, AreaChart, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { KPI } from '~/shared/types/analysis.types';
 
 const iconMap: Record<string, any> = {
-  CurrencyDollar: require('@tabler/icons-react').IconCurrencyDollar,
-  ChartBar: require('@tabler/icons-react').IconChartBar,
-  ShoppingBag: require('@tabler/icons-react').IconShoppingBag,
-  Receipt: require('@tabler/icons-react').IconReceipt,
-  Users: require('@tabler/icons-react').IconUsers,
-  UserPlus: require('@tabler/icons-react').IconUserPlus,
-  UserCheck: require('@tabler/icons-react').IconUserCheck,
-  TrendingUp: require('@tabler/icons-react').IconTrendingUp
+  CurrencyDollar: IconCurrencyDollar,
+  ChartBar: IconChartBar,
+  ShoppingBag: IconShoppingBag,
+  Receipt: IconReceipt,
+  Users: IconUsers,
+  UserPlus: IconUserPlus,
+  UserCheck: IconUserCheck,
+  TrendingUp: IconTrendingUp
 };
 
 interface KPIOverviewProps {
@@ -45,7 +57,7 @@ export function KPIOverview({ data, loading }: KPIOverviewProps) {
   return (
     <Grid>
       {data.map(kpi => {
-        const IconComponent = iconMap[kpi.icon] || require('@tabler/icons-react').IconReport;
+        const IconComponent = iconMap[kpi.icon] || IconReport;
         const percentChange = kpi.previousValue ? ((kpi.value - kpi.previousValue) / kpi.previousValue) * 100 : 0;
         const isPositive = percentChange >= 0;
 
