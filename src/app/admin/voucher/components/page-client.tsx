@@ -4,17 +4,17 @@ import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Title } 
 import { IconActivity, IconAlertTriangle, IconCircleCheck, IconGift } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import Empty from '~/components/common/empty';
-import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
-import CustomPagination from '~/components/common/pagination';
-import PageSizeSelector from '~/components/common/per-page';
-import { SearchInput } from '~/components/search/search-input';
-import { STATUS_FILTER_VOUCHER } from '~/shared/constants/voucher.constants';
-import { FindVoucher, GetAllVoucher } from '~/shared/types/trpc/voucher.types';
-import { api } from '~/trpc/react';
 import CardVoucher from '~/app/admin/voucher/components/card-voucher';
 import { UpdateVoucherModal } from '~/app/admin/voucher/components/modals/update-voucher-modal';
 import { ViewVoucherModal } from '~/app/admin/voucher/components/modals/view-voucher-modal';
+import Empty from '~/components/common/empty';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
+import { ModalUpsertSkeleton } from '~/components/forms/modal-upsert-skeleton';
+import { SearchInput } from '~/components/search/search-input';
+import { STATUS_FILTER_VOUCHER } from '~/shared/constants/voucher.constants';
+import { FindVoucher } from '~/shared/types/trpc/voucher.types';
+import { api } from '~/trpc/react';
 
 type StatusFilterVoucher = typeof STATUS_FILTER_VOUCHER;
 
@@ -38,7 +38,7 @@ export default function VoucherClient() {
       type
     }
   });
-  const { data: allDataClient } = api.Voucher.getAll.useQuery(undefined);
+  const { data: summary } = api.Voucher.admin.getSummary.useQuery();
   const [selectedPromotion, setSelectedPromotion] = useState<{
     type: 'edit' | 'view';
     data: FindVoucher['vouchers'][number];
@@ -48,29 +48,7 @@ export default function VoucherClient() {
   const vouchers = data?.vouchers || [];
 
   const dataFilter = useMemo(() => {
-    if (!allDataClient) return [];
-
-    const now = new Date();
-
-    const summary = allDataClient.reduce(
-      (acc: { total: number; enabled: number; expired: number; totalUsage: number }, item: GetAllVoucher[number]) => {
-        const endDate = new Date(item.endDate);
-        const used = +item.usedQuantity || 0;
-
-        acc.total += 1;
-        acc.totalUsage += used;
-
-        if (item.isActive) {
-          if (endDate > now) {
-            acc.enabled += 1;
-          } else {
-            acc.expired += 1;
-          }
-        }
-        return acc;
-      },
-      { total: 0, enabled: 0, expired: 0, totalUsage: 0 }
-    );
+    if (!summary) return [];
 
     return [
       {
@@ -81,13 +59,13 @@ export default function VoucherClient() {
       },
       {
         label: 'Khả dụng',
-        value: summary.enabled,
+        value: summary.active,
         icon: IconCircleCheck,
         color: '#499764'
       },
       {
         label: 'Đã được dùng',
-        value: summary.totalUsage,
+        value: summary.usaged,
         icon: IconActivity,
         color: '#C0A453'
       },
@@ -98,7 +76,7 @@ export default function VoucherClient() {
         color: '#CA041D'
       }
     ];
-  }, [allDataClient]);
+  }, [summary]);
 
   const utils = api.useUtils();
   useEffect(() => {

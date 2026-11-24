@@ -8,7 +8,10 @@ import {
   publicProcedure,
   requirePermission
 } from '~/server/api/trpc';
+import { CATEGORY_KEY } from '~/shared/constants/redis-keys';
+import { baseCategorySchema } from '~/shared/schema/category.schema';
 import {
+  adminGetCategorySummaryService,
   createManyCategoryService,
   deleteCategoryService,
   findCategoryService,
@@ -17,9 +20,14 @@ import {
   getCategoriesWithRelationBasicService,
   upsertCategoryService
 } from './category.service';
-import { CATEGORY_KEY } from '~/shared/constants/redis-keys';
-import { baseCategorySchema } from '~/shared/schema/category.schema';
+
+const adminCategoryRouter = createTRPCRouter({
+  adminGetCategorySummary: protectedProcedure.query(async ({ ctx }) => await adminGetCategorySummaryService(ctx.db))
+});
+
 export const categoryRouter = createTRPCRouter({
+  admin: adminCategoryRouter,
+
   find: publicProcedure
     .input(
       z.object({

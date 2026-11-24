@@ -67,18 +67,13 @@ export const getOnePaymentService = async (
   }
   return payment;
 };
-export const getAllPaymentService = async (
-  db: PrismaClient,
-  input?: {
-    include?: Prisma.PaymentInclude;
-  }
-) => {
-  let payments = await db.payment.findMany({ include: input?.include });
+export const getAllPaymentService = async (db: PrismaClient) => {
+  let payments = await db.payment.findMany();
   if (!payments?.length) {
     await db.payment.createMany({
       data: seedPayments
     });
-    payments = await db.payment.findMany({ include: input?.include });
+    payments = await db.payment.findMany();
   }
   return payments;
 };

@@ -112,15 +112,7 @@ export const deleteVoucherService = async (db: PrismaClient, input: { id: string
     }
   };
 };
-export const getAllVoucherService = async (db: PrismaClient, input?: { include?: Prisma.VoucherInclude }) => {
-  const vouchers = await db.voucher.findMany({ include: input?.include });
-  return vouchers.map(v => ({
-    ...v,
-    discountValue: moneyToNumber(v.discountValue),
-    maxDiscount: moneyToNumber(v.maxDiscount),
-    minOrderPrice: moneyToNumber(v.minOrderPrice)
-  }));
-};
+
 export const getVoucherAppliedAllService = async (db: PrismaClient, input?: { include?: Prisma.VoucherInclude }) => {
   const vouhcers = await db.voucher.findMany({ where: { applyAll: true }, include: input?.include });
   return vouhcers.map(v => ({
@@ -358,5 +350,29 @@ export const createVoucherService = async (db: PrismaClient, input: VoucherInput
         discountValue: moneyToNumber(result.discountValue)
       }
     }
+  };
+};
+
+export const adminGetVoucherSummaryService = async (db: PrismaClient) => {
+  const [total, active, usaged, expired] = await db.$transaction([
+    db.voucher.count(),
+    db.voucher.count({ where: { isActive: true } }),
+    db.voucher.aggregate({
+      _sum: { usedQuantity: true }
+    }),
+    db.voucher.count({
+      where: {
+        endDate: {
+          lt: new Date()
+        }
+      }
+    })
+  ]);
+  return {
+    total,
+    active,
+    inactive: total - active,
+    usaged: usaged._sum.usedQuantity,
+    expired
   };
 };

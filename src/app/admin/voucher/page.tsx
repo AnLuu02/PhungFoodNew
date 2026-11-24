@@ -1,9 +1,9 @@
 import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { api, HydrateClient } from '~/trpc/server';
 import { CreateVoucherButton } from '~/app/admin/voucher/components/button';
 import VoucherClient from '~/app/admin/voucher/components/page-client';
+import { api, HydrateClient } from '~/trpc/server';
 
 export const metadata: Metadata = {
   title: 'Quản lý khuyến mãi '
@@ -27,7 +27,7 @@ export default async function VoucherManagementPage({
   const type = searchParams?.type ?? undefined;
 
   await Promise.all([
-    api.Voucher.getAll.prefetch(),
+    api.Voucher.admin.getSummary.prefetch(),
     api.Voucher.find.prefetch({ page: +page, limit: +limit, filters: { s, status, type } })
   ]);
 

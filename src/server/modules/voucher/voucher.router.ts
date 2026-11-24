@@ -1,20 +1,32 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
 import {
+  activityLogger,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+  requirePermission
+} from '~/server/api/trpc';
+import { baseVoucherSchema } from '~/shared/schema/voucher.schema';
+import {
+  adminGetVoucherSummaryService,
   createVoucherService,
   deleteVoucherService,
   findVoucherService,
-  getAllVoucherService,
   getOneVoucherService,
   getVoucherAppliedAllService,
   getVoucherForUserByUniqueService,
   getVoucherForUserService,
   updateVoucherService
 } from './voucher.service';
-import { baseVoucherSchema } from '~/shared/schema/voucher.schema';
+
+const adminVoucherRouter = createTRPCRouter({
+  getSummary: protectedProcedure.query(async ({ ctx }) => adminGetVoucherSummaryService(ctx.db))
+});
+
 export const voucherRouter = createTRPCRouter({
+  admin: adminVoucherRouter,
   find: publicProcedure
     .input(
       z.object({
@@ -44,15 +56,6 @@ export const voucherRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => await deleteVoucherService(ctx.db, input)),
 
-  getAll: publicProcedure
-    .input(
-      z
-        .object({
-          include: z.custom<Prisma.VoucherInclude>().optional()
-        })
-        .optional()
-    )
-    .query(async ({ ctx, input }) => await getAllVoucherService(ctx.db, input)),
   getVoucherAppliedAll: publicProcedure
     .input(
       z

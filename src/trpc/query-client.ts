@@ -5,6 +5,7 @@ export const createQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
+        refetchOnWindowFocus: false,
         staleTime: 30 * 1000
       },
       dehydrate: {

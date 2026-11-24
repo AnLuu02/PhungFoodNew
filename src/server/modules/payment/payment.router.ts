@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
 import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import { basePaymentSchema } from '~/shared/schema/payment.schema';
 import {
   deletePaymentService,
   findPaymentService,
@@ -9,7 +10,6 @@ import {
   getOnePaymentService,
   upsertPaymentService
 } from './payment.service';
-import { basePaymentSchema } from '~/shared/schema/payment.schema';
 
 export const paymentRouter = createTRPCRouter({
   find: publicProcedure
@@ -41,15 +41,7 @@ export const paymentRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => await getOnePaymentService(ctx.db, input)),
-  getAll: publicProcedure
-    .input(
-      z
-        .object({
-          include: z.custom<Prisma.PaymentInclude>().optional()
-        })
-        .optional()
-    )
-    .query(async ({ ctx, input }) => await getAllPaymentService(ctx.db, input)),
+  getAll: publicProcedure.query(async ({ ctx }) => await getAllPaymentService(ctx.db)),
   upsert: publicProcedure
     .use(requirePermission('update:payment'))
     .use(requirePermission('create:payment'))

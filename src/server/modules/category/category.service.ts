@@ -191,3 +191,32 @@ export const createManyCategoryService = async (db: PrismaClient, input: { data:
 
   return newData;
 };
+
+export const adminGetCategorySummaryService = async (db: PrismaClient) => {
+  const [total, active, byCategory] = await db.$transaction([
+    db.category.count({ where: { isActive: true } }),
+    db.category.count({ where: { isActive: true } }),
+    db.category.findMany({
+      where: {
+        isActive: true
+      },
+      select: {
+        name: true,
+        _count: {
+          select: {
+            subCategory: {
+              where: { isActive: true }
+            }
+          }
+        }
+      }
+    })
+  ]);
+
+  return {
+    total,
+    active,
+    inactive: total - active,
+    byCategory: byCategory.map(b => ({ [b.name]: b._count.subCategory }))
+  };
+};
