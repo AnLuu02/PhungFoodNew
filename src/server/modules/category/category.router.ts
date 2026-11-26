@@ -22,7 +22,7 @@ import {
 } from './category.service';
 
 const adminCategoryRouter = createTRPCRouter({
-  adminGetCategorySummary: protectedProcedure.query(async ({ ctx }) => await adminGetCategorySummaryService(ctx.db))
+  getSummary: protectedProcedure.query(async ({ ctx }) => await adminGetCategorySummaryService(ctx.db))
 });
 
 export const categoryRouter = createTRPCRouter({

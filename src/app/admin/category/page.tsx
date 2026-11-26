@@ -14,8 +14,8 @@ import {
 } from '@mantine/core';
 import { IconDownload, IconFileTypeXls } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { api, HydrateClient } from '~/trpc/server';
 import CategoryClientManagementPage from '~/app/admin/category/components/page-client';
+import { api, HydrateClient } from '~/trpc/server';
 
 export const metadata: Metadata = {
   title: 'Quản lý danh mục'
@@ -39,6 +39,7 @@ export default async function CategoryManagementPage({
   const category = searchParams?.category;
   await Promise.allSettled([
     api.Category.getCategoriesWithRelationBasic.prefetch(),
+    api.Category.admin.getSummary.prefetch(),
     api.Category.find.prefetch({ page: +page, limit: +limit, s }),
     api.SubCategory.find.prefetch({ page: +page, limit: +limit, filters: { s, status, category } })
   ]);

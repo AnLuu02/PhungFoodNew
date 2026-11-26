@@ -3,12 +3,12 @@ import { ActionIcon, Box, Card, Flex, Group, Paper, Select, SimpleGrid, Tabs, Ti
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { SearchInput } from '~/components/search/search-input';
-import { CategoryBasic } from '~/shared/types/trpc/category.types';
-import { api } from '~/trpc/react';
 import { CreateCategoryButton, CreateSubCategoryButton } from '~/app/admin/category/components/button';
 import TableCategory from '~/app/admin/category/components/tables/table-category';
 import TableSubCategory from '~/app/admin/category/components/tables/table-sub-category';
+import { SearchInput } from '~/components/search/search-input';
+import { CategoryBasic } from '~/shared/types/trpc/category.types';
+import { api } from '~/trpc/react';
 
 export default function CategoryClientManagementPage() {
   const searchParams = useSearchParams();
@@ -16,55 +16,32 @@ export default function CategoryClientManagementPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'category' | 'subCategory'>('category');
   const { data: allDataClient } = api.Category.getCategoriesWithRelationBasic.useQuery(undefined);
+  const { data: summary } = api.Category.admin.getSummary.useQuery();
   const dataFilter = useMemo(() => {
-    if (!allDataClient) return [];
-    const summary = allDataClient?.reduce(
-      (
-        acc: {
-          totalCate: number;
-          activeCate: number;
-          totalSubCate: number;
-          activeSubCate: number;
-        },
-        item: CategoryBasic
-      ) => {
-        acc.totalCate += 1;
-        acc.totalSubCate += item.subCategory?.length || 0;
-        if (item.isActive) {
-          acc.activeCate += 1;
-        }
-        item.subCategory?.forEach((subCategory: CategoryBasic['subCategory'][number]) => {
-          if (subCategory.isActive) {
-            acc.activeSubCate += 1;
-          }
-        });
-        return acc;
-      },
-      { totalCate: 0, activeCate: 0, totalSubCate: 0, activeSubCate: 0 }
-    );
+    if (!summary) return [];
 
     return [
       {
         label: 'Tổng số danh mục',
-        value: summary.totalCate,
+        value: summary.total,
         icon: IconCategory,
         color: '#446DAE'
       },
       {
         label: 'Danh mục hoạt động',
-        value: summary.activeCate,
+        value: summary.active,
         icon: IconCircleCheck,
         color: '#499764'
       },
       {
         label: 'Tổng số danh mục con',
-        value: summary.totalSubCate,
+        value: summary.totalSub,
         icon: IconCategoryPlus,
         color: '#C0A453'
       },
       {
         label: 'Danh mục con hoạt động',
-        value: summary.activeSubCate,
+        value: summary.activeSub,
         icon: IconCircleCheck,
         color: '#CA041D'
       }

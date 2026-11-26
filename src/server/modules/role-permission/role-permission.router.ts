@@ -1,6 +1,14 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import {
+  activityLogger,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+  requirePermission
+} from '~/server/api/trpc';
+import { basePermissionSchema } from '~/shared/schema/permission.schema';
+import { baseRoleSchema } from '~/shared/schema/role.schema';
 import {
   createManyPermissionService,
   deletePermissionService,
@@ -18,10 +26,30 @@ import {
   getOneRoleService,
   upsertRoleService
 } from './role.service';
-import { basePermissionSchema } from '~/shared/schema/permission.schema';
-import { baseRoleSchema } from '~/shared/schema/role.schema';
+
+const adminRoleRouter = createTRPCRouter({
+  getRoleSummary: protectedProcedure.query(async ({ ctx }) => {
+    const [total, byRole] = await ctx.db.$transaction([
+      ctx.db.role.count(),
+      ctx.db.role.groupBy({
+        by: ['name'],
+        orderBy: { name: 'asc' },
+        _count: { _all: true }
+      })
+    ]);
+    return {
+      total,
+      byRole: byRole.map(b => ({
+        role: b.name,
+        count: b._count && typeof b._count === 'object' ? (b._count?._all ?? 0) : 0
+      }))
+    };
+  })
+});
 
 export const rolePermissionRouter = createTRPCRouter({
+  admin: adminRoleRouter,
+
   find: publicProcedure
     .input(
       z.object({

@@ -1,10 +1,10 @@
 import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { UserRole } from '~/shared/constants/user.constants';
-import { api, HydrateClient } from '~/trpc/server';
 import { CreateProductButton } from '~/app/admin/product/components/button';
 import TableProduct from '~/app/admin/product/components/tables/table-product';
+import { UserRole } from '~/shared/constants/user.constants';
+import { api, HydrateClient } from '~/trpc/server';
 
 export const metadata: Metadata = {
   title: 'Quản lý sản phẩm '
@@ -25,6 +25,7 @@ export default async function ProductManagementPage({
   const filter = searchParams?.filter;
   await Promise.allSettled([
     api.Product.getProductsOnly.prefetch({ userRole: UserRole.ADMIN }),
+    api.Product.admin.getSummary.prefetch(),
     api.Product.find.prefetch({
       page: +page,
       limit: +limit,

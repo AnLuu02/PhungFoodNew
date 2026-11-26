@@ -1,6 +1,13 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
-import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import {
+  activityLogger,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+  requirePermission
+} from '~/server/api/trpc';
+import { baseMaterialSchema } from '~/shared/schema/material.schema';
 import {
   createManyMaterialService,
   deleteMaterialService,
@@ -9,9 +16,30 @@ import {
   getOneMaterialService,
   upsertMaterialService
 } from './material.service';
-import { baseMaterialSchema } from '~/shared/schema/material.schema';
+
+const adminMaterialRouter = createTRPCRouter({
+  getSummary: protectedProcedure.query(async ({ ctx }) => {
+    const [total, byCategory] = await ctx.db.$transaction([
+      ctx.db.material.count(),
+      ctx.db.material.groupBy({
+        by: ['category'],
+        orderBy: { category: 'asc' },
+        _count: { _all: true }
+      })
+    ]);
+    return {
+      total,
+      byCategory: byCategory.map(bc => ({
+        category: bc.category,
+        count: bc._count && typeof bc._count === 'object' ? (bc._count?._all ?? 0) : 0
+      }))
+    };
+  })
+});
 
 export const materialRouter = createTRPCRouter({
+  admin: adminMaterialRouter,
+
   find: publicProcedure
     .input(
       z.object({

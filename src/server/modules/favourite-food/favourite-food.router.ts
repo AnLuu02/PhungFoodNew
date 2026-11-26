@@ -12,6 +12,16 @@ import {
 } from './favourite-food.service';
 
 export const favouriteFoodRouter = createTRPCRouter({
+  list: publicProcedure
+    .input(
+      z.object({
+        search: z.string().optional(),
+        sort: z.array(z.string()).optional(),
+        filters: z.array(z.string()).optional()
+      })
+    )
+    .query(async ({ ctx }) => {}),
+
   create: publicProcedure
     .use(activityLogger)
     .input(
@@ -53,6 +63,7 @@ export const favouriteFoodRouter = createTRPCRouter({
     .input(
       z.object({
         s: z.string().optional(),
+        sort: z.array(z.string()).optional(),
         keys: z.array(z.string())
       })
     )

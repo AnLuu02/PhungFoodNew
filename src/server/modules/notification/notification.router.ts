@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { notificationSchema } from '~/shared/schema/notification.schema';
 import {
   createNotificationService,
   deleteNotificationByIdService,
@@ -12,7 +13,6 @@ import {
   updateActionUserService,
   updateNotificationService
 } from './notification.service';
-import { notificationSchema } from '~/shared/schema/notification.schema';
 export const notificationRouter = createTRPCRouter({
   create: publicProcedure
     .use(activityLogger)

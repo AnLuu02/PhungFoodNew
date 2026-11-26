@@ -16,20 +16,23 @@ import {
   Title
 } from '@mantine/core';
 import { IconMeat } from '@tabler/icons-react';
-import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
-import { CommonSkeleton } from '~/components/loading/loading-skeleton';
+import {
+  CreateManyMaterialButton,
+  DeleteMaterialButton,
+  UpdateMaterialButton
+} from '~/app/admin/material/components/button';
 import CustomPagination from '~/components/common/pagination';
 import PageSizeSelector from '~/components/common/per-page';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
 import { SearchInput } from '~/components/search/search-input';
-import { categoryMaterials } from '~/shared/constants/common.constants';
 import { formatDateViVN } from '~/lib/utils/format';
 import { randomColorHex } from '~/lib/utils/random-color-hex';
+import { categoryMaterials } from '~/shared/constants/common.constants';
 import { BADGE_COLORS } from '~/shared/constants/helper.constants';
-import { FindMaterial, GetAllMaterial } from '~/shared/types/trpc/material.types';
+import { FindMaterial } from '~/shared/types/trpc/material.types';
 import { api } from '~/trpc/react';
-import { CreateManyMaterialButton, DeleteMaterialButton, UpdateMaterialButton } from '~/app/admin/material/components/button';
 
 type CategoryMaterialType = typeof categoryMaterials;
 type KeyCategory = keyof CategoryMaterialType;
@@ -44,28 +47,19 @@ export default function TableMaterial() {
   const limit = searchParams.get('limit') ?? '5';
 
   const { data: dataClient, isLoading } = api.Material.find.useQuery({ page: +page, limit: +limit, s });
-  const { data: allDataClient } = api.Material.getAll.useQuery(undefined);
+  const { data: summary } = api.Material.admin.getSummary.useQuery(undefined);
 
   const currentItems = dataClient?.materials || [];
   const dataFilter = useMemo(() => {
-    let keys: any = {};
-    Object.keys(categoryMaterials)?.map(k => {
-      keys[k] = 0;
-    });
-    if (!allDataClient) return [];
-    const summary = allDataClient.reduce((acc: any, item: GetAllMaterial[number]) => {
-      item.category ? (acc[item.category] += 1) : null;
-      return acc;
-    }, keys);
+    if (!summary) return [];
 
-    return Object.entries(categoryMaterials).map(([key, value]) => ({
-      label: value,
-      tag: key,
-      value: summary?.[key],
+    return summary.byCategory.map(({ category, count }) => ({
+      label: count,
+      value: category,
       icon: IconMeat,
       color: randomColorHex()
     }));
-  }, [allDataClient]);
+  }, [summary]);
 
   const utils = api.useUtils();
   useEffect(() => {
@@ -80,23 +74,23 @@ export default function TableMaterial() {
         {dataFilter?.map((item, index) => {
           const IconR = item.icon;
           return (
-            <Link href={`/admin/material?s=${item.tag}`}>
-              <Card style={{ backgroundColor: item.color + 10 }} shadow='md' pos={'relative'} key={index} p={'md'}>
-                <Flex align={'center'} gap={'md'}>
-                  <ActionIcon variant='light' size={'xl'} color={item.color}>
-                    <IconR size={20} />
-                  </ActionIcon>
-                  <Box>
-                    <Title order={6} className='font-quicksand'>
-                      {item.label}
-                    </Title>
-                    <Title order={3} className='font-quicksand'>
-                      {item.value}
-                    </Title>
-                  </Box>
-                </Flex>
-              </Card>
-            </Link>
+            // <Link href={`/admin/material?s=${item.tag}`}>
+            <Card style={{ backgroundColor: item.color + 10 }} shadow='md' pos={'relative'} key={index} p={'md'}>
+              <Flex align={'center'} gap={'md'}>
+                <ActionIcon variant='light' size={'xl'} color={item.color}>
+                  <IconR size={20} />
+                </ActionIcon>
+                <Box>
+                  <Title order={6} className='font-quicksand'>
+                    {item.label}
+                  </Title>
+                  <Title order={3} className='font-quicksand'>
+                    {item.value}
+                  </Title>
+                </Box>
+              </Flex>
+            </Card>
+            // </Link>
           );
         })}
       </SimpleGrid>

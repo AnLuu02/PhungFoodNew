@@ -13,19 +13,19 @@ import {
   Title,
   Tooltip
 } from '@mantine/core';
-import { IconBrandCashapp, IconDumpling, IconMeat, IconMoneybag, IconMushroomFilled } from '@tabler/icons-react';
+import { IconDumpling, IconMeat, IconMoneybag, IconMushroomFilled } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
+import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '~/app/admin/invoice/components/button';
 import { SendOrderButton } from '~/app/admin/order/components/button';
-import InvoiceToPrint from '~/components/domain/invoice-to-print';
-import { CommonSkeleton } from '~/components/loading/loading-skeleton';
 import CustomPagination from '~/components/common/pagination';
 import PageSizeSelector from '~/components/common/per-page';
+import InvoiceToPrint from '~/components/domain/invoice-to-print';
+import { CommonSkeleton } from '~/components/loading/loading-skeleton';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
 import { renderShortId } from '~/lib/utils/render-short-id';
-import { FindInvoice, GetAllInvoice } from '~/shared/types/trpc/invoice.types';
+import { FindInvoice } from '~/shared/types/trpc/invoice.types';
 import { api } from '~/trpc/react';
-import { DeleteInvoiceButton, UpdateInvoiceButton, ViewInvoiceButton } from '~/app/admin/invoice/components/button';
 
 export default function TableInvoice() {
   const searchParams = useSearchParams();
@@ -35,58 +35,43 @@ export default function TableInvoice() {
   const limit = searchParams.get('limit') ?? '5';
 
   const { data: dataClient, isLoading } = api.Invoice.find.useQuery({ page: +page, limit: +limit, s });
-  const { data: allDataClient } = api.Invoice.getAll.useQuery(undefined);
+  const { data: summary } = api.Invoice.admin.getSummary.useQuery();
 
   const currentItems = dataClient?.invoices || [];
   const dataFilter = useMemo(() => {
-    if (!allDataClient) return [];
-    const summary = allDataClient.reduce(
-      (
-        acc: { PAID: number; DRAFT: number; CANCELLED: number; ForeignCurrency: number; VND: number },
-        item: GetAllInvoice[number]
-      ) => {
-        item.status === 'PAID' && (acc['PAID'] += 1);
-        item.status === 'DRAFT' && (acc['DRAFT'] += 1);
-        item.status === 'CANCELLED' && (acc['CANCELLED'] += 1);
-        item.currency !== 'VND' && (acc['ForeignCurrency'] += 1);
-        item.currency === 'VND' && (acc['VND'] += 1);
-        return acc;
-      },
-      { PAID: 0, DRAFT: 0, CANCELLED: 0, ForeignCurrency: 0, VND: 0 }
-    );
+    if (!summary) return [];
+
+    const byStatusMap = new Map(summary.byStatus.map(b => [b.status, b]));
+
+    const byCurrencyArr = summary.byCurrency.map(b => ({
+      label: b.currency?.toUpperCase(),
+      value: b.count ?? 0,
+      icon: IconMoneybag,
+      color: '#228AE5'
+    }));
+
     return [
       {
         label: 'Hoàn thành',
-        value: summary['PAID'],
+        value: byStatusMap.get('PAID')?.count ?? 0,
         icon: IconMeat,
         color: '#446DAE'
       },
       {
         label: 'Đang chờ ',
-        value: summary['DRAFT'],
+        value: byStatusMap.get('DRAFT')?.count ?? 0,
         icon: IconDumpling,
         color: '#499764'
       },
       {
         label: 'Đã hủy',
-        value: summary['CANCELLED'],
+        value: byStatusMap.get('CANCELLED')?.count ?? 0,
         icon: IconMushroomFilled,
         color: '#C0A453'
       },
-      {
-        label: 'Việt Nam đồng',
-        value: summary['VND'],
-        icon: IconBrandCashapp,
-        color: '#CA041D'
-      },
-      {
-        label: 'Ngoại tệ',
-        value: summary['ForeignCurrency'],
-        icon: IconMoneybag,
-        color: '#228AE5'
-      }
+      ...byCurrencyArr
     ];
-  }, [allDataClient]);
+  }, [summary]);
 
   const utils = api.useUtils();
   useEffect(() => {

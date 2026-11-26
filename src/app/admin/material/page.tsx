@@ -1,9 +1,9 @@
 import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { api, HydrateClient } from '~/trpc/server';
 import { CreateMaterialButton } from '~/app/admin/material/components/button';
 import TableMaterial from '~/app/admin/material/components/tables/table-material';
+import { api, HydrateClient } from '~/trpc/server';
 
 export const metadata: Metadata = {
   title: 'Quản lý nguyên liệu '
@@ -22,7 +22,7 @@ export default async function MaterialManagementPage({
   const limit = searchParams?.limit ?? '5';
   await Promise.allSettled([
     api.Material.find.prefetch({ page: +page, limit: +limit, s }),
-    api.Material.getAll.prefetch()
+    api.Material.admin.getSummary.prefetch()
   ]);
   return (
     <HydrateClient>

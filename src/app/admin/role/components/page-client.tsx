@@ -3,14 +3,19 @@ import { ActionIcon, Box, Card, Divider, Flex, Group, Paper, Select, SimpleGrid,
 import { IconCategory, IconCategoryPlus, IconCircleCheck } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
+import {
+  CreateManyPermissionButton,
+  CreateManyRoleButton,
+  CreatePermissionButton,
+  CreateRoleButton
+} from '~/app/admin/role/components/button';
+import { RoleSection } from '~/app/admin/role/components/sections/role-section';
+import TablePermission from '~/app/admin/role/components/sections/table-permissions';
 import { useHashTabs } from '~/components/hooks/use-hash-tabs';
 import { SearchInput } from '~/components/search/search-input';
 import { UserRole } from '~/shared/constants/user.constants';
 import { GetAllRole } from '~/shared/types/trpc/role-permission.types';
 import { api } from '~/trpc/react';
-import { CreateManyPermissionButton, CreateManyRoleButton, CreatePermissionButton, CreateRoleButton } from '~/app/admin/role/components/button';
-import { RoleSection } from '~/app/admin/role/components/sections/role-section';
-import TablePermission from '~/app/admin/role/components/sections/table-permissions';
 
 const TABS: Record<string, { value: string; label: string }> = {
   role: { value: 'role', label: 'Vai trò' },

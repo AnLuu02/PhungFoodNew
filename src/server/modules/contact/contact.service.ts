@@ -67,10 +67,6 @@ export const deleteContactService = async (db: PrismaClient, input: { id: string
   };
 };
 
-export const getAllContactService = async (db: PrismaClient) => {
-  return await db.contact.findMany({});
-};
-
 export const upsertContactService = async (db: PrismaClient, input: ContactInput) => {
   const { id, ...data } = input;
   const result = await db.$transaction(async tx => {

@@ -1,7 +1,16 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import {
+  activityLogger,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+  requirePermission
+} from '~/server/api/trpc';
+import { productFilterSchema } from '~/shared/schema/product.filter.schema';
+import { productFromDbSchema } from '~/shared/schema/product.schema';
+import { TUserRole } from '~/shared/types/trpc/user.types';
 import {
   findInfiniteProductService,
   findProductService,
@@ -13,11 +22,23 @@ import {
   softDeleteProductService,
   upsertProductService
 } from './product.service';
-import { productFilterSchema } from '~/shared/schema/product.filter.schema';
-import { productFromDbSchema } from '~/shared/schema/product.schema';
-import { TUserRole } from '~/shared/types/trpc/user.types';
+
+const adminProductRouter = createTRPCRouter({
+  getSummary: protectedProcedure.query(async ({ ctx }) => {
+    const [total, active, purchased] = await ctx.db.$transaction([
+      ctx.db.product.count(),
+      ctx.db.product.count({ where: { isActive: true } }),
+      ctx.db.product.aggregate({
+        _sum: { soldQuantity: true }
+      })
+    ]);
+    return { total, active, inactive: total - active, purchased: purchased._sum.soldQuantity ?? 0 };
+  })
+});
 
 export const productRouter = createTRPCRouter({
+  admin: adminProductRouter,
+
   find: publicProcedure
     .input(productFilterSchema.extend({ include: z.custom<Prisma.ProductInclude>().optional() }))
     .query(async ({ ctx, input }) => await findProductService(ctx.db, input)),

@@ -1,10 +1,10 @@
 import { Box, Button, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { SearchInput } from '~/components/search/search-input';
-import { api, HydrateClient } from '~/trpc/server';
 import { CreateOrderButton, SendMessageAllUserAdvanced } from '~/app/admin/order/components/button';
 import TableOrder from '~/app/admin/order/components/tables/table-order';
+import { SearchInput } from '~/components/search/search-input';
+import { api, HydrateClient } from '~/trpc/server';
 export const metadata: Metadata = {
   title: 'Quản lý hóa đơn '
 };
@@ -28,7 +28,7 @@ export default async function OrderManagementPage({
   )?.filter(Boolean);
 
   await Promise.allSettled([
-    api.Order.getAll.prefetch(),
+    api.Order.admin.getSummary.prefetch(),
     api.Order.find.prefetch({ page: +page, limit: +limit, s, filter, sort: sortArr })
   ]);
   return (

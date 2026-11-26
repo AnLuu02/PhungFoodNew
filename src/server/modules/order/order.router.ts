@@ -1,7 +1,8 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { activityLogger, createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+import { activityLogger, createTRPCRouter, protectedProcedure, publicProcedure } from '~/server/api/trpc';
+import { baseOrderSchema } from '~/shared/schema/order.schema';
 import {
   deleteOrderService,
   findOrderService,
@@ -11,9 +12,31 @@ import {
   updateOrderService,
   upsertOrderService
 } from './order.service';
-import { baseOrderSchema } from '~/shared/schema/order.schema';
+
+const adminOrderRouter = createTRPCRouter({
+  getSummary: protectedProcedure.query(async ({ ctx }) => {
+    const [total, byStatus] = await ctx.db.$transaction([
+      ctx.db.order.count(),
+      ctx.db.order.groupBy({
+        by: ['status'],
+        orderBy: { status: 'asc' },
+        _count: { _all: true }
+      })
+    ]);
+
+    return {
+      total,
+      byStatus: byStatus.map(bs => ({
+        status: bs.status,
+        count: bs._count && typeof bs._count === 'object' ? (bs._count?._all ?? 0) : 0
+      }))
+    };
+  })
+});
 
 export const orderRouter = createTRPCRouter({
+  admin: adminOrderRouter,
+
   find: publicProcedure
     .input(
       z.object({

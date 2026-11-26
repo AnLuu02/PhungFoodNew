@@ -2,10 +2,6 @@
 
 import { Badge, Box, Divider, Group, Highlight, Paper, Stack, Text } from '@mantine/core';
 import { IconBellPause, IconCircleCheck, IconSum, IconTruckDelivery, IconXboxX } from '@tabler/icons-react';
-import CustomPagination from '~/components/common/pagination';
-import PageSizeSelector from '~/components/common/per-page';
-import { formatPriceLocaleVi } from '~/lib/utils/format';
-import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';
 import {
   CopyOrderButton,
   DeleteOrderButton,
@@ -14,6 +10,10 @@ import {
   SendOrderButton,
   UpdateOrderButton
 } from '~/app/admin/order/components/button';
+import CustomPagination from '~/components/common/pagination';
+import PageSizeSelector from '~/components/common/per-page';
+import { getStatusInfo, ORDER_STATUS_UI } from '~/lib/helpers/order/status-order';
+import { formatPriceLocaleVi } from '~/lib/utils/format';
 
 import { ActionIcon, Card, Flex, Select, SimpleGrid, Title } from '@mantine/core';
 import { OrderStatus } from '@prisma/client';
@@ -22,7 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
 import { CommonSkeleton } from '~/components/loading/loading-skeleton';
 import { SearchInput } from '~/components/search/search-input';
-import { FindOrder, GetAllOrder } from '~/shared/types/trpc/order.types';
+import { FindOrder } from '~/shared/types/trpc/order.types';
 import { api } from '~/trpc/react';
 
 export default function TableOrder() {
@@ -43,37 +43,12 @@ export default function TableOrder() {
     filter,
     sort: sortArr
   });
-  const { data: allDataClient } = api.Order.getAll.useQuery(undefined);
+  const { data: summary } = api.Order.admin.getSummary.useQuery();
   const currentItems = dataClient?.orders || [];
   const dataFilter = useMemo(() => {
-    if (!allDataClient) return [];
-    const summary = allDataClient.reduce(
-      (
-        acc: {
-          total: number;
-          [OrderStatus.COMPLETED]: number;
-          [OrderStatus.UNPAID]: number;
-          [OrderStatus.SHIPPING]: number;
-          [OrderStatus.PENDING]: number;
-          [OrderStatus.CANCELLED]: number;
-          [OrderStatus.CONFIRMED]: number;
-        },
-        item: GetAllOrder[number]
-      ) => {
-        acc.total += 1;
-        item.status ? (acc[item.status as OrderStatus] += 1) : null;
-        return acc;
-      },
-      {
-        total: 0,
-        [OrderStatus.UNPAID]: 0,
-        [OrderStatus.COMPLETED]: 0,
-        [OrderStatus.SHIPPING]: 0,
-        [OrderStatus.PENDING]: 0,
-        [OrderStatus.CANCELLED]: 0,
-        [OrderStatus.CONFIRMED]: 0
-      }
-    );
+    if (!summary) return [];
+
+    const summaryMap = new Map(summary.byStatus.map(bs => [bs.status, bs]));
 
     return [
       {
@@ -84,31 +59,31 @@ export default function TableOrder() {
       },
       {
         label: 'Hoàn thành',
-        value: summary[OrderStatus.COMPLETED],
+        value: summaryMap.get(OrderStatus.COMPLETED)?.count ?? 0,
         icon: IconCircleCheck,
         color: '#499764'
       },
       {
         label: 'Vận chuyển',
-        value: summary[OrderStatus.SHIPPING],
+        value: summaryMap.get(OrderStatus.SHIPPING)?.count ?? 0,
         icon: IconTruckDelivery,
         color: '#C0A453'
       },
       {
         label: 'Chờ xác nhận',
-        value: summary[OrderStatus.PENDING],
+        value: summaryMap.get(OrderStatus.PENDING)?.count ?? 0,
         icon: IconBellPause,
         color: '#F16329'
       },
 
       {
         label: 'Đã hủy',
-        value: summary[OrderStatus.CANCELLED],
+        value: summaryMap.get(OrderStatus.CANCELLED)?.count ?? 0,
         icon: IconXboxX,
         color: '#CA041D'
       }
     ];
-  }, [allDataClient]);
+  }, [summary]);
 
   const utils = api.useUtils();
   useEffect(() => {

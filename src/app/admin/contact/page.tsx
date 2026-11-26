@@ -1,8 +1,8 @@
 import { Box, Button, Divider, Flex, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { Metadata } from 'next';
-import { api, HydrateClient } from '~/trpc/server';
 import TableContact from '~/app/admin/contact/components/tables/table-contact';
+import { api, HydrateClient } from '~/trpc/server';
 
 export const metadata: Metadata = {
   title: 'Quản lý liên hệ của khách ahngf '
@@ -20,7 +20,7 @@ export default async function ContactManagementPage({
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   await Promise.allSettled([
-    api.Contact.getAll.prefetch(),
+    api.Contact.admin.getSummary.prefetch(),
     api.Contact.find.prefetch({ page: +page, limit: +limit, s })
   ]);
 

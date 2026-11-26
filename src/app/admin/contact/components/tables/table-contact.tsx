@@ -18,15 +18,15 @@ import { TypeContact } from '@prisma/client';
 import { IconBrandAsana, IconHelpOctagon, IconMessageReply, IconPhysotherapist } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
+import { CallPhoneButton, DeleteContactButton, SendMailButton } from '~/app/admin/contact/components/button';
 import CustomPagination from '~/components/common/pagination';
 import PageSizeSelector from '~/components/common/per-page';
 import { SearchInput } from '~/components/search/search-input';
 import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { formatDateViVN } from '~/lib/utils/format';
 import { ContactTypeOptions } from '~/shared/constants/contact.constants';
-import { FindContact, GetAllContact } from '~/shared/types/trpc/contact.types';
+import { FindContact } from '~/shared/types/trpc/contact.types';
 import { api } from '~/trpc/react';
-import { CallPhoneButton, DeleteContactButton, SendMailButton } from '~/app/admin/contact/components/button';
 
 export default function TableContact() {
   const searchParams = useSearchParams();
@@ -38,48 +38,41 @@ export default function TableContact() {
   const limit = searchParams.get('limit') ?? '5';
 
   const { data: dataClient, isLoading } = api.Contact.find.useQuery({ page: +page, limit: +limit, s });
-  const { data: allDataClient } = api.Contact.getAll.useQuery(undefined);
+  const { data: summary } = api.Contact.admin.getSummary.useQuery(undefined);
 
   const currentItems = dataClient?.contacts || [];
   const dataFilter = useMemo(() => {
-    if (!allDataClient) return [];
-    const summary = allDataClient.reduce(
-      (acc: Record<TypeContact, number>, item: GetAllContact[number]) => {
-        if (item.type === TypeContact.COLLABORATION) acc[TypeContact.COLLABORATION] += 1;
-        else if (item.type === TypeContact.FEEDBACK) acc[TypeContact.FEEDBACK] += 1;
-        else if (item.type === TypeContact.SUPPORT) acc[TypeContact.SUPPORT] += 1;
-        else acc[TypeContact.OTHER] += 1;
-        return acc;
-      },
-      { [TypeContact.COLLABORATION]: 0, [TypeContact.FEEDBACK]: 0, [TypeContact.OTHER]: 0, [TypeContact.SUPPORT]: 0 }
-    );
+    if (!summary) return [];
+
+    const summaryMap = new Map(summary.byType.map(bt => [bt.type, bt]));
+
     return [
       {
         label: 'Hợp tác',
-        value: summary[TypeContact.COLLABORATION],
+        value: summaryMap.get(TypeContact.COLLABORATION)?.count ?? 0,
         icon: IconBrandAsana,
         color: '#446DAE'
       },
       {
         label: 'Phản hổi',
-        value: summary[TypeContact.FEEDBACK],
+        value: summaryMap.get(TypeContact.FEEDBACK)?.count ?? 0,
         icon: IconMessageReply,
         color: '#499764'
       },
       {
         label: 'Hỗ trợ',
-        value: summary[TypeContact.SUPPORT],
+        value: summaryMap.get(TypeContact.SUPPORT)?.count ?? 0,
         icon: IconHelpOctagon,
         color: '#C0A453'
       },
       {
         label: 'Khác',
-        value: summary[TypeContact.OTHER],
+        value: summaryMap.get(TypeContact.OTHER)?.count ?? 0,
         icon: IconPhysotherapist,
         color: '#CA041D'
       }
     ];
-  }, [allDataClient]);
+  }, [summary]);
 
   const utils = api.useUtils();
   useEffect(() => {

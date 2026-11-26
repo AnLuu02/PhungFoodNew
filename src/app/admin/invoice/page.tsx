@@ -1,10 +1,10 @@
 import { Box, Divider, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import { Metadata } from 'next';
+import { CreateInvoiceButton } from '~/app/admin/invoice/components/button';
+import TableInvoice from '~/app/admin/invoice/components/tables/table-invoice';
 import PageSizeSelector from '~/components/common/per-page';
 import { SearchInput } from '~/components/search/search-input';
 import { api, HydrateClient } from '~/trpc/server';
-import { CreateInvoiceButton } from '~/app/admin/invoice/components/button';
-import TableInvoice from '~/app/admin/invoice/components/tables/table-invoice';
 
 export const metadata: Metadata = {
   title: 'Quản lý hóa đơn '
@@ -23,7 +23,7 @@ export default async function InvoiceManagementPage({
   const page = searchParams?.page || '1';
   const limit = searchParams?.limit ?? '5';
   await Promise.allSettled([
-    api.Invoice.getAll.prefetch(),
+    api.Invoice.admin.getSummary.prefetch(),
     api.Invoice.find.prefetch({ page: +page, limit: +limit, s })
   ]);
 

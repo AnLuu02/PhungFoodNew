@@ -1,10 +1,10 @@
 'use client';
 
 import { Avatar, Badge, Box, Group, Highlight, Spoiler, Text, Tooltip } from '@mantine/core';
+import { DeleteProductButton, UpdateProductButton } from '~/app/admin/product/components/button';
 import CustomPagination from '~/components/common/pagination';
 import PageSizeSelector from '~/components/common/per-page';
 import { formatDateViVN, formatPriceLocaleVi } from '~/lib/utils/format';
-import { DeleteProductButton, UpdateProductButton } from '~/app/admin/product/components/button';
 
 import { ActionIcon, Card, Divider, Flex, Paper, Select, SimpleGrid, Stack, Title } from '@mantine/core';
 import { IconCheese, IconCircleCheck, IconGardenCartOff, IconTruckDelivery } from '@tabler/icons-react';
@@ -14,7 +14,7 @@ import { SearchInput } from '~/components/search/search-input';
 import { CardSkeleton } from '~/components/web/cards/card-skeleton';
 import { randomColorHex } from '~/lib/utils/random-color-hex';
 import { UserRole } from '~/shared/constants/user.constants';
-import { FindProduct, getProductsOnly } from '~/shared/types/trpc/product.types';
+import { FindProduct } from '~/shared/types/trpc/product.types';
 import { api } from '~/trpc/react';
 
 export default function TableProduct() {
@@ -35,24 +35,11 @@ export default function TableProduct() {
     userRole: UserRole.ADMIN,
     filter: filter ? filter + '@#@$@@' : undefined
   });
-  const { data: allDataClient } = api.Product.getProductsOnly.useQuery({ userRole: UserRole.ADMIN });
+  const { data: summary } = api.Product.admin.getSummary.useQuery();
   const currentItems = dataClient?.products || [];
   const categories = categoryData ?? [];
   const dataFilter = useMemo(() => {
-    if (!allDataClient) return [];
-    const summary = allDataClient.reduce(
-      (acc: { total: number; active: number; inactive: number; purchased: number }, item: getProductsOnly[number]) => {
-        acc.total += 1;
-        acc.purchased += item.soldQuantity || 0;
-        if (item.isActive) {
-          acc.active += 1;
-        } else {
-          acc.inactive += 1;
-        }
-        return acc;
-      },
-      { total: 0, active: 0, inactive: 0, purchased: 0 }
-    );
+    if (!summary) return [];
 
     return [
       {
@@ -80,7 +67,7 @@ export default function TableProduct() {
         color: '#CA041D'
       }
     ];
-  }, [allDataClient]);
+  }, [summary]);
 
   const utils = api.useUtils();
   useEffect(() => {

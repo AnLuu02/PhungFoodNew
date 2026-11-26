@@ -1,7 +1,14 @@
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 
-import { activityLogger, createTRPCRouter, publicProcedure, requirePermission } from '~/server/api/trpc';
+import {
+  activityLogger,
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+  requirePermission
+} from '~/server/api/trpc';
+import { baseReviewSchema } from '~/shared/schema/review.schema';
 import {
   deleteReviewService,
   findReviewService,
@@ -9,9 +16,30 @@ import {
   getReviewForOwnerService,
   upsertReviewService
 } from './review.service';
-import { baseReviewSchema } from '~/shared/schema/review.schema';
+
+const adminReviewRouter = createTRPCRouter({
+  getSummary: protectedProcedure.query(async ({ ctx }) => {
+    const [total, byRating] = await ctx.db.$transaction([
+      ctx.db.review.count(),
+      ctx.db.review.groupBy({
+        by: ['rating'],
+        orderBy: { rating: 'asc' },
+        _count: { _all: true }
+      })
+    ]);
+    return {
+      total,
+      byRating: byRating.map(br => ({
+        star: br.rating,
+        count: br._count && typeof br._count === 'object' ? (br._count?._all ?? 0) : 0
+      }))
+    };
+  })
+});
 
 export const reviewRouter = createTRPCRouter({
+  admin: adminReviewRouter,
+
   find: publicProcedure
     .input(
       z.object({
